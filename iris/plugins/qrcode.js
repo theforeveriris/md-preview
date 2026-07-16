@@ -47,7 +47,7 @@ export default {
       const link = document.createElement('link');
       link.id = 'qrcode-plugin-styles';
       link.rel = 'stylesheet';
-      link.href = './plugins/qrcode.css';
+      link.href = './iris/plugins/qrcode.css';
       document.head.appendChild(link);
     }
   },
