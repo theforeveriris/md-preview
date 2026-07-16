@@ -1,0 +1,251 @@
+/* QR Code Plugin Enhanced Styles */
+
+/* 容器基础样式 */
+.qrcode-container-enhanced {
+  --qr-container-padding: 2em;
+  --qr-container-radius: 24px;
+  --qr-container-max-width: 400px;
+  --qr-container-bg: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(250,250,255,0.95) 100%);
+  --qr-container-shadow: 0 20px 60px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.06);
+  --qr-container-border: none;
+  
+  /* 二维码包装器样式 */
+  --qr-wrapper-padding: 1.5em;
+  --qr-wrapper-radius: 20px;
+  --qr-wrapper-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
+  
+  /* 文本样式 */
+  --qr-title-size: 1.125em;
+  --qr-title-weight: 600;
+  --qr-title-color: #2d3748;
+  --qr-title-margin: 1.5em;
+  --qr-text-size: 0.875em;
+  --qr-text-color: #718096;
+  --qr-text-line-height: 1.5;
+  --qr-text-max-width: 280px;
+  
+  /* 装饰元素 */
+  --qr-corner-tl-size: 60px;
+  --qr-corner-tl-bg: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, transparent 100%);
+  --qr-corner-br-size: 80px;
+  --qr-corner-br-bg: linear-gradient(135deg, transparent 0%, rgba(118, 75, 162, 0.1) 100%);
+  
+  /* 动画 */
+  --qr-animation-duration: 0.4s;
+  --qr-animation-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* 二维码样式 */
+  --qr-canvas-radius: 12px;
+  --qr-module-gap: 2px;
+  --qr-logo-size-ratio: 0.2;
+  --qr-logo-padding: 6px;
+  --qr-logo-radius: 12px;
+  --qr-logo-inner-radius: 8px;
+}
+
+/* 暗色主题适配 */
+@media (prefers-color-scheme: dark) {
+  .qrcode-container-enhanced {
+    --qr-container-bg: linear-gradient(135deg, rgba(30,30,40,0.95) 0%, rgba(25,25,35,0.95) 100%);
+    --qr-container-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 8px 16px rgba(0,0,0,0.2);
+    --qr-title-color: #e2e8f0;
+    --qr-text-color: #a0aec0;
+    --qr-corner-tl-bg: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, transparent 100%);
+    --qr-corner-br-bg: linear-gradient(135deg, transparent 0%, rgba(118, 75, 162, 0.2) 100%);
+  }
+}
+
+/* 紧凑模式 */
+.qrcode-container-enhanced.compact {
+  --qr-container-padding: 1.5em;
+  --qr-container-radius: 16px;
+  --qr-wrapper-padding: 1em;
+  --qr-title-margin: 1em;
+  --qr-title-size: 1em;
+  --qr-corner-tl-size: 40px;
+  --qr-corner-br-size: 50px;
+}
+
+/* 极简模式 */
+.qrcode-container-enhanced.minimal {
+  --qr-container-padding: 1em;
+  --qr-container-radius: 12px;
+  --qr-container-bg: transparent;
+  --qr-container-shadow: none;
+  --qr-container-border: 1px solid rgba(0,0,0,0.1);
+  --qr-wrapper-padding: 0.5em;
+  --qr-wrapper-shadow: none;
+  --qr-corner-tl-size: 0;
+  --qr-corner-br-size: 0;
+}
+
+/* 华丽模式 */
+.qrcode-container-enhanced.fancy {
+  --qr-container-padding: 3em;
+  --qr-container-radius: 32px;
+  --qr-container-shadow: 0 30px 80px rgba(0,0,0,0.15), 0 12px 24px rgba(0,0,0,0.1), 0 0 1px rgba(0,0,0,0.05);
+  --qr-wrapper-padding: 2em;
+  --qr-wrapper-radius: 24px;
+  --qr-corner-tl-size: 100px;
+  --qr-corner-br-size: 120px;
+  --qr-title-size: 1.25em;
+}
+
+/* 无边框模式 */
+.qrcode-container-enhanced.borderless {
+  --qr-container-border: none;
+  --qr-container-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* 高对比度模式 */
+.qrcode-container-enhanced.high-contrast {
+  --qr-title-color: #000000;
+  --qr-text-color: #333333;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .qrcode-container-enhanced {
+    --qr-container-padding: 1.5em;
+    --qr-container-max-width: 100%;
+    --qr-wrapper-padding: 1em;
+    --qr-corner-tl-size: 40px;
+    --qr-corner-br-size: 50px;
+  }
+}
+
+/* 打印样式 */
+@media print {
+  .qrcode-container-enhanced {
+    --qr-container-bg: white;
+    --qr-container-shadow: none;
+    --qr-container-border: 1px solid #000;
+    --qr-corner-tl-size: 0;
+    --qr-corner-br-size: 0;
+  }
+}
+
+/* 悬停效果 */
+.qrcode-container-enhanced:hover {
+  transform: translateY(-2px);
+  transition: transform 0.3s ease;
+}
+
+.qrcode-container-enhanced.no-hover:hover {
+  transform: none;
+}
+
+/* 加载动画 */
+@keyframes qr-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes qr-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.qrcode-loading {
+  animation: qr-pulse 1.5s ease-in-out infinite;
+}
+
+/* 自定义边框样式 */
+.qrcode-container-enhanced.border-solid {
+  --qr-container-border: 2px solid var(--qr-title-color);
+}
+
+.qrcode-container-enhanced.border-dashed {
+  --qr-container-border: 2px dashed var(--qr-title-color);
+}
+
+.qrcode-container-enhanced.border-dotted {
+  --qr-container-border: 2px dotted var(--qr-title-color);
+}
+
+.qrcode-container-enhanced.border-gradient {
+  --qr-container-border: none;
+  border: 2px solid transparent;
+  background-image: 
+    linear-gradient(white, white),
+    linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+/* 阴影变体 */
+.qrcode-container-enhanced.shadow-sm {
+  --qr-container-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.qrcode-container-enhanced.shadow-lg {
+  --qr-container-shadow: 0 30px 90px rgba(0,0,0,0.2), 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.qrcode-container-enhanced.shadow-xl {
+  --qr-container-shadow: 0 40px 120px rgba(0,0,0,0.25), 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.qrcode-container-enhanced.shadow-none {
+  --qr-container-shadow: none;
+}
+
+/* 背景样式变体 */
+.qrcode-container-enhanced.bg-transparent {
+  --qr-container-bg: transparent;
+}
+
+.qrcode-container-enhanced.bg-blur {
+  --qr-container-bg: rgba(255,255,255,0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.qrcode-container-enhanced.bg-gradient-warm {
+  --qr-container-bg: linear-gradient(135deg, #fff5f5 0%, #fffaf0 100%);
+}
+
+.qrcode-container-enhanced.bg-gradient-cool {
+  --qr-container-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fff4 100%);
+}
+
+/* 自定义主题类 */
+.qrcode-theme-elegant {
+  --qr-container-bg: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+  --qr-title-color: #1a202c;
+  --qr-text-color: #4a5568;
+}
+
+.qrcode-theme-vibrant {
+  --qr-container-bg: linear-gradient(135deg, #fef3c7 0%, #fecaca 100%);
+  --qr-title-color: #991b1b;
+  --qr-text-color: #b45309;
+}
+
+.qrcode-theme-nature {
+  --qr-container-bg: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  --qr-title-color: #065f46;
+  --qr-text-color: #047857;
+}
+
+.qrcode-theme-ocean {
+  --qr-container-bg: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  --qr-title-color: #1e3a8a;
+  --qr-text-color: #1e40af;
+}
+
+.qrcode-theme-sunset {
+  --qr-container-bg: linear-gradient(135deg, #fed7aa 0%, #fecaca 100%);
+  --qr-title-color: #9a3412;
+  --qr-text-color: #c2410c;
+}
