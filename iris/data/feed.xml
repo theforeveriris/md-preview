@@ -5,8 +5,29 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 16 Jul 2026 06:57:46 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 18 Jul 2026 20:13:19 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ColorCard 插件示例</title>
+      <link>https://theforeveriris.github.io/md-preview/#/docs/examples/colorcard-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/#/docs/examples/colorcard-examples.md</guid>
+      <pubDate>Sat, 18 Jul 2026 19:40:26 GMT</pubDate>
+      <description>插件将颜色列表渲染为可点击复制的色卡墙，自动根据背景亮度自适应文字颜色。常用于： - 设计稿配色展示 - 品牌色 / 主题色文档 - 调色板分享 - 数据可视化色阶说明 支持三种代码块语言别名：、、。 每行一个颜色，支持十六进制、颜色名、、 等任意浏览器识别的格式。 colorcard #FF6B6B #4ECDC4 #45B7D1 #FFA07A #98D8C8 支持 、、 等形式： color</description>
+    </item>
+    <item>
+      <title>Countdown 插件示例</title>
+      <link>https://theforeveriris.github.io/md-preview/#/docs/examples/countdown-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/#/docs/examples/countdown-examples.md</guid>
+      <pubDate>Sat, 18 Jul 2026 19:40:26 GMT</pubDate>
+      <description>插件将 Markdown 代码块渲染为实时刷新的倒计时 / 正计时卡片，适合用于： - 距离某个固定时间点的倒计时（截止日期、活动开始、考试倒计时等） - 自某个历史时间点起的正计时（项目开始至今、产品上线至今等） - 相对时长的倒计时（30 分钟后、1 天 2 小时后等） 直接传入任何 能识别的日期字符串，默认倒计时方向。 countdown 2026-12-31T23:59:59 1d2h3m</description>
+    </item>
+    <item>
+      <title>插件开发指南</title>
+      <link>https://theforeveriris.github.io/md-preview/#/docs/plugin-development.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/#/docs/plugin-development.md</guid>
+      <pubDate>Thu, 16 Jul 2026 07:35:54 GMT</pubDate>
+      <description>Markdown Preview 的插件系统允许你扩展 Markdown 渲染能力，自定义处理特定的代码块。插件放入 目录后，加载器会自动发现并注册。 每个插件是一个导出对象的 JavaScript 模块（ES Module），支持以下接口： | 字段/方法 | 类型 | 必填 | 说明 | |-----------|------|------|------| | | | ✅ | 插件唯一标识 |</description>
+    </item>
     <item>
       <title>eNSP 拓扑渲染示例</title>
       <link>https://theforeveriris.github.io/md-preview/#/docs/examples/ensp-examples.md</link>
@@ -90,13 +111,6 @@
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/#/docs/theme-customization.md</guid>
       <pubDate>Mon, 13 Jul 2026 01:54:24 GMT</pubDate>
       <description>Markdown Preview 提供三种层级的外观定制方式，由易到难： 1. 预设主题 — 内置 7 套配色，一键切换 2. 可视化取色器 — 拖动色块即可调整主题色，无需写 CSS 3. 自定义 CSS — 加载外部 CSS 文件，完全控制样式 --- | ID | 名称 | 说明 | |----|------|------| | | 默认 | 浅紫浅粉渐变风格 | | | GitHub Li</description>
-    </item>
-    <item>
-      <title>插件开发指南</title>
-      <link>https://theforeveriris.github.io/md-preview/#/docs/plugin-development.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/#/docs/plugin-development.md</guid>
-      <pubDate>Fri, 10 Jul 2026 00:01:51 GMT</pubDate>
-      <description>Markdown Preview 的插件系统允许你扩展 Markdown 渲染能力，自定义处理特定的代码块。插件放入 目录后，加载器会自动发现并注册。 每个插件是一个导出对象的 JavaScript 模块，需要实现以下接口： | 方法 | 参数 | 返回值 | 说明 | |------|------|--------|------| | | : 代码块内容，: 代码语言标识 | | 判断该插件是否</description>
     </item>
     <item>
       <title>表格使用示例</title>
