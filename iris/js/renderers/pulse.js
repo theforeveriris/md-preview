@@ -67,9 +67,9 @@
     style.textContent = [
       '.pulse-widget {',
       '  margin: 1.8em auto;',
-      '  max-width: 720px;',
+      '  max-width: 710px;',
       '  border: 1px solid var(--color-border);',
-      '  border-radius: 14px;',
+      '  border-radius: 12px;',
       '  overflow: hidden;',
       '  background: var(--color-surface);',
       '  box-shadow: 0 2px 12px rgba(0,0,0,0.06);',
@@ -83,7 +83,7 @@
       '  display: flex;',
       '  align-items: center;',
       '  justify-content: space-between;',
-      '  padding: 12px 16px;',
+      '  padding: 7px 11px;',
       '  border-bottom: 1px solid var(--color-border);',
       '  background: linear-gradient(135deg,',
       '    color-mix(in srgb, var(--color-accent-purple) 8%, transparent),',
@@ -178,8 +178,8 @@
       '  display: none;',
       '  border-top: 1px solid var(--color-border);',
       '  background: var(--color-code-bg, #f6f8fa);',
-      '  padding: 12px 16px;',
-      '  max-height: 240px;',
+      '  padding: 7px 11px;',
+      '  max-height: 230px;',
       '  overflow: auto;',
       '}',
       '.pulse-source-panel.open { display: block; }',
@@ -198,20 +198,20 @@
       '.pulse-canvas-wrap {',
       '  position: relative;',
       '  width: 100%;',
-      '  padding: 14px 16px 10px;',
+      '  padding: 9px 11px 5px;',
       '  box-sizing: border-box;',
       '}',
       '.pulse-canvas {',
       '  display: block;',
       '  width: 100%;',
-      '  height: 220px;',
+      '  height: 210px;',
       '  border-radius: 8px;',
       '}',
       '.pulse-info {',
       '  display: flex;',
       '  justify-content: space-between;',
       '  align-items: center;',
-      '  padding: 0 16px 12px;',
+      '  padding: 0 11px 7px;',
       '  font-size: 11px;',
       '  color: var(--color-text-muted);',
       '  font-variant-numeric: tabular-nums;',
@@ -229,7 +229,7 @@
       '  display: flex;',
       '  flex-wrap: wrap;',
       '  gap: 6px 12px;',
-      '  padding: 0 16px 12px;',
+      '  padding: 0 11px 7px;',
       '  font-size: 11px;',
       '  color: var(--color-text-muted);',
       '}',
@@ -553,10 +553,10 @@
     if (viewMode === 'scroll') {
       // ====== 滚动模式 ======
       var scrollStepX = w * 0.015;
-      var playheadFixedX = padX + w * 0.25;
+      var playheadFixedX = padX + w * 0.5;
       var pointsVisible = Math.floor(w / scrollStepX);
       var centerIdx = playheadIdx;
-      var startIdx = centerIdx - Math.floor(pointsVisible * 0.25);
+      var startIdx = centerIdx - Math.floor(pointsVisible * 0.5);
       var endIdx = startIdx + pointsVisible;
 
       function idxToScrollX(idx) {
