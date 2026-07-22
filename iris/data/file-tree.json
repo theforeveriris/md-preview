@@ -20,6 +20,18 @@
             "wordCount": 106
           },
           {
+            "name": "colorcard-examples.md",
+            "type": "file",
+            "path": "docs/examples/colorcard-examples.md",
+            "wordCount": 157
+          },
+          {
+            "name": "countdown-examples.md",
+            "type": "file",
+            "path": "docs/examples/countdown-examples.md",
+            "wordCount": 166
+          },
+          {
             "name": "diff-examples.md",
             "type": "file",
             "path": "docs/examples/diff-examples.md",
@@ -104,6 +116,12 @@
             "wordCount": 24
           },
           {
+            "name": "pulse-examples.md",
+            "type": "file",
+            "path": "docs/examples/pulse-examples.md",
+            "wordCount": 385
+          },
+          {
             "name": "qrcode-examples.md",
             "type": "file",
             "path": "docs/examples/qrcode-examples.md",
@@ -128,7 +146,7 @@
             "wordCount": 390
           }
         ],
-        "wordCount": 7023
+        "wordCount": 7731
       },
       {
         "name": "code-highlight-theme.md",
@@ -170,7 +188,7 @@
         "name": "plugin-development.md",
         "type": "file",
         "path": "docs/plugin-development.md",
-        "wordCount": 174
+        "wordCount": 289
       },
       {
         "name": "rss.md",
@@ -185,12 +203,25 @@
         "wordCount": 489
       }
     ],
-    "wordCount": 11438
+    "wordCount": 12261
   },
   {
     "name": "iris",
     "type": "folder",
     "children": [
+      {
+        "name": "examples",
+        "type": "folder",
+        "children": [
+          {
+            "name": "pkt-huawei-vrp-解析示例.md",
+            "type": "file",
+            "path": "iris/examples/pkt-huawei-vrp-解析示例.md",
+            "wordCount": 1002
+          }
+        ],
+        "wordCount": 1002
+      },
       {
         "name": "scripts",
         "type": "folder",
@@ -212,7 +243,7 @@
         "wordCount": 166
       }
     ],
-    "wordCount": 166
+    "wordCount": 1168
   },
   {
     "name": "readme-dev.md",

@@ -272,6 +272,7 @@
       window.MarkdownPreview.renderers.plantuml.render();
       window.MarkdownPreview.renderers.embedded.render();
       window.MarkdownPreview.renderers.katex.render();
+      window.MarkdownPreview.renderers.pulse.render();
       console.log('[Markdown] Render cycle complete');
     }, 100);
 

@@ -55,6 +55,7 @@ Markdown Preview 是一个极简风格的 Markdown 文档预览站点，专为 G
 | GeoJSON | 基于 Leaflet 的地理数据地图 | [示例](examples/geojson-examples.md) |
 | Packet Tracer | Cisco .pkt 网络拓扑图（Cytoscape.js 渲染） | [示例](examples/pkt-examples.md) |
 | 外部嵌入 | YouTube、Bilibili、Figma、CodePen 等 | [示例](examples/embed-examples.md) |
+| Pulse 波形 | 郊狼 Dungeonlab+pulse 波形文件动态渲染 | [示例](examples/pulse-examples.md) |
 
 ## 五、主题与外观
 

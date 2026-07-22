@@ -25,6 +25,16 @@
     "preview": "基础使用教程 学习如何使用 Markdown 预览器的基本功能。 界面概览 侧边栏 - 自动发现并显示所有 .md 文件的树形结构 - 点击文件夹可以展开/折叠 - 点击文件名加载文档 主内容区 - 显示 Markdown 渲染后的内容 - 支持代码高亮 - 支持图片预览 进度指示器 - 顶部：文件加载进度条 - 底部：阅读位置进度条 基本操作 浏览文档 1. 点击侧边栏中的文件名 2. 文档内容"
   },
   {
+    "path": "docs/examples/colorcard-examples.md",
+    "title": "ColorCard 插件示例",
+    "preview": "ColorCard 颜色卡片插件示例 colorcard 插件将颜色列表渲染为可点击复制的色卡墙，自动根据背景亮度自适应文字颜色。常用于： - 设计稿配色展示 - 品牌色 / 主题色文档 - 调色板分享 - 数据可视化色阶说明 支持三种代码块语言别名：colorcard、colors、palette。 基础用法 1. 行分隔色值（最简形式） 每行一个颜色，支持十六进制、颜色名、rgb()、hsl("
+  },
+  {
+    "path": "docs/examples/countdown-examples.md",
+    "title": "Countdown 插件示例",
+    "preview": "Countdown 倒计时插件示例 countdown 插件将 Markdown 代码块渲染为实时刷新的倒计时 / 正计时卡片，适合用于： - 距离某个固定时间点的倒计时（截止日期、活动开始、考试倒计时等） - 自某个历史时间点起的正计时（项目开始至今、产品上线至今等） - 相对时长的倒计时（30 分钟后、1 天 2 小时后等） 基础用法 1. ISO 日期字符串 直接传入任何 Date.pars"
+  },
+  {
     "path": "docs/examples/diff-examples.md",
     "title": "Git Diff 可视化示例",
     "preview": "Git Diff 可视化示例 本页面展示如何使用 diff2html 可视化展示 Git Diff 内容。 --- 1. 基本用法 简单的文件修改 源码格式： 渲染效果： --- 2. 多文件修改 渲染效果： --- 3. 不同类型的变更 新增文件 删除文件 重命名文件 --- 4. 复杂示例 完整的功能变更 --- 5. 使用说明 语法规则 1. 使用 diff diff --git a/旧文件"
@@ -93,6 +103,11 @@
     "path": "docs/examples/plugin-demo.md",
     "title": "插件系统示例",
     "preview": "插件系统示例 这是一个展示 Markdown Preview 插件系统的示例文档。 Mermaid 图表 PlantUML 图表 ApexCharts 图表 Git Diff GeoJSON 地图 音乐乐谱 (ABC)"
+  },
+  {
+    "path": "docs/examples/pulse-examples.md",
+    "title": "Pulse 波形示例",
+    "preview": "Pulse 波形示例 本文档展示了郊狼（Dungeonlab）波形文件的渲染效果。使用 [pulse title=\"标题\"]Dungeonlab+pulse:...[/pulse] 语法即可渲染出逐帧动态波形演示。 --- 语法说明 格式字段： | 组成部分 | 格式 | 说明 | |---------|------|------| | 文件头 | Dungeonlab+pulse: | 固定标识"
   },
   {
     "path": "docs/examples/qrcode-examples.md",
