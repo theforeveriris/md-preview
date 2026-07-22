@@ -291,6 +291,68 @@
       '  .pulse-header { padding: 8px 10px; }',
       '  .pulse-style-toggle, .pulse-source-btn { padding: 5px 7px; margin-right: 5px; }',
       '  .pulse-download-btn { padding: 5px 8px; }',
+      '}',
+      '.pulse-mini-widget {',
+      '  display: inline-block;',
+      '  vertical-align: middle;',
+      '  width: 220px;',
+      '  margin: 0.5em;',
+      '  border: 1px solid var(--color-border);',
+      '  border-radius: 8px;',
+      '  overflow: hidden;',
+      '  background: var(--color-surface);',
+      '  transition: border-color 0.2s;',
+      '}',
+      '.pulse-mini-widget:hover {',
+      '  border-color: var(--color-accent-purple);',
+      '}',
+      '.pulse-mini-header {',
+      '  display: flex;',
+      '  align-items: center;',
+      '  justify-content: space-between;',
+      '  padding: 5px 8px 5px 10px;',
+      '  border-bottom: 1px solid var(--color-border);',
+      '}',
+      '.pulse-mini-title {',
+      '  font-size: 11px;',
+      '  font-weight: 600;',
+      '  color: var(--color-text);',
+      '  white-space: nowrap;',
+      '  overflow: hidden;',
+      '  text-overflow: ellipsis;',
+      '  flex: 1;',
+      '  margin-right: 6px;',
+      '}',
+      '.pulse-mini-actions {',
+      '  display: flex;',
+      '  gap: 1px;',
+      '  flex-shrink: 0;',
+      '}',
+      '.pulse-mini-btn {',
+      '  padding: 4px 5px;',
+      '  border: none;',
+      '  border-radius: 4px;',
+      '  background: transparent;',
+      '  color: var(--color-text-muted);',
+      '  cursor: pointer;',
+      '  display: flex;',
+      '  align-items: center;',
+      '  justify-content: center;',
+      '  transition: all 0.15s;',
+      '}',
+      '.pulse-mini-btn:hover {',
+      '  background: var(--color-bg);',
+      '  color: var(--color-accent-purple);',
+      '}',
+      '.pulse-mini-canvas-wrap {',
+      '  padding: 6px;',
+      '}',
+      '.pulse-mini-canvas {',
+      '  display: block;',
+      '  width: 100%;',
+      '  height: 70px;',
+      '  border-radius: 5px;',
+      '  background: var(--color-bg);',
       '}'
     ].join('\n');
     document.head.appendChild(style);
@@ -1198,6 +1260,176 @@
     return widget;
   }
 
+  function createPulseMiniWidget(title, rawData) {
+    var parsed = parsePulseData(rawData);
+
+    if (!parsed) {
+      var errDiv = document.createElement('div');
+      errDiv.className = 'pulse-mini-widget';
+      errDiv.innerHTML = '<div class="pulse-error">解析失败</div>';
+      return errDiv;
+    }
+
+    var wave = expandWaveform(parsed);
+
+    var widget = document.createElement('div');
+    widget.className = 'pulse-mini-widget';
+
+    var header = document.createElement('div');
+    header.className = 'pulse-mini-header';
+
+    var titleEl = document.createElement('div');
+    titleEl.className = 'pulse-mini-title';
+    titleEl.textContent = title || 'Pulse';
+
+    var actions = document.createElement('div');
+    actions.className = 'pulse-mini-actions';
+
+    var copyBtn = document.createElement('button');
+    copyBtn.className = 'pulse-mini-btn';
+    copyBtn.title = '复制源码';
+    copyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    copyBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      navigator.clipboard.writeText('[pulsemini' + (title ? ' title="' + title + '"' : '') + ']' + rawData + '[/pulsemini]');
+      copyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+      setTimeout(function() {
+        copyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+      }, 1500);
+    });
+
+    var dlBtn = document.createElement('button');
+    dlBtn.className = 'pulse-mini-btn';
+    dlBtn.title = '下载 .pulse';
+    dlBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>';
+    dlBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      downloadPulse(rawData, title);
+    });
+
+    actions.appendChild(copyBtn);
+    actions.appendChild(dlBtn);
+    header.appendChild(titleEl);
+    header.appendChild(actions);
+    widget.appendChild(header);
+
+    var canvasWrap = document.createElement('div');
+    canvasWrap.className = 'pulse-mini-canvas-wrap';
+    var canvas = document.createElement('canvas');
+    canvas.className = 'pulse-mini-canvas';
+    canvasWrap.appendChild(canvas);
+    widget.appendChild(canvasWrap);
+
+    var ctx = canvas.getContext('2d');
+    var dpr = window.devicePixelRatio || 1;
+    var playheadIdx = 0;
+    var lastTime = null;
+    var stopped = false;
+
+    function resize() {
+      var w = canvasWrap.clientWidth;
+      var h = 80;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    var points = [];
+    for (var si = 0; si < wave.sections.length; si++) {
+      var sec = wave.sections[si];
+      if (!sec.enabled) continue;
+      for (var pi = 0; pi < sec.points.length; pi++) {
+        points.push({ value: sec.points[pi].intensity, isKey: sec.points[pi].isAnchor });
+      }
+    }
+
+    function draw(time) {
+      if (stopped) return;
+      if (!lastTime) lastTime = time;
+      var delta = time - lastTime;
+      lastTime = time;
+
+      var w = canvasWrap.clientWidth;
+      var h = 80;
+      var padX = 4;
+      var padY = 8;
+      var graphW = w - padX * 2;
+      var graphH = h - padY * 2;
+
+      playheadIdx += delta * 0.025;
+      if (playheadIdx >= points.length) playheadIdx = 0;
+
+      var computedStyle = getComputedStyle(document.documentElement);
+      var accentColor = computedStyle.getPropertyValue('--color-accent-purple').trim() || '#d4a5c9';
+      var accentPink = computedStyle.getPropertyValue('--color-accent-pink').trim() || '#f2c4ce';
+      var borderColor = computedStyle.getPropertyValue('--color-border').trim() || '#f0f0f0';
+      var bgColor = computedStyle.getPropertyValue('--color-surface').trim() || '#ffffff';
+
+      ctx.clearRect(0, 0, w, h);
+
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.strokeStyle = borderColor;
+      ctx.lineWidth = 0.5;
+      for (var i = 0; i <= 4; i++) {
+        var y = padY + (graphH / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(padX, y);
+        ctx.lineTo(w - padX, y);
+        ctx.stroke();
+      }
+
+      var scrollStepX = graphW * 0.015;
+      var barWidth = Math.max(1, scrollStepX * 0.6);
+      var playheadFixedX = padX + graphW * 0.5;
+      var pointsVisible = Math.floor(graphW / scrollStepX);
+      var centerIdx = Math.floor(playheadIdx);
+      var startIdx = centerIdx - Math.floor(pointsVisible * 0.5);
+      var endIdx = startIdx + pointsVisible;
+
+      var gradient = ctx.createLinearGradient(padX, 0, w - padX, 0);
+      gradient.addColorStop(0, 'transparent');
+      gradient.addColorStop(0.15, accentColor);
+      gradient.addColorStop(0.85, accentColor);
+      gradient.addColorStop(1, 'transparent');
+      ctx.fillStyle = gradient;
+
+      for (var j = startIdx; j < endIdx; j++) {
+        var idx = ((j % points.length) + points.length) % points.length;
+        var x = padX + (j - startIdx) * scrollStepX;
+        var barHeight = graphH * (points[idx].value / 100);
+        var y = padY + graphH - barHeight;
+        ctx.fillRect(x - barWidth / 2, y, barWidth, barHeight);
+      }
+
+      ctx.strokeStyle = accentPink;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(playheadFixedX, padY);
+      ctx.lineTo(playheadFixedX, h - padY);
+      ctx.stroke();
+
+      requestAnimationFrame(draw);
+    }
+
+    requestAnimationFrame(draw);
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    animations.push({
+      stop: function() {
+        stopped = true;
+        window.removeEventListener('resize', resize);
+      }
+    });
+
+    return widget;
+  }
+
   // ============== 主渲染入口 ==============
 
   function render(container) {
@@ -1210,6 +1442,7 @@
     if (!targetEl) return;
 
     var pulseRegex = /\[pulse(?:\s+title\s*=\s*(?:"([^"]*)"|'([^']*)'))?\]([\s\S]*?)\[\/pulse\]/gi;
+    var pulseminiRegex = /\[pulsemini(?:\s+title\s*=\s*(?:"([^"]*)"|'([^']*)'))?\]([\s\S]*?)\[\/pulsemini\]/gi;
 
     var html = targetEl.innerHTML;
     var match;
@@ -1234,7 +1467,14 @@
       if (isInsideCode(html, match.index)) continue;
       var title = match[1] !== undefined ? match[1] : (match[2] !== undefined ? match[2] : '');
       var rawData = decodeEntities(match[3].trim());
-      replacements.push({ matchStr: match[0], title: title, rawData: rawData, index: match.index });
+      replacements.push({ matchStr: match[0], title: title, rawData: rawData, index: match.index, type: 'full' });
+    }
+
+    while ((match = pulseminiRegex.exec(html)) !== null) {
+      if (isInsideCode(html, match.index)) continue;
+      var miniTitle = match[1] !== undefined ? match[1] : (match[2] !== undefined ? match[2] : '');
+      var miniRawData = decodeEntities(match[3].trim());
+      replacements.push({ matchStr: match[0], title: miniTitle, rawData: miniRawData, index: match.index, type: 'mini' });
     }
 
     if (replacements.length === 0) return;
@@ -1254,7 +1494,9 @@
       var repIdx = parseInt(ph.getAttribute('data-pulse-placeholder'), 10);
       var rep = replacements[repIdx];
       if (rep) {
-        var widget = createPulseWidget(rep.title, rep.rawData);
+        var widget = rep.type === 'mini'
+          ? createPulseMiniWidget(rep.title, rep.rawData)
+          : createPulseWidget(rep.title, rep.rawData);
         var parentP = ph.closest('p');
         if (parentP && parentP.textContent.trim() === '') {
           parentP.parentNode.replaceChild(widget, parentP);
