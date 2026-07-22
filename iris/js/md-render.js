@@ -133,6 +133,75 @@
   }
 
   /**
+   * 处理代码选项卡语法 ::: code-tabs ... :::
+   * 内部用 @tab 名称 分隔每个标签页
+   * @param {string} text - Markdown 文本
+   * @returns {string} 处理后的 HTML 字符串
+   */
+  function processCodeTabs(text) {
+    const codeTabRegex = /^:::\s*code-tabs\s*\n([\s\S]*?)^:::\s*$/gm;
+    return text.replace(codeTabRegex, (match, content) => {
+      const tabRegex = /^@tab\s+(.+)$/gm;
+      const tabs = [];
+      let lastIndex = 0;
+      let m;
+      const matches = [];
+      while ((m = tabRegex.exec(content)) !== null) {
+        matches.push({ name: m[1].trim(), index: m.index, length: m[0].length });
+      }
+      if (matches.length === 0) return match;
+      for (let i = 0; i < matches.length; i++) {
+        const start = matches[i].index + matches[i].length;
+        const end = i < matches.length - 1 ? matches[i + 1].index : content.length;
+        const tabContent = content.substring(start, end).trim();
+        tabs.push({ name: matches[i].name, content: tabContent });
+      }
+      const tabId = 'codetabs-' + Math.random().toString(36).substring(2, 9);
+      let tabHeaders = tabs.map((tab, i) =>
+        `<button class="code-tab-btn ${i === 0 ? 'active' : ''}" data-tab="${tabId}-${i}" data-group="${tabId}">${tab.name}</button>`
+      ).join('');
+      let tabPanels = tabs.map((tab, i) =>
+        `<div class="code-tab-panel ${i === 0 ? 'active' : ''}" id="${tabId}-${i}" data-group="${tabId}">\n${tab.content}\n</div>`
+      ).join('\n');
+      return `<div class="code-tabs" data-tabs-group="${tabId}">\n<div class="code-tab-header">\n${tabHeaders}\n</div>\n<div class="code-tab-content">\n${tabPanels}\n</div>\n</div>\n`;
+    });
+  }
+
+  /**
+   * 处理分栏布局语法 ::: columns ... :::
+   * 内部用 ::: column 标题 分隔每个栏
+   * @param {string} text - Markdown 文本
+   * @returns {string} 处理后的 HTML 字符串
+   */
+  function processColumns(text) {
+    const columnRegex = /^:::\s*columns\s*\n([\s\S]*?)^:::\s*$/gm;
+    return text.replace(columnRegex, (match, content) => {
+      const colRegex = /^:::\s*column(?:\s+(.+))?$/gm;
+      const columns = [];
+      const matches = [];
+      let m;
+      while ((m = colRegex.exec(content)) !== null) {
+        matches.push({ title: m[1] ? m[1].trim() : '', index: m.index, length: m[0].length });
+      }
+      if (matches.length === 0) return match;
+      for (let i = 0; i < matches.length; i++) {
+        const start = matches[i].index + matches[i].length;
+        const end = i < matches.length - 1 ? matches[i + 1].index : content.lastIndexOf(':::');
+        let colContent = content.substring(start, end).trim();
+        if (colContent.endsWith(':::')) {
+          colContent = colContent.slice(0, -3).trim();
+        }
+        columns.push({ title: matches[i].title, content: colContent });
+      }
+      const colHtml = columns.map(col => {
+        const titleHtml = col.title ? `<div class="column-title">${col.title}</div>\n` : '';
+        return `<div class="column-item">\n${titleHtml}<div class="column-body">\n${col.content}\n</div>\n</div>`;
+      }).join('\n');
+      return `<div class="columns-container">\n${colHtml}\n</div>\n`;
+    });
+  }
+
+  /**
    * 处理遮罩/剧透语法 ||内容||
    * 鼠标悬停或点击（移动端）时显示内容
    * @param {string} text - Markdown 文本
@@ -177,7 +246,9 @@
   function parseMarkdown(content, opts) {
     const { processed, blocks } = protectLaTeXBlocks(content);
     const alertProcessed = processGitHubAlerts(processed, opts);
-    const spoilerProcessed = processSpoilers(alertProcessed);
+    const codeTabProcessed = processCodeTabs(alertProcessed);
+    const columnProcessed = processColumns(codeTabProcessed);
+    const spoilerProcessed = processSpoilers(columnProcessed);
     const renderer = createMdRenderer(opts);
     let html = marked.parse(spoilerProcessed, { breaks: true, gfm: true, renderer });
     html = restoreLaTeXBlocks(html, blocks);
@@ -297,11 +368,33 @@
     });
   }
 
+  /**
+   * 初始化代码选项卡点击切换
+   * @param {HTMLElement} container
+   */
+  function initCodeTabs(container) {
+    const tabBtns = container.querySelectorAll('.code-tab-btn');
+    if (tabBtns.length === 0) return;
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const group = btn.dataset.group;
+        const tabId = btn.dataset.tab;
+        container.querySelectorAll(`.code-tab-btn[data-group="${group}"]`).forEach(b => b.classList.remove('active'));
+        container.querySelectorAll(`.code-tab-panel[data-group="${group}"]`).forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        const panel = document.getElementById(tabId);
+        if (panel) panel.classList.add('active');
+      });
+    });
+  }
+
   window.MarkdownPreview.mdRender = {
     KNOWN_STYLES,
     DEFAULT_ALERT_TYPES,
     processGitHubAlerts,
     processSpoilers,
+    processCodeTabs,
+    processColumns,
     protectLaTeXBlocks,
     restoreLaTeXBlocks,
     createMdRenderer,
@@ -309,5 +402,6 @@
     groupGalleries,
     initSliders,
     highlightCodeBlocks,
+    initCodeTabs,
   };
 })();

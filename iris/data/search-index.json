@@ -25,9 +25,19 @@
     "preview": "基础使用教程 学习如何使用 Markdown 预览器的基本功能。 界面概览 侧边栏 - 自动发现并显示所有 .md 文件的树形结构 - 点击文件夹可以展开/折叠 - 点击文件名加载文档 主内容区 - 显示 Markdown 渲染后的内容 - 支持代码高亮 - 支持图片预览 进度指示器 - 顶部：文件加载进度条 - 底部：阅读位置进度条 基本操作 浏览文档 1. 点击侧边栏中的文件名 2. 文档内容"
   },
   {
+    "path": "docs/examples/code-tabs-examples.md",
+    "title": "代码选项卡使用示例",
+    "preview": "代码选项卡使用示例 使用 ::: code-tabs 语法可以创建多语言代码选项卡，点击顶部标签切换不同语言的代码示例。 --- 基础用法 最常见的场景：同一个功能用多种语言实现。 ::: code-tabs @tab JavaScript @tab Python @tab Go ::: 点击上方标签可以切换不同语言的代码。 --- 两语言对比 ::: code-tabs @tab JavaScr"
+  },
+  {
     "path": "docs/examples/colorcard-examples.md",
     "title": "ColorCard 插件示例",
     "preview": "ColorCard 颜色卡片插件示例 colorcard 插件将颜色列表渲染为可点击复制的色卡墙，自动根据背景亮度自适应文字颜色。常用于： - 设计稿配色展示 - 品牌色 / 主题色文档 - 调色板分享 - 数据可视化色阶说明 支持三种代码块语言别名：colorcard、colors、palette。 基础用法 1. 行分隔色值（最简形式） 每行一个颜色，支持十六进制、颜色名、rgb()、hsl("
+  },
+  {
+    "path": "docs/examples/columns-examples.md",
+    "title": "分栏布局使用示例",
+    "preview": "分栏布局使用示例 使用 ::: columns 语法可以创建多栏布局，将内容并排展示。每一栏用 ::: column 标题 标记。 --- 基础两栏布局 ::: columns ::: column 左侧内容 这是左栏的内容，可以放任意 Markdown 格式的文本。 支持加粗、斜体、代码等行内格式。 - 列表项 1 - 列表项 2 - 列表项 3 ::: ::: column 右侧内容 这是右栏"
   },
   {
     "path": "docs/examples/countdown-examples.md",

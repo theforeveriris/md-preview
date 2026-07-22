@@ -257,6 +257,8 @@
 
     wrapTables(dom.markdownContent);
 
+    mdRender.initCodeTabs(dom.markdownContent);
+
     setTimeout(async () => {
       console.log('[Markdown] Starting render cycle');
       const plugins = window.MarkdownPreview.plugins;
