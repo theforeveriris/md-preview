@@ -464,7 +464,7 @@ db.users.aggregate([
 
 ## 语法说明
 
-```text
+````text
 ::: code-tabs
 @tab 标签名1
 ```语言
@@ -476,7 +476,7 @@ db.users.aggregate([
 代码内容
 ```
 :::
-```
+````
 
 ### 规则
 

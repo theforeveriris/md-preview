@@ -230,7 +230,7 @@ def hello():
 
 ## 语法说明
 
-```text
+````text
 ::: columns
 ::: column 栏1标题
 栏1内容（任意 Markdown）
@@ -239,7 +239,7 @@ def hello():
 栏2内容（任意 Markdown）
 :::
 :::
-```
+````
 
 ### 规则
 
