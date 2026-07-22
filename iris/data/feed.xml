@@ -5,8 +5,22 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 18 Jul 2026 20:13:19 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 22 Jul 2026 03:08:06 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Pulse 波形示例</title>
+      <link>https://theforeveriris.github.io/md-preview/#/docs/examples/pulse-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/#/docs/examples/pulse-examples.md</guid>
+      <pubDate>Wed, 22 Jul 2026 03:04:10 GMT</pubDate>
+      <description>本文档展示了郊狼（Dungeonlab）波形文件的渲染效果。使用 语法即可渲染出逐帧动态波形演示。 --- 格式字段： | 组成部分 | 格式 | 说明 | |---------|------|------| | 文件头 | | 固定标识 | | 全局参数 | | 脉冲编号、模式标志、通道数 | | 段参数 | | 曲线类型、幅度、步进、重复、方向 | | 段数据 | | 采样点序列，值 0-10</description>
+    </item>
+    <item>
+      <title>功能总览</title>
+      <link>https://theforeveriris.github.io/md-preview/#/docs/features.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/#/docs/features.md</guid>
+      <pubDate>Wed, 22 Jul 2026 03:04:10 GMT</pubDate>
+      <description>Markdown Preview 是一个极简风格的 Markdown 文档预览站点，专为 GitHub Pages 设计，完全静态，无需后端。 --- | 功能 | 说明 | |------|------| | 自动发现 | 扫描仓库所有 文件，构建嵌套目录树 | | 字数统计 | 每个文件旁显示字数（可在设置中关闭） | | 文件名截断 | 长文件名截断/展开切换（展开时区域可横向滚动，隐藏滚动</description>
+    </item>
     <item>
       <title>ColorCard 插件示例</title>
       <link>https://theforeveriris.github.io/md-preview/#/docs/examples/colorcard-examples.md</link>
@@ -48,13 +62,6 @@
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/#/docs/feat.md</guid>
       <pubDate>Mon, 13 Jul 2026 12:11:22 GMT</pubDate>
       <description>&gt; 基于代码现状整理的优化路线图，按类别分组，标注优先级（P0 高 / P1 中 / P2 低）与实施状态。 &gt; ✅ 已完成 / ❌ 不做 / ⏳ 待办 --- - 现状：search.js 使用 FlexSearch 构建标题 + 正文 + 路径复合索引，自定义 CJK 编码器支持中文分词与模糊匹配。 - 现状：结果 title/preview 中匹配片段用 标签包裹高亮。 - 决策：用户反馈「</description>
-    </item>
-    <item>
-      <title>功能总览</title>
-      <link>https://theforeveriris.github.io/md-preview/#/docs/features.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/#/docs/features.md</guid>
-      <pubDate>Mon, 13 Jul 2026 12:11:22 GMT</pubDate>
-      <description>Markdown Preview 是一个极简风格的 Markdown 文档预览站点，专为 GitHub Pages 设计，完全静态，无需后端。 --- | 功能 | 说明 | |------|------| | 自动发现 | 扫描仓库所有 文件，构建嵌套目录树 | | 字数统计 | 每个文件旁显示字数（可在设置中关闭） | | 文件名截断 | 长文件名截断/展开切换（展开时区域可横向滚动，隐藏滚动</description>
     </item>
     <item>
       <title>Markdown 编辑器</title>
