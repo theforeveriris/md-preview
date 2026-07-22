@@ -873,16 +873,18 @@
       const card = document.createElement("div");
       card.className = "pulse-gen-card";
       card.innerHTML = `
-        <div class="pulse-gen-card-title">${wf.name}</div>
-        <div class="pulse-gen-card-canvas-wrap" id="pulseCardCanvas_${idx}"></div>
-        <div class="pulse-gen-card-actions">
-          <button class="pulse-gen-card-btn" data-action="copy" data-idx="${idx}">
-            <svg class="ico ico-xs"><use href="#i-clipboard"/></svg> 复制
-          </button>
-          <button class="pulse-gen-card-btn" data-action="download" data-idx="${idx}">
-            <svg class="ico ico-xs"><use href="#i-download"/></svg> 下载
-          </button>
+        <div class="pulse-gen-card-header">
+          <div class="pulse-gen-card-title">${wf.name}</div>
+          <div class="pulse-gen-card-actions">
+            <button class="pulse-gen-card-btn" data-action="copy" data-idx="${idx}" title="复制源码">
+              <svg class="ico ico-xs"><use href="#i-clipboard"/></svg>
+            </button>
+            <button class="pulse-gen-card-btn" data-action="download" data-idx="${idx}" title="下载 .pulse">
+              <svg class="ico ico-xs"><use href="#i-download"/></svg>
+            </button>
+          </div>
         </div>
+        <div class="pulse-gen-card-canvas-wrap" id="pulseCardCanvas_${idx}"></div>
       `;
       grid.appendChild(card);
 
