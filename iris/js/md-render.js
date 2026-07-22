@@ -133,6 +133,42 @@
   }
 
   /**
+   * 处理遮罩/剧透语法 ||内容||
+   * 鼠标悬停或点击（移动端）时显示内容
+   * @param {string} text - Markdown 文本
+   * @returns {string} 处理后的文本
+   */
+  function processSpoilers(text) {
+    const codeBlocks = [];
+    let protectedText = text;
+
+    protectedText = protectedText.replace(/```[\s\S]*?```/g, function(match) {
+      const idx = codeBlocks.length;
+      codeBlocks.push(match);
+      return `SPOILERCODEBLOCK_${idx}_`;
+    });
+
+    protectedText = protectedText.replace(/`[^`\n]+`/g, function(match) {
+      const idx = codeBlocks.length;
+      codeBlocks.push(match);
+      return `SPOILERINLINECODE_${idx}_`;
+    });
+
+    protectedText = protectedText.replace(/\|\|([^\|\n]+?)\|\|/g, function(match, content) {
+      return '<span class="spoiler" tabindex="0">' + content + '</span>';
+    });
+
+    protectedText = protectedText.replace(/SPOILERCODEBLOCK_(\d+)_/g, function(m, idx) {
+      return codeBlocks[parseInt(idx)];
+    });
+    protectedText = protectedText.replace(/SPOILERINLINECODE_(\d+)_/g, function(m, idx) {
+      return codeBlocks[parseInt(idx)];
+    });
+
+    return protectedText;
+  }
+
+  /**
    * 解析 Markdown 为 HTML（含 LaTeX 保护、Alert 处理、自定义 Renderer）
    * @param {string} content - Markdown 原文（已剥离 frontmatter）
    * @param {Object} [opts] - 透传给 processGitHubAlerts / createMdRenderer
@@ -141,8 +177,9 @@
   function parseMarkdown(content, opts) {
     const { processed, blocks } = protectLaTeXBlocks(content);
     const alertProcessed = processGitHubAlerts(processed, opts);
+    const spoilerProcessed = processSpoilers(alertProcessed);
     const renderer = createMdRenderer(opts);
-    let html = marked.parse(alertProcessed, { breaks: true, gfm: true, renderer });
+    let html = marked.parse(spoilerProcessed, { breaks: true, gfm: true, renderer });
     html = restoreLaTeXBlocks(html, blocks);
     return { html, blocks };
   }
@@ -264,6 +301,7 @@
     KNOWN_STYLES,
     DEFAULT_ALERT_TYPES,
     processGitHubAlerts,
+    processSpoilers,
     protectLaTeXBlocks,
     restoreLaTeXBlocks,
     createMdRenderer,

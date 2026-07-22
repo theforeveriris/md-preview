@@ -1164,3 +1164,21 @@
   .lightbox-next { right: 12px; }
   .lightbox-toolbar { bottom: 16px; }
 }
+
+.spoiler {
+  background: var(--color-accent-purple);
+  color: transparent;
+  border-radius: 4px;
+  padding: 0 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s, color 0.2s;
+}
+.spoiler:hover,
+.spoiler:focus,
+.spoiler:active {
+  color: var(--color-text);
+  background: transparent;
+  cursor: text;
+  user-select: text;
+}

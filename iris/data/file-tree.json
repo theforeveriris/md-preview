@@ -128,6 +128,12 @@
             "wordCount": 80
           },
           {
+            "name": "spoiler-examples.md",
+            "type": "file",
+            "path": "docs/examples/spoiler-examples.md",
+            "wordCount": 223
+          },
+          {
             "name": "table-examples.md",
             "type": "file",
             "path": "docs/examples/table-examples.md",
@@ -146,7 +152,7 @@
             "wordCount": 390
           }
         ],
-        "wordCount": 8007
+        "wordCount": 8230
       },
       {
         "name": "code-highlight-theme.md",
@@ -203,7 +209,7 @@
         "wordCount": 489
       }
     ],
-    "wordCount": 12551
+    "wordCount": 12774
   },
   {
     "name": "iris",
