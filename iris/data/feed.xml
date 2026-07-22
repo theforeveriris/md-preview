@@ -5,14 +5,14 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 22 Jul 2026 04:42:50 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 22 Jul 2026 04:51:33 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Pulse 波形示例</title>
       <link>https://theforeveriris.github.io/md-preview/#/docs/examples/pulse-examples.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/#/docs/examples/pulse-examples.md</guid>
-      <pubDate>Wed, 22 Jul 2026 04:42:31 GMT</pubDate>
-      <description>本文档展示了 DG-LAB 郊狼波形文件（）的渲染效果。使用 语法即可渲染出逐帧动态波形演示。 所有示例均基于 DG-LAB 官方 3.4.4 版本波形文件导出规范。 --- | 参数 | 取值 | 说明 | |------|------|------| | 休息时长 | 0-99 | 休息时间滑块值，×0.1 为秒数 | | 速度倍率 | 1 / 2 / 4 | 播放速度倍率 | | 频率A/B</description>
+      <pubDate>Wed, 22 Jul 2026 04:51:12 GMT</pubDate>
+      <description>本文档展示了 DG-LAB 郊狼波形文件（）的渲染效果。使用 语法即可渲染出逐帧动态波形演示。 所有示例均基于 DG-LAB 官方 3.4.4 版本波形文件导出规范。 &gt; 默认以官方竖线样式展示，点击左上角「竖线/曲线」按钮可切换显示模式。 --- | 参数 | 取值 | 说明 | |------|------|------| | 休息时长 | 0-99 | 休息时间滑块值，×0.1 为秒数 | </description>
     </item>
     <item>
       <title>功能总览</title>
