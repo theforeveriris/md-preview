@@ -1,15 +1,20 @@
 /**
- * Pulse 波形渲染器
+ * Pulse 波形渲染器（DG-LAB 郊狼官方格式）
  *
  * 解析 Dungeonlab+pulse 格式的郊狼波形文件，渲染为逐帧动态波形演示。
+ * 基于 DG-LAB 3.4.4 版本波形文件导出规范。
  *
  * 语法：[pulse title="标题"]Dungeonlab+pulse:...[/pulse]
  *
- * Dungeonlab+pulse 格式：
- *   Dungeonlab+pulse:<全局参数>=<段参数1>/<段数据1>+section+<段参数2>/<段数据2>+section+...
- *   全局参数：脉冲编号,模式标志,通道数
- *   段参数：  曲线类型,幅度,步进,重复,方向
- *   段数据：  值-关键帧标志,值-关键帧标志,...  （值 0-100，标志 1=关键帧 0=插值点）
+ * 格式总览：
+ *   Dungeonlab+pulse:<全局参数>=<小节1>+section+<小节2>+section+...
+ *   全局参数： 休息时长(0-99), 速度倍率(1/2/4), 未知参数(默认16)
+ *   小节参数： 频率A(0-83), 频率B(0-83), 小节时长(0-99), 频率模式(1-4), 小节开关(0-1)
+ *   数据点：   强度(0-100)-类型(0=普通脉冲/1=锚点脉冲), 每点=0.1s竖条
+ *   分隔符：   +section+ 分隔小节，/ 分隔小节参数与数据，= 分隔全局与首小节
+ *
+ * 特殊格式：
+ *   某些导出文件省略 = 分隔符，首小节参数紧跟在 Dungeonlab+pulse: 之后。
  */
 (function() {
   'use strict';
@@ -18,9 +23,43 @@
   window.MarkdownPreview.renderers = window.MarkdownPreview.renderers || {};
 
   var STYLE_ID = 'pulse-renderer-styles';
-  var animations = []; // 活跃的动画句柄
+  var animations = [];
 
-  // ============== 注入样式（仅一次） ==============
+  // ============== 映射表 ==============
+
+  var FREQ_SLIDER_MAP = [
+    10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+    30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
+    50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78,
+    80, 85, 90, 95,
+    100, 110, 120, 130, 140, 150, 160, 170, 180, 190,
+    200, 233, 266, 300, 333, 366,
+    400, 450, 500, 550,
+    600, 700, 800, 900, 1000
+  ];
+
+  var SECTION_TIME_MAP = (function() {
+    var m = [];
+    var i;
+    for (i = 0; i <= 39; i++) m.push(+(0.1 + i * 0.1).toFixed(1));
+    for (i = 40; i <= 44; i++) m.push(+(5.0 + (i - 40) * 0.2).toFixed(1));
+    for (i = 45; i <= 49; i++) m.push(+(6.0 + (i - 45) * 0.2).toFixed(1));
+    for (i = 50; i <= 54; i++) m.push(+(7.0 + (i - 50) * 0.2).toFixed(1));
+    m.push(8.0, 8.5, 9.0, 9.5);
+    m.push(10.0);
+    for (i = 60; i <= 69; i++) m.push(10 + (i - 59));
+    m.push(23.4, 26.6, 30.0, 33.4, 36.6);
+    m.push(40.0, 45.0, 50.0, 55.0);
+    m.push(60.0, 70.0, 80.0, 90.0);
+    m.push(100.0, 120.0, 140.0, 160.0, 180.0);
+    m.push(200.0, 250.0, 300.0);
+    while (m.length < 100) m.push(300.0);
+    return m;
+  })();
+
+  var FREQ_MODE_NAMES = ['', '固定', '节内渐变', '元内渐变', '元间渐变'];
+
+  // ============== 注入样式 ==============
   function injectStyles() {
     if (document.getElementById(STYLE_ID)) return;
     var style = document.createElement('style');
@@ -28,7 +67,7 @@
     style.textContent = [
       '.pulse-widget {',
       '  margin: 1.8em auto;',
-      '  max-width: 680px;',
+      '  max-width: 720px;',
       '  border: 1px solid var(--color-border);',
       '  border-radius: 14px;',
       '  overflow: hidden;',
@@ -95,7 +134,7 @@
       '.pulse-canvas {',
       '  display: block;',
       '  width: 100%;',
-      '  height: 200px;',
+      '  height: 220px;',
       '  border-radius: 8px;',
       '}',
       '.pulse-info {',
@@ -106,12 +145,45 @@
       '  font-size: 11px;',
       '  color: var(--color-text-muted);',
       '  font-variant-numeric: tabular-nums;',
+      '  flex-wrap: wrap;',
+      '  gap: 6px;',
       '}',
-      '.pulse-info-left { display: flex; gap: 14px; }',
+      '.pulse-info-left { display: flex; gap: 14px; flex-wrap: wrap; }',
+      '.pulse-info-right { display: flex; gap: 14px; flex-wrap: wrap; }',
       '.pulse-info-badge {',
       '  display: inline-flex;',
       '  align-items: center;',
       '  gap: 4px;',
+      '}',
+      '.pulse-section-legend {',
+      '  display: flex;',
+      '  flex-wrap: wrap;',
+      '  gap: 6px 12px;',
+      '  padding: 0 16px 12px;',
+      '  font-size: 11px;',
+      '  color: var(--color-text-muted);',
+      '}',
+      '.pulse-section-tag {',
+      '  display: inline-flex;',
+      '  align-items: center;',
+      '  gap: 4px;',
+      '  padding: 2px 8px;',
+      '  border-radius: 10px;',
+      '  background: color-mix(in srgb, var(--color-accent-purple) 12%, transparent);',
+      '  color: var(--color-accent-purple-deep);',
+      '  font-size: 10px;',
+      '  font-weight: 500;',
+      '}',
+      '.pulse-section-tag.disabled {',
+      '  background: var(--color-border);',
+      '  color: var(--color-text-muted);',
+      '  text-decoration: line-through;',
+      '}',
+      '.pulse-section-tag .dot {',
+      '  width: 6px;',
+      '  height: 6px;',
+      '  border-radius: 50%;',
+      '  background: currentColor;',
       '}',
       '.pulse-error {',
       '  padding: 16px;',
@@ -123,85 +195,7 @@
     document.head.appendChild(style);
   }
 
-  // ============== Dungeonlab+pulse 解析器 ==============
-
-  /**
-   * 解析 Dungeonlab+pulse 格式字符串
-   * @param {string} raw - 原始数据（可能含前后空白）
-   * @returns {Object|null} 解析结果 { globalParams, sections } 或 null
-   */
-  function parsePulseData(raw) {
-    var data = raw.trim();
-    var prefix = 'Dungeonlab+pulse:';
-    if (data.indexOf(prefix) !== 0) return null;
-
-    data = data.substring(prefix.length).trim();
-
-    var eqIdx = data.indexOf('=');
-    if (eqIdx === -1) return null;
-
-    var globalStr = data.substring(0, eqIdx);
-    var sectionsStr = data.substring(eqIdx + 1);
-
-    var globalParams = globalStr.split(',').map(function(s) {
-      return parseInt(s, 10);
-    });
-    if (globalParams.length < 3 || globalParams.some(isNaN)) return null;
-
-    var sectionParts = sectionsStr.split('+section+');
-    var sections = [];
-
-    for (var si = 0; si < sectionParts.length; si++) {
-      var part = sectionParts[si].trim();
-      if (!part) continue;
-
-      var slashIdx = part.indexOf('/');
-      if (slashIdx === -1) return null;
-
-      var paramStr = part.substring(0, slashIdx);
-      var dataStr = part.substring(slashIdx + 1);
-
-      var params = paramStr.split(',').map(function(s) {
-        return parseInt(s, 10);
-      });
-      if (params.length < 5 || params.some(isNaN)) return null;
-
-      var pointStrs = dataStr.split(',');
-      var points = [];
-      for (var pi = 0; pi < pointStrs.length; pi++) {
-        var pt = pointStrs[pi].trim();
-        if (!pt) continue;
-        var dashIdx = pt.lastIndexOf('-');
-        if (dashIdx <= 0) continue;
-        var value = parseFloat(pt.substring(0, dashIdx));
-        var flag = parseInt(pt.substring(dashIdx + 1), 10);
-        if (isNaN(value) || isNaN(flag)) continue;
-        points.push({ value: value, keyframe: flag === 1 });
-      }
-
-      if (points.length === 0) return null;
-
-      sections.push({
-        curveType: params[0],
-        amplitude: params[1],
-        step: params[2],
-        repeat: params[3],
-        direction: params[4],
-        points: points
-      });
-    }
-
-    if (sections.length === 0) return null;
-
-    return {
-      pulseNumber: globalParams[0],
-      modeFlag: globalParams[1],
-      channelCount: globalParams[2],
-      sections: sections
-    };
-  }
-
-  // ============== 颜色工具 ==============
+  // ============== 工具函数 ==============
 
   function getThemeColors() {
     var cs = getComputedStyle(document.documentElement);
@@ -220,7 +214,6 @@
     };
   }
 
-  // 将 hex 颜色转为 rgba（支持 #rgb / #rrggbb）
   function hexToRgba(hex, alpha) {
     hex = hex.replace('#', '');
     if (hex.length === 3) {
@@ -232,33 +225,201 @@
     return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
   }
 
-  // ============== 波形绘制 ==============
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
 
-  /**
-   * 将所有段的数据点展开为一条连续波形（按 repeat 展开）
-   * @returns {{ values: number[], keyframes: boolean[], sectionMarks: number[] }}
-   */
+  function decodeEntities(str) {
+    var txt = document.createElement('textarea');
+    txt.innerHTML = str;
+    return txt.value;
+  }
+
+  function freqSliderToMs(val) {
+    var idx = Math.max(0, Math.min(83, Math.round(val)));
+    return FREQ_SLIDER_MAP[idx] || 10;
+  }
+
+  function sectionSliderToSec(val) {
+    var idx = Math.max(0, Math.min(99, Math.round(val)));
+    return SECTION_TIME_MAP[idx] || 0.1;
+  }
+
+  // ============== 解析器 ==============
+
+  function parsePulseData(raw) {
+    var data = raw.trim();
+    var prefix = 'Dungeonlab+pulse:';
+    if (data.indexOf(prefix) !== 0) return null;
+
+    data = data.substring(prefix.length).trim();
+    if (!data) return null;
+
+    var globalStr, sectionsStr;
+    var eqIdx = data.indexOf('=');
+
+    if (eqIdx === -1) {
+      globalStr = '0,1,16';
+      sectionsStr = data;
+    } else {
+      globalStr = data.substring(0, eqIdx);
+      sectionsStr = data.substring(eqIdx + 1);
+    }
+
+    var globalParams = globalStr.split(',').map(function(s) {
+      return parseInt(s.trim(), 10);
+    });
+    if (globalParams.length < 3) {
+      while (globalParams.length < 3) globalParams.push(16);
+    }
+    if (globalParams.some(isNaN)) return null;
+
+    var restSlider = globalParams[0];
+    var speedMultiplier = globalParams[1];
+    var unknownParam = globalParams[2];
+
+    if (speedMultiplier !== 1 && speedMultiplier !== 2 && speedMultiplier !== 4) {
+      speedMultiplier = 1;
+    }
+
+    var sectionParts = sectionsStr.split('+section+');
+    var sections = [];
+
+    for (var si = 0; si < sectionParts.length; si++) {
+      var part = sectionParts[si].trim();
+      if (!part) continue;
+
+      var slashIdx = part.indexOf('/');
+      if (slashIdx === -1) return null;
+
+      var paramStr = part.substring(0, slashIdx);
+      var dataStr = part.substring(slashIdx + 1);
+
+      var params = paramStr.split(',').map(function(s) {
+        return parseInt(s.trim(), 10);
+      });
+      if (params.length < 5) {
+        while (params.length < 5) params.push(0);
+      }
+      if (params.some(isNaN)) return null;
+
+      var freqA = params[0];
+      var freqB = params[1];
+      var durationSlider = params[2];
+      var freqMode = params[3];
+      var enabled = params[4] === 1;
+
+      if (freqMode < 1 || freqMode > 4) freqMode = 1;
+
+      var pointStrs = dataStr.split(',');
+      var points = [];
+      for (var pi = 0; pi < pointStrs.length; pi++) {
+        var pt = pointStrs[pi].trim();
+        if (!pt) continue;
+        var dashIdx = pt.lastIndexOf('-');
+        if (dashIdx <= 0) continue;
+        var value = parseFloat(pt.substring(0, dashIdx));
+        var type = parseInt(pt.substring(dashIdx + 1), 10);
+        if (isNaN(value) || isNaN(type)) continue;
+        if (value < 0) value = 0;
+        if (value > 100) value = 100;
+        points.push({ value: value, anchor: type === 1 });
+      }
+
+      if (points.length < 2) return null;
+
+      var pulseMetaSec = points.length * 0.1;
+      var sectionSec = sectionSliderToSec(durationSlider);
+
+      sections.push({
+        index: si,
+        freqA: freqA,
+        freqB: freqB,
+        durationSlider: durationSlider,
+        durationSec: sectionSec,
+        freqMode: freqMode,
+        enabled: enabled,
+        points: points,
+        pulseMetaSec: pulseMetaSec
+      });
+    }
+
+    if (sections.length === 0) return null;
+
+    var restSec = restSlider * 0.1;
+    var enabledSections = sections.filter(function(s) { return s.enabled; });
+    var totalPlaySec = 0;
+    enabledSections.forEach(function(s) {
+      totalPlaySec += s.durationSec;
+    });
+    var totalCycleSec = (totalPlaySec + restSec) / speedMultiplier;
+
+    return {
+      restSlider: restSlider,
+      restSec: restSec,
+      speedMultiplier: speedMultiplier,
+      unknownParam: unknownParam,
+      sections: sections,
+      totalPlaySec: totalPlaySec,
+      totalCycleSec: totalCycleSec,
+      enabledCount: enabledSections.length
+    };
+  }
+
+  // ============== 波形展开 ==============
+
   function expandWaveform(parsed) {
     var values = [];
-    var keyframes = [];
-    var sectionMarks = []; // 每段起始索引
+    var anchors = [];
+    var sectionMarks = [];
+    var sectionIndices = [];
+    var restStartIdx = -1;
 
     for (var si = 0; si < parsed.sections.length; si++) {
       var sec = parsed.sections[si];
-      sectionMarks.push(values.length);
+      if (!sec.enabled) continue;
 
-      for (var rep = 0; rep < sec.repeat; rep++) {
-        // direction=0 正向，direction=1 反向
-        var pts = sec.direction === 1 ? sec.points.slice().reverse() : sec.points;
-        for (var pi = 0; pi < pts.length; pi++) {
-          values.push(pts[pi].value);
-          keyframes.push(pts[pi].keyframe);
+      sectionMarks.push(values.length);
+      sectionIndices.push(sec.index);
+
+      var totalPoints = Math.max(2, Math.round(sec.durationSec / 0.1));
+      var metaLen = sec.points.length;
+      var filled = 0;
+
+      while (filled < totalPoints) {
+        var remaining = totalPoints - filled;
+        var take = Math.min(metaLen, remaining);
+        for (var pi = 0; pi < take; pi++) {
+          values.push(sec.points[pi].value);
+          anchors.push(sec.points[pi].anchor);
         }
+        filled += take;
       }
     }
 
-    return { values: values, keyframes: keyframes, sectionMarks: sectionMarks };
+    if (parsed.restSec > 0 && values.length > 0) {
+      restStartIdx = values.length;
+      var restPoints = Math.round(parsed.restSec / 0.1);
+      for (var ri = 0; ri < restPoints; ri++) {
+        values.push(0);
+        anchors.push(false);
+      }
+    }
+
+    return {
+      values: values,
+      anchors: anchors,
+      sectionMarks: sectionMarks,
+      sectionIndices: sectionIndices,
+      restStartIdx: restStartIdx,
+      totalPoints: values.length,
+      totalSec: values.length * 0.1
+    };
   }
+
+  // ============== 波形绘制 ==============
 
   function drawWaveform(canvas, wave, progress, colors) {
     var ctx = canvas.getContext('2d');
@@ -268,7 +429,6 @@
     var cssW = canvas.clientWidth;
     var cssH = canvas.clientHeight;
 
-    // 高 DPI 适配
     if (canvas.width !== Math.round(cssW * dpr) || canvas.height !== Math.round(cssH * dpr)) {
       canvas.width = Math.round(cssW * dpr);
       canvas.height = Math.round(cssH * dpr);
@@ -276,26 +436,47 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, cssW, cssH);
 
-    var padX = 8;
-    var padY = 16;
+    var padX = 12;
+    var padY = 18;
     var w = cssW - padX * 2;
     var h = cssH - padY * 2;
-    var values = wave.values;
-    var n = values.length;
+    var n = wave.totalPoints;
     if (n < 2) return;
 
     var stepX = w / (n - 1);
+
+    function valueToY(v) {
+      return padY + h - (v / 100) * h;
+    }
+
+    // ---- 休息段背景（淡色） ----
+    if (wave.restStartIdx > 0 && wave.restStartIdx < n) {
+      var restX = padX + wave.restStartIdx * stepX;
+      ctx.fillStyle = hexToRgba(colors.textMuted, 0.06);
+      ctx.fillRect(restX, padY, padX + w - restX, h);
+      ctx.strokeStyle = colors.textMuted;
+      ctx.globalAlpha = 0.3;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(restX, padY);
+      ctx.lineTo(restX, padY + h);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = colors.textMuted;
+      ctx.font = '10px system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('休息', padX + w - 4, padY + 12);
+    }
 
     // ---- 背景网格 ----
     ctx.strokeStyle = colors.border;
     ctx.lineWidth = 1;
     ctx.globalAlpha = 0.5;
-    // 水平中线
     ctx.beginPath();
     ctx.moveTo(padX, padY + h / 2);
     ctx.lineTo(padX + w, padY + h / 2);
     ctx.stroke();
-    // 水平刻度线 (25%, 75%)
     [0.25, 0.75].forEach(function(frac) {
       ctx.beginPath();
       ctx.moveTo(padX, padY + h * frac);
@@ -305,107 +486,110 @@
     });
     ctx.globalAlpha = 1;
 
-    // ---- 段分隔线 ----
+    // ---- 小节分隔线 ----
     for (var mi = 0; mi < wave.sectionMarks.length; mi++) {
       var markIdx = wave.sectionMarks[mi];
       if (markIdx === 0) continue;
       var mx = padX + markIdx * stepX;
-      ctx.strokeStyle = colors.textMuted;
-      ctx.globalAlpha = 0.2;
-      ctx.setLineDash([3, 4]);
+      ctx.strokeStyle = colors.accentPink;
+      ctx.globalAlpha = 0.35;
+      ctx.setLineDash([2, 3]);
       ctx.beginPath();
       ctx.moveTo(mx, padY);
       ctx.lineTo(mx, padY + h);
       ctx.stroke();
       ctx.setLineDash([]);
       ctx.globalAlpha = 1;
+      ctx.fillStyle = colors.textMuted;
+      ctx.font = '9px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      var secNum = wave.sectionIndices[mi] + 1;
+      ctx.fillText('S' + secNum, mx, padY + h - 2);
     }
 
     // ---- 完整波形（淡色背景） ----
-    function valueToY(v) {
-      return padY + h - (v / 100) * h;
-    }
-
     ctx.strokeStyle = colors.accent;
-    ctx.globalAlpha = 0.25;
+    ctx.globalAlpha = 0.22;
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     for (var i = 0; i < n; i++) {
       var x = padX + i * stepX;
-      var y = valueToY(values[i]);
+      var y = valueToY(wave.values[i]);
       if (i === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     }
     ctx.stroke();
     ctx.globalAlpha = 1;
 
-    // ---- 已播放部分（填充 + 描边） ----
+    // ---- 已播放部分 ----
     var playheadIdx = progress * (n - 1);
     var playInt = Math.floor(playheadIdx);
     var playFrac = playheadIdx - playInt;
 
-    // 填充区域
-    ctx.beginPath();
-    ctx.moveTo(padX, padY + h);
-    for (var j = 0; j <= playInt && j < n; j++) {
-      ctx.lineTo(padX + j * stepX, valueToY(values[j]));
-    }
-    // 插值到播放头位置
-    if (playInt < n - 1) {
-      var interpValue = values[playInt] + (values[playInt + 1] - values[playInt]) * playFrac;
-      var interpX = padX + (playInt + playFrac) * stepX;
-      ctx.lineTo(interpX, valueToY(interpValue));
-    }
-    var lastX = padX + Math.min(playInt, n - 1) * stepX;
-    if (playInt < n - 1) lastX = interpX;
-    ctx.lineTo(lastX, padY + h);
-    ctx.closePath();
+    if (playInt >= 0) {
+      ctx.beginPath();
+      ctx.moveTo(padX, padY + h);
+      for (var j = 0; j <= playInt && j < n; j++) {
+        ctx.lineTo(padX + j * stepX, valueToY(wave.values[j]));
+      }
+      var interpValue, interpX;
+      if (playInt < n - 1) {
+        interpValue = wave.values[playInt] + (wave.values[playInt + 1] - wave.values[playInt]) * playFrac;
+        interpX = padX + (playInt + playFrac) * stepX;
+        ctx.lineTo(interpX, valueToY(interpValue));
+        ctx.lineTo(interpX, padY + h);
+      } else {
+        ctx.lineTo(padX + w, padY + h);
+      }
+      ctx.closePath();
 
-    var grad = ctx.createLinearGradient(0, padY, 0, padY + h);
-    grad.addColorStop(0, hexToRgba(colors.accent, 0.45));
-    grad.addColorStop(1, hexToRgba(colors.accent, 0.05));
-    ctx.fillStyle = grad;
-    ctx.fill();
+      var grad = ctx.createLinearGradient(0, padY, 0, padY + h);
+      grad.addColorStop(0, hexToRgba(colors.accent, 0.45));
+      grad.addColorStop(1, hexToRgba(colors.accent, 0.05));
+      ctx.fillStyle = grad;
+      ctx.fill();
 
-    // 描边
-    ctx.strokeStyle = colors.accentDeep;
-    ctx.lineWidth = 2;
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    for (var k = 0; k <= playInt && k < n; k++) {
-      var kx = padX + k * stepX;
-      var ky = valueToY(values[k]);
-      if (k === 0) ctx.moveTo(kx, ky);
-      else ctx.lineTo(kx, ky);
-    }
-    if (playInt < n - 1) {
-      ctx.lineTo(interpX, valueToY(interpValue));
-    }
-    ctx.stroke();
+      ctx.strokeStyle = colors.accentDeep;
+      ctx.lineWidth = 2;
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      for (var k = 0; k <= playInt && k < n; k++) {
+        var kx = padX + k * stepX;
+        var ky = valueToY(wave.values[k]);
+        if (k === 0) ctx.moveTo(kx, ky);
+        else ctx.lineTo(kx, ky);
+      }
+      if (playInt < n - 1) {
+        ctx.lineTo(interpX, valueToY(interpValue));
+      }
+      ctx.stroke();
 
-    // ---- 关键帧标记 ----
-    for (var kf = 0; kf <= playInt && kf < n; kf++) {
-      if (wave.keyframes[kf]) {
-        var kfx = padX + kf * stepX;
-        var kfy = valueToY(values[kf]);
-        ctx.fillStyle = colors.accentPink;
-        ctx.beginPath();
-        ctx.arc(kfx, kfy, 3, 0, Math.PI * 2);
-        ctx.fill();
+      for (var ai = 0; ai <= playInt && ai < n; ai++) {
+        if (wave.anchors[ai] && wave.values[ai] > 0) {
+          var ax = padX + ai * stepX;
+          var ay = valueToY(wave.values[ai]);
+          ctx.fillStyle = colors.accentPink;
+          ctx.beginPath();
+          ctx.arc(ax, ay, 3, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = colors.surface;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
       }
     }
 
-    // ---- 播放头光标 ----
+    // ---- 播放头 ----
+    var cursorValue;
     if (playInt < n - 1) {
-      var cursorValue = values[playInt] + (values[playInt + 1] - values[playInt]) * playFrac;
+      cursorValue = wave.values[playInt] + (wave.values[playInt + 1] - wave.values[playInt]) * playFrac;
     } else {
-      cursorValue = values[n - 1];
+      cursorValue = wave.values[n - 1];
     }
     var cursorX = padX + playheadIdx * stepX;
     var cursorY = valueToY(cursorValue);
 
-    // 竖线
     ctx.strokeStyle = colors.accentDeep;
     ctx.globalAlpha = 0.6;
     ctx.lineWidth = 1.5;
@@ -415,7 +599,6 @@
     ctx.stroke();
     ctx.globalAlpha = 1;
 
-    // 光标圆点
     ctx.fillStyle = colors.accentDeep;
     ctx.beginPath();
     ctx.arc(cursorX, cursorY, 5, 0, Math.PI * 2);
@@ -426,11 +609,12 @@
     ctx.fill();
   }
 
-  // ============== 动画管理 ==============
+  // ============== 动画 ==============
 
-  function startAnimation(canvas, wave, infoLeftEl) {
+  function startAnimation(canvas, wave, parsed, infoLeftEl) {
     var colors = getThemeColors();
-    var duration = Math.max(2000, wave.values.length * 60); // 总时长
+    var totalSec = wave.totalSec / parsed.speedMultiplier;
+    var duration = Math.max(3000, totalSec * 500);
     var startTime = null;
     var rafId = null;
     var running = true;
@@ -444,9 +628,12 @@
       drawWaveform(canvas, wave, progress, colors);
 
       if (infoLeftEl) {
-        var currentIdx = Math.floor(progress * (wave.values.length - 1));
+        var currentIdx = Math.floor(progress * (wave.totalPoints - 1));
+        var currentSec = (progress * wave.totalSec).toFixed(1);
         var pct = Math.round(progress * 100);
-        infoLeftEl.textContent = '进度 ' + pct + '% · 帧 ' + (currentIdx + 1) + '/' + wave.values.length;
+        infoLeftEl.textContent =
+          pct + '% · ' + currentSec + 's / ' + wave.totalSec.toFixed(1) + 's · 帧 ' +
+          (currentIdx + 1) + '/' + wave.totalPoints;
       }
 
       rafId = requestAnimationFrame(frame);
@@ -454,7 +641,6 @@
 
     rafId = requestAnimationFrame(frame);
 
-    // 主题切换时刷新颜色
     function onThemeChange() {
       colors = getThemeColors();
     }
@@ -465,14 +651,11 @@
         running = false;
         if (rafId) cancelAnimationFrame(rafId);
         window.removeEventListener('themechange', onThemeChange);
-      },
-      refreshColors: function() {
-        colors = getThemeColors();
       }
     };
   }
 
-  // ============== 下载功能 ==============
+  // ============== 下载 ==============
 
   function downloadPulse(rawData, title) {
     var blob = new Blob([rawData.trim()], { type: 'application/octet-stream' });
@@ -487,15 +670,7 @@
     setTimeout(function() { URL.revokeObjectURL(url); }, 200);
   }
 
-  // ============== HTML 实体解码 ==============
-
-  function decodeEntities(str) {
-    var txt = document.createElement('textarea');
-    txt.innerHTML = str;
-    return txt.value;
-  }
-
-  // ============== 创建单个 pulse 部件 ==============
+  // ============== 创建部件 ==============
 
   function createPulseWidget(title, rawData) {
     var parsed = parsePulseData(rawData);
@@ -509,25 +684,23 @@
 
     var wave = expandWaveform(parsed);
 
-    // 容器
     var widget = document.createElement('div');
     widget.className = 'pulse-widget';
 
-    // 头部：标题 + 下载按钮
     var header = document.createElement('div');
     header.className = 'pulse-header';
 
     var titleEl = document.createElement('div');
     titleEl.className = 'pulse-title';
     titleEl.innerHTML =
-      '<span class="pulse-title-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>' +
-      '<span>' + escapeHtml(title || ('Pulse #' + parsed.pulseNumber)) + '</span>';
+      '<span class="pulse-title-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>' +
+      '<span>' + escapeHtml(title || 'Pulse 波形') + '</span>';
 
     var dlBtn = document.createElement('button');
     dlBtn.className = 'pulse-download-btn';
     dlBtn.innerHTML =
       '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>' +
-      '<span>下载</span>';
+      '<span>下载 .pulse</span>';
     dlBtn.addEventListener('click', function() {
       downloadPulse(rawData, title);
     });
@@ -535,49 +708,69 @@
     header.appendChild(titleEl);
     header.appendChild(dlBtn);
 
-    // 画布区域
     var canvasWrap = document.createElement('div');
     canvasWrap.className = 'pulse-canvas-wrap';
     var canvas = document.createElement('canvas');
     canvas.className = 'pulse-canvas';
     canvasWrap.appendChild(canvas);
 
-    // 底部信息
+    var legend = document.createElement('div');
+    legend.className = 'pulse-section-legend';
+    for (var si = 0; si < parsed.sections.length; si++) {
+      var sec = parsed.sections[si];
+      var tag = document.createElement('span');
+      tag.className = 'pulse-section-tag' + (sec.enabled ? '' : ' disabled');
+      var freqMsA = freqSliderToMs(sec.freqA);
+      var freqMsB = freqSliderToMs(sec.freqB);
+      var freqHzA = (1000 / freqMsA).toFixed(1);
+      var freqHzB = (1000 / freqMsB).toFixed(1);
+      var modeName = FREQ_MODE_NAMES[sec.freqMode] || '固定';
+      var freqText = sec.freqMode === 1
+        ? (freqHzA + 'Hz')
+        : (freqHzA + '→' + freqHzB + 'Hz');
+      tag.innerHTML = '<span class="dot"></span>S' + (si + 1) +
+        ' ' + sec.durationSec.toFixed(1) + 's · ' + freqText +
+        ' · ' + modeName;
+      tag.title = '频率A:' + sec.freqA + '(' + freqMsA + 'ms) · 频率B:' + sec.freqB + '(' + freqMsB + 'ms)\n' +
+        '时长滑块:' + sec.durationSlider + ' · 模式:' + modeName + '\n' +
+        '脉冲元:' + sec.points.length + '点 (' + sec.pulseMetaSec.toFixed(1) + 's) · ' +
+        (sec.enabled ? '启用' : '禁用');
+      legend.appendChild(tag);
+    }
+
     var info = document.createElement('div');
     info.className = 'pulse-info';
     var infoLeft = document.createElement('div');
     infoLeft.className = 'pulse-info-left';
     var infoRight = document.createElement('div');
-    var totalPoints = wave.values.length;
-    var totalSections = parsed.sections.length;
-    infoRight.textContent =
-      '通道 ' + parsed.channelCount + ' · ' + totalSections + ' 段 · ' + totalPoints + ' 帧';
+    infoRight.className = 'pulse-info-right';
+
+    var cycleTime = parsed.totalCycleSec.toFixed(1);
+    infoRight.innerHTML =
+      '<span>' + parsed.enabledCount + '/' + parsed.sections.length + ' 段</span>' +
+      '<span>' + parsed.speedMultiplier + 'x 速度</span>' +
+      '<span>休息 ' + parsed.restSec.toFixed(1) + 's</span>' +
+      '<span>周期 ' + cycleTime + 's</span>';
+
     info.appendChild(infoLeft);
     info.appendChild(infoRight);
 
     widget.appendChild(header);
     widget.appendChild(canvasWrap);
+    widget.appendChild(legend);
     widget.appendChild(info);
 
-    // 启动动画（下一帧，确保 canvas 已布局）
     requestAnimationFrame(function() {
-      var anim = startAnimation(canvas, wave, infoLeft);
+      var anim = startAnimation(canvas, wave, parsed, infoLeft);
       animations.push(anim);
     });
 
     return widget;
   }
 
-  function escapeHtml(str) {
-    var div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  }
-
   // ============== 主渲染入口 ==============
 
   function render(container) {
-    // 停止旧动画
     animations.forEach(function(a) { a.stop(); });
     animations = [];
 
@@ -586,8 +779,6 @@
     var targetEl = container || (window.MarkdownPreview.dom && window.MarkdownPreview.dom.markdownContent);
     if (!targetEl) return;
 
-    // 匹配 [pulse title="..."]...[/pulse] 标签
-    // 标题属性可选，支持单引号或双引号
     var pulseRegex = /\[pulse(?:\s+title\s*=\s*(?:"([^"]*)"|'([^']*)'))?\]([\s\S]*?)\[\/pulse\]/gi;
 
     var html = targetEl.innerHTML;
@@ -602,7 +793,6 @@
 
     if (replacements.length === 0) return;
 
-    // 按位置降序排列，从后往前替换避免索引偏移
     var sorted = replacements.slice().sort(function(a, b) { return b.index - a.index; });
     for (var i = 0; i < sorted.length; i++) {
       var rep = sorted[i];
@@ -613,14 +803,12 @@
 
     targetEl.innerHTML = html;
 
-    // 将占位符替换为实际的 pulse 部件
     var placeholders = targetEl.querySelectorAll('[data-pulse-placeholder]');
     placeholders.forEach(function(ph) {
       var repIdx = parseInt(ph.getAttribute('data-pulse-placeholder'), 10);
       var rep = replacements[repIdx];
       if (rep) {
         var widget = createPulseWidget(rep.title, rep.rawData);
-        // 如果占位符在 <p> 内，替换整个 <p>
         var parentP = ph.closest('p');
         if (parentP && parentP.textContent.trim() === '') {
           parentP.parentNode.replaceChild(widget, parentP);
@@ -636,8 +824,12 @@
   window.MarkdownPreview.renderers.pulse = {
     render: render,
     parsePulseData: parsePulseData,
-    expandWaveform: expandWaveform
+    expandWaveform: expandWaveform,
+    freqSliderToMs: freqSliderToMs,
+    sectionSliderToSec: sectionSliderToSec,
+    FREQ_SLIDER_MAP: FREQ_SLIDER_MAP,
+    SECTION_TIME_MAP: SECTION_TIME_MAP
   };
 
-  console.log('[Pulse] Renderer module loaded and registered');
+  console.log('[Pulse] Renderer module loaded (DG-LAB format)');
 })();
