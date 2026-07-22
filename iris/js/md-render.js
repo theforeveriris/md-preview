@@ -191,6 +191,8 @@
       let localInCode = false;
       let localFenceChar = '';
       let localFenceLen = 0;
+      let inTab = false;
+      let foundEnd = false;
       while (i < lines.length) {
         const l = lines[i];
         const lfence = isFence(l);
@@ -202,37 +204,45 @@
           } else if (lfence.char === localFenceChar && lfence.len >= localFenceLen) {
             localInCode = false;
           }
-          tabContentLines.push(l);
+          if (inTab) tabContentLines.push(l);
           i++;
           continue;
         }
         if (localInCode) {
-          tabContentLines.push(l);
+          if (inTab) tabContentLines.push(l);
           i++;
           continue;
         }
         const endMatch = l.match(/^:::\s*$/);
         if (endMatch) {
-          if (currentTab) {
+          if (inTab) {
             tabs.push({ name: currentTab, content: tabContentLines.join('\n').trim() });
+            inTab = false;
+            i++;
+            continue;
+          } else {
+            foundEnd = true;
+            i++;
+            break;
           }
-          i++;
-          break;
         }
         const tabMatch = l.match(/^@tab\s+(.+)$/);
         if (tabMatch) {
-          if (currentTab) {
+          if (inTab) {
             tabs.push({ name: currentTab, content: tabContentLines.join('\n').trim() });
           }
           currentTab = tabMatch[1].trim();
           tabContentLines = [];
+          inTab = true;
           i++;
           continue;
         }
-        tabContentLines.push(l);
+        if (inTab) {
+          tabContentLines.push(l);
+        }
         i++;
       }
-      if (tabs.length === 0) {
+      if (!foundEnd || tabs.length === 0) {
         result.push(line);
         continue;
       }
