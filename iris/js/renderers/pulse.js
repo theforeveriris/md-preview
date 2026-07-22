@@ -1325,38 +1325,42 @@
     var playheadIdx = 0;
     var lastTime = null;
     var stopped = false;
-
-    function resize() {
-      var w = canvasWrap.clientWidth;
-      var h = 80;
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
-      canvas.style.width = w + 'px';
-      canvas.style.height = h + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
+    var canvasH = 70;
 
     var points = [];
-    for (var si = 0; si < wave.sections.length; si++) {
-      var sec = wave.sections[si];
-      if (!sec.enabled) continue;
-      for (var pi = 0; pi < sec.points.length; pi++) {
-        points.push({ value: sec.points[pi].intensity, isKey: sec.points[pi].isAnchor });
-      }
+    for (var i = 0; i < wave.values.length; i++) {
+      points.push({ value: wave.values[i], isKey: wave.anchors[i] });
     }
 
     function draw(time) {
       if (stopped) return;
+
+      var cssW = canvas.clientWidth || canvasWrap.clientWidth;
+      if (cssW < 10) {
+        requestAnimationFrame(draw);
+        return;
+      }
+      if (canvas.width !== Math.round(cssW * dpr) || canvas.height !== Math.round(canvasH * dpr)) {
+        canvas.width = Math.round(cssW * dpr);
+        canvas.height = Math.round(canvasH * dpr);
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
       if (!lastTime) lastTime = time;
       var delta = time - lastTime;
       lastTime = time;
 
-      var w = canvasWrap.clientWidth;
-      var h = 80;
+      var w = cssW;
+      var h = canvasH;
       var padX = 4;
-      var padY = 8;
+      var padY = 6;
       var graphW = w - padX * 2;
       var graphH = h - padY * 2;
+
+      if (graphW < 10 || points.length === 0) {
+        requestAnimationFrame(draw);
+        return;
+      }
 
       playheadIdx += delta * 0.025;
       if (playheadIdx >= points.length) playheadIdx = 0;
@@ -1417,13 +1421,15 @@
 
     requestAnimationFrame(draw);
 
-    resize();
-    window.addEventListener('resize', resize);
+    var onResize = function() {
+      lastTime = null;
+    };
+    window.addEventListener('resize', onResize);
 
     animations.push({
       stop: function() {
         stopped = true;
-        window.removeEventListener('resize', resize);
+        window.removeEventListener('resize', onResize);
       }
     });
 
