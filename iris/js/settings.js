@@ -320,6 +320,7 @@
     const downloadMdBtn = document.getElementById('downloadMdBtn');
     const downloadPdfBtn = document.getElementById('downloadPdfBtn');
     const openEditorBtn = document.getElementById('openEditorBtn');
+    const openPulseGenBtn = document.getElementById('openPulseGenBtn');
 
     downloadMdBtn?.addEventListener('click', () => downloadCurrentFile());
     downloadPdfBtn?.addEventListener('click', exportPdf);
@@ -327,6 +328,12 @@
       closeSettingsPanel();
       if (window.MarkdownPreview?.enterEditorMode) {
         window.MarkdownPreview.enterEditorMode();
+      }
+    });
+    openPulseGenBtn?.addEventListener('click', () => {
+      closeSettingsPanel();
+      if (window.MarkdownPreview?.enterPulseGen) {
+        window.MarkdownPreview.enterPulseGen();
       }
     });
   }

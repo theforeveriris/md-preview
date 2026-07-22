@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="iris/vendor/katex/katex.min.css">
   <link rel="stylesheet" href="iris/vendor/highlight.js/styles/github.css" id="hljs-theme">
   <link rel="stylesheet" href="iris/css/editor.css">
+  <link rel="stylesheet" href="iris/css/pulse-generator.css">
   <link rel="stylesheet" href="iris/css/pkt/pkt.css">
 </head>
 <body>
@@ -355,6 +356,15 @@
                 </div>
                 <div class="setting-control">
                   <button id="openEditorBtn" class="download-btn">打开编辑器</button>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label">波形生成器</div>
+                  <div class="setting-description">可视化生成 DG-LAB 郊狼 .pulse 波形文件，最多 20 个</div>
+                </div>
+                <div class="setting-control">
+                  <button id="openPulseGenBtn" class="download-btn">打开生成器</button>
                 </div>
               </div>
               <div class="setting-item">
@@ -980,6 +990,261 @@
     <div class="autocomplete-list" id="autocompleteList"></div>
   </div>
 
+  <!-- ============== 波形生成器 ============== -->
+  <div class="pulse-gen-overlay" id="pulseGenOverlay" style="display:none;">
+    <header class="pulse-gen-toolbar">
+      <div class="pulse-gen-toolbar-left">
+        <button class="pulse-gen-back-btn" id="exitPulseGenBtn" title="返回文档站">
+          <svg class="ico ico-sm"><use href="#i-arrow-left"/></svg>
+          <span>文档站</span>
+        </button>
+        <span class="pulse-gen-title">波形生成器</span>
+      </div>
+      <div class="pulse-gen-toolbar-right">
+        <span class="pulse-gen-count" id="pulseGenCount">0 / 20</span>
+      </div>
+    </header>
+    <div class="pulse-gen-body">
+      <aside class="pulse-gen-controls">
+        <div class="pulse-gen-section">
+          <div class="pulse-gen-section-title">波形类型</div>
+          <div class="pulse-gen-select-wrap">
+            <select id="pulseTypeMode">
+              <option value="all">全类型随机</option>
+              <option value="category">按类别选择</option>
+              <option value="specific">指定类型</option>
+            </select>
+          </div>
+          <div id="pulseCategoryList" class="pulse-gen-checkbox-grid" style="display:none;">
+            <label><input type="checkbox" value="脉冲类"> 脉冲类</label>
+            <label><input type="checkbox" value="基础波"> 基础波</label>
+            <label><input type="checkbox" value="自然类"> 自然类</label>
+            <label><input type="checkbox" value="衰减上升"> 衰减上升</label>
+            <label><input type="checkbox" value="噪声类"> 噪声类</label>
+            <label><input type="checkbox" value="阶梯折线"> 阶梯折线</label>
+            <label><input type="checkbox" value="组合类"> 组合类</label>
+            <label><input type="checkbox" value="特殊形状"> 特殊形状</label>
+            <label><input type="checkbox" value="氛围类"> 氛围类</label>
+          </div>
+          <div id="pulseTypeList" class="pulse-gen-type-list" style="display:none;">
+            <div class="pulse-gen-type-col">
+              <div class="pulse-gen-type-group-title">脉冲类</div>
+              <label><input type="checkbox" value="快速脉冲"> 快速脉冲</label>
+              <label><input type="checkbox" value="慢速脉冲"> 慢速脉冲</label>
+              <label><input type="checkbox" value="双脉冲"> 双脉冲</label>
+              <label><input type="checkbox" value="单脉冲"> 单脉冲</label>
+              <label><input type="checkbox" value="窄脉冲串"> 窄脉冲串</label>
+              <label><input type="checkbox" value="宽脉冲"> 宽脉冲</label>
+            </div>
+            <div class="pulse-gen-type-col">
+              <div class="pulse-gen-type-group-title">基础波</div>
+              <label><input type="checkbox" value="正弦波"> 正弦波</label>
+              <label><input type="checkbox" value="三角波"> 三角波</label>
+              <label><input type="checkbox" value="方波"> 方波</label>
+              <label><input type="checkbox" value="锯齿波"> 锯齿波</label>
+            </div>
+            <div class="pulse-gen-type-col">
+              <div class="pulse-gen-type-group-title">自然类</div>
+              <label><input type="checkbox" value="海浪"> 海浪</label>
+              <label><input type="checkbox" value="微风"> 微风</label>
+              <label><input type="checkbox" value="心跳"> 心跳</label>
+              <label><input type="checkbox" value="弹跳"> 弹跳</label>
+              <label><input type="checkbox" value="潮汐"> 潮汐</label>
+              <label><input type="checkbox" value="涟漪"> 涟漪</label>
+            </div>
+            <div class="pulse-gen-type-col">
+              <div class="pulse-gen-type-group-title">衰减上升</div>
+              <label><input type="checkbox" value="指数衰减"> 指数衰减</label>
+              <label><input type="checkbox" value="指数上升"> 指数上升</label>
+              <label><input type="checkbox" value="快速衰减"> 快速衰减</label>
+              <label><input type="checkbox" value="缓慢衰减"> 缓慢衰减</label>
+              <label><input type="checkbox" value="快速上升"> 快速上升</label>
+              <label><input type="checkbox" value="缓慢上升"> 缓慢上升</label>
+            </div>
+            <div class="pulse-gen-type-col">
+              <div class="pulse-gen-type-group-title">噪声类</div>
+              <label><input type="checkbox" value="噪声"> 噪声</label>
+              <label><input type="checkbox" value="粗糙噪声"> 粗糙噪声</label>
+              <label><input type="checkbox" value="细碎噪声"> 细碎噪声</label>
+            </div>
+            <div class="pulse-gen-type-col">
+              <div class="pulse-gen-type-group-title">阶梯折线</div>
+              <label><input type="checkbox" value="阶梯波"> 阶梯波</label>
+              <label><input type="checkbox" value="微阶梯"> 微阶梯</label>
+              <label><input type="checkbox" value="锯齿折线"> 锯齿折线</label>
+            </div>
+            <div class="pulse-gen-type-col">
+              <div class="pulse-gen-type-group-title">组合类</div>
+              <label><input type="checkbox" value="升降波"> 升降波</label>
+              <label><input type="checkbox" value="脉冲衰减"> 脉冲衰减</label>
+              <label><input type="checkbox" value="正弦衰减"> 正弦衰减</label>
+              <label><input type="checkbox" value="阶梯正弦"> 阶梯正弦</label>
+              <label><input type="checkbox" value="呼吸波"> 呼吸波</label>
+            </div>
+            <div class="pulse-gen-type-col">
+              <div class="pulse-gen-type-group-title">特殊形状</div>
+              <label><input type="checkbox" value="尖峰"> 尖峰</label>
+              <label><input type="checkbox" value="谷底"> 谷底</label>
+              <label><input type="checkbox" value="平顶"> 平顶</label>
+              <label><input type="checkbox" value="双峰"> 双峰</label>
+              <label><input type="checkbox" value="三峰"> 三峰</label>
+              <label><input type="checkbox" value="山丘"> 山丘</label>
+              <label><input type="checkbox" value="悬崖"> 悬崖</label>
+            </div>
+            <div class="pulse-gen-type-col">
+              <div class="pulse-gen-type-group-title">氛围类</div>
+              <label><input type="checkbox" value="地震波"> 地震波</label>
+              <label><input type="checkbox" value="雷鸣"> 雷鸣</label>
+              <label><input type="checkbox" value="滴答"> 滴答</label>
+              <label><input type="checkbox" value="渐强"> 渐强</label>
+              <label><input type="checkbox" value="渐弱"> 渐弱</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="pulse-gen-section">
+          <div class="pulse-gen-section-title">激烈程度</div>
+          <div class="pulse-gen-slider-row">
+            <input type="range" id="pulseIntensity" min="1" max="10" value="5">
+            <span class="pulse-gen-slider-val" id="pulseIntensityVal">5</span>
+          </div>
+          <div class="pulse-gen-desc">1-10，影响幅度/频率/过渡速度/关键帧密度</div>
+        </div>
+
+        <div class="pulse-gen-section">
+          <div class="pulse-gen-section-title">强度范围</div>
+          <div class="pulse-gen-select-wrap">
+            <select id="pulseIntensityPreset">
+              <option value="full">full (0-100)</option>
+              <option value="low">low (0-30)</option>
+              <option value="medium" selected>medium (10-60)</option>
+              <option value="high">high (25-85)</option>
+              <option value="max">max (40-100)</option>
+              <option value="custom">自定义</option>
+            </select>
+          </div>
+          <div class="pulse-gen-range-row" id="pulseCustomRange" style="display:none;">
+            <div class="pulse-gen-range-item">
+              <label>最低</label>
+              <input type="number" id="pulseMinIntensity" min="0" max="100" value="0">
+            </div>
+            <div class="pulse-gen-range-item">
+              <label>最大</label>
+              <input type="number" id="pulseMaxIntensity" min="0" max="100" value="100">
+            </div>
+          </div>
+        </div>
+
+        <div class="pulse-gen-section">
+          <div class="pulse-gen-section-title">段数</div>
+          <div class="pulse-gen-select-wrap">
+            <select id="pulseSectionsMode">
+              <option value="range">随机范围 (1-3)</option>
+              <option value="fixed">固定段数</option>
+            </select>
+          </div>
+          <div class="pulse-gen-range-row" id="pulseSectionsRange">
+            <div class="pulse-gen-range-item">
+              <label>最小</label>
+              <input type="number" id="pulseMinSections" min="1" max="5" value="1">
+            </div>
+            <div class="pulse-gen-range-item">
+              <label>最大</label>
+              <input type="number" id="pulseMaxSections" min="1" max="5" value="3">
+            </div>
+          </div>
+          <div class="pulse-gen-range-item" id="pulseSectionsFixed" style="display:none;">
+            <label>段数</label>
+            <input type="number" id="pulseFixedSections" min="1" max="5" value="2">
+          </div>
+        </div>
+
+        <div class="pulse-gen-section">
+          <div class="pulse-gen-section-title">数据点数</div>
+          <div class="pulse-gen-select-wrap">
+            <select id="pulsePointsMode">
+              <option value="auto">自动计算</option>
+              <option value="fixed">固定值</option>
+              <option value="range">随机范围</option>
+            </select>
+          </div>
+          <div class="pulse-gen-range-item" id="pulsePointsFixed" style="display:none;">
+            <label>点数</label>
+            <input type="number" id="pulseFixedPoints" min="2" max="200" value="30">
+          </div>
+          <div class="pulse-gen-range-row" id="pulsePointsRange" style="display:none;">
+            <div class="pulse-gen-range-item">
+              <label>最小</label>
+              <input type="number" id="pulseMinPoints" min="2" max="200" value="10">
+            </div>
+            <div class="pulse-gen-range-item">
+              <label>最大</label>
+              <input type="number" id="pulseMaxPoints" min="2" max="200" value="40">
+            </div>
+          </div>
+        </div>
+
+        <div class="pulse-gen-section">
+          <div class="pulse-gen-section-title">插值类型</div>
+          <div class="pulse-gen-select-wrap">
+            <select id="pulseInterpolation">
+              <option value="linear">linear (线性)</option>
+              <option value="ease_in">ease_in (先慢后快)</option>
+              <option value="ease_out">ease_out (先快后慢)</option>
+              <option value="ease_in_out">ease_in_out (两端缓)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pulse-gen-section">
+          <div class="pulse-gen-section-title">生成数量</div>
+          <div class="pulse-gen-slider-row">
+            <input type="range" id="pulseCount" min="1" max="20" value="10">
+            <span class="pulse-gen-slider-val" id="pulseCountVal">10</span>
+          </div>
+        </div>
+
+        <div class="pulse-gen-section">
+          <label class="pulse-gen-checkbox-row">
+            <input type="checkbox" id="pulseMix">
+            <span>波形叠加混合</span>
+          </label>
+        </div>
+
+        <div class="pulse-gen-section">
+          <div class="pulse-gen-section-title">随机种子</div>
+          <div class="pulse-gen-select-wrap">
+            <select id="pulseSeedMode">
+              <option value="random">随机</option>
+              <option value="fixed">固定种子</option>
+            </select>
+          </div>
+          <div class="pulse-gen-range-item" id="pulseSeedFixed" style="display:none;">
+            <label>种子值</label>
+            <input type="number" id="pulseSeed" value="42">
+          </div>
+        </div>
+
+        <button class="pulse-gen-generate-btn" id="pulseGenGenerateBtn">
+          <svg class="ico ico-sm"><use href="#i-zap"/></svg>
+          生成波形
+        </button>
+      </aside>
+
+      <main class="pulse-gen-results">
+        <div class="pulse-gen-grid" id="pulseGenGrid">
+          <div class="pulse-gen-empty">
+            <svg class="pulse-gen-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+            <p>配置参数后点击「生成波形」</p>
+            <p class="pulse-gen-empty-hint">最多生成 20 个波形</p>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
   <script defer src="iris/vendor/marked.js"></script>
   <script defer src="iris/vendor/marked-footnote.min.js"></script>
   <script defer src="iris/vendor/highlight.js/highlight.min.js"></script>
@@ -1024,6 +1289,7 @@
   <script defer src="iris/js/renderers/embedded.js"></script>
   <script defer src="iris/js/renderers/katex.js"></script>
   <script defer src="iris/js/renderers/pulse.js"></script>
+  <script defer src="iris/js/pulse-generator.js"></script>
 
   <!-- Packet Tracer 拓扑渲染器 -->
   <script defer src="iris/vendor/cytoscape/cytoscape.min.js"></script>
