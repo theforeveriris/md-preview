@@ -107,7 +107,7 @@
   {
     "path": "docs/examples/pulse-examples.md",
     "title": "Pulse 波形示例",
-    "preview": "Pulse 波形示例 本文档展示了 DG-LAB 郊狼波形文件（.pulse）的渲染效果。使用 [pulse title=\"标题\"]Dungeonlab+pulse:...[/pulse] 语法即可渲染出逐帧动态波形演示。 所有示例均基于 DG-LAB 官方 3.4.4 版本波形文件导出规范。 > 默认以官方竖线样式展示，点击左上角「竖线/曲线」按钮可切换显示模式。 --- 格式速查 | 参数 |"
+    "preview": "Pulse 波形示例 本文档展示了 DG-LAB 郊狼波形文件（.pulse）的渲染效果。使用 [pulse title=\"标题\"]Dungeonlab+pulse:...[/pulse] 语法即可渲染出逐帧动态波形演示。 如需内联的迷你波形，使用 [pulsemini title=\"标题\"]Dungeonlab+pulse:...[/pulsemini] 语法，适合在文字段落中嵌入或批量展示。 "
   },
   {
     "path": "docs/examples/qrcode-examples.md",
