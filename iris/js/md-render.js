@@ -136,69 +136,149 @@
    * 处理代码选项卡语法 ::: code-tabs ... :::
    * 内部用 @tab 名称 分隔每个标签页
    * @param {string} text - Markdown 文本
+   * @param {Object} [opts]
+   * @param {marked.Renderer} [opts.renderer] - 自定义 renderer
    * @returns {string} 处理后的 HTML 字符串
    */
-  function processCodeTabs(text) {
-    const codeTabRegex = /^:::\s*code-tabs\s*\n([\s\S]*?)^:::\s*$/gm;
-    return text.replace(codeTabRegex, (match, content) => {
-      const tabRegex = /^@tab\s+(.+)$/gm;
-      const tabs = [];
-      let lastIndex = 0;
-      let m;
-      const matches = [];
-      while ((m = tabRegex.exec(content)) !== null) {
-        matches.push({ name: m[1].trim(), index: m.index, length: m[0].length });
+  function processCodeTabs(text, opts) {
+    opts = opts || {};
+    const lines = text.split('\n');
+    const result = [];
+    let i = 0;
+    const parseOpts = { breaks: true, gfm: true };
+    if (opts.renderer) parseOpts.renderer = opts.renderer;
+
+    while (i < lines.length) {
+      const line = lines[i];
+      const startMatch = line.match(/^:::\s*code-tabs\s*$/);
+      if (!startMatch) {
+        result.push(line);
+        i++;
+        continue;
       }
-      if (matches.length === 0) return match;
-      for (let i = 0; i < matches.length; i++) {
-        const start = matches[i].index + matches[i].length;
-        const end = i < matches.length - 1 ? matches[i + 1].index : content.length;
-        const tabContent = content.substring(start, end).trim();
-        tabs.push({ name: matches[i].name, content: tabContent });
+      i++;
+      const tabs = [];
+      let currentTab = null;
+      let tabContentLines = [];
+      while (i < lines.length) {
+        const l = lines[i];
+        const endMatch = l.match(/^:::\s*$/);
+        if (endMatch) {
+          if (currentTab) {
+            tabs.push({ name: currentTab, content: tabContentLines.join('\n').trim() });
+          }
+          i++;
+          break;
+        }
+        const tabMatch = l.match(/^@tab\s+(.+)$/);
+        if (tabMatch) {
+          if (currentTab) {
+            tabs.push({ name: currentTab, content: tabContentLines.join('\n').trim() });
+          }
+          currentTab = tabMatch[1].trim();
+          tabContentLines = [];
+          i++;
+          continue;
+        }
+        tabContentLines.push(l);
+        i++;
+      }
+      if (tabs.length === 0) {
+        result.push(line);
+        continue;
       }
       const tabId = 'codetabs-' + Math.random().toString(36).substring(2, 9);
-      let tabHeaders = tabs.map((tab, i) =>
-        `<button class="code-tab-btn ${i === 0 ? 'active' : ''}" data-tab="${tabId}-${i}" data-group="${tabId}">${tab.name}</button>`
+      const tabHeaders = tabs.map((tab, idx) =>
+        `<button class="code-tab-btn ${idx === 0 ? 'active' : ''}" data-tab="${tabId}-${idx}" data-group="${tabId}">${tab.name}</button>`
       ).join('');
-      let tabPanels = tabs.map((tab, i) =>
-        `<div class="code-tab-panel ${i === 0 ? 'active' : ''}" id="${tabId}-${i}" data-group="${tabId}">\n${tab.content}\n</div>`
-      ).join('\n');
-      return `<div class="code-tabs" data-tabs-group="${tabId}">\n<div class="code-tab-header">\n${tabHeaders}\n</div>\n<div class="code-tab-content">\n${tabPanels}\n</div>\n</div>\n`;
-    });
+      const tabPanels = tabs.map((tab, idx) => {
+        const rendered = marked.parse(tab.content, parseOpts);
+        return `<div class="code-tab-panel ${idx === 0 ? 'active' : ''}" id="${tabId}-${idx}" data-group="${tabId}">${rendered}</div>`;
+      }).join('');
+      result.push(`<div class="code-tabs" data-tabs-group="${tabId}"><div class="code-tab-header">${tabHeaders}</div><div class="code-tab-content">${tabPanels}</div></div>`);
+    }
+    return result.join('\n');
   }
 
   /**
    * 处理分栏布局语法 ::: columns ... :::
    * 内部用 ::: column 标题 分隔每个栏
    * @param {string} text - Markdown 文本
+   * @param {Object} [opts]
+   * @param {marked.Renderer} [opts.renderer] - 自定义 renderer
    * @returns {string} 处理后的 HTML 字符串
    */
-  function processColumns(text) {
-    const columnRegex = /^:::\s*columns\s*\n([\s\S]*?)^:::\s*$/gm;
-    return text.replace(columnRegex, (match, content) => {
-      const colRegex = /^:::\s*column(?:\s+(.+))?$/gm;
+  function processColumns(text, opts) {
+    opts = opts || {};
+    const lines = text.split('\n');
+    const result = [];
+    let i = 0;
+    const parseOpts = { breaks: true, gfm: true };
+    if (opts.renderer) parseOpts.renderer = opts.renderer;
+
+    while (i < lines.length) {
+      const line = lines[i];
+      const startMatch = line.match(/^:::\s*columns\s*$/);
+      if (!startMatch) {
+        result.push(line);
+        i++;
+        continue;
+      }
+      i++;
       const columns = [];
-      const matches = [];
-      let m;
-      while ((m = colRegex.exec(content)) !== null) {
-        matches.push({ title: m[1] ? m[1].trim() : '', index: m.index, length: m[0].length });
-      }
-      if (matches.length === 0) return match;
-      for (let i = 0; i < matches.length; i++) {
-        const start = matches[i].index + matches[i].length;
-        const end = i < matches.length - 1 ? matches[i + 1].index : content.lastIndexOf(':::');
-        let colContent = content.substring(start, end).trim();
-        if (colContent.endsWith(':::')) {
-          colContent = colContent.slice(0, -3).trim();
+      let currentTitle = null;
+      let colContentLines = [];
+      let inColumn = false;
+      let foundEnd = false;
+
+      while (i < lines.length) {
+        const l = lines[i];
+        const colMatch = l.match(/^:::\s*column(?:\s+(.+))?\s*$/);
+        const endMatch = l.match(/^:::\s*$/);
+
+        if (colMatch) {
+          if (inColumn) {
+            columns.push({ title: currentTitle, content: colContentLines.join('\n').trim() });
+          }
+          currentTitle = colMatch[1] ? colMatch[1].trim() : '';
+          colContentLines = [];
+          inColumn = true;
+          i++;
+          continue;
         }
-        columns.push({ title: matches[i].title, content: colContent });
+
+        if (endMatch) {
+          if (inColumn) {
+            columns.push({ title: currentTitle, content: colContentLines.join('\n').trim() });
+            inColumn = false;
+            i++;
+            continue;
+          } else {
+            foundEnd = true;
+            i++;
+            break;
+          }
+        }
+
+        if (inColumn) {
+          colContentLines.push(l);
+        }
+        i++;
       }
+
+      if (!foundEnd || columns.length === 0) {
+        result.push(line);
+        continue;
+      }
+
       const colHtml = columns.map(col => {
-        const titleHtml = col.title ? `<div class="column-title">${col.title}</div>\n` : '';
-        return `<div class="column-item">\n${titleHtml}<div class="column-body">\n${col.content}\n</div>\n</div>`;
-      }).join('\n');
-      return `<div class="columns-container">\n${colHtml}\n</div>\n`;
-    });
+        const rendered = marked.parse(col.content, parseOpts);
+        const titleHtml = col.title ? `<div class="column-title">${col.title}</div>` : '';
+        return `<div class="column-item">${titleHtml}<div class="column-body">${rendered}</div></div>`;
+      }).join('');
+      result.push(`<div class="columns-container">${colHtml}</div>`);
+    }
+    return result.join('\n');
   }
 
   /**
@@ -246,11 +326,11 @@
   function parseMarkdown(content, opts) {
     const { processed, blocks } = protectLaTeXBlocks(content);
     const alertProcessed = processGitHubAlerts(processed, opts);
-    const codeTabProcessed = processCodeTabs(alertProcessed);
-    const columnProcessed = processColumns(codeTabProcessed);
-    const spoilerProcessed = processSpoilers(columnProcessed);
+    const spoilerProcessed = processSpoilers(alertProcessed);
     const renderer = createMdRenderer(opts);
-    let html = marked.parse(spoilerProcessed, { breaks: true, gfm: true, renderer });
+    const codeTabProcessed = processCodeTabs(spoilerProcessed, { renderer });
+    const columnProcessed = processColumns(codeTabProcessed, { renderer });
+    let html = marked.parse(columnProcessed, { breaks: true, gfm: true, renderer });
     html = restoreLaTeXBlocks(html, blocks);
     return { html, blocks };
   }
