@@ -119,7 +119,7 @@
             "name": "pulse-examples.md",
             "type": "file",
             "path": "docs/examples/pulse-examples.md",
-            "wordCount": 496
+            "wordCount": 556
           },
           {
             "name": "qrcode-examples.md",
@@ -146,7 +146,7 @@
             "wordCount": 390
           }
         ],
-        "wordCount": 7842
+        "wordCount": 7902
       },
       {
         "name": "code-highlight-theme.md",
@@ -203,7 +203,7 @@
         "wordCount": 489
       }
     ],
-    "wordCount": 12386
+    "wordCount": 12446
   },
   {
     "name": "iris",
