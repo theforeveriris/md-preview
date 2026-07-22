@@ -386,3 +386,15 @@
     font-size: 14px;
   }
 }
+
+.pulse-gen-controls,
+.pulse-gen-results,
+.pulse-gen-type-list {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.pulse-gen-controls::-webkit-scrollbar,
+.pulse-gen-results::-webkit-scrollbar,
+.pulse-gen-type-list::-webkit-scrollbar {
+  display: none;
+}
