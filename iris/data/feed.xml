@@ -5,8 +5,15 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 22 Jul 2026 07:34:14 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 22 Jul 2026 08:48:00 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>遮罩（剧透）语法示例</title>
+      <link>https://theforeveriris.github.io/md-preview/#/docs/examples/spoiler-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/#/docs/examples/spoiler-examples.md</guid>
+      <pubDate>Wed, 22 Jul 2026 08:47:46 GMT</pubDate>
+      <description>使用 语法可以创建遮罩（剧透）效果，鼠标悬停或点击（移动端）时才会显示内容。遮罩颜色使用当前主题的主题色。 --- 这是一段普通文字，||这是被遮罩隐藏的内容||，后面继续是普通文字。 把鼠标移到上面紫色的色块上，就会显示隐藏的内容。 --- 今天的考试题答案是：||A||、||B||、||C||、||D||，全选就对了。 --- 主角最后的结局是||在雪地中独自离去，没有人知道他去了哪里||，留</description>
+    </item>
     <item>
       <title>Pulse 波形示例</title>
       <link>https://theforeveriris.github.io/md-preview/#/docs/examples/pulse-examples.md</link>
