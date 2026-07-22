@@ -5,21 +5,21 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 22 Jul 2026 09:07:28 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 22 Jul 2026 09:27:46 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>代码选项卡使用示例</title>
       <link>https://theforeveriris.github.io/md-preview/#/docs/examples/code-tabs-examples.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/#/docs/examples/code-tabs-examples.md</guid>
-      <pubDate>Wed, 22 Jul 2026 09:04:09 GMT</pubDate>
-      <description>使用 语法可以创建多语言代码选项卡，点击顶部标签切换不同语言的代码示例。 --- 最常见的场景：同一个功能用多种语言实现。 ::: code-tabs @tab JavaScript @tab Python @tab Go ::: 点击上方标签可以切换不同语言的代码。 --- ::: code-tabs @tab JavaScript @tab Rust ::: --- ::: code-tabs</description>
+      <pubDate>Wed, 22 Jul 2026 09:27:20 GMT</pubDate>
+      <description>使用 语法可以创建多语言代码选项卡，点击顶部标签切换不同语言的代码示例。 --- 源码： js function greet(name) { return ; } console.log(greet(&apos;World&apos;)); python def greet(name): return f&quot;Hello, {name}!&quot; print(greet(&quot;World&quot;)) go package main im</description>
     </item>
     <item>
       <title>分栏布局使用示例</title>
       <link>https://theforeveriris.github.io/md-preview/#/docs/examples/columns-examples.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/#/docs/examples/columns-examples.md</guid>
-      <pubDate>Wed, 22 Jul 2026 09:04:09 GMT</pubDate>
-      <description>使用 语法可以创建多栏布局，将内容并排展示。每一栏用 标记。 --- ::: columns ::: column 左侧内容 这是左栏的内容，可以放任意 Markdown 格式的文本。 支持加粗、斜体、等行内格式。 - 列表项 1 - 列表项 2 - 列表项 3 ::: ::: column 右侧内容 这是右栏的内容，同样支持完整的 Markdown 语法。 &gt; 可以放引用块 也可以放普通段落，两</description>
+      <pubDate>Wed, 22 Jul 2026 09:27:20 GMT</pubDate>
+      <description>使用 语法可以在 Markdown 中创建多栏布局，每栏可以包含任意 Markdown 内容。 --- 源码： 渲染效果： ::: columns ::: column 第一栏 功能 A 快速、高效、稳定的核心功能，满足日常需求。 - 高性能 - 低延迟 - 易使用 ::: ::: column 第二栏 功能 B 丰富的扩展能力，灵活应对各种场景。 - 可定制 - 可扩展 - 可集成 ::: ::</description>
     </item>
     <item>
       <title>遮罩（剧透）语法示例</title>
