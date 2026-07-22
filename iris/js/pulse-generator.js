@@ -987,30 +987,24 @@
       const startIdx = centerIdx - Math.floor(pointsVisible * 0.5);
       const endIdx = startIdx + pointsVisible;
 
-      ctx.strokeStyle = accentColor;
-      ctx.lineWidth = 1.5;
+      const barWidth = Math.max(1, scrollStepX * 0.6);
+
+      ctx.fillStyle = accentColor;
 
       const gradient = ctx.createLinearGradient(padX, 0, w - padX, 0);
       gradient.addColorStop(0, 'transparent');
       gradient.addColorStop(0.15, accentColor);
       gradient.addColorStop(0.85, accentColor);
       gradient.addColorStop(1, 'transparent');
-      ctx.strokeStyle = gradient;
+      ctx.fillStyle = gradient;
 
-      ctx.beginPath();
-      let first = true;
       for (let i = startIdx; i < endIdx; i++) {
         const idx = ((i % points.length) + points.length) % points.length;
         const x = padX + (i - startIdx) * scrollStepX;
-        const y = padY + graphH * (1 - points[idx].value / 100);
-        if (first) {
-          ctx.moveTo(x, y);
-          first = false;
-        } else {
-          ctx.lineTo(x, y);
-        }
+        const barHeight = graphH * (points[idx].value / 100);
+        const y = padY + graphH - barHeight;
+        ctx.fillRect(x - barWidth / 2, y, barWidth, barHeight);
       }
-      ctx.stroke();
 
       ctx.strokeStyle = accentPink;
       ctx.lineWidth = 1.5;
