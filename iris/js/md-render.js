@@ -138,12 +138,13 @@
    * @param {string} text - Markdown 文本
    * @param {Object} [opts]
    * @param {marked.Renderer} [opts.renderer] - 自定义 renderer
-   * @returns {string} 处理后的 HTML 字符串
+   * @returns {{ processed: string, codeTabBlocks: string[] }}
    */
   function processCodeTabs(text, opts) {
     opts = opts || {};
     const lines = text.split('\n');
     const result = [];
+    const codeTabBlocks = [];
     let i = 0;
     let inFencedCode = false;
     let fenceChar = '';
@@ -191,7 +192,6 @@
       let localInCode = false;
       let localFenceChar = '';
       let localFenceLen = 0;
-      let inTab = false;
       let foundEnd = false;
       while (i < lines.length) {
         const l = lines[i];
@@ -204,42 +204,35 @@
           } else if (lfence.char === localFenceChar && lfence.len >= localFenceLen) {
             localInCode = false;
           }
-          if (inTab) tabContentLines.push(l);
+          tabContentLines.push(l);
           i++;
           continue;
         }
         if (localInCode) {
-          if (inTab) tabContentLines.push(l);
+          tabContentLines.push(l);
           i++;
           continue;
         }
         const endMatch = l.match(/^:::\s*$/);
         if (endMatch) {
-          if (inTab) {
+          if (currentTab) {
             tabs.push({ name: currentTab, content: tabContentLines.join('\n').trim() });
-            inTab = false;
-            i++;
-            continue;
-          } else {
-            foundEnd = true;
-            i++;
-            break;
           }
+          foundEnd = true;
+          i++;
+          break;
         }
         const tabMatch = l.match(/^@tab\s+(.+)$/);
         if (tabMatch) {
-          if (inTab) {
+          if (currentTab) {
             tabs.push({ name: currentTab, content: tabContentLines.join('\n').trim() });
           }
           currentTab = tabMatch[1].trim();
           tabContentLines = [];
-          inTab = true;
           i++;
           continue;
         }
-        if (inTab) {
-          tabContentLines.push(l);
-        }
+        tabContentLines.push(l);
         i++;
       }
       if (!foundEnd || tabs.length === 0) {
@@ -254,9 +247,24 @@
         const rendered = marked.parse(tab.content, parseOpts);
         return `<div class="code-tab-panel ${idx === 0 ? 'active' : ''}" id="${tabId}-${idx}" data-group="${tabId}">${rendered}</div>`;
       }).join('');
-      result.push(`<div class="code-tabs" data-tabs-group="${tabId}"><div class="code-tab-header">${tabHeaders}</div><div class="code-tab-content">${tabPanels}</div></div>`);
+      const html = `<div class="code-tabs" data-tabs-group="${tabId}"><div class="code-tab-header">${tabHeaders}</div><div class="code-tab-content">${tabPanels}</div></div>`;
+      const idx = codeTabBlocks.length;
+      codeTabBlocks.push(html);
+      result.push(`CODETABBLOCK_${idx}_`);
     }
-    return result.join('\n');
+    return { processed: result.join('\n'), codeTabBlocks };
+  }
+
+  /**
+   * 还原代码选项卡占位符为完整 HTML
+   * @param {string} html
+   * @param {string[]} codeTabBlocks
+   * @returns {string}
+   */
+  function restoreCodeTabBlocks(html, codeTabBlocks) {
+    return html.replace(/CODETABBLOCK_(\d+)_/g, function(m, idx) {
+      return codeTabBlocks[parseInt(idx)];
+    });
   }
 
   /**
@@ -437,9 +445,10 @@
     const alertProcessed = processGitHubAlerts(processed, opts);
     const spoilerProcessed = processSpoilers(alertProcessed);
     const renderer = createMdRenderer(opts);
-    const codeTabProcessed = processCodeTabs(spoilerProcessed, { renderer });
+    const { processed: codeTabProcessed, codeTabBlocks } = processCodeTabs(spoilerProcessed, { renderer });
     const columnProcessed = processColumns(codeTabProcessed, { renderer });
     let html = marked.parse(columnProcessed, { breaks: true, gfm: true, renderer });
+    html = restoreCodeTabBlocks(html, codeTabBlocks);
     html = restoreLaTeXBlocks(html, blocks);
     return { html, blocks };
   }
