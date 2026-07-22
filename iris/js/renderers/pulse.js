@@ -522,7 +522,7 @@
 
   // ============== 波形绘制 ==============
 
-  function drawWaveform(canvas, wave, progress, colors, style) {
+  function drawWaveform(canvas, wave, progress, colors, style, viewMode) {
     var ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -544,11 +544,185 @@
     var n = wave.totalPoints;
     if (n < 2) return;
 
-    var stepX = w / (n - 1);
-
     function valueToY(v) {
       return padY + h - (v / 100) * h;
     }
+
+    var playheadIdx = progress * (n - 1);
+
+    if (viewMode === 'scroll') {
+      // ====== 滚动模式 ======
+      var scrollStepX = w * 0.015;
+      var playheadFixedX = padX + w * 0.25;
+      var pointsVisible = Math.floor(w / scrollStepX);
+      var centerIdx = playheadIdx;
+      var startIdx = centerIdx - Math.floor(pointsVisible * 0.25);
+      var endIdx = startIdx + pointsVisible;
+
+      function idxToScrollX(idx) {
+        return playheadFixedX + (idx - centerIdx) * scrollStepX;
+      }
+
+      // 左右渐隐遮罩
+      var fadeW = 30;
+      var leftFade = ctx.createLinearGradient(padX, 0, padX + fadeW, 0);
+      leftFade.addColorStop(0, colors.surface);
+      leftFade.addColorStop(1, 'transparent');
+      var rightFade = ctx.createLinearGradient(padX + w - fadeW, 0, padX + w, 0);
+      rightFade.addColorStop(0, 'transparent');
+      rightFade.addColorStop(1, colors.surface);
+
+      if (style === 'bars') {
+        var barW = Math.max(1, scrollStepX * 0.6);
+        for (var bi = Math.floor(startIdx); bi <= Math.ceil(endIdx); bi++) {
+          if (bi < 0 || bi >= n) continue;
+          var bx = idxToScrollX(bi);
+          if (bx < padX - barW || bx > padX + w + barW) continue;
+          var by = valueToY(wave.values[bi]);
+          var bh = padY + h - by;
+          if (bh <= 0) continue;
+          var isPlayed = bi <= playheadIdx;
+          if (isPlayed) {
+            var barGrad = ctx.createLinearGradient(0, by, 0, padY + h);
+            barGrad.addColorStop(0, colors.accentDeep);
+            barGrad.addColorStop(1, hexToRgba(colors.accent, 0.35));
+            ctx.fillStyle = barGrad;
+          } else {
+            ctx.fillStyle = hexToRgba(colors.accent, 0.18);
+          }
+          ctx.fillRect(bx - barW / 2, by, barW, bh);
+          if (wave.anchors[bi] && wave.values[bi] > 0) {
+            ctx.fillStyle = colors.accentPink;
+            ctx.fillRect(bx - barW / 2 - 1, by - 2, barW + 2, 2);
+          }
+        }
+      } else {
+        // 曲线模式
+        ctx.strokeStyle = colors.accent;
+        ctx.globalAlpha = 0.22;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        var firstPt = true;
+        for (var ci = Math.floor(startIdx); ci <= Math.ceil(endIdx); ci++) {
+          if (ci < 0 || ci >= n) continue;
+          var cx = idxToScrollX(ci);
+          if (cx < padX - 5 || cx > padX + w + 5) continue;
+          var cy = valueToY(wave.values[ci]);
+          if (firstPt) { ctx.moveTo(cx, cy); firstPt = false; }
+          else ctx.lineTo(cx, cy);
+        }
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+
+        // 已播放部分填充
+        var playInt2 = Math.floor(playheadIdx);
+        var playFrac2 = playheadIdx - playInt2;
+        if (playInt2 >= startIdx) {
+          ctx.beginPath();
+          ctx.moveTo(playheadFixedX, padY + h);
+          for (var k = Math.floor(startIdx); k <= playInt2 && k < n; k++) {
+            if (k < 0) continue;
+            var kx = idxToScrollX(k);
+            if (kx < padX - 5) continue;
+            ctx.lineTo(kx, valueToY(wave.values[k]));
+          }
+          if (playInt2 < n - 1) {
+            var interpVal = wave.values[playInt2] + (wave.values[playInt2 + 1] - wave.values[playInt2]) * playFrac2;
+            ctx.lineTo(playheadFixedX, valueToY(interpVal));
+          }
+          ctx.closePath();
+          var grad = ctx.createLinearGradient(0, padY, 0, padY + h);
+          grad.addColorStop(0, hexToRgba(colors.accent, 0.45));
+          grad.addColorStop(1, hexToRgba(colors.accent, 0.05));
+          ctx.fillStyle = grad;
+          ctx.fill();
+
+          // 已播放描边
+          ctx.strokeStyle = colors.accentDeep;
+          ctx.lineWidth = 2;
+          ctx.lineJoin = 'round';
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          firstPt = true;
+          for (var k2 = Math.floor(startIdx); k2 <= playInt2 && k2 < n; k2++) {
+            if (k2 < 0) continue;
+            var k2x = idxToScrollX(k2);
+            if (k2x < padX - 5) continue;
+            var k2y = valueToY(wave.values[k2]);
+            if (firstPt) { ctx.moveTo(k2x, k2y); firstPt = false; }
+            else ctx.lineTo(k2x, k2y);
+          }
+          if (playInt2 < n - 1) {
+            var interpVal2 = wave.values[playInt2] + (wave.values[playInt2 + 1] - wave.values[playInt2]) * playFrac2;
+            ctx.lineTo(playheadFixedX, valueToY(interpVal2));
+          }
+          ctx.stroke();
+
+          // 锚点
+          for (var ai = Math.floor(startIdx); ai <= playInt2 && ai < n; ai++) {
+            if (ai < 0) continue;
+            if (wave.anchors[ai] && wave.values[ai] > 0) {
+              var ax = idxToScrollX(ai);
+              if (ax < padX - 5 || ax > padX + w + 5) continue;
+              var ay = valueToY(wave.values[ai]);
+              ctx.fillStyle = colors.accentPink;
+              ctx.beginPath();
+              ctx.arc(ax, ay, 3, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.strokeStyle = colors.surface;
+              ctx.lineWidth = 1;
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      // 渐隐遮罩
+      ctx.save();
+      ctx.globalCompositeOperation = 'destination-out';
+      var leftGrad = ctx.createLinearGradient(padX, 0, padX + fadeW, 0);
+      leftGrad.addColorStop(0, 'rgba(0,0,0,1)');
+      leftGrad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = leftGrad;
+      ctx.fillRect(padX, padY, fadeW, h);
+      var rightGrad = ctx.createLinearGradient(padX + w - fadeW, 0, padX + w, 0);
+      rightGrad.addColorStop(0, 'rgba(0,0,0,0)');
+      rightGrad.addColorStop(1, 'rgba(0,0,0,1)');
+      ctx.fillStyle = rightGrad;
+      ctx.fillRect(padX + w - fadeW, padY, fadeW, h);
+      ctx.restore();
+
+      // 中心播放头
+      var cursorVal;
+      var playInt = Math.floor(playheadIdx);
+      var playFrac = playheadIdx - playInt;
+      if (playInt < n - 1) {
+        cursorVal = wave.values[playInt] + (wave.values[playInt + 1] - wave.values[playInt]) * playFrac;
+      } else {
+        cursorVal = wave.values[n - 1];
+      }
+      var cursorY = valueToY(cursorVal);
+      ctx.strokeStyle = colors.accentDeep;
+      ctx.globalAlpha = 0.7;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(playheadFixedX, padY);
+      ctx.lineTo(playheadFixedX, padY + h);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = colors.accentDeep;
+      ctx.beginPath();
+      ctx.arc(playheadFixedX, cursorY, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = colors.surface;
+      ctx.beginPath();
+      ctx.arc(playheadFixedX, cursorY, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      return;
+    }
+
+    var stepX = w / (n - 1);
 
     // ---- 休息段背景（淡色） ----
     if (wave.restStartIdx > 0 && wave.restStartIdx < n) {
@@ -797,7 +971,7 @@
 
   // ============== 动画 ==============
 
-  function startAnimation(canvas, wave, parsed, infoLeftEl, styleRef) {
+  function startAnimation(canvas, wave, parsed, infoLeftEl, styleRef, viewModeRef) {
     var colors = getThemeColors();
     var totalSec = wave.totalSec / parsed.speedMultiplier;
     var duration = Math.max(3000, totalSec * 500);
@@ -811,7 +985,7 @@
       var elapsed = timestamp - startTime;
       var progress = (elapsed % duration) / duration;
 
-      drawWaveform(canvas, wave, progress, colors, styleRef.style);
+      drawWaveform(canvas, wave, progress, colors, styleRef.style, viewModeRef.view);
 
       if (infoLeftEl) {
         var currentIdx = Math.floor(progress * (wave.totalPoints - 1));
@@ -886,6 +1060,26 @@
     headerRight.className = 'pulse-header-right';
 
     var styleRef = { style: 'bars' };
+    var viewModeRef = { view: 'full' };
+
+    var viewToggle = document.createElement('button');
+    viewToggle.className = 'pulse-style-toggle';
+    viewToggle.innerHTML =
+      '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 12h18"/></svg>' +
+      '<span>全局</span>';
+    viewToggle.addEventListener('click', function() {
+      if (viewModeRef.view === 'full') {
+        viewModeRef.view = 'scroll';
+        viewToggle.innerHTML =
+          '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18"/><path d="M10 5l-4 7 4 7"/><path d="M14 5l4 7-4 7"/></svg>' +
+          '<span>滚动</span>';
+      } else {
+        viewModeRef.view = 'full';
+        viewToggle.innerHTML =
+          '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 12h18"/></svg>' +
+          '<span>全局</span>';
+      }
+    });
 
     var styleToggle = document.createElement('button');
     styleToggle.className = 'pulse-style-toggle';
@@ -935,6 +1129,7 @@
       }
     });
 
+    headerRight.appendChild(viewToggle);
     headerRight.appendChild(styleToggle);
     headerRight.appendChild(sourceBtn);
     headerRight.appendChild(dlBtn);
@@ -996,7 +1191,7 @@
     widget.appendChild(sourcePanel);
 
     requestAnimationFrame(function() {
-      var anim = startAnimation(canvas, wave, parsed, infoLeft, styleRef);
+      var anim = startAnimation(canvas, wave, parsed, infoLeft, styleRef, viewModeRef);
       animations.push(anim);
     });
 
