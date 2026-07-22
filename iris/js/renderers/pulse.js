@@ -147,6 +147,53 @@
       '  border-color: var(--color-accent-purple);',
       '}',
       '.pulse-style-toggle:active { transform: scale(0.96); }',
+      '.pulse-source-btn {',
+      '  flex-shrink: 0;',
+      '  display: inline-flex;',
+      '  align-items: center;',
+      '  gap: 5px;',
+      '  padding: 6px 12px;',
+      '  font-size: 12px;',
+      '  font-weight: 500;',
+      '  color: var(--color-text-muted);',
+      '  background: transparent;',
+      '  border: 1px solid var(--color-border);',
+      '  border-radius: 8px;',
+      '  cursor: pointer;',
+      '  transition: all 0.2s ease;',
+      '  user-select: none;',
+      '  margin-right: 8px;',
+      '}',
+      '.pulse-source-btn:hover {',
+      '  color: var(--color-accent-purple-deep);',
+      '  border-color: var(--color-accent-purple);',
+      '}',
+      '.pulse-source-btn:active { transform: scale(0.96); }',
+      '.pulse-source-btn.active {',
+      '  color: var(--color-accent-purple-deep);',
+      '  border-color: var(--color-accent-purple);',
+      '  background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent);',
+      '}',
+      '.pulse-source-panel {',
+      '  display: none;',
+      '  border-top: 1px solid var(--color-border);',
+      '  background: var(--color-code-bg, #f6f8fa);',
+      '  padding: 12px 16px;',
+      '  max-height: 240px;',
+      '  overflow: auto;',
+      '}',
+      '.pulse-source-panel.open { display: block; }',
+      '.pulse-source-panel pre {',
+      '  margin: 0;',
+      '  padding: 0;',
+      '  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;',
+      '  font-size: 11.5px;',
+      '  line-height: 1.6;',
+      '  color: var(--color-text, #2d2d2d);',
+      '  white-space: pre-wrap;',
+      '  word-break: break-all;',
+      '  background: transparent;',
+      '}',
       '.pulse-header-right { display: flex; align-items: center; }',
       '.pulse-canvas-wrap {',
       '  position: relative;',
@@ -837,7 +884,28 @@
       downloadPulse(rawData, title);
     });
 
+    var sourceBtn = document.createElement('button');
+    sourceBtn.className = 'pulse-source-btn';
+    sourceBtn.innerHTML =
+      '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>' +
+      '<span>源码</span>';
+    var sourcePanel = document.createElement('div');
+    sourcePanel.className = 'pulse-source-panel';
+    var sourcePre = document.createElement('pre');
+    sourcePre.textContent = '[pulse' + (title ? ' title="' + title + '"' : '') + ']' + rawData + '[/pulse]';
+    sourcePanel.appendChild(sourcePre);
+    sourceBtn.addEventListener('click', function() {
+      if (sourcePanel.classList.contains('open')) {
+        sourcePanel.classList.remove('open');
+        sourceBtn.classList.remove('active');
+      } else {
+        sourcePanel.classList.add('open');
+        sourceBtn.classList.add('active');
+      }
+    });
+
     headerRight.appendChild(styleToggle);
+    headerRight.appendChild(sourceBtn);
     headerRight.appendChild(dlBtn);
 
     header.appendChild(titleEl);
@@ -894,6 +962,7 @@
     widget.appendChild(canvasWrap);
     widget.appendChild(legend);
     widget.appendChild(info);
+    widget.appendChild(sourcePanel);
 
     requestAnimationFrame(function() {
       var anim = startAnimation(canvas, wave, parsed, infoLeft, styleRef);
