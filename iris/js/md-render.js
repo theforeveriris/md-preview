@@ -145,11 +145,39 @@
     const lines = text.split('\n');
     const result = [];
     let i = 0;
+    let inFencedCode = false;
+    let fenceChar = '';
+    let fenceLen = 0;
     const parseOpts = { breaks: true, gfm: true };
     if (opts.renderer) parseOpts.renderer = opts.renderer;
 
+    function isFence(line) {
+      const m = line.match(/^(\s*)(`{3,}|~{3,})/);
+      return m ? { char: m[2][0], len: m[2].length } : null;
+    }
+
     while (i < lines.length) {
       const line = lines[i];
+
+      const fence = isFence(line);
+      if (fence) {
+        if (!inFencedCode) {
+          inFencedCode = true;
+          fenceChar = fence.char;
+          fenceLen = fence.len;
+        } else if (fence.char === fenceChar && fence.len >= fenceLen) {
+          inFencedCode = false;
+        }
+        result.push(line);
+        i++;
+        continue;
+      }
+      if (inFencedCode) {
+        result.push(line);
+        i++;
+        continue;
+      }
+
       const startMatch = line.match(/^:::\s*code-tabs\s*$/);
       if (!startMatch) {
         result.push(line);
@@ -160,8 +188,29 @@
       const tabs = [];
       let currentTab = null;
       let tabContentLines = [];
+      let localInCode = false;
+      let localFenceChar = '';
+      let localFenceLen = 0;
       while (i < lines.length) {
         const l = lines[i];
+        const lfence = isFence(l);
+        if (lfence) {
+          if (!localInCode) {
+            localInCode = true;
+            localFenceChar = lfence.char;
+            localFenceLen = lfence.len;
+          } else if (lfence.char === localFenceChar && lfence.len >= localFenceLen) {
+            localInCode = false;
+          }
+          tabContentLines.push(l);
+          i++;
+          continue;
+        }
+        if (localInCode) {
+          tabContentLines.push(l);
+          i++;
+          continue;
+        }
         const endMatch = l.match(/^:::\s*$/);
         if (endMatch) {
           if (currentTab) {
@@ -213,11 +262,39 @@
     const lines = text.split('\n');
     const result = [];
     let i = 0;
+    let inFencedCode = false;
+    let fenceChar = '';
+    let fenceLen = 0;
     const parseOpts = { breaks: true, gfm: true };
     if (opts.renderer) parseOpts.renderer = opts.renderer;
 
+    function isFence(line) {
+      const m = line.match(/^(\s*)(`{3,}|~{3,})/);
+      return m ? { char: m[2][0], len: m[2].length } : null;
+    }
+
     while (i < lines.length) {
       const line = lines[i];
+
+      const fence = isFence(line);
+      if (fence) {
+        if (!inFencedCode) {
+          inFencedCode = true;
+          fenceChar = fence.char;
+          fenceLen = fence.len;
+        } else if (fence.char === fenceChar && fence.len >= fenceLen) {
+          inFencedCode = false;
+        }
+        result.push(line);
+        i++;
+        continue;
+      }
+      if (inFencedCode) {
+        result.push(line);
+        i++;
+        continue;
+      }
+
       const startMatch = line.match(/^:::\s*columns\s*$/);
       if (!startMatch) {
         result.push(line);
@@ -230,9 +307,31 @@
       let colContentLines = [];
       let inColumn = false;
       let foundEnd = false;
+      let localInCode = false;
+      let localFenceChar = '';
+      let localFenceLen = 0;
 
       while (i < lines.length) {
         const l = lines[i];
+        const lfence = isFence(l);
+        if (lfence) {
+          if (!localInCode) {
+            localInCode = true;
+            localFenceChar = lfence.char;
+            localFenceLen = lfence.len;
+          } else if (lfence.char === localFenceChar && lfence.len >= localFenceLen) {
+            localInCode = false;
+          }
+          if (inColumn) colContentLines.push(l);
+          i++;
+          continue;
+        }
+        if (localInCode) {
+          if (inColumn) colContentLines.push(l);
+          i++;
+          continue;
+        }
+
         const colMatch = l.match(/^:::\s*column(?:\s+(.+))?\s*$/);
         const endMatch = l.match(/^:::\s*$/);
 
@@ -449,22 +548,24 @@
   }
 
   /**
-   * 初始化代码选项卡点击切换
+   * 初始化代码选项卡点击切换（事件委托方式）
    * @param {HTMLElement} container
    */
   function initCodeTabs(container) {
-    const tabBtns = container.querySelectorAll('.code-tab-btn');
-    if (tabBtns.length === 0) return;
-    tabBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const group = btn.dataset.group;
-        const tabId = btn.dataset.tab;
-        container.querySelectorAll(`.code-tab-btn[data-group="${group}"]`).forEach(b => b.classList.remove('active'));
-        container.querySelectorAll(`.code-tab-panel[data-group="${group}"]`).forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        const panel = document.getElementById(tabId);
-        if (panel) panel.classList.add('active');
-      });
+    if (container.dataset.codeTabsInit) return;
+    container.dataset.codeTabsInit = 'true';
+    container.addEventListener('click', (e) => {
+      const btn = e.target.closest('.code-tab-btn');
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const group = btn.dataset.group;
+      const tabId = btn.dataset.tab;
+      container.querySelectorAll(`.code-tab-btn[data-group="${group}"]`).forEach(b => b.classList.remove('active'));
+      container.querySelectorAll(`.code-tab-panel[data-group="${group}"]`).forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const panel = document.getElementById(tabId);
+      if (panel) panel.classList.add('active');
     });
   }
 

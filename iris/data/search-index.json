@@ -27,7 +27,7 @@
   {
     "path": "docs/examples/code-tabs-examples.md",
     "title": "代码选项卡使用示例",
-    "preview": "代码选项卡使用示例 使用 ::: code-tabs 语法可以创建多语言代码选项卡，点击顶部标签切换不同语言的代码示例。 --- 基础用法 最常见的场景：同一个功能用多种语言实现。 ::: code-tabs @tab JavaScript @tab Python @tab Go ::: 点击上方标签可以切换不同语言的代码。 --- 两语言对比 ::: code-tabs @tab JavaScr"
+    "preview": "代码选项卡使用示例 使用 ::: code-tabs 语法可以创建多语言代码选项卡，点击顶部标签切换不同语言的代码示例。 --- 基础用法 源码： js function greet(name) { return Hello, ${name}!; } console.log(greet('World')); python def greet(name): return f\"Hello, {name"
   },
   {
     "path": "docs/examples/colorcard-examples.md",
@@ -37,7 +37,7 @@
   {
     "path": "docs/examples/columns-examples.md",
     "title": "分栏布局使用示例",
-    "preview": "分栏布局使用示例 使用 ::: columns 语法可以创建多栏布局，将内容并排展示。每一栏用 ::: column 标题 标记。 --- 基础两栏布局 ::: columns ::: column 左侧内容 这是左栏的内容，可以放任意 Markdown 格式的文本。 支持加粗、斜体、代码等行内格式。 - 列表项 1 - 列表项 2 - 列表项 3 ::: ::: column 右侧内容 这是右栏"
+    "preview": "分栏布局使用示例 使用 ::: columns 语法可以在 Markdown 中创建多栏布局，每栏可以包含任意 Markdown 内容。 --- 基础两栏布局 源码： 渲染效果： ::: columns ::: column 左侧标题 这是左侧栏的内容。 - 列表项 1 - 列表项 2 - 列表项 3 ::: ::: column 右侧标题 这是右侧栏的内容。 > 这是一段引用 正常段落文字。 :"
   },
   {
     "path": "docs/examples/countdown-examples.md",

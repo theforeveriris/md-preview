@@ -23,7 +23,7 @@
             "name": "code-tabs-examples.md",
             "type": "file",
             "path": "docs/examples/code-tabs-examples.md",
-            "wordCount": 119
+            "wordCount": 247
           },
           {
             "name": "colorcard-examples.md",
@@ -35,7 +35,7 @@
             "name": "columns-examples.md",
             "type": "file",
             "path": "docs/examples/columns-examples.md",
-            "wordCount": 283
+            "wordCount": 125
           },
           {
             "name": "countdown-examples.md",
@@ -164,7 +164,7 @@
             "wordCount": 390
           }
         ],
-        "wordCount": 8632
+        "wordCount": 8602
       },
       {
         "name": "code-highlight-theme.md",
@@ -221,7 +221,7 @@
         "wordCount": 489
       }
     ],
-    "wordCount": 13176
+    "wordCount": 13146
   },
   {
     "name": "iris",
