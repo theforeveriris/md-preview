@@ -1496,6 +1496,7 @@
     targetEl.innerHTML = html;
 
     var placeholders = targetEl.querySelectorAll('[data-pulse-placeholder]');
+    var miniParents = new Set();
     placeholders.forEach(function(ph) {
       var repIdx = parseInt(ph.getAttribute('data-pulse-placeholder'), 10);
       var rep = replacements[repIdx];
@@ -1507,8 +1508,33 @@
         if (parentP && parentP.textContent.trim() === '') {
           parentP.parentNode.replaceChild(widget, parentP);
         } else {
+          if (rep.type === 'mini' && parentP) {
+            miniParents.add(parentP);
+          }
           ph.parentNode.replaceChild(widget, ph);
         }
+      }
+    });
+
+    miniParents.forEach(function(p) {
+      var hasOnlyMini = true;
+      var children = p.childNodes;
+      for (var i = 0; i < children.length; i++) {
+        var child = children[i];
+        if (child.nodeType === 1) {
+          if (!child.classList || !child.classList.contains('pulse-mini-widget')) {
+            hasOnlyMini = false;
+            break;
+          }
+        } else if (child.nodeType === 3) {
+          if (child.textContent.trim() !== '') {
+            hasOnlyMini = false;
+            break;
+          }
+        }
+      }
+      if (hasOnlyMini) {
+        p.style.textAlign = 'center';
       }
     });
   }
