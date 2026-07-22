@@ -1189,7 +1189,6 @@
   margin: 1.5em 0;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  overflow: hidden;
   background: var(--color-surface);
 }
 
@@ -1200,6 +1199,7 @@
   padding: 6px 6px 0;
   background: var(--color-surface-alt, rgba(212, 165, 201, 0.04));
   border-bottom: 1px solid var(--color-border);
+  border-radius: 8px 8px 0 0;
 }
 
 .code-tab-btn {
@@ -1245,6 +1245,14 @@
   margin: 0;
   border: none;
   border-radius: 0;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.code-tab-panel pre code {
+  white-space: pre;
+  word-break: normal;
+  word-wrap: normal;
 }
 
 /* ============== 分栏布局 ============== */
@@ -1284,12 +1292,25 @@
 
 @media (max-width: 768px) {
   .columns-container {
-    flex-direction: column;
-    gap: 20px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    gap: 16px;
+    padding-bottom: 4px;
+  }
+
+  .column-item {
+    flex: 0 0 auto;
+    min-width: 260px;
+    max-width: 85vw;
   }
 
   .code-tab-btn {
     padding: 6px 12px;
     font-size: 12px;
+  }
+
+  .code-tab-panel pre {
+    font-size: 13px;
   }
 }
