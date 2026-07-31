@@ -105,6 +105,11 @@
     "preview": "Packet Tracer 拓扑渲染 本站点支持在 Markdown 文档中嵌入 Cisco Packet Tracer 拓扑图。将 .pkt 文件放入 iris/data/pkt/raw/ 目录，构建脚本会自动解密、解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。 基本用法 使用 @pkt 嵌入语法引用预处理好的拓扑 JSON，需要用 pkt 代码块包裹（即三反"
   },
   {
+    "path": "docs/examples/pkt-huawei-vrp-解析示例.md",
+    "title": "PKT 华为 VRP 命令解析示例",
+    "preview": "PKT 华为 VRP 命令解析示例 > ⚠️ 重要说明：PKT 渲染器当前的解析逻辑并不是特别健壮。 > > PKT 拓扑渲染器（iris/js/pkt/pkt-renderer.js）中\"可能的配置过程\"推算逻辑基于正则表达式 + 段落分割实现，并非真正的语法解析器。它对常见的、格式规范的 VRP 配置文本能给出合理的步骤拆分，但在以下情况下可能产生错误、遗漏或乱序： > > - 配置文本被压缩"
+  },
+  {
     "path": "docs/examples/plantuml-examples.md",
     "title": "PlantUML 图表示例",
     "preview": "PlantUML 图表示例 本文档展示了 PlantUML 支持的各类图表及其渲染效果。 --- 1. 类图 (Class Diagram) 基础类图 渲染效果： --- 2. 顺序图 (Sequence Diagram) 基础顺序图 渲染效果： 带循环的顺序图 渲染效果： --- 3. 用例图 (Use Case Diagram) 电商系统用例图 渲染效果： --- 4. 活动图 (Activi"
@@ -123,6 +128,11 @@
     "path": "docs/examples/pulse-examples.md",
     "title": "Pulse 波形示例",
     "preview": "Pulse 波形示例 本文档展示了 DG-LAB 郊狼波形文件（.pulse）的渲染效果。使用 [pulse title=\"标题\"]Dungeonlab+pulse:...[/pulse] 语法即可渲染出逐帧动态波形演示。 如需内联的迷你波形，使用 [pulsemini title=\"标题\"]Dungeonlab+pulse:...[/pulsemini] 语法，适合在文字段落中嵌入或批量展示。 "
+  },
+  {
+    "path": "docs/examples/pulse-generator-page.md",
+    "title": "郊狼波形批量生成页（特殊页面）",
+    "preview": "郊狼波形批量生成页（特殊页面） 郊狼波形批量生成页是系统内置的可视化波形生成工具，面向 DG-LAB 郊狼设备的 .pulse 波形创作者。以全屏覆盖层形式呈现，支持按类别/具体波形批量生成、参数调优、随机种子、波形叠加混合，并实时预览生成的迷你波形，提供一键复制源码与下载 .pulse 文件的能力。 --- 一、访问方式 四种入口方式任选其一： | 方式 | 说明 | |------|-----"
   },
   {
     "path": "docs/examples/qrcode-examples.md",
@@ -150,16 +160,6 @@
     "preview": "Twitter/X 嵌入示例 本页面展示如何使用 Markdown 预览器嵌入 Twitter/X 推文和时间线。 --- 1. 基本用法 嵌入单条推文 源码： 渲染效果： --- 使用 X 替代 Twitter 源码： 渲染效果： --- 2. 用户时间线嵌入 嵌入用户时间线 源码： 渲染效果： 说明： - 显示该用户最近的推文 - 自动刷新显示最新内容 - 高度可自定义 --- 嵌入用户喜欢的"
   },
   {
-    "path": "docs/feat.md",
-    "title": "feat.md — 优化路线图",
-    "preview": "feat.md — 优化路线图 > 基于代码现状整理的优化路线图，按类别分组，标注优先级（P0 高 / P1 中 / P2 低）与实施状态。 > ✅ 已完成 / ❌ 不做 / ⏳ 待办 --- 一、搜索体验 1. 升级为 FlexSearch 全文检索 — P0 ✅ 已完成 - 现状：search.js 使用 FlexSearch 构建标题 + 正文 + 路径复合索引，自定义 CJK 编码器支持中"
-  },
-  {
-    "path": "docs/features.md",
-    "title": "功能总览",
-    "preview": "功能总览 Markdown Preview 是一个极简风格的 Markdown 文档预览站点，专为 GitHub Pages 设计，完全静态，无需后端。 --- 一、文档浏览 | 功能 | 说明 | |------|------| | 自动发现 | 扫描仓库所有 .md 文件，构建嵌套目录树 | | 字数统计 | 每个文件旁显示字数（可在设置中关闭） | | 文件名截断 | 长文件名截断/展开切换"
-  },
-  {
     "path": "docs/getting-started.md",
     "title": "快速开始",
     "preview": "快速开始 部署到 GitHub Pages 1. Fork 仓库 点击右上角的 Fork 按钮，将仓库复制到你的账号下。 2. 开启 GitHub Pages 1. 进入 Fork 后的仓库 2. 点击 Settings → Pages 3. 在 Build and deployment 中，Source 选择 GitHub Actions 3. 修改配置 编辑 iris/config.json，"
@@ -173,6 +173,11 @@
     "path": "docs/rss.md",
     "title": "RSS 订阅",
     "preview": "RSS 订阅 Markdown Preview 自动为 docs/ 目录下的所有 Markdown 文档生成 RSS 2.0 feed，方便他人通过 RSS 阅读器订阅你的文档更新。 --- 订阅地址 部署后，RSS feed 位于： 例如本站： > feed.xml 不放在仓库根目录，而是放在 iris/data/ 下，与 file-tree.json、search-index.json 等预构"
+  },
+  {
+    "path": "docs/show.md",
+    "title": "系统运行时截图",
+    "preview": "系统运行时截图 本文档按功能模块整理了 Markdown Preview 站点的完整运行时界面截图，每个截图附有功能介绍，并指向 docs/examples/ 中对应的详细示例文档。特殊页面会额外标注访问 URL。 --- 一、整体界面 首页整体展示 !首页整体展示 站点默认以左侧文档目录树 + 右侧正文阅读区的两栏布局呈现。侧边栏自动扫描仓库中所有 .md 文件，构建嵌套目录结构并显示字数统计；"
   },
   {
     "path": "docs/theme-customization.md",
