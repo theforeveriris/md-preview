@@ -1,5 +1,5 @@
-const CACHE_NAME = 'md-preview-v7.1';
-const RUNTIME_CACHE = 'md-preview-runtime-v7.1';
+const CACHE_NAME = 'md-preview-v7.2';
+const RUNTIME_CACHE = 'md-preview-runtime-v7.2';
 const PRECACHE_MANIFEST_URL = './iris/data/precache-manifest.json';
 
 // 最小化兜底清单：当 manifest 拉取失败时使用，仅保证核心骨架可离线
@@ -142,10 +142,10 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Markdown 文档：网络优先，离线降级到缓存
+  // Markdown 文档：网络优先，强制 no-cache 绕过 stale runtime 响应；离线降级到缓存
   if (isMarkdownDoc(url)) {
     event.respondWith(
-      fetch(request)
+      fetch(request, { cache: 'no-cache' })
         .then(response => {
           if (response.ok) {
             const clone = response.clone();

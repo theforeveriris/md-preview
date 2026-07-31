@@ -32,7 +32,7 @@
       }
 
       window.MarkdownPreview.ui.updateProgress(30);
-      const response = await fetch(path);
+      const response = await fetch(path, { cache: 'no-store' });
 
       if (window.MarkdownPreview.debug && window.MarkdownPreview.debug.incrementApiCalls) {
         window.MarkdownPreview.debug.incrementApiCalls();
