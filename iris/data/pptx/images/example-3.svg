@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+<defs><linearGradient id="g-example-3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0EA5E9"/><stop offset="100%" stop-color="#14B8A6"/></linearGradient></defs>
+<rect x="0" y="0" width="1600" height="900" fill="url(#g-example-3)"/>
+
+        <text x="100" y="140" font-size="56" font-weight="800" fill="#fff">01 · 愿景与战略</text>
+        <rect x="300" y="240" width="1000" height="560" rx="24" fill="#fff" fill-opacity="0.08"/>
+        <line x1="800" y1="240" x2="800" y2="800" stroke="#fff" stroke-opacity="0.15" stroke-width="2"/>
+        <text x="360" y="320" font-size="30" font-weight="700" fill="#fff">愿景 Vision</text>
+        <text font-size="22" fill="#fff" fill-opacity="0.9" style="white-space:pre"><tspan x="360" y="400">用 AI 赋能每一位创作者，</tspan><tspan x="360" y="444">让复杂的信息表达更简单。</tspan><tspan x="360" y="488"></tspan><tspan x="360" y="532">减少 90% 的排版时间，</tspan><tspan x="360" y="576">把创造力真正归还给人。</tspan></text>
+        <text x="860" y="320" font-size="30" font-weight="700" fill="#fff">战略 Strategy</text>
+        <text font-size="22" fill="#fff" fill-opacity="0.9"><tspan x="860" y="400">· 文档即应用</tspan><tspan x="860" y="444">· 可视化优先</tspan><tspan x="860" y="488">· 离线可用，隐私第一</tspan><tspan x="860" y="532">· 以 Markdown 作为统一抽象</tspan></text>
+        
+<text x="1540" y="860" text-anchor="end" font-size="18" fill="#fff" fill-opacity="0.6">3 / 8</text>
+</svg>

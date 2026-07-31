@@ -37,6 +37,7 @@
   <link rel="stylesheet" href="iris/css/editor.css">
   <link rel="stylesheet" href="iris/css/pulse-generator.css">
   <link rel="stylesheet" href="iris/css/pkt/pkt.css">
+  <link rel="stylesheet" href="iris/css/pptx.css">
 </head>
 <body>
   <!-- SVG 图标库 -->
@@ -1287,6 +1288,9 @@
 
   <!-- Packet Tracer 拓扑渲染器（cytoscape.min.js 已改为按需懒加载，见 pkt-renderer.js#loadAndRender） -->
   <script defer src="iris/js/pkt/pkt-renderer.js"></script>
+
+  <!-- PPTX 嵌入渲染器（缩略图网格 + 全屏放映模式，详见 pptx.js 顶部注释） -->
+  <script defer src="iris/js/renderers/pptx.js"></script>
 
   <!-- Main Entry -->
   <script defer src="iris/js/themes/theme-manager.js"></script>

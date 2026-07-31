@@ -23,7 +23,7 @@
             "name": "code-tabs-examples.md",
             "type": "file",
             "path": "docs/examples/code-tabs-examples.md",
-            "wordCount": 247
+            "wordCount": 231
           },
           {
             "name": "colorcard-examples.md",
@@ -35,7 +35,7 @@
             "name": "columns-examples.md",
             "type": "file",
             "path": "docs/examples/columns-examples.md",
-            "wordCount": 125
+            "wordCount": 111
           },
           {
             "name": "countdown-examples.md",
@@ -128,6 +128,12 @@
             "wordCount": 24
           },
           {
+            "name": "pptx-examples.md",
+            "type": "file",
+            "path": "docs/examples/pptx-examples.md",
+            "wordCount": 270
+          },
+          {
             "name": "pulse-examples.md",
             "type": "file",
             "path": "docs/examples/pulse-examples.md",
@@ -164,7 +170,7 @@
             "wordCount": 390
           }
         ],
-        "wordCount": 8602
+        "wordCount": 8842
       },
       {
         "name": "code-highlight-theme.md",
@@ -221,7 +227,7 @@
         "wordCount": 489
       }
     ],
-    "wordCount": 13146
+    "wordCount": 13386
   },
   {
     "name": "iris",

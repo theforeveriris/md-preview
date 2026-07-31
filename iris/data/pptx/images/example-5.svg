@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+<defs><linearGradient id="g-example-5" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#EF4444"/></linearGradient></defs>
+<rect x="0" y="0" width="1600" height="900" fill="url(#g-example-5)"/>
+
+        <text x="100" y="180" font-size="52" font-weight="800" fill="#fff">03 · Q3 核心项目 · 四大重点</text>
+        
+            <rect x="120" y="300" width="310" height="420" rx="20" fill="#fff" fill-opacity="0.12" stroke="#fff" stroke-opacity="0.2"/>
+            <text x="275.0" y="410" text-anchor="middle" font-size="56">🎨</text>
+            <text x="275.0" y="490" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">可视化重构</text>
+            <rect x="160" y="520" width="230" height="2" fill="#fff" fill-opacity="0.3"/>
+            <text x="275.0" y="570" text-anchor="middle" font-size="20" fill="#fff" fill-opacity="0.92">Mermaid / ECharts 双引擎</text><text x="275.0" y="610" text-anchor="middle" font-size="20" fill="#fff" fill-opacity="0.92">默认美观度提升 3 倍</text>
+            <rect x="470" y="300" width="310" height="420" rx="20" fill="#fff" fill-opacity="0.12" stroke="#fff" stroke-opacity="0.2"/>
+            <text x="625.0" y="410" text-anchor="middle" font-size="56">⚡️</text>
+            <text x="625.0" y="490" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">首屏性能</text>
+            <rect x="510" y="520" width="230" height="2" fill="#fff" fill-opacity="0.3"/>
+            <text x="625.0" y="570" text-anchor="middle" font-size="20" fill="#fff" fill-opacity="0.92">懒加载重构 + SW 降级</text><text x="625.0" y="610" text-anchor="middle" font-size="20" fill="#fff" fill-opacity="0.92">首屏 JS 从 6.8MB → 1MB</text>
+            <rect x="820" y="300" width="310" height="420" rx="20" fill="#fff" fill-opacity="0.12" stroke="#fff" stroke-opacity="0.2"/>
+            <text x="975.0" y="410" text-anchor="middle" font-size="56">📐</text>
+            <text x="975.0" y="490" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">PPTX 嵌入</text>
+            <rect x="860" y="520" width="230" height="2" fill="#fff" fill-opacity="0.3"/>
+            <text x="975.0" y="570" text-anchor="middle" font-size="20" fill="#fff" fill-opacity="0.92">新增预览模式</text><text x="975.0" y="610" text-anchor="middle" font-size="20" fill="#fff" fill-opacity="0.92">文档内即可放映演示</text>
+            <rect x="1170" y="300" width="310" height="420" rx="20" fill="#fff" fill-opacity="0.12" stroke="#fff" stroke-opacity="0.2"/>
+            <text x="1325.0" y="410" text-anchor="middle" font-size="56">🌍</text>
+            <text x="1325.0" y="490" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">国际化</text>
+            <rect x="1210" y="520" width="230" height="2" fill="#fff" fill-opacity="0.3"/>
+            <text x="1325.0" y="570" text-anchor="middle" font-size="20" fill="#fff" fill-opacity="0.92">i18n 框架接入</text><text x="1325.0" y="610" text-anchor="middle" font-size="20" fill="#fff" fill-opacity="0.92">支持 8 种语言切换</text>
+        
+<text x="1540" y="860" text-anchor="end" font-size="18" fill="#fff" fill-opacity="0.6">5 / 8</text>
+</svg>

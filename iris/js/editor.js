@@ -105,6 +105,7 @@
     { trigger: '@', label: '@[openstreetmap](URL)', desc: '嵌入·OpenStreetMap', insert: '@[openstreetmap](https://www.openstreetmap.org/?mlat=39.9&mlon=116.4#map=12)', replaceLength: 1 },
     { trigger: '@', label: '@[googledocs](URL)', desc: '嵌入·Google Docs', insert: '@[googledocs](https://docs.google.com/document/d/abc/edit)', replaceLength: 1 },
     { trigger: '@', label: '@[pkt](name)', desc: '嵌入·PT 拓扑', insert: '@[pkt](example)', replaceLength: 1 },
+    { trigger: '@', label: '@[pptx](slug)', desc: '嵌入·PPTX 演示', insert: '@[pptx](example)', replaceLength: 1 },
     // ``` 代码块语言
     { trigger: '```', label: '```mermaid', desc: 'Mermaid 流程图', insert: '```mermaid\nflowchart TD\n    A --> B\n```', replaceLength: 3 },
     { trigger: '```', label: '```mermaid 时序图', desc: 'sequenceDiagram', insert: '```mermaid\nsequenceDiagram\n    Alice->>Bob: Hello\n    Bob-->>Alice: Hi\n```', replaceLength: 3 },
@@ -137,6 +138,7 @@
     { trigger: '```', label: '```apexcharts 散点图', desc: 'ApexCharts scatter', insert: '```apexcharts\n{"chart":{"type":"scatter"},"series":[{"data":[[10,30],[20,40]]}]}\n```', replaceLength: 3 },
     { trigger: '```', label: '```apexcharts 气泡图', desc: 'ApexCharts bubble', insert: '```apexcharts\n{"chart":{"type":"bubble"},"series":[{"data":[[1,30,10],[2,40,15]]}]}\n```', replaceLength: 3 },
     { trigger: '```', label: '```apexcharts 极坐标', desc: 'ApexCharts polarArea', insert: '```apexcharts\n{"chart":{"type":"polarArea"},"series":[14,23,21,17]}\n```', replaceLength: 3 },
+    { trigger: '```', label: '```pptx', desc: '嵌入 PPTX 演示', insert: '```pptx\n@[pptx](example)\n```', replaceLength: 3 },
     { trigger: '```', label: '```diff', desc: 'Diff 差异', insert: '```diff\n+ 新增\n- 删除\n```', replaceLength: 3 },
     { trigger: '```', label: '```geo', desc: '坐标地图', insert: '```geo\n{"lat":39.9042,"lng":116.4074,"zoom":12}\n```', replaceLength: 3 },
     { trigger: '```', label: '```geojson', desc: 'GeoJSON 地图', insert: '```geojson\n{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"name":"点"},"geometry":{"type":"Point","coordinates":[116.4,39.9]}}]}\n```', replaceLength: 3 },

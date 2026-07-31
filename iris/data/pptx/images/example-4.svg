@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+<defs><linearGradient id="g-example-4" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6366F1"/><stop offset="100%" stop-color="#A855F7"/></linearGradient></defs>
+<rect x="0" y="0" width="1600" height="900" fill="url(#g-example-4)"/>
+
+        <text x="100" y="160" font-size="56" font-weight="800" fill="#fff">02 · H1 里程碑回顾</text>
+        <line x1="160" y1="500" x2="1440" y2="500" stroke="#fff" stroke-opacity="0.5" stroke-width="4"/>
+            <circle cx="160" cy="500" r="28" fill="#fff"/>
+            <text x="160" y="508" text-anchor="middle" font-size="20" font-weight="800" fill="#6366F1">M1</text>
+            <text x="160" y="440" text-anchor="middle" font-size="22" font-weight="700" fill="#fff">1 月·基础骨架</text>
+            
+            <circle cx="580" cy="500" r="28" fill="#fff"/>
+            <text x="580" y="508" text-anchor="middle" font-size="20" font-weight="800" fill="#6366F1">M2</text>
+            <text x="580" y="440" text-anchor="middle" font-size="22" font-weight="700" fill="#fff">3 月·渲染引擎 2.0</text>
+            
+            <circle cx="1000" cy="500" r="28" fill="#fff"/>
+            <text x="1000" y="508" text-anchor="middle" font-size="20" font-weight="800" fill="#6366F1">M3</text>
+            <text x="1000" y="440" text-anchor="middle" font-size="22" font-weight="700" fill="#fff">5 月·移动端适配</text>
+            
+            <circle cx="1440" cy="500" r="28" fill="#fff"/>
+            <text x="1440" y="508" text-anchor="middle" font-size="20" font-weight="800" fill="#6366F1">M4</text>
+            <text x="1440" y="440" text-anchor="middle" font-size="22" font-weight="700" fill="#fff">6 月·插件生态</text>
+            
+        <text x="100" y="740" font-size="22" fill="#fff" opacity="0.7">H1 2026：按既定节奏 100% 交付所有里程碑 · NPS 达到 52</text>
+        
+<text x="1540" y="860" text-anchor="end" font-size="18" fill="#fff" fill-opacity="0.6">4 / 8</text>
+</svg>

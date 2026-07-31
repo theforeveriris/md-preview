@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+<defs><linearGradient id="g-example-1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5B21B6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs>
+<rect x="0" y="0" width="1600" height="900" fill="url(#g-example-1)"/>
+
+        <rect x="100" y="100" width="6" height="80" fill="#fff" opacity="0.9"/>
+        <text x="100" y="280" font-size="20" fill="#fff" opacity="0.85" letter-spacing="8">Roadmap</text>
+        <text x="100" y="420" font-size="88" font-weight="800" fill="#fff">产品路线图 · 2026 Q3</text>
+        <text x="100" y="500" font-size="34" fill="#fff" opacity="0.9">愿景 · 目标 · 里程碑</text>
+        <text x="100" y="790" font-size="18" fill="#fff" opacity="0.6">Presented by Team md-preview  ·  2026-07-31</text>
+        <circle cx="1450" cy="200" r="140" fill="#fff" opacity="0.05"/>
+        <circle cx="1380" cy="700" r="220" fill="#fff" opacity="0.04"/>
+        
+<text x="1540" y="860" text-anchor="end" font-size="18" fill="#fff" fill-opacity="0.6">1 / 8</text>
+</svg>

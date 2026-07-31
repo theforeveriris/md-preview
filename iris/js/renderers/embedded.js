@@ -44,7 +44,7 @@
     const content = targetEl.innerHTML;
     let processedContent = content;
 
-    const embedLanguages = ['embed', 'geojson', 'topojson', 'twitter', 'x', 'pkt', 'ensp'];
+    const embedLanguages = ['embed', 'geojson', 'topojson', 'twitter', 'x', 'pkt', 'ensp', 'pptx'];
     const preTags = processedContent.match(/<pre[^>]*>[\s\S]*?<\/pre>/gi) || [];
     const prePlaceholders = [];
 
@@ -110,6 +110,20 @@
               }, 50);
 
               processedContent = processedContent.replace(placeholder, pktContainer);
+            } else if (service === 'pptx') {
+              // PPTX 嵌入：与 pkt 完全同风格：@[pptx](slug) → 占位 div → pptx.loadAndRender
+              const pptxId = 'pptx-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+              const pptxContainer = `<div id="${pptxId}" class="pptx-embed"></div>`;
+
+              setTimeout(() => {
+                const el = document.getElementById(pptxId);
+                if (el && window.MarkdownPreview.pptx) {
+                  const p = window.MarkdownPreview.pptx.loadAndRender(el, url, 'pptx');
+                  if (p && typeof p.catch === 'function') p.catch(e => console.error('[embedded] pptx render failed:', e));
+                }
+              }, 50);
+
+              processedContent = processedContent.replace(placeholder, pptxContainer);
             } else if (service === 'twitter' || service === 'x') {
               const twitterCode = renderTwitterEmbed(service, url, fullMatch);
               processedContent = processedContent.replace(placeholder, twitterCode);
