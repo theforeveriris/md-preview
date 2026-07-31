@@ -23,7 +23,7 @@
 - 长表格优化：自动包裹支持横向滚动
 - 标题锚点分享：标题悬浮出现复制链接按钮，直达章节
 - Packet Tracer 拓扑：解析 Cisco `.pkt` 文件，渲染交互式网络拓扑图（基于 Cytoscape.js）
-- E-String Play：解析 `.ensp` 波形文件并渲染为音频波形
+- 华为 eNSP 拓扑：解析 `.topo` / `.zip` 华为 eNSP 工程文件，渲染路由器/交换机等网络设备拓扑
 - PPTX 嵌入：通过预处理将 PPTX 渲染为多页图片网格，点击可进入全屏放映模式
 - 画廊布局：@grid / @cardstack / @filmstrip / @polaroid 等多种图片画廊 CSS 布局
 - 二维码生成：`qrcode` 代码块生成任意内容二维码
@@ -98,7 +98,7 @@ node iris/scripts/build-search-index.js
 # 构建 RSS feed
 node iris/scripts/build-feed.js
 
-# 构建 PKT/ENSP 产物（若有 raw 目录文件）
+# 构建 PKT/eNSP 产物（若有 raw 目录文件）
 python3 iris/scripts/pkt/main.py
 python3 iris/scripts/ensp/main.py
 
@@ -151,11 +151,11 @@ python3 iris/scripts/pptx/main.py
 | Diff 可视化 | Git Diff 语法高亮对比 |
 | GeoJSON | 基于 Leaflet 的地理数据地图 |
 | Packet Tracer | Cisco .pkt 网络拓扑图渲染（Cytoscape.js） |
-| E-String Play | .ensp 波形文件解析与音频波形渲染 |
+| 华为 eNSP | .topo / .zip 路由器交换机网络拓扑图渲染（Cytoscape.js） |
 | PPTX 嵌入 | 图片网格 + 全屏放映，支持 CI/CD 自动预处理 |
 | 外部嵌入 | YouTube、Bilibili、Twitter、Figma、CodePen 等 |
 | GitHub Alerts | `[!NOTE]` `[!TIP]` `[!WARNING]` 等 |
-| PWA 波形生成 | 可视化生成 DG-LAB .pulse 波形文件（最多 20 个） |
+| Pulse 波形 | DG-LAB 郊狼电击器 `.pulse` 波形解析、迷你波形、滚动/全局模式、可视化波形生成器 |
 
 ## 示例文档索引
 
@@ -184,9 +184,9 @@ python3 iris/scripts/pptx/main.py
 | `diff-examples.md` | Diff 差异可视化 |
 | `geojson-examples.md` | GeoJSON 地图 |
 | `pkt-examples.md` | Packet Tracer .pkt 拓扑渲染 |
-| `ensp-examples.md` | E-String Play .ensp 波形渲染 |
+| `ensp-examples.md` | 华为 eNSP .topo/.zip 拓扑渲染 |
 | `pptx-examples.md` | PPTX 嵌入语法与放映示例 |
-| `pulse-examples.md` | PWA 波形生成器语法 |
+| `pulse-examples.md` | DG-LAB 郊狼 `.pulse` 波形与迷你波形示例 |
 | `embed-examples.md` | YouTube / Bilibili / Figma / CodePen 嵌入 |
 | `twitter-embed-examples.md` | Twitter 推文嵌入 |
 | `plugin-demo.md` | 插件系统演示 |
@@ -227,14 +227,14 @@ python3 iris/scripts/pptx/main.py
 │   │   ├── search-index.json
 │   │   ├── feed.xml
 │   │   ├── pkt/ json + images
-│   │   ├── ensp/ json + wav
+│   │   ├── ensp/ json + xml
 │   │   └── pptx/ json + svg/png
 │   └── scripts/            # 构建脚本
 │       ├── build-file-tree.js
 │       ├── build-search-index.js
 │       ├── build-feed.js
-│       ├── pkt/main.py       # PKT/ENSP 产物生成
-│       ├── ensp/main.py
+│       ├── pkt/main.py       # PKT 产物生成
+│       ├── ensp/main.py      # eNSP 拓扑 XML → JSON 解析
 │       └── pptx/main.py      # PPTX → PDF → PNG/SVG 转换
 ├── docs/                   # 用户文档
 │   ├── editor.md
@@ -340,11 +340,89 @@ AGPL-3.0 在 GPL 的基础上增加了"网络交互即触发分发"条款，能�
 
 ## 近期变更记录
 
+以下为远程 `main` 分支最近的 80 条提交（从 `40e1873` 回溯），完整历史请运行 `git log`。
+
 | 提交 | 标题 |
 |------|------|
+| `40e1873` | docs: 重写 README.md 与 readme-dev.md，移除 emoji，新增 examples 索引与字体/PPTX/按需加载等当前功能说明 |
 | `19d1169` | feat(settings): 添加字体自定义入口（字号/字重/字色/字体族 + 远程字体加载） |
 | `b2b0132` | build: update feed.xml |
 | `19d7cb8` | chore(pptx): 移除示例文档中 example 演示及对应 data 产物 |
 | `a005c70` | build: update feed.xml |
+| `b99caed` | feat: 分析打卡项目卡顿原因 |
+| `ce8739b` | feat: 分析打卡项目卡顿原因 |
+| `8ec9059` | fix(pptx): 缩略图点击避免触发通用图片灯箱 |
+| `69ea9c3` | fix(sw): 解决 Markdown 文档变更后前端仍显示旧版本问题 |
+| `075cc6d` | feat(pptx): 新建 raw/pptx CI/CD 构建工作流，集成真实 PPTX 演示 |
+| `a72ddac` | Add files via upload |
+| `90f9ef2` | build: update search-index.json |
+| `3fce366` | feat: 新增 PPTX 嵌入，参考 pkt 语法，支持缩略图网格+全屏放映 |
+| `97c9652` | perf: 重型 vendor 库按需懒加载，首屏体积从 6.8MB 降至约 1MB |
+| `f01a022` | fix: 修复代码块内容未 HTML 转义导致标签丢失 |
+| `6da605b` | fix: 修复代码选项卡中代码块被外层 marked.parse 二次解析破坏的问题 |
+| `d6179a1` | fix: 修复代码选项卡渲染逻辑中的错误 |
+| `7407dd0` | build: update feed.xml |
+| `7129817` | fix: 语法说明代码块改用4反引号包裹避免内部反引号提前结束代码块 |
+| `e1ef070` | fix: 代码选项卡代码块横向滚动，分栏移动端改为横向滚动多列 |
+| `859dc08` | build: update feed.xml |
+| `3f0c825` | fix: 修复代码选项卡点击和代码块内语法误解析问题，重写示例文档 |
+| `258f946` | fix: 修复代码选项卡和分栏布局渲染失败的问题 |
+| `a9ef845` | build: update feed.xml |
+| `6747434` | feat: 增加代码选项卡和分栏布局语法糖 |
+| `c4a4446` | build: update feed.xml |
+| `655a9db` | feat(spoiler): 添加 \|\|内容\|\| 遮罩/剧透语法支持 |
+| `869e075` | fix(pulse): 迷你波形组自动居中显示 |
+| `bc975c7` | fix(pulse): 修复 pulsemini 迷你波形渲染失败的问题 |
+| `fc734b2` | build: update feed.xml |
+| `ebb9a5d` | docs(pulse): 补充 pulsmini 迷你波形和波形生成器说明 |
+| `3d8cd6f` | feat(pulse): 添加 [pulsemini] 迷你波形渲染支持 |
+| `1a616a9` | fix(pulse-gen): 复制下载按钮移到标题行右侧，只显示图标 |
+| `60b87d6` | fix(pulse-gen): 隐藏侧边栏和结果区滚动条 |
+| `d06c1d9` | fix(pulse-gen): 迷你波形默认改为竖线样式 |
+| `de9fda4` | feat(pulse): 添加波形生成器页面，可视化生成 .pulse 波形文件 |
+| `3cce9a7` | fix(pulse): 滚动模式播放头居中，容器尺寸各方向减少5px |
+| `fa67f5a` | feat(pulse): 添加滚动模式切换，支持全局/滚动两种视图 |
+| `dc54add` | fix(pulse): 移动端响应式适配优化 |
+| `064efd7` | feat(pulse): 添加查看源代码按钮，可展开显示 pulse 源码 |
+| `b56138c` | build: update feed.xml |
+| `1c610d1` | feat(pulse): 添加竖线扫描线样式切换，修复代码块内标签渲染，更新示例文档 |
+| `2387821` | build: update feed.xml |
+| `5cbe59d` | feat(pulse): 更新为 DG-LAB 官方波形文件格式 |
+| `cb7a992` | build: update feed.xml |
+| `8716213` | feat: 文档站集成郊狼波形文件解析 |
+| `107d0cd` | build: update feed.xml |
+| `ab31aea` | Merge pull request #8 from omajili-manbu/main |
+| `643ccbb` | Merge pull request #3 from omajili-manbu/trae/agent-Gkrsr1 |
+| `0b1b4b2` | feat: Iris Plugin Development and Docs |
+| `99de76b` | Merge pull request #7 from omajili-manbu/main |
+| `7b691de` | refactor: 将 .build-cm6 移至 iris/scripts/cm6-bundle |
+| `2478861` | Merge pull request #6 from omajili-manbu/main |
+| `6456c52` | Merge pull request #2 from omajili-manbu/trae/agent-gkYtG1 |
+| `1044cc9` | feat: sync latest updates |
+| `7a832b9` | feat: save progress |
+| `47b7936` | feat: sync latest updates |
+| `5bbb1ab` | feat: sync latest updates |
+| `c6bb356` | feat: update workspace |
+| `1bd5e04` | feat: save progress |
+| `9723df2` | feat: apply changes |
+| `c959b3c` | feat: apply changes |
+| `f369b83` | feat: update workspace |
+| `a3614cc` | Merge pull request #1 from omajili-manbu/trae/agent-gkYtG1 |
+| `cae9bc3` | feat: apply changes |
+| `5b67ff9` | fix: 修复插件系统导致的页面崩溃 |
+| `826f9d4` | build: update search-index.json |
+| `a5bd246` | refactor(plugins): 重构插件系统 API，增强扩展能力与生命周期管理 |
+| `448f126` | build: update feed.xml |
+| `3ce1cc9` | build: update search-index.json |
+| `c767dab` | feat(ensp): 修复 eNSP XML 解析器并添加示例文档 |
+| `cb40e62` | Add files via upload |
+| `e7e2239` | Create 1.txt |
+| `e69e1a0` | feat: 添加目录树对齐线 |
+| `7790127` | feat(ensp): 支持 .zip 压缩包导入 |
+| `1b7a931` | feat: 添加目录树对齐线 |
+| `c3c2d6a` | feat(topology): 新增 eNSP 和 Graphviz DOT 拓扑解析支持 |
+| `0e45e19` | feat(pkt): 增强拓扑信息完整性——PC配置/BGP/RIP/默认路由/链路网段 |
+| `a2b0700` | fix(editor): 修复 cell 中 pkt 拓扑图无法渲染的问题 |
+| `2e8eb64` | build: update feed.xml |
 
-更多历史请通过 `git log` 查看。
+> 若需更完整的历史（共 371 条），请在仓库目录执行：`git log --oneline`。

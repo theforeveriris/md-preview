@@ -74,8 +74,9 @@
 | Diff2Html | `diff.js` | ` ```diff ` | diff2html.min.js + diff2html.min.css |
 | GeoJSON | `geojson.js` | ` ```geojson ` | leaflet.js + leaflet.css + tile 服务 |
 | Packet Tracer | `pkt.js` | `@[pkt](slug)` 或 ` ```pkt ` | cytoscape + css |
-| E-String Play | `ensp.js` | `@[ensp](slug)` 或 ` ```ensp ` | 仅用 Canvas / Audio API |
-| PPTX | `pptx.js` | `@[pptx](slug)` 或 ```` ```pptx ```` | 无额外依赖，图片取自预构建产物 |
+| 华为 eNSP | `ensp.js` | `@[ensp](slug)` 或 ` ```ensp ` | cytoscape + css（拓扑数据来自 XML 解析产物） |
+| PPTX | `pptx.js` | `@[pptx](slug)` 或```` ```pptx ```` | 无额外依赖，图片取自预构建产物 |
+| Pulse 波形 | `pulse.js` / `pulse-generator.js` | `[pulse ...]` / `[pulsemini ...]` BBcode，或 `?mode=pulse` 生成器 | 仅用 Canvas / SVG / 原生 JS 渲染波形播放头 |
 | QRCode | `qrcode.js` | ` ```qrcode ` | qrcode.min.js（inline 本地） |
 | Countdown | `countdown.js` | ` ```countdown ` | 零依赖，原生 Date |
 | Embed | `embed.js` | YouTube / Bilibili / Twitter / Figma / CodePen 链接或 `@[embed]` | 通过原生 iframe，不额外加载库 |
@@ -110,7 +111,7 @@
 ### 产物存放约定
 
 - PKT：`iris/data/pkt/json/<slug>.json` + `iris/data/pkt/images/<slug>-<N>.<ext>`
-- ENSP：`iris/data/ensp/json/<slug>.json` + `iris/data/ensp/wav/<slug>-<N>.wav`
+- eNSP：`iris/data/ensp/xml/<slug>.xml`（原始 XML）+ `iris/data/ensp/json/<slug>.json`（解析后拓扑 JSON）
 - PPTX：`iris/data/pptx/json/<slug>.json` + `iris/data/pptx/images/<slug>-<N>.(svg/png)`
 
 `slug` 来自 raw 目录文件名去扩展名。任何 `@[xxx](slug)` 嵌入语法按上面路径查找即可。
@@ -189,10 +190,10 @@ node iris/scripts/build-feed.js
 ```
 按修改时间排序输出 Atom 1.0 格式的 `iris/data/feed.xml`。
 
-### PKT / ENSP 构建
+### PKT / eNSP 构建
 ```
 python3 iris/scripts/pkt/main.py   # raw/*.pkt → json + images
-python3 iris/scripts/ensp/main.py  # raw/*.ensp → json + wav
+python3 iris/scripts/ensp/main.py  # raw/*.topo / *.zip → xml + json
 ```
 增量处理：对 raw 里每个文件做 mtime 比较，仅产物缺失或 mtime 落后才重新解析。
 
@@ -272,17 +273,23 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │   │   ├── file-tree.js          # 侧边栏/搜索/索引
 │   │   ├── dom.js                # 按需加载 DOM 工具
 │   │   ├── storage.js            # IndexedDB 笔记本
-│   │   └── renderers/            # 12+ 个代码块/嵌入渲染器
+│   │   ├── pulse.js              # DG-LAB .pulse 波形解析与 [pulse]/[pulsemini] 渲染
+│   │   ├── pulse-generator.js    # ?mode=pulse 可视化波形生成器
+│   │   └── renderers/            # 14+ 个代码块/嵌入渲染器
 │   ├── vendor/                   # 本地化的前端依赖
-│   ├── data/                     # 预构建数据：file-tree/search-index/feed + pkt/ensp/pptx 产物
+│   ├── data/                     # 预构建数据
+│   │   ├── file-tree.json / search-index.json / feed.xml
+│   │   ├── pkt/    json + images （Cisco Packet Tracer 拓扑）
+│   │   ├── ensp/   xml + json    （华为 eNSP 拓扑：xml 原始工程，json 解析产物）
+│   │   └── pptx/   json + svg/png （PPTX 渲染产物）
 │   ├── icons/                    # 各类 PNG 图标
 │   └── scripts/                  # 构建脚本（Node + Python）
 │       ├── build-file-tree.js
 │       ├── build-search-index.js
 │       ├── build-feed.js
-│       ├── pkt/main.py
-│       ├── ensp/main.py
-│       └── pptx/main.py
+│       ├── pkt/main.py           # .pkt 解析
+│       ├── ensp/main.py          # .topo/.zip (华为 eNSP) → xml + json
+│       └── pptx/main.py          # pptx → PDF → PNG/SVG + meta json
 ├── docs/
 │   ├── features.md / getting-started.md
 │   ├── editor.md / configuration.md
