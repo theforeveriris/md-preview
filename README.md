@@ -1,6 +1,40 @@
 # Markdown Preview
 
-一个极简风格的 Markdown 文档预览站点，专为 GitHub Pages 设计，完全静态，无需后端。
+[![made-with-javascript](https://img.shields.io/badge/Made%20with-JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![made-with-html5](https://img.shields.io/badge/Made%20with-HTML5-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+[![made-with-css3](https://img.shields.io/badge/Made%20with-CSS3-1572B6?logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
+[![made-with-nodejs](https://img.shields.io/badge/Made%20with-Node.js-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![markdown](https://img.shields.io/badge/Markdown-000000?logo=markdown&logoColor=white)](https://daringfireball.net/projects/markdown/)
+[![marked](https://img.shields.io/badge/Powered%20by-Marked-brightgreen)](https://github.com/markedjs/marked)
+[![mermaid](https://img.shields.io/badge/Chart-Mermaid-FF3670?logo=mermaid)](https://mermaid.js.org/)
+[![plantuml](https://img.shields.io/badge/UML-PlantUML-1ABD1A)](https://plantuml.com/)
+[![apexcharts](https://img.shields.io/badge/Charts-ApexCharts-008FFB)](https://apexcharts.com/)
+[![katex](https://img.shields.io/badge/Math-KaTeX-008080)](https://katex.org/)
+[![highlight.js](https://img.shields.io/badge/Syntax-Highlight.js-519ABA?logo=hljs)](https://highlightjs.org/)
+[![cytoscape.js](https://img.shields.io/badge/Topology-Cytoscape.js-F7DF1E?logo=cytoscapedotjs&logoColor=black)](https://cytoscape.org/)
+[![leaflet](https://img.shields.io/badge/Map-Leaflet-199900?logo=leaflet&logoColor=white)](https://leafletjs.com/)
+[![pwa](https://img.shields.io/badge/PWA-Ready-5A0FC8?logo=pwa)](https://web.dev/progressive-web-apps/)
+[![github-pages](https://img.shields.io/badge/Deploy-GitHub%20Pages-222222?logo=githubpages)](https://pages.github.com/)
+[![github-actions](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/features/actions)
+[![license](https://img.shields.io/badge/License-AGPL--3.0-blue?logo=gnu)](./LICENSE)
+[![license-docs](https://img.shields.io/badge/Docs%20License-CC--BY--SA--4.0-EF9421?logo=creativecommons&logoColor=white)](./docs/LICENSE)
+
+一个~~极简~~**我流**风格的 Markdown 文档预览站点，专为 GitHub Pages 设计，完全静态，无需后端。
+
+---
+**本项目建立的初衷是我的其他项目需要文档站，但网路上现存的文档站要么丑，要么部署麻烦（我期望动动手指在 GitHub Mobile 传几个 .md 文件就自动在本仓库里部署了，要么没有我想要的功能没有预置）。好啦，那干脆自己做一个好了，那时的我如是想。**
+
+
+几经放弃，中途也萌生过换技术栈为 react，但由于种种原因，居然还是使用传统的 js 写完了。这算是复古吗？~~或许我哪天心血来潮就去改成 react了？~~ 就像我重拾废弃的项目时。~~AI 时代的新模型总能给我重构和 debug 的信心。~~ 
+
+闲话说完，本项目包含基础 markdown、mermaid 渲染、plantuml 渲染、 ApexCharts 的各种图表渲染、多栏文本、类似于萌娘百科的文本遮罩、多标签代码块、diff 渲染、外部服务嵌入、~~推特帖子嵌入（待修复）~~、pkt 或 ensp 拓扑图渲染、ppt 渲染、latex 公式渲染、多种主题画廊渲染、郊狼波形渲染，支持显示自定义页面主题、配色、css，支持 pwa 安装、rss 订阅，内置包含各类本项目语法糖的仿 jupyter notebook 渲染页、郊狼波形生成器等等
+
+Demo：https://theforeveriris.github.io/md-preview/
+
+项目各功能截图展示和索引：https://theforeveriris.github.io/md-preview/#/docs/show.md
+
+---
 
 ## 特性
 
