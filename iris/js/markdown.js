@@ -768,11 +768,14 @@
     document.body.appendChild(overlay);
 
     overlay.addEventListener('click', (e) => {
-      if (e.target === overlay || e.target.classList.contains('lightbox-stage')) {
+      // 仅点击遮罩背景 / 舞台空白处（不是 stage 内部 img）才关闭；
+      // 工具栏、导航、关闭按钮有自己的 handler，不在这里误关
+      if (e.target === overlay ||
+          (e.target.classList.contains('lightbox-stage') && e.target === e.currentTarget)) {
         closeLightbox();
       }
     });
-    overlay.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+    overlay.querySelector('.lightbox-close').addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
     overlay.querySelector('.lightbox-prev').addEventListener('click', (e) => { e.stopPropagation(); navigateLightbox(-1); });
     overlay.querySelector('.lightbox-next').addEventListener('click', (e) => { e.stopPropagation(); navigateLightbox(1); });
     overlay.querySelector('[data-action="zoom-in"]').addEventListener('click', (e) => { e.stopPropagation(); zoomLightbox(0.25); });
@@ -781,6 +784,9 @@
 
     document.addEventListener('keydown', (e) => {
       if (!overlay.classList.contains('open')) return;
+      // 如果 PPTX 放映 overlay 也开着，键盘优先交给 PPTX（由 PPTX 自己的 keydown 控制）
+      const pptxOpen = document.getElementById('pptx-slideshow-overlay')?.classList.contains('is-open');
+      if (pptxOpen) return;
       if (e.key === 'Escape') closeLightbox();
       else if (e.key === 'ArrowLeft') navigateLightbox(-1);
       else if (e.key === 'ArrowRight') navigateLightbox(1);
@@ -790,13 +796,32 @@
     });
   }
 
+  // 判定：这张 img 是否应该进入通用图片灯箱（与 markdown.js click 委托保持一致）
+  function isLightboxEligibleImage(img) {
+    if (!img || !img.tagName || img.tagName !== 'IMG') return false;
+    if (img.closest('a')) return false;
+    if (img.closest('[data-pptx-thumb], [data-lightbox-disable], .pptx-thumb-card, .pptx-embed')) return false;
+    // 自身就是灯箱内部元素 / pptx slideshow 内部元素也不进入
+    if (img.closest('#lightboxOverlay, #pptx-slideshow-overlay')) return false;
+    return true;
+  }
+
   function openLightbox(img) {
     initLightbox();
     const overlay = document.getElementById('lightboxOverlay');
-    // 收集当前文档内所有可查看图片（不含链接内图片）
-    const allImgs = Array.from(dom.markdownContent.querySelectorAll('img')).filter(i => !i.closest('a'));
+    // 收集当前文档内所有可查看图片（与 click 委托用同一个 isLightboxEligibleImage）
+    const allImgs = Array.from(dom.markdownContent.querySelectorAll('img'))
+      .filter(isLightboxEligibleImage);
     lightboxState.images = allImgs;
-    lightboxState.index = Math.max(0, allImgs.indexOf(img));
+
+    // 定位初始 index：优先 DOM 引用匹配；失败再按 src 模糊匹配；都失败回退到第一张
+    let idx = allImgs.indexOf(img);
+    if (idx < 0 && img && img.src) {
+      const want = img.src;
+      idx = allImgs.findIndex(i => i.src === want);
+      if (idx < 0) idx = allImgs.findIndex(i => (i.getAttribute('src') || '') === (img.getAttribute('src') || ''));
+    }
+    lightboxState.index = idx >= 0 ? idx : 0;
     lightboxState.scale = 1;
     renderLightboxImage();
     overlay.classList.add('open');

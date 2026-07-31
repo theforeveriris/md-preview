@@ -66,18 +66,20 @@
       navigateSlideshow(x < rect.width / 2 ? -1 : 1);
     });
 
-    document.addEventListener('keydown', onSlideshowKeydown);
+    document.addEventListener('keydown', onSlideshowKeydown, true);
     return slideshowEl;
   }
 
   function onSlideshowKeydown(e) {
     if (!slideshowEl || !slideshowEl.classList.contains('is-open')) return;
-    if (e.key === 'Escape') { e.preventDefault(); closeSlideshow(); }
-    else if (e.key === 'ArrowLeft') { e.preventDefault(); navigateSlideshow(-1); }
-    else if (e.key === 'ArrowRight') { e.preventDefault(); navigateSlideshow(1); }
-    else if (e.key === ' ') { e.preventDefault(); navigateSlideshow(e.shiftKey ? -1 : 1); }
-    else if (e.key === 'Home') { e.preventDefault(); navigateSlideshow(-1e9); }
-    else if (e.key === 'End') { e.preventDefault(); navigateSlideshow(1e9); }
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.key === 'Escape') closeSlideshow();
+    else if (e.key === 'ArrowLeft') navigateSlideshow(-1);
+    else if (e.key === 'ArrowRight') navigateSlideshow(1);
+    else if (e.key === ' ') navigateSlideshow(e.shiftKey ? -1 : 1);
+    else if (e.key === 'Home') navigateSlideshow(-1e9);
+    else if (e.key === 'End') navigateSlideshow(1e9);
   }
 
   function openSlideshow(startIndex, imageUrls, title) {
