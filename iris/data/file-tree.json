@@ -131,7 +131,7 @@
             "name": "pptx-examples.md",
             "type": "file",
             "path": "docs/examples/pptx-examples.md",
-            "wordCount": 270
+            "wordCount": 364
           },
           {
             "name": "pulse-examples.md",
@@ -170,7 +170,7 @@
             "wordCount": 390
           }
         ],
-        "wordCount": 8842
+        "wordCount": 8936
       },
       {
         "name": "code-highlight-theme.md",
@@ -227,7 +227,7 @@
         "wordCount": 489
       }
     ],
-    "wordCount": 13386
+    "wordCount": 13480
   },
   {
     "name": "iris",
