@@ -100,3 +100,13 @@ title: Packet Tracer 拓扑渲染示例
 - **VLAN**：VLAN ID 和名称
 - **ACL**：访问控制列表规则
 - **路由表**：直连路由、静态路由、OSPF 路由（从配置推算）
+
+## 华为 VRP 配置步骤推算
+
+PKT 渲染器内置了对华为 VRP 配置的"可能的配置过程"推算能力——把一段完整的 VRP 配置 `display current-configuration` 输出，按配置最佳实践顺序重组为带视图提示符的交互式命令步骤（系统视图 → VLAN → 接口 → 路由协议 → ... → 保存），方便学习与排错参考。
+
+推算逻辑基于正则表达式 + 段落分割，支持 OSPF / BGP / IS-IS / RIP / ACL / NAT / DHCP / VRRP / AAA / SSH / NTP / SNMP / STP / 前缀列表 / 路由策略 等常见协议，已修复命令缩写归一化、`#` 分隔符缺失 fallback、OSPF 多进程 VRF、BGP 地址族子视图等边界情况。完整示例与已知限制详见：
+
+> **👉 [PKT 华为 VRP 命令解析示例](pkt-huawei-vrp-解析示例.md)**
+>
+> 包含：解析器工作流程 / 典型配置完整输入输出对照 / 识别规则速查 / 已修复问题与已知限制。

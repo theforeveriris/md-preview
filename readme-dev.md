@@ -291,11 +291,11 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │       ├── ensp/main.py          # .topo/.zip (华为 eNSP) → xml + json
 │       └── pptx/main.py          # pptx → PDF → PNG/SVG + meta json
 ├── docs/
-│   ├── features.md / getting-started.md
+│   ├── show.md / getting-started.md
 │   ├── editor.md / configuration.md
 │   ├── theme-customization.md / code-highlight-theme.md
 │   ├── plugin-development.md / rss.md
-│   └── examples/                 # 27 篇功能示例
+│   └── examples/                 # 27+ 篇功能示例
 └── .github/workflows/
     ├── build-site.yml
     ├── build-pkt.yml

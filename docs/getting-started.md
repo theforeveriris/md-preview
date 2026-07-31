@@ -72,10 +72,10 @@ open index.html
 
 ## 下一步
 
-- 查看 [功能总览](features.md) 了解所有能力
 - 查看 [配置参考](configuration.md) 了解所有可配置项
 - 查看 [主题定制](theme-customization.md) 自定义外观
 - 查看 [代码高亮主题](code-highlight-theme.md) 自定义代码配色
 - 查看 [RSS 订阅](rss.md) 了解如何让他人订阅你的文档更新
 - 查看 [插件开发指南](plugin-development.md) 扩展渲染能力
+- 浏览 [系统运行时截图](show.md) 了解完整界面效果
 - 浏览 [examples/](examples/) 目录查看所有支持的渲染功能

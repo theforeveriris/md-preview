@@ -21,7 +21,6 @@
  *   - iris/data/ensp/       ENSP 大文件
  *   - iris/data/pkt/raw/    PKT 原始文件
  *   - iris/data/pkt/xml/    PKT XML 中间产物
- *   - iris/examples/        示例文档
  *   - iris/plugins/         插件（按需）
  *   - iris/vendor 下的：apexcharts.min.js, mermaid.min.js, pako.min.js,
  *     katex/（含字体）, leaflet/, diff2html/, highlight.js/styles/*（除 github.css）
@@ -46,7 +45,6 @@ const ALLOWED_EXTS = new Set([
 // 注意：必须用前缀而非 includes('/xxx/')，否则会误伤 js/xxx/ 等同名子目录
 const EXCLUDE_PREFIXES = [
   'scripts/',  // iris/scripts/ 下的构建脚本
-  'examples/', // iris/examples/ 下的示例文档
   'plugins/',  // iris/plugins/ 下的下载型插件，按需加载
 ];
 
