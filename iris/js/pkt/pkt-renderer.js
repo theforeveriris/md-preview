@@ -3097,6 +3097,14 @@
     `;
 
     try {
+      // 按需加载 cytoscape（366KB，仅在渲染 pkt/ensp 拓扑时才需要）
+      if (typeof cytoscape === 'undefined') {
+        await window.MarkdownPreview.loadScript('iris/vendor/cytoscape/cytoscape.min.js');
+      }
+      if (typeof cytoscape === 'undefined') {
+        throw new Error('Cytoscape library failed to load');
+      }
+
       const base = getBasePath();
       let safePath = jsonPath;
       if (!jsonPath.startsWith('http') && !jsonPath.startsWith('/')) {

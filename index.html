@@ -32,8 +32,7 @@
   <link rel="preload" href="iris/data/file-tree.json" as="fetch" crossorigin>
   <link rel="stylesheet" href="iris/styles.css">
   <link rel="stylesheet" href="iris/css/themes/themes.css">
-  <link rel="stylesheet" href="iris/vendor/leaflet/leaflet.css">
-  <link rel="stylesheet" href="iris/vendor/katex/katex.min.css">
+  <!-- leaflet.css / katex.min.css / diff2html.min.css 改为按需加载，见 dom.js loadStyle -->
   <link rel="stylesheet" href="iris/vendor/highlight.js/styles/github.css" id="hljs-theme">
   <link rel="stylesheet" href="iris/css/editor.css">
   <link rel="stylesheet" href="iris/css/pulse-generator.css">
@@ -1249,15 +1248,10 @@
   <script defer src="iris/vendor/marked-footnote.min.js"></script>
   <script defer src="iris/vendor/highlight.js/highlight.min.js"></script>
   <script defer src="iris/vendor/flexsearch.bundle.js"></script>
-  <script defer src="iris/vendor/mermaid.min.js"></script>
-  <script defer src="iris/vendor/pako.min.js"></script>
-  <script defer src="iris/vendor/leaflet/leaflet.js"></script>
-  <script defer src="iris/vendor/apexcharts.min.js"></script>
-  <link rel="stylesheet" href="iris/vendor/diff2html/css/diff2html.min.css" />
-  <script defer src="iris/vendor/diff2html/js/diff2html.min.js"></script>
-  <script defer src="iris/vendor/diff2html/js/diff2html-ui.min.js"></script>
-  <script defer src="iris/vendor/katex/katex.min.js"></script>
-  <script defer src="iris/vendor/katex/auto-render.min.js"></script>
+  <!-- 以下重型 vendor 库改为按需懒加载（由各 renderer 在 DOM 出现对应内容时调用 dom.js#loadScript/loadStyle）：
+       mermaid.min.js / pako.min.js / leaflet.js / apexcharts.min.js
+       diff2html.min.js / diff2html-ui.min.js / katex.min.js / auto-render.min.js / cytoscape.min.js
+       仅保留 codemirror.min.js 仍 defer（编辑器适配层强耦合 CM6，后续单独优化） -->
 
   <script async src="https://platform.twitter.com/widgets.js"></script>
 
@@ -1291,8 +1285,7 @@
   <script defer src="iris/js/renderers/pulse.js"></script>
   <script defer src="iris/js/pulse-generator.js"></script>
 
-  <!-- Packet Tracer 拓扑渲染器 -->
-  <script defer src="iris/vendor/cytoscape/cytoscape.min.js"></script>
+  <!-- Packet Tracer 拓扑渲染器（cytoscape.min.js 已改为按需懒加载，见 pkt-renderer.js#loadAndRender） -->
   <script defer src="iris/js/pkt/pkt-renderer.js"></script>
 
   <!-- Main Entry -->

@@ -268,13 +268,19 @@
         await renderWithPluginsLegacy();
       }
       console.log('[Markdown] Plugins rendered, calling other renderers');
-      window.MarkdownPreview.renderers.apexcharts.render();
-      window.MarkdownPreview.renderers.diff.render();
-      window.MarkdownPreview.renderers.mermaid.render();
-      window.MarkdownPreview.renderers.plantuml.render();
-      window.MarkdownPreview.renderers.embedded.render();
-      window.MarkdownPreview.renderers.katex.render();
-      window.MarkdownPreview.renderers.pulse.render();
+      // 渲染器现在按需懒加载 vendor 库（async），逐个 await 并隔离错误，
+      // 避免某一个库加载/渲染失败导致后续渲染器不执行
+      const safeRun = async (label, fn) => {
+        try { await fn(); }
+        catch (e) { console.error('[Markdown] ' + label + ' renderer failed:', e); }
+      };
+      await safeRun('apexcharts', () => window.MarkdownPreview.renderers.apexcharts.render());
+      await safeRun('diff', () => window.MarkdownPreview.renderers.diff.render());
+      await safeRun('mermaid', () => window.MarkdownPreview.renderers.mermaid.render());
+      await safeRun('plantuml', () => window.MarkdownPreview.renderers.plantuml.render());
+      await safeRun('embedded', () => window.MarkdownPreview.renderers.embedded.render());
+      await safeRun('katex', () => window.MarkdownPreview.renderers.katex.render());
+      await safeRun('pulse', () => window.MarkdownPreview.renderers.pulse.render());
       console.log('[Markdown] Render cycle complete');
     }, 100);
 

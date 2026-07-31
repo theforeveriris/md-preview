@@ -81,7 +81,8 @@
               const mapContainer = `<div id="${mapId}" class="geo-map" style="height:400px;border-radius:8px;overflow:hidden"></div>`;
 
               setTimeout(() => {
-                window.MarkdownPreview.renderers.geo.renderGeoData(service, url, fullMatch, mapId);
+                const p = window.MarkdownPreview.renderers.geo.renderGeoData(service, url, fullMatch, mapId);
+                if (p && typeof p.catch === 'function') p.catch(e => console.error('[embedded] geo render failed:', e));
               }, 10);
 
               processedContent = processedContent.replace(placeholder, mapContainer);

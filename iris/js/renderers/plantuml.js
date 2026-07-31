@@ -54,11 +54,19 @@
   }
   
   async function render() {
-    if (typeof pako === 'undefined') {
-      console.error('Pako library is not loaded');
+    // 没有 plantuml 代码块时直接跳过，避免无谓加载 pako
+    if (!document.querySelector('.markdown-body pre code.language-plantuml')) {
       return;
     }
-    
+
+    if (typeof pako === 'undefined') {
+      await window.MarkdownPreview.loadScript('iris/vendor/pako.min.js');
+    }
+    if (typeof pako === 'undefined') {
+      console.error('Pako library failed to load');
+      return;
+    }
+
     const allPres = document.querySelectorAll('.markdown-body pre');
     
     for (let i = 0; i < allPres.length; i++) {

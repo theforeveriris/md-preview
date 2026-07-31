@@ -4,12 +4,19 @@
   
   const { dom } = window.MarkdownPreview;
   
-  function renderGeoData(type, dataStr, originalMatch, mapId) {
+  async function renderGeoData(type, dataStr, originalMatch, mapId) {
+    // 按需加载 leaflet JS + CSS（~150KB，仅在出现 geojson/topojson 嵌入时才需要）
     if (typeof L === 'undefined') {
-      console.error('Leaflet library is not loaded');
+      await Promise.all([
+        window.MarkdownPreview.loadStyle('iris/vendor/leaflet/leaflet.css'),
+        window.MarkdownPreview.loadScript('iris/vendor/leaflet/leaflet.js'),
+      ]);
+    }
+    if (typeof L === 'undefined') {
+      console.error('Leaflet library failed to load');
       return;
     }
-    
+
     try {
       const geoData = JSON.parse(dataStr);
       

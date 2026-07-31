@@ -2,12 +2,20 @@
   window.MarkdownPreview = window.MarkdownPreview || {};
   window.MarkdownPreview.renderers = window.MarkdownPreview.renderers || {};
   
-  function render() {
-    if (typeof ApexCharts === 'undefined') {
-      console.error('ApexCharts library is not loaded');
+  async function render() {
+    // 没有 apexcharts 代码块时直接跳过，避免无谓加载 ApexCharts（621KB）
+    if (!document.querySelector('.markdown-body pre code.language-apexcharts')) {
       return;
     }
-    
+
+    if (typeof ApexCharts === 'undefined') {
+      await window.MarkdownPreview.loadScript('iris/vendor/apexcharts.min.js');
+    }
+    if (typeof ApexCharts === 'undefined') {
+      console.error('ApexCharts library failed to load');
+      return;
+    }
+
     const allPres = Array.from(document.querySelectorAll('.markdown-body pre'));
     
     for (let i = 0; i < allPres.length; i++) {

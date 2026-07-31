@@ -620,14 +620,22 @@
     setTimeout(() => {
       try {
         const renderers = window.MarkdownPreview?.renderers;
+        // 渲染器现在按需懒加载 vendor 库（返回 Promise），统一 catch 避免未捕获 rejection
+        const run = (fn) => {
+          if (!fn) return;
+          try {
+            const p = fn();
+            if (p && typeof p.catch === 'function') p.catch(e => console.warn('[Editor] renderer failed:', e));
+          } catch (e) { console.warn('[Editor] renderer sync error:', e); }
+        };
         if (renderers) {
-          if (renderers.mermaid?.render) renderers.mermaid.render();
-          if (renderers.apexcharts?.render) renderers.apexcharts.render();
-          if (renderers.diff?.render) renderers.diff.render();
-          if (renderers.katex?.render) renderers.katex.render();
-          if (renderers.plantuml?.render) renderers.plantuml.render();
+          run(renderers.mermaid?.render);
+          run(renderers.apexcharts?.render);
+          run(renderers.diff?.render);
+          run(renderers.katex?.render);
+          run(renderers.plantuml?.render);
           // 传入 outputElement 让 embedded 渲染器在 cell 容器内处理 pkt/geo 等嵌入
-          if (renderers.embedded?.render) renderers.embedded.render(outputElement);
+          run(() => renderers.embedded?.render && renderers.embedded.render(outputElement));
         }
       } catch (e) { console.warn('[Editor] Plugin render error:', e); }
     }, 200);
