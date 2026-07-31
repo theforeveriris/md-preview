@@ -402,16 +402,6 @@ Pulse 格式与示例：[Pulse 波形示例](examples/pulse-examples.md)
 
 ---
 
-## 六、其他
-
-### 占位图
-
-![zhanweifu](image/zhanweifu.png)
-
-编辑器「插入 → 占位图片」菜单提供的四种尺寸占位图模板：300×200、600×400、1200×600 横幅、500×500 方图，用于文档排版时临时标记图片位置，后续替换为实际图片 URL 即可。
-
----
-
 ## 索引：示例文档速查表
 
 | 功能分类 | 对应详细文档 |
@@ -427,6 +417,7 @@ Pulse 格式与示例：[Pulse 波形示例](examples/pulse-examples.md)
 | Mermaid / PlantUML / ApexCharts 图表 | [mermaid-examples.md](examples/mermaid-examples.md) / [plantuml-examples.md](examples/plantuml-examples.md) / [apexcharts-examples.md](examples/apexcharts-examples.md) |
 | LaTeX 公式 / Diff 差异 / GeoJSON 地图 | [latex-examples.md](examples/latex-examples.md) / [diff-examples.md](examples/diff-examples.md) / [geojson-examples.md](examples/geojson-examples.md) |
 | Packet Tracer / eNSP 拓扑 | [pkt-examples.md](examples/pkt-examples.md) / [ensp-examples.md](examples/ensp-examples.md) |
+| 华为 VRP 配置步骤推算 | [pkt-huawei-vrp-解析示例.md](examples/pkt-huawei-vrp-解析示例.md) |
 | PPTX 嵌入与放映 | [pptx-examples.md](examples/pptx-examples.md) |
 | Pulse 波形渲染与迷你波形 | [pulse-examples.md](examples/pulse-examples.md) |
 | Pulse 批量生成器（特殊页面） | [pulse-generator-page.md](examples/pulse-generator-page.md) |

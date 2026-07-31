@@ -168,7 +168,6 @@ async function main() {
     './iris/data/ensp/sample.json',
     './iris/data/pkt/raw/sample.bin',
     './iris/data/pkt/xml/sample.xml',
-    './iris/examples/demo.md',
     './package.json',
     './package-lock.json',
   ];

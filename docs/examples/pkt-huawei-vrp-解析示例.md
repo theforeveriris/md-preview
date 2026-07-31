@@ -65,7 +65,7 @@ bgp 65001
   peer 200.1.1.2 enable
   peer 200.1.1.2 route-policy RP10 export
   peer 200.1.1.2 next-hop-local
- aggregate 10.0.0.0 255.255.0.0
+  aggregate 10.0.0.0 255.255.0.0
 #
 ip route-static 0.0.0.0 0.0.0.0 200.1.1.2
 #

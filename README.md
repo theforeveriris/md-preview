@@ -188,6 +188,7 @@ python3 iris/scripts/pptx/main.py
 | `pptx-examples.md` | PPTX 嵌入语法与放映示例 |
 | `pulse-examples.md` | DG-LAB 郊狼 `.pulse` 波形与迷你波形示例 |
 | `pulse-generator-page.md` | 郊狼波形批量生成特殊页面说明（`?mode=pulsegen`） |
+| `pkt-huawei-vrp-解析示例.md` | 华为 VRP 配置步骤推算解析示例 |
 | `embed-examples.md` | YouTube / Bilibili / Figma / CodePen 嵌入 |
 | `twitter-embed-examples.md` | Twitter 推文嵌入 |
 | `plugin-demo.md` | 插件系统演示 |
