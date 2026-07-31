@@ -632,9 +632,11 @@
         }
         return;
       }
-      // 图片灯箱（链接内的图片不拦截，保留默认跳转）
+      // 图片灯箱（链接内的图片不拦截，保留默认跳转；
+      //          PPTX 缩略图不拦截，避免和点击放映模式冲突）
       const img = e.target.closest('img');
-      if (img && !img.closest('a')) {
+      if (img && !img.closest('a')
+          && !img.closest('[data-pptx-thumb], [data-lightbox-disable], .pptx-thumb-card, .pptx-embed')) {
         e.preventDefault();
         openLightbox(img);
         return;

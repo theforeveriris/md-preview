@@ -136,11 +136,16 @@
       card.type = 'button';
       card.className = 'pptx-thumb-card';
       card.dataset.index = String(i);
+      card.dataset.pptxThumb = '1';
       card.innerHTML = `
         <div class="pptx-thumb-card__badge">${i + 1}</div>
-        <img loading="lazy" decoding="async" src="${url}" alt="${title || slug} 第 ${i + 1} 页">
+        <img loading="lazy" decoding="async" src="${url}" alt="${title || slug} 第 ${i + 1} 页" data-pptx-thumb="1" data-lightbox-disable="1">
       `;
-      card.addEventListener('click', () => openSlideshow(i, urls, title || slug));
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openSlideshow(i, urls, title || slug);
+      });
       grid.appendChild(card);
     });
 
