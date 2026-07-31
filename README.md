@@ -2,67 +2,83 @@
 
 一个极简风格的 Markdown 文档预览站点，专为 GitHub Pages 设计，完全静态，无需后端。
 
-## ✨ 特性
+## 特性
 
 ### 文档浏览
 
-- 📂 **自动发现** — 自动扫描仓库中所有 `.md` 文件，构建文档目录树（含字数统计）
-- 🔍 **全文搜索** — 基于 FlexSearch 的中文分词全文检索，结果关键词高亮
-- 🔗 **Hash 路由** — 每个文档有独立 URL，支持分享和书签
-- 🧭 **上一篇 / 下一篇** — 悬浮球快速翻阅相邻文档
-- 📂 **打开本地 MD** — 临时预览本地 Markdown 文件，无需入库
-- ⏱️ **阅读时间估算** — 自动计算预计阅读时长
-- 📝 **Frontmatter** — 支持 YAML 元数据解析
+- 自动发现：自动扫描仓库中所有 `.md` 文件，构建文档目录树（含字数统计）
+- 全文搜索：基于 FlexSearch 的中文分词全文检索，结果关键词高亮
+- Hash 路由：每个文档有独立 URL，支持分享和书签
+- 上一篇 / 下一篇：悬浮球快速翻阅相邻文档
+- 打开本地 MD：临时预览本地 Markdown 文件，无需入库
+- 阅读时间估算：自动计算预计阅读时长
+- Frontmatter：支持 YAML 元数据解析
 
 ### 渲染能力
 
-- 🎨 **7 种内置主题** — 默认 / GitHub Light / GitHub Dark / Notion / Arc Dark / Dracula / Nord
-- 🖼️ **图片灯箱** — 点击放大、缩放、键盘左右键翻页
-- 📢 **GitHub 风格 Alerts** — 支持 `[!NOTE]` `[!WARNING]` 等提示语法
-- 📋 **代码块增强** — 一键复制按钮、语言标签、横向滚动优化
-- 📊 **长表格优化** — 自动包裹支持横向滚动
-- 🔗 **标题锚点分享** — 标题悬浮出现复制链接按钮，直达章节
-- 🌐 **Packet Tracer 拓扑** — 解析 Cisco `.pkt` 文件，渲染交互式网络拓扑图（基于 Cytoscape.js）
+- 7 种内置主题：默认 / GitHub Light / GitHub Dark / Notion / Arc Dark / Dracula / Nord
+- 图片灯箱：点击放大、缩放、键盘左右键翻页
+- GitHub 风格 Alerts：支持 `[!NOTE]` `[!WARNING]` 等提示语法
+- 代码块增强：一键复制按钮、语言标签、横向滚动优化、代码 Tabs
+- 长表格优化：自动包裹支持横向滚动
+- 标题锚点分享：标题悬浮出现复制链接按钮，直达章节
+- Packet Tracer 拓扑：解析 Cisco `.pkt` 文件，渲染交互式网络拓扑图（基于 Cytoscape.js）
+- E-String Play：解析 `.ensp` 波形文件并渲染为音频波形
+- PPTX 嵌入：通过预处理将 PPTX 渲染为多页图片网格，点击可进入全屏放映模式
+- 画廊布局：@grid / @cardstack / @filmstrip / @polaroid 等多种图片画廊 CSS 布局
+- 二维码生成：`qrcode` 代码块生成任意内容二维码
+- 倒计时组件：`countdown` 代码块渲染实时倒计时
+- Spoiler 折叠：内置剧透折叠块语法
+- Columns / ColorCard：页面分栏与彩色卡片布局
 
 ### 主题与外观
 
-- 🎨 **可视化配色取色器** — 强调色 / 中性色独立调整，支持自定义亮色或暗色主题
-- 💻 **代码高亮主题** — 10 种内置方案 + 自定义 highlight.js 主题 URL
-- ✏️ **自定义 CSS** — 加载外部 CSS 文件进一步定制
+- 可视化配色取色器：强调色 / 中性色独立调整，支持自定义亮色或暗色主题
+- 字体自定义：
+  - 远程字体 URL（Google Fonts 等 CSS URL 即可加载）
+  - 展示字体族（标题衬线体）与正文字体族（UI/正文无衬线体）自由填写
+  - 字号细调：UI / 正文 / H1 / H2 / H3 独立设置
+  - 字重细调：UI / 正文 / 展示体 / H1 / H2 / H3 独立选择（300 ~ 800）
+  - 字色：正文与次要文字颜色独立取色
+  - 一键「重置字体」恢复默认
+- 代码高亮主题：10 种内置方案 + 自定义 highlight.js 主题 URL
+- 自定义 CSS：加载外部 CSS 文件进一步定制
 
 ### 输出与订阅
 
-- 📄 **导出 PDF** — 通过浏览器打印对话框导出为 PDF
-- 📡 **RSS 源** — 自动生成 `feed.xml`，支持 RSS 阅读器订阅
-- 📲 **PWA 支持** — 可安装到桌面，离线访问已访问文档，更新时提示刷新
+- 导出 PDF：通过浏览器打印对话框导出为 PDF
+- 导出 Markdown：下载当前文章为 `.md`
+- RSS 源：自动生成 `feed.xml`，支持 RSS 阅读器订阅
+- PWA 支持：可安装到桌面，离线访问已访问文档，更新时提示刷新
 
 ### 工程与开发
 
-- 🔌 **插件系统** — 支持扩展自定义渲染器
-- ✏️ **编辑此页** — 悬浮球快速跳转 GitHub 编辑页面
-- 📱 **响应式设计** — 完美适配桌面端和移动端
+- 插件系统：支持扩展自定义渲染器
+- 编辑此页：悬浮球快速跳转 GitHub 编辑页面
+- 响应式设计：完美适配桌面端和移动端
+- 按需懒加载：Mermaid / ApexCharts / Leaflet / KaTeX / Diff2Html / Cytoscape.js 等重型库只在命中对应代码块时加载，首屏体积从约 6.8MB 降至约 1MB
 
 ### 内置编辑器
 
-- 📝 **类 Jupyter Cell 编辑器** — 全屏覆盖层，按 Cell 编写并即时渲染 Markdown
-- ⚡ **运行与预览** — 单 Cell 运行 / 运行全部 / 运行至下方，渲染管线与文档站一致
-- 💾 **自动保存** — localStorage 1.5s 防抖保存，刷新不丢内容
-- 🔍 **搜索替换** — 跨所有 Cell 查找、替换、跳转
-- 🧩 **11 类自动补全** — `@` / ` ``` ` / `#` / `$$` / `![` 等触发字符即弹补全，120+ 条目
-- 📋 **8 大工具栏菜单** — Markdown / HTML / 私有语法 / 工具渲染 / 插入 / 嵌入 / 下载 / 导入
-- 🖱️ **2 列右键菜单** — 17 项 Cell 操作，视口边界自适应定位
-- 📤 **导入导出** — `.md` / `.html` / `.pdf` / `.mdnb` 笔记本格式
-- 🎨 **字号与主题** — 4 档字号、亮/暗主题独立切换
+- 类 Jupyter Cell 编辑器：全屏覆盖层，按 Cell 编写并即时渲染 Markdown
+- 运行与预览：单 Cell 运行 / 运行全部 / 运行至下方，渲染管线与文档站一致
+- 自动保存：IndexedDB 存储 + 1.5s 防抖保存，刷新不丢内容，多笔记本多 Tab 支持
+- 搜索替换：跨所有 Cell 查找、替换、跳转
+- 11 类自动补全：`@` / `` ``` `` / `#` / `$$` / `![` 等触发字符即弹补全，120+ 条目
+- 8 大工具栏菜单：Markdown / HTML / 私有语法 / 工具渲染 / 插入 / 嵌入 / 下载 / 导入
+- 2 列右键菜单：17 项 Cell 操作，视口边界自适应定位
+- 导入导出：`.md` / `.html` / `.pdf` / `.mdnb` 笔记本格式
+- 字号与主题：4 档字号、亮/暗主题独立切换
 
 详见 [编辑器说明](docs/editor.md)。
 
-## 🚀 快速开始
+## 快速开始
 
 ### GitHub Pages 部署
 
 1. Fork 本仓库
-2. 进入仓库 **Settings → Pages**
-3. Source 选择 **GitHub Actions**
+2. 进入仓库 Settings → Pages
+3. Source 选择 GitHub Actions
 4. 修改 `iris/config.json` 中的 `owner` 和 `repo` 为你的信息
 5. 推送代码，等待 GitHub Actions 自动构建部署
 
@@ -82,10 +98,17 @@ node iris/scripts/build-search-index.js
 # 构建 RSS feed
 node iris/scripts/build-feed.js
 
+# 构建 PKT/ENSP 产物（若有 raw 目录文件）
+python3 iris/scripts/pkt/main.py
+python3 iris/scripts/ensp/main.py
+
+# 构建 PPTX 产物（若有 data/pptx/raw 下的 ppt/pptx 文件）
+python3 iris/scripts/pptx/main.py
+
 # 用浏览器打开 index.html
 ```
 
-## ⚙️ 配置
+## 配置
 
 修改 `iris/config.json` 自定义基础配置：
 
@@ -96,15 +119,16 @@ node iris/scripts/build-feed.js
 }
 ```
 
-更多运行时配置（主题、配色、代码高亮、显示选项等）在站点右上角悬浮球 → 设置 中调整，详见 [配置参考](docs/configuration.md)。
+更多运行时配置（主题、配色、代码高亮、显示选项、字体定制等）在站点右上角悬浮球 → 设置 中调整，详见 [配置参考](docs/configuration.md)。
 
-## 📁 文档放置
+## 文档放置
 
 在仓库任意位置创建 `.md` 文件即可，系统会自动发现并显示在侧边栏。推荐放在 `docs/` 目录下。
 
 ```
 你的仓库/
 ├── README.md
+├── readme-dev.md
 ├── docs/
 │   ├── guide.md
 │   ├── api/
@@ -114,49 +138,118 @@ node iris/scripts/build-feed.js
 └── ...
 ```
 
-## 🎯 支持的渲染功能
+## 支持的渲染功能
 
 | 功能 | 说明 |
 |------|------|
-| **Markdown 基础** | 标题、列表、表格、引用、代码块等 |
-| **Mermaid 图表** | 流程图、时序图、甘特图等 18+ 种 |
-| **PlantUML** | UML 图、架构图、思维导图等 |
-| **ApexCharts** | 交互式折线图、柱状图、饼图等 |
-| **LaTeX 公式** | 基于 KaTeX 的数学公式渲染 |
-| **二维码** | 使用 `qrcode` 代码块生成二维码 |
-| **Diff 可视化** | Git Diff 语法高亮对比 |
-| **GeoJSON** | 基于 Leaflet 的地理数据地图 |
-| **Packet Tracer** | Cisco .pkt 网络拓扑图渲染（Cytoscape.js） |
-| **外部嵌入** | YouTube、Bilibili、Figma、CodePen 等 |
-| **GitHub Alerts** | `[!NOTE]` `[!TIP]` `[!WARNING]` 等 |
+| Markdown 基础 | 标题、列表、表格、引用、代码块等 |
+| Mermaid 图表 | 流程图、时序图、甘特图等 18+ 种 |
+| PlantUML | UML 图、架构图、思维导图等 |
+| ApexCharts | 交互式折线图、柱状图、饼图等 |
+| LaTeX 公式 | 基于 KaTeX 的数学公式渲染 |
+| 二维码 | 使用 `qrcode` 代码块生成二维码 |
+| Diff 可视化 | Git Diff 语法高亮对比 |
+| GeoJSON | 基于 Leaflet 的地理数据地图 |
+| Packet Tracer | Cisco .pkt 网络拓扑图渲染（Cytoscape.js） |
+| E-String Play | .ensp 波形文件解析与音频波形渲染 |
+| PPTX 嵌入 | 图片网格 + 全屏放映，支持 CI/CD 自动预处理 |
+| 外部嵌入 | YouTube、Bilibili、Twitter、Figma、CodePen 等 |
+| GitHub Alerts | `[!NOTE]` `[!TIP]` `[!WARNING]` 等 |
+| PWA 波形生成 | 可视化生成 DG-LAB .pulse 波形文件（最多 20 个） |
 
-更多示例请查看 [docs/examples/](docs/examples/)。
+## 示例文档索引
 
-## 📂 项目结构
+全部示例位于 [docs/examples/](docs/examples/)，按文件名与功能对应关系如下：
+
+| 文件名 | 功能说明 |
+|--------|----------|
+| `markdown-syntax.md` | Markdown 基础语法总览 |
+| `basic-usage.md` | 基础使用与常见排版 |
+| `table-examples.md` | 表格展示与长表格优化 |
+| `theme-demo.md` | 7 种内置主题的视觉对比 |
+| `image-gallery-examples.md` | 图片与灯箱功能示例 |
+| `gallery-layouts.md` | @grid / @cardstack 等画廊布局示例 |
+| `github-alerts-examples.md` | GitHub 风格 Alerts 提示语法 |
+| `native-html-examples.md` | HTML 原生标签排版技巧 |
+| `columns-examples.md` | Columns 分栏布局 |
+| `colorcard-examples.md` | ColorCard 彩色卡片 |
+| `spoiler-examples.md` | 剧透/折叠块语法 |
+| `code-tabs-examples.md` | 代码 Tabs 多语言并排 |
+| `countdown-examples.md` | Countdown 倒计时组件 |
+| `qrcode-examples.md` | 二维码生成 |
+| `mermaid-examples.md` | Mermaid 各类图表 |
+| `plantuml-examples.md` | PlantUML UML 与架构图 |
+| `apexcharts-examples.md` | ApexCharts 交互式图表 |
+| `latex-examples.md` | LaTeX / KaTeX 数学公式 |
+| `diff-examples.md` | Diff 差异可视化 |
+| `geojson-examples.md` | GeoJSON 地图 |
+| `pkt-examples.md` | Packet Tracer .pkt 拓扑渲染 |
+| `ensp-examples.md` | E-String Play .ensp 波形渲染 |
+| `pptx-examples.md` | PPTX 嵌入语法与放映示例 |
+| `pulse-examples.md` | PWA 波形生成器语法 |
+| `embed-examples.md` | YouTube / Bilibili / Figma / CodePen 嵌入 |
+| `twitter-embed-examples.md` | Twitter 推文嵌入 |
+| `plugin-demo.md` | 插件系统演示 |
+
+## 项目结构
 
 ```
 .
 ├── index.html              # 入口页面
 ├── manifest.json           # PWA 清单
 ├── sw.js                   # Service Worker
+├── README.md               # 用户手册
+├── readme-dev.md           # 开发者文档
 ├── iris/
 │   ├── app.js              # 应用入口
-│   ├── config.json         # 用户配置
+│   ├── config.json         # 用户配置（owner/repo 等）
 │   ├── styles.css          # 样式入口
-│   ├── css/                # 模块化样式（含 editor.css 编辑器样式）
-│   ├── js/                 # 核心功能模块（含 editor.js 编辑器）
+│   ├── css/                # 模块化样式
+│   │   ├── base.css        # 基础变量与 reset
+│   │   ├── layout.css      # 侧边栏与布局
+│   │   ├── markdown.css    # Markdown 正文样式
+│   │   ├── floating.css    # 悬浮球、设置面板、工具栏
+│   │   ├── editor.css      # 内置编辑器样式
+│   │   ├── themes/         # 7 种内置主题
+│   │   ├── pkt/            # Packet Tracer 渲染样式
+│   │   └── pptx.css        # PPTX 缩略图网格与放映样式
+│   ├── js/                 # 核心功能模块
+│   │   ├── settings.js     # 设置面板、配色、字体自定义
+│   │   ├── themes/theme-manager.js  # 主题切换
+│   │   ├── markdown.js     # Markdown 渲染 + 图片灯箱
+│   │   ├── renderers/      # 各代码块渲染器（mermaid/pkt/pptx 等）
+│   │   └── storage.js      # IndexedDB 笔记本存储
 │   ├── vendor/             # 第三方依赖（本地化）
 │   ├── plugins/            # 插件目录
 │   ├── icons/              # 图标资源
-│   ├── data/               # 预构建数据（file-tree/search-index/feed/pkt）
-│   └── scripts/            # 构建脚本（file-tree/search-index/feed/pkt）
-├── docs/                   # 文档目录
-│   ├── editor.md           # 编辑器说明
-│   └── examples/           # 功能示例
-└── .github/workflows/      # GitHub Actions
+│   ├── data/               # 预构建数据
+│   │   ├── file-tree.json
+│   │   ├── search-index.json
+│   │   ├── feed.xml
+│   │   ├── pkt/ json + images
+│   │   ├── ensp/ json + wav
+│   │   └── pptx/ json + svg/png
+│   └── scripts/            # 构建脚本
+│       ├── build-file-tree.js
+│       ├── build-search-index.js
+│       ├── build-feed.js
+│       ├── pkt/main.py       # PKT/ENSP 产物生成
+│       ├── ensp/main.py
+│       └── pptx/main.py      # PPTX → PDF → PNG/SVG 转换
+├── docs/                   # 用户文档
+│   ├── editor.md
+│   ├── features.md
+│   ├── configuration.md
+│   ├── theme-customization.md
+│   ├── code-highlight-theme.md
+│   ├── plugin-development.md
+│   ├── rss.md
+│   ├── getting-started.md
+│   └── examples/           # 功能示例（27 篇）
+└── .github/workflows/      # GitHub Actions：build-site / build-pkt / build-pptx
 ```
 
-## 📚 文档
+## 文档
 
 - [快速开始](docs/getting-started.md)
 - [功能总览](docs/features.md)
@@ -168,7 +261,7 @@ node iris/scripts/build-feed.js
 - [RSS 订阅](docs/rss.md)
 - [开发者文档](readme-dev.md)
 
-## 🙏 致谢
+## 致谢
 
 本项目基于众多优秀的开源项目构建，在此向所有项目的作者和贡献者表示衷心感谢。
 
@@ -203,6 +296,8 @@ node iris/scripts/build-feed.js
 |------|------|--------|
 | [pako](https://github.com/nodeca/pako) | PlantUML 文本压缩（zlib） | MIT AND Zlib |
 | [sharp](https://github.com/lovell/sharp) | PWA 图标生成（构建期） | Apache-2.0 |
+| [LibreOffice](https://www.libreoffice.org) | PPTX → PDF 导出（CI 构建期） | MPL 2.0 |
+| [Poppler / pdftoppm](https://poppler.freedesktop.org) | PDF → PNG/SVG 转换（CI 构建期） | GPL |
 
 ### 图标与设计资源
 
@@ -216,29 +311,40 @@ node iris/scripts/build-feed.js
 
 | 项目 | 用途 | 许可证 |
 |------|------|--------|
-| [Cormorant Garamond](https://fonts.google.com/specimen/Cormorant+Garamond) | 标题衬线字体 | OFL 1.1 |
-| [IBM Plex Sans](https://fonts.google.com/specimen/IBM+Plex+Sans) | 正文无衬线字体 | OFL 1.1 |
-| [Google Fonts](https://fonts.google.com) | 字体分发服务 | — |
+| [Cormorant Garamond](https://fonts.google.com/specimen/Cormorant+Garamond) | 标题衬线字体（默认） | OFL 1.1 |
+| [IBM Plex Sans](https://fonts.google.com/specimen/IBM+Plex+Sans) | 正文无衬线字体（默认） | OFL 1.1 |
+| [Google Fonts](https://fonts.google.com) | 字体分发服务，也支持用户在设置里填写任意远程字体 URL | — |
 
 ### 运行时服务
 
 以下服务在运行时被调用，感谢其提供的公共服务：
 
-- [PlantUML 公共服务器](https://plantuml.com) — UML 图表渲染
-- [OpenStreetMap](https://www.openstreetmap.org) — 地图瓦片
-- [Shields.io](https://shields.io) / [Badgen](https://badgen.net) — 徽章图生成
-- [YouTube](https://youtube.com) / [Bilibili](https://bilibili.com) / [CodePen](https://codepen.io) / [Figma](https://figma.com) 等嵌入服务
+- PlantUML 公共服务器 — UML 图表渲染
+- OpenStreetMap — 地图瓦片
+- Shields.io / Badgen — 徽章图生成
+- YouTube / Bilibili / Twitter / CodePen / Figma 等嵌入服务
 
-## 📄 License
+## License
 
 本项目采用代码与内容分离的多许可证方案：
 
 | 范围 | 许可证 | 说明 |
 |------|--------|------|
-| **项目源代码**（`iris/` 目录） | [AGPL-3.0](./LICENSE) | 允许商用，但修改后部署为网络服务须公开源码 |
-| **文档内容**（`docs/` 目录） | [CC-BY-SA-4.0](./docs/LICENSE) | 允许再分发，但须署名并以相同许可共享 |
-| **第三方依赖** | 各自原有许可证 | 详见 [THIRD_PARTY_LICENSES](./THIRD_PARTY_LICENSES) |
+| 项目源代码（`iris/` 目录） | [AGPL-3.0](./LICENSE) | 允许商用，但修改后部署为网络服务须公开源码 |
+| 文档内容（`docs/` 目录） | [CC-BY-SA-4.0](./docs/LICENSE) | 允许再分发，但须署名并以相同许可共享 |
+| 第三方依赖 | 各自原有许可证 | 详见 THIRD_PARTY_LICENSES |
 
-### 为什么选择 AGPL-3.0？
+### 为什么选择 AGPL-3.0
 
 AGPL-3.0 在 GPL 的基础上增加了"网络交互即触发分发"条款，能有效防止他人将本项目修改后部署为闭源网络服务。对于纯前端静态站点项目，这是保护开源的最有效方案。
+
+## 近期变更记录
+
+| 提交 | 标题 |
+|------|------|
+| `19d1169` | feat(settings): 添加字体自定义入口（字号/字重/字色/字体族 + 远程字体加载） |
+| `b2b0132` | build: update feed.xml |
+| `19d7cb8` | chore(pptx): 移除示例文档中 example 演示及对应 data 产物 |
+| `a005c70` | build: update feed.xml |
+
+更多历史请通过 `git log` 查看。

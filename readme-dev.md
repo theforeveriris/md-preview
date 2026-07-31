@@ -1,453 +1,296 @@
-# Markdown Preview - 开发者文档
+# Markdown Preview — 开发者文档
 
-面向希望深入了解或扩展本项目的开发者。
+面向想贡献代码、扩展功能或进行深度定制的开发者。用户手册请见 [README.md](README.md)。
 
----
+## 目录
 
-## 技术栈
+- 架构概览
+- 模块说明
+  - 入口与生命周期
+  - 核心模块
+  - 渲染器（Renderer）
+  - 插件系统
+- CI / CD 工作流
+  - 站点构建（build-site）
+  - PKT / ENSP 产物构建（build-pkt）
+  - PPTX 产物构建（build-pptx）
+- 样式与主题系统
+  - CSS 变量约定
+  - 主题配色
+  - 字体自定义系统
+- 按需懒加载机制
+- 笔记本存储（IndexedDB）
+- 构建脚本参考
+- 本地调试与常见坑
+- 目录结构速查
 
-| 技术 | 用途 |
-|------|------|
-| HTML5 | 页面结构 |
-| CSS3 + CSS 变量 | 样式系统、响应式、主题 |
-| Vanilla JavaScript | 核心逻辑，无框架依赖 |
-| Node.js（仅构建） | 文件树、搜索索引、RSS feed 预构建 |
-| GitHub Actions | CI/CD 自动部署 |
-| Marked.js | Markdown 解析 |
-| FlexSearch | 全文搜索（含 CJK 自定义编码器） |
-| highlight.js | 代码语法高亮 |
-| Mermaid.js | 图表渲染 |
-| PlantUML | UML 图表 |
-| ApexCharts | 交互式图表 |
-| KaTeX | LaTeX 公式 |
-| Leaflet.js | 地理数据地图 |
-| diff2html | Git Diff 可视化 |
-| Cytoscape.js | Packet Tracer 网络拓扑图渲染 |
-| Python 3（仅构建） | .pkt 文件解密解析（零第三方依赖） |
-| localStorage | 编辑器自动保存与偏好持久化 |
+## 架构概览
 
-## 项目架构
+本项目是一个完全静态、纯前端的 Markdown 文档预览站点。运行时不依赖任何服务器：
 
-### 目录结构
+1. 首次打开 `index.html`，`iris/app.js` 初始化。
+2. 尝试从 `iris/data/file-tree.json` 读取预构建的文件树；若不存在则回退到 GitHub Contents API。
+3. 侧边栏渲染文件树；用户点击 → Hash 路由 → 加载对应 `.md` → marked 解析 → 各 Renderer 对特定代码块后处理。
+4. 设置、主题、字体、编辑器笔记本等持久化走 `localStorage` 或 `IndexedDB`。
+5. Service Worker（`sw.js`）负责静态资源缓存和 PWA 更新提示。
 
-```
-.
-├── index.html              # 入口页面，声明库依赖
-├── manifest.json           # PWA 应用清单
-├── sw.js                   # Service Worker（离线缓存）
-├── iris/
-│   ├── app.js              # 应用入口，初始化各模块
-│   ├── config.json         # 用户配置文件
-│   ├── styles.css          # 样式入口（汇总各 CSS 模块）
-│   ├── css/
-│   │   ├── base.css        # 基础样式与 CSS 变量定义
-│   │   ├── layout.css      # 布局（侧边栏、主内容区）
-│   │   ├── components.css  # 组件样式（含打印样式）
-│   │   ├── markdown.css    # Markdown 渲染样式
-│   │   ├── floating.css    # 悬浮球与浮动元素
-│   │   ├── responsive.css  # 响应式适配
-│   │   ├── editor.css      # 编辑器页面样式（工具栏 / Cell / 右键菜单 / 补全列表）
-│   │   └── themes/
-│   │       └── themes.css  # 7 种内置主题
-│   ├── js/
-│   │   ├── config.js       # 配置加载模块
-│   │   ├── state.js        # 全局状态管理
-│   │   ├── dom.js          # DOM 元素引用
-│   │   ├── ui.js           # UI 工具与事件监听
-│   │   ├── file-tree.js    # 文件树加载与渲染（Shadow DOM 滚动条隐藏）
-│   │   ├── markdown.js     # Markdown 渲染、代码块复制、灯箱、标题锚点
-│   │   ├── search.js       # FlexSearch 全文搜索（关键词高亮）
-│   │   ├── router.js       # Hash 路由
-│   │   ├── settings.js     # 设置面板、悬浮菜单、PDF 导出、本地 MD、编辑器入口
-│   │   ├── editor.js       # 内置 Markdown 编辑器（Cell / 自动保存 / 补全 / 搜索替换）
-│   │   ├── debug.js        # 调试模式
-│   │   ├── themes/
-│   │   │   └── theme-manager.js  # 主题管理器（预设/自定义 CSS/hljs）
-│   │   ├── plugins/
-│   │   │   └── loader.js   # 插件加载器
-│   │   ├── renderers/      # 扩展渲染器
-│   │   │   ├── mermaid.js
-│   │   │   ├── plantuml.js
-│   │   │   ├── apexcharts.js
-│   │   │   ├── katex.js
-│   │   │   ├── diff.js
-│   │   │   ├── geo.js
-│   │   │   └── embedded.js
-│   │   └── pkt/
-│   │       └── pkt-renderer.js  # Packet Tracer 拓扑渲染器
-│   ├── vendor/             # 第三方依赖（本地化，无 CDN）
-│   │   ├── marked.js
-│   │   ├── flexsearch.bundle.js
-│   │   ├── highlight.js/
-│   │   ├── mermaid.min.js
-│   │   ├── apexcharts.min.js
-│   │   ├── pako.min.js
-│   │   ├── katex/
-│   │   ├── leaflet/
-│   │   ├── cytoscape/       # Cytoscape.js（拓扑图）
-│   │   └── diff2html/
-│   ├── plugins/            # 自定义插件
-│   │   └── qrcode.js
-│   ├── icons/              # PWA 图标资源
-│   ├── data/               # 预构建数据
-│   │   ├── file-tree.json
-│   │   ├── search-index.json
-│   │   ├── feed.xml        # RSS 2.0 feed
-│   │   └── pkt/            # Packet Tracer 拓扑数据
-│   │       ├── raw/         # .pkt 原始文件
-│   │       ├── xml/         # 解密解压后的 XML
-│   │       ├── json/        # 解析后的拓扑 JSON
-│   │       └── icons.svg    # 设备类型 SVG 图标
-│   └── scripts/            # 构建脚本
-│       ├── build-file-tree.js
-│       ├── build-search-index.js
-│       ├── build-feed.js   # RSS feed 生成
-│       └── pkt/            # .pkt 解密解析（Python）
-│           ├── decrypt.py   # XOR + Twofish EAX 解密
-│           ├── decompress.py # zlib 解压
-│           ├── parse.py     # XML + IOS 配置解析
-│           ├── output.py    # JSON 输出
-│           └── main.py      # 主入口（mtime 增量）
-├── docs/
-│   └── examples/           # 功能示例文档
-└── .github/workflows/
-    ├── build-and-deploy.yml     # 主部署流程
-    ├── build-search-index.yml   # 搜索索引构建
-    ├── build-feed.yml           # RSS feed 构建
-    ├── build-pkt.yml            # PKT 拓扑构建
-    └── sync-to-product.yml      # product 分支同步
-```
+## 模块说明
 
-### 模块依赖关系
+### 入口与生命周期
 
-```
-app.js (入口)
-  ├── file-tree.js     # 文件树加载
-  ├── ui.js            # UI 事件
-  ├── search.js        # FlexSearch 全文搜索
-  ├── router.js        # Hash 路由
-  ├── debug.js         # 调试面板
-  ├── markdown.js      # Markdown 渲染（代码块/灯箱/锚点）
-  │     ├── renderers/ # 各扩展渲染器（含 embedded.js → pkt-renderer.js）
-  │     └── plugins/   # 自定义插件
-  ├── themes/          # 主题管理（自定义 CSS/hljs）
-  ├── settings.js      # 设置面板、悬浮菜单、PDF 导出、编辑器入口
-  └── editor.js        # 内置 Markdown 编辑器（按需初始化）
-        └── 复用 markdown.js 渲染管线
-```
+[`index.html`](index.html) 引入的脚本按以下顺序执行：
 
-### 核心模块说明
+1. `iris/js/config.js` — 注入 owner / repo 等用户配置到 `window.MarkdownPreview.config`
+2. `iris/js/themes/theme-manager.js` — 尽早应用主题（避免闪烁），加载自定义 CSS / 自定义 hljs
+3. `iris/js/settings.js` — 读取并应用 `customColors`、`fontConfig`、远程字体 URL
+4. `iris/vendor/marked.js`、`iris/vendor/highlight.js` 等按需 vendor
+5. `iris/js/dom.js` — 按需加载样式、DOM 工具
+6. `iris/js/file-tree.js` — 构建侧边栏
+7. `iris/js/markdown.js` — Markdown 渲染 + 图片灯箱
+8. `iris/js/app.js` — 组装 Hash 路由、编辑器模式、波形生成器模式
 
-#### `config.js` — 配置加载
+### 核心模块
 
-从 `iris/config.json` 加载用户配置，与默认配置深度合并。加载失败时使用默认配置兜底。
+| 模块 | 路径 | 职责 |
+|------|------|------|
+| Config | `iris/js/config.js` | 读取 `iris/config.json`，暴露到 `window.MarkdownPreview.config` |
+| Theme Manager | `iris/js/themes/theme-manager.js` | 预设主题切换、自定义 CSS / hljs 主题加载 |
+| Settings | `iris/js/settings.js` | 设置面板 UI、`customColors`、`fontConfig`、远程字体注入 |
+| File Tree | `iris/js/file-tree.js` | 侧边栏文件树 / 索引、字数、搜索结果列表、上一篇/下一篇 |
+| Markdown | `iris/js/markdown.js` | marked + 代码块高亮、标题锚点、图片灯箱（ArrowLeft/Right 翻页） |
+| Storage | `iris/js/storage.js` | IndexedDB 笔记本存储（替代 localStorage 大内容） |
+| App | `iris/js/app.js` | Hash 路由、编辑器模式 (`?mode=editor`)、Pulse 生成器 (`?mode=pulse`) |
 
-#### `file-tree.js` — 文件树
+### 渲染器（Renderer）
 
-双重加载策略：
-1. 优先加载预构建的 `iris/data/file-tree.json`（无 API 限制，速度快）
-2. 不存在则回退到 GitHub API（`recursive=1` 获取完整树）
+所有渲染器位于 `iris/js/renderers/`，统一被 `markdown.js` 在后处理阶段按 `tag` 匹配调用。
 
-特性：
-- 自动过滤 `.md` 文件，构建嵌套目录结构
-- 每个文件附带字数统计
-- 文件树区域使用 Shadow DOM 隔离样式，并隐藏滚动条保持视觉简洁
-- 提供 `getAdjacentFiles(path)` 接口，返回上/下一篇文档（供悬浮菜单使用）
-- 可在设置面板切换是否显示字数统计、是否截断长文件名
+| 渲染器 | 文件 | 触发条件 | 依赖（按需加载） |
+|--------|------|----------|-------------------|
+| Mermaid | `mermaid.js` | ` ```mermaid ` | mermaid.min.js |
+| PlantUML | `plantuml.js` | ` ```plantuml ` | pako（文本压缩为 deflate URL，请求 plantuml.com） |
+| ApexCharts | `apexcharts.js` | ` ```apexcharts ` | apexcharts.js + apexcharts.css |
+| LaTeX / KaTeX | `latex.js` | ` $$...$$ ` 或 ` ```latex ` | katex.min.js + katex.min.css |
+| Diff2Html | `diff.js` | ` ```diff ` | diff2html.min.js + diff2html.min.css |
+| GeoJSON | `geojson.js` | ` ```geojson ` | leaflet.js + leaflet.css + tile 服务 |
+| Packet Tracer | `pkt.js` | `@[pkt](slug)` 或 ` ```pkt ` | cytoscape + css |
+| E-String Play | `ensp.js` | `@[ensp](slug)` 或 ` ```ensp ` | 仅用 Canvas / Audio API |
+| PPTX | `pptx.js` | `@[pptx](slug)` 或 ```` ```pptx ```` | 无额外依赖，图片取自预构建产物 |
+| QRCode | `qrcode.js` | ` ```qrcode ` | qrcode.min.js（inline 本地） |
+| Countdown | `countdown.js` | ` ```countdown ` | 零依赖，原生 Date |
+| Embed | `embed.js` | YouTube / Bilibili / Twitter / Figma / CodePen 链接或 `@[embed]` | 通过原生 iframe，不额外加载库 |
+| GitHub Alerts | 内建于 `markdown.js` | `> [!NOTE]` 等 | 纯 CSS |
+| Gallery Layouts | `gallery.js` | `@grid / @cardstack / ...` 指令行 | 纯 CSS |
 
-#### `markdown.js` — Markdown 渲染
+**扩展新 Renderer 最短路径**：
 
-渲染管道：
-1. Marked.js 解析 Markdown（自定义 `renderer.code` 注入复制按钮、语言标签）
-2. 处理 Frontmatter（YAML 元数据）
-3. 动态更新 `document.title`（用于 SEO 与浏览器标签）
-4. 处理 GitHub Alerts
-5. 图片增强（懒加载、画廊、错误降级、灯箱）
-6. 长表格自动包裹 `.table-wrapper` 支持横向滚动
-7. 标题锚点分享按钮（H1~H6 悬浮出现复制链接）
-8. 调用各扩展渲染器（Mermaid、KaTeX 等）
-9. 调用插件渲染
-
-代码块增强：
-- 每个 `<pre>` 注入复制按钮（Clipboard API + `execCommand` 兜底）
-- 顶部显示语言标签 `.code-lang-label`
-- `data-lang` 属性记录语言便于扩展
-
-灯箱（lightbox）：
-- 点击图片打开全屏灯箱
-- 支持滚轮缩放、左右键翻页、Esc 关闭
-- 自动收集当前文档所有图片，支持画廊模式
-
-#### `search.js` — 全文搜索
-
-基于 FlexSearch，特性：
-- 预构建索引（`iris/data/search-index.json`），无索引时回退到运行时构建
-- 自定义 CJK 编码器，支持中文分词与模糊匹配
-- 标题 + 正文 + 路径三字段复合索引
-- 搜索结果关键词高亮（`<mark>` 标签包裹）
-- 直接使用索引中的完整 `path`，避免硬编码前缀拼接
-
-#### `theme-manager.js` — 主题系统
-
-基于 CSS 变量，特性：
-- 7 种内置主题（default / github-light / github-dark / notion / arc / dracula / nord）
-- 自定义 CSS（加载外部 URL）
-- 自定义 highlight.js 主题 CSS（独立输入框，加载后插入到 `#hljs-theme` 之后确保覆盖）
-- 通过 localStorage 持久化
-
-#### `settings.js` — 设置面板与悬浮菜单
-
-设置面板分组：
-- **外观**：预设主题 / 自定义配色（取色器：强调色 + 中性色）/ 代码高亮主题 / 高级（自定义 CSS、自定义 hljs）
-- **功能**：显示选项（阅读进度、字数统计、文件名截断）
-- **操作**：下载当前 MD、导出 PDF
-
-悬浮球菜单（7 个入口）：
-1. 回到顶部
-2. 上一篇
-3. 下一篇
-4. 打开本地 MD（FileReader 读取，不写进 URL，刷新后丢失）
-5. 安装到桌面（PWA，仅 `beforeinstallprompt` 触发时显示）
-6. 编辑此页（跳转 GitHub 编辑页面）
-7. 设置
-
-导出 PDF：通过 `window.print()` 触发浏览器打印对话框，配合 `@media print` 样式隐藏侧边栏/悬浮球等 UI 元素。
-
-#### `editor.js` — 内置 Markdown 编辑器
-
-类 Jupyter 的 Cell 化编辑器，以全屏覆盖层形式叠加在文档站之上。详细使用说明见 [编辑器说明](docs/editor.md)。
-
-**入口与生命周期**：
-- 通过 URL `?mode=editor`、设置面板「打开编辑器」按钮或 `MarkdownPreview.enterEditorMode()` 进入
-- 首次进入时调用 `initEditor()` 初始化（懒加载，避免影响首屏）
-- `exitEditorMode()` 退出并清理 URL 参数
-- 复用 `markdown.js` 的渲染管线，渲染结果与文档站完全一致
-
-**核心数据结构**：
-```javascript
-cells = [{
-  id, div, textarea, output, outputToolbar, lineNumbers,
-  statusDot, linesLabel, typeBadge, collapseBtn,
-  type,            // 'markdown' | 'plaintext'
-  lastRunContent   // 上次运行内容，用于检测「已修改」状态
-}]
-```
-
-**主要功能模块**：
-- **Cell 管理**：`createCell` / `deleteCell` / `renumberCells` / `rebuildCellDOMOrder`
-- **运行**：`runCell` / `runAllCells` / `runCellBelow`，调用 `MarkdownPreview.renderMarkdown` 渲染到 `.cell-output`
-- **自动补全**：11 类触发字符（`@` / ` ``` ` / `> [!` / `#` / `-` / `|` / `---` / `>` / `$$` / `![` / `[`），70+ 条目
-- **右键菜单**：2 列布局 17 项操作，`showContextMenu` 四方向边界检测定位
-- **搜索替换**：跨所有 Cell textarea 的查找 / 替换 / 全部替换 / F3 导航
-- **格式化**：`applyFormat` 支持粗体 / 斜体 / 删除线 / 行内代码 / H1~H3 / 链接 / 引用 / 列表
-- **导入导出**：`.md` / `.html` / 内联 CSS HTML / `.pdf` / `.mdnb` 笔记本 / 合并 `.md`
-- **自动保存**：localStorage `mdnb_autosave_v2`，1.5s 防抖，序列化所有 Cell 的 id/type/content/output_html
-
-**持久化键**：
-| 键 | 用途 |
-|----|------|
-| `mdnb_autosave_v2` | 笔记本自动保存（cells 数组） |
-| `mdnb_fontsize` | 编辑区字号（12/14/16/18） |
-| `mdnb_theme` | 编辑器主题（light/dark） |
-
-**全局 API**：
-- `MarkdownPreview.enterEditorMode()` — 进入编辑器
-- `MarkdownPreview.exitEditorMode()` — 退出编辑器
-
-**样式**：`iris/css/editor.css`，包含工具栏、Cell、右键菜单、补全列表、搜索面板、选中浮动工具栏、状态栏等全部样式。
-
-#### `pkt-renderer.js` — Packet Tracer 拓扑渲染
-
-基于 Cytoscape.js 渲染 Cisco Packet Tracer 网络拓扑图，通过 `@[pkt](name)` 嵌入语法触发（由 `embedded.js` 调用）。
-
-**渲染流程**：
-1. `loadAndRender(container, jsonPath)` — 从 `iris/data/pkt/json/` 拉取 JSON
-2. `renderTopology(container, jsonData)` — 构建 DOM + 初始化 Cytoscape 实例
-3. 设备节点使用 SVG data-URI 图标（13 种类型），连线按线缆类型着色
-
-**交互**：
-- 节点点击 → `openDrawer(node)` 弹出右侧抽屉，5 标签页（接口表 / 配置 / VLAN / ACL / 路由）
-- 搜索框 → 按设备名 / IP / 类型过滤，匹配高亮 + 非匹配淡出
-- 工具栏 → PT 坐标布局 ↔ 力导向布局 / 网格切换 / 适配视图 / 导出（PNG / JSON / Markdown）
-- 连线 hover → tooltip 显示接口和线缆信息
-
-**全局 API**：`MarkdownPreview.pkt.loadAndRender(el, name)`
-
-**样式**：`iris/css/pkt/pkt.css`，含拓扑容器、工具栏、画布、抽屉、标签页、接口表、IOS 语法高亮、移动端响应式（抽屉底部弹出 70vh）。
+1. 新建 `iris/js/renderers/xxx.js`，对外暴露 `detect($root)` + `render($node)` 方法。
+2. 在 `iris/js/markdown.js` 的 renderers 数组中注册。
+3. 若需要重型依赖，参考 `mermaid.js` 的 `loadScriptOnce` + `loadStyleOnce` 模式，首次命中才真正加载。
 
 ### 插件系统
 
-插件接口（v2）：
+详见 [docs/plugin-development.md](docs/plugin-development.md)。插件本质上是一个提供 `install(app)` 方法的对象，可：
 
-```javascript
-export default {
-  name: 'plugin-name',
-  description: '插件描述',
-  priority: 10,                 // 优先级，数值越大越优先
+- 扩展 marked lexer / parser / renderer
+- 注册自定义代码块语言（在 markdown.js 的 afterRender 里处理）
+- 注入自定义 CSS 或 <script>
+- 挂接路由、设置面板自定义控件
 
-  // 生命周期：初始化
-  init(config) { },
+## CI / CD 工作流
 
-  // 判断逻辑（可选，默认精确匹配 language === name）
-  test(code, language) {
-    return language === 'my-language';
-  },
+全部位于 `.github/workflows/`：
 
-  // 渲染前/后钩子（可选）
-  beforeRender(code, container, context) { },
-  afterRender(container, context) { },
+| 工作流文件 | 触发条件 | 作用 |
+|-----------|----------|------|
+| `build-site.yml` | push 到 `main`，或 `docs/**` / `index.html` / `iris/**` 变化 | 构建 file-tree / search-index / feed，提交到 main，GitHub Pages 自动发布 |
+| `build-pkt.yml` | push 到 `main`，且 `iris/data/pkt/raw/**` 或 `iris/data/ensp/raw/**` 变化 | 执行 `iris/scripts/pkt/main.py` 和 `iris/scripts/ensp/main.py`，把产物 push 回 `data/pkt/json`、`data/pkt/images` 等 |
+| `build-pptx.yml` | push 到 `main`，且 `iris/data/pptx/raw/**` 变化 | 安装 LibreOffice + poppler-utils，跑 `iris/scripts/pptx/main.py`：PPTX→PDF→PNG/SVG+元数据 JSON，push 回 |
 
-  // 渲染（支持同步或 async）
-  async render(code, container, context) {
-    container.innerHTML = '...';
-  },
+### 产物存放约定
 
-  // 销毁钩子（可选）
-  destroy() { }
-};
+- PKT：`iris/data/pkt/json/<slug>.json` + `iris/data/pkt/images/<slug>-<N>.<ext>`
+- ENSP：`iris/data/ensp/json/<slug>.json` + `iris/data/ensp/wav/<slug>-<N>.wav`
+- PPTX：`iris/data/pptx/json/<slug>.json` + `iris/data/pptx/images/<slug>-<N>.(svg/png)`
+
+`slug` 来自 raw 目录文件名去扩展名。任何 `@[xxx](slug)` 嵌入语法按上面路径查找即可。
+
+## 样式与主题系统
+
+### CSS 变量约定
+
+所有可定制的视觉量以 CSS 变量定义在 `iris/css/base.css :root`：
+
+```
+--color-bg / --color-surface / --color-border
+--color-text / --color-text-muted
+--color-accent-purple / --color-accent-pink / --color-accent-purple-deep
+--color-glow
+--font-display / --font-body
+--font-size-body / --font-size-md / --font-size-h1 / --font-size-h2 / --font-size-h3
+--font-weight-body / --font-weight-md / --font-weight-display
+--font-weight-h1 / --font-weight-h2 / --font-weight-h3
+--sidebar-width / --transition-smooth
 ```
 
-**上下文对象 `context`**：
+### 主题配色
 
-| 字段 | 说明 |
-|------|------|
-| `language` | 代码块语言标识 |
-| `documentPath` | 当前文档路径 |
-| `config` | 来自 `config.json` 的插件专属配置 |
-| `registerResource` | 注册可清理资源（需实现 `destroy()`） |
+`iris/css/themes/themes.css` 中每一个主题（`[data-theme="github-light"]` 等）仅覆盖上面的 `--color-*` 变量。新增主题时：
 
-**插件加载策略**（按优先级）：
+1. 在 `theme-manager.js: validThemes` 加入 ID
+2. 在 `themes.css` 添加 `[data-theme="your-id"] { --color-xxx: ... }`
+3. 在 `index.html` 中 `<select id="themeSelect">` 追加 option
 
-1. `config.plugins.manifest` — 显式 URL 列表，最可靠
-2. `iris/plugins/directory.json` — 预构建索引文件
-3. 目录扫描 — 回退到 `fetch('iris/plugins/')`（部分静态托管不支持）
+### 字体自定义系统
 
-将插件文件放入 `iris/plugins/` 目录，插件加载器会自动发现并注册。详见 [插件开发指南](docs/plugin-development.md)。
+- **存储键**：`localStorage.md-preview-settings.fontConfig`（序列化对象）
+- **默认值**：见 `iris/js/settings.js:defaultFontConfig`
+- **远程字体加载**：用户在设置中填写 Google Fonts / 任意 CSS URL → 由 `applyRemoteFont()` 生成 `<link id="remote-font-stylesheet">` 注入 `<head>`；重复切换时会先移除旧 link，避免堆积。
+- **变量注入**：`applyFontConfig(cfg)` 逐个写入 `document.documentElement.style.setProperty(...)`。清除值时 `removeProperty()` 回退到 `base.css` 默认。
+- **字体族自定义**：`--font-display`（标题、welcome、sidebar-title）与 `--font-body`（UI、正文）分别独立。
 
-## 部署与构建
+## 按需懒加载机制
 
-### GitHub Pages 部署
+首屏体积优化策略如下（对应 `iris/js/dom.js: loadScriptOnce / loadStyleOnce`）：
 
-工作流：`build-and-deploy.yml`
+- vendor 中"重型"库（mermaid / apexcharts / katex / leaflet / diff2html / cytoscape）**不通过 `<script>` 引入 index.html**，而是由对应的 Renderer 在首次检测到自身代码块时 `loadScriptOnce(url)`。
+- `styles.css` 中各子样式（leaflet.css / katex.min.css / diff2html.min.css）同样按需加载。
+- 每个 `loadScriptOnce` 有 Promise 单例缓存，同一脚本不会并发加载两次。
+- 实测首屏 JS 从约 6.8MB → 约 1MB。
 
-1. 推送代码到 `main` 分支触发
-2. 运行 `iris/scripts/build-file-tree.js` 预构建文件树
-3. 上传整个仓库为 Pages Artifact
-4. 部署到 GitHub Pages
+## 笔记本存储（IndexedDB）
 
-### 搜索索引构建
+对应 `iris/js/storage.js`。
 
-工作流：`build-search-index.yml`
+| 对象存储 | key | value 结构 |
+|---------|-----|------------|
+| notebooks | notebookId | `{ id, title, cells: [...], saved, version }` |
+| meta | 任意字符串 | 任意（已用于 activeTab / tabOrder） |
 
-- 当 `docs/**` 路径下文件变更时触发
-- 运行 `iris/scripts/build-search-index.js` 生成搜索索引
-- 提交并推送到仓库
+单笔记本模式默认 key = `AUTOSAVE_KEY = 'autosave'`。首次打开会尝试从 `localStorage` 迁移旧数据（key 可指定），迁移成功后清掉 localStorage。
 
-### RSS Feed 构建
+## 构建脚本参考
 
-工作流：`build-feed.yml`
-
-- 当 `docs/**` 路径下文件变更时触发，或手动 `workflow_dispatch`
-- `fetch-depth: 0` 拉取完整 git 历史（用于读取文件提交时间）
-- 运行 `iris/scripts/build-feed.js` 生成 `iris/data/feed.xml`
-- 提交并推送到仓库
-
-### Packet Tracer 拓扑构建
-
-工作流：`build-pkt.yml`
-
-- 当 `iris/data/pkt/raw/` 或 `iris/scripts/pkt/` 下文件变更时触发
-- 设置 Python 3.11，运行 `iris/scripts/pkt/main.py --verbose`
-- 管线：XOR/Twofish 解密 → zlib 解压 → XML 解析 → IOS 配置提取 → JSON 输出
-- mtime 增量构建（仅处理变更的 .pkt 文件）
-- 提交生成的 JSON 和 XML 到仓库
-
-### Product 分支同步
-
-工作流：`sync-to-product.yml`
-
-- 推送 `main` 时触发
-- 创建 `product` 分支，移除所有 `.md` 文件
-- 用于纯应用发布（不含文档）
-
-## PWA
-
-配置文件：
-- `manifest.json` — 应用清单（名称、图标、启动 URL）
-- `sw.js` — Service Worker（离线缓存）
-
-特性：
-- 可安装到桌面/手机主屏幕
-- 预缓存首屏关键静态资源
-- 静态资源缓存优先、后台更新；Markdown 文档网络优先、离线降级到缓存
-- 资源更新时弹出 toast 提示用户刷新
-- 安装按钮集成在悬浮球菜单中
-
-## 本地开发
-
-```bash
-# 构建文件树
+### file-tree 构建
+```
 node iris/scripts/build-file-tree.js
+```
+扫描仓库根下所有 `.md`（排除 node_modules / .git / vendor / .github），生成带字数统计的 `iris/data/file-tree.json`。
 
-# 构建搜索索引
+### search-index 构建
+```
 node iris/scripts/build-search-index.js
+```
+读取 file-tree 中每篇文档正文 → FlexSearch 文档索引 + 正文字段 → `iris/data/search-index.json`。
 
-# 构建 RSS feed
+### feed 构建
+```
 node iris/scripts/build-feed.js
+```
+按修改时间排序输出 Atom 1.0 格式的 `iris/data/feed.xml`。
 
-# 构建 Packet Tracer 拓扑（需 Python 3）
-python3 iris/scripts/pkt/main.py --verbose
+### PKT / ENSP 构建
+```
+python3 iris/scripts/pkt/main.py   # raw/*.pkt → json + images
+python3 iris/scripts/ensp/main.py  # raw/*.ensp → json + wav
+```
+增量处理：对 raw 里每个文件做 mtime 比较，仅产物缺失或 mtime 落后才重新解析。
 
-# 用浏览器直接打开 index.html 即可预览
+### PPTX 构建
+```
+python3 iris/scripts/pptx/main.py
+```
+依赖系统命令：`libreoffice --headless --convert-to pdf` + `pdftoppm` / `pdftocairo`（poppler-utils）。流程：
+
+1. raw 目录下发现 ppt/pptx → 导出 PDF → `pdftoppm` 每页导出 PNG/SVG。
+2. 生成 `json/<slug>.json`：`{ title, pages: N, width, height, thumbType }`。
+3. 产物推入仓库，前端渲染器直接读图片 + 元数据。
+
+## 本地调试与常见坑
+
+### 用简单静态服务器打开
+
+直接 `file://` 打开会被 Service Worker、CORS、fetch file-tree.json 等卡住，建议：
+
+```
+python3 -m http.server 8080
+# 访问 http://localhost:8080/
 ```
 
-## 样式开发
+或使用 `npx serve .`。
 
-CSS 采用模块化架构，按功能拆分到 `iris/css/` 目录下的各文件中，最终通过 `iris/styles.css` 汇总。
+### 调试模式
 
-主题通过 CSS 变量实现，新增主题只需在 `iris/css/themes/themes.css` 中添加新的 `[data-theme="xxx"]` 选择器并定义变量。运行时主题色由 `settings.js` 通过 `root.style.setProperty` 动态覆盖。
+URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 
-打印样式位于 `iris/css/components.css` 的 `@media print` 段，导出 PDF 时复用。
+- 环境（浏览器、视口、平台、语言、在线状态）
+- 性能（首屏耗时、TTFB、DOM Ready、FCP、堆内存）
+- 当前文档（路径、源大小、HTML 大小、渲染耗时、标题/图片/代码块/表格/链接数、Frontmatter）
+- 文件树 & 搜索（文件总数、索引条目、搜索引擎）
+- 主题（当前主题、代码主题、自定义色数、自定义 CSS / hljs）
+- 缓存与网络（API 调用次数、缓存命中、LocalStorage、Service Worker 状态）
 
-## 调试模式
+### Service Worker 缓存不清
 
-访问 URL 时添加 `?debug=1` 参数，右下角会显示调试面板，每 2 秒自动刷新，包含 6 个分组：
+`sw.js` 顶部 `CACHE_NAME` 手动升级版本号（例如 `v7.1 → v7.2`）会让下次 install 阶段跳过旧缓存，激活时把旧缓存清掉。
+`index.html` 中 SW 注册用 `fetch('sw.js', { cache: 'no-store' })` + `updateViaCache: 'none'` 双保险，确保拿到最新脚本。
 
-### 环境
-- 浏览器（解析 UA）
-- 视口尺寸 + DPR
-- 平台、语言
-- 在线状态、连接类型（4g/wifi 等）
+### PPT 缩略图点击触发"通用灯箱"
 
-### 性能
-- 首屏耗时（自 `?debug=1` 启用时刻）
-- TTFB / DOM Ready / Load（Performance Timing API）
-- FCP（PerformanceObserver `first-contentful-paint`）
-- JS 堆内存 / 总堆内存 / 堆上限（Chrome only，`performance.memory`）
+两重防护：
+1. PPTX Renderer 对缩略图 click 调用 `e.stopPropagation()` + `e.preventDefault()`；
+2. `markdown.js` 里 `isLightboxEligibleImage()` 排除 `[data-pptx-thumb]` / `.pptx-thumb-card` / `.pptx-embed` 以及已在 `#pptx-slideshow-overlay` 或 `#lightboxOverlay` 内的图片。
+3. 键盘事件：PPT 放映在捕获阶段（`useCapture:true`）监听 keydown 并 `stopPropagation()`，优先于通用灯箱。
 
-### 当前文档
-- 路径、源大小、HTML 大小、渲染耗时
-- 标题数 / 图片数 / 代码块数 / 表格数 / 链接数（DOM 查询）
-- Frontmatter 字段列表
+## 目录结构速查
 
-### 文件树 & 搜索
-- 文件总数（递归统计 `state.fileTreeData`）
-- 加载来源（`prebuilt` / `api`）
-- 搜索索引来源（`prebuilt` / `runtime`）
-- 索引条目数、搜索引擎（FlexSearch / simple）
-
-### 主题
-- 当前主题、代码主题
-- 自定义色数（localStorage 中实际生效的颜色数）
-- 自定义 CSS / 自定义 hljs 是否启用
-
-### 缓存与网络
-- API 调用次数、缓存命中（命中 / 调用）
-- LocalStorage 占用字节数
-- Service Worker 状态（activated / 未注册 / 不支持）
-
-实现：[iris/js/debug.js](iris/js/debug.js)，相关状态字段定义在 [iris/js/state.js](iris/js/state.js)（`fileTreeSource` / `searchIndexStats` / `lastDocStats`）。
-
----
-
-**文档版本**: 3.3
+```
+.
+├── index.html                    # 入口页面 + 设置面板 HTML
+├── manifest.json                 # PWA 清单
+├── sw.js                         # Service Worker（版本号控制缓存）
+├── README.md                     # 用户手册
+├── readme-dev.md                 # 本文件（开发者文档）
+├── iris/
+│   ├── app.js                    # Hash 路由 + 模式切换
+│   ├── config.js                 # 读取 iris/config.json
+│   ├── styles.css                # 样式入口（@import 各 css 子模块）
+│   ├── css/
+│   │   ├── base.css              # :root 变量、reset、body 默认
+│   │   ├── layout.css            # sidebar、main、breadcrumb 等布局
+│   │   ├── markdown.css          # .markdown-body H1-H6、p、code 等
+│   │   ├── floating.css          # 悬浮球、设置面板、工具栏、字体小网格
+│   │   ├── editor.css            # Markdown 编辑器模式样式
+│   │   ├── pulse-generator.css   # Pulse 波形生成器样式
+│   │   ├── pkt/pkt.css           # Packet Tracer 渲染样式
+│   │   ├── pptx.css              # PPTX 网格 + 放映样式
+│   │   └── themes/themes.css     # 7 种预设主题的 --color-* 覆盖
+│   ├── js/
+│   │   ├── settings.js           # 设置面板 + customColors + fontConfig
+│   │   ├── themes/theme-manager.js
+│   │   ├── markdown.js           # 渲染管线 + 图片灯箱
+│   │   ├── file-tree.js          # 侧边栏/搜索/索引
+│   │   ├── dom.js                # 按需加载 DOM 工具
+│   │   ├── storage.js            # IndexedDB 笔记本
+│   │   └── renderers/            # 12+ 个代码块/嵌入渲染器
+│   ├── vendor/                   # 本地化的前端依赖
+│   ├── data/                     # 预构建数据：file-tree/search-index/feed + pkt/ensp/pptx 产物
+│   ├── icons/                    # 各类 PNG 图标
+│   └── scripts/                  # 构建脚本（Node + Python）
+│       ├── build-file-tree.js
+│       ├── build-search-index.js
+│       ├── build-feed.js
+│       ├── pkt/main.py
+│       ├── ensp/main.py
+│       └── pptx/main.py
+├── docs/
+│   ├── features.md / getting-started.md
+│   ├── editor.md / configuration.md
+│   ├── theme-customization.md / code-highlight-theme.md
+│   ├── plugin-development.md / rss.md
+│   └── examples/                 # 27 篇功能示例
+└── .github/workflows/
+    ├── build-site.yml
+    ├── build-pkt.yml
+    └── build-pptx.yml
+```
