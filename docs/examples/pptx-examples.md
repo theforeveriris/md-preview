@@ -77,8 +77,6 @@ python3 iris/scripts/pptx/main.py --verbose --file my-deck.pptx
 ```
 ````
 
-渲染效果如下（示例为产品路线图，共 8 页 SVG 占位图）：
-
 ```pptx
 @[pptx](example)
 ```

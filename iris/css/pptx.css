@@ -38,7 +38,7 @@
   height: 32px;
   border-radius: 50%;
   border: 3px solid rgba(0, 0, 0, 0.08);
-  border-top-color: #8b5cf6;
+  border-top-color: var(--color-accent-purple, #8b5cf6);
   animation: pptx-spin 0.9s linear infinite;
 }
 @keyframes pptx-spin {
@@ -87,7 +87,7 @@
 .pptx-error-detail > summary::-webkit-details-marker { display: none; }
 .pptx-error-detail > summary::before {
   content: "▸ ";
-  color: #8b5cf6;
+  color: var(--color-accent-purple, #8b5cf6);
 }
 .pptx-error-detail[open] > summary::before {
   content: "▾ ";
@@ -101,7 +101,7 @@
   gap: 12px;
   padding: 14px 20px;
   border-bottom: 1px solid var(--border, #f1f1f3);
-  background: linear-gradient(180deg, rgba(139, 92, 246, 0.06), rgba(217, 70, 239, 0.02));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent-purple, #8b5cf6) 6%, transparent), color-mix(in srgb, var(--color-accent-pink, #f2c4ce) 2%, transparent));
 }
 .pptx-header__title {
   display: flex;
@@ -112,7 +112,7 @@
   color: var(--fg, #1f2937);
 }
 .pptx-header__title svg {
-  color: #8b5cf6;
+  color: var(--color-accent-purple, #8b5cf6);
 }
 .pptx-header__meta {
   font-size: 12px;
@@ -168,17 +168,17 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.0) 30%, rgba(139, 92, 246, 0.0) 70%);
+  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--color-accent-purple, #8b5cf6) 0%, transparent) 30%, color-mix(in srgb, var(--color-accent-purple, #8b5cf6) 0%, transparent) 70%);
   pointer-events: none;
   transition: background 0.18s ease;
 }
 .pptx-thumb-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(139, 92, 246, 0.14), 0 3px 8px rgba(0, 0, 0, 0.08);
-  border-color: #8b5cf6;
+  box-shadow: 0 10px 20px color-mix(in srgb, var(--color-accent-purple, #8b5cf6) 14%, transparent), 0 3px 8px rgba(0, 0, 0, 0.08);
+  border-color: var(--color-accent-purple, #8b5cf6);
 }
 .pptx-thumb-card:hover::after {
-  background: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.35) 0%, rgba(139, 92, 246, 0.0) 60%);
+  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--color-accent-purple, #8b5cf6) 35%, transparent) 0%, color-mix(in srgb, var(--color-accent-purple, #8b5cf6) 0%, transparent) 60%);
 }
 .pptx-thumb-card img {
   width: 100%;
