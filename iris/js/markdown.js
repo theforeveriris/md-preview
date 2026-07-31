@@ -357,27 +357,47 @@
 
   function interceptLinks(currentPath) {
     document.querySelectorAll('.markdown-body a').forEach(link => {
+      const href = link.getAttribute('href');
+      if (!href) return;
+
+      // 跳过外部 URL
+      if (href.startsWith('http://') || href.startsWith('https://') || href.startsWith('//')) return;
+
+      // 匹配内部 .md 链接（可带 #anchor 锚点）
+      const mdLinkMatch = href.match(/^([^#]*\.md)(#.*)?$/);
+      if (!mdLinkMatch) return;
+
+      const mdPath = mdLinkMatch[1];
+      const anchor = mdLinkMatch[2] || '';
+
+      let targetPath = mdPath;
+      if (!mdPath.startsWith('/') && currentPath) {
+        const currentDir = currentPath.split('/').slice(0, -1).join('/');
+        targetPath = currentDir ? `${currentDir}/${mdPath}` : mdPath;
+        targetPath = simplifyPath(targetPath);
+      }
+
+      if (targetPath.startsWith('/')) {
+        targetPath = targetPath.substring(1);
+      }
+
+      // 将 href 重写为 hash 路由格式，确保悬停、新标签打开、复制链接均得到正确 URL
+      link.setAttribute('href', '#/' + targetPath + anchor);
+
       link.addEventListener('click', (e) => {
-        const href = link.getAttribute('href');
-        if (!href) return;
-
-        if (href.endsWith('.md')) {
-          e.preventDefault();
-
-          let targetPath = href;
-          if (!href.startsWith('/') && currentPath) {
-            const currentDir = currentPath.split('/').slice(0, -1).join('/');
-            targetPath = currentDir ? `${currentDir}/${href}` : href;
-            targetPath = simplifyPath(targetPath);
+        e.preventDefault();
+        loadMarkdownFile(targetPath).then(() => {
+          if (anchor) {
+            const anchorId = anchor.substring(1);
+            setTimeout(() => {
+              const target = document.getElementById(anchorId);
+              if (target) {
+                target.scrollIntoView({ behavior: 'instant', block: 'start' });
+              }
+            }, 200);
           }
-
-          if (targetPath.startsWith('/')) {
-            targetPath = targetPath.substring(1);
-          }
-
-          loadMarkdownFile(targetPath);
-          window.MarkdownPreview.fileTree.highlightFileInSidebar(targetPath);
-        }
+        });
+        window.MarkdownPreview.fileTree.highlightFileInSidebar(targetPath);
       });
     });
   }
