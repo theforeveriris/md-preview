@@ -1,24 +1,26 @@
 # Markdown Preview
 
-[![made-with-javascript](https://img.shields.io/badge/Made%20with-JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![made-with-html5](https://img.shields.io/badge/Made%20with-HTML5-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
-[![made-with-css3](https://img.shields.io/badge/Made%20with-CSS3-1572B6?logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
-[![made-with-nodejs](https://img.shields.io/badge/Made%20with-Node.js-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
-[![made-with-python](https://img.shields.io/badge/Made%20with-Python-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![markdown](https://img.shields.io/badge/Markdown-000000?logo=markdown&logoColor=white)](https://daringfireball.net/projects/markdown/)
-[![marked](https://img.shields.io/badge/Powered%20by-Marked-brightgreen)](https://github.com/markedjs/marked)
-[![mermaid](https://img.shields.io/badge/Chart-Mermaid-FF3670?logo=mermaid)](https://mermaid.js.org/)
-[![plantuml](https://img.shields.io/badge/UML-PlantUML-1ABD1A)](https://plantuml.com/)
-[![apexcharts](https://img.shields.io/badge/Charts-ApexCharts-008FFB)](https://apexcharts.com/)
-[![katex](https://img.shields.io/badge/Math-KaTeX-008080)](https://katex.org/)
-[![highlight.js](https://img.shields.io/badge/Syntax-Highlight.js-519ABA?logo=hljs)](https://highlightjs.org/)
-[![cytoscape.js](https://img.shields.io/badge/Topology-Cytoscape.js-F7DF1E?logo=cytoscapedotjs&logoColor=black)](https://cytoscape.org/)
-[![leaflet](https://img.shields.io/badge/Map-Leaflet-199900?logo=leaflet&logoColor=white)](https://leafletjs.com/)
-[![pwa](https://img.shields.io/badge/PWA-Ready-5A0FC8?logo=pwa)](https://web.dev/progressive-web-apps/)
-[![github-pages](https://img.shields.io/badge/Deploy-GitHub%20Pages-222222?logo=githubpages)](https://pages.github.com/)
-[![github-actions](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/features/actions)
-[![license](https://img.shields.io/badge/License-AGPL--3.0-blue?logo=gnu)](./LICENSE)
-[![license-docs](https://img.shields.io/badge/Docs%20License-CC--BY--SA--4.0-EF9421?logo=creativecommons&logoColor=white)](./docs/LICENSE)
+<p align="center">
+  <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript"><img src="https://img.shields.io/badge/Made%20with-JavaScript-F7DF1E?logo=javascript&logoColor=black" alt="made-with-javascript"></a>
+  <a href="https://developer.mozilla.org/en-US/docs/Web/HTML"><img src="https://img.shields.io/badge/Made%20with-HTML5-E34F26?logo=html5&logoColor=white" alt="made-with-html5"></a>
+  <a href="https://developer.mozilla.org/en-US/docs/Web/CSS"><img src="https://img.shields.io/badge/Made%20with-CSS3-1572B6?logo=css3&logoColor=white" alt="made-with-css3"></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Made%20with-Node.js-339933?logo=nodedotjs&logoColor=white" alt="made-with-nodejs"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Made%20with-Python-3776AB?logo=python&logoColor=white" alt="made-with-python"></a>
+  <a href="https://daringfireball.net/projects/markdown/"><img src="https://img.shields.io/badge/Markdown-000000?logo=markdown&logoColor=white" alt="markdown"></a>
+  <a href="https://github.com/markedjs/marked"><img src="https://img.shields.io/badge/Powered%20by-Marked-brightgreen" alt="marked"></a>
+  <a href="https://mermaid.js.org/"><img src="https://img.shields.io/badge/Chart-Mermaid-FF3670?logo=mermaid" alt="mermaid"></a>
+  <a href="https://plantuml.com/"><img src="https://img.shields.io/badge/UML-PlantUML-1ABD1A" alt="plantuml"></a>
+  <a href="https://apexcharts.com/"><img src="https://img.shields.io/badge/Charts-ApexCharts-008FFB" alt="apexcharts"></a>
+  <a href="https://katex.org/"><img src="https://img.shields.io/badge/Math-KaTeX-008080" alt="katex"></a>
+  <a href="https://highlightjs.org/"><img src="https://img.shields.io/badge/Syntax-Highlight.js-519ABA?logo=hljs" alt="highlight.js"></a>
+  <a href="https://cytoscape.org/"><img src="https://img.shields.io/badge/Topology-Cytoscape.js-F7DF1E?logo=cytoscapedotjs&logoColor=black" alt="cytoscape.js"></a>
+  <a href="https://leafletjs.com/"><img src="https://img.shields.io/badge/Map-Leaflet-199900?logo=leaflet&logoColor=white" alt="leaflet"></a>
+  <a href="https://web.dev/progressive-web-apps/"><img src="https://img.shields.io/badge/PWA-Ready-5A0FC8?logo=pwa" alt="pwa"></a>
+  <a href="https://pages.github.com/"><img src="https://img.shields.io/badge/Deploy-GitHub%20Pages-222222?logo=githubpages" alt="github-pages"></a>
+  <a href="https://github.com/features/actions"><img src="https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white" alt="github-actions"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-blue?logo=gnu" alt="license"></a>
+  <a href="./docs/LICENSE"><img src="https://img.shields.io/badge/Docs%20License-CC--BY--SA--4.0-EF9421?logo=creativecommons&logoColor=white" alt="license-docs"></a>
+</p>
 
 一个~~极简~~**我流**风格的 Markdown 文档预览站点，专为 GitHub Pages 设计，完全静态，无需后端。
 
