@@ -187,6 +187,7 @@ python3 iris/scripts/pptx/main.py
 | `ensp-examples.md` | 华为 eNSP .topo/.zip 拓扑渲染 |
 | `pptx-examples.md` | PPTX 嵌入语法与放映示例 |
 | `pulse-examples.md` | DG-LAB 郊狼 `.pulse` 波形与迷你波形示例 |
+| `pulse-generator-page.md` | 郊狼波形批量生成特殊页面说明（`?mode=pulsegen`） |
 | `embed-examples.md` | YouTube / Bilibili / Figma / CodePen 嵌入 |
 | `twitter-embed-examples.md` | Twitter 推文嵌入 |
 | `plugin-demo.md` | 插件系统演示 |
@@ -238,21 +239,21 @@ python3 iris/scripts/pptx/main.py
 │       └── pptx/main.py      # PPTX → PDF → PNG/SVG 转换
 ├── docs/                   # 用户文档
 │   ├── editor.md
-│   ├── features.md
+│   ├── show.md             # 运行时截图展示
 │   ├── configuration.md
 │   ├── theme-customization.md
 │   ├── code-highlight-theme.md
 │   ├── plugin-development.md
 │   ├── rss.md
 │   ├── getting-started.md
-│   └── examples/           # 功能示例（27 篇）
+│   └── examples/           # 功能示例（27+ 篇）
 └── .github/workflows/      # GitHub Actions：build-site / build-pkt / build-pptx
 ```
 
 ## 文档
 
 - [快速开始](docs/getting-started.md)
-- [功能总览](docs/features.md)
+- [系统运行时截图](docs/show.md)
 - [编辑器说明](docs/editor.md)
 - [配置参考](docs/configuration.md)
 - [主题定制](docs/theme-customization.md)

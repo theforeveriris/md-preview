@@ -332,7 +332,7 @@ Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可�
 ## 相关文档
 
 - [快速开始](getting-started.md)
-- [功能总览](features.md)
+- [系统运行时截图](show.md)
 - [图片画廊布局](examples/gallery-layouts.md)
 - [Mermaid 示例](examples/mermaid-examples.md)
 - [LaTeX 示例](examples/latex-examples.md)
