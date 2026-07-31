@@ -316,6 +316,29 @@
   margin: 1.5em 0;
 }
 
+/* Badge row container (Shields/Badgen-style badge images) */
+.markdown-body .badge-row {
+  text-align: center;
+  line-height: 1;
+  margin: 1.2em 0 1.6em;
+}
+.markdown-body .badge-row a {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+.markdown-body .badge-row img {
+  display: inline-block;
+  height: 20px;
+  width: auto;
+  max-width: none;
+  margin: 2px 1px;
+  padding: 0;
+  border-radius: 0;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
 .reading-progress {
   position: fixed;
   bottom: 0;

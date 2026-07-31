@@ -1,6 +1,6 @@
 # Markdown Preview
 
-<p align="center">
+<div class="badge-row">
   <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript"><img src="https://img.shields.io/badge/Made%20with-JavaScript-F7DF1E?logo=javascript&logoColor=black" alt="made-with-javascript"></a>
   <a href="https://developer.mozilla.org/en-US/docs/Web/HTML"><img src="https://img.shields.io/badge/Made%20with-HTML5-E34F26?logo=html5&logoColor=white" alt="made-with-html5"></a>
   <a href="https://developer.mozilla.org/en-US/docs/Web/CSS"><img src="https://img.shields.io/badge/Made%20with-CSS3-1572B6?logo=css3&logoColor=white" alt="made-with-css3"></a>
@@ -20,7 +20,7 @@
   <a href="https://github.com/features/actions"><img src="https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white" alt="github-actions"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-blue?logo=gnu" alt="license"></a>
   <a href="./docs/LICENSE"><img src="https://img.shields.io/badge/Docs%20License-CC--BY--SA--4.0-EF9421?logo=creativecommons&logoColor=white" alt="license-docs"></a>
-</p>
+</div>
 
 一个~~极简~~**我流**风格的 Markdown 文档预览站点，专为 GitHub Pages 设计，完全静态，无需后端。
 
