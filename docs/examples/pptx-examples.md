@@ -77,10 +77,6 @@ python3 iris/scripts/pptx/main.py --verbose --file my-deck.pptx
 ```
 ````
 
-```pptx
-@[pptx](example)
-```
-
 > 提示：
 > - 点击任意缩略图即可从该页开始全屏放映
 > - 键盘：左方向键 / 右方向键 或 空格 翻页，ESC 关闭，Home / End 跳到首尾
