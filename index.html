@@ -279,6 +279,157 @@
               </div>
             </div>
 
+            <!-- 字体自定义 -->
+            <div class="settings-subsection">
+              <div class="settings-subsection-title">字体</div>
+
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label">远程字体 URL</div>
+                  <div class="setting-description">加载远程字体，支持 Google Fonts 样式的 CSS URL（例：https://fonts.googleapis.com/css2?family=Noto+Sans+SC）。回车或失去焦点后应用，留空则禁用</div>
+                </div>
+                <div class="setting-control">
+                  <input type="text" id="remoteFontUrl" class="custom-css-input" placeholder="https://fonts.googleapis.com/css2?family=...">
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label">展示字体族（标题等衬线体）</div>
+                  <div class="setting-description">设置 CSS font-family，多个字体用英文逗号分隔；远程字体加载完毕后可直接填字体名</div>
+                </div>
+                <div class="setting-control">
+                  <input type="text" id="fontFamilyDisplay" class="custom-css-input" placeholder="例如：'Noto Serif SC', Georgia, serif">
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label">正文字体族（UI/正文无衬线体）</div>
+                  <div class="setting-description">设置 CSS font-family，多个字体用英文逗号分隔</div>
+                </div>
+                <div class="setting-control">
+                  <input type="text" id="fontFamilyBody" class="custom-css-input" placeholder="例如：'Noto Sans SC', system-ui, sans-serif">
+                </div>
+              </div>
+
+              <div class="setting-item setting-item-block">
+                <div>
+                  <div class="setting-label">字号</div>
+                  <div class="setting-description">控制界面与 Markdown 正文字号（单位 px）</div>
+                </div>
+                <div class="setting-control control-grid">
+                  <label class="mini-field" title="UI 基础字号 (--font-size-body)">
+                    <span class="mini-label">UI 字号</span>
+                    <input type="number" id="fontSizeBody" min="10" max="28" step="1" class="mini-input">
+                  </label>
+                  <label class="mini-field" title="Markdown 正文基础字号 (--font-size-md)">
+                    <span class="mini-label">正文</span>
+                    <input type="number" id="fontSizeMd" min="12" max="32" step="1" class="mini-input">
+                  </label>
+                  <label class="mini-field" title="H1 (--font-size-h1)">
+                    <span class="mini-label">H1</span>
+                    <input type="number" id="fontSizeH1" min="20" max="72" step="1" class="mini-input">
+                  </label>
+                  <label class="mini-field" title="H2 (--font-size-h2)">
+                    <span class="mini-label">H2</span>
+                    <input type="number" id="fontSizeH2" min="16" max="56" step="1" class="mini-input">
+                  </label>
+                  <label class="mini-field" title="H3 (--font-size-h3)">
+                    <span class="mini-label">H3</span>
+                    <input type="number" id="fontSizeH3" min="14" max="48" step="1" class="mini-input">
+                  </label>
+                </div>
+              </div>
+
+              <div class="setting-item setting-item-block">
+                <div>
+                  <div class="setting-label">字重</div>
+                  <div class="setting-description">控制字体粗细（300 细 / 400 常规 / 500 中等 / 600 半粗 / 700 粗体）</div>
+                </div>
+                <div class="setting-control control-grid">
+                  <label class="mini-field" title="UI 基础字重">
+                    <span class="mini-label">UI</span>
+                    <select id="fontWeightBody" class="mini-input">
+                      <option value="300">300 细</option>
+                      <option value="400">400 常规</option>
+                      <option value="500">500 中等</option>
+                      <option value="600">600 半粗</option>
+                      <option value="700">700 粗</option>
+                    </select>
+                  </label>
+                  <label class="mini-field" title="Markdown 正文字重">
+                    <span class="mini-label">正文</span>
+                    <select id="fontWeightMd" class="mini-input">
+                      <option value="300">300 细</option>
+                      <option value="400">400 常规</option>
+                      <option value="500">500 中等</option>
+                      <option value="600">600 半粗</option>
+                      <option value="700">700 粗</option>
+                    </select>
+                  </label>
+                  <label class="mini-field" title="展示体字重">
+                    <span class="mini-label">展示体</span>
+                    <select id="fontWeightDisplay" class="mini-input">
+                      <option value="300">300 细</option>
+                      <option value="400">400 常规</option>
+                      <option value="500">500 中等</option>
+                      <option value="600">600 半粗</option>
+                      <option value="700">700 粗</option>
+                    </select>
+                  </label>
+                  <label class="mini-field" title="H1 字重">
+                    <span class="mini-label">H1</span>
+                    <select id="fontWeightH1" class="mini-input">
+                      <option value="400">400 常规</option>
+                      <option value="500">500 中等</option>
+                      <option value="600">600 半粗</option>
+                      <option value="700">700 粗</option>
+                      <option value="800">800 特粗</option>
+                    </select>
+                  </label>
+                  <label class="mini-field" title="H2 字重">
+                    <span class="mini-label">H2</span>
+                    <select id="fontWeightH2" class="mini-input">
+                      <option value="400">400 常规</option>
+                      <option value="500">500 中等</option>
+                      <option value="600">600 半粗</option>
+                      <option value="700">700 粗</option>
+                      <option value="800">800 特粗</option>
+                    </select>
+                  </label>
+                  <label class="mini-field" title="H3 字重">
+                    <span class="mini-label">H3</span>
+                    <select id="fontWeightH3" class="mini-input">
+                      <option value="400">400 常规</option>
+                      <option value="500">500 中等</option>
+                      <option value="600">600 半粗</option>
+                      <option value="700">700 粗</option>
+                      <option value="800">800 特粗</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+
+              <div class="setting-item setting-item-block">
+                <div>
+                  <div class="setting-label">字色</div>
+                  <div class="setting-description">主文字与次要文字颜色；强调色（链接、高亮等）在上方「自定义配色」调节</div>
+                </div>
+                <div class="setting-control color-picker-row">
+                  <label class="color-pick" title="正文字色 (--color-text)">
+                    <input type="color" id="fontColorText" data-var="--color-text" value="#2d2d2d">
+                    <span class="color-pick-label">正文</span>
+                  </label>
+                  <label class="color-pick" title="次要文字色 (--color-text-muted)">
+                    <input type="color" id="fontColorMuted" data-var="--color-text-muted" value="#999999">
+                    <span class="color-pick-label">次要</span>
+                  </label>
+                  <button class="color-reset-btn" id="resetFontBtn" type="button">重置字体</button>
+                </div>
+              </div>
+            </div>
+
             <div class="settings-subsection">
               <div class="settings-subsection-title">高级</div>
               <div class="setting-item">

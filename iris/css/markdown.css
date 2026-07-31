@@ -2,6 +2,9 @@
   max-width: 720px;
   margin: 0 auto;
   padding: 24px 40px 120px;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-md);
+  color: var(--color-text);
 }
 
 .welcome-state {
@@ -16,7 +19,7 @@
 .welcome-text {
   font-family: var(--font-display);
   font-size: 1.25rem;
-  font-weight: 400;
+  font-weight: var(--font-weight-display);
   font-style: italic;
   color: var(--color-text-muted);
 }
@@ -76,18 +79,20 @@
 }
 
 .markdown-body h1 {
-  font-size: 2.25rem;
-  font-weight: 600;
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-h1);
   border-bottom: 1px solid var(--color-border);
   padding-bottom: 0.5em;
 }
 
 .markdown-body h2 {
-  font-size: 1.75rem;
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-h2);
 }
 
 .markdown-body h3 {
-  font-size: 1.375rem;
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-h3);
 }
 
 .markdown-body h4 {

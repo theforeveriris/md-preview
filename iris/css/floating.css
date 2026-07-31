@@ -418,6 +418,48 @@
   color: var(--color-text);
 }
 
+/* 字体自定义：字号/字重小网格 */
+.control-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.mini-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 72px;
+}
+
+.mini-label {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  line-height: 1;
+}
+
+.mini-input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 13px;
+  line-height: 1.2;
+  transition: var(--transition-smooth);
+}
+
+.mini-input:hover {
+  border-color: var(--color-accent-purple);
+}
+
+.mini-input:focus {
+  outline: none;
+  border-color: var(--color-accent-purple);
+}
+
 @media (max-width: 600px) {
   .setting-control {
     width: 100%;
@@ -432,5 +474,9 @@
 
   .color-picker-row {
     justify-content: flex-start;
+  }
+
+  .mini-field {
+    flex: 1 1 calc(33.33% - 10px);
   }
 }

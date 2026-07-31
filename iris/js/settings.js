@@ -2,13 +2,15 @@
   window.MarkdownPreview = window.MarkdownPreview || {};
 
   const STORAGE_KEY = 'md-preview-settings';
+  const REMOTE_FONT_STYLE_ID = 'remote-font-stylesheet';
 
   const defaultSettings = {
     showReadingProgress: true,
     showWordCount: false,
     truncateFileNames: true,
     codeTheme: 'github',
-    customColors: {}
+    customColors: {},
+    fontConfig: {}
   };
 
   // 主题色默认值（与 base.css :root 保持一致）
@@ -24,11 +26,39 @@
     '--color-text-muted': '#999999'
   };
 
+  // 字体默认值（与 base.css / markdown.css :root 保持一致）
+  const defaultFontConfig = {
+    remoteFontUrl: '',
+    fontFamilyDisplay: "'Cormorant Garamond', Georgia, serif",
+    fontFamilyBody: "'IBM Plex Sans', -apple-system, sans-serif",
+    fontSizeBody: 16,
+    fontSizeMd: 18,
+    fontSizeH1: 36,   // 2.25rem → 约 36px (base 16)
+    fontSizeH2: 28,   // 1.75rem → 28px
+    fontSizeH3: 22,   // 1.375rem → 22px
+    fontWeightBody: '400',
+    fontWeightMd: '400',
+    fontWeightDisplay: '400',
+    fontWeightH1: '600',
+    fontWeightH2: '600',
+    fontWeightH3: '600'
+  };
+
   // 取色器分组：强调色 / 中性色。glow 是 rgba，需特殊处理
   const colorGroups = {
     accent: ['--color-accent-purple', '--color-accent-pink', '--color-accent-purple-deep'],
     neutral: ['--color-bg', '--color-surface', '--color-border', '--color-text', '--color-text-muted']
   };
+
+  // settings → fontConfig 读取，合并默认值
+  function normalizeFontConfig(cfg) {
+    cfg = cfg && typeof cfg === 'object' ? cfg : {};
+    const out = {};
+    Object.keys(defaultFontConfig).forEach(k => {
+      out[k] = cfg[k] != null ? cfg[k] : defaultFontConfig[k];
+    });
+    return out;
+  }
 
   function loadSettings() {
     try {
@@ -41,13 +71,17 @@
           showWordCount: parsed.showWordCount ?? defaultSettings.showWordCount,
           truncateFileNames: parsed.truncateFileNames ?? defaultSettings.truncateFileNames,
           codeTheme: parsed.codeTheme ?? defaultSettings.codeTheme,
-          customColors: (parsed.customColors && typeof parsed.customColors === 'object') ? parsed.customColors : {}
+          customColors: (parsed.customColors && typeof parsed.customColors === 'object') ? parsed.customColors : {},
+          fontConfig: normalizeFontConfig(parsed.fontConfig)
         };
       }
     } catch (e) {
       console.error('Failed to load settings:', e);
     }
-    return defaultSettings;
+    return {
+      ...defaultSettings,
+      fontConfig: normalizeFontConfig(defaultFontConfig)
+    };
   }
 
   function saveSettings(settings) {
@@ -211,6 +245,9 @@
 
     const resetColorsBtn = document.getElementById('resetColorsBtn');
     resetColorsBtn?.addEventListener('click', resetCustomColors);
+
+    // 字体自定义
+    bindFontControls();
   }
 
   function applyCodeTheme(theme) {
@@ -244,6 +281,136 @@
       const input = document.querySelector(`input[type="color"][data-var="${varName}"]`);
       if (input) input.value = defaultColors[varName];
     });
+  }
+
+  // ---------- 远程字体加载（Google Fonts 等 CSS URL）----------
+  function applyRemoteFont(url) {
+    const existing = document.getElementById(REMOTE_FONT_STYLE_ID);
+    if (existing) existing.remove();
+    const trimmed = (url || '').trim();
+    if (!trimmed) return;
+    const link = document.createElement('link');
+    link.id = REMOTE_FONT_STYLE_ID;
+    link.rel = 'stylesheet';
+    link.href = trimmed;
+    link.onerror = () => console.warn('[font] Remote font CSS failed to load:', trimmed);
+    document.head.appendChild(link);
+  }
+
+  // 应用字体配置到 :root / body
+  function applyFontConfig(fontCfg) {
+    const cfg = normalizeFontConfig(fontCfg || {});
+    const root = document.documentElement;
+
+    // 1) 远程字体 CSS
+    applyRemoteFont(cfg.remoteFontUrl);
+
+    // 2) font-family
+    if (cfg.fontFamilyDisplay) root.style.setProperty('--font-display', cfg.fontFamilyDisplay);
+    else root.style.removeProperty('--font-display');
+    if (cfg.fontFamilyBody) root.style.setProperty('--font-body', cfg.fontFamilyBody);
+    else root.style.removeProperty('--font-body');
+
+    // 3) font-size（带 px 单位，H1~H3 直接 px 绝对尺寸，避免受 body 字号放大再缩放）
+    setPxProp(root, '--font-size-body', cfg.fontSizeBody);
+    setPxProp(root, '--font-size-md', cfg.fontSizeMd);
+    setPxProp(root, '--font-size-h1', cfg.fontSizeH1);
+    setPxProp(root, '--font-size-h2', cfg.fontSizeH2);
+    setPxProp(root, '--font-size-h3', cfg.fontSizeH3);
+
+    // 4) font-weight
+    setProp(root, '--font-weight-body', cfg.fontWeightBody);
+    setProp(root, '--font-weight-md', cfg.fontWeightMd);
+    setProp(root, '--font-weight-display', cfg.fontWeightDisplay);
+    setProp(root, '--font-weight-h1', cfg.fontWeightH1);
+    setProp(root, '--font-weight-h2', cfg.fontWeightH2);
+    setProp(root, '--font-weight-h3', cfg.fontWeightH3);
+  }
+
+  function setPxProp(root, varName, val) {
+    const n = Number(val);
+    if (Number.isFinite(n) && n > 0) {
+      root.style.setProperty(varName, `${n}px`);
+    } else {
+      root.style.removeProperty(varName);
+    }
+  }
+  function setProp(root, varName, val) {
+    if (val != null && val !== '') {
+      root.style.setProperty(varName, String(val));
+    } else {
+      root.style.removeProperty(varName);
+    }
+  }
+
+  // 重置字体为默认值
+  function resetFontConfig() {
+    const settings = loadSettings();
+    settings.fontConfig = normalizeFontConfig(defaultFontConfig);
+    saveSettings(settings);
+    applyFontConfig(settings.fontConfig);
+    // 同步 UI
+    populateFontControls(settings.fontConfig);
+  }
+
+  // 把字体配置值回填到 UI
+  function populateFontControls(cfg) {
+    const setVal = (id, v) => {
+      const el = document.getElementById(id);
+      if (el) el.value = (v ?? '');
+    };
+    setVal('remoteFontUrl', cfg.remoteFontUrl || '');
+    setVal('fontFamilyDisplay', cfg.fontFamilyDisplay || '');
+    setVal('fontFamilyBody', cfg.fontFamilyBody || '');
+    setVal('fontSizeBody', cfg.fontSizeBody);
+    setVal('fontSizeMd', cfg.fontSizeMd);
+    setVal('fontSizeH1', cfg.fontSizeH1);
+    setVal('fontSizeH2', cfg.fontSizeH2);
+    setVal('fontSizeH3', cfg.fontSizeH3);
+    setVal('fontWeightBody', cfg.fontWeightBody);
+    setVal('fontWeightMd', cfg.fontWeightMd);
+    setVal('fontWeightDisplay', cfg.fontWeightDisplay);
+    setVal('fontWeightH1', cfg.fontWeightH1);
+    setVal('fontWeightH2', cfg.fontWeightH2);
+    setVal('fontWeightH3', cfg.fontWeightH3);
+  }
+
+  // 绑定字体 UI 到设置
+  function bindFontControls() {
+    const settings = loadSettings();
+    populateFontControls(settings.fontConfig);
+
+    const updateFont = (patch) => {
+      const s = loadSettings();
+      s.fontConfig = normalizeFontConfig({ ...s.fontConfig, ...patch });
+      saveSettings(s);
+      applyFontConfig(s.fontConfig);
+    };
+
+    // 文本类：回车或失焦保存
+    ['remoteFontUrl', 'fontFamilyDisplay', 'fontFamilyBody'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const commit = () => updateFont({ [id]: el.value });
+      el.addEventListener('keydown', (e) => { if (e.key === 'Enter') commit(); });
+      el.addEventListener('blur', commit);
+    });
+
+    // 字号 / 字重：变化即实时保存
+    ['fontSizeBody', 'fontSizeMd', 'fontSizeH1', 'fontSizeH2', 'fontSizeH3'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input', () => updateFont({ [id]: el.value }));
+    });
+    ['fontWeightBody', 'fontWeightMd', 'fontWeightDisplay',
+     'fontWeightH1', 'fontWeightH2', 'fontWeightH3'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('change', () => updateFont({ [id]: el.value }));
+    });
+
+    // 重置按钮
+    document.getElementById('resetFontBtn')?.addEventListener('click', resetFontConfig);
   }
 
   function openSettingsPanel() {
@@ -374,6 +541,7 @@
     toggleTruncateFileNames(settings.truncateFileNames);
     applyCodeTheme(settings.codeTheme);
     applyCustomColors(settings.customColors || {});
+    applyFontConfig(settings.fontConfig || defaultFontConfig);
 
     const showReadingProgressToggle = document.getElementById('showReadingProgressToggle');
     const showWordCountToggle = document.getElementById('showWordCountToggle');

@@ -11,6 +11,18 @@
   --index-guide-color: rgb(from var(--color-text) r g b / .2);
   --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+  /* ---------- 可自定义字体相关变量 ---------- */
+  --font-size-body: 16px;     /* body 基础字号 */
+  --font-size-md: 18px;       /* markdown 正文基础字号 */
+  --font-size-h1: 2.25rem;
+  --font-size-h2: 1.75rem;
+  --font-size-h3: 1.35rem;
+  --font-weight-body: 400;    /* body 基础字重 */
+  --font-weight-md: 400;      /* markdown 正文字重 */
+  --font-weight-h1: 600;
+  --font-weight-h2: 600;
+  --font-weight-h3: 600;
+  --font-weight-display: 400; /* 衬线展示体字重 */
   --sidebar-width: 280px;
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -27,11 +39,11 @@ html {
 
 body {
   font-family: var(--font-body);
-  font-size: 16px;
+  font-size: var(--font-size-body);
   line-height: 1.7;
   color: var(--color-text);
   background: var(--color-bg);
-  font-weight: 400;
+  font-weight: var(--font-weight-body);
   letter-spacing: 0.01em;
 }
 
