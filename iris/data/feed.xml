@@ -5,13 +5,13 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 31 Jul 2026 12:45:25 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 31 Jul 2026 14:06:05 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>PPTX 演示嵌入示例</title>
       <link>https://theforeveriris.github.io/md-preview/#/docs/examples/pptx-examples.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/#/docs/examples/pptx-examples.md</guid>
-      <pubDate>Fri, 31 Jul 2026 12:45:12 GMT</pubDate>
+      <pubDate>Fri, 31 Jul 2026 14:05:41 GMT</pubDate>
       <description>本站点支持在 Markdown 文档中嵌入 PPT 与 PPTX 演示文稿（预处理产物方案，与 / 拓扑嵌入完全同风格）。 与 PDF/PPTX 在前端动态解码相比，「提前导出每页图片 + 元数据 JSON」有以下优势： | 方案 | 首屏速度 | 依赖体积 | 兼容性 | 可搜索 | |---|---|---|---|---| | 前端实时解码 PPTX | 慢（多 MB 级解码库） | 重 |</description>
     </item>
     <item>
