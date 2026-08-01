@@ -90,22 +90,9 @@
     { trigger: '@', label: '@slider', desc: '画廊·幻灯片', insert: '@slider\n', replaceLength: 1 },
     { trigger: '@', label: '@ticket', desc: '画廊·票根', insert: '@ticket\n', replaceLength: 1 },
     { trigger: '@', label: '@panorama', desc: '画廊·全景横幅', insert: '@panorama\n', replaceLength: 1 },
-    // @ 外部嵌入
-    { trigger: '@', label: '@[youtube](ID)', desc: '嵌入·YouTube', insert: '@[youtube](dQw4w9WgXcQ)', replaceLength: 1 },
-    { trigger: '@', label: '@[bilibili](BV)', desc: '嵌入·Bilibili', insert: '@[bilibili](BV1xx411c7mD)', replaceLength: 1 },
-    { trigger: '@', label: '@[vimeo](ID)', desc: '嵌入·Vimeo', insert: '@[vimeo](76979871)', replaceLength: 1 },
-    { trigger: '@', label: '@[twitter](URL)', desc: '嵌入·Twitter/X', insert: '@[twitter](https://twitter.com/user/status/123)', replaceLength: 1 },
-    { trigger: '@', label: '@[gist](URL)', desc: '嵌入·GitHub Gist', insert: '@[gist](https://gist.github.com/user/id)', replaceLength: 1 },
-    { trigger: '@', label: '@[codepen](URL)', desc: '嵌入·CodePen', insert: '@[codepen](https://codepen.io/user/pen/abc)', replaceLength: 1 },
-    { trigger: '@', label: '@[jsfiddle](URL)', desc: '嵌入·JSFiddle', insert: '@[jsfiddle](https://jsfiddle.net/user/abc/)', replaceLength: 1 },
-    { trigger: '@', label: '@[stackblitz](URL)', desc: '嵌入·StackBlitz', insert: '@[stackblitz](https://stackblitz.com/edit/user-project)', replaceLength: 1 },
-    { trigger: '@', label: '@[replit](URL)', desc: '嵌入·Replit', insert: '@[replit](https://replit.com/@user/project)', replaceLength: 1 },
-    { trigger: '@', label: '@[figma](URL)', desc: '嵌入·Figma', insert: '@[figma](https://www.figma.com/file/abc/Design)', replaceLength: 1 },
-    { trigger: '@', label: '@[googlemaps](URL)', desc: '嵌入·Google Maps', insert: '@[googlemaps](https://www.google.com/maps/place/Beijing)', replaceLength: 1 },
-    { trigger: '@', label: '@[openstreetmap](URL)', desc: '嵌入·OpenStreetMap', insert: '@[openstreetmap](https://www.openstreetmap.org/?mlat=39.9&mlon=116.4#map=12)', replaceLength: 1 },
-    { trigger: '@', label: '@[googledocs](URL)', desc: '嵌入·Google Docs', insert: '@[googledocs](https://docs.google.com/document/d/abc/edit)', replaceLength: 1 },
-    { trigger: '@', label: '@[pkt](name)', desc: '嵌入·PT 拓扑', insert: '@[pkt](example)', replaceLength: 1 },
-    { trigger: '@', label: '@[pptx](slug)', desc: '嵌入·PPTX 演示', insert: '@[pptx](example)', replaceLength: 1 },
+    // 注：@[service] 嵌入语法必须包裹在 ```embed 代码块中，统一在 ``` 触发补全中提供
+    // @tab 代码选项卡分隔符
+    { trigger: '@', label: '@tab 名称', desc: 'code-tabs 选项卡分隔', insert: '@tab ', replaceLength: 1 },
     // ``` 代码块语言
     { trigger: '```', label: '```mermaid', desc: 'Mermaid 流程图', insert: '```mermaid\nflowchart TD\n    A --> B\n```', replaceLength: 3 },
     { trigger: '```', label: '```mermaid 时序图', desc: 'sequenceDiagram', insert: '```mermaid\nsequenceDiagram\n    Alice->>Bob: Hello\n    Bob-->>Alice: Hi\n```', replaceLength: 3 },
@@ -139,12 +126,16 @@
     { trigger: '```', label: '```apexcharts 气泡图', desc: 'ApexCharts bubble', insert: '```apexcharts\n{"chart":{"type":"bubble"},"series":[{"data":[[1,30,10],[2,40,15]]}]}\n```', replaceLength: 3 },
     { trigger: '```', label: '```apexcharts 极坐标', desc: 'ApexCharts polarArea', insert: '```apexcharts\n{"chart":{"type":"polarArea"},"series":[14,23,21,17]}\n```', replaceLength: 3 },
     { trigger: '```', label: '```pptx', desc: '嵌入 PPTX 演示', insert: '```pptx\n@[pptx](example)\n```', replaceLength: 3 },
+    { trigger: '```', label: '```pkt', desc: '嵌入 PT 拓扑', insert: '```pkt\n@[pkt](example)\n```', replaceLength: 3 },
+    { trigger: '```', label: '```pkt (ensp)', desc: '嵌入 eNSP 拓扑', insert: '```pkt\n@[ensp](example)\n```', replaceLength: 3 },
+    { trigger: '```', label: '```embed', desc: '外部内容嵌入', insert: '```embed\n@[youtube](dQw4w9WgXcQ)\n```', replaceLength: 3 },
     { trigger: '```', label: '```diff', desc: 'Diff 差异', insert: '```diff\n+ 新增\n- 删除\n```', replaceLength: 3 },
     { trigger: '```', label: '```geo', desc: '坐标地图', insert: '```geo\n{"lat":39.9042,"lng":116.4074,"zoom":12}\n```', replaceLength: 3 },
     { trigger: '```', label: '```geojson', desc: 'GeoJSON 地图', insert: '```geojson\n{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"name":"点"},"geometry":{"type":"Point","coordinates":[116.4,39.9]}}]}\n```', replaceLength: 3 },
     { trigger: '```', label: '```topojson', desc: 'TopoJSON 地图', insert: '```topojson\n{"type":"Topology","objects":{},"arcs":[]}\n```', replaceLength: 3 },
     { trigger: '```', label: '```qrcode', desc: '二维码', insert: '```qrcode\nhttps://github.com\n```', replaceLength: 3 },
-    { trigger: '```', label: '```abc', desc: 'ABC 乐谱', insert: '```abc\nX:1\nT:曲名\nM:4/4\nL:1/4\nK:C\nC D E F|G A B c|\n```', replaceLength: 3 },
+    { trigger: '```', label: '```colorcard', desc: '颜色卡片', insert: '```colorcard\n#FF6B6B\n#4ECDC4\n#45B7D1\n```', replaceLength: 3 },
+    { trigger: '```', label: '```countdown', desc: '倒计时', insert: '```countdown\n2025-12-31T23:59:59\n```', replaceLength: 3 },
     { trigger: '```', label: '```javascript', desc: 'JavaScript', insert: '```javascript\n\n```', replaceLength: 3 },
     { trigger: '```', label: '```python', desc: 'Python', insert: '```python\n\n```', replaceLength: 3 },
     { trigger: '```', label: '```bash', desc: 'Shell', insert: '```bash\n\n```', replaceLength: 3 },
@@ -191,8 +182,15 @@
     // --- 水平线 / Frontmatter
     { trigger: '---', label: '--- 水平分割线', desc: 'Horizontal rule', insert: '---\n', replaceLength: 3 },
     { trigger: '---', label: '--- Frontmatter', desc: 'YAML 文档头', insert: '---\ntitle: \ndate: \n---\n', replaceLength: 3 },
-    // > 普通引用
+    // > 普通引用触发
     { trigger: '>', label: '> 引用', desc: 'Blockquote', insert: '> ', replaceLength: 1 },
+    // ::: 容器（code-tabs / columns）
+    { trigger: ':::', label: '::: code-tabs', desc: '代码选项卡', insert: '::: code-tabs\n@tab 选项卡 A\n\n内容 A\n\n@tab 选项卡 B\n\n内容 B\n\n:::\n', replaceLength: 3 },
+    { trigger: ':::', label: '::: columns', desc: '多列布局', insert: '::: columns\n\n::: column 标题一\n\n第一栏内容\n\n::: column 标题二\n\n第二栏内容\n\n:::\n', replaceLength: 3 },
+    // || 剧透
+    { trigger: '||', label: '||剧透||', desc: '剧透/遮罩', insert: '||剧透内容||', replaceLength: 2 },
+    // [pulse DG-LAB 波形
+    { trigger: '[pulse', label: '[pulse]...[/pulse]', desc: 'DG-LAB 波形', insert: '[pulse title="标题"]\nDungeonlab+pulse:0,1,16=10,10,10,1,0/50-1,50-1,50-1,50-1\n[/pulse]', replaceLength: 6 },
     // $$ KaTeX 公式块
     { trigger: '$$', label: '$$ 公式块', desc: 'KaTeX block', insert: '$$\n\n$$', replaceLength: 2 },
     // ![ 图片
@@ -233,6 +231,140 @@
   const imageUploadBtn = document.getElementById('imageUploadBtn');
   const imageUploadPopover = document.getElementById('imageUploadPopover');
 
+  // ============== 双屏编辑模式 ==============
+  // 将某个 Cell 的 CodeMirror host 移动到双屏 overlay 左侧，右侧实时预览渲染结果。
+  // 退出时把 host 移回原 Cell，CodeMirror 实例与撤销栈保持不变，其它 Cell 完全不受影响。
+  const dualPaneOverlay = document.getElementById('dualPaneOverlay');
+  const dualPaneLeft = document.getElementById('dualPaneLeft');
+  const dualPaneRight = document.getElementById('dualPaneRight');
+  const dualPanePreview = document.getElementById('dualPanePreview');
+  const dualPaneCellNum = document.getElementById('dualPaneCellNum');
+  const dualPaneCloseBtn = document.getElementById('dualPaneCloseBtn');
+  const dualPaneSyncBtn = document.getElementById('dualPaneSyncBtn');
+  const dualPaneDivider = document.getElementById('dualPaneDivider');
+
+  let dualPaneState = null; // { cell, originalHostParent, inputHandler, escHandler }
+
+  function renderDualPanePreview(content) {
+    if (!dualPaneState) return;
+    // 复用 Cell 渲染管线：parseMarkdown + 画廊/代码高亮 + 各渲染器
+    renderCellMarkdown(content, dualPanePreview);
+  }
+
+  function openDualPane(id) {
+    const cell = getCell(id);
+    if (!cell) return;
+    if (dualPaneState) closeDualPane(); // 防止重复打开
+
+    const cmHost = cell.div.querySelector('.cell-cm-host');
+    const originalHostParent = cmHost.parentElement; // .cell-editor-wrap
+
+    dualPaneCellNum.textContent = id;
+    // 把 CodeMirror host 移入左侧（实例不变，撤销栈保留）
+    dualPaneLeft.appendChild(cmHost);
+
+    // 初始渲染一次
+    renderDualPanePreview(cell.textarea.value);
+
+    // 输入时实时预览（防抖 250ms，避免渲染器频繁重入）
+    let debounceTimer = null;
+    const inputHandler = () => {
+      updateCellMeta(cell);
+      markUnsaved();
+      updateStatusbar();
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        renderDualPanePreview(cell.textarea.value);
+      }, 250);
+    };
+    cell.textarea.addEventListener('input', inputHandler);
+
+    // Esc 退出
+    const escHandler = (e) => {
+      if (e.key === 'Escape' && dualPaneState) {
+        e.preventDefault();
+        closeDualPane();
+      }
+    };
+    document.addEventListener('keydown', escHandler);
+
+    dualPaneState = { cell, cmHost, originalHostParent, inputHandler, escHandler, debounceTimer: null };
+
+    dualPaneOverlay.classList.add('visible');
+    document.body.classList.add('dual-pane-active');
+
+    // CodeMirror 重新挂载后需要重新测量视口，延迟 focus 触发刷新
+    setTimeout(() => {
+      try { cell.textarea.focus(); } catch (e) {}
+    }, 50);
+  }
+
+  function closeDualPane() {
+    if (!dualPaneState) return;
+    const { cell, cmHost, originalHostParent, inputHandler, escHandler, debounceTimer } = dualPaneState;
+    if (debounceTimer) clearTimeout(debounceTimer);
+
+    cell.textarea.removeEventListener('input', inputHandler);
+    document.removeEventListener('keydown', escHandler);
+
+    // 把 CodeMirror host 移回原 Cell 的编辑区容器
+    if (cmHost && originalHostParent) {
+      originalHostParent.appendChild(cmHost);
+    }
+
+    // 清空预览区，避免残留渲染器实例/监听
+    dualPanePreview.innerHTML = '';
+
+    dualPaneOverlay.classList.remove('visible');
+    document.body.classList.remove('dual-pane-active');
+
+    dualPaneState = null;
+
+    // 移回后重新测量 CodeMirror
+    setTimeout(() => {
+      try { cell.textarea.focus(); } catch (e) {}
+    }, 50);
+  }
+
+  dualPaneCloseBtn.addEventListener('click', closeDualPane);
+
+  // 同步滚动：左侧滚动时，右侧按比例滚动
+  let syncScrollEnabled = true;
+  dualPaneSyncBtn.addEventListener('click', () => {
+    syncScrollEnabled = !syncScrollEnabled;
+    dualPaneSyncBtn.classList.toggle('active', syncScrollEnabled);
+  });
+  dualPaneLeft.addEventListener('scroll', () => {
+    if (!syncScrollEnabled || !dualPaneState) return;
+    const ratio = dualPaneLeft.scrollTop / Math.max(1, dualPaneLeft.scrollHeight - dualPaneLeft.clientHeight);
+    dualPaneRight.scrollTop = ratio * Math.max(1, dualPaneRight.scrollHeight - dualPaneRight.clientHeight);
+  });
+
+  // 拖拽分隔条调整左右宽度
+  let dragResizing = false;
+  dualPaneDivider.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    dragResizing = true;
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  });
+  document.addEventListener('mousemove', (e) => {
+    if (!dragResizing) return;
+    const rect = dualPaneOverlay.querySelector('.dual-pane-body').getBoundingClientRect();
+    let leftWidth = e.clientX - rect.left;
+    // 限制最小宽度，避免某一侧消失
+    leftWidth = Math.max(160, Math.min(rect.width - 160, leftWidth));
+    const leftPct = (leftWidth / rect.width) * 100;
+    dualPaneLeft.style.flex = '0 0 ' + leftPct + '%';
+    dualPaneRight.style.flex = '1 1 ' + (100 - leftPct) + '%';
+  });
+  document.addEventListener('mouseup', () => {
+    if (!dragResizing) return;
+    dragResizing = false;
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+  });
+
   // ============== Cell 管理 ==============
 
   function createCell(afterCellId, initialContent, opts) {
@@ -258,6 +390,7 @@
         </div>
         <div class="cell-header-right">
           <button class="cell-action-btn cell-run-btn" data-cell-id="${id}" title="运行 (Ctrl+Enter)"><svg class="ico ico-sm"><use href="#i-play"/></svg></button>
+          <button class="cell-action-btn cell-split-btn" data-cell-id="${id}" title="双屏编辑"><svg class="ico ico-sm"><use href="#i-split"/></svg></button>
           <button class="cell-action-btn cell-collapse-btn" data-cell-id="${id}" title="折叠/展开"><svg class="ico ico-sm"><use href="#i-chevron-right"/></svg></button>
           <button class="cell-action-btn cell-up-btn" data-cell-id="${id}" title="上移"><svg class="ico ico-sm"><use href="#i-arrow-up"/></svg></button>
           <button class="cell-action-btn cell-down-btn" data-cell-id="${id}" title="下移"><svg class="ico ico-sm"><use href="#i-arrow-down"/></svg></button>
@@ -361,6 +494,7 @@
     });
 
     div.querySelector('.cell-run-btn').addEventListener('click', () => runCell(id));
+    div.querySelector('.cell-split-btn').addEventListener('click', () => openDualPane(id));
     div.querySelector('.cell-delete-btn').addEventListener('click', () => deleteCell(id));
     div.querySelector('.cell-up-btn').addEventListener('click', () => moveCell(id, -1));
     div.querySelector('.cell-down-btn').addEventListener('click', () => moveCell(id, 1));
@@ -1084,6 +1218,15 @@
     else if (lineBeforeCursor.match(/^>\s?$/) && !lineBeforeCursor.includes('[')) {
       showAutocomplete(textarea, '', '>', lineStart, lineBeforeCursor.length);
     }
+    // ::: 容器触发（code-tabs / columns）
+    else if (lineBeforeCursor.match(/^:::\s*\w*$/)) {
+      const filter = lineBeforeCursor.substring(3).trim();
+      showAutocomplete(textarea, filter, ':::', lineStart, lineBeforeCursor.length);
+    }
+    // || 剧透触发
+    else if (lineBeforeCursor.match(/^\|\|$/)) {
+      showAutocomplete(textarea, '', '||', lineStart, 2);
+    }
     // --- 水平线 / Frontmatter 触发（3 个以上 -）
     else if (lineBeforeCursor.match(/^-{3,}$/)) {
       showAutocomplete(textarea, '', '---', lineStart, lineBeforeCursor.length);
@@ -1111,6 +1254,10 @@
     // [ 链接触发（单个 [）
     else if (lineBeforeCursor.match(/^\[$/)) {
       showAutocomplete(textarea, '', '[', lineStart, 1);
+    }
+    // [pulse DG-LAB 波形触发
+    else if (lineBeforeCursor.match(/^\[pulse\w*$/)) {
+      showAutocomplete(textarea, '', '[pulse', lineStart, lineBeforeCursor.length);
     }
     // @ 画廊样式触发
     else if (lineBeforeCursor.match(/^@\w*$/)) {

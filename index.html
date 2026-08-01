@@ -69,6 +69,8 @@
     <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
     <symbol id="i-quote" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h4v6a4 4 0 0 1-4 4M13 7h4v6a4 4 0 0 1-4 4"/></symbol>
     <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-split" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></symbol>
   </svg>
   <div class="progress-bar" id="progressBar"></div>
   
@@ -667,7 +669,6 @@
               <button class="dropdown-item" data-insert="***粗斜体***" data-cursor="-6">粗斜体</button>
               <button class="dropdown-item" data-insert="~~删除线~~" data-cursor="-4">删除线</button>
               <button class="dropdown-item" data-insert="`行内代码`" data-cursor="-2">行内代码 <kbd>Ctrl+`</kbd></button>
-              <button class="dropdown-item" data-insert="==高亮==" data-cursor="-4">高亮标记</button>
             </div>
             <div class="dropdown-group">
               <div class="dropdown-group-title">列表</div>
@@ -805,6 +806,19 @@
               <button class="dropdown-item" data-insert="---\ntitle: \ndate: \ntags: []\n---\n" data-cursor="-5">Frontmatter 头信息</button>
               <button class="dropdown-item" data-insert="<!-- TOC -->\n- [标题1](#标题1)\n- [标题2](#标题2)\n<!-- /TOC -->\n" data-cursor="-1">目录 TOC</button>
             </div>
+            <div class="dropdown-group">
+              <div class="dropdown-group-title">布局容器</div>
+              <button class="dropdown-item" data-insert="::: code-tabs\n@tab 选项卡 A\n\n内容 A\n\n@tab 选项卡 B\n\n内容 B\n\n:::\n" data-cursor="-6">代码选项卡 code-tabs</button>
+              <button class="dropdown-item" data-insert="::: columns\n\n::: column 标题一\n\n第一栏内容\n\n::: column 标题二\n\n第二栏内容\n\n:::\n" data-cursor="-6">多列布局 columns</button>
+            </div>
+            <div class="dropdown-group">
+              <div class="dropdown-group-title">行内标记</div>
+              <button class="dropdown-item" data-insert="||剧透内容||" data-cursor="-2">剧透/遮罩 spoiler</button>
+            </div>
+            <div class="dropdown-group">
+              <div class="dropdown-group-title">DG-LAB 波形</div>
+              <button class="dropdown-item" data-insert="[pulse title=&quot;标题&quot;]\nDungeonlab+pulse:0,1,16=10,10,10,1,0/50-1,50-1,50-1,50-1\n[/pulse]" data-cursor="-9">波形 pulse</button>
+            </div>
           </div>
         </div>
 
@@ -871,7 +885,12 @@
               <button class="dropdown-item" data-insert="$$\n\\sum_{i=1}^{n} i = \\frac{n(n+1)}{2}\n$$" data-cursor="-4">求和与极限</button>
               <button class="dropdown-item" data-insert="```qrcode\nhttps://github.com\n```" data-cursor="-6">二维码</button>
               <button class="dropdown-item" data-insert="```qrcode\n{&quot;data&quot;:&quot;https://github.com&quot;,&quot;size&quot;:180}\n```" data-cursor="-6">二维码（自定义尺寸）</button>
-              <button class="dropdown-item" data-insert="```abc\nX:1\nT:曲名\nM:4/4\nL:1/4\nK:C\nC D E F|G A B c|\n```" data-cursor="-6">ABC 乐谱</button>
+            </div>
+            <div class="dropdown-group">
+              <div class="dropdown-group-title">插件</div>
+              <button class="dropdown-item" data-insert="```colorcard\n#FF6B6B\n#4ECDC4\n#45B7D1\n#FFA07A\n#98D8C8\n```" data-cursor="-6">颜色卡片 colorcard</button>
+              <button class="dropdown-item" data-insert="```countdown\n2025-12-31T23:59:59\n```" data-cursor="-6">倒计时 countdown</button>
+              <button class="dropdown-item" data-insert="```countdown\n1d2h30m\n```" data-cursor="-6">倒计时（相对时长）</button>
             </div>
             <div class="dropdown-group">
               <div class="dropdown-group-title">地理</div>
@@ -932,35 +951,41 @@
           <div class="dropdown-menu" id="dropdownEmbed">
             <div class="dropdown-group">
               <div class="dropdown-group-title">视频</div>
-              <button class="dropdown-item" data-insert="@[youtube](dQw4w9WgXcQ)">YouTube</button>
-              <button class="dropdown-item" data-insert="@[bilibili](BV1xx411c7mD)">Bilibili</button>
-              <button class="dropdown-item" data-insert="@[vimeo](76979871)">Vimeo</button>
+              <button class="dropdown-item" data-insert="```embed\n@[youtube](dQw4w9WgXcQ)\n```" data-cursor="-5">YouTube</button>
+              <button class="dropdown-item" data-insert="```embed\n@[bilibili](BV1xx411c7mD)\n```" data-cursor="-5">Bilibili</button>
+              <button class="dropdown-item" data-insert="```embed\n@[vimeo](76979871)\n```" data-cursor="-5">Vimeo</button>
             </div>
             <div class="dropdown-group">
               <div class="dropdown-group-title">社交</div>
-              <button class="dropdown-item" data-insert="@[twitter](https://twitter.com/elk/status/20)">Twitter / X 推文</button>
-              <button class="dropdown-item" data-insert="@[twitter](https://twitter.com/elk)">Twitter 用户时间线</button>
-              <button class="dropdown-item" data-insert="@[gist](https://gist.github.com/user/gist_id)">GitHub Gist</button>
+              <button class="dropdown-item" data-insert="```embed\n@[twitter](https://twitter.com/elk/status/20)\n```" data-cursor="-5">Twitter / X 推文</button>
+              <button class="dropdown-item" data-insert="```embed\n@[twitter](https://twitter.com/elk)\n```" data-cursor="-5">Twitter 用户时间线</button>
+              <button class="dropdown-item" data-insert="```embed\n@[gist](https://gist.github.com/user/gist_id)\n```" data-cursor="-5">GitHub Gist</button>
             </div>
             <div class="dropdown-group">
               <div class="dropdown-group-title">代码演示</div>
-              <button class="dropdown-item" data-insert="@[codepen](https://codepen.io/user/pen/abc)">CodePen</button>
-              <button class="dropdown-item" data-insert="@[jsfiddle](https://jsfiddle.net/user/abc/)">JSFiddle</button>
-              <button class="dropdown-item" data-insert="@[stackblitz](https://stackblitz.com/edit/user-project)">StackBlitz</button>
-              <button class="dropdown-item" data-insert="@[replit](https://replit.com/@user/project)">Replit</button>
+              <button class="dropdown-item" data-insert="```embed\n@[codepen](https://codepen.io/user/pen/abc)\n```" data-cursor="-5">CodePen</button>
+              <button class="dropdown-item" data-insert="```embed\n@[jsfiddle](https://jsfiddle.net/user/abc/)\n```" data-cursor="-5">JSFiddle</button>
+              <button class="dropdown-item" data-insert="```embed\n@[stackblitz](https://stackblitz.com/edit/user-project)\n```" data-cursor="-5">StackBlitz</button>
+              <button class="dropdown-item" data-insert="```embed\n@[replit](https://replit.com/@user/project)\n```" data-cursor="-5">Replit</button>
             </div>
             <div class="dropdown-group">
               <div class="dropdown-group-title">设计稿</div>
-              <button class="dropdown-item" data-insert="@[figma](https://www.figma.com/file/abc/Design)">Figma</button>
+              <button class="dropdown-item" data-insert="```embed\n@[figma](https://www.figma.com/file/abc/Design)\n```" data-cursor="-5">Figma</button>
             </div>
             <div class="dropdown-group">
               <div class="dropdown-group-title">地图</div>
-              <button class="dropdown-item" data-insert="@[googlemaps](https://www.google.com/maps/place/Beijing)">Google Maps</button>
-              <button class="dropdown-item" data-insert="@[openstreetmap](https://www.openstreetmap.org/?mlat=39.9042&mlon=116.4074#map=12)">OpenStreetMap</button>
+              <button class="dropdown-item" data-insert="```embed\n@[googlemaps](https://www.google.com/maps/place/Beijing)\n```" data-cursor="-5">Google Maps</button>
+              <button class="dropdown-item" data-insert="```embed\n@[openstreetmap](https://www.openstreetmap.org/?mlat=39.9042&mlon=116.4074#map=12)\n```" data-cursor="-5">OpenStreetMap</button>
             </div>
             <div class="dropdown-group">
               <div class="dropdown-group-title">办公文档</div>
-              <button class="dropdown-item" data-insert="@[googledocs](https://docs.google.com/document/d/abc/edit)">Google Docs</button>
+              <button class="dropdown-item" data-insert="```embed\n@[googledocs](https://docs.google.com/document/d/abc/edit)\n```" data-cursor="-5">Google Docs</button>
+            </div>
+            <div class="dropdown-group">
+              <div class="dropdown-group-title">本站拓扑/演示</div>
+              <button class="dropdown-item" data-insert="```pkt\n@[pkt](example)\n```" data-cursor="-5">PT 拓扑 pkt</button>
+              <button class="dropdown-item" data-insert="```pkt\n@[ensp](example)\n```" data-cursor="-5">eNSP 拓扑 ensp</button>
+              <button class="dropdown-item" data-insert="```pptx\n@[pptx](example)\n```" data-cursor="-5">PPTX 演示 pptx</button>
             </div>
           </div>
         </div>
@@ -1066,6 +1091,31 @@
     <main class="editor-main" id="editorMain">
       <!-- Cells will be dynamically created by editor.js -->
     </main>
+
+    <!-- 双屏编辑模式（编辑 + 实时预览） -->
+    <div class="dual-pane-overlay" id="dualPaneOverlay">
+      <div class="dual-pane-header">
+        <div class="dual-pane-title">
+          <svg class="ico ico-sm"><use href="#i-split"/></svg>
+          <span>双屏编辑 · Cell [<span id="dualPaneCellNum"></span>]</span>
+        </div>
+        <div class="dual-pane-actions">
+          <button class="dual-pane-btn" id="dualPaneSyncBtn" title="同步滚动"><svg class="ico ico-sm"><use href="#i-refresh"/></svg> 同步滚动</button>
+          <button class="dual-pane-btn dual-pane-close-btn" id="dualPaneCloseBtn" title="退出双屏 (Esc)"><svg class="ico ico-sm"><use href="#i-close"/></svg> 退出</button>
+        </div>
+      </div>
+      <div class="dual-pane-body">
+        <div class="dual-pane-left" id="dualPaneLeft">
+          <div class="dual-pane-label">编辑</div>
+          <!-- CodeMirror host 会被移动到这里 -->
+        </div>
+        <div class="dual-pane-divider" id="dualPaneDivider"></div>
+        <div class="dual-pane-right" id="dualPaneRight">
+          <div class="dual-pane-label">预览</div>
+          <div class="markdown-body dual-pane-preview" id="dualPanePreview"></div>
+        </div>
+      </div>
+    </div>
 
     <!-- 底部状态栏 -->
     <footer class="editor-statusbar">

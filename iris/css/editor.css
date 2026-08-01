@@ -634,6 +634,174 @@ body.editor-dark-mode .tab-item.active {
   padding: 24px 16px 60px;
 }
 
+/* ============== 双屏编辑模式 ============== */
+
+.dual-pane-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  display: none;
+  flex-direction: column;
+  background: var(--color-bg, #fafafa);
+}
+
+.dual-pane-overlay.visible {
+  display: flex;
+}
+
+.dual-pane-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 8px 16px;
+  background: var(--color-surface, #fff);
+  border-bottom: 1px solid var(--color-border, #e0e0e0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.dual-pane-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text, #333);
+}
+
+.dual-pane-title .ico {
+  color: var(--color-accent-purple, #9b59b6);
+}
+
+.dual-pane-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dual-pane-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-family: inherit;
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: 5px;
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #333);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.dual-pane-btn:hover {
+  background: rgba(212, 165, 201, 0.12);
+  border-color: var(--color-accent-purple, #9b59b6);
+  color: var(--color-accent-purple, #9b59b6);
+}
+
+.dual-pane-btn.active {
+  background: rgba(212, 165, 201, 0.18);
+  border-color: var(--color-accent-purple, #9b59b6);
+  color: var(--color-accent-purple, #9b59b6);
+}
+
+.dual-pane-close-btn:hover {
+  color: #e74c3c;
+  border-color: #e74c3c;
+  background: rgba(231, 76, 60, 0.1);
+}
+
+.dual-pane-body {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.dual-pane-left,
+.dual-pane-right {
+  display: flex;
+  flex-direction: column;
+  min-width: 160px;
+  min-height: 0;
+}
+
+.dual-pane-left {
+  flex: 0 0 50%;
+  border-right: none;
+  background: var(--color-surface, #fff);
+  overflow: auto;
+}
+
+.dual-pane-right {
+  flex: 1 1 50%;
+  background: var(--color-bg, #fafafa);
+  overflow: auto;
+}
+
+.dual-pane-divider {
+  flex: 0 0 6px;
+  background: var(--color-border, #e0e0e0);
+  cursor: col-resize;
+  position: relative;
+  transition: background 0.15s;
+}
+
+.dual-pane-divider:hover,
+.dual-pane-divider:active {
+  background: var(--color-accent-purple, #9b59b6);
+}
+
+.dual-pane-label {
+  flex-shrink: 0;
+  padding: 4px 14px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #999);
+  background: var(--color-surface, #fff);
+  border-bottom: 1px solid var(--color-border, #e8e8e8);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* 双屏内 CodeMirror host 撑满左侧 */
+.dual-pane-left .cell-cm-host {
+  min-height: auto;
+  height: auto;
+  flex: 1;
+  padding: 12px 16px 40px;
+}
+
+.dual-pane-left .cell-cm-host .cm-editor {
+  min-height: auto;
+  height: auto;
+}
+
+.dual-pane-left .cell-cm-host .cm-scroller {
+  max-height: none;
+}
+
+/* 双屏预览区 */
+.dual-pane-preview {
+  padding: 16px 20px 60px;
+  max-width: none;
+}
+
+.dual-pane-right .dual-pane-label {
+  background: var(--color-bg, #fafafa);
+}
+
+/* 双屏激活时隐藏自动补全/选中工具栏的层级问题由 z-index 兜底 */
+body.dual-pane-active .selection-toolbar,
+body.dual-pane-active .autocomplete-list {
+  z-index: 1600;
+}
+
 /* ============== Cell ============== */
 
 .cell {
