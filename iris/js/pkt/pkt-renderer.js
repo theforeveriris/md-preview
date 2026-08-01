@@ -125,20 +125,7 @@
     wrapper.className = 'pkt-topology-container';
     wrapper.innerHTML = `
       <div class="pkt-toolbar">
-        <div class="pkt-toolbar-left">
-          <span class="pkt-toolbar-title">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="6" cy="6" r="2"/>
-              <circle cx="18" cy="6" r="2"/>
-              <circle cx="6" cy="18" r="2"/>
-              <circle cx="18" cy="18" r="2"/>
-              <path d="M8 6h8M6 8v8M18 8v8M8 18h8"/>
-            </svg>
-            <span class="pkt-toolbar-title-text">${sourceFile}</span>
-          </span>
-        </div>
         <div class="pkt-toolbar-right">
-          <input type="search" class="pkt-search-input" placeholder="搜索设备..." />
           <button class="pkt-btn active" data-action="layout-pt" title="使用 PT 原始坐标布局">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg>
             <span class="pkt-btn-label">PT 坐标</span>
@@ -170,6 +157,16 @@
         </div>
       </div>
       <div class="pkt-canvas-wrapper">
+        <div class="pkt-canvas-watermark" title="${sourceFile}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="6" cy="6" r="2"/>
+            <circle cx="18" cy="6" r="2"/>
+            <circle cx="6" cy="18" r="2"/>
+            <circle cx="18" cy="18" r="2"/>
+            <path d="M8 6h8M6 8v8M18 8v8M8 18h8"/>
+          </svg>
+          <span class="pkt-canvas-watermark-text">${sourceFile}</span>
+        </div>
         <div class="pkt-canvas"></div>
       </div>
       <div class="pkt-statusbar">
@@ -178,6 +175,9 @@
           <span class="pkt-statusbar-item">链路 <strong>${jsonData.meta.linkCount}</strong></span>
           <span class="pkt-statusbar-item">配置 <strong>${jsonData.meta.configCount}</strong></span>
           <span class="pkt-statusbar-item">${jsonData.meta.ptVersion || ''}</span>
+        </div>
+        <div class="pkt-statusbar-search">
+          <input type="search" class="pkt-search-input" placeholder="搜索设备..." />
         </div>
         <div class="pkt-statusbar-right">
           <span class="pkt-zoom-display">100%</span>
