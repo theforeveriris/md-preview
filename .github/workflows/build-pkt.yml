@@ -1,0 +1,37 @@
+name: Build PKT Topologies
+
+on:
+  push:
+    paths:
+      - 'iris/data/pkt/raw/**'
+      - 'iris/scripts/pkt/**'
+      - '.github/workflows/build-pkt.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Process .pkt files
+        run: python iris/scripts/pkt/main.py --verbose
+
+      - name: Commit generated JSON/XML
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add iris/data/pkt/xml/ iris/data/pkt/json/
+          if git diff --staged --quiet; then
+            echo '无需提交：JSON/XML 已是最新'
+          else
+            git commit -m 'chore(pkt): 自动构建拓扑 JSON/XML [skip ci]'
+            git push
+          fi

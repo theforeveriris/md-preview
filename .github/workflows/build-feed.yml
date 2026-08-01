@@ -1,0 +1,37 @@
+name: Build RSS Feed
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # 完整 git 历史，用于读取文件提交时间
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Build RSS feed
+      run: node iris/scripts/build-feed.js
+
+    - name: Commit and push changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        message: 'build: update feed.xml'
+        add: 'iris/data/feed.xml'
+        default_author: github_actions

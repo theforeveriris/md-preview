@@ -1,0 +1,206 @@
+/* Theme System - 内置主题定义 */
+
+:root {
+  /* 默认主题：紫粉渐变 */
+  --color-bg: #fafafa;
+  --color-surface: #ffffff;
+  --color-border: #f0f0f0;
+  --color-text: #2d2d2d;
+  --color-text-muted: #999999;
+  --color-accent-purple: #d4a5c9;
+  --color-accent-pink: #f2c4ce;
+  --color-accent-purple-deep: #b88aad;
+  --color-glow: rgba(255, 255, 255, 0.8);
+  --color-hover: rgba(212, 165, 201, 0.1);
+  --color-selection: var(--color-accent-pink);
+  --color-scrollbar: var(--color-accent-purple);
+  --color-scrollbar-hover: var(--color-accent-purple-deep);
+  --color-link: #6b5b95;
+  --color-link-hover: #4a3f6b;
+  --color-code-bg: #f5f5f5;
+  --color-code-border: #e0e0e0;
+  --color-success: #4caf50;
+  --color-error: #f44336;
+  --color-warning: #ff9800;
+}
+
+/* GitHub Light 主题 */
+[data-theme="github-light"] {
+  --color-bg: #ffffff;
+  --color-surface: #f6f8fa;
+  --color-border: #d0d7de;
+  --color-text: #24292f;
+  --color-text-muted: #57606a;
+  --color-accent-purple: #0969da;
+  --color-accent-pink: #0969da;
+  --color-accent-purple-deep: #0550ae;
+  --color-glow: rgba(255, 255, 255, 0.8);
+  --color-hover: rgba(9, 105, 218, 0.08);
+  --color-selection: rgba(9, 105, 218, 0.2);
+  --color-scrollbar: #c1c7cd;
+  --color-scrollbar-hover: #8c959f;
+  --color-link: #0969da;
+  --color-link-hover: #0550ae;
+  --color-code-bg: #f6f8fa;
+  --color-code-border: #d0d7de;
+  --color-success: #1a7f37;
+  --color-error: #cf222e;
+  --color-warning: #bf8700;
+}
+
+/* GitHub Dark 主题 */
+[data-theme="github-dark"] {
+  --color-bg: #0d1117;
+  --color-surface: #161b22;
+  --color-border: #30363d;
+  --color-text: #c9d1d9;
+  --color-text-muted: #8b949e;
+  --color-accent-purple: #58a6ff;
+  --color-accent-pink: #58a6ff;
+  --color-accent-purple-deep: #388bfd;
+  --color-glow: rgba(13, 17, 23, 0.8);
+  --color-hover: rgba(88, 166, 255, 0.1);
+  --color-selection: rgba(88, 166, 255, 0.3);
+  --color-scrollbar: #484f58;
+  --color-scrollbar-hover: #6e7681;
+  --color-link: #58a6ff;
+  --color-link-hover: #79c0ff;
+  --color-code-bg: #161b22;
+  --color-code-border: #30363d;
+  --color-success: #3fb950;
+  --color-error: #f85149;
+  --color-warning: #d29922;
+}
+
+/* Notion 暖灰主题 */
+[data-theme="notion"] {
+  --color-bg: #f7f6f3;
+  --color-surface: #ffffff;
+  --color-border: #e9e9e7;
+  --color-text: #37352f;
+  --color-text-muted: #9b9a97;
+  --color-accent-purple: #2383e2;
+  --color-accent-pink: #2383e2;
+  --color-accent-purple-deep: #1b6bb5;
+  --color-glow: rgba(247, 246, 243, 0.8);
+  --color-hover: rgba(35, 131, 226, 0.06);
+  --color-selection: rgba(35, 131, 226, 0.15);
+  --color-scrollbar: #d3d3d0;
+  --color-scrollbar-hover: #b8b8b5;
+  --color-link: #2383e2;
+  --color-link-hover: #1b6bb5;
+  --color-code-bg: #f7f6f3;
+  --color-code-border: #e9e9e7;
+  --color-success: #0f7b6c;
+  --color-error: #eb5757;
+  --color-warning: #cb912f;
+}
+
+/* Arc 彩虹紫主题 */
+[data-theme="arc"] {
+  --color-bg: #1a1625;
+  --color-surface: #251e33;
+  --color-border: #3d3456;
+  --color-text: #e4e0f3;
+  --color-text-muted: #9d97b8;
+  --color-accent-purple: #a78bfa;
+  --color-accent-pink: #f472b6;
+  --color-accent-purple-deep: #8b5cf6;
+  --color-glow: rgba(26, 22, 37, 0.8);
+  --color-hover: rgba(167, 139, 250, 0.15);
+  --color-selection: rgba(167, 139, 250, 0.3);
+  --color-scrollbar: #5a4d7a;
+  --color-scrollbar-hover: #7c6d9a;
+  --color-link: #a78bfa;
+  --color-link-hover: #c4b5fd;
+  --color-code-bg: #1f1a2e;
+  --color-code-border: #3d3456;
+  --color-success: #34d399;
+  --color-error: #f87171;
+  --color-warning: #fbbf24;
+}
+
+/* Dracula 主题 */
+[data-theme="dracula"] {
+  --color-bg: #282a36;
+  --color-surface: #383a4a;
+  --color-border: #44475a;
+  --color-text: #f8f8f2;
+  --color-text-muted: #6272a4;
+  --color-accent-purple: #bd93f9;
+  --color-accent-pink: #ff79c6;
+  --color-accent-purple-deep: #9b59d0;
+  --color-glow: rgba(40, 42, 54, 0.8);
+  --color-hover: rgba(189, 147, 249, 0.15);
+  --color-selection: rgba(189, 147, 249, 0.3);
+  --color-scrollbar: #6272a4;
+  --color-scrollbar-hover: #44475a;
+  --color-link: #bd93f9;
+  --color-link-hover: #d6acff;
+  --color-code-bg: #1e1f29;
+  --color-code-border: #44475a;
+  --color-success: #50fa7b;
+  --color-error: #ff5555;
+  --color-warning: #f1fa8c;
+}
+
+/* Nord 主题 */
+[data-theme="nord"] {
+  --color-bg: #2e3440;
+  --color-surface: #3b4252;
+  --color-border: #434c5e;
+  --color-text: #eceff4;
+  --color-text-muted: #d8dee9;
+  --color-accent-purple: #88c0d0;
+  --color-accent-pink: #81a1c1;
+  --color-accent-purple-deep: #5e81ac;
+  --color-glow: rgba(46, 52, 64, 0.8);
+  --color-hover: rgba(136, 192, 208, 0.15);
+  --color-selection: rgba(136, 192, 208, 0.3);
+  --color-scrollbar: #4c566a;
+  --color-scrollbar-hover: #5e81ac;
+  --color-link: #88c0d0;
+  --color-link-hover: #a3d8e8;
+  --color-code-bg: #2e3440;
+  --color-code-border: #434c5e;
+  --color-success: #a3be8c;
+  --color-error: #bf616a;
+  --color-warning: #ebcb8b;
+}
+
+/* 更新组件样式以使用新变量 */
+.search-result-item:hover {
+  background: var(--color-hover);
+}
+
+.edit-fab {
+  background: var(--color-accent-purple);
+  box-shadow: 0 4px 12px var(--color-hover);
+}
+
+.edit-fab:hover {
+  background: var(--color-accent-purple-deep);
+  box-shadow: 0 6px 16px var(--color-hover);
+}
+
+.comments-section::before {
+  background: linear-gradient(90deg, var(--color-accent-purple), var(--color-accent-pink));
+}
+
+::selection {
+  background: var(--color-selection);
+  color: var(--color-text);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-scrollbar-hover);
+}
+
+#searchInput:focus {
+  border-color: var(--color-accent-purple);
+  box-shadow: 0 0 0 3px var(--color-hover);
+}

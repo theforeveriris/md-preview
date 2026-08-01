@@ -1,0 +1,1415 @@
+/**
+ * 画廊布局样式集
+ *
+ * 在 Markdown 中，连续图片前用单独一段 `@style` 指定画廊渲染样式。
+ * 当前支持的 style：
+ *   - grid       默认网格（自动布局，与不写 @style 相同）
+ *   - cardstack  扑克牌堆：中间一张主图，左右错层露出上下张的一角，边缘模糊
+ *   - filmstrip  胶片条：横向滚动，上下带胶片穿孔装饰
+ *   - polaroid   拍立得墙：白边相框，轻微旋转错落排布
+ *   - stack      堆叠覆盖：图片相互覆盖，hover 时展开扇形
+ *   - mosaic     马赛克：首张大图占两格，其余小图网格排布
+ *   - scattered  散落明信片：图片随机散落在画布上，hover 置顶拉直放大
+ *   - hexagon    蜂巢六边形：图片裁切为六边形，错位蜂巢排列
+ *   - coverflow  Cover Flow：中间正中放大，两侧 3D 倾斜后退，hover 整体滑动
+ *   - tape       软木板留言墙：软木纹理背景 + 多色和纸胶带贴顶角
+ *   - duotone    双色调：图片单色化叠加主题色，hover 恢复彩色（克制）
+ *   - frame      画框装裱：精致金属画框，居中纵列展示（克制）
+ *   - arch       拱形画廊：图片顶部裁切为拱形，罗马建筑感（克制）
+ *   - masonry    瀑布流：CSS columns 错落排布，保持原始宽高比（实用）
+ *   - slider     幻灯片：自动轮播，循环切换，hover 暂停（实用，需 JS 驱动）
+ *   - ticket     票根：撕边虚线 + 半圆缺口，票根造型（克制）
+ *   - panorama   全景横幅：超宽横向滚动拼接，沉浸式浏览（实用）
+ *
+ * 注意：所有画廊容器的基础类仍为 .image-gallery，这里通过附加
+ * .image-gallery--{style} 修饰类来切换布局。
+ */
+
+/* ============== 基础容器（默认 = grid） ============== */
+
+.image-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+  padding: 16px;
+  background: rgba(212, 165, 201, 0.05);
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+}
+
+.image-gallery img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  display: block;
+}
+
+.image-gallery img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 24px rgba(212, 165, 201, 0.2);
+}
+
+@media (max-width: 768px) {
+  .image-gallery {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    padding: 12px;
+  }
+}
+
+/* ============== @grid — 显式指定网格布局 ============== */
+
+.image-gallery--grid {
+  /* 与默认一致，仅作为显式声明 */
+}
+
+/* ============== @cardstack — 扑克牌堆 ============== */
+
+.image-gallery--cardstack {
+  display: block;
+  position: relative;
+  height: 320px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.image-gallery--cardstack img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 240px;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.35s ease,
+              opacity 0.35s ease;
+  transform-origin: center center;
+  backface-visibility: hidden;
+}
+
+/* 中间主图（第一张）— 正中显示 */
+.image-gallery--cardstack img:nth-child(1) {
+  z-index: 3;
+  transform: translate(-50%, -50%) rotate(0deg);
+}
+
+/* 左侧图（第二张）— 高位错层，露出左上角 */
+.image-gallery--cardstack img:nth-child(2) {
+  z-index: 2;
+  transform: translate(-118%, -55%) rotate(-5deg);
+  /* 仅露出一角：右侧与底部裁掉 */
+  clip-path: polygon(0 0, 55% 0, 55% 70%, 0 70%);
+  /* 边缘模糊：用 mask 渐变叠加 */
+  -webkit-mask-image: linear-gradient(135deg, #000 35%, transparent 75%);
+  mask-image: linear-gradient(135deg, #000 35%, transparent 75%);
+  opacity: 0.85;
+  filter: blur(0.4px);
+}
+
+/* 右侧图（第三张）— 低位错层，露出右下角 */
+.image-gallery--cardstack img:nth-child(3) {
+  z-index: 2;
+  transform: translate(-82%, -45%) rotate(5deg);
+  clip-path: polygon(45% 30%, 100% 30%, 100% 100%, 45% 100%);
+  -webkit-mask-image: linear-gradient(315deg, #000 35%, transparent 75%);
+  mask-image: linear-gradient(315deg, #000 35%, transparent 75%);
+  opacity: 0.85;
+  filter: blur(0.4px);
+}
+
+/* 第四张及之后 — 藏在更深处，仅露极小一角 */
+.image-gallery--cardstack img:nth-child(n + 4) {
+  z-index: 1;
+  transform: translate(-50%, -50%) rotate(0deg);
+  clip-path: polygon(0 0, 0 0, 0 0, 0 0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* hover 主图时整体轻微抬起 */
+.image-gallery--cardstack:hover img:nth-child(1) {
+  transform: translate(-50%, -54%) rotate(0deg);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+}
+
+.image-gallery--cardstack:hover img:nth-child(2) {
+  transform: translate(-122%, -58%) rotate(-6deg);
+}
+
+.image-gallery--cardstack:hover img:nth-child(3) {
+  transform: translate(-78%, -42%) rotate(6deg);
+}
+
+@media (max-width: 768px) {
+  .image-gallery--cardstack {
+    height: 240px;
+  }
+  .image-gallery--cardstack img {
+    width: 180px;
+    height: 240px;
+  }
+}
+
+/* ============== @filmstrip — 胶片条 ============== */
+
+.image-gallery--filmstrip {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 0;
+  padding: 20px 0;
+  margin: 16px 0;
+  background: #1a1a1a;
+  border-radius: 8px;
+  border: 1px solid #333;
+  /* 上下胶片穿孔：用 repeating-linear-gradient 模拟 */
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 14px,
+      rgba(255, 255, 255, 0.85) 14px,
+      rgba(255, 255, 255, 0.85) 22px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 14px,
+      rgba(255, 255, 255, 0.85) 14px,
+      rgba(255, 255, 255, 0.85) 22px
+    ),
+    #1a1a1a;
+  background-position: 0 0, 0 100%;
+  background-size: auto 14px, auto 14px;
+  background-repeat: repeat-x;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-accent-purple) transparent;
+}
+
+.image-gallery--filmstrip::-webkit-scrollbar {
+  height: 6px;
+}
+
+.image-gallery--filmstrip::-webkit-scrollbar-thumb {
+  background: var(--color-accent-purple);
+  border-radius: 3px;
+}
+
+.image-gallery--filmstrip img {
+  flex: 0 0 auto;
+  width: 240px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 0;
+  margin: 0 4px;
+  filter: saturate(0.92);
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.image-gallery--filmstrip img:hover {
+  transform: scale(1.04);
+  filter: saturate(1.1);
+  z-index: 2;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .image-gallery--filmstrip img {
+    width: 180px;
+    height: 120px;
+  }
+}
+
+/* ============== @polaroid — 拍立得墙 ============== */
+
+.image-gallery--polaroid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  padding: 32px 16px;
+  margin: 16px 0;
+  background: linear-gradient(135deg, rgba(212, 165, 201, 0.08), rgba(242, 196, 206, 0.05));
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+}
+
+.image-gallery--polaroid img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  padding: 12px 12px 40px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  border-radius: 4px;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+}
+
+/* 交错旋转，模拟随手贴在墙上的拍立得 */
+.image-gallery--polaroid img:nth-child(odd) {
+  transform: rotate(-4deg);
+}
+
+.image-gallery--polaroid img:nth-child(even) {
+  transform: rotate(3deg);
+}
+
+.image-gallery--polaroid img:nth-child(3n) {
+  transform: rotate(-2deg) translateY(8px);
+}
+
+.image-gallery--polaroid img:nth-child(4n) {
+  transform: rotate(5deg) translateY(-6px);
+}
+
+.image-gallery--polaroid img:hover {
+  transform: rotate(0deg) scale(1.08) translateY(-8px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28);
+  z-index: 5;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .image-gallery--polaroid img {
+    width: 140px;
+    height: 140px;
+    padding: 8px 8px 28px;
+  }
+}
+
+/* ============== @stack — 堆叠覆盖 ============== */
+
+.image-gallery--stack {
+  display: block;
+  position: relative;
+  height: 320px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.image-gallery--stack img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 320px;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transform-origin: bottom center;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+  cursor: pointer;
+}
+
+/* 多张图堆叠：第 N 张向右下偏移并旋转一点，像扑克摊开 */
+.image-gallery--stack img:nth-child(1) {
+  z-index: 5;
+  transform: translate(-50%, -50%) rotate(-6deg);
+}
+
+.image-gallery--stack img:nth-child(2) {
+  z-index: 4;
+  transform: translate(-42%, -46%) rotate(-2deg);
+}
+
+.image-gallery--stack img:nth-child(3) {
+  z-index: 3;
+  transform: translate(-34%, -42%) rotate(2deg);
+}
+
+.image-gallery--stack img:nth-child(4) {
+  z-index: 2;
+  transform: translate(-26%, -38%) rotate(6deg);
+}
+
+.image-gallery--stack img:nth-child(n + 5) {
+  z-index: 1;
+  transform: translate(-18%, -34%) rotate(10deg);
+  opacity: 0.6;
+}
+
+.image-gallery--stack:hover img:nth-child(1) {
+  transform: translate(-70%, -50%) rotate(-12deg);
+}
+
+.image-gallery--stack:hover img:nth-child(2) {
+  transform: translate(-50%, -50%) rotate(-4deg);
+}
+
+.image-gallery--stack:hover img:nth-child(3) {
+  transform: translate(-30%, -50%) rotate(4deg);
+}
+
+.image-gallery--stack:hover img:nth-child(4) {
+  transform: translate(-10%, -50%) rotate(12deg);
+}
+
+.image-gallery--stack:hover img:nth-child(n + 5) {
+  transform: translate(10%, -50%) rotate(20deg);
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .image-gallery--stack {
+    height: 240px;
+  }
+  .image-gallery--stack img {
+    width: 220px;
+    height: 165px;
+  }
+}
+
+/* ============== @mosaic — 马赛克（首图大，其余小） ============== */
+
+.image-gallery--mosaic {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+  padding: 8px;
+  margin: 16px 0;
+  background: rgba(212, 165, 201, 0.05);
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  min-height: 320px;
+}
+
+/* 第一张占据左侧大格（跨两行） */
+.image-gallery--mosaic img:nth-child(1) {
+  grid-row: 1 / span 2;
+  grid-column: 1;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-gallery--mosaic img:nth-child(2) {
+  grid-row: 1;
+  grid-column: 2;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-gallery--mosaic img:nth-child(3) {
+  grid-row: 1;
+  grid-column: 3;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-gallery--mosaic img:nth-child(4) {
+  grid-row: 2;
+  grid-column: 2;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-gallery--mosaic img:nth-child(5) {
+  grid-row: 2;
+  grid-column: 3;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 第 6 张及之后：自动流到下一行 */
+.image-gallery--mosaic img:nth-child(n + 6) {
+  grid-row: auto;
+  grid-column: auto;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-gallery--mosaic img:hover {
+  transform: scale(1.03);
+  z-index: 2;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .image-gallery--mosaic {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    min-height: 0;
+  }
+  .image-gallery--mosaic img:nth-child(1) {
+    grid-row: 1;
+    grid-column: 1 / span 2;
+    height: 180px;
+  }
+  .image-gallery--mosaic img:nth-child(2) {
+    grid-row: 2;
+    grid-column: 1;
+    height: 140px;
+  }
+  .image-gallery--mosaic img:nth-child(3) {
+    grid-row: 2;
+    grid-column: 2;
+    height: 140px;
+  }
+  .image-gallery--mosaic img:nth-child(4) {
+    grid-row: 3;
+    grid-column: 1;
+    height: 140px;
+  }
+  .image-gallery--mosaic img:nth-child(5) {
+    grid-row: 3;
+    grid-column: 2;
+    height: 140px;
+  }
+  .image-gallery--mosaic img:nth-child(n + 6) {
+    grid-row: auto;
+    grid-column: auto;
+    height: 140px;
+  }
+}
+
+/* ============== @scattered — 散落明信片 ============== */
+/* 图片随机散落在画布上，每张不同角度，hover 置顶拉直放大 */
+
+.image-gallery--scattered {
+  display: block;
+  position: relative;
+  min-height: 420px;
+  padding: 24px;
+  margin: 16px 0;
+  background: linear-gradient(135deg, rgba(242, 196, 206, 0.08), rgba(212, 165, 201, 0.05));
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.image-gallery--scattered img {
+  position: absolute;
+  width: 200px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.45s ease,
+              z-index 0s;
+  cursor: pointer;
+}
+
+/* 6 张以内手动定位，营造散落感 */
+.image-gallery--scattered img:nth-child(1) {
+  top: 8%;
+  left: 6%;
+  transform: rotate(-8deg);
+}
+
+.image-gallery--scattered img:nth-child(2) {
+  top: 4%;
+  left: 38%;
+  transform: rotate(4deg);
+}
+
+.image-gallery--scattered img:nth-child(3) {
+  top: 12%;
+  left: 68%;
+  transform: rotate(-3deg);
+}
+
+.image-gallery--scattered img:nth-child(4) {
+  top: 48%;
+  left: 14%;
+  transform: rotate(6deg);
+}
+
+.image-gallery--scattered img:nth-child(5) {
+  top: 52%;
+  left: 44%;
+  transform: rotate(-5deg);
+}
+
+.image-gallery--scattered img:nth-child(6) {
+  top: 46%;
+  left: 72%;
+  transform: rotate(9deg);
+}
+
+/* 第 7 张及之后：自动流到右侧，避免重叠 */
+.image-gallery--scattered img:nth-child(n + 7) {
+  position: relative;
+  top: auto;
+  left: auto;
+  margin: 8px;
+  display: inline-block;
+  transform: rotate(0deg);
+}
+
+.image-gallery--scattered img:hover {
+  transform: rotate(0deg) scale(1.12) translateY(-12px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .image-gallery--scattered {
+    min-height: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px;
+    overflow: visible;
+  }
+  .image-gallery--scattered img {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 140px;
+    height: 110px;
+    clip-path: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .image-gallery--scattered img:nth-child(1),
+  .image-gallery--scattered img:nth-child(2),
+  .image-gallery--scattered img:nth-child(3),
+  .image-gallery--scattered img:nth-child(4),
+  .image-gallery--scattered img:nth-child(5),
+  .image-gallery--scattered img:nth-child(6),
+  .image-gallery--scattered img:nth-child(n + 7) {
+    transform: rotate(0deg);
+    position: relative;
+    top: auto;
+    left: auto;
+    margin: 0;
+    display: block;
+  }
+}
+
+/* ============== @hexagon — 蜂巢六边形 ============== */
+/* 图片裁切为六边形，紧密蜂巢排列 */
+
+.image-gallery--hexagon {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 4px;
+  padding: 24px;
+  margin: 16px 0;
+  background: radial-gradient(ellipse at center, rgba(212, 165, 201, 0.1), transparent 75%);
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+}
+
+.image-gallery--hexagon img {
+  width: 180px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 0;
+  /* 六边形裁切 */
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              filter 0.4s ease;
+  cursor: pointer;
+  filter: saturate(0.95);
+}
+
+/* 错位：偶数列下移半格，形成蜂巢 */
+.image-gallery--hexagon img:nth-child(even) {
+  transform: translateY(50px);
+}
+
+.image-gallery--hexagon img:hover {
+  transform: scale(1.08);
+  filter: saturate(1.2) brightness(1.05);
+  z-index: 2;
+  position: relative;
+}
+
+/* 偶数列 hover 时保持偏移 */
+.image-gallery--hexagon img:nth-child(even):hover {
+  transform: translateY(50px) scale(1.08);
+}
+
+@media (max-width: 768px) {
+  .image-gallery--hexagon {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 2px;
+    padding: 16px;
+  }
+  .image-gallery--hexagon img {
+    width: 140px;
+    height: 155px;
+  }
+  .image-gallery--hexagon img:nth-child(even) {
+    transform: translateY(40px);
+  }
+  .image-gallery--hexagon img:nth-child(even):hover {
+    transform: translateY(40px) scale(1.08);
+  }
+}
+
+/* ============== @coverflow — Cover Flow ============== */
+/* 中间一张正中放大，两侧 3D 倾斜后退，hover 整体滑动 */
+
+.image-gallery--coverflow {
+  display: block;
+  position: relative;
+  height: 340px;
+  padding: 0;
+  margin: 24px 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(212, 165, 201, 0.06) 50%, transparent 100%);
+  border: none;
+  border-radius: 0;
+  overflow: hidden;
+  perspective: 1500px;
+}
+
+.image-gallery--coverflow img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 260px;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.55s ease,
+              filter 0.55s ease;
+  transform-origin: center bottom;
+  cursor: pointer;
+}
+
+.image-gallery--coverflow img:nth-child(1) {
+  transform: translate(-50%, -50%) translateX(-360px) rotateY(45deg) scale(0.7);
+  opacity: 0.4;
+  filter: brightness(0.6) blur(1px);
+  z-index: 1;
+}
+
+.image-gallery--coverflow img:nth-child(2) {
+  transform: translate(-50%, -50%) translateX(-200px) rotateY(35deg) scale(0.82);
+  opacity: 0.65;
+  filter: brightness(0.75) blur(0.5px);
+  z-index: 2;
+}
+
+.image-gallery--coverflow img:nth-child(3) {
+  transform: translate(-50%, -50%) rotateY(0deg) scale(1.05);
+  opacity: 1;
+  filter: brightness(1);
+  z-index: 5;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+.image-gallery--coverflow img:nth-child(4) {
+  transform: translate(-50%, -50%) translateX(200px) rotateY(-35deg) scale(0.82);
+  opacity: 0.65;
+  filter: brightness(0.75) blur(0.5px);
+  z-index: 2;
+}
+
+.image-gallery--coverflow img:nth-child(5) {
+  transform: translate(-50%, -50%) translateX(360px) rotateY(-45deg) scale(0.7);
+  opacity: 0.4;
+  filter: brightness(0.6) blur(1px);
+  z-index: 1;
+}
+
+.image-gallery--coverflow img:nth-child(n + 6) {
+  transform: translate(-50%, -50%) scale(0.4);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* hover 时整体向左滑动一张（露出右侧更多） */
+.image-gallery--coverflow:hover img:nth-child(1) {
+  transform: translate(-50%, -50%) translateX(-460px) rotateY(50deg) scale(0.6);
+  opacity: 0.2;
+}
+
+.image-gallery--coverflow:hover img:nth-child(2) {
+  transform: translate(-50%, -50%) translateX(-300px) rotateY(42deg) scale(0.7);
+  opacity: 0.45;
+}
+
+.image-gallery--coverflow:hover img:nth-child(3) {
+  transform: translate(-50%, -50%) translateX(-140px) rotateY(30deg) scale(0.9);
+  opacity: 0.85;
+  filter: brightness(0.9);
+}
+
+.image-gallery--coverflow:hover img:nth-child(4) {
+  transform: translate(-50%, -50%) rotateY(0deg) scale(1.05);
+  opacity: 1;
+  filter: brightness(1);
+  z-index: 5;
+}
+
+.image-gallery--coverflow:hover img:nth-child(5) {
+  transform: translate(-50%, -50%) translateX(200px) rotateY(-35deg) scale(0.82);
+  opacity: 0.65;
+  filter: brightness(0.75);
+}
+
+@media (max-width: 768px) {
+  .image-gallery--coverflow {
+    height: 260px;
+  }
+  .image-gallery--coverflow img {
+    width: 180px;
+    height: 220px;
+  }
+  .image-gallery--coverflow img:nth-child(1) {
+    transform: translate(-50%, -50%) translateX(-250px) rotateY(45deg) scale(0.7);
+  }
+  .image-gallery--coverflow img:nth-child(2) {
+    transform: translate(-50%, -50%) translateX(-140px) rotateY(35deg) scale(0.82);
+  }
+  .image-gallery--coverflow img:nth-child(3) {
+    transform: translate(-50%, -50%) rotateY(0deg) scale(1.05);
+  }
+  .image-gallery--coverflow img:nth-child(4) {
+    transform: translate(-50%, -50%) translateX(140px) rotateY(-35deg) scale(0.82);
+  }
+  .image-gallery--coverflow img:nth-child(5) {
+    transform: translate(-50%, -50%) translateX(250px) rotateY(-45deg) scale(0.7);
+  }
+}
+
+/* ============== @tape — 软木板留言墙 ============== */
+/* 软木板纹理背景 + 多色和纸胶带贴顶角，图片不同高度悬挂。区别于 polaroid：
+   无白边相框，胶带是主角，背景是软木质感 */
+
+.image-gallery--tape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 28px 36px;
+  padding: 36px 24px;
+  margin: 16px 0;
+  /* 软木板纹理：细密颗粒点阵 */
+  background:
+    radial-gradient(circle at 20% 30%, rgba(139, 90, 43, 0.12) 0, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(139, 90, 43, 0.1) 0, transparent 40%),
+    radial-gradient(circle, rgba(139, 90, 43, 0.18) 1px, transparent 1.5px),
+    linear-gradient(135deg, #c9a574, #b8895a);
+  background-size: auto, auto, 12px 12px, 100% 100%;
+  border-radius: 10px;
+  border: 1px solid #a07840;
+  box-shadow: inset 0 0 40px rgba(101, 67, 33, 0.25);
+}
+
+.image-gallery--tape img {
+  position: relative;
+  width: 220px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 2px;
+  /* 无白边，直接贴在板上，仅留投影 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+}
+
+/* 两条和纸胶带：分别贴在左上、右上角，颜色交替 */
+.image-gallery--tape img::before,
+.image-gallery--tape img::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  width: 56px;
+  height: 24px;
+  /* 和纸胶带：半透明 + 竖纹纹理 */
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 3px,
+      rgba(255, 255, 255, 0.15) 3px,
+      rgba(255, 255, 255, 0.15) 4px
+    ),
+    rgba(242, 196, 206, 0.7);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+}
+
+.image-gallery--tape img::before {
+  left: 8px;
+  transform: rotate(-8deg);
+}
+
+.image-gallery--tape img::after {
+  right: 8px;
+  transform: rotate(6deg);
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 3px,
+      rgba(255, 255, 255, 0.15) 3px,
+      rgba(255, 255, 255, 0.15) 4px
+    ),
+    rgba(212, 165, 201, 0.7);
+}
+
+/* 交错胶带配色：偶数张换色 */
+.image-gallery--tape img:nth-child(even)::before {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 3px,
+      rgba(255, 255, 255, 0.15) 3px,
+      rgba(255, 255, 255, 0.15) 4px
+    ),
+    rgba(255, 220, 130, 0.7);
+}
+
+.image-gallery--tape img:nth-child(even)::after {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 3px,
+      rgba(255, 255, 255, 0.15) 3px,
+      rgba(255, 255, 255, 0.15) 4px
+    ),
+    rgba(170, 210, 200, 0.7);
+}
+
+/* 第三种配色：3n 张 */
+.image-gallery--tape img:nth-child(3n)::before {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 3px,
+      rgba(255, 255, 255, 0.15) 3px,
+      rgba(255, 255, 255, 0.15) 4px
+    ),
+    rgba(180, 200, 240, 0.7);
+}
+
+.image-gallery--tape img:nth-child(3n)::after {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 3px,
+      rgba(255, 255, 255, 0.15) 3px,
+      rgba(255, 255, 255, 0.15) 4px
+    ),
+    rgba(240, 180, 200, 0.7);
+}
+
+/* 不同高度悬挂：奇偶交错偏移 */
+.image-gallery--tape img:nth-child(odd) {
+  transform: rotate(-2deg) translateY(8px);
+}
+
+.image-gallery--tape img:nth-child(even) {
+  transform: rotate(2deg) translateY(-6px);
+}
+
+.image-gallery--tape img:nth-child(3n) {
+  transform: rotate(-1deg) translateY(16px);
+}
+
+/* hover：胶带绷直，图片轻微浮起 */
+.image-gallery--tape img:hover {
+  transform: rotate(0deg) scale(1.05) translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+  z-index: 5;
+}
+
+.image-gallery--tape img:hover::before,
+.image-gallery--tape img:hover::after {
+  transform: rotate(0deg);
+}
+
+.image-gallery--tape img:hover::before {
+  left: 12px;
+}
+
+.image-gallery--tape img:hover::after {
+  right: 12px;
+}
+
+@media (max-width: 768px) {
+  .image-gallery--tape {
+    gap: 24px 20px;
+    padding: 24px 14px;
+  }
+  .image-gallery--tape img {
+    width: 150px;
+    height: 110px;
+  }
+  .image-gallery--tape img::before,
+  .image-gallery--tape img::after {
+    width: 40px;
+    height: 18px;
+    top: -7px;
+  }
+  .image-gallery--tape img::before {
+    left: 6px;
+  }
+  .image-gallery--tape img::after {
+    right: 6px;
+  }
+}
+
+/* ============== @duotone — 双色调 ============== */
+/* 图片默认单色化叠加主题色，hover 恢复彩色。克制：仅色彩变化，无位移 */
+
+.image-gallery--duotone {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  padding: 20px;
+  margin: 16px 0;
+  background: #0e0e12;
+  border-radius: 12px;
+  border: 1px solid #1f1f28;
+}
+
+.image-gallery--duotone img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 4px;
+  /* 双色调：灰度 + 主题色叠加 */
+  filter: grayscale(1) contrast(1.1) brightness(0.9);
+  transition: filter 0.6s ease, transform 0.6s ease;
+  cursor: pointer;
+  /* 用 mix-blend 让叠加色与图片融合 */
+  mix-blend-mode: normal;
+}
+
+/* 伪元素：覆盖主题色，配合 mix-blend-mode 实现双色调 */
+.image-gallery--duotone img::after {
+  content: '';
+}
+
+/* 由于 img 不支持伪元素，用容器背景 + blend 模拟。
+   这里改用 box-shadow inset 叠加主题色（克制实现） */
+.image-gallery--duotone img {
+  box-shadow:
+    inset 0 0 0 1000px rgba(184, 138, 173, 0.45);
+}
+
+/* 交错色调：偶数张用粉色叠加 */
+.image-gallery--duotone img:nth-child(even) {
+  box-shadow:
+    inset 0 0 0 1000px rgba(242, 196, 206, 0.4);
+}
+
+.image-gallery--duotone img:hover {
+  filter: grayscale(0) contrast(1) brightness(1);
+  box-shadow: none;
+  transform: scale(1.01);
+}
+
+@media (max-width: 768px) {
+  .image-gallery--duotone {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px;
+    padding: 12px;
+  }
+  .image-gallery--duotone img {
+    height: 160px;
+  }
+}
+
+/* ============== @frame — 画框装裱 ============== */
+/* 每张图加精致金属画框，居中纵列展示。克制：静态展示，hover 仅画框微光 */
+
+.image-gallery--frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  padding: 40px 20px;
+  margin: 16px 0;
+  background:
+    linear-gradient(180deg, rgba(250, 250, 250, 0.6), rgba(240, 240, 240, 0.4)),
+    repeating-linear-gradient(
+      45deg,
+      transparent 0,
+      transparent 20px,
+      rgba(0, 0, 0, 0.015) 20px,
+      rgba(0, 0, 0, 0.015) 21px
+    );
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+}
+
+.image-gallery--frame img {
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  object-fit: cover;
+  padding: 16px 16px 48px;
+  background: #fff;
+  /* 金属画框：多层渐变模拟金边 */
+  border: 1px solid #c9a96a;
+  box-shadow:
+    0 0 0 4px #f5e6c8,
+    0 0 0 5px #b8956a,
+    0 12px 28px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.5s ease;
+  cursor: pointer;
+}
+
+/* 画框底部留白处显示图片序号（克制装饰） */
+.image-gallery--frame img {
+  counter-increment: frame-counter;
+}
+
+.image-gallery--frame {
+  counter-reset: frame-counter;
+}
+
+/* hover：画框微光，不位移 */
+.image-gallery--frame img:hover {
+  box-shadow:
+    0 0 0 4px #f8edd0,
+    0 0 0 5px #d4af6e,
+    0 0 24px rgba(212, 175, 110, 0.3),
+    0 12px 28px rgba(0, 0, 0, 0.18);
+}
+
+@media (max-width: 768px) {
+  .image-gallery--frame {
+    gap: 24px;
+    padding: 24px 12px;
+  }
+  .image-gallery--frame img {
+    max-width: 100%;
+    padding: 10px 10px 32px;
+    box-shadow:
+      0 0 0 3px #f5e6c8,
+      0 0 0 4px #b8956a,
+      0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* ============== @arch — 拱形画廊 ============== */
+/* 图片顶部裁切为拱形（罗马建筑感），居中纵列。克制：纯形状艺术，无 hover 位移 */
+
+.image-gallery--arch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 32px 20px;
+  margin: 16px 0;
+  background:
+    linear-gradient(180deg, rgba(212, 165, 201, 0.06), rgba(242, 196, 206, 0.03));
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+}
+
+.image-gallery--arch img {
+  width: 100%;
+  max-width: 480px;
+  height: 320px;
+  object-fit: cover;
+  /* 拱形：顶部大圆角 + 底部直角，模拟罗马拱门 */
+  border-radius: 240px 240px 8px 8px;
+  /* 柔和阴影模拟浮雕感 */
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+  transition: filter 0.5s ease, box-shadow 0.5s ease;
+  cursor: pointer;
+  filter: saturate(0.92) contrast(1.02);
+}
+
+/* 偶数张略窄，营造节奏感 */
+.image-gallery--arch img:nth-child(even) {
+  max-width: 380px;
+  height: 280px;
+  border-radius: 190px 190px 6px 6px;
+}
+
+/* hover：仅提亮 + 阴影加深，不位移 */
+.image-gallery--arch img:hover {
+  filter: saturate(1.05) contrast(1.05) brightness(1.02);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.18),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  .image-gallery--arch {
+    gap: 16px;
+    padding: 20px 12px;
+  }
+  .image-gallery--arch img {
+    height: 220px;
+    border-radius: 160px 160px 6px 6px;
+  }
+  .image-gallery--arch img:nth-child(even) {
+    height: 200px;
+    border-radius: 140px 140px 6px 6px;
+  }
+}
+
+/* ============== @masonry — 瀑布流 ============== */
+/* CSS columns 实现的瀑布流，图片保持原始宽高比错落排布。实用：适合大量图片 */
+
+.image-gallery--masonry {
+  display: block;
+  column-count: 3;
+  column-gap: 16px;
+  padding: 16px;
+  margin: 16px 0;
+  background: rgba(212, 165, 201, 0.04);
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+}
+
+.image-gallery--masonry img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 0 16px;
+  border-radius: 6px;
+  break-inside: avoid;
+  transition: transform 0.4s ease, box-shadow 0.4s ease, filter 0.4s ease;
+  cursor: pointer;
+  filter: saturate(0.96);
+}
+
+.image-gallery--masonry img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 28px rgba(212, 165, 201, 0.25);
+  filter: saturate(1.08);
+  z-index: 2;
+  position: relative;
+}
+
+@media (max-width: 900px) {
+  .image-gallery--masonry {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 540px) {
+  .image-gallery--masonry {
+    column-count: 2;
+    column-gap: 8px;
+  }
+  .image-gallery--masonry img {
+    margin-bottom: 12px;
+  }
+}
+
+/* ============== @slider — 幻灯片（自动轮播） ============== */
+/* 自动横向轮播，循环切换，hover 暂停。实用：故事/步骤/产品展示 */
+/* JS 在 markdown.js 的 initSliders 中驱动：创建 .slider-track 容纳图片，
+   用 transform 位移切换；创建 .slider-dots 指示点 */
+
+.image-gallery--slider {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  padding: 0;
+  margin: 16px 0;
+  background: #111;
+  border-radius: 12px;
+  border: 1px solid #222;
+}
+
+/* track 由 JS 创建，横向排列所有图片，整体位移切换 */
+.image-gallery--slider .slider-track {
+  display: flex;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.image-gallery--slider .slider-track img {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+  border-radius: 0;
+  display: block;
+}
+
+/* 左右渐变遮罩，暗示可滑动 */
+.image-gallery--slider::before,
+.image-gallery--slider::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.image-gallery--slider::before {
+  left: 0;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.4), transparent);
+}
+
+.image-gallery--slider::after {
+  right: 0;
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0.4), transparent);
+}
+
+/* 轮播指示点，由 JS 创建 .slider-dots 容器 */
+.image-gallery--slider .slider-dots {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.image-gallery--slider .slider-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.image-gallery--slider .slider-dots span.active {
+  background: var(--color-accent-purple, #d4a5c9);
+  transform: scale(1.3);
+}
+
+@media (max-width: 768px) {
+  .image-gallery--slider .slider-track img {
+    height: 240px;
+  }
+}
+
+/* ============== @ticket — 票根 ============== */
+/* 图片裁切为票根造型：左侧主图 + 右侧序号区，中间撕边虚线。克制：静态 */
+
+.image-gallery--ticket {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 32px 20px;
+  margin: 16px 0;
+  background: linear-gradient(180deg, rgba(250, 250, 250, 0.6), rgba(240, 240, 240, 0.3));
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+}
+
+.image-gallery--ticket img {
+  width: 100%;
+  max-width: 560px;
+  height: 220px;
+  object-fit: cover;
+  /* 票根造型：左圆角、右半圆缺口（撕票口） */
+  border-radius: 8px 0 0 8px;
+  /* 右侧用 mask 切出半圆缺口，模拟票根撕边 */
+  -webkit-mask-image:
+    radial-gradient(circle 14px at 100% 50%, transparent 98%, #000 100%),
+    linear-gradient(#000, #000);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    radial-gradient(circle 14px at 100% 50%, transparent 98%, #000 100%),
+    linear-gradient(#000, #000);
+  mask-composite: intersect;
+  /* 撕边虚线：用 border-right + 虚线模拟 */
+  box-shadow:
+    inset -2px 0 0 0 #fff,
+    inset -3px 0 0 0 var(--color-border),
+    0 6px 18px rgba(0, 0, 0, 0.15);
+  transition: transform 0.4s ease, box-shadow 0.4s ease, filter 0.4s ease;
+  cursor: pointer;
+  filter: contrast(1.02);
+}
+
+/* 交错配色：偶数张换成暖色调 */
+.image-gallery--ticket img:nth-child(even) {
+  filter: contrast(1.02) sepia(0.15);
+}
+
+.image-gallery--ticket img:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow:
+    inset -2px 0 0 0 #fff,
+    inset -3px 0 0 0 var(--color-accent-purple),
+    0 12px 28px rgba(0, 0, 0, 0.22);
+  filter: contrast(1.05);
+}
+
+.image-gallery--ticket img:nth-child(even):hover {
+  filter: contrast(1.05) sepia(0.1);
+}
+
+@media (max-width: 768px) {
+  .image-gallery--ticket img {
+    height: 160px;
+    max-width: 100%;
+  }
+}
+
+/* ============== @panorama — 全景横幅 ============== */
+/* 超宽横向滚动，图片近似无缝拼接，沉浸式浏览。实用：风景/全景/长卷 */
+
+.image-gallery--panorama {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 2px;
+  padding: 0;
+  margin: 16px 0;
+  background: #000;
+  border-radius: 12px;
+  border: 1px solid #222;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-accent-purple) transparent;
+}
+
+.image-gallery--panorama::-webkit-scrollbar {
+  height: 6px;
+}
+
+.image-gallery--panorama::-webkit-scrollbar-thumb {
+  background: var(--color-accent-purple);
+  border-radius: 3px;
+}
+
+.image-gallery--panorama img {
+  flex: 0 0 auto;
+  width: 80%;
+  max-width: 640px;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 0;
+  scroll-snap-align: center;
+  transition: filter 0.4s ease;
+  filter: brightness(0.92);
+}
+
+.image-gallery--panorama img:hover {
+  filter: brightness(1.06);
+}
+
+@media (max-width: 768px) {
+  .image-gallery--panorama img {
+    width: 90%;
+    height: 220px;
+  }
+}

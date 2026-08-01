@@ -1,0 +1,127 @@
+<!--
+  Packet Tracer 设备 SVG 图标库
+  图标来源：VMware Clarity Icons (MIT) — https://github.com/vmware-archive/clarity-assets
+            Tabler Icons (MIT) — https://github.com/tabler/tabler-icons  （仅 laptop）
+  统一风格：outline/line 线性图标。Clarity 的 -line 变体为基于 fill 的描边轮廓
+  （viewBox 0 0 36 36）；Tabler 为基于 stroke 的描边（viewBox 0 0 24 24）。
+  颜色通过 currentColor 适配亮/暗主题。
+  使用方式：<svg class="pkt-device-icon"><use href="#pkt-router"/></svg>
+  或经 pkt-renderer.js 的 getIconDataURI() 提取为 data-URI 节点背景图。
+-->
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg">
+  <!-- 路由器 router（Clarity technology/router-line） -->
+  <symbol id="pkt-router" viewBox="0 0 36 36" fill="currentColor">
+    <g fill="currentColor" stroke="none">
+      <path d="M18,14.87l5.11-5.14a1,1,0,1,0-1.42-1.41L19,11V3.33a1,1,0,0,0-2,0V11L14.31,8.32a1,1,0,1,0-1.42,1.41Z"/>
+      <path d="M18,21.13l-5.11,5.14a1,1,0,0,0,1.42,1.41L17,25v7.69a1,1,0,0,0,2,0V25l2.69,2.71a1,1,0,0,0,1.42-1.41Z"/>
+      <path d="M28.85,12.89a1,1,0,0,0-1.41,1.42L30.15,17H22.46a1,1,0,1,0,0,2h7.69l-2.71,2.69a1,1,0,0,0,1.41,1.42L34,18Z"/>
+      <path d="M5.85,19h7.69a1,1,0,0,0,0-2H5.85l2.71-2.69a1,1,0,1,0-1.41-1.42L2,18l5.14,5.11a1,1,0,1,0,1.41-1.42Z"/>
+    </g>
+  </symbol>
+
+  <!-- 交换机 switch（Clarity technology/network-switch-line） -->
+  <symbol id="pkt-switch" viewBox="0 0 36 36" fill="currentColor">
+    <g fill="currentColor" stroke="none">
+      <path d="M33.91,18.47,30.78,8.41A2,2,0,0,0,28.87,7H7.13A2,2,0,0,0,5.22,8.41L2.09,18.48a2,2,0,0,0-.09.59V27a2,2,0,0,0,2,2H32a2,2,0,0,0,2-2V19.06A2,2,0,0,0,33.91,18.47ZM32,27H4V19.06L7.13,9H28.87L32,19.06Z"/>
+      <rect x="7.12" y="22" width="1.8" height="3"/>
+      <rect x="12.12" y="22" width="1.8" height="3"/>
+      <rect x="17.11" y="22" width="1.8" height="3"/>
+      <rect x="22.1" y="22" width="1.8" height="3"/>
+      <rect x="27.1" y="22" width="1.8" height="3"/>
+      <rect x="6.23" y="18" width="23.69" height="1.4"/>
+    </g>
+  </symbol>
+
+  <!-- PC（Clarity technology/computer-line） -->
+  <symbol id="pkt-pc" viewBox="0 0 36 36" fill="currentColor">
+    <g fill="currentColor" stroke="none">
+      <polygon points="9.6 22.88 9.6 10.6 24.4 10.6 25.98 9 8 9 8 22.88 9.6 22.88"/>
+      <path d="M6,7H30V23h2V6.5A1.5,1.5,0,0,0,30.5,5H5.5A1.5,1.5,0,0,0,4,6.5V23H6Z"/>
+      <path d="M1,25v3.4A2.6,2.6,0,0,0,3.6,31H32.34a2.6,2.6,0,0,0,2.6-2.6V25Zm32,3.4a.6.6,0,0,1-.6.6H3.56a.6.6,0,0,1-.6-.6V26.53h9.95a1.64,1.64,0,0,0,1.5,1h7.13a1.64,1.64,0,0,0,1.5-1H33Z"/>
+    </g>
+  </symbol>
+
+  <!-- 服务器 server（Clarity technology/server-line） -->
+  <symbol id="pkt-server" viewBox="0 0 36 36" fill="currentColor">
+    <g fill="currentColor" stroke="none">
+      <path d="M18,24.3a2.48,2.48,0,1,0,2.48,2.47A2.48,2.48,0,0,0,18,24.3Zm0,3.6a1.13,1.13,0,1,1,1.13-1.12A1.13,1.13,0,0,1,18,27.9Z"/>
+      <path d="M25.65,3.6H10.35A1.35,1.35,0,0,0,9,4.95V32.4H27V4.95A1.35,1.35,0,0,0,25.65,3.6Zm-.45,27H10.8V5.4H25.2Z"/>
+      <rect x="12.6" y="7.2" width="10.8" height="1.44"/>
+      <rect x="12.6" y="10.8" width="10.8" height="1.44"/>
+    </g>
+  </symbol>
+
+  <!-- 笔记本 laptop（Tabler device-laptop，stroke 风格） -->
+  <symbol id="pkt-laptop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 19l18 0"/>
+      <path d="M5 6m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v8a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z"/>
+    </g>
+  </symbol>
+
+  <!-- 防火墙 firewall（Clarity essential/firewall-line） -->
+  <symbol id="pkt-firewall" viewBox="0 0 36 36" fill="currentColor">
+    <g fill="currentColor" stroke="none">
+      <path d="M32,6H4A2,2,0,0,0,2,8V28a2,2,0,0,0,2,2H32a2,2,0,0,0,2-2V8A2,2,0,0,0,32,6ZM4,8H32v5.08H23.8v-4H22v4H14v-4H12v4H4Zm0,7H32v6.08H28.92V16.27H27v4.81H18.92V16.27H17v4.81H8.9V16.27H7v4.81H4ZM23.8,28V24.27H22.2V28H14V24.27h-1.6V28H4V23H32v5Z"/>
+    </g>
+  </symbol>
+
+  <!-- IP 电话 phone（Clarity technology/mobile-phone-line） -->
+  <symbol id="pkt-phone" viewBox="0 0 36 36" fill="currentColor">
+    <g fill="currentColor" stroke="none">
+      <path d="M25,4H11A2,2,0,0,0,9,6V30a2,2,0,0,0,2,2H25a2,2,0,0,0,2-2V6A2,2,0,0,0,25,4ZM11,6H25V24H11Zm0,24V26H25v4Z"/>
+      <rect x="17" y="27" width="2" height="2"/>
+    </g>
+  </symbol>
+
+  <!-- 无线接入点 access-point（Clarity technology/wifi-line） -->
+  <symbol id="pkt-access-point" viewBox="0 0 36 36" fill="currentColor">
+    <g fill="currentColor" stroke="none">
+      <path d="M33.55,8.2a28.1,28.1,0,0,0-31.11.08A1,1,0,1,0,3.56,9.94a26.11,26.11,0,0,1,28.89-.07,1,1,0,0,0,1.1-1.67Z"/>
+      <path d="M18.05,10.72A20.74,20.74,0,0,0,6.23,14.4,1,1,0,0,0,7.36,16,18.85,18.85,0,0,1,28.64,16a1,1,0,0,0,1.12-1.65A20.75,20.75,0,0,0,18.05,10.72Z"/>
+      <path d="M18.05,17.9a13.51,13.51,0,0,0-8,2.64,1,1,0,0,0,1.18,1.61,11.56,11.56,0,0,1,13.62-.08A1,1,0,1,0,26,20.46,13.52,13.52,0,0,0,18.05,17.9Z"/>
+      <path d="M18,24.42a4,4,0,1,0,4,4A4,4,0,0,0,18,24.42Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,18,30.42Z"/>
+    </g>
+  </symbol>
+
+  <!-- 云 cloud（Clarity core/cloud-line） -->
+  <symbol id="pkt-cloud" viewBox="0 0 36 36" fill="currentColor">
+    <g fill="currentColor" stroke="none">
+      <path d="M27.14,33H10.62C5.67,33,1,28.19,1,23.1a10,10,0,0,1,8-9.75,10.19,10.19,0,0,1,20.33,1.06A10.07,10.07,0,0,1,29,16.66a8.29,8.29,0,0,1,6,8C35,29.1,31.33,33,27.14,33ZM19.09,6.23a8.24,8.24,0,0,0-8.19,8l0,.87-.86.1A7.94,7.94,0,0,0,3,23.1c0,4,3.77,7.9,7.62,7.9H27.14C30.21,31,33,28,33,24.65a6.31,6.31,0,0,0-5.37-6.26l-1.18-.18.39-1.13A8.18,8.18,0,0,0,19.09,6.23Z"/>
+    </g>
+  </symbol>
+
+  <!-- 集线器 hub（Clarity technology/nodes-line，多节点代表集线器/集中器） -->
+  <symbol id="pkt-hub" viewBox="0 0 36 36" fill="currentColor">
+    <g fill="currentColor" stroke="none">
+      <path d="M10.5,34.29,2,29.39V19.58l8.5-4.9,8.5,4.9v9.81ZM4,28.23,10.5,32,17,28.23V20.74L10.5,17,4,20.74Z"/>
+      <path d="M25.5,34.29,17,29.39V19.58l8.5-4.9,8.5,4.9v9.81ZM19,28.23,25.5,32,32,28.23V20.74L25.5,17,19,20.74Z"/>
+      <path d="M18,21.32l-8.5-4.9V6.61L18,1.71l8.5,4.9v9.81Zm-6.5-6.06L18,19l6.5-3.75V7.77L18,4,11.5,7.77Z"/>
+    </g>
+  </symbol>
+
+  <!-- 电视 tv（Clarity technology/display-line） -->
+  <symbol id="pkt-tv" viewBox="0 0 36 36" fill="currentColor">
+    <g fill="currentColor" stroke="none">
+      <path d="M32.5,3H3.5A1.5,1.5,0,0,0,2,4.5v21A1.5,1.5,0,0,0,3.5,27h29A1.5,1.5,0,0,0,34,25.5V4.5A1.5,1.5,0,0,0,32.5,3ZM32,25H4V5H32Z"/>
+      <polygon points="7.7 8.76 28.13 8.76 29.94 7.16 6.1 7.16 6.1 23 7.7 23 7.7 8.76"/>
+      <path d="M26,32H24.26a3.61,3.61,0,0,1-1.5-2.52V28.13H21.24V29.5A4.2,4.2,0,0,0,22.17,32H13.83a4.2,4.2,0,0,0,.93-2.52V28.13H13.24V29.5A3.61,3.61,0,0,1,11.74,32H9.94a1,1,0,1,0,0,2H26.06a.92.92,0,0,0,1-1A1,1,0,0,0,26,32Z"/>
+    </g>
+  </symbol>
+
+  <!-- 平板 tablet（Clarity technology/tablet-line） -->
+  <symbol id="pkt-tablet" viewBox="0 0 36 36" fill="currentColor">
+    <g fill="currentColor" stroke="none">
+      <rect x="17" y="29" width="2" height="2"/>
+      <path d="M30,2H6A2,2,0,0,0,4,4V32a2,2,0,0,0,2,2H30a2,2,0,0,0,2-2V4A2,2,0,0,0,30,2Zm0,2V26.38H6V4ZM6,32V28H30v4Z"/>
+    </g>
+  </symbol>
+
+  <!-- 未知设备 unknown（Clarity core/unknown-status-line） -->
+  <symbol id="pkt-unknown" viewBox="0 0 36 36" fill="currentColor">
+    <g fill="currentColor" stroke="none">
+      <circle cx="17.58" cy="26.23" r="1.4"/>
+      <path d="M24.7,13a5.18,5.18,0,0,0-2.16-3.56,7.26,7.26,0,0,0-5.71-1.09A11.34,11.34,0,0,0,12,10.44,1,1,0,1,0,13.26,12a9.32,9.32,0,0,1,3.94-1.72,5.29,5.29,0,0,1,4.16.74,3.21,3.21,0,0,1,1.35,2.19c.33,2.69-3.19,3.75-5.32,4.14l-.82.15v4.36a1,1,0,0,0,2,0V19.17C24.61,17.79,24.88,14.41,24.7,13Z"/>
+    </g>
+  </symbol>
+</svg>

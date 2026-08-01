@@ -1,0 +1,42 @@
+# 依赖
+node_modules/
+
+# 预构建数据（按需保留，默认注释；如需重新忽略可取消注释）
+# iris/data/file-tree.json
+# iris/data/search-index.json
+
+# 构建产物
+dist/
+build/
+
+# 上传/临时文件
+.uploads/
+*.tmp
+*.log
+screenshot*.png
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 环境变量与密钥
+.env
+.env.local
+.env.*.local
+
+# 缓存
+.cache/
+.eslintcache
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo

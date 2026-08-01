@@ -1,0 +1,8 @@
+{
+  "files": [
+    "qrcode.js",
+    "countdown.js",
+    "colorcard.js"
+  ],
+  "description": "Auto-generated plugin manifest for Markdown Preview"
+}

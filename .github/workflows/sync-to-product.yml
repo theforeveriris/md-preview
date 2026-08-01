@@ -1,0 +1,44 @@
+name: Sync to Product Branch
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create and Update Product Branch
+        run: |
+          # 创建或切换到临时分支
+          git checkout --orphan temp-product
+          
+          # 添加所有文件
+          git add -A
+          
+          # 删除所有 MD 文件
+          git rm --cached $(find . -name "*.md" -type f)
+          rm -f $(find . -name "*.md" -type f)
+          
+          # 提交更改
+          git add -A
+          git commit -m "初始化 md-preview"
+          
+          # 强制更新 product 分支
+          git branch -M temp-product product
+          git push -f origin product

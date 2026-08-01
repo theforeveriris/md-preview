@@ -1,0 +1,284 @@
+[
+  {
+    "name": "docs",
+    "type": "folder",
+    "children": [
+      {
+        "name": "examples",
+        "type": "folder",
+        "children": [
+          {
+            "name": "apexcharts-examples.md",
+            "type": "file",
+            "path": "docs/examples/apexcharts-examples.md",
+            "wordCount": 155
+          },
+          {
+            "name": "basic-usage.md",
+            "type": "file",
+            "path": "docs/examples/basic-usage.md",
+            "wordCount": 106
+          },
+          {
+            "name": "code-tabs-examples.md",
+            "type": "file",
+            "path": "docs/examples/code-tabs-examples.md",
+            "wordCount": 231
+          },
+          {
+            "name": "colorcard-examples.md",
+            "type": "file",
+            "path": "docs/examples/colorcard-examples.md",
+            "wordCount": 157
+          },
+          {
+            "name": "columns-examples.md",
+            "type": "file",
+            "path": "docs/examples/columns-examples.md",
+            "wordCount": 111
+          },
+          {
+            "name": "countdown-examples.md",
+            "type": "file",
+            "path": "docs/examples/countdown-examples.md",
+            "wordCount": 166
+          },
+          {
+            "name": "diff-examples.md",
+            "type": "file",
+            "path": "docs/examples/diff-examples.md",
+            "wordCount": 77
+          },
+          {
+            "name": "embed-examples.md",
+            "type": "file",
+            "path": "docs/examples/embed-examples.md",
+            "wordCount": 105
+          },
+          {
+            "name": "ensp-examples.md",
+            "type": "file",
+            "path": "docs/examples/ensp-examples.md",
+            "wordCount": 388
+          },
+          {
+            "name": "gallery-layouts.md",
+            "type": "file",
+            "path": "docs/examples/gallery-layouts.md",
+            "wordCount": 473
+          },
+          {
+            "name": "geojson-examples.md",
+            "type": "file",
+            "path": "docs/examples/geojson-examples.md",
+            "wordCount": 74
+          },
+          {
+            "name": "github-alerts-examples.md",
+            "type": "file",
+            "path": "docs/examples/github-alerts-examples.md",
+            "wordCount": 50
+          },
+          {
+            "name": "image-gallery-examples.md",
+            "type": "file",
+            "path": "docs/examples/image-gallery-examples.md",
+            "wordCount": 1512
+          },
+          {
+            "name": "latex-examples.md",
+            "type": "file",
+            "path": "docs/examples/latex-examples.md",
+            "wordCount": 578
+          },
+          {
+            "name": "markdown-syntax.md",
+            "type": "file",
+            "path": "docs/examples/markdown-syntax.md",
+            "wordCount": 330
+          },
+          {
+            "name": "mermaid-examples.md",
+            "type": "file",
+            "path": "docs/examples/mermaid-examples.md",
+            "wordCount": 307
+          },
+          {
+            "name": "native-html-examples.md",
+            "type": "file",
+            "path": "docs/examples/native-html-examples.md",
+            "wordCount": 781
+          },
+          {
+            "name": "pkt-examples.md",
+            "type": "file",
+            "path": "docs/examples/pkt-examples.md",
+            "wordCount": 332
+          },
+          {
+            "name": "plantuml-examples.md",
+            "type": "file",
+            "path": "docs/examples/plantuml-examples.md",
+            "wordCount": 381
+          },
+          {
+            "name": "plugin-demo.md",
+            "type": "file",
+            "path": "docs/examples/plugin-demo.md",
+            "wordCount": 24
+          },
+          {
+            "name": "pptx-examples.md",
+            "type": "file",
+            "path": "docs/examples/pptx-examples.md",
+            "wordCount": 364
+          },
+          {
+            "name": "pulse-examples.md",
+            "type": "file",
+            "path": "docs/examples/pulse-examples.md",
+            "wordCount": 661
+          },
+          {
+            "name": "qrcode-examples.md",
+            "type": "file",
+            "path": "docs/examples/qrcode-examples.md",
+            "wordCount": 80
+          },
+          {
+            "name": "spoiler-examples.md",
+            "type": "file",
+            "path": "docs/examples/spoiler-examples.md",
+            "wordCount": 223
+          },
+          {
+            "name": "table-examples.md",
+            "type": "file",
+            "path": "docs/examples/table-examples.md",
+            "wordCount": 697
+          },
+          {
+            "name": "theme-demo.md",
+            "type": "file",
+            "path": "docs/examples/theme-demo.md",
+            "wordCount": 183
+          },
+          {
+            "name": "twitter-embed-examples.md",
+            "type": "file",
+            "path": "docs/examples/twitter-embed-examples.md",
+            "wordCount": 390
+          }
+        ],
+        "wordCount": 8936
+      },
+      {
+        "name": "code-highlight-theme.md",
+        "type": "file",
+        "path": "docs/code-highlight-theme.md",
+        "wordCount": 499
+      },
+      {
+        "name": "configuration.md",
+        "type": "file",
+        "path": "docs/configuration.md",
+        "wordCount": 621
+      },
+      {
+        "name": "editor.md",
+        "type": "file",
+        "path": "docs/editor.md",
+        "wordCount": 1010
+      },
+      {
+        "name": "feat.md",
+        "type": "file",
+        "path": "docs/feat.md",
+        "wordCount": 279
+      },
+      {
+        "name": "features.md",
+        "type": "file",
+        "path": "docs/features.md",
+        "wordCount": 928
+      },
+      {
+        "name": "getting-started.md",
+        "type": "file",
+        "path": "docs/getting-started.md",
+        "wordCount": 115
+      },
+      {
+        "name": "plugin-development.md",
+        "type": "file",
+        "path": "docs/plugin-development.md",
+        "wordCount": 289
+      },
+      {
+        "name": "rss.md",
+        "type": "file",
+        "path": "docs/rss.md",
+        "wordCount": 314
+      },
+      {
+        "name": "theme-customization.md",
+        "type": "file",
+        "path": "docs/theme-customization.md",
+        "wordCount": 489
+      }
+    ],
+    "wordCount": 13480
+  },
+  {
+    "name": "iris",
+    "type": "folder",
+    "children": [
+      {
+        "name": "examples",
+        "type": "folder",
+        "children": [
+          {
+            "name": "pkt-huawei-vrp-解析示例.md",
+            "type": "file",
+            "path": "iris/examples/pkt-huawei-vrp-解析示例.md",
+            "wordCount": 1002
+          }
+        ],
+        "wordCount": 1002
+      },
+      {
+        "name": "scripts",
+        "type": "folder",
+        "children": [
+          {
+            "name": "pkt",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/scripts/pkt/README.md",
+                "wordCount": 166
+              }
+            ],
+            "wordCount": 166
+          }
+        ],
+        "wordCount": 166
+      }
+    ],
+    "wordCount": 1168
+  },
+  {
+    "name": "readme-dev.md",
+    "type": "file",
+    "path": "readme-dev.md",
+    "wordCount": 636
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "README.md",
+    "wordCount": 457
+  }
+]

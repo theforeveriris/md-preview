@@ -1,0 +1,187 @@
+[
+  {
+    "path": "docs/code-highlight-theme.md",
+    "title": "代码高亮主题开发指南",
+    "preview": "代码高亮主题开发指南 概述 Markdown Preview 使用 highlight.js 进行代码语法高亮。内置了 10 种常用主题，并支持自定义主题。 内置主题 | 主题 ID | 名称 | 类型 | |---------|------|------| | github | GitHub Light | 亮色 | | github-dark | GitHub Dark | 暗色 | | at"
+  },
+  {
+    "path": "docs/configuration.md",
+    "title": "配置参考",
+    "preview": "配置参考 Markdown Preview 的配置分为两层： 1. 构建/部署配置 — iris/config.json（仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 一、iris/config.json（仓库级配置） 修改此文件后需推送代码触发重新部署。 基础配置 | 字段 | 类型 | 默认值 | 说明 | |------|"
+  },
+  {
+    "path": "docs/editor.md",
+    "title": "Markdown 编辑器",
+    "preview": "Markdown 编辑器 Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可在浏览器内即时编写、运行、预览 Markdown，并支持自动保存、搜索替换、导入导出等能力。 编辑器以全屏覆盖层的形式叠加在文档站之上，复用站点已有的渲染管线（marked.js + 各扩展渲染器），所有渲染结果与文档站完全一致。 --- 一、入口与退出 进入编辑器"
+  },
+  {
+    "path": "docs/examples/apexcharts-examples.md",
+    "title": "ApexCharts 交互式图表示例",
+    "preview": "ApexCharts 交互式图表示例 本页面展示 ApexCharts 的各种图表类型和配置方式。 --- 1. 折线图 基础折线图 源码： 渲染效果： --- 多系列折线图 源码： 渲染效果： --- 2. 面积图 基础面积图 源码： 渲染效果： --- 多系列面积图 源码： 渲染效果： --- 3. 柱状图 基础柱状图 源码： 渲染效果： --- 分组柱状图 源码： 渲染效果： --- 4. "
+  },
+  {
+    "path": "docs/examples/basic-usage.md",
+    "title": "基础使用教程",
+    "preview": "基础使用教程 学习如何使用 Markdown 预览器的基本功能。 界面概览 侧边栏 - 自动发现并显示所有 .md 文件的树形结构 - 点击文件夹可以展开/折叠 - 点击文件名加载文档 主内容区 - 显示 Markdown 渲染后的内容 - 支持代码高亮 - 支持图片预览 进度指示器 - 顶部：文件加载进度条 - 底部：阅读位置进度条 基本操作 浏览文档 1. 点击侧边栏中的文件名 2. 文档内容"
+  },
+  {
+    "path": "docs/examples/code-tabs-examples.md",
+    "title": "代码选项卡使用示例",
+    "preview": "代码选项卡使用示例 使用 ::: code-tabs 语法可以创建多语言代码选项卡，点击顶部标签切换不同语言的代码示例。 --- 基础用法 源码： js function greet(name) { return Hello, ${name}!; } console.log(greet('World')); python def greet(name): return f\"Hello, {name"
+  },
+  {
+    "path": "docs/examples/colorcard-examples.md",
+    "title": "ColorCard 插件示例",
+    "preview": "ColorCard 颜色卡片插件示例 colorcard 插件将颜色列表渲染为可点击复制的色卡墙，自动根据背景亮度自适应文字颜色。常用于： - 设计稿配色展示 - 品牌色 / 主题色文档 - 调色板分享 - 数据可视化色阶说明 支持三种代码块语言别名：colorcard、colors、palette。 基础用法 1. 行分隔色值（最简形式） 每行一个颜色，支持十六进制、颜色名、rgb()、hsl("
+  },
+  {
+    "path": "docs/examples/columns-examples.md",
+    "title": "分栏布局使用示例",
+    "preview": "分栏布局使用示例 使用 ::: columns 语法可以在 Markdown 中创建多栏布局，每栏可以包含任意 Markdown 内容。 --- 基础两栏布局 源码： 渲染效果： ::: columns ::: column 左侧标题 这是左侧栏的内容。 - 列表项 1 - 列表项 2 - 列表项 3 ::: ::: column 右侧标题 这是右侧栏的内容。 > 这是一段引用 正常段落文字。 :"
+  },
+  {
+    "path": "docs/examples/countdown-examples.md",
+    "title": "Countdown 插件示例",
+    "preview": "Countdown 倒计时插件示例 countdown 插件将 Markdown 代码块渲染为实时刷新的倒计时 / 正计时卡片，适合用于： - 距离某个固定时间点的倒计时（截止日期、活动开始、考试倒计时等） - 自某个历史时间点起的正计时（项目开始至今、产品上线至今等） - 相对时长的倒计时（30 分钟后、1 天 2 小时后等） 基础用法 1. ISO 日期字符串 直接传入任何 Date.pars"
+  },
+  {
+    "path": "docs/examples/diff-examples.md",
+    "title": "Git Diff 可视化示例",
+    "preview": "Git Diff 可视化示例 本页面展示如何使用 diff2html 可视化展示 Git Diff 内容。 --- 1. 基本用法 简单的文件修改 源码格式： 渲染效果： --- 2. 多文件修改 渲染效果： --- 3. 不同类型的变更 新增文件 删除文件 重命名文件 --- 4. 复杂示例 完整的功能变更 --- 5. 使用说明 语法规则 1. 使用 diff diff --git a/旧文件"
+  },
+  {
+    "path": "docs/examples/embed-examples.md",
+    "title": "外部服务嵌入示例",
+    "preview": "外部服务嵌入示例 本页面展示各种外部服务的嵌入方式和渲染效果。 --- 1. 视频平台 YouTube 源码： 渲染效果： --- Bilibili 源码： 渲染效果： --- Vimeo 源码： 渲染效果： --- 2. 设计稿 Figma 源码： 渲染效果： --- 3. 代码演示 CodePen 源码： 渲染效果： --- JSFiddle 源码： 渲染效果： --- StackBlitz "
+  },
+  {
+    "path": "docs/examples/ensp-examples.md",
+    "title": "eNSP 拓扑渲染示例",
+    "preview": "华为 eNSP 拓扑渲染 本站点支持在 Markdown 文档中嵌入华为 eNSP 拓扑图。将 .topo 或 .zip 压缩包放入 iris/data/ensp/raw/ 目录，构建脚本会自动解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。 基本用法 使用 @ensp 嵌入语法引用预处理好的拓扑 JSON，需要用 ensp 代码块包裹（即三反引号 + ensp "
+  },
+  {
+    "path": "docs/examples/gallery-layouts.md",
+    "title": "画廊布局样式速查",
+    "preview": "画廊布局样式速查 本页是画廊布局样式的快速查阅卡片。完整示例与说明见 图片画廊与懒加载示例。 语法 在连续图片之前，用单独一行 @样式名 指定该组图片的渲染样式： - @style 必须独占一行（单独成段） - 标记只作用于紧跟其后的一组连续图片 - 不写 @style 时，连续 2 张及以上图片自动使用默认网格布局 - 未识别的 @xxx 会被当作普通文本输出 样式速查表 | 样式 | 说明 |"
+  },
+  {
+    "path": "docs/examples/geojson-examples.md",
+    "title": "GeoJSON / TopoJSON 示例",
+    "preview": "GeoJSON / TopoJSON 示例 本页面展示地理数据可视化功能，支持 GeoJSON 和 TopoJSON 格式的嵌入渲染。 --- 1. GeoJSON 点数据 单个点 源码： 渲染效果： --- 多个城市点 源码： 渲染效果： --- 2. GeoJSON 线数据 简单线段 源码： 渲染效果： --- 多段线路 源码： 渲染效果： --- 3. GeoJSON 多边形数据 简单多边形"
+  },
+  {
+    "path": "docs/examples/github-alerts-examples.md",
+    "title": "GitHub Alerts 示例",
+    "preview": "GitHub Alerts 示例 本页面展示如何在 Markdown 中使用 GitHub 风格的 Alerts 语法。 什么是 GitHub Alerts？ GitHub 引入了一种特殊的引用块语法，用于创建具有不同颜色和图标的提示框。 支持的类型 [!NOTE] > [!NOTE] > 这是一个提示信息，用于提供额外的说明或重要信息。 [!TIP] > [!TIP] > 这是一个技巧提示，用于"
+  },
+  {
+    "path": "docs/examples/image-gallery-examples.md",
+    "title": "图片画廊与懒加载示例",
+    "preview": "图片画廊与懒加载示例 本页面展示图片的懒加载、画廊模式（含多种布局样式）、图片灯箱和错误降级功能。 --- 1. 图片懒加载 所有图片都自动添加了 loading=\"lazy\" 属性，会在图片进入视口时才加载。 语法格式： 图片会在滚动到视口时才开始加载，提升页面性能。 --- 2. 画廊模式 当文档中出现连续两张或以上的图片（中间无其他内容）时，会自动包装成画廊布局。 两张图片画廊 以下两张图片"
+  },
+  {
+    "path": "docs/examples/latex-examples.md",
+    "title": "LaTeX 公式示例",
+    "preview": "LaTeX 公式示例 本文档展示了 KaTeX 支持的各类数学公式及其渲染效果。 --- 1. 行内公式 行内公式使用单个 \\$ 包裹，例如： - 勾股定理：$a^2 + b^2 = c^2$ - 欧拉公式：$e^{i\\pi} + 1 = 0$ - 二次方程根：$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$ - 积分：$\\int{a}^{b} f(x) dx$ -"
+  },
+  {
+    "path": "docs/examples/markdown-syntax.md",
+    "title": "Markdown 语法参考",
+    "preview": "Markdown 语法参考 本页面展示所有常用 Markdown 语法及其渲染效果。 --- 标题 使用 # 符号创建标题，# 的数量表示标题级别。 渲染效果： 一级标题 二级标题 三级标题 四级标题 五级标题 六级标题 --- 强调 使用 或 表示斜体， 或 表示粗体。 渲染效果： 斜体文本 也是斜体 粗体文本 也是粗体 粗斜体文本 也是粗斜体 删除线文本 --- 列表 无序列表 使用 -、 或"
+  },
+  {
+    "path": "docs/examples/mermaid-examples.md",
+    "title": "Mermaid 图表示例",
+    "preview": "Mermaid 图表示例 本文档展示了 Mermaid 支持的各类图表及其渲染效果。 --- 1. 流程图 (Flowchart) 垂直流程图 (Top to Bottom) 渲染效果： 水平流程图 (Left to Right) 渲染效果： 复杂流程图 (包含子图) 渲染效果： --- 2. 时序图 (Sequence Diagram) 基础时序图 渲染效果： 循环与条件 渲染效果： --- 3"
+  },
+  {
+    "path": "docs/examples/native-html-examples.md",
+    "title": "浏览器原生 HTML 元素与 Web API 示例",
+    "preview": "浏览器原生 HTML 元素与 Web API 示例 本页面展示丰富的浏览器原生功能，零 JS、零后端即可使用！ --- 一、语义与排版 1.1 原生模态对话框 <dialog id=\"dialogDemo\"> <h3>欢迎！</h3> <p>这是一个纯 HTML 原生模态对话框。</p> <button onclick=\"document.getElementById('dialogDemo')."
+  },
+  {
+    "path": "docs/examples/pkt-examples.md",
+    "title": "Packet Tracer 拓扑渲染示例",
+    "preview": "Packet Tracer 拓扑渲染 本站点支持在 Markdown 文档中嵌入 Cisco Packet Tracer 拓扑图。将 .pkt 文件放入 iris/data/pkt/raw/ 目录，构建脚本会自动解密、解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。 基本用法 使用 @pkt 嵌入语法引用预处理好的拓扑 JSON，需要用 pkt 代码块包裹（即三反"
+  },
+  {
+    "path": "docs/examples/pkt-huawei-vrp-解析示例.md",
+    "title": "PKT 华为 VRP 命令解析示例",
+    "preview": "PKT 华为 VRP 命令解析示例 > ⚠️ 重要说明：PKT 渲染器当前的解析逻辑并不是特别健壮。 > > PKT 拓扑渲染器（iris/js/pkt/pkt-renderer.js）中\"可能的配置过程\"推算逻辑基于正则表达式 + 段落分割实现，并非真正的语法解析器。它对常见的、格式规范的 VRP 配置文本能给出合理的步骤拆分，但在以下情况下可能产生错误、遗漏或乱序： > > - 配置文本被压缩"
+  },
+  {
+    "path": "docs/examples/plantuml-examples.md",
+    "title": "PlantUML 图表示例",
+    "preview": "PlantUML 图表示例 本文档展示了 PlantUML 支持的各类图表及其渲染效果。 --- 1. 类图 (Class Diagram) 基础类图 渲染效果： --- 2. 顺序图 (Sequence Diagram) 基础顺序图 渲染效果： 带循环的顺序图 渲染效果： --- 3. 用例图 (Use Case Diagram) 电商系统用例图 渲染效果： --- 4. 活动图 (Activi"
+  },
+  {
+    "path": "docs/examples/plugin-demo.md",
+    "title": "插件系统示例",
+    "preview": "插件系统示例 这是一个展示 Markdown Preview 插件系统的示例文档。 Mermaid 图表 PlantUML 图表 ApexCharts 图表 Git Diff GeoJSON 地图 音乐乐谱 (ABC)"
+  },
+  {
+    "path": "docs/examples/pptx-examples.md",
+    "title": "PPTX 演示嵌入示例",
+    "preview": "PPTX 演示嵌入 本站点支持在 Markdown 文档中嵌入 PPT 与 PPTX 演示文稿（预处理产物方案，与 pkt / ensp 拓扑嵌入完全同风格）。 为什么采用「预处理产物」？ 与 PDF/PPTX 在前端动态解码相比，「提前导出每页图片 + 元数据 JSON」有以下优势： | 方案 | 首屏速度 | 依赖体积 | 兼容性 | 可搜索 | |---|---|---|---|---| |"
+  },
+  {
+    "path": "docs/examples/pulse-examples.md",
+    "title": "Pulse 波形示例",
+    "preview": "Pulse 波形示例 本文档展示了 DG-LAB 郊狼波形文件（.pulse）的渲染效果。使用 [pulse title=\"标题\"]Dungeonlab+pulse:...[/pulse] 语法即可渲染出逐帧动态波形演示。 如需内联的迷你波形，使用 [pulsemini title=\"标题\"]Dungeonlab+pulse:...[/pulsemini] 语法，适合在文字段落中嵌入或批量展示。 "
+  },
+  {
+    "path": "docs/examples/pulse-generator-page.md",
+    "title": "郊狼波形批量生成页（特殊页面）",
+    "preview": "郊狼波形批量生成页（特殊页面） 郊狼波形批量生成页是系统内置的可视化波形生成工具，面向 DG-LAB 郊狼设备的 .pulse 波形创作者。以全屏覆盖层形式呈现，支持按类别/具体波形批量生成、参数调优、随机种子、波形叠加混合，并实时预览生成的迷你波形，提供一键复制源码与下载 .pulse 文件的能力。 --- 一、访问方式 四种入口方式任选其一： | 方式 | 说明 | |------|-----"
+  },
+  {
+    "path": "docs/examples/qrcode-examples.md",
+    "title": "二维码插件示例",
+    "preview": "二维码生成插件示例 这是一个展示 Markdown Preview 二维码插件功能的示例文档。 基本用法 使用 qrcode 语言标签，内容就是你想要生成二维码的文本或 URL： 简单文本 自定义大小 你可以使用 JSON 格式指定更多选项，比如二维码的大小： 联系方式 长文本内容 更多示例 --- 插件功能说明 二维码插件支持： - 直接文本和 URL - JSON 配置（支持自定义大小） - "
+  },
+  {
+    "path": "docs/examples/spoiler-examples.md",
+    "title": "遮罩（剧透）语法示例",
+    "preview": "遮罩（剧透）语法示例 使用 ||内容|| 语法可以创建遮罩（剧透）效果，鼠标悬停或点击（移动端）时才会显示内容。遮罩颜色使用当前主题的主题色。 --- 基础用法 这是一段普通文字，||这是被遮罩隐藏的内容||，后面继续是普通文字。 把鼠标移到上面紫色的色块上，就会显示隐藏的内容。 --- 行内多个遮罩 今天的考试题答案是：||A||、||B||、||C||、||D||，全选就对了。 --- 句子中"
+  },
+  {
+    "path": "docs/examples/table-examples.md",
+    "title": "表格使用示例",
+    "preview": "表格使用示例 本页面展示各种场景下的表格渲染效果，包括宽表格、长内容表格、多列表格等。 > 💡 提示：表格内容过宽时可左右滑动查看，表头会保持固定可见。 --- 基础表格 标准的 Markdown 表格语法，支持对齐方式设置。 渲染效果： | 左对齐 | 居中对齐 | 右对齐 | | :----- | :------: | -----: | | 内容 1 | 内容 2 | 内容 3 | | 内容"
+  },
+  {
+    "path": "docs/examples/theme-demo.md",
+    "title": "主题市场演示",
+    "preview": "主题市场演示 这是一个展示主题系统的示例文档。点击左下角的调色盘图标可以切换不同的主题。 可用主题 | 主题名称 | 描述 | |---------|------| | 🌸 紫粉渐变 | 默认的浅紫浅粉渐变主题 | | ⚡ GitHub Light | 仿 GitHub 明亮主题 | | 🌙 GitHub Dark | 仿 GitHub 深色主题 | | 📝 Notion | 仿 Notio"
+  },
+  {
+    "path": "docs/examples/twitter-embed-examples.md",
+    "title": "Twitter/X 嵌入示例",
+    "preview": "Twitter/X 嵌入示例 本页面展示如何使用 Markdown 预览器嵌入 Twitter/X 推文和时间线。 --- 1. 基本用法 嵌入单条推文 源码： 渲染效果： --- 使用 X 替代 Twitter 源码： 渲染效果： --- 2. 用户时间线嵌入 嵌入用户时间线 源码： 渲染效果： 说明： - 显示该用户最近的推文 - 自动刷新显示最新内容 - 高度可自定义 --- 嵌入用户喜欢的"
+  },
+  {
+    "path": "docs/getting-started.md",
+    "title": "快速开始",
+    "preview": "快速开始 部署到 GitHub Pages 1. Fork 仓库 点击右上角的 Fork 按钮，将仓库复制到你的账号下。 2. 开启 GitHub Pages 1. 进入 Fork 后的仓库 2. 点击 Settings → Pages 3. 在 Build and deployment 中，Source 选择 GitHub Actions 3. 修改配置 编辑 iris/config.json，"
+  },
+  {
+    "path": "docs/plugin-development.md",
+    "title": "插件开发指南",
+    "preview": "插件开发指南 插件机制概述 Markdown Preview 的插件系统允许你扩展 Markdown 渲染能力，自定义处理特定的代码块。插件放入 iris/plugins/ 目录后，加载器会自动发现并注册。 插件接口（v2） 每个插件是一个导出对象的 JavaScript 模块（ES Module），支持以下接口： API 说明 | 字段/方法 | 类型 | 必填 | 说明 | |--------"
+  },
+  {
+    "path": "docs/rss.md",
+    "title": "RSS 订阅",
+    "preview": "RSS 订阅 Markdown Preview 自动为 docs/ 目录下的所有 Markdown 文档生成 RSS 2.0 feed，方便他人通过 RSS 阅读器订阅你的文档更新。 --- 订阅地址 部署后，RSS feed 位于： 例如本站： > feed.xml 不放在仓库根目录，而是放在 iris/data/ 下，与 file-tree.json、search-index.json 等预构"
+  },
+  {
+    "path": "docs/show.md",
+    "title": "系统运行时截图",
+    "preview": "系统运行时截图 本文档按功能模块整理了 Markdown Preview 站点的完整运行时界面截图，每个截图附有功能介绍，并指向 docs/examples/ 中对应的详细示例文档。特殊页面会额外标注访问 URL。 --- 一、整体界面 首页整体展示 !首页整体展示 站点默认以左侧文档目录树 + 右侧正文阅读区的两栏布局呈现。侧边栏自动扫描仓库中所有 .md 文件，构建嵌套目录结构并显示字数统计；"
+  },
+  {
+    "path": "docs/theme-customization.md",
+    "title": "主题定制",
+    "preview": "主题定制 Markdown Preview 提供三种层级的外观定制方式，由易到难： 1. 预设主题 — 内置 7 套配色，一键切换 2. 可视化取色器 — 拖动色块即可调整主题色，无需写 CSS 3. 自定义 CSS — 加载外部 CSS 文件，完全控制样式 --- 一、内置主题 | ID | 名称 | 说明 | |----|------|------| | default | 默认 | 浅紫浅粉"
+  }
+]
