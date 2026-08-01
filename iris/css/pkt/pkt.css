@@ -27,6 +27,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
 }
 
 .pkt-toolbar-title {
@@ -35,18 +38,32 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .pkt-toolbar-title svg {
   width: 16px;
   height: 16px;
+  flex-shrink: 0;
   color: var(--color-accent-purple, #9b59b6);
+}
+
+.pkt-toolbar-title-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
+  /* 超出区域淡出效果：右侧用线性渐变遮罩平滑过渡 */
+  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 85%, transparent 100%);
+  mask-image: linear-gradient(to right, #000 0%, #000 85%, transparent 100%);
 }
 
 .pkt-toolbar-right {
   display: flex;
   align-items: center;
   gap: 4px;
+  flex-shrink: 0;
 }
 
 .pkt-btn {
@@ -880,6 +897,21 @@
 
   .pkt-search-input:focus {
     width: 120px;
+  }
+
+  /* 移动端：功能按钮改为纯图标，避免文字撑出区域 */
+  .pkt-btn {
+    padding: 6px;
+    gap: 0;
+  }
+
+  .pkt-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .pkt-btn-label {
+    display: none;
   }
 
   .pkt-statusbar {

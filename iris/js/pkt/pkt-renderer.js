@@ -134,38 +134,38 @@
               <circle cx="18" cy="18" r="2"/>
               <path d="M8 6h8M6 8v8M18 8v8M8 18h8"/>
             </svg>
-            ${sourceFile}
+            <span class="pkt-toolbar-title-text">${sourceFile}</span>
           </span>
         </div>
         <div class="pkt-toolbar-right">
           <input type="search" class="pkt-search-input" placeholder="搜索设备..." />
           <button class="pkt-btn active" data-action="layout-pt" title="使用 PT 原始坐标布局">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg>
-            PT 坐标
+            <span class="pkt-btn-label">PT 坐标</span>
           </button>
           <button class="pkt-btn" data-action="layout-force" title="力导向自动布局">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M8 6h8M6 8l4 8M18 8l-4 8"/></svg>
-            力导向
+            <span class="pkt-btn-label">力导向</span>
           </button>
           <button class="pkt-btn" data-action="toggle-grid" title="切换网格背景">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3zM9 3v18M15 3v18M3 9h18M3 15h18"/></svg>
-            网格
+            <span class="pkt-btn-label">网格</span>
           </button>
           <button class="pkt-btn active" data-action="toggle-iface" title="显示/隐藏接口名">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h10M4 17h7"/></svg>
-            接口名
+            <span class="pkt-btn-label">接口名</span>
           </button>
           <button class="pkt-btn active" data-action="toggle-subnet" title="显示/隐藏网段">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg>
-            网段
+            <span class="pkt-btn-label">网段</span>
           </button>
           <button class="pkt-btn" data-action="fit" title="适应屏幕">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6"/></svg>
-            复位
+            <span class="pkt-btn-label">复位</span>
           </button>
           <button class="pkt-btn" data-action="export" title="导出">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-            导出
+            <span class="pkt-btn-label">导出</span>
           </button>
         </div>
       </div>
