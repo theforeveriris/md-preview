@@ -177,7 +177,7 @@
           <span class="pkt-statusbar-item">${jsonData.meta.ptVersion || ''}</span>
         </div>
         <div class="pkt-statusbar-search">
-          <input type="search" class="pkt-search-input" placeholder="搜索设备..." />
+          <input type="search" class="pkt-search-input" placeholder="搜索" />
         </div>
         <div class="pkt-statusbar-right">
           <span class="pkt-zoom-display">100%</span>

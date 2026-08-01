@@ -69,9 +69,9 @@
   height: 13px;
 }
 
-/* 搜索框：扁平缩小，置于底部状态栏 */
+/* 搜索框：扁平缩小，置于底部状态栏（仅容纳 2-3 个汉字） */
 .pkt-search-input {
-  width: 120px;
+  width: 64px;
   padding: 2px 8px;
   font-size: 11px;
   font-family: inherit;
@@ -85,7 +85,7 @@
 
 .pkt-search-input:focus {
   border-color: var(--color-accent-purple, #9b59b6);
-  width: 160px;
+  width: 88px;
   box-shadow: 0 0 0 2px rgba(212, 165, 201, 0.12);
 }
 
@@ -930,31 +930,23 @@
     padding: 2px 6px;
   }
 
-  /* 移动端搜索框收紧 */
+  /* 移动端搜索框收紧（保持单行，不撑开状态栏） */
   .pkt-search-input {
-    width: 90px;
+    width: 56px;
   }
 
   .pkt-search-input:focus {
-    width: 110px;
+    width: 76px;
   }
 
-  /* 状态栏允许换行，统计与搜索分两行 */
+  /* 状态栏保持单行 */
   .pkt-statusbar {
-    flex-wrap: wrap;
-    gap: 6px;
+    flex-wrap: nowrap;
+    gap: 8px;
   }
 
   .pkt-statusbar-search {
-    flex: 1 1 100%;
-    justify-content: stretch;
-  }
-
-  .pkt-statusbar-search .pkt-search-input {
-    width: 100%;
-  }
-
-  .pkt-statusbar-search .pkt-search-input:focus {
-    width: 100%;
+    flex: 1;
+    justify-content: flex-end;
   }
 }
