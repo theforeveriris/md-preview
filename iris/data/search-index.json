@@ -175,6 +175,11 @@
     "preview": "RSS 订阅 Markdown Preview 自动为 docs/ 目录下的所有 Markdown 文档生成 RSS 2.0 feed，方便他人通过 RSS 阅读器订阅你的文档更新。 --- 订阅地址 部署后，RSS feed 位于： 例如本站： > feed.xml 不放在仓库根目录，而是放在 iris/data/ 下，与 file-tree.json、search-index.json 等预构"
   },
   {
+    "path": "docs/shortcuts.md",
+    "title": "快捷键",
+    "preview": "快捷键 Markdown Preview 支持一组全局键盘快捷键，覆盖侧边栏、设置、搜索、文档导航与内容区宽度调节。⌘ 表示 macOS 的 Cmd 键，Ctrl 表示 Windows / Linux 的 Ctrl 键。 --- 一、文档站快捷键 | 按键 | 功能 | 说明 | |------|------|------| | Ctrl/⌘ + B | 折叠 / 展开侧边栏 | 对齐 VS Co"
+  },
+  {
     "path": "docs/show.md",
     "title": "系统运行时截图",
     "preview": "系统运行时截图 本文档按功能模块整理了 Markdown Preview 站点的完整运行时界面截图，每个截图附有功能介绍，并指向 docs/examples/ 中对应的详细示例文档。特殊页面会额外标注访问 URL。 --- 一、整体界面 首页整体展示 !首页整体展示 站点默认以左侧文档目录树 + 右侧正文阅读区的两栏布局呈现。侧边栏自动扫描仓库中所有 .md 文件，构建嵌套目录结构并显示字数统计；"
