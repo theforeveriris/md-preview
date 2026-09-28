@@ -498,6 +498,31 @@
                   </label>
                 </div>
               </div>
+
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label">内容区宽度</div>
+                  <div class="setting-description">调整 Markdown 正文的最大宽度，拖动即时生效；快捷键 Ctrl/⌘+B 可折叠侧边栏获得更宽空间</div>
+                </div>
+                <div class="setting-control content-width-control">
+                  <input type="range" id="contentWidthRange" class="width-slider" min="600" max="1400" step="20" value="720" aria-label="内容区宽度">
+                  <span class="width-value" id="contentWidthValue">720px</span>
+                  <button id="resetContentWidthBtn" class="download-btn">重置</button>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label">正文占满可用宽度</div>
+                  <div class="setting-description">开启后正文铺满窗口可用宽度，忽略上方的宽度设置，适合宽屏显示器</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="contentFullWidthToggle">
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
             </div>
 
             <div class="settings-subsection">

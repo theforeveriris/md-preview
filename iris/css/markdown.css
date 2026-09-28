@@ -1,10 +1,15 @@
 .markdown-body {
-  max-width: 720px;
+  max-width: var(--content-width);
   margin: 0 auto;
   padding: 24px 40px 120px;
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-md);
   color: var(--color-text);
+}
+
+/* 全宽模式：正文占满可用宽度（设置面板 → 正文占满可用宽度） */
+body.content-full-width .markdown-body {
+  max-width: 100%;
 }
 
 .welcome-state {

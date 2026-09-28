@@ -269,6 +269,33 @@
   margin-left: 16px;
 }
 
+/* 内容区宽度：滑杆 + 数值 + 重置 */
+.content-width-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.content-width-control .width-slider {
+  width: 180px;
+  max-width: 40vw;
+  accent-color: var(--color-accent-purple);
+  cursor: pointer;
+}
+
+.content-width-control .width-slider:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.content-width-control .width-value {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  min-width: 48px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
 .switch {
   position: relative;
   display: inline-block;

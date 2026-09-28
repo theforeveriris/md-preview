@@ -190,3 +190,25 @@
   z-index: 99;
   backdrop-filter: blur(2px);
 }
+
+/* ===== 桌面端侧边栏折叠（body.sidebar-collapsed）===== */
+/* 仅桌面端生效；移动端抽屉仍由 .open / .sidebar-overlay 控制 */
+@media (min-width: 769px) {
+  body.sidebar-collapsed .sidebar {
+    transform: translateX(-100%);
+    box-shadow: none;
+  }
+
+  body.sidebar-collapsed .main-content {
+    margin-left: 0;
+  }
+
+  body.sidebar-collapsed .reading-progress {
+    left: 0;
+  }
+
+  /* 折叠后左上角浮现汉堡按钮，用于重新展开（复用移动端按钮） */
+  body.sidebar-collapsed .mobile-menu-btn {
+    display: flex;
+  }
+}

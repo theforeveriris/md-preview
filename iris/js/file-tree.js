@@ -327,13 +327,39 @@
   }
   
   function toggleSidebar() {
+    if (window.innerWidth > 768) {
+      toggleSidebarCollapsed();
+      return;
+    }
     dom.sidebar.classList.toggle('open');
     dom.sidebarOverlay.classList.toggle('active');
   }
-  
+
+  function toggleSidebarCollapsed() {
+    setSidebarCollapsed(!document.body.classList.contains('sidebar-collapsed'));
+  }
+
+  // 桌面端折叠状态：写在 body.sidebar-collapsed，样式见 layout.css；
+  // 同时持久化到设置，刷新后保持
+  function setSidebarCollapsed(collapsed) {
+    document.body.classList.toggle('sidebar-collapsed', collapsed === true);
+    try {
+      var settings = window.MarkdownPreview.settings;
+      if (settings && settings.load && settings.save) {
+        var s = settings.load();
+        s.sidebarCollapsed = collapsed === true;
+        settings.save(s);
+      }
+    } catch (e) { /* settings 未就绪时仅切换类名 */ }
+  }
+
   function closeSidebar() {
     dom.sidebar.classList.remove('open');
     dom.sidebarOverlay.classList.remove('active');
+    // 桌面端：Esc / overlay 关闭语义 = 展开已折叠的侧边栏
+    if (window.innerWidth > 768 && document.body.classList.contains('sidebar-collapsed')) {
+      setSidebarCollapsed(false);
+    }
   }
   
   function closeSidebarOnMobile() {
@@ -394,6 +420,8 @@
     toggleSidebar,
     closeSidebar,
     closeSidebarOnMobile,
+    toggleSidebarCollapsed,
+    setSidebarCollapsed,
     onFilesLoaded,
     getAllFilesInDFSOrder,
     getAdjacentFiles,

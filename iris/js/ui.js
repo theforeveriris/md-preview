@@ -54,14 +54,30 @@
   
   function setupEventListeners() {
     dom.mobileMenuBtn.addEventListener('click', window.MarkdownPreview.fileTree.toggleSidebar);
+    dom.sidebarToggle.addEventListener('click', window.MarkdownPreview.fileTree.toggleSidebar);
     dom.sidebarOverlay.addEventListener('click', window.MarkdownPreview.fileTree.closeSidebar);
-    
+
     dom.modeFiles.addEventListener('click', () => switchMode('files'));
     dom.modeIndex.addEventListener('click', () => switchMode('index'));
-    
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         window.MarkdownPreview.fileTree.closeSidebar();
+        return;
+      }
+      // Ctrl/Cmd + B：折叠/展开侧边栏（对齐 VS Code 习惯键位）
+      if ((e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey
+          && String(e.key).toLowerCase() === 'b') {
+        // 编辑器模式有独立 Ctrl+B（粗体），不抢占
+        if (document.body.classList.contains('editor-mode')) return;
+        // 输入控件内不抢占（编辑区、搜索框等）
+        const target = e.target;
+        if (target && target.closest && target.closest('input, textarea, select, [contenteditable="true"]')) return;
+        // 设置面板打开时不动作
+        const settingsOverlay = document.getElementById('settingsOverlay');
+        if (settingsOverlay && settingsOverlay.classList.contains('open')) return;
+        e.preventDefault();
+        window.MarkdownPreview.fileTree.toggleSidebar();
       }
     });
   }

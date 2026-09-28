@@ -10,8 +10,16 @@
     truncateFileNames: true,
     codeTheme: 'github',
     customColors: {},
-    fontConfig: {}
+    fontConfig: {},
+    sidebarCollapsed: false,
+    contentWidth: 720,
+    contentFullWidth: false
   };
+
+  // 内容区宽度范围（与设置面板滑杆一致）
+  const CONTENT_WIDTH_MIN = 600;
+  const CONTENT_WIDTH_MAX = 1400;
+  const CONTENT_WIDTH_DEFAULT = 720;
 
   // 主题色默认值（与 base.css :root 保持一致）
   const defaultColors = {
@@ -60,6 +68,12 @@
     return out;
   }
 
+  function normalizeContentWidth(v) {
+    const n = Number(v);
+    if (!Number.isFinite(n)) return CONTENT_WIDTH_DEFAULT;
+    return Math.min(CONTENT_WIDTH_MAX, Math.max(CONTENT_WIDTH_MIN, Math.round(n)));
+  }
+
   function loadSettings() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -72,7 +86,10 @@
           truncateFileNames: parsed.truncateFileNames ?? defaultSettings.truncateFileNames,
           codeTheme: parsed.codeTheme ?? defaultSettings.codeTheme,
           customColors: (parsed.customColors && typeof parsed.customColors === 'object') ? parsed.customColors : {},
-          fontConfig: normalizeFontConfig(parsed.fontConfig)
+          fontConfig: normalizeFontConfig(parsed.fontConfig),
+          sidebarCollapsed: parsed.sidebarCollapsed === true,
+          contentWidth: normalizeContentWidth(parsed.contentWidth ?? defaultSettings.contentWidth),
+          contentFullWidth: parsed.contentFullWidth === true
         };
       }
     } catch (e) {
@@ -229,6 +246,35 @@
       settings.codeTheme = e.target.value;
       saveSettings(settings);
       applyCodeTheme(settings.codeTheme);
+    });
+
+    // 内容区宽度：滑杆 / 全宽开关 / 重置
+    const contentWidthRange = document.getElementById('contentWidthRange');
+    const contentFullWidthToggle = document.getElementById('contentFullWidthToggle');
+    const resetContentWidthBtn = document.getElementById('resetContentWidthBtn');
+
+    contentWidthRange?.addEventListener('input', (e) => {
+      const settings = loadSettings();
+      settings.contentWidth = normalizeContentWidth(e.target.value);
+      saveSettings(settings);
+      applyContentWidthSettings(settings);
+      syncContentWidthControls(settings);
+    });
+
+    contentFullWidthToggle?.addEventListener('change', (e) => {
+      const settings = loadSettings();
+      settings.contentFullWidth = e.target.checked;
+      saveSettings(settings);
+      applyContentWidthSettings(settings);
+      syncContentWidthControls(settings);
+    });
+
+    resetContentWidthBtn?.addEventListener('click', () => {
+      const settings = loadSettings();
+      settings.contentWidth = CONTENT_WIDTH_DEFAULT;
+      saveSettings(settings);
+      applyContentWidthSettings(settings);
+      syncContentWidthControls(settings);
     });
 
     // 自定义主题色取色器
@@ -447,6 +493,33 @@
       window.MarkdownPreview.fileTree.setTruncateNames(truncate);
     }
   }
+
+  // ---------- 侧边栏折叠状态（桌面端）----------
+  // file-tree.js 的按钮/快捷键负责切换并持久化；这里只在启动时恢复
+  function applySidebarCollapsed(collapsed) {
+    document.body.classList.toggle('sidebar-collapsed', collapsed === true);
+  }
+
+  // ---------- 内容区宽度 ----------
+  function applyContentWidthSettings(settings) {
+    document.body.classList.toggle('content-full-width', settings.contentFullWidth === true);
+    const root = document.documentElement;
+    if (settings.contentFullWidth) return; // 全宽模式忽略滑杆值
+    root.style.setProperty('--content-width', `${settings.contentWidth}px`);
+  }
+
+  // 把宽度配置回填到设置面板控件
+  function syncContentWidthControls(settings) {
+    const range = document.getElementById('contentWidthRange');
+    const value = document.getElementById('contentWidthValue');
+    const fullToggle = document.getElementById('contentFullWidthToggle');
+    if (range) {
+      range.value = settings.contentWidth;
+      range.disabled = settings.contentFullWidth === true;
+    }
+    if (value) value.textContent = `${settings.contentWidth}px`;
+    if (fullToggle) fullToggle.checked = settings.contentFullWidth === true;
+  }
   
   function downloadCurrentFile() {
     const { state } = window.MarkdownPreview;
@@ -542,6 +615,9 @@
     applyCodeTheme(settings.codeTheme);
     applyCustomColors(settings.customColors || {});
     applyFontConfig(settings.fontConfig || defaultFontConfig);
+    applySidebarCollapsed(settings.sidebarCollapsed);
+    applyContentWidthSettings(settings);
+    syncContentWidthControls(settings);
 
     const showReadingProgressToggle = document.getElementById('showReadingProgressToggle');
     const showWordCountToggle = document.getElementById('showWordCountToggle');

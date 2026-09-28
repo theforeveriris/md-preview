@@ -24,6 +24,7 @@
   --font-weight-h3: 600;
   --font-weight-display: 400; /* 衬线展示体字重 */
   --sidebar-width: 280px;
+  --content-width: 720px;    /* Markdown 正文区最大宽度，可在设置面板调整 */
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
