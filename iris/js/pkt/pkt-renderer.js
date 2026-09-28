@@ -100,6 +100,9 @@
 
   function renderTopology(container, jsonData, options) {
     options = options || {};
+    // 复用同一容器时，先销毁上一轮 Cytoscape 实例，避免 canvas/事件/动画帧累积
+    if (container._pktCy) destroyCyInstance(container._pktCy);
+    container._pktCy = null;
     const sourceFile = jsonData.meta?.source || 'unknown.pkt';
 
     // 错误处理
@@ -582,6 +585,11 @@
 
     // 触摸优化（移动端双指缩放由 Cytoscape 默认支持）
 
+    // 登记实例：用于文档渲染边界统一销毁（destroyOrphaned）
+    cy._pktContainer = container;
+    container._pktCy = cy;
+    liveInstances.add(cy);
+
     return cy;
   }
 
@@ -680,6 +688,27 @@
     if (btn) btn.classList.add('active');
   }
 
+  // ============== Cytoscape 实例生命周期 ==============
+  // 记录所有存活拓扑实例，用于文档渲染边界统一销毁（防止跨文档导航泄漏）
+  const liveInstances = new Set();
+
+  function destroyCyInstance(cy) {
+    if (!cy) return;
+    // 若当前打开的抽屉属于该拓扑，先关闭，避免销毁后抽屉悬挂旧数据
+    if (drawerOwner === cy._pktContainer) closeDrawer();
+    try { cy.destroy(); } catch (e) { /* ignore */ }
+    liveInstances.delete(cy);
+  }
+
+  function destroyOrphaned() {
+    // 销毁已脱离 DOM 的拓扑实例（上一轮文档渲染的容器已被 innerHTML 替换）
+    for (const cy of [...liveInstances]) {
+      if (cy._pktContainer && !cy._pktContainer.isConnected) {
+        destroyCyInstance(cy);
+      }
+    }
+  }
+
   // ============== Tooltip ==============
 
   let tooltipEl = null;
@@ -718,9 +747,14 @@
 
   let drawerEl = null;
   let drawerOverlayEl = null;
+  let drawerOwner = null; // 当前抽屉归属的拓扑容器（用于销毁拓扑时联动关闭抽屉）
 
   function openDrawer(node, jsonData) {
     closeDrawer();
+
+    // 记录抽屉归属的拓扑容器，跨文档渲染销毁该拓扑时联动关闭抽屉
+    const ownerCy = node.cy && node.cy();
+    drawerOwner = (ownerCy && ownerCy._pktContainer) ? ownerCy._pktContainer : null;
 
     const devId = node.data('id');
     const devName = node.data('label');
@@ -829,14 +863,20 @@
   }
 
   function closeDrawer() {
+    drawerOwner = null;
     if (drawerEl) {
-      drawerEl.classList.remove('visible');
-      drawerOverlayEl?.classList.remove('visible');
+      const oldDrawer = drawerEl;
+      const oldOverlay = drawerOverlayEl;
+      oldDrawer.classList.remove('visible');
+      oldOverlay?.classList.remove('visible');
+      // 捕获旧元素再延迟移除：若 250ms 内打开了新抽屉，只清理旧抽屉，
+      // 不触碰新抽屉（快速连点/连开多个设备的竞态修复）
       setTimeout(() => {
-        drawerEl?.remove();
-        drawerOverlayEl?.remove();
-        drawerEl = null;
-        drawerOverlayEl = null;
+        oldDrawer.remove();
+        oldOverlay?.remove();
+        // 仅当单例仍指向旧元素时才清空，避免误删新抽屉
+        if (drawerEl === oldDrawer) drawerEl = null;
+        if (drawerOverlayEl === oldOverlay) drawerOverlayEl = null;
       }, 250);
     }
   }
@@ -3087,6 +3127,10 @@
   // ============== 加载 JSON 并渲染 ==============
 
   async function loadAndRender(container, jsonPath, options) {
+    // 销毁同一容器上残留的上一轮拓扑实例（编辑器 cell 重复渲染、同一容器复用等场景）
+    if (container._pktCy) destroyCyInstance(container._pktCy);
+    container._pktCy = null;
+
     container.innerHTML = `
       <div class="pkt-topology-container">
         <div class="pkt-loading">
@@ -3161,6 +3205,7 @@
     renderTopology,
     loadAndRender,
     highlightIOS,
+    destroyOrphaned,
   };
 
   // ============== 自动加载设备 SVG 图标 sprite ==============

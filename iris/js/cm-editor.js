@@ -101,15 +101,17 @@
           }
         }),
         // DOM 事件：keydown / keyup / click / mouseup
+        // 注意：keydown/keyup 需要与 input/click 等事件一样把 target 设为编辑器包装对象，
+        // 否则 editor.js 通过 e.target.dataset.cellId 定位 cell 会拿到 CM6 的 .cm-content 节点而失效。
         EditorView.domEventHandlers({
           keydown: (event) => {
             if (this._onKeyDown) this._onKeyDown(event);
-            this._dispatchEvent('keydown', event);
+            this._dispatchEvent('keydown', this._wrapKeyEvent(event));
             return false; // 不阻止默认行为，让 CM6 keymap 优先处理
           },
           keyup: (event) => {
             if (this._onKeyUp) this._onKeyUp(event);
-            this._dispatchEvent('keyup', event);
+            this._dispatchEvent('keyup', this._wrapKeyEvent(event));
             return false;
           },
           click: (event) => {
@@ -226,6 +228,26 @@
       }
     }
 
+    /**
+     * 将原始键盘 DOM 事件包装成 target=this 的兼容事件对象，
+     * 保留 editor.js 快捷键处理所需的属性，并把 preventDefault/stopPropagation 委托回真实事件。
+     */
+    _wrapKeyEvent(event) {
+      return {
+        target: this,
+        key: event.key,
+        code: event.code,
+        ctrlKey: event.ctrlKey,
+        metaKey: event.metaKey,
+        shiftKey: event.shiftKey,
+        altKey: event.altKey,
+        repeat: event.repeat,
+        isComposing: event.isComposing,
+        preventDefault: () => event.preventDefault(),
+        stopPropagation: () => event.stopPropagation(),
+      };
+    }
+
     // ============== 扩展 API ==============
 
     /**
@@ -265,14 +287,17 @@
 
     /**
      * 在行首插入文本（用于格式化快捷键）
+     * 注意：使用 EditorSelection.range 保持原选区位置（cursor() 的第二参数是 assoc 而非选区终点）
      */
     insertAtLineStart(prefix) {
       const state = this.view.state;
       const sel = state.selection.main;
       const lineStart = state.doc.lineAt(sel.from).from;
+      const from = sel.from + prefix.length;
+      const to = sel.to + prefix.length;
       this.view.dispatch({
         changes: { from: lineStart, to: lineStart, insert: prefix },
-        selection: EditorSelection.cursor(sel.from + prefix.length, sel.to + prefix.length),
+        selection: EditorSelection.range(from, to),
         scrollIntoView: true,
       });
     }

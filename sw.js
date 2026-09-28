@@ -1,5 +1,5 @@
-const CACHE_NAME = 'md-preview-v7.2';
-const RUNTIME_CACHE = 'md-preview-runtime-v7.2';
+const CACHE_NAME = 'md-preview-v7.3';
+const RUNTIME_CACHE = 'md-preview-runtime-v7.3';
 const PRECACHE_MANIFEST_URL = './iris/data/precache-manifest.json';
 
 // 最小化兜底清单：当 manifest 拉取失败时使用，仅保证核心骨架可离线
@@ -56,22 +56,20 @@ async function precache() {
 
   await Promise.all(
     urls.map(async (url) => {
+      // 网络优先：install 时总是重新拉取，确保发布新版本后预缓存立即刷新，
+      // 而不是命中旧缓存直接跳过（旧逻辑导致预缓存从未更新）。
+      // 仅当网络失败时才回退旧缓存，避免更新失败导致离线不可用。
+      const cached = await cache.match(url);
       try {
-        // 检查是否已缓存，避免重复请求
-        const cached = await cache.match(url);
-        if (cached) {
-          successCount++;
-          return;
-        }
         const response = await fetch(url);
         if (response.ok) {
           await cache.put(url, response);
           successCount++;
         } else {
-          failCount++;
+          if (cached) successCount++; else failCount++;
         }
       } catch (err) {
-        failCount++;
+        if (cached) successCount++; else failCount++;
       }
     })
   );
@@ -80,7 +78,7 @@ async function precache() {
 }
 
 self.addEventListener('install', event => {
-  console.log('[SW] Installing v7.1...');
+  console.log('[SW] Installing v7.3...');
   event.waitUntil(
     precache()
       .then(() => self.skipWaiting())
@@ -92,7 +90,7 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
-  console.log('[SW] Activating v7.1...');
+  console.log('[SW] Activating v7.3...');
   event.waitUntil(
     caches.keys().then(keys => {
       return Promise.all(

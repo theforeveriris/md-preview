@@ -269,6 +269,19 @@
 
   async function renderWithPlugins(context) {
     console.log('[Plugins] renderWithPlugins called');
+
+    // 文档渲染边界：清理上一轮文档渲染遗留的插件资源（倒计时定时器、监听器等），
+    // 防止跨文档导航时这些资源持续累积泄漏。渲染器只在本函数内注册资源，
+    // 编辑器 cell 路径不经过这里，不受影响。
+    pluginInstances.forEach((resources) => {
+      resources.forEach(res => {
+        if (res && typeof res.destroy === 'function') {
+          try { res.destroy(); } catch (e) { /* ignore */ }
+        }
+      });
+    });
+    pluginInstances.clear();
+
     const plugins = window.MarkdownPreview.plugins;
     if (!plugins || typeof plugins.find !== 'function') {
       console.log('[Plugins] Plugin system not available');
@@ -342,7 +355,9 @@
       } catch (error) {
         console.error(`[Plugins] Plugin "${plugin.name}" render error:`, error);
 
-        // 渲染错误时显示友好的错误边界
+        // 渲染错误时显示友好的错误边界（插件名/错误消息转义后拼入，防止注入）
+        const safePluginName = String(plugin.name || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const safeError = String(error && error.message ? error.message : error).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         container.innerHTML = `
           <div class="plugin-error" style="
             padding: 12px 16px;
@@ -354,8 +369,8 @@
             font-size: 14px;
           ">
             <div style="font-weight: 600; margin-bottom: 4px;">❌ 插件渲染错误</div>
-            <div style="opacity: 0.8;">插件: <code>${plugin.name}</code></div>
-            <div style="opacity: 0.8; font-size: 12px; margin-top: 4px;">${error.message || error}</div>
+            <div style="opacity: 0.8;">插件: <code>${safePluginName}</code></div>
+            <div style="opacity: 0.8; font-size: 12px; margin-top: 4px;">${safeError}</div>
           </div>
         `;
         if (pre.parentNode) {

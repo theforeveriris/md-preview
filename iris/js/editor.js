@@ -220,7 +220,7 @@
   const statusCurCellWords = document.getElementById('statusCurCellWords');
   const statusSave = document.getElementById('statusSave');
   const searchPanel = document.getElementById('searchPanel');
-  const searchInput = document.getElementById('searchInput');
+  const searchInput = document.getElementById('editorSearchInput');
   const replaceInput = document.getElementById('replaceInput');
   const searchInfo = document.getElementById('searchInfo');
   const fontSizeMenu = document.getElementById('fontSizeMenu');
@@ -1171,9 +1171,16 @@
     });
 
     // 使用 CM6 坐标 API 定位补全列表
-    const view = textarea.view;
-    const pos = view.state.selection.main.head;
-    const coords = view.coordsAtPos(pos);
+    // coordsAtPos 依赖真实布局（getClientRects），在无布局环境（headless/jsdom/隐藏容器）可能抛错，
+    // 测量失败时仅跳过定位，不影响补全列表显示。
+    let coords = null;
+    try {
+      const view = textarea.view;
+      const pos = view.state.selection.main.head;
+      coords = view.coordsAtPos(pos);
+    } catch (e) {
+      coords = null;
+    }
     if (coords) {
       autocompleteList.style.top = (coords.bottom + 4) + 'px';
       autocompleteList.style.left = (coords.left) + 'px';
@@ -1206,63 +1213,63 @@
     // ``` 代码块语言触发（先检查多字符前缀）
     if (lineBeforeCursor.match(/^```[\w-]*$/)) {
       const filter = lineBeforeCursor.substring(3);
-      showAutocomplete(textarea, filter, '```', lineStart, 3);
+      showAutocomplete(editor, filter, '```', lineStart, 3);
     }
     // > [! GitHub Alert 触发（比 > 更具体，先检查）
     else if (lineBeforeCursor.match(/^> \[!?[\w]*$/)) {
       const m = lineBeforeCursor.match(/^> \[!?([\w]*)$/);
       const filter = m ? m[1] : '';
-      showAutocomplete(textarea, filter, '> [!', lineStart, lineBeforeCursor.length);
+      showAutocomplete(editor, filter, '> [!', lineStart, lineBeforeCursor.length);
     }
     // > 普通引用触发（仅 > 或 > 后跟空格，且不是 > [）
     else if (lineBeforeCursor.match(/^>\s?$/) && !lineBeforeCursor.includes('[')) {
-      showAutocomplete(textarea, '', '>', lineStart, lineBeforeCursor.length);
+      showAutocomplete(editor, '', '>', lineStart, lineBeforeCursor.length);
     }
     // ::: 容器触发（code-tabs / columns）
     else if (lineBeforeCursor.match(/^:::\s*\w*$/)) {
       const filter = lineBeforeCursor.substring(3).trim();
-      showAutocomplete(textarea, filter, ':::', lineStart, lineBeforeCursor.length);
+      showAutocomplete(editor, filter, ':::', lineStart, lineBeforeCursor.length);
     }
     // || 剧透触发
     else if (lineBeforeCursor.match(/^\|\|$/)) {
-      showAutocomplete(textarea, '', '||', lineStart, 2);
+      showAutocomplete(editor, '', '||', lineStart, 2);
     }
     // --- 水平线 / Frontmatter 触发（3 个以上 -）
     else if (lineBeforeCursor.match(/^-{3,}$/)) {
-      showAutocomplete(textarea, '', '---', lineStart, lineBeforeCursor.length);
+      showAutocomplete(editor, '', '---', lineStart, lineBeforeCursor.length);
     }
     // - 列表触发（单个 - 或 - 后跟空格）
     else if (lineBeforeCursor.match(/^-\s?$/)) {
-      showAutocomplete(textarea, '', '-', lineStart, lineBeforeCursor.length);
+      showAutocomplete(editor, '', '-', lineStart, lineBeforeCursor.length);
     }
     // # 标题触发（1-6 个 #）
     else if (lineBeforeCursor.match(/^#{1,6}$/)) {
-      showAutocomplete(textarea, lineBeforeCursor, '#', lineStart, lineBeforeCursor.length);
+      showAutocomplete(editor, lineBeforeCursor, '#', lineStart, lineBeforeCursor.length);
     }
     // | 表格触发（单个 |）
     else if (lineBeforeCursor.match(/^\|$/)) {
-      showAutocomplete(textarea, '', '|', lineStart, 1);
+      showAutocomplete(editor, '', '|', lineStart, 1);
     }
     // $$ KaTeX 公式块触发
     else if (lineBeforeCursor.match(/^\$\$$/)) {
-      showAutocomplete(textarea, '', '$$', lineStart, 2);
+      showAutocomplete(editor, '', '$$', lineStart, 2);
     }
     // ![ 图片触发
     else if (lineBeforeCursor.match(/^!\[?$/)) {
-      showAutocomplete(textarea, '', '![', lineStart, lineBeforeCursor.length);
+      showAutocomplete(editor, '', '![', lineStart, lineBeforeCursor.length);
     }
     // [ 链接触发（单个 [）
     else if (lineBeforeCursor.match(/^\[$/)) {
-      showAutocomplete(textarea, '', '[', lineStart, 1);
+      showAutocomplete(editor, '', '[', lineStart, 1);
     }
     // [pulse DG-LAB 波形触发
     else if (lineBeforeCursor.match(/^\[pulse\w*$/)) {
-      showAutocomplete(textarea, '', '[pulse', lineStart, lineBeforeCursor.length);
+      showAutocomplete(editor, '', '[pulse', lineStart, lineBeforeCursor.length);
     }
     // @ 画廊样式触发
     else if (lineBeforeCursor.match(/^@\w*$/)) {
       const filter = lineBeforeCursor.substring(1);
-      showAutocomplete(textarea, filter, '@', lineStart, 1);
+      showAutocomplete(editor, filter, '@', lineStart, 1);
     }
     else {
       hideAutocomplete();
@@ -1756,12 +1763,13 @@
     return url;
   }
 
-  // 正在处理的图片标记，避免重复插入
+  // 正在处理的图片标记，避免同一文件重复插入（以 file 为 key，
+  // 这样同一次粘贴/拖拽多张图片可以并发插入，而不会被 cellData 粒度拦截）
   const _imageProcessing = new WeakSet();
 
   async function insertImageToCell(cellData, file) {
     if (!cellData || !file) return;
-    if (_imageProcessing.has(cellData)) return;
+    if (_imageProcessing.has(file)) return;
     const config = getImageUploadConfig();
     const fileName = (file.name || 'image').replace(/[`\[\]()]/g, '').replace(/\.[^.]+$/, '') || 'image';
     activeCellId = cellData.id;
@@ -1769,7 +1777,7 @@
 
     if (config.mode === 'host' && config.url) {
       showToast('正在上传图片到图床…');
-      _imageProcessing.add(cellData);
+      _imageProcessing.add(file);
       try {
         const url = await uploadImageToHost(file, config);
         const md = `![${fileName}](${url})`;
@@ -1788,11 +1796,11 @@
           showToast('图片插入失败：' + e2.message);
         }
       } finally {
-        _imageProcessing.delete(cellData);
+        _imageProcessing.delete(file);
       }
     } else {
       // base64 模式
-      _imageProcessing.add(cellData);
+      _imageProcessing.add(file);
       try {
         const dataUrl = await fileToBase64(file);
         const md = `![${fileName}](${dataUrl})`;
@@ -1802,7 +1810,7 @@
       } catch (e) {
         showToast('图片插入失败：' + e.message);
       } finally {
-        _imageProcessing.delete(cellData);
+        _imageProcessing.delete(file);
       }
     }
   }

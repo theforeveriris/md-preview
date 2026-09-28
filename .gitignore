@@ -9,6 +9,9 @@ node_modules/
 dist/
 build/
 
+# eNSP/PT 解析器的解压产物（*.zip 解出的 *_extracted/ 目录，仅构建期临时文件）
+*_extracted/
+
 # 上传/临时文件
 .uploads/
 *.tmp

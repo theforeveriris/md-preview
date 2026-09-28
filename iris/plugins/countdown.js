@@ -124,7 +124,9 @@ export default {
     };
 
     const timerId = setInterval(tick, cfg.updateIntervalMs);
-    this._timers.add(timerId);
+    // 捕获 this._timers 供 stop() 闭包使用（闭包内 this 不是插件实例）
+    const timers = this._timers;
+    timers.add(timerId);
     tick();
 
     // 注册资源以便 loader 在注销时统一清理
@@ -135,9 +137,9 @@ export default {
     }
 
     function stop() {
-      if (timerId !== null) {
-        clearInterval(timerId);
-      }
+      clearInterval(timerId);
+      // 从 _timers 集合中移除，防止 Set 跨渲染无界增长
+      timers.delete(timerId);
     }
   },
 

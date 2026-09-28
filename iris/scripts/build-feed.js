@@ -173,8 +173,12 @@ function buildFeed() {
     const description = frontmatter.description || extractDescription(body);
     const pubDate = frontmatter.date ? new Date(frontmatter.date) : getPublishDate(file.fullPath);
 
-    // hash 路由 URL：https://.../md-preview/#/docs/foo.md
-    const itemUrl = `${SITE_URL}#/${file.repoRelativePath}`;
+    // 直链原始 Markdown 文件：标准 RSS 阅读器抓取 <link> 时不执行站点 JS，
+    // hash fragment（#/docs/foo.md）只能拿到 index.html 空壳，无法解析。
+    // Pages artifact 部署下 docs/foo.md 以真实路径直接可抓，故 link/guid 指向文件本身。
+    // 逐段 encodeURIComponent：文件名可能含空格/中文/# 等需要转义的字符。
+    const pathUrl = file.repoRelativePath.split('/').map(encodeURIComponent).join('/');
+    const itemUrl = `${SITE_URL}${pathUrl}`;
 
     return {
       title,

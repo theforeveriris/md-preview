@@ -37,7 +37,7 @@ https://theforeveriris.github.io/md-preview/iris/data/feed.xml
 | 字段 | 来源 |
 |------|------|
 | `<title>` | frontmatter.title → 文档首个 `#` 标题 → 文件名 |
-| `<link>` | 站点 URL + `#/` + 文档相对路径（hash 路由直达） |
+| `<link>` | 站点 URL + `docs/` 文档相对路径，指向可直接抓取的原始 Markdown 文件（标准 RSS 阅读器不执行站点 JS，hash fragment `#/docs/foo.md` 无法解析） |
 | `<guid>` | 与 `<link>` 相同，作为永久链接 |
 | `<pubDate>` | frontmatter.date → git 最后提交时间 → 文件 mtime |
 | `<description>` | frontmatter.description → 正文前 200 字（去除代码块/标题/markdown 符号） |

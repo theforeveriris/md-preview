@@ -36,6 +36,19 @@
   };
 
   /**
+   * HTML 转义。用于任何会被拼进 innerHTML 的文档内容（代码块 lang、
+   * LaTeX 原文、剧透内容、标签/栏标题等），防止存储型 XSS。
+   */
+  function escapeHtml(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  /**
    * 处理 GitHub Alerts（> [!TYPE] 语法）
    * @param {string} text - Markdown 文本
    * @param {Object} [opts]
@@ -99,7 +112,8 @@
    */
   function restoreLaTeXBlocks(html, blocks) {
     return html.replace(/LATEXPROTECT_(\d+)_/g, (m, idx) => {
-      return `<div class="katex-block">${blocks[parseInt(idx)]}</div>`;
+      // 转义后再放回：katex 渲染器读取的是 block.textContent，转义不影响公式解析
+      return `<div class="katex-block">${escapeHtml(blocks[parseInt(idx)])}</div>`;
     });
   }
 
@@ -117,21 +131,25 @@
     const renderer = new marked.Renderer();
     renderer.code = function({ text, lang }) {
       const language = lang || '';
-      const languageClass = language ? ` class="language-${language}"` : '';
-      const langLabel = language ? `<span class="code-lang-label">${language}</span>` : '';
+      // lang 来自文档内容，必须先转义再拼进 HTML（marked 默认渲染器会转义，自定义 renderer 需要自己处理）
+      const escapedLang = escapeHtml(language);
+      const languageClass = escapedLang ? ` class="language-${escapedLang}"` : '';
+      const langLabel = escapedLang ? `<span class="code-lang-label">${escapedLang}</span>` : '';
       const escapedText = String(text || '')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
-      return `<pre class="code-block"${language ? ` data-lang="${language}"` : ''}><button class="copy-btn" aria-label="复制代码"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>${langLabel}<code${languageClass}>${escapedText}</code></pre>`;
+      return `<pre class="code-block"${escapedLang ? ` data-lang="${escapedLang}"` : ''}><button class="copy-btn" aria-label="复制代码"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>${langLabel}<code${languageClass}>${escapedText}</code></pre>`;
     };
     renderer.paragraph = function(token) {
       const trimmed = (token && token.text ? token.text : '').trim();
-      const markerMatch = trimmed.match(/^@([a-zA-Z][\w-]*)(\s.*)?$/);
+      // 仅当整段恰好是 "@样式名" 时才视为画廊样式标记；
+      // 否则 "@stack 本周完成 3 个任务" 这类正常段落会被误删。
+      const markerMatch = trimmed.match(/^@([a-zA-Z][\w-]*)$/);
       if (markerMatch && knownStyles.includes(markerMatch[1].toLowerCase())) {
-        return `<p class="gallery-style-marker" data-style="${markerMatch[1].toLowerCase()}"></p>`;
+        return `<p class="gallery-style-marker" data-style="${escapeHtml(markerMatch[1].toLowerCase())}"></p>`;
       }
       return `<p>${this.parser.parseInline(token.tokens)}</p>`;
     };
@@ -247,7 +265,7 @@
       }
       const tabId = 'codetabs-' + Math.random().toString(36).substring(2, 9);
       const tabHeaders = tabs.map((tab, idx) =>
-        `<button class="code-tab-btn ${idx === 0 ? 'active' : ''}" data-tab="${tabId}-${idx}" data-group="${tabId}">${tab.name}</button>`
+        `<button class="code-tab-btn ${idx === 0 ? 'active' : ''}" data-tab="${tabId}-${idx}" data-group="${tabId}">${escapeHtml(tab.name)}</button>`
       ).join('');
       const tabPanels = tabs.map((tab, idx) => {
         const rendered = marked.parse(tab.content, parseOpts);
@@ -396,7 +414,7 @@
 
       const colHtml = columns.map(col => {
         const rendered = marked.parse(col.content, parseOpts);
-        const titleHtml = col.title ? `<div class="column-title">${col.title}</div>` : '';
+        const titleHtml = col.title ? `<div class="column-title">${escapeHtml(col.title)}</div>` : '';
         return `<div class="column-item">${titleHtml}<div class="column-body">${rendered}</div></div>`;
       }).join('');
       result.push(`<div class="columns-container">${colHtml}</div>`);
@@ -427,7 +445,8 @@
     });
 
     protectedText = protectedText.replace(/\|\|([^\|\n]+?)\|\|/g, function(match, content) {
-      return '<span class="spoiler" tabindex="0">' + content + '</span>';
+      // 内容在 marked 解析前就插入了 <span> 原始 HTML，必须转义防止注入
+      return '<span class="spoiler" tabindex="0">' + escapeHtml(content) + '</span>';
     });
 
     protectedText = protectedText.replace(/SPOILERCODEBLOCK_(\d+)_/g, function(m, idx) {
@@ -528,7 +547,15 @@
    * 幻灯片自动轮播：为 .image-gallery--slider 创建 track + 指示点
    * @param {HTMLElement} container
    */
+  // 追踪所有轮播定时器：每次新的渲染周期都会先清掉上一轮遗留的 interval，
+  // 防止文档切换后旧轮播（DOM 已脱离）继续空转累积。
+  const sliderTimers = new Set();
+
   function initSliders(container) {
+    // 上一渲染周期的轮播元素已脱离 DOM，先统一停止其定时器
+    sliderTimers.forEach(id => clearInterval(id));
+    sliderTimers.clear();
+
     container.querySelectorAll('.image-gallery--slider').forEach(slider => {
       const imgs = Array.from(slider.querySelectorAll('img'));
       if (imgs.length < 2) return;
@@ -552,8 +579,8 @@
         track.style.transform = `translateX(-${index * 100}%)`;
         dots.querySelectorAll('span').forEach((d, di) => d.classList.toggle('active', di === index));
       }
-      function start() { stop(); timer = setInterval(() => go(index + 1), 4000); }
-      function stop() { if (timer) { clearInterval(timer); timer = null; } }
+      function start() { stop(); timer = setInterval(() => go(index + 1), 4000); sliderTimers.add(timer); }
+      function stop() { if (timer) { clearInterval(timer); sliderTimers.delete(timer); timer = null; } }
       slider.addEventListener('mouseenter', stop);
       slider.addEventListener('mouseleave', start);
       start();
@@ -597,6 +624,7 @@
   window.MarkdownPreview.mdRender = {
     KNOWN_STYLES,
     DEFAULT_ALERT_TYPES,
+    escapeHtml,
     processGitHubAlerts,
     processSpoilers,
     processCodeTabs,

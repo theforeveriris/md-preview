@@ -41,7 +41,7 @@
             "name": "countdown-examples.md",
             "type": "file",
             "path": "docs/examples/countdown-examples.md",
-            "wordCount": 166
+            "wordCount": 167
           },
           {
             "name": "diff-examples.md",
@@ -65,7 +65,7 @@
             "name": "gallery-layouts.md",
             "type": "file",
             "path": "docs/examples/gallery-layouts.md",
-            "wordCount": 473
+            "wordCount": 485
           },
           {
             "name": "geojson-examples.md",
@@ -83,25 +83,25 @@
             "name": "image-gallery-examples.md",
             "type": "file",
             "path": "docs/examples/image-gallery-examples.md",
-            "wordCount": 1512
+            "wordCount": 1514
           },
           {
             "name": "latex-examples.md",
             "type": "file",
             "path": "docs/examples/latex-examples.md",
-            "wordCount": 578
+            "wordCount": 583
           },
           {
             "name": "markdown-syntax.md",
             "type": "file",
             "path": "docs/examples/markdown-syntax.md",
-            "wordCount": 330
+            "wordCount": 340
           },
           {
             "name": "mermaid-examples.md",
             "type": "file",
             "path": "docs/examples/mermaid-examples.md",
-            "wordCount": 307
+            "wordCount": 312
           },
           {
             "name": "native-html-examples.md",
@@ -113,13 +113,19 @@
             "name": "pkt-examples.md",
             "type": "file",
             "path": "docs/examples/pkt-examples.md",
-            "wordCount": 332
+            "wordCount": 501
+          },
+          {
+            "name": "pkt-huawei-vrp-解析示例.md",
+            "type": "file",
+            "path": "docs/examples/pkt-huawei-vrp-解析示例.md",
+            "wordCount": 1002
           },
           {
             "name": "plantuml-examples.md",
             "type": "file",
             "path": "docs/examples/plantuml-examples.md",
-            "wordCount": 381
+            "wordCount": 386
           },
           {
             "name": "plugin-demo.md",
@@ -131,13 +137,19 @@
             "name": "pptx-examples.md",
             "type": "file",
             "path": "docs/examples/pptx-examples.md",
-            "wordCount": 364
+            "wordCount": 365
           },
           {
             "name": "pulse-examples.md",
             "type": "file",
             "path": "docs/examples/pulse-examples.md",
             "wordCount": 661
+          },
+          {
+            "name": "pulse-generator-page.md",
+            "type": "file",
+            "path": "docs/examples/pulse-generator-page.md",
+            "wordCount": 873
           },
           {
             "name": "qrcode-examples.md",
@@ -155,7 +167,7 @@
             "name": "table-examples.md",
             "type": "file",
             "path": "docs/examples/table-examples.md",
-            "wordCount": 697
+            "wordCount": 699
           },
           {
             "name": "theme-demo.md",
@@ -170,37 +182,25 @@
             "wordCount": 390
           }
         ],
-        "wordCount": 8936
+        "wordCount": 11023
       },
       {
         "name": "code-highlight-theme.md",
         "type": "file",
         "path": "docs/code-highlight-theme.md",
-        "wordCount": 499
+        "wordCount": 502
       },
       {
         "name": "configuration.md",
         "type": "file",
         "path": "docs/configuration.md",
-        "wordCount": 621
+        "wordCount": 634
       },
       {
         "name": "editor.md",
         "type": "file",
         "path": "docs/editor.md",
         "wordCount": 1010
-      },
-      {
-        "name": "feat.md",
-        "type": "file",
-        "path": "docs/feat.md",
-        "wordCount": 279
-      },
-      {
-        "name": "features.md",
-        "type": "file",
-        "path": "docs/features.md",
-        "wordCount": 928
       },
       {
         "name": "getting-started.md",
@@ -218,34 +218,27 @@
         "name": "rss.md",
         "type": "file",
         "path": "docs/rss.md",
-        "wordCount": 314
+        "wordCount": 341
+      },
+      {
+        "name": "show.md",
+        "type": "file",
+        "path": "docs/show.md",
+        "wordCount": 2339
       },
       {
         "name": "theme-customization.md",
         "type": "file",
         "path": "docs/theme-customization.md",
-        "wordCount": 489
+        "wordCount": 495
       }
     ],
-    "wordCount": 13480
+    "wordCount": 16748
   },
   {
     "name": "iris",
     "type": "folder",
     "children": [
-      {
-        "name": "examples",
-        "type": "folder",
-        "children": [
-          {
-            "name": "pkt-huawei-vrp-解析示例.md",
-            "type": "file",
-            "path": "iris/examples/pkt-huawei-vrp-解析示例.md",
-            "wordCount": 1002
-          }
-        ],
-        "wordCount": 1002
-      },
       {
         "name": "scripts",
         "type": "folder",
@@ -267,18 +260,18 @@
         "wordCount": 166
       }
     ],
-    "wordCount": 1168
+    "wordCount": 166
   },
   {
     "name": "readme-dev.md",
     "type": "file",
     "path": "readme-dev.md",
-    "wordCount": 636
+    "wordCount": 850
   },
   {
     "name": "README.md",
     "type": "file",
     "path": "README.md",
-    "wordCount": 457
+    "wordCount": 942
   }
 ]

@@ -12,7 +12,6 @@
 """
 
 import struct
-import zlib
 
 
 # ============== 格式检测 ==============
@@ -415,103 +414,6 @@ class TwofishCipher:
         return struct.pack('<4I', P0, P1, P2, P3)
 
 
-# ============== Twofish EAX 模式 ==============
-
-def _cmac_twofish(cipher: TwofishCipher, data: bytes) -> bytes:
-    """计算 CMAC（基于 Twofish）"""
-    # 生成子密钥
-    L = cipher.encrypt_block(b'\x00' * 16)
-    K1 = _double(L)
-    K2 = _double(K1)
-
-    n = (len(data) + 15) // 16
-    if n == 0:
-        return cipher.encrypt_block(K2)
-
-    # 最后一块处理
-    last_block = data[(n - 1) * 16: n * 16]
-    if len(last_block) == 16:
-        last_block = bytes(a ^ b for a, b in zip(last_block, K1))
-    else:
-        last_block = last_block + b'\x80' + b'\x00' * (16 - len(last_block) - 1)
-        last_block = bytes(a ^ b for a, b in zip(last_block, K2))
-
-    # CMAC 计算
-    T = b'\x00' * 16
-    for i in range(n - 1):
-        block = data[i * 16: (i + 1) * 16]
-        T = cipher.encrypt_block(bytes(a ^ b for a, b in zip(T, block)))
-    T = cipher.encrypt_block(bytes(a ^ b for a, b in zip(T, last_block)))
-    return T
-
-
-def _double(block: bytes) -> bytes:
-    """GF(2^128) 上的乘 2"""
-    val = int.from_bytes(block, 'big')
-    result = (val << 1) & ((1 << 128) - 1)
-    if val & (1 << 127):
-        result ^= 0x87
-    return result.to_bytes(16, 'big')
-
-
-def _ctr_twofish(cipher: TwofishCipher, nonce: bytes, data: bytes) -> bytes:
-    """CTR 模式加密/解密"""
-    result = bytearray(len(data))
-    counter = int.from_bytes(nonce, 'big')
-    for i in range(0, len(data), 16):
-        block = data[i: i + 16]
-        counter_bytes = counter.to_bytes(16, 'big')
-        keystream = cipher.encrypt_block(counter_bytes)
-        for j in range(len(block)):
-            result[i + j] = block[j] ^ keystream[j]
-        counter = (counter + 1) & ((1 << 128) - 1)
-    return bytes(result)
-
-
-def decrypt_twofish_eax(data: bytes, key: bytes) -> bytes:
-    """Twofish EAX 模式解密
-
-    EAX 模式组合了 CTR（加密）和 OMAC（认证）。
-    .pkt 文件结构（新版）：
-        [nonce(16字节)] [ciphertext(N字节)] [tag(16字节)]
-    """
-    if len(data) < 32:
-        raise ValueError("Twofish EAX 数据太短")
-
-    nonce = data[:16]
-    tag = data[-16:]
-    ciphertext = data[16:-16]
-
-    cipher = TwofishCipher(key)
-
-    # 验证认证标签
-    # OMAC(nonce) || OMAC(header) || OMAC(ciphertext)
-    expected_tag = _cmac_twofish(cipher, nonce)
-    ct_mac = _cmac_twofish(cipher, ciphertext)
-    final_tag = bytes(a ^ b ^ c for a, b, c in zip(
-        _cmac_twofish(cipher, b'\x00' * 16),
-        expected_tag,
-        ct_mac
-    ))
-
-    if final_tag != tag:
-        raise ValueError("Twofish EAX 认证失败：标签不匹配")
-
-    # CTR 解密
-    return _ctr_twofish(cipher, nonce, ciphertext)
-
-
-# ============== Packet Tracer 密钥（旧版错误密钥，保留参考） ==============
-
-# 旧版错误密钥（保留以便参考）
-_OLD_PT_TWOFISH_KEY = bytes([
-    0x6A, 0x39, 0x6F, 0x10, 0x4C, 0x6D, 0x82, 0x4C,
-    0x4C, 0x6D, 0x82, 0x4C, 0x4C, 0x6D, 0x82, 0x4C,
-    0x4C, 0x6D, 0x82, 0x4C, 0x4C, 0x6D, 0x82, 0x4C,
-    0x4C, 0x6D, 0x82, 0x4C, 0x4C, 0x6D, 0x82, 0x4C,
-])
-
-
 # ============== 新版 Packet Tracer 正确加密参数 ==============
 
 # 正确的 Twofish-128 密钥（16 字节 0x89）
@@ -626,12 +528,6 @@ def _deobf_stage2(data: bytes) -> bytes:
     """Stage 2 反混淆：递减计数器 XOR"""
     L = len(data)
     return bytes(b ^ (L - i & 0xFF) for i, b in enumerate(data))
-
-
-def _uncompress_qt(blob: bytes) -> bytes:
-    """Qt 格式解压：4 字节大端未压缩大小 + zlib 流"""
-    size = struct.unpack(">I", blob[:4])[0]
-    return zlib.decompress(blob[4:])[:size]
 
 
 # ============== 新版 .pkt 解密主函数 ==============

@@ -18,7 +18,7 @@ function countWords(content) {
     .replace(/```[\s\S]*?```/g, '')
     .replace(/`[^`]*`/g, '')
     .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
-    .replace(/\[[^\]]*\]\([^)]*\)/g, '$1')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
     .replace(/^#+\s.*$/gm, '')
     .replace(/^[-*+]\s.*$/gm, '')
     .replace(/^>\s.*$/gm, '')

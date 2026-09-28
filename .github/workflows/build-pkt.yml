@@ -22,7 +22,9 @@ jobs:
           python-version: '3.11'
 
       - name: Process .pkt files
-        run: python iris/scripts/pkt/main.py --verbose
+        # --force：fresh checkout 下 git 不保留原始 mtime，增量对比失效，
+        # 触发本次构建的 .pkt 会被误判为最新而跳过，因此 CI 必须全量重建
+        run: python iris/scripts/pkt/main.py --force --verbose
 
       - name: Commit generated JSON/XML
         run: |

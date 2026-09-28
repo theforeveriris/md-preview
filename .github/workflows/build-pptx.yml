@@ -32,7 +32,9 @@ jobs:
           python -m pip install python-pptx Pillow
 
       - name: Process .ppt/.pptx files
-        run: python iris/scripts/pptx/main.py --verbose
+        # --force：fresh checkout 下 git 不保留原始 mtime，增量对比失效，
+        # 触发本次构建的文件会被误判为最新而跳过，因此 CI 必须全量重建
+        run: python iris/scripts/pptx/main.py --force --verbose
 
       - name: Commit generated JSON + images
         run: |

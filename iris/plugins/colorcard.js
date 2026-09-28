@@ -33,6 +33,12 @@ export default {
   },
 
   async render(code, container, context) {
+    // 每个渲染周期开始时清空上一轮累积的清理函数，防止 _cleanupFns 跨文档/跨块渲染无界增长。
+    // 上一轮的监听器由 loader 的 registerResource 按文档渲染边界统一销毁，这里只是释放引用。
+    if (Array.isArray(this._cleanupFns)) {
+      this._cleanupFns.length = 0;
+    }
+
     const colors = parseColors(code);
     if (colors.length === 0) {
       renderError(container, '未识别到任何颜色，请使用 JSON 数组、CSV 或行分隔的十六进制色值');

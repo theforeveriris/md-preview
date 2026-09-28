@@ -89,6 +89,21 @@ def process_topo(topo_path: Path, verbose: bool = False) -> dict:
             extract_dir.mkdir(parents=True, exist_ok=True)
 
             with zipfile.ZipFile(topo_path, 'r') as zf:
+                # 解压防御：限制条目数与总解压体积（zip 炸弹），并拒绝路径穿越
+                MAX_ZIP_ENTRIES = 500
+                MAX_ZIP_TOTAL_BYTES = 200 * 1024 * 1024  # 200 MB
+
+                infolist = zf.infolist()
+                if len(infolist) > MAX_ZIP_ENTRIES:
+                    raise ValueError(f'ZIP 条目数过多（{len(infolist)} > {MAX_ZIP_ENTRIES}），已拒绝解压')
+                total_uncompressed = sum(i.file_size for i in infolist)
+                if total_uncompressed > MAX_ZIP_TOTAL_BYTES:
+                    raise ValueError(f'ZIP 解压总大小过大（{total_uncompressed} bytes > {MAX_ZIP_TOTAL_BYTES}），已拒绝解压')
+                for info in infolist:
+                    name = info.filename.replace('\\', '/')
+                    if name.startswith('/') or '..' in name.split('/'):
+                        raise ValueError(f'ZIP 条目包含非法路径: {info.filename}')
+
                 zf.extractall(str(extract_dir))
 
             # 查找解压后的 .topo 文件

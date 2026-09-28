@@ -42,9 +42,17 @@
     // 支持传入外部容器（如编辑器 cell 的 outputElement），不传则默认操作主文档
     const targetEl = container || dom.markdownContent;
     const content = targetEl.innerHTML;
-    let processedContent = content;
 
     const embedLanguages = ['embed', 'geojson', 'topojson', 'twitter', 'x', 'pkt', 'ensp', 'pptx'];
+
+    // 提前检测：文档不含任何嵌入语言标记时直接返回，
+    // 避免无条件 innerHTML 重建把 ApexCharts/Leaflet 等 JS 实例的 DOM 全部销毁重建。
+    if (!embedLanguages.some(lang => content.includes(`language-${lang}`))) {
+      return;
+    }
+
+    let processedContent = content;
+
     const preTags = processedContent.match(/<pre[^>]*>[\s\S]*?<\/pre>/gi) || [];
     const prePlaceholders = [];
 

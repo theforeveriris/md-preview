@@ -168,10 +168,13 @@
 
         const placeholder = document.createElement('div');
         placeholder.className = 'image-placeholder';
+        // alt / filename 来自文档内容，转义后再拼入 HTML 防止注入
+        const safeAlt = mdRender.escapeHtml(alt);
+        const safeFilename = mdRender.escapeHtml(filename);
         placeholder.innerHTML = `
           <div class="placeholder-icon">🖼️</div>
-          <div class="placeholder-text">${alt}</div>
-          <div class="placeholder-filename">${filename}</div>
+          <div class="placeholder-text">${safeAlt}</div>
+          <div class="placeholder-filename">${safeFilename}</div>
         `;
 
         this.parentNode.insertBefore(placeholder, this);
@@ -278,6 +281,9 @@
       await safeRun('diff', () => window.MarkdownPreview.renderers.diff.render());
       await safeRun('mermaid', () => window.MarkdownPreview.renderers.mermaid.render());
       await safeRun('plantuml', () => window.MarkdownPreview.renderers.plantuml.render());
+      // 文档渲染边界：清理上一轮文档渲染遗留的、已脱离 DOM 的拓扑实例（cytoscape canvas/动画帧），
+      // 防止跨文档导航累积泄漏。编辑器 cell 的拓扑容器仍连接在 DOM 上，不受影响。
+      window.MarkdownPreview.pkt?.destroyOrphaned?.();
       await safeRun('embedded', () => window.MarkdownPreview.renderers.embedded.render());
       await safeRun('katex', () => window.MarkdownPreview.renderers.katex.render());
       await safeRun('pulse', () => window.MarkdownPreview.renderers.pulse.render());
@@ -298,8 +304,8 @@
 
     const navHtml = `
       <div class="doc-navigation">
-        ${prev ? `<a href="#/${prev.path}" data-path="${prev.path}" class="nav-link">← ${prev.name}</a>` : ''}
-        ${next ? `<a href="#/${next.path}" data-path="${next.path}" class="nav-link">${next.name} →</a>` : ''}
+        ${prev ? `<a href="#/${encodeURI(prev.path)}" data-path="${mdRender.escapeHtml(prev.path)}" class="nav-link">← ${mdRender.escapeHtml(prev.name)}</a>` : ''}
+        ${next ? `<a href="#/${encodeURI(next.path)}" data-path="${mdRender.escapeHtml(next.path)}" class="nav-link">${mdRender.escapeHtml(next.name)} →</a>` : ''}
       </div>
     `;
 
