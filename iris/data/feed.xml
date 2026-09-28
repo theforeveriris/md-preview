@@ -5,8 +5,15 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 28 Sep 2026 17:51:33 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 28 Sep 2026 18:25:49 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>配置参考</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
+      <pubDate>Mon, 28 Sep 2026 18:24:18 GMT</pubDate>
+      <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
+    </item>
     <item>
       <title>RSS 订阅</title>
       <link>https://theforeveriris.github.io/md-preview/docs/rss.md</link>
@@ -139,13 +146,6 @@
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md</guid>
       <pubDate>Mon, 13 Jul 2026 01:54:24 GMT</pubDate>
       <description>Markdown Preview 使用 highlight.js 进行代码语法高亮。内置了 10 种常用主题，并支持自定义主题。 | 主题 ID | 名称 | 类型 | |---------|------|------| | | GitHub Light | 亮色 | | | GitHub Dark | 暗色 | | | Atom One Light | 亮色 | | | Atom One Dar</description>
-    </item>
-    <item>
-      <title>配置参考</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
-      <pubDate>Mon, 13 Jul 2026 01:54:24 GMT</pubDate>
-      <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
     </item>
     <item>
       <title>主题定制</title>
