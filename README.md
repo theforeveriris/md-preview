@@ -45,7 +45,8 @@ Demo：https://theforeveriris.github.io/md-preview/
 - Hash 路由：每个文档有独立 URL，支持分享和书签
 - 上一篇 / 下一篇：悬浮球快速翻阅相邻文档
 - 侧边栏折叠：桌面端可用汉堡按钮或 `Ctrl/⌘ + B` 折叠/展开侧边栏，状态自动记忆
-- 内容区宽度可调：设置面板滑杆调整正文最大宽度，或一键占满可用宽度
+- 内容区宽度可调：设置面板滑杆调整正文最大宽度，或一键占满可用宽度，快捷键 `Ctrl/⌘ + Alt + =/-/0/F` 快速调节
+- 全局快捷键：设置面板 `Ctrl/⌘ + ,`、搜索 `Ctrl/⌘ + K`、上一篇/下一篇 `[` / `]` 等，详见[快捷键](docs/shortcuts.md)
 - 打开本地 MD：临时预览本地 Markdown 文件，无需入库
 - 阅读时间估算：自动计算预计阅读时长
 - Frontmatter：支持 YAML 元数据解析
@@ -291,6 +292,7 @@ python3 iris/scripts/pptx/main.py
 
 - [快速开始](docs/getting-started.md)
 - [系统运行时截图](docs/show.md)
+- [快捷键](docs/shortcuts.md)
 - [编辑器说明](docs/editor.md)
 - [配置参考](docs/configuration.md)
 - [主题定制](docs/theme-customization.md)

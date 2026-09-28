@@ -52,6 +52,57 @@
     }
   }
   
+  // ---------- 快捷键辅助 ----------
+
+  function isEditableTarget(e) {
+    const inEditable = (el) => !!(el && el.closest && el.closest('input, textarea, select, [contenteditable="true"]'));
+    // 同时检查事件目标与当前焦点元素：真实按键 target 即焦点元素，
+    // 但程序化派发的事件 target 可能是 document，此时以 activeElement 为准
+    return inEditable(e.target) || inEditable(document.activeElement);
+  }
+
+  function isEditorMode() {
+    return document.body.classList.contains('editor-mode');
+  }
+
+  function isSettingsOpen() {
+    const overlay = document.getElementById('settingsOverlay');
+    return !!(overlay && overlay.classList.contains('open'));
+  }
+
+  // 灯箱 / PPTX 放映打开时，普通按键不抢（它们的翻页键由各自 handler 处理）
+  function isMediaOverlayOpen() {
+    const lightbox = document.getElementById('lightboxOverlay');
+    const pptx = document.getElementById('pptx-slideshow-overlay');
+    return !!(lightbox && lightbox.classList.contains('open')) ||
+           !!(pptx && pptx.classList.contains('is-open'));
+  }
+
+  // Ctrl/⌘+K：聚焦侧边栏搜索框；移动端先弹抽屉，桌面端先展开侧边栏
+  function focusSidebarSearch() {
+    if (window.innerWidth <= 768) {
+      if (!dom.sidebar.classList.contains('open')) {
+        window.MarkdownPreview.fileTree.toggleSidebar();
+      }
+    } else if (document.body.classList.contains('sidebar-collapsed')) {
+      window.MarkdownPreview.fileTree.toggleSidebar();
+    }
+    const input = document.getElementById('searchInput');
+    if (input) {
+      input.focus();
+      input.select();
+    }
+  }
+
+  // [ / ]：上一篇 / 下一篇（与悬浮球按钮同逻辑，但静默不弹 alert）
+  function navigateDocShortcut(direction) {
+    const { state, fileTree, markdown } = window.MarkdownPreview;
+    if (!state.currentFilePath) return;
+    const { prev, next } = fileTree.getAdjacentFiles(state.currentFilePath);
+    const target = direction === 'prev' ? prev : next;
+    if (target) markdown.loadMarkdownFile(target.path);
+  }
+
   function setupEventListeners() {
     dom.mobileMenuBtn.addEventListener('click', window.MarkdownPreview.fileTree.toggleSidebar);
     dom.sidebarToggle.addEventListener('click', window.MarkdownPreview.fileTree.toggleSidebar);
@@ -60,24 +111,72 @@
     dom.modeFiles.addEventListener('click', () => switchMode('files'));
     dom.modeIndex.addEventListener('click', () => switchMode('index'));
 
+    // 全局快捷键。完整清单见 docs/shortcuts.md。
+    // 守卫优先级：Esc（关设置/侧边栏）→ 编辑器模式 / 输入态 → 各键位。
     document.addEventListener('keydown', (e) => {
+      const mod = e.ctrlKey || e.metaKey;
+      const alt = e.altKey;
+      const shift = e.shiftKey;
+      const key = String(e.key);
+
       if (e.key === 'Escape') {
+        // 设置面板打开时 Esc 只关设置面板
+        if (isSettingsOpen()) {
+          window.MarkdownPreview.settings.close();
+          return;
+        }
+        // 编辑器 / 灯箱 / PPTX 放映有自己的 Esc 处理，不抢
+        if (isEditorMode()) return;
+        if (isMediaOverlayOpen()) return;
         window.MarkdownPreview.fileTree.closeSidebar();
         return;
       }
-      // Ctrl/Cmd + B：折叠/展开侧边栏（对齐 VS Code 习惯键位）
-      if ((e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey
-          && String(e.key).toLowerCase() === 'b') {
-        // 编辑器模式有独立 Ctrl+B（粗体），不抢占
-        if (document.body.classList.contains('editor-mode')) return;
-        // 输入控件内不抢占（编辑区、搜索框等）
-        const target = e.target;
-        if (target && target.closest && target.closest('input, textarea, select, [contenteditable="true"]')) return;
-        // 设置面板打开时不动作
-        const settingsOverlay = document.getElementById('settingsOverlay');
-        if (settingsOverlay && settingsOverlay.classList.contains('open')) return;
+
+      // 编辑器模式有独立键位（Ctrl+B=粗体、Ctrl+K=链接等），全部不抢占
+      if (isEditorMode()) return;
+      // 输入控件内不抢占
+      if (isEditableTarget(e)) return;
+
+      // Ctrl/⌘ + , ：设置面板开关（面板打开时也可用）
+      if (mod && !alt && key === ',') {
+        e.preventDefault();
+        window.MarkdownPreview.settings.toggle();
+        return;
+      }
+
+      // Ctrl/⌘ + Alt + = / + / - / 0 / F ：内容区宽度（面板打开时也可用，便于看数值）
+      if (mod && alt && (key === '=' || key === '+' || key === '-' || key === '0' ||
+          key.toLowerCase() === 'f')) {
+        e.preventDefault();
+        if (key === '=') window.MarkdownPreview.settings.nudgeContentWidth(20);
+        else if (key === '+') window.MarkdownPreview.settings.nudgeContentWidth(20);
+        else if (key === '-') window.MarkdownPreview.settings.nudgeContentWidth(-20);
+        else if (key === '0') window.MarkdownPreview.settings.resetContentWidth();
+        else window.MarkdownPreview.settings.toggleContentFullWidth();
+        return;
+      }
+
+      // 以下键位在设置面板打开时不动作
+      if (isSettingsOpen()) return;
+
+      // Ctrl/⌘ + B ：折叠/展开侧边栏（对齐 VS Code 习惯键位）
+      if (mod && !alt && !shift && key.toLowerCase() === 'b') {
         e.preventDefault();
         window.MarkdownPreview.fileTree.toggleSidebar();
+        return;
+      }
+
+      // Ctrl/⌘ + K ：聚焦搜索框（对齐 GitHub / Slack 惯例键位）
+      if (mod && !alt && !shift && key.toLowerCase() === 'k') {
+        e.preventDefault();
+        focusSidebarSearch();
+        return;
+      }
+
+      // [ / ] ：上一篇 / 下一篇（对齐 GitHub 代码评审翻页键位）
+      if (!mod && !alt && !shift && (key === '[' || key === ']')) {
+        if (isMediaOverlayOpen()) return;
+        navigateDocShortcut(key === '[' ? 'prev' : 'next');
       }
     });
   }

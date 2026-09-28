@@ -270,11 +270,7 @@
     });
 
     resetContentWidthBtn?.addEventListener('click', () => {
-      const settings = loadSettings();
-      settings.contentWidth = CONTENT_WIDTH_DEFAULT;
-      saveSettings(settings);
-      applyContentWidthSettings(settings);
-      syncContentWidthControls(settings);
+      resetContentWidth();
     });
 
     // 自定义主题色取色器
@@ -475,6 +471,17 @@
     }
   }
 
+  // 快捷键入口：设置面板开关（Ctrl/⌘+,）
+  function toggleSettingsPanel() {
+    const settingsOverlay = document.getElementById('settingsOverlay');
+    if (!settingsOverlay) return;
+    if (settingsOverlay.classList.contains('open')) {
+      closeSettingsPanel();
+    } else {
+      openSettingsPanel();
+    }
+  }
+
   function toggleReadingProgress(show) {
     const readingProgress = document.getElementById('readingProgress');
     if (readingProgress) {
@@ -519,6 +526,35 @@
     }
     if (value) value.textContent = `${settings.contentWidth}px`;
     if (fullToggle) fullToggle.checked = settings.contentFullWidth === true;
+  }
+
+  // 快捷键入口：宽度微调（Ctrl/⌘+Alt + = / -），步进 20px；
+  // 全宽模式下第一次微调会先退出全宽，从当前滑杆值起调
+  function nudgeContentWidth(delta) {
+    const settings = loadSettings();
+    settings.contentFullWidth = false;
+    const base = Number(settings.contentWidth) || CONTENT_WIDTH_DEFAULT;
+    settings.contentWidth = normalizeContentWidth(base + delta);
+    saveSettings(settings);
+    applyContentWidthSettings(settings);
+    syncContentWidthControls(settings);
+  }
+
+  function resetContentWidth() {
+    const settings = loadSettings();
+    settings.contentWidth = CONTENT_WIDTH_DEFAULT;
+    saveSettings(settings);
+    applyContentWidthSettings(settings);
+    syncContentWidthControls(settings);
+  }
+
+  // 快捷键入口：全宽开关（Ctrl/⌘+Alt+F）
+  function toggleContentFullWidth() {
+    const settings = loadSettings();
+    settings.contentFullWidth = !settings.contentFullWidth;
+    saveSettings(settings);
+    applyContentWidthSettings(settings);
+    syncContentWidthControls(settings);
   }
   
   function downloadCurrentFile() {
@@ -642,6 +678,10 @@
     save: saveSettings,
     open: openSettingsPanel,
     close: closeSettingsPanel,
+    toggle: toggleSettingsPanel,
+    nudgeContentWidth: nudgeContentWidth,
+    resetContentWidth: resetContentWidth,
+    toggleContentFullWidth: toggleContentFullWidth,
     resetCustomColors: resetCustomColors,
     init: init
   };
