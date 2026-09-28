@@ -5,8 +5,15 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 05 Aug 2026 07:31:45 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 28 Sep 2026 17:51:33 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RSS 订阅</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/rss.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/rss.md</guid>
+      <pubDate>Mon, 28 Sep 2026 17:47:50 GMT</pubDate>
+      <description>Markdown Preview 自动为 目录下的所有 Markdown 文档生成 RSS 2.0 feed，方便他人通过 RSS 阅读器订阅你的文档更新。 --- 部署后，RSS feed 位于： 例如本站： &gt; feed.xml 不放在仓库根目录，而是放在 下，与 、 等预构建数据并列。 中已添加： 主流浏览器和 RSS 阅读器扩展会自动发现并提示订阅。 每篇文档对应一个 ，包含： | 字段 </description>
+    </item>
     <item>
       <title>Packet Tracer 拓扑渲染示例</title>
       <link>https://theforeveriris.github.io/md-preview/docs/examples/pkt-examples.md</link>
@@ -139,13 +146,6 @@
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
       <pubDate>Mon, 13 Jul 2026 01:54:24 GMT</pubDate>
       <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
-    </item>
-    <item>
-      <title>RSS 订阅</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/rss.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/rss.md</guid>
-      <pubDate>Mon, 13 Jul 2026 01:54:24 GMT</pubDate>
-      <description>Markdown Preview 自动为 目录下的所有 Markdown 文档生成 RSS 2.0 feed，方便他人通过 RSS 阅读器订阅你的文档更新。 --- 部署后，RSS feed 位于： 例如本站： &gt; feed.xml 不放在仓库根目录，而是放在 下，与 、 等预构建数据并列。 中已添加： 主流浏览器和 RSS 阅读器扩展会自动发现并提示订阅。 每篇文档对应一个 ，包含： | 字段 </description>
     </item>
     <item>
       <title>主题定制</title>
