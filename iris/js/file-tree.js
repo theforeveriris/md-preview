@@ -232,7 +232,9 @@
         ':host(.tinted-icons) li.text::before{background:currentColor;-webkit-mask:var(--svg-text) center/contain no-repeat;mask:var(--svg-text) center/contain no-repeat}',
         ':host(.tinted-icons) li.folder::before{background:currentColor;-webkit-mask:var(--svg-folder) center/contain no-repeat;mask:var(--svg-folder) center/contain no-repeat}',
         ':host(.tinted-icons) li.folder>button::before{background:currentColor;-webkit-mask:var(--svg-closed) center/contain no-repeat;mask:var(--svg-closed) center/contain no-repeat}',
-        ':host(.tinted-icons) li.folder.opened>button::before{background-image:none;-webkit-mask-image:var(--svg-opened);mask-image:var(--svg-opened)}'
+        ':host(.tinted-icons) li.folder.opened>button::before{background-image:none;-webkit-mask-image:var(--svg-opened);mask-image:var(--svg-opened)}',
+        // 导航线：vendor 的 1px dotted 换成更淡的 1px 实线，颜色仍跟随文字色
+        ':host(.tinted-icons) li.folder.opened>ul{border-inline-start:1px solid rgb(from currentColor r g b / .12)}'
       ].join('\n');
       shadow.appendChild(styleEl);
     }

@@ -10,7 +10,8 @@
   width: var(--sidebar-width);
   height: 100vh;
   background: var(--color-surface);
-  border-right: 1px solid var(--color-border);
+  /* 无边框，靠柔和投影与内容区分界（深色主题为 none，靠底色差） */
+  box-shadow: var(--shadow-sidebar);
   display: flex;
   flex-direction: column;
   transition: var(--transition-smooth);
@@ -32,7 +33,6 @@
 
 .sidebar-header {
   padding: 24px 20px;
-  border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -169,14 +169,14 @@
   width: 44px;
   height: 44px;
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: none;
   border-radius: 10px;
   cursor: pointer;
   z-index: 90;
   align-items: center;
   justify-content: center;
   color: var(--color-text);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
 .sidebar-overlay {

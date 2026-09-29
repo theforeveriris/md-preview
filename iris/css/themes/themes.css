@@ -22,6 +22,8 @@
   --color-success: #4caf50;
   --color-error: #f44336;
   --color-warning: #ff9800;
+  /* 侧边栏与内容区的分界：浅色主题用向右扩散的柔和投影 */
+  --shadow-sidebar: 8px 0 24px rgba(0, 0, 0, 0.06), 2px 0 6px rgba(0, 0, 0, 0.04);
 }
 
 /* GitHub Light 主题 */
@@ -166,6 +168,14 @@
   --color-success: #a3be8c;
   --color-error: #bf616a;
   --color-warning: #ebcb8b;
+}
+
+/* 深色主题：黑色投影在深底上不可见，侧边栏分界靠 surface 与 bg 的底色差 */
+[data-theme="github-dark"],
+[data-theme="arc"],
+[data-theme="dracula"],
+[data-theme="nord"] {
+  --shadow-sidebar: none;
 }
 
 /* 更新组件样式以使用新变量 */
