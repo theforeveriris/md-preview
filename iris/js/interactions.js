@@ -2,7 +2,7 @@
  * 内容交互增强
  *  - 共享浮动菜单（图标库图标，主题变量适配）
  *  - 右键 LaTeX 公式 → 复制 LaTeX 源码（源码来自渲染时写入的 data-latex）
- *  - 表格左上角悬浮手柄 → 下载主题化 PNG / 复制 Markdown 源码 / 复制 CSV
+ *  - 表格第一行左侧悬浮手柄 → 下载主题化 PNG / 复制 Markdown 源码 / 复制 CSV
  *
  * 不使用 emoji，全部使用 index.html 内联 SVG 符号库（<use href="#i-xxx">）。
  */
@@ -159,14 +159,17 @@
     return handle;
   }
 
-  // 手柄贴在表格左上角外侧（略高于顶边，左缘对齐表格）；
-  // 表格贴近视口顶部时向下收敛到 8px，此时会短暂覆盖首行，可接受
+  // 手柄贴在表格第一行左侧外侧：垂直对齐首行中线，水平悬于表格左缘外 6px；
+  // 表格贴近视口左缘时收敛到 8px，此时会短暂覆盖首行，可接受
   function positionHandle(table) {
     const handle = document.getElementById(HANDLE_ID);
     if (!handle || !handle.classList.contains('visible')) return;
     const rect = table.getBoundingClientRect();
-    handle.style.left = Math.max(8, rect.left) + 'px';
-    handle.style.top = Math.max(8, rect.top - 30) + 'px'; // 26px 手柄 + 4px 间距
+    const firstRow = table.rows[0];
+    const rowRect = firstRow ? firstRow.getBoundingClientRect() : rect;
+    const rowCenter = rowRect.top + rowRect.height / 2;
+    handle.style.left = Math.max(8, rect.left - 32) + 'px'; // 26px 手柄 + 6px 间距
+    handle.style.top = Math.round(rowCenter - 13) + 'px';   // 26px 手柄垂直居中于首行
   }
 
   function showHandle(table) {

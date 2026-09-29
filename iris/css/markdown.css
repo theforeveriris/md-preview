@@ -285,7 +285,7 @@ body.content-full-width .markdown-body {
   box-sizing: border-box;
 }
 
-/* 表格左上角外侧悬浮手柄（hover 表格出现，点击弹出操作菜单）；
+/* 表格第一行左侧外侧悬浮手柄（hover 表格出现，点击弹出操作菜单）；
    fixed 定位挂 body，位置由 interactions.js 按表格实际位置计算 */
 .table-handle {
   position: fixed;
