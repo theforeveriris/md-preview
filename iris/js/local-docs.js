@@ -23,11 +23,13 @@
 
   let panelEl = null;
   let listEl = null;
-  let countEl = null;
   let clearBtn = null;
+  let toggleBtn = null;
   let inputEl = null;
   // 递增 id：文件名可能重名/特殊字符，不用文件名做 key
   let idSeq = 0;
+  // 列表折叠状态（会话内记忆，默认展开）
+  let collapsed = false;
 
   function getState() {
     return window.MarkdownPreview.state;
@@ -38,24 +40,50 @@
     return 'local-' + Date.now().toString(36) + '-' + idSeq;
   }
 
+  // 词数统计口径与 markdown.js calculateReadingTime 一致（英文单词 + 中文字符）
+  function countWords(text) {
+    const en = (text.match(/[a-zA-Z]+/g) || []).length;
+    const cjk = (text.match(/[\u4e00-\u9fa5]/g) || []).length;
+    return en + cjk;
+  }
+
+  // 格式与 file-tree.js formatWordCount 一致
+  function formatWordCount(count) {
+    if (!count && count !== 0) return '';
+    if (count >= 10000) {
+      return (count / 10000).toFixed(1).replace(/\.0$/, '') + 'w';
+    }
+    return count + ' words';
+  }
+
   // ============== 面板渲染 ==============
+  // 表头（文件夹行样式）在 init 中只构建一次，这里更新计数与列表
   function renderPanel() {
     if (!panelEl) return;
-    const files = getState().localFiles;
+    const state = getState();
+    const files = state.localFiles;
     panelEl.hidden = files.length === 0;
-    if (countEl) countEl.textContent = String(files.length);
+    panelEl.classList.toggle('collapsed', collapsed);
+    // 与文件树同步的两个显示设置
+    const settings = window.MarkdownPreview.settings ? window.MarkdownPreview.settings.load() : {};
+    panelEl.classList.toggle('show-word-count', settings.showWordCount === true);
+    panelEl.classList.toggle('truncate-names', settings.truncateFileNames !== false);
+    if (toggleBtn) toggleBtn.dataset.count = files.length + ' item' + (files.length === 1 ? '' : 's');
     if (!listEl) return;
     listEl.innerHTML = '';
     files.forEach(file => {
       const li = document.createElement('li');
-      li.className = 'local-file-item' + (file.id === getState().activeLocalFileId ? ' active' : '');
+      li.className = 'local-file-item' + (file.id === state.activeLocalFileId ? ' active' : '');
       li.dataset.id = file.id;
 
       const openBtn = document.createElement('button');
       openBtn.type = 'button';
       openBtn.className = 'local-file-open';
       openBtn.title = file.name;
-      openBtn.textContent = file.name;
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'file-name';
+      nameSpan.textContent = file.name;
+      openBtn.appendChild(nameSpan);
       openBtn.addEventListener('click', () => openLocalFile(file.id));
 
       const removeBtn = document.createElement('button');
@@ -69,7 +97,14 @@
         removeLocalFile(file.id);
       });
 
-      li.append(openBtn, removeBtn);
+      li.append(openBtn);
+      if (file.words != null) {
+        const wc = document.createElement('span');
+        wc.className = 'word-count';
+        wc.textContent = formatWordCount(file.words);
+        li.appendChild(wc);
+      }
+      li.appendChild(removeBtn);
       listEl.appendChild(li);
     });
   }
@@ -120,6 +155,11 @@
     renderPanel();
   }
 
+  // 显示词数 / 折叠文件名设置变化时由 settings.js 调用
+  function refresh() {
+    renderPanel();
+  }
+
   // ============== 读取选中的文件 ==============
   function readAsText(file) {
     return new Promise((resolve, reject) => {
@@ -158,8 +198,9 @@
       const existing = state.localFiles.find(f => f.name === file.name);
       if (existing) {
         existing.content = content;
+        existing.words = countWords(content);
       } else {
-        state.localFiles.push({ id: makeId(), name: file.name, content });
+        state.localFiles.push({ id: makeId(), name: file.name, content, words: countWords(content) });
       }
       // 第一个处理成功的文件立即打开（沿用单选时代的行为）
       if (!firstOpened) {
@@ -209,9 +250,16 @@
 
     panelEl = document.getElementById('localFilesPanel');
     listEl = document.getElementById('localFilesList');
-    countEl = document.getElementById('localFilesCount');
+    toggleBtn = document.getElementById('localFilesToggle');
     clearBtn = document.getElementById('localFilesClearBtn');
     if (clearBtn) clearBtn.addEventListener('click', clearLocalFiles);
+
+    // 表头文件夹行：点击折叠/展开列表（表头 DOM 只构建一次）
+    toggleBtn?.addEventListener('click', () => {
+      collapsed = !collapsed;
+      renderPanel();
+    });
+
     bindPicker();
     renderPanel();
   }
@@ -222,6 +270,7 @@
     clearLocalFiles,
     clearActive,
     navigateLocal,
+    refresh,
     init
   };
 

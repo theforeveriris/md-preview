@@ -566,12 +566,14 @@
     if (window.MarkdownPreview?.fileTree?.setWordCountVisibility) {
       window.MarkdownPreview.fileTree.setWordCountVisibility(show);
     }
+    window.MarkdownPreview?.localDocs?.refresh();
   }
 
   function toggleTruncateFileNames(truncate) {
     if (window.MarkdownPreview?.fileTree?.setTruncateNames) {
       window.MarkdownPreview.fileTree.setTruncateNames(truncate);
     }
+    window.MarkdownPreview?.localDocs?.refresh();
   }
 
   // ---------- 侧边栏折叠状态（桌面端）----------
