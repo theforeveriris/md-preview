@@ -93,6 +93,7 @@
     dom.paletteOverlay.classList.add('active');
     dom.paletteOverlay.setAttribute('aria-hidden', 'false');
     window.MarkdownPreview.search.reset();
+    if (dom.paletteClear) dom.paletteClear.hidden = true;
     dom.searchInput.focus();
   }
 
@@ -101,6 +102,7 @@
     dom.paletteOverlay.classList.remove('active');
     dom.paletteOverlay.setAttribute('aria-hidden', 'true');
     window.MarkdownPreview.search.reset();
+    if (dom.paletteClear) dom.paletteClear.hidden = true;
   }
 
   // Ctrl/⌘ + K：打开搜索命令面板（对齐 GitHub / Slack 惯例键位）；
@@ -137,6 +139,18 @@
     dom.paletteOverlay?.addEventListener('click', (e) => {
       if (e.target === dom.paletteOverlay) closeSearchPalette();
     });
+    // 清空按钮：有输入时出现，替代原生 ❌
+    const syncClearBtn = () => {
+      if (dom.paletteClear) dom.paletteClear.hidden = !dom.searchInput.value;
+    };
+    dom.searchInput?.addEventListener('input', syncClearBtn);
+    dom.paletteClear?.addEventListener('click', () => {
+      dom.searchInput.value = '';
+      // 触发 input 让 search.js 清空结果回到空态提示
+      dom.searchInput.dispatchEvent(new Event('input'));
+      dom.searchInput.focus();
+      syncClearBtn();
+    });
 
     dom.modeFiles.addEventListener('click', () => switchMode('files'));
     dom.modeIndex.addEventListener('click', () => switchMode('index'));
@@ -158,6 +172,11 @@
         // 搜索面板是最上层浮层，Esc 优先关闭
         if (isSearchPaletteOpen()) {
           closeSearchPalette();
+          return;
+        }
+        // 右键浮动菜单（LaTeX 复制 / 表格操作）打开时先关菜单
+        if (window.MarkdownPreview.interactions?.isMenuOpen?.()) {
+          window.MarkdownPreview.interactions.hideMenu();
           return;
         }
         // 编辑器 / 灯箱 / PPTX 放映有自己的 Esc 处理，不抢

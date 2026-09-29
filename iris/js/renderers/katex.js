@@ -22,20 +22,40 @@
       return;
     }
 
-    // 按需加载 katex + auto-render + CSS
+    // 按需加载 katex + auto-render + CSS。
+    // 注意顺序：auto-render 是 UMD，执行时会捕获当时的 window.katex，
+    // 必须等 katex.min.js 执行完再加载，否则捕获到 undefined，
+    // renderMathInElement 内部访问 katex.ParseError 时抛错（行内公式整体失效）。
     if (typeof katex === 'undefined' || typeof renderMathInElement === 'undefined') {
       await Promise.all([
         window.MarkdownPreview.loadStyle('iris/vendor/katex/katex.min.css'),
         window.MarkdownPreview.loadScript('iris/vendor/katex/katex.min.js'),
-        window.MarkdownPreview.loadScript('iris/vendor/katex/auto-render.min.js'),
       ]);
+      await window.MarkdownPreview.loadScript('iris/vendor/katex/auto-render.min.js');
     }
     if (typeof katex === 'undefined' || typeof renderMathInElement === 'undefined') {
       console.error('KaTeX library failed to load');
       return;
     }
 
-    // 先处理所有 katex-block div 中的纯文本 LaTeX
+    // 先处理 katex-inline span（$...$ 行内公式，渲染前占位保护生成）
+    markdownBody.querySelectorAll('.katex-inline').forEach(span => {
+      const latex = span.textContent.trim();
+      if (!latex) return;
+      try {
+        span.textContent = '';
+        katex.render(latex, span, {
+          displayMode: false,
+          throwOnError: false,
+          trust: true,
+          strict: false
+        });
+      } catch (e) {
+        console.error('KaTeX inline rendering error:', e);
+      }
+    });
+
+    // 再处理所有 katex-block div 中的纯文本 LaTeX
     const katexBlocks = markdownBody.querySelectorAll('.katex-block');
     katexBlocks.forEach(block => {
       const latex = block.textContent.trim();

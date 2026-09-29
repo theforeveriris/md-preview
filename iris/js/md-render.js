@@ -85,36 +85,72 @@
   }
 
   /**
-   * 保护 $$...$$ LaTeX 块，避免被 marked 误处理
+   * 保护 LaTeX 公式，避免被 marked 误处理：
+   *   1) $$...$$ 块级公式（原有逻辑）
+   *   2) $...$ 行内公式（Pandoc 规则：$ 后不能是空白，闭合 $ 前不能是空白）；
+   *      下划线/反斜杠等字符会被 marked 转义或解析成强调，必须先占位保护
+   *   3) 代码围栏与行内代码先占位，代码里的 $ 不会被误认为公式
    * @param {string} text
-   * @returns {{ processed: string, blocks: string[] }}
+   * @returns {{ processed: string, blocks: string[], inline: string[], codeSegments: string[] }}
    */
   function protectLaTeXBlocks(text) {
     const blocks = [];
-    const processed = text.replace(/\$\$[\s\S]*?\$\$/g, (match) => {
-      const idx = blocks.length;
-      const cleaned = match.split('\n').map((l, i, a) => {
-        if (i === 0) return l.replace(/^\$\$\s*/, '');
-        if (i === a.length - 1) return l.replace(/\s*\$\$$/, '');
-        return l.replace(/^    /, '');
-      }).join('\n').trim();
-      blocks.push(cleaned);
-      return `LATEXPROTECT_${idx}_`;
+    const inline = [];
+    // 先占位代码段（围栏/行内代码），公式提取只作用于非代码文本
+    const codeSegments = [];
+    const codeSafe = text.replace(/(```[\s\S]*?(?:```|$)|~~~[\s\S]*?(?:~~~|$)|`[^`\n]*`)/g, (m) => {
+      const idx = codeSegments.length;
+      codeSegments.push(m);
+      return `LATEXCODESEG_${idx}_HOLD`;
     });
-    return { processed, blocks };
+
+    const processed = codeSafe
+      // $$...$$ 块
+      .replace(/\$\$[\s\S]*?\$\$/g, (match) => {
+        const idx = blocks.length;
+        const cleaned = match.split('\n').map((l, i, a) => {
+          if (i === 0) return l.replace(/^\$\$\s*/, '');
+          if (i === a.length - 1) return l.replace(/\s*\$\$$/, '');
+          return l.replace(/^    /, '');
+        }).join('\n').trim();
+        blocks.push(cleaned);
+        return `LATEXPROTECT_${idx}_`;
+      })
+      // $...$ 行内（占位符的下划线位于单词内部，marked 不会解析成强调）
+      .replace(/(?<!\\)\$(?!\s)([^$\n]+?)(?<=\S)\$/g, (m, latex) => {
+        const idx = inline.length;
+        inline.push(latex);
+        return `LATEXINLINE_${idx}_`;
+      });
+
+    return { processed, blocks, inline, codeSegments };
   }
 
   /**
-   * 还原 LaTeX 占位符为 katex-block div
+   * 还原占位符：LaTeX 块/行内公式转回节点，代码段放回原文。
+   * 公式原文同时写入 data-latex，供右键「复制 LaTeX 公式」使用。
    * @param {string} html
    * @param {string[]} blocks
+   * @param {string[]} [inline]
+   * @param {string[]} [codeSegments]
    * @returns {string}
    */
-  function restoreLaTeXBlocks(html, blocks) {
-    return html.replace(/LATEXPROTECT_(\d+)_/g, (m, idx) => {
+  function restoreLaTeXBlocks(html, blocks, inline, codeSegments) {
+    inline = inline || [];
+    codeSegments = codeSegments || [];
+    // 先放回代码段，再还原公式占位符（公式占位符不会出现在代码段内）
+    html = html.replace(/LATEXCODESEG_(\d+)_HOLD/g, (m, idx) => codeSegments[parseInt(idx)] ?? m);
+    html = html.replace(/LATEXPROTECT_(\d+)_/g, (m, idx) => {
+      const latex = blocks[parseInt(idx)] ?? '';
       // 转义后再放回：katex 渲染器读取的是 block.textContent，转义不影响公式解析
-      return `<div class="katex-block">${escapeHtml(blocks[parseInt(idx)])}</div>`;
+      return `<div class="katex-block" data-latex="${escapeHtml(latex)}">${escapeHtml(latex)}</div>`;
     });
+    html = html.replace(/LATEXINLINE_(\d+)_/g, (m, idx) => {
+      const latex = inline[parseInt(idx)];
+      if (latex == null) return m;
+      return `<span class="katex-inline" data-latex="${escapeHtml(latex)}">${escapeHtml(latex)}</span>`;
+    });
+    return html;
   }
 
   /**
@@ -466,7 +502,7 @@
    * @returns {{ html: string, blocks: string[] }}
    */
   function parseMarkdown(content, opts) {
-    const { processed, blocks } = protectLaTeXBlocks(content);
+    const { processed, blocks, inline, codeSegments } = protectLaTeXBlocks(content);
     const alertProcessed = processGitHubAlerts(processed, opts);
     const spoilerProcessed = processSpoilers(alertProcessed);
     const renderer = createMdRenderer(opts);
@@ -474,7 +510,7 @@
     const columnProcessed = processColumns(codeTabProcessed, { renderer });
     let html = marked.parse(columnProcessed, { breaks: true, gfm: true, renderer });
     html = restoreCodeTabBlocks(html, codeTabBlocks);
-    html = restoreLaTeXBlocks(html, blocks);
+    html = restoreLaTeXBlocks(html, blocks, inline, codeSegments);
     return { html, blocks };
   }
 

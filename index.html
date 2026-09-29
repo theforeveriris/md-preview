@@ -73,6 +73,8 @@
     <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol>
     <symbol id="i-split" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></symbol>
+    <symbol id="i-table" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></symbol>
   </svg>
   <div class="progress-bar" id="progressBar"></div>
   
@@ -591,6 +593,9 @@
       <div class="palette-input-row">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
         <input type="search" id="searchInput" placeholder="搜索文档..." autocomplete="off" />
+        <button class="palette-clear" id="paletteClear" type="button" aria-label="清空搜索词" hidden>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
         <kbd class="palette-esc">Esc</kbd>
       </div>
       <div class="search-results" id="searchResults"></div>
@@ -1503,6 +1508,7 @@
   <script defer src="iris/js/state.js"></script>
   <script defer src="iris/js/dom.js"></script>
   <script defer src="iris/js/ui.js"></script>
+  <script defer src="iris/js/interactions.js"></script>
   <script defer src="iris/js/search.js"></script>
   <script defer src="iris/vendor/file-tree/prod.js"></script>
   <script defer src="iris/js/file-tree.js"></script>

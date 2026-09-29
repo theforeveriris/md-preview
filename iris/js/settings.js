@@ -120,10 +120,44 @@
       return;
     }
 
+    // ---------- 悬浮球交互 ----------
+    // 桌面端鼠标掠过即展开；触屏无 hover，点击仍可直接开关。
+    // 展开延迟 100ms：过滤无意飞掠，又接近即时响应；
+    // 指针离开「球 + 菜单」整体 1.2s 后自动收回，期间移回则取消。
+    const OPEN_DELAY = 100;
+    const CLOSE_DELAY = 1200;
+    let openTimer = null;
+    let closeTimer = null;
+
+    const clearTimers = () => { clearTimeout(openTimer); clearTimeout(closeTimer); };
+    const openMenu = () => {
+      clearTimers();
+      menuItems.classList.add('open');
+      menuTrigger.classList.add('active');
+    };
+    const closeMenu = () => {
+      clearTimers();
+      menuItems.classList.remove('open');
+      menuTrigger.classList.remove('active');
+    };
+
+    menuTrigger.addEventListener('mouseenter', () => {
+      clearTimeout(closeTimer);
+      openTimer = setTimeout(openMenu, OPEN_DELAY);
+    });
+    // 绑在整个浮层容器上：球 ↔ 菜单项之间移动不会触发离开
+    floatingMenu.addEventListener('mouseleave', () => {
+      clearTimeout(openTimer);
+      closeTimer = setTimeout(closeMenu, CLOSE_DELAY);
+    });
+    floatingMenu.addEventListener('mouseenter', () => clearTimeout(closeTimer));
+
     menuTrigger.addEventListener('click', () => {
-      const isOpen = menuItems.classList.contains('open');
-      menuItems.classList.toggle('open');
-      menuTrigger.classList.toggle('active');
+      if (menuItems.classList.contains('open')) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
     });
 
     backToTopBtn?.addEventListener('click', () => {

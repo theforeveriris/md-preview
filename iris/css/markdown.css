@@ -283,6 +283,42 @@ body.content-full-width .markdown-body {
   border-radius: 8px;
   border: 1px solid var(--color-border);
   box-sizing: border-box;
+  /* 表格操作手柄的定位上下文 */
+  position: relative;
+}
+
+/* 表格左上角悬浮手柄（hover 表格出现，点击弹出操作菜单） */
+.table-handle {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+  border: none;
+  border-radius: 8px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16), 0 1px 3px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease, color 0.15s ease, background 0.15s ease;
+  z-index: 5;
+}
+
+.table-handle.visible {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.table-handle:hover {
+  color: var(--color-accent-purple-deep);
+  background: var(--color-hover);
 }
 
 .markdown-body .table-wrapper > table {
@@ -308,6 +344,17 @@ body.content-full-width .markdown-body {
   background: rgba(212, 165, 201, 0.08);
   font-weight: 500;
   white-space: nowrap;
+}
+
+/* GFM 对齐列：marked 输出 align 属性，上面的默认 left 不能覆盖它 */
+.markdown-body th[align="center"],
+.markdown-body td[align="center"] {
+  text-align: center;
+}
+
+.markdown-body th[align="right"],
+.markdown-body td[align="right"] {
+  text-align: right;
 }
 
 .markdown-body tr:nth-child(even) {

@@ -9,6 +9,9 @@
     window.MarkdownPreview.fileTree.loadFileTree();
     window.MarkdownPreview.ui.setupEventListeners();
     window.MarkdownPreview.ui.setupScrollProgress();
+    if (window.MarkdownPreview.interactions && window.MarkdownPreview.interactions.init) {
+      window.MarkdownPreview.interactions.init();
+    }
     if (window.MarkdownPreview.search && window.MarkdownPreview.search.init) {
       window.MarkdownPreview.search.init();
     }

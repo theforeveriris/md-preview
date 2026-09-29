@@ -199,6 +199,8 @@
   function hideSearchResults() {
     const { dom } = window.MarkdownPreview;
     dom.searchResults.classList.remove('active');
+    // 命令面板中结果区常驻显示，隐藏时同时清空内容，恢复空态提示
+    dom.searchResults.innerHTML = '';
   }
 
   // 清空输入与结果（命令面板关闭/重新打开时调用）
