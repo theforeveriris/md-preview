@@ -6,6 +6,8 @@
     fileLiMap: null,
     currentMode: 'files',
     currentFilePath: '',
+    // 「打开本地 MD」加载的文档：{ name, content }，供导出 MD/PDF 使用；加载仓库内文档时置回 null
+    localDoc: null,
     currentHeadings: [],
     currentFrontmatter: {},
     // 调试面板用：文件树加载来源

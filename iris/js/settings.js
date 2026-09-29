@@ -145,6 +145,7 @@
       const target = direction === 'prev' ? prev : next;
       if (target) {
         markdown.loadMarkdownFile(target.path);
+        fileTree.highlightFileInSidebar(target.path);
       } else {
         alert(direction === 'prev' ? '已经是第一篇了' : '已经是最后一篇了');
       }
@@ -559,13 +560,29 @@
   
   function downloadCurrentFile() {
     const { state } = window.MarkdownPreview;
+
+    // 本地打开的 MD：直接下载内存中的原文，不走 fetch
+    const local = state.localDoc;
+    if (local && typeof local.content === 'string') {
+      const baseName = (local.name || 'document').replace(/\.md$/i, '');
+      const blob = new Blob([local.content], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${baseName}.md`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      return;
+    }
+
     const currentPath = state.currentFilePath;
-    
     if (!currentPath) {
       alert('请先打开一个文档');
       return;
     }
-    
+
     const fileName = currentPath.split('/').pop().replace('.md', '');
     downloadMarkdown(currentPath, fileName);
   }
@@ -617,7 +634,8 @@
   // 导出 PDF：通过浏览器打印对话框
   function exportPdf() {
     const { state } = window.MarkdownPreview;
-    if (!state.currentFilePath) {
+    // 仓库内文档与「打开本地 MD」渲染的文档都支持打印导出
+    if (!state.currentFilePath && !state.localDoc) {
       alert('请先打开一个文档');
       return;
     }

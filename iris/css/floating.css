@@ -59,7 +59,7 @@
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  background: white;
+  background: var(--color-surface);
   border: none;
   border-radius: 24px;
   cursor: pointer;
@@ -148,7 +148,7 @@
 }
 
 .settings-panel {
-  background: white;
+  background: var(--color-surface);
   border-radius: 16px;
   width: 90%;
   max-width: 500px;

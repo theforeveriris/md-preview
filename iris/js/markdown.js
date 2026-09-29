@@ -54,6 +54,8 @@
       const markdown = await response.text();
       window.MarkdownPreview.ui.updateProgress(100);
       state.currentFilePath = path;
+      // 加载仓库内文档后清除本地文档记录，导出功能随之切回仓库文件
+      state.localDoc = null;
       renderMarkdown(markdown, path);
       extractAndRenderIndex(markdown);
       updateEditButton(path);
@@ -920,6 +922,8 @@
         history.replaceState(null, '', window.location.pathname + window.location.search);
       }
       resetReadingProgress();
+      // 记录本地文档原文，导出 MD / PDF 时直接取用
+      state.localDoc = { name: fileName || 'document.md', content: content };
       // 更新面包屑为文件名
       if (fileName) {
         const bc = document.getElementById('pageBreadcrumbs');

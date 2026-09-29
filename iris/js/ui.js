@@ -100,7 +100,10 @@
     if (!state.currentFilePath) return;
     const { prev, next } = fileTree.getAdjacentFiles(state.currentFilePath);
     const target = direction === 'prev' ? prev : next;
-    if (target) markdown.loadMarkdownFile(target.path);
+    if (target) {
+      markdown.loadMarkdownFile(target.path);
+      fileTree.highlightFileInSidebar(target.path);
+    }
   }
 
   function setupEventListeners() {
