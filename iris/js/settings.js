@@ -123,9 +123,9 @@
     // ---------- 悬浮球交互 ----------
     // 桌面端鼠标掠过即展开；触屏无 hover，点击仍可直接开关。
     // 展开延迟 100ms：过滤无意飞掠，又接近即时响应；
-    // 指针离开「球 + 菜单」整体 1.2s 后自动收回，期间移回则取消。
+    // 指针离开「球 + 菜单」整体 0.5s 后自动收回，期间移回则取消。
     const OPEN_DELAY = 100;
-    const CLOSE_DELAY = 1200;
+    const CLOSE_DELAY = 500;
     let openTimer = null;
     let closeTimer = null;
 

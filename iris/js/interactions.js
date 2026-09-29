@@ -134,6 +134,8 @@
   }
 
   // ============== 表格手柄 ==============
+  // 手柄挂在 body 上用 fixed 定位：wrapper 有 overflow-x:auto，
+  // 放在其内部无法悬到表格左上角外侧（会被裁切或撑出滚动）。
   const HANDLE_ID = 'tableHoverHandle';
   let hideTimer = null;
 
@@ -157,20 +159,23 @@
     return handle;
   }
 
+  // 手柄贴在表格左上角外侧（略高于顶边，左缘对齐表格）；
+  // 表格贴近视口顶部时向下收敛到 8px，此时会短暂覆盖首行，可接受
+  function positionHandle(table) {
+    const handle = document.getElementById(HANDLE_ID);
+    if (!handle || !handle.classList.contains('visible')) return;
+    const rect = table.getBoundingClientRect();
+    handle.style.left = Math.max(8, rect.left) + 'px';
+    handle.style.top = Math.max(8, rect.top - 30) + 'px'; // 26px 手柄 + 4px 间距
+  }
+
   function showHandle(table) {
     clearTimeout(hideTimer);
-    let wrapper = table.parentElement;
-    if (!wrapper.classList.contains('table-wrapper')) {
-      // 编辑器 cell 输出等未包裹的场景，补一层定位容器
-      wrapper = document.createElement('div');
-      wrapper.className = 'table-wrapper table-wrapper-inline';
-      table.parentNode.insertBefore(wrapper, table);
-      wrapper.appendChild(table);
-    }
     const handle = ensureHandle();
     handle._table = table;
-    if (handle.parentElement !== wrapper) wrapper.appendChild(handle);
+    if (handle.parentElement !== document.body) document.body.appendChild(handle);
     handle.classList.add('visible');
+    positionHandle(table);
   }
 
   function scheduleHideHandle() {
@@ -180,6 +185,13 @@
       const handle = document.getElementById(HANDLE_ID);
       if (handle) handle.classList.remove('visible');
     }, 300);
+  }
+
+  function repositionVisibleHandle() {
+    const handle = document.getElementById(HANDLE_ID);
+    if (handle && handle.classList.contains('visible') && handle._table) {
+      positionHandle(handle._table);
+    }
   }
 
   function initTableHandle() {
@@ -192,6 +204,10 @@
         scheduleHideHandle();
       }
     });
+    // fixed 手柄不随文档滚动：滚动/缩放时贴回表格当前位置
+    //（capture 捕获 wrapper 内部的横向滚动）
+    window.addEventListener('scroll', repositionVisibleHandle, true);
+    window.addEventListener('resize', repositionVisibleHandle);
   }
 
   // ============== 表格菜单 ==============

@@ -283,15 +283,14 @@ body.content-full-width .markdown-body {
   border-radius: 8px;
   border: 1px solid var(--color-border);
   box-sizing: border-box;
-  /* 表格操作手柄的定位上下文 */
-  position: relative;
 }
 
-/* 表格左上角悬浮手柄（hover 表格出现，点击弹出操作菜单） */
+/* 表格左上角外侧悬浮手柄（hover 表格出现，点击弹出操作菜单）；
+   fixed 定位挂 body，位置由 interactions.js 按表格实际位置计算 */
 .table-handle {
-  position: absolute;
-  top: 5px;
-  left: 5px;
+  position: fixed;
+  left: 0;
+  top: 0;
   width: 26px;
   height: 26px;
   display: flex;
@@ -307,7 +306,7 @@ body.content-full-width .markdown-body {
   transform: scale(0.9);
   pointer-events: none;
   transition: opacity 0.15s ease, transform 0.15s ease, color 0.15s ease, background 0.15s ease;
-  z-index: 5;
+  z-index: 900;
 }
 
 .table-handle.visible {

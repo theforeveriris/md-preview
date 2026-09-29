@@ -89,9 +89,12 @@
    *   1) $$...$$ 块级公式（原有逻辑）
    *   2) $...$ 行内公式（Pandoc 规则：$ 后不能是空白，闭合 $ 前不能是空白）；
    *      下划线/反斜杠等字符会被 marked 转义或解析成强调，必须先占位保护
-   *   3) 代码围栏与行内代码先占位，代码里的 $ 不会被误认为公式
+   *   3) 代码围栏与行内代码先占位，公式提取只作用于非代码文本；
+   *      提取完成后立即还原为原始 Markdown——后续 alerts/codeTabs/columns
+   *      与 marked 本身都需要看到真实的围栏语法，若拖到 marked 之后才还原，
+   *      还原进最终 HTML 的是未解析的原文，代码块会整体失效
    * @param {string} text
-   * @returns {{ processed: string, blocks: string[], inline: string[], codeSegments: string[] }}
+   * @returns {{ processed: string, blocks: string[], inline: string[] }}
    */
   function protectLaTeXBlocks(text) {
     const blocks = [];
@@ -104,7 +107,7 @@
       return `LATEXCODESEG_${idx}_HOLD`;
     });
 
-    const processed = codeSafe
+    const extracted = codeSafe
       // $$...$$ 块
       .replace(/\$\$[\s\S]*?\$\$/g, (match) => {
         const idx = blocks.length;
@@ -123,23 +126,22 @@
         return `LATEXINLINE_${idx}_`;
       });
 
-    return { processed, blocks, inline, codeSegments };
+    // 公式提取完毕，代码段立即还原为原始 Markdown（单趟替换，还原内容不会被重扫）
+    const processed = extracted.replace(/LATEXCODESEG_(\d+)_HOLD/g, (m, idx) => codeSegments[parseInt(idx)] ?? m);
+    return { processed, blocks, inline };
   }
 
   /**
-   * 还原占位符：LaTeX 块/行内公式转回节点，代码段放回原文。
+   * 还原占位符：LaTeX 块/行内公式转回节点。
    * 公式原文同时写入 data-latex，供右键「复制 LaTeX 公式」使用。
+   * （代码段占位符已在 protectLaTeXBlocks 内还原，此处不再处理）
    * @param {string} html
    * @param {string[]} blocks
    * @param {string[]} [inline]
-   * @param {string[]} [codeSegments]
    * @returns {string}
    */
-  function restoreLaTeXBlocks(html, blocks, inline, codeSegments) {
+  function restoreLaTeXBlocks(html, blocks, inline) {
     inline = inline || [];
-    codeSegments = codeSegments || [];
-    // 先放回代码段，再还原公式占位符（公式占位符不会出现在代码段内）
-    html = html.replace(/LATEXCODESEG_(\d+)_HOLD/g, (m, idx) => codeSegments[parseInt(idx)] ?? m);
     html = html.replace(/LATEXPROTECT_(\d+)_/g, (m, idx) => {
       const latex = blocks[parseInt(idx)] ?? '';
       // 转义后再放回：katex 渲染器读取的是 block.textContent，转义不影响公式解析
@@ -502,7 +504,7 @@
    * @returns {{ html: string, blocks: string[] }}
    */
   function parseMarkdown(content, opts) {
-    const { processed, blocks, inline, codeSegments } = protectLaTeXBlocks(content);
+    const { processed, blocks, inline } = protectLaTeXBlocks(content);
     const alertProcessed = processGitHubAlerts(processed, opts);
     const spoilerProcessed = processSpoilers(alertProcessed);
     const renderer = createMdRenderer(opts);
@@ -510,7 +512,7 @@
     const columnProcessed = processColumns(codeTabProcessed, { renderer });
     let html = marked.parse(columnProcessed, { breaks: true, gfm: true, renderer });
     html = restoreCodeTabBlocks(html, codeTabBlocks);
-    html = restoreLaTeXBlocks(html, blocks, inline, codeSegments);
+    html = restoreLaTeXBlocks(html, blocks, inline);
     return { html, blocks };
   }
 
