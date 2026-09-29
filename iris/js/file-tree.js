@@ -154,6 +154,9 @@
     }
 
     const tree = new Tree();
+    // 图标着色样式依赖该类提高优先级（:host(.tinted-icons)），
+    // 因为组件自带的 constructable stylesheet 在层叠顺序上晚于注入的 <style>
+    tree.classList.add('tinted-icons');
 
     // 构建词数映射表：解码后的完整路径 -> 词数
     const wordCountMap = new Map();
@@ -220,7 +223,16 @@
         ':host(.truncate-names) li.folder>ul{overflow:hidden}',
         ':host(:not(.truncate-names)) li.file,:host(:not(.truncate-names)) li.text{min-width:max-content}',
         ':host(:not(.truncate-names)) li.folder>ul{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none}',
-        ':host(:not(.truncate-names)) li.folder>ul::-webkit-scrollbar{display:none;height:0;width:0}'
+        ':host(:not(.truncate-names)) li.folder>ul::-webkit-scrollbar{display:none;height:0;width:0}',
+        // 图标着色：vendor 把 stroke="currentColor" 的 SVG 当 background-image 用，
+        // data-URI 图片内无法继承页面颜色，深色主题下图标始终是黑色。
+        // 改用 mask + background-color:currentColor，让图标跟随文字颜色；
+        // :host(.tinted-icons) 用于压过 vendor 样式表里的 background-image
+        ':host(.tinted-icons) li.file::before{background:currentColor;-webkit-mask:var(--svg-file) center/contain no-repeat;mask:var(--svg-file) center/contain no-repeat}',
+        ':host(.tinted-icons) li.text::before{background:currentColor;-webkit-mask:var(--svg-text) center/contain no-repeat;mask:var(--svg-text) center/contain no-repeat}',
+        ':host(.tinted-icons) li.folder::before{background:currentColor;-webkit-mask:var(--svg-folder) center/contain no-repeat;mask:var(--svg-folder) center/contain no-repeat}',
+        ':host(.tinted-icons) li.folder>button::before{background:currentColor;-webkit-mask:var(--svg-closed) center/contain no-repeat;mask:var(--svg-closed) center/contain no-repeat}',
+        ':host(.tinted-icons) li.folder.opened>button::before{background-image:none;-webkit-mask-image:var(--svg-opened);mask-image:var(--svg-opened)}'
       ].join('\n');
       shadow.appendChild(styleEl);
     }
@@ -364,14 +376,14 @@
   }
 
   // 桌面端折叠状态：写在 body.sidebar-collapsed，样式见 layout.css；
-  // 同时持久化到设置，刷新后保持
+  // 持久化到设置的 sidebarOpen（默认收起，用户展开后刷新仍保持）
   function setSidebarCollapsed(collapsed) {
     document.body.classList.toggle('sidebar-collapsed', collapsed === true);
     try {
       var settings = window.MarkdownPreview.settings;
       if (settings && settings.load && settings.save) {
         var s = settings.load();
-        s.sidebarCollapsed = collapsed === true;
+        s.sidebarOpen = collapsed !== true;
         settings.save(s);
       }
     } catch (e) { /* settings 未就绪时仅切换类名 */ }

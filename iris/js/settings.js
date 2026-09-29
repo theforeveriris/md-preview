@@ -11,7 +11,7 @@
     codeTheme: 'github',
     customColors: {},
     fontConfig: {},
-    sidebarCollapsed: false,
+    sidebarOpen: false,
     contentWidth: 720,
     contentFullWidth: false
   };
@@ -87,7 +87,7 @@
           codeTheme: parsed.codeTheme ?? defaultSettings.codeTheme,
           customColors: (parsed.customColors && typeof parsed.customColors === 'object') ? parsed.customColors : {},
           fontConfig: normalizeFontConfig(parsed.fontConfig),
-          sidebarCollapsed: parsed.sidebarCollapsed === true,
+          sidebarOpen: parsed.sidebarOpen === true,
           contentWidth: normalizeContentWidth(parsed.contentWidth ?? defaultSettings.contentWidth),
           contentFullWidth: parsed.contentFullWidth === true
         };
@@ -503,9 +503,10 @@
   }
 
   // ---------- 侧边栏折叠状态（桌面端）----------
-  // file-tree.js 的按钮/快捷键负责切换并持久化；这里只在启动时恢复
-  function applySidebarCollapsed(collapsed) {
-    document.body.classList.toggle('sidebar-collapsed', collapsed === true);
+  // file-tree.js 的按钮/快捷键负责切换并持久化（sidebarOpen，默认收起，
+  // 用户展开后记住）；这里只在启动时恢复
+  function applySidebarState(open) {
+    document.body.classList.toggle('sidebar-collapsed', open !== true);
   }
 
   // ---------- 内容区宽度 ----------
@@ -669,7 +670,7 @@
     applyCodeTheme(settings.codeTheme);
     applyCustomColors(settings.customColors || {});
     applyFontConfig(settings.fontConfig || defaultFontConfig);
-    applySidebarCollapsed(settings.sidebarCollapsed);
+    applySidebarState(settings.sidebarOpen);
     applyContentWidthSettings(settings);
     syncContentWidthControls(settings);
 
