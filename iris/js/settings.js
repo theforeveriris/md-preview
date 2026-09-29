@@ -15,7 +15,7 @@
     contentWidth: 720,
     contentFullWidth: false,
     tableBleed: false,
-    serifHeadingDigits: false
+    serifHeadingDigits: true
   };
 
   // 内容区宽度范围（与设置面板滑杆一致）
@@ -93,7 +93,8 @@
           contentWidth: normalizeContentWidth(parsed.contentWidth ?? defaultSettings.contentWidth),
           contentFullWidth: parsed.contentFullWidth === true,
           tableBleed: parsed.tableBleed === true,
-          serifHeadingDigits: parsed.serifHeadingDigits === true
+          // 默认衬线数字：旧存档无此键时视为开启，显式 false 才关闭
+          serifHeadingDigits: parsed.serifHeadingDigits !== false
         };
       }
     } catch (e) {
