@@ -435,6 +435,19 @@
                   <button class="color-reset-btn" id="resetFontBtn" type="button">重置字体</button>
                 </div>
               </div>
+
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label">标题使用衬线数字</div>
+                  <div class="setting-description">标题中的阿拉伯数字改用衬线字体（Georgia / 宋体风格）渲染，其余文字与标题字体设置不受影响</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="serifHeadingDigitsToggle">
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
             </div>
 
             <div class="settings-subsection">
@@ -524,6 +537,19 @@
                 <div class="setting-control">
                   <label class="switch">
                     <input type="checkbox" id="contentFullWidthToggle">
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label">长表格延伸到右侧空白</div>
+                  <div class="setting-description">内容宽度设置保持不变，宽表格向右适度越过正文边界、利用右侧空白显示更多列；仍放不下的部分在表格内横向滚动</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="tableBleedToggle">
                     <span class="switch-slider"></span>
                   </label>
                 </div>

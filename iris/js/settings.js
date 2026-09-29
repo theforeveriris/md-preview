@@ -13,7 +13,9 @@
     fontConfig: {},
     sidebarOpen: false,
     contentWidth: 720,
-    contentFullWidth: false
+    contentFullWidth: false,
+    tableBleed: false,
+    serifHeadingDigits: false
   };
 
   // 内容区宽度范围（与设置面板滑杆一致）
@@ -89,7 +91,9 @@
           fontConfig: normalizeFontConfig(parsed.fontConfig),
           sidebarOpen: parsed.sidebarOpen === true,
           contentWidth: normalizeContentWidth(parsed.contentWidth ?? defaultSettings.contentWidth),
-          contentFullWidth: parsed.contentFullWidth === true
+          contentFullWidth: parsed.contentFullWidth === true,
+          tableBleed: parsed.tableBleed === true,
+          serifHeadingDigits: parsed.serifHeadingDigits === true
         };
       }
     } catch (e) {
@@ -330,6 +334,22 @@
       saveSettings(settings);
       applyContentWidthSettings(settings);
       syncContentWidthControls(settings);
+    });
+
+    // 长表格右侧越界
+    document.getElementById('tableBleedToggle')?.addEventListener('change', (e) => {
+      const settings = loadSettings();
+      settings.tableBleed = e.target.checked;
+      saveSettings(settings);
+      applyTableBleed(settings.tableBleed);
+    });
+
+    // 标题衬线数字
+    document.getElementById('serifHeadingDigitsToggle')?.addEventListener('change', (e) => {
+      const settings = loadSettings();
+      settings.serifHeadingDigits = e.target.checked;
+      saveSettings(settings);
+      applySerifHeadingDigits(settings.serifHeadingDigits);
     });
 
     resetContentWidthBtn?.addEventListener('click', () => {
@@ -620,6 +640,52 @@
     applyContentWidthSettings(settings);
     syncContentWidthControls(settings);
   }
+
+  // ---------- 长表格右侧越界 ----------
+  // 内容宽度设置不变：把正文右缘到窗口边缘的空白量写入 --table-bleed-x，
+  // .table-wrapper 借它向右延伸（见 markdown.css）。侧边栏开合、窗口缩放、
+  // 宽度设置变化都会改变右缘位置，用 ResizeObserver + resize 跟随。
+  let tableBleedRO = null;
+
+  function updateTableBleedVar() {
+    const content = document.getElementById('markdownContent');
+    if (!content) return;
+    const rect = content.getBoundingClientRect();
+    // 表格容器受正文内边距约束，右缘 = 边界盒右缘 - 内边距；再留 16px 呼吸位
+    const padRight = parseFloat(getComputedStyle(content).paddingRight) || 0;
+    const bleed = Math.max(0, Math.round(window.innerWidth - (rect.right - padRight) - 16));
+    document.documentElement.style.setProperty('--table-bleed-x', `${bleed}px`);
+  }
+
+  function applyTableBleed(enabled) {
+    document.body.classList.toggle('table-bleed', enabled === true);
+    const root = document.documentElement;
+    if (enabled !== true) {
+      root.style.removeProperty('--table-bleed-x');
+      if (tableBleedRO) { tableBleedRO.disconnect(); tableBleedRO = null; }
+      window.removeEventListener('resize', updateTableBleedVar);
+      return;
+    }
+    if (!tableBleedRO) {
+      tableBleedRO = new ResizeObserver(updateTableBleedVar);
+      // 侧边栏开合只平移固定宽度的正文，不改变其尺寸——
+      // 还要观察会随之变宽窄的 .main-content 才能感知右缘移动
+      const content = document.getElementById('markdownContent');
+      const mainContent = document.querySelector('.main-content');
+      if (content) tableBleedRO.observe(content);
+      if (mainContent) tableBleedRO.observe(mainContent);
+      if (!content && !mainContent) tableBleedRO.observe(document.body);
+    }
+    window.addEventListener('resize', updateTableBleedVar);
+    updateTableBleedVar();
+  }
+
+  // ---------- 标题衬线数字 ----------
+  // 数字字形由 CSS 的 @font-face + unicode-range 提供（见 markdown.css），
+  // 这里只负责开关 body class
+  function applySerifHeadingDigits(enabled) {
+    document.body.classList.toggle('serif-heading-digits', enabled === true);
+  }
   
   function downloadCurrentFile() {
     const { state } = window.MarkdownPreview;
@@ -735,16 +801,22 @@
     applySidebarState(settings.sidebarOpen);
     applyContentWidthSettings(settings);
     syncContentWidthControls(settings);
+    applyTableBleed(settings.tableBleed);
+    applySerifHeadingDigits(settings.serifHeadingDigits);
 
     const showReadingProgressToggle = document.getElementById('showReadingProgressToggle');
     const showWordCountToggle = document.getElementById('showWordCountToggle');
     const truncateFileNamesToggle = document.getElementById('truncateFileNamesToggle');
     const codeThemeSelect = document.getElementById('codeThemeSelect');
+    const tableBleedToggle = document.getElementById('tableBleedToggle');
+    const serifHeadingDigitsToggle = document.getElementById('serifHeadingDigitsToggle');
 
     if (showReadingProgressToggle) showReadingProgressToggle.checked = settings.showReadingProgress;
     if (showWordCountToggle) showWordCountToggle.checked = settings.showWordCount;
     if (truncateFileNamesToggle) truncateFileNamesToggle.checked = settings.truncateFileNames !== false;
     if (codeThemeSelect) codeThemeSelect.value = settings.codeTheme;
+    if (tableBleedToggle) tableBleedToggle.checked = settings.tableBleed === true;
+    if (serifHeadingDigitsToggle) serifHeadingDigitsToggle.checked = settings.serifHeadingDigits === true;
 
     // 取色器显示：有自定义值用自定义值，否则显示默认色
     document.querySelectorAll('input[type="color"][data-var]').forEach(input => {

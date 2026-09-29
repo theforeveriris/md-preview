@@ -58,7 +58,7 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 图片灯箱：点击放大、缩放、键盘左右键翻页
 - GitHub 风格 Alerts：支持 `[!NOTE]` `[!WARNING]` 等提示语法
 - 代码块增强：一键复制按钮、语言标签、横向滚动优化、代码 Tabs
-- 长表格优化：自动包裹支持横向滚动
+- 长表格优化：自动包裹支持横向滚动；可选「延伸到右侧空白」，宽表格越过正文边界利用右侧空间显示更多列（内容宽度设置不变）
 - 标题锚点分享：标题悬浮出现复制链接按钮，直达章节
 - Packet Tracer 拓扑：解析 Cisco `.pkt` 文件，渲染交互式网络拓扑图（基于 Cytoscape.js）
 - 华为 eNSP 拓扑：解析 `.topo` / `.zip` 华为 eNSP 工程文件，渲染路由器/交换机等网络设备拓扑
@@ -78,6 +78,7 @@ Demo：https://theforeveriris.github.io/md-preview/
   - 字号细调：UI / 正文 / H1 / H2 / H3 独立设置
   - 字重细调：UI / 正文 / 展示体 / H1 / H2 / H3 独立选择（300 ~ 800）
   - 字色：正文与次要文字颜色独立取色
+  - 可选「标题使用衬线数字」：标题中的阿拉伯数字以 Georgia / 宋体风格衬线字形渲染
   - 一键「重置字体」恢复默认
 - 代码高亮主题：10 种内置方案 + 自定义 highlight.js 主题 URL
 - 自定义 CSS：加载外部 CSS 文件进一步定制
