@@ -138,7 +138,9 @@
   --lfi-svg-closed: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" shape-rendering="geometricPrecision"><path d="M12 8v8" /><path d="M8 12h8" /></svg>');
 
   flex-shrink: 0;
-  padding: 10px 0 6px 16px;
+  /* 左内边距 32px = .file-tree 的 16px 容器 + :host>ul 的 16px 缩进，
+     使本地文件表头/列表项与树内文件夹行同一列 */
+  padding: 10px 0 6px 32px;
 }
 
 .local-files[hidden] {
@@ -245,7 +247,7 @@
 .local-files-list {
   list-style: none;
   margin: 0;
-  padding: 0 0 0 calc(var(--lfi-icon-size) + var(--lfi-padding));
+  padding: 0;
   max-height: 40vh;
   overflow-y: auto;
   scrollbar-width: none;
