@@ -5,14 +5,28 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 28 Sep 2026 18:25:49 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 29 Sep 2026 09:57:48 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>快速开始</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/getting-started.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/getting-started.md</guid>
+      <pubDate>Tue, 29 Sep 2026 09:52:43 GMT</pubDate>
+      <description>点击右上角的 Fork 按钮，将仓库复制到你的账号下。 1. 进入 Fork 后的仓库 2. 点击 Settings → Pages 3. 在 Build and deployment 中，Source 选择 GitHub Actions 编辑 ，将 和 改为你的信息： 提交修改并推送到 分支，GitHub Actions 会自动构建并部署。部署完成后，访问 即可查看。 在仓库的任意位置创建 文件</description>
+    </item>
     <item>
       <title>配置参考</title>
       <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
-      <pubDate>Mon, 28 Sep 2026 18:24:18 GMT</pubDate>
+      <pubDate>Mon, 28 Sep 2026 18:50:01 GMT</pubDate>
       <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
+    </item>
+    <item>
+      <title>快捷键</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/shortcuts.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/shortcuts.md</guid>
+      <pubDate>Mon, 28 Sep 2026 18:50:01 GMT</pubDate>
+      <description>Markdown Preview 支持一组全局键盘快捷键，覆盖侧边栏、设置、搜索、文档导航与内容区宽度调节。 表示 macOS 的 Cmd 键， 表示 Windows / Linux 的 Ctrl 键。 --- | 按键 | 功能 | 说明 | |------|------|------| | | 折叠 / 展开侧边栏 | 对齐 VS Code 的侧边栏键位；折叠后左上角会浮现展开按钮；状态自动记</description>
     </item>
     <item>
       <title>RSS 订阅</title>
@@ -62,13 +76,6 @@
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/pulse-generator-page.md</guid>
       <pubDate>Fri, 31 Jul 2026 15:49:43 GMT</pubDate>
       <description>郊狼波形批量生成页是系统内置的可视化波形生成工具，面向 DG-LAB 郊狼设备的 波形创作者。以全屏覆盖层形式呈现，支持按类别/具体波形批量生成、参数调优、随机种子、波形叠加混合，并实时预览生成的迷你波形，提供一键复制源码与下载 文件的能力。 --- 四种入口方式任选其一： | 方式 | 说明 | |------|------| | URL 参数 | 在站点任意 URL 后追加 ，例如 | | 设</description>
-    </item>
-    <item>
-      <title>快速开始</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/getting-started.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/getting-started.md</guid>
-      <pubDate>Fri, 31 Jul 2026 15:49:43 GMT</pubDate>
-      <description>点击右上角的 Fork 按钮，将仓库复制到你的账号下。 1. 进入 Fork 后的仓库 2. 点击 Settings → Pages 3. 在 Build and deployment 中，Source 选择 GitHub Actions 编辑 ，将 和 改为你的信息： 提交修改并推送到 分支，GitHub Actions 会自动构建并部署。部署完成后，访问 即可查看。 在仓库的任意位置创建 文件</description>
     </item>
     <item>
       <title>PPTX 演示嵌入示例</title>
