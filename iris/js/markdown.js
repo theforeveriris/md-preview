@@ -23,6 +23,14 @@
     }
   }
 
+  // 新文档加载时复位阅读状态：滚动置顶 + 清零两条进度条。
+  // reading-progress-bar 只在 scroll 事件里更新，导航后若不显式清零会残留上一文档的进度
+  function resetReadingProgress() {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    if (dom.readingProgressBar) dom.readingProgressBar.style.width = '0%';
+    if (dom.progressBar) dom.progressBar.style.width = '0%';
+  }
+
   async function loadMarkdownFile(path) {
     try {
       // 立即更新 URL，提供即时反馈
@@ -31,6 +39,7 @@
         router.updateHash(path);
       }
 
+      resetReadingProgress();
       window.MarkdownPreview.ui.updateProgress(30);
       const response = await fetch(path, { cache: 'no-store' });
 
@@ -910,6 +919,7 @@
       if (window.location.hash) {
         history.replaceState(null, '', window.location.pathname + window.location.search);
       }
+      resetReadingProgress();
       // 更新面包屑为文件名
       if (fileName) {
         const bc = document.getElementById('pageBreadcrumbs');

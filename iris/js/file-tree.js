@@ -170,6 +170,21 @@
     }
     buildWordCountMap(files);
 
+    // 构建标题映射表：解码后的完整路径 -> 文档标题（frontmatter title / 正文首个 # 标题）
+    const titleMap = new Map();
+    function buildTitleMap(items, parentPath) {
+      parentPath = parentPath || '';
+      items.forEach(function(item) {
+        var currentPath = parentPath ? parentPath + '/' + item.name : item.name;
+        if (item.type === 'file' && item.title) {
+          titleMap.set(currentPath, item.title);
+        } else if (item.type === 'folder' && item.children) {
+          buildTitleMap(item.children, currentPath);
+        }
+      });
+    }
+    buildTitleMap(files);
+
     function addItems(parent, items) {
       items.forEach(item => {
         if (item.type === 'folder') {
@@ -248,6 +263,15 @@
         var decodedPath = getDecodedPath(li);
         state.fileLiMap.set(decodedPath, li);
 
+        // 侧边栏显示名：优先文档标题，其次解码后的文件名（去掉 .md 后缀）。
+        // vendor 组件渲染时对文件名做了 encodeURIComponent，中文会显示成 %XX，这里统一换成可读文本。
+        // 注意 decodedPath 需在替换文本前计算（getDecodedPath 依赖按钮内的原始文本节点）
+        var displayName = titleMap.get(decodedPath);
+        if (!displayName) {
+          var baseName = decodedPath.split('/').pop() || '';
+          displayName = safeDecode(baseName).replace(/\.md$/i, '');
+        }
+
         // 将文件名文本节点包裹在 span 中，实现截断
         var textNode = null;
         for (var i = 0; i < button.childNodes.length; i++) {
@@ -259,7 +283,7 @@
         if (textNode) {
           var nameSpan = document.createElement('span');
           nameSpan.className = 'file-name';
-          nameSpan.textContent = textNode.textContent;
+          nameSpan.textContent = displayName;
           button.replaceChild(nameSpan, textNode);
         }
 

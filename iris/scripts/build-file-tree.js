@@ -34,6 +34,28 @@ function countWords(content) {
   return chineseChars + englishWords;
 }
 
+// 提取文档标题：frontmatter.title 优先，其次正文第一个 `#` 标题，都没有则返回空串（显示时回退文件名）
+function extractTitle(content) {
+  const fm = content.match(/^---\s*\n([\s\S]*?)\n---\s*/);
+  let meta = '';
+  let body = content;
+  if (fm) {
+    meta = fm[1];
+    body = content.slice(fm[0].length);
+  }
+
+  let title = '';
+  const titleLine = meta.split('\n').find(l => l.trim().startsWith('title:'));
+  if (titleLine) {
+    title = titleLine.trim().replace(/^title:\s*/, '').trim().replace(/^["']|["']$/g, '');
+  }
+  if (!title) {
+    const h1 = body.match(/^#\s+(.+?)\s*$/m);
+    if (h1) title = h1[1].trim();
+  }
+  return title;
+}
+
 function buildTreeFromDirectory(dir, basePath = '') {
   const result = [];
   const items = fs.readdirSync(dir, { withFileTypes: true });
@@ -72,12 +94,15 @@ function buildTreeFromDirectory(dir, basePath = '') {
   files.forEach(file => {
     const content = fs.readFileSync(file.fullPath, 'utf-8');
     const wordCount = countWords(content);
-    result.push({
+    const title = extractTitle(content);
+    const entry = {
       name: file.name,
       type: 'file',
       path: file.path,
       wordCount
-    });
+    };
+    if (title) entry.title = title;
+    result.push(entry);
     totalWords += wordCount;
   });
   

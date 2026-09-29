@@ -11,175 +11,204 @@
             "name": "apexcharts-examples.md",
             "type": "file",
             "path": "docs/examples/apexcharts-examples.md",
-            "wordCount": 155
+            "wordCount": 155,
+            "title": "ApexCharts 交互式图表示例"
           },
           {
             "name": "basic-usage.md",
             "type": "file",
             "path": "docs/examples/basic-usage.md",
-            "wordCount": 106
+            "wordCount": 106,
+            "title": "基础使用教程"
           },
           {
             "name": "code-tabs-examples.md",
             "type": "file",
             "path": "docs/examples/code-tabs-examples.md",
-            "wordCount": 231
+            "wordCount": 231,
+            "title": "代码选项卡使用示例"
           },
           {
             "name": "colorcard-examples.md",
             "type": "file",
             "path": "docs/examples/colorcard-examples.md",
-            "wordCount": 157
+            "wordCount": 157,
+            "title": "ColorCard 插件示例"
           },
           {
             "name": "columns-examples.md",
             "type": "file",
             "path": "docs/examples/columns-examples.md",
-            "wordCount": 111
+            "wordCount": 111,
+            "title": "分栏布局使用示例"
           },
           {
             "name": "countdown-examples.md",
             "type": "file",
             "path": "docs/examples/countdown-examples.md",
-            "wordCount": 167
+            "wordCount": 167,
+            "title": "Countdown 插件示例"
           },
           {
             "name": "diff-examples.md",
             "type": "file",
             "path": "docs/examples/diff-examples.md",
-            "wordCount": 77
+            "wordCount": 77,
+            "title": "Git Diff 可视化示例"
           },
           {
             "name": "embed-examples.md",
             "type": "file",
             "path": "docs/examples/embed-examples.md",
-            "wordCount": 105
+            "wordCount": 105,
+            "title": "外部服务嵌入示例"
           },
           {
             "name": "ensp-examples.md",
             "type": "file",
             "path": "docs/examples/ensp-examples.md",
-            "wordCount": 388
+            "wordCount": 388,
+            "title": "eNSP 拓扑渲染示例"
           },
           {
             "name": "gallery-layouts.md",
             "type": "file",
             "path": "docs/examples/gallery-layouts.md",
-            "wordCount": 485
+            "wordCount": 485,
+            "title": "画廊布局样式速查"
           },
           {
             "name": "geojson-examples.md",
             "type": "file",
             "path": "docs/examples/geojson-examples.md",
-            "wordCount": 74
+            "wordCount": 74,
+            "title": "GeoJSON / TopoJSON 示例"
           },
           {
             "name": "github-alerts-examples.md",
             "type": "file",
             "path": "docs/examples/github-alerts-examples.md",
-            "wordCount": 50
+            "wordCount": 50,
+            "title": "GitHub Alerts 示例"
           },
           {
             "name": "image-gallery-examples.md",
             "type": "file",
             "path": "docs/examples/image-gallery-examples.md",
-            "wordCount": 1514
+            "wordCount": 1514,
+            "title": "图片画廊与懒加载示例"
           },
           {
             "name": "latex-examples.md",
             "type": "file",
             "path": "docs/examples/latex-examples.md",
-            "wordCount": 583
+            "wordCount": 583,
+            "title": "LaTeX 公式示例"
           },
           {
             "name": "markdown-syntax.md",
             "type": "file",
             "path": "docs/examples/markdown-syntax.md",
-            "wordCount": 340
+            "wordCount": 340,
+            "title": "Markdown 语法参考"
           },
           {
             "name": "mermaid-examples.md",
             "type": "file",
             "path": "docs/examples/mermaid-examples.md",
-            "wordCount": 312
+            "wordCount": 312,
+            "title": "Mermaid 图表示例"
           },
           {
             "name": "native-html-examples.md",
             "type": "file",
             "path": "docs/examples/native-html-examples.md",
-            "wordCount": 781
+            "wordCount": 781,
+            "title": "浏览器原生 HTML 元素与 Web API 示例"
           },
           {
             "name": "pkt-examples.md",
             "type": "file",
             "path": "docs/examples/pkt-examples.md",
-            "wordCount": 501
+            "wordCount": 501,
+            "title": "Packet Tracer 拓扑渲染示例"
           },
           {
             "name": "pkt-huawei-vrp-解析示例.md",
             "type": "file",
             "path": "docs/examples/pkt-huawei-vrp-解析示例.md",
-            "wordCount": 1002
+            "wordCount": 1002,
+            "title": "PKT 华为 VRP 命令解析示例"
           },
           {
             "name": "plantuml-examples.md",
             "type": "file",
             "path": "docs/examples/plantuml-examples.md",
-            "wordCount": 386
+            "wordCount": 386,
+            "title": "PlantUML 图表示例"
           },
           {
             "name": "plugin-demo.md",
             "type": "file",
             "path": "docs/examples/plugin-demo.md",
-            "wordCount": 24
+            "wordCount": 24,
+            "title": "插件系统示例"
           },
           {
             "name": "pptx-examples.md",
             "type": "file",
             "path": "docs/examples/pptx-examples.md",
-            "wordCount": 365
+            "wordCount": 365,
+            "title": "PPTX 演示嵌入示例"
           },
           {
             "name": "pulse-examples.md",
             "type": "file",
             "path": "docs/examples/pulse-examples.md",
-            "wordCount": 661
+            "wordCount": 661,
+            "title": "Pulse 波形示例"
           },
           {
             "name": "pulse-generator-page.md",
             "type": "file",
             "path": "docs/examples/pulse-generator-page.md",
-            "wordCount": 873
+            "wordCount": 873,
+            "title": "郊狼波形批量生成页（特殊页面）"
           },
           {
             "name": "qrcode-examples.md",
             "type": "file",
             "path": "docs/examples/qrcode-examples.md",
-            "wordCount": 80
+            "wordCount": 80,
+            "title": "二维码插件示例"
           },
           {
             "name": "spoiler-examples.md",
             "type": "file",
             "path": "docs/examples/spoiler-examples.md",
-            "wordCount": 223
+            "wordCount": 223,
+            "title": "遮罩（剧透）语法示例"
           },
           {
             "name": "table-examples.md",
             "type": "file",
             "path": "docs/examples/table-examples.md",
-            "wordCount": 699
+            "wordCount": 699,
+            "title": "表格使用示例"
           },
           {
             "name": "theme-demo.md",
             "type": "file",
             "path": "docs/examples/theme-demo.md",
-            "wordCount": 183
+            "wordCount": 183,
+            "title": "主题市场演示"
           },
           {
             "name": "twitter-embed-examples.md",
             "type": "file",
             "path": "docs/examples/twitter-embed-examples.md",
-            "wordCount": 390
+            "wordCount": 390,
+            "title": "Twitter/X 嵌入示例"
           }
         ],
         "wordCount": 11023
@@ -188,52 +217,67 @@
         "name": "code-highlight-theme.md",
         "type": "file",
         "path": "docs/code-highlight-theme.md",
-        "wordCount": 502
+        "wordCount": 502,
+        "title": "代码高亮主题开发指南"
       },
       {
         "name": "configuration.md",
         "type": "file",
         "path": "docs/configuration.md",
-        "wordCount": 634
+        "wordCount": 701,
+        "title": "配置参考"
       },
       {
         "name": "editor.md",
         "type": "file",
         "path": "docs/editor.md",
-        "wordCount": 1010
+        "wordCount": 1010,
+        "title": "Markdown 编辑器"
       },
       {
         "name": "getting-started.md",
         "type": "file",
         "path": "docs/getting-started.md",
-        "wordCount": 115
+        "wordCount": 115,
+        "title": "快速开始"
       },
       {
         "name": "plugin-development.md",
         "type": "file",
         "path": "docs/plugin-development.md",
-        "wordCount": 289
+        "wordCount": 289,
+        "title": "插件开发指南"
       },
       {
         "name": "rss.md",
         "type": "file",
         "path": "docs/rss.md",
-        "wordCount": 341
+        "wordCount": 341,
+        "title": "RSS 订阅"
+      },
+      {
+        "name": "shortcuts.md",
+        "type": "file",
+        "path": "docs/shortcuts.md",
+        "wordCount": 489,
+        "title": "快捷键"
       },
       {
         "name": "show.md",
         "type": "file",
         "path": "docs/show.md",
-        "wordCount": 2339
+        "wordCount": 2339,
+        "title": "系统运行时截图"
       },
       {
         "name": "theme-customization.md",
         "type": "file",
         "path": "docs/theme-customization.md",
-        "wordCount": 495
+        "wordCount": 495,
+        "title": "主题定制"
       }
     ],
-    "wordCount": 16748
+    "wordCount": 17304
   },
   {
     "name": "iris",
@@ -251,7 +295,8 @@
                 "name": "README.md",
                 "type": "file",
                 "path": "iris/scripts/pkt/README.md",
-                "wordCount": 166
+                "wordCount": 166,
+                "title": "Packet Tracer .pkt → JSON 预处理脚本"
               }
             ],
             "wordCount": 166
@@ -266,12 +311,14 @@
     "name": "readme-dev.md",
     "type": "file",
     "path": "readme-dev.md",
-    "wordCount": 850
+    "wordCount": 850,
+    "title": "Markdown Preview — 开发者文档"
   },
   {
     "name": "README.md",
     "type": "file",
     "path": "README.md",
-    "wordCount": 942
+    "wordCount": 942,
+    "title": "Markdown Preview"
   }
 ]
