@@ -43,22 +43,24 @@ body.content-full-width .markdown-body {
   line-height: 1.3;
 }
 
-/* 标题衬线数字（设置开启时）：@font-face 仅声明数字字符（unicode-range），
-   非数字字符按 font-family 列表继续回退到原标题字体；local() 依次尝试
-   Georgia / Times / 宋体，均不可用时整体优雅回退为原标题字体 */
+/* 标题数字无衬线（设置开启时）：默认关闭，数字随标题字体
+   （默认衬线体）。开启后 @font-face 仅声明数字字符
+   （unicode-range），非数字字符按 font-family 列表继续回退到
+   原标题字体；local() 依次尝试常见无衬线字体，均不可用时整体
+   优雅回退为原标题字体 */
 @font-face {
-  font-family: 'Serif Heading Digits';
-  src: local('Georgia'), local('Times New Roman'), local('Times'), local('Songti SC'), local('SimSun');
+  font-family: 'Sans Heading Digits';
+  src: local('IBM Plex Sans'), local('Segoe UI'), local('Helvetica Neue'), local('Arial'), local('Roboto'), local('PingFang SC'), local('Microsoft YaHei');
   unicode-range: U+30-39, U+FF10-FF19;
 }
 
-body.serif-heading-digits .markdown-body h1,
-body.serif-heading-digits .markdown-body h2,
-body.serif-heading-digits .markdown-body h3,
-body.serif-heading-digits .markdown-body h4,
-body.serif-heading-digits .markdown-body h5,
-body.serif-heading-digits .markdown-body h6 {
-  font-family: 'Serif Heading Digits', var(--font-display);
+body.sans-heading-digits .markdown-body h1,
+body.sans-heading-digits .markdown-body h2,
+body.sans-heading-digits .markdown-body h3,
+body.sans-heading-digits .markdown-body h4,
+body.sans-heading-digits .markdown-body h5,
+body.sans-heading-digits .markdown-body h6 {
+  font-family: 'Sans Heading Digits', var(--font-display);
 }
 
 .markdown-body h1:first-child {

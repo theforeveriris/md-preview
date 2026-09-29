@@ -15,7 +15,7 @@
     contentWidth: 720,
     contentFullWidth: false,
     tableBleed: false,
-    serifHeadingDigits: true
+    sansHeadingDigits: false
   };
 
   // 内容区宽度范围（与设置面板滑杆一致）
@@ -93,8 +93,7 @@
           contentWidth: normalizeContentWidth(parsed.contentWidth ?? defaultSettings.contentWidth),
           contentFullWidth: parsed.contentFullWidth === true,
           tableBleed: parsed.tableBleed === true,
-          // 默认衬线数字：旧存档无此键时视为开启，显式 false 才关闭
-          serifHeadingDigits: parsed.serifHeadingDigits !== false
+          sansHeadingDigits: parsed.sansHeadingDigits === true
         };
       }
     } catch (e) {
@@ -345,12 +344,12 @@
       applyTableBleed(settings.tableBleed);
     });
 
-    // 标题衬线数字
-    document.getElementById('serifHeadingDigitsToggle')?.addEventListener('change', (e) => {
+    // 标题数字无衬线
+    document.getElementById('sansHeadingDigitsToggle')?.addEventListener('change', (e) => {
       const settings = loadSettings();
-      settings.serifHeadingDigits = e.target.checked;
+      settings.sansHeadingDigits = e.target.checked;
       saveSettings(settings);
-      applySerifHeadingDigits(settings.serifHeadingDigits);
+      applySansHeadingDigits(settings.sansHeadingDigits);
     });
 
     resetContentWidthBtn?.addEventListener('click', () => {
@@ -681,11 +680,11 @@
     updateTableBleedVar();
   }
 
-  // ---------- 标题衬线数字 ----------
+  // ---------- 标题数字无衬线 ----------
   // 数字字形由 CSS 的 @font-face + unicode-range 提供（见 markdown.css），
-  // 这里只负责开关 body class
-  function applySerifHeadingDigits(enabled) {
-    document.body.classList.toggle('serif-heading-digits', enabled === true);
+  // 这里只负责开关 body class。默认关闭：数字随标题字体（衬线体）
+  function applySansHeadingDigits(enabled) {
+    document.body.classList.toggle('sans-heading-digits', enabled === true);
   }
   
   function downloadCurrentFile() {
@@ -803,21 +802,21 @@
     applyContentWidthSettings(settings);
     syncContentWidthControls(settings);
     applyTableBleed(settings.tableBleed);
-    applySerifHeadingDigits(settings.serifHeadingDigits);
+    applySansHeadingDigits(settings.sansHeadingDigits);
 
     const showReadingProgressToggle = document.getElementById('showReadingProgressToggle');
     const showWordCountToggle = document.getElementById('showWordCountToggle');
     const truncateFileNamesToggle = document.getElementById('truncateFileNamesToggle');
     const codeThemeSelect = document.getElementById('codeThemeSelect');
     const tableBleedToggle = document.getElementById('tableBleedToggle');
-    const serifHeadingDigitsToggle = document.getElementById('serifHeadingDigitsToggle');
+    const sansHeadingDigitsToggle = document.getElementById('sansHeadingDigitsToggle');
 
     if (showReadingProgressToggle) showReadingProgressToggle.checked = settings.showReadingProgress;
     if (showWordCountToggle) showWordCountToggle.checked = settings.showWordCount;
     if (truncateFileNamesToggle) truncateFileNamesToggle.checked = settings.truncateFileNames !== false;
     if (codeThemeSelect) codeThemeSelect.value = settings.codeTheme;
     if (tableBleedToggle) tableBleedToggle.checked = settings.tableBleed === true;
-    if (serifHeadingDigitsToggle) serifHeadingDigitsToggle.checked = settings.serifHeadingDigits === true;
+    if (sansHeadingDigitsToggle) sansHeadingDigitsToggle.checked = settings.sansHeadingDigits === true;
 
     // 取色器显示：有自定义值用自定义值，否则显示默认色
     document.querySelectorAll('input[type="color"][data-var]').forEach(input => {
