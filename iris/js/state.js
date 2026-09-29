@@ -8,6 +8,9 @@
     currentFilePath: '',
     // 「打开本地 MD」加载的文档：{ name, content }，供导出 MD/PDF 使用；加载仓库内文档时置回 null
     localDoc: null,
+    // 本地文件会话列表（多选）：[{ id, name, content }]，纯内存，刷新即清空；由 local-docs.js 管理
+    localFiles: [],
+    activeLocalFileId: '',
     currentHeadings: [],
     currentFrontmatter: {},
     // 调试面板用：文件树加载来源

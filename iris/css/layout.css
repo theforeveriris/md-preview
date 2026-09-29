@@ -122,6 +122,129 @@
   border-left-color: var(--color-accent-purple);
 }
 
+/* ===== 本地文件会话面板（多选打开的本地 MD，位于文件树上方）===== */
+.local-files {
+  flex-shrink: 0;
+  margin: 0 10px 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.local-files[hidden] {
+  display: none;
+}
+
+.local-files-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px 5px;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.local-files-title {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.local-files-count {
+  font-size: 0.6875rem;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 99px;
+  background: var(--color-hover);
+}
+
+.local-files-clear {
+  margin-left: auto;
+  display: none;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 6px;
+}
+
+.local-files:hover .local-files-clear {
+  display: inline-flex;
+}
+
+.local-files-clear:hover {
+  color: var(--color-accent-purple-deep);
+  background: var(--color-hover);
+}
+
+.local-files-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 4px 4px;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+.local-file-item {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  border-left: 2px solid transparent;
+  border-radius: 6px;
+}
+
+.local-file-item:hover {
+  background: var(--color-hover);
+}
+
+.local-file-item.active {
+  background: var(--color-hover);
+  border-left-color: var(--color-accent-purple);
+}
+
+.local-file-open {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 300;
+  line-height: 1.4;
+  padding: 4px 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.local-file-item.active .local-file-open {
+  color: var(--color-accent-purple-deep);
+}
+
+.local-file-remove {
+  display: none;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 5px;
+}
+
+.local-file-item:hover .local-file-remove {
+  display: inline-flex;
+}
+
+.local-file-remove:hover {
+  color: var(--color-accent-purple-deep);
+  background: rgba(212, 165, 201, 0.15);
+}
+
 /* ===== File Tree Component ===== */
 .file-tree {
   --ft-padding: 4px;

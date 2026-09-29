@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-07-31T11:40:15.074Z",
+  "generatedAt": "2026-09-30T00:00:00.000Z",
   "version": 1,
-  "count": 65,
+  "count": 66,
   "urls": [
     "./",
     "./index.html",
@@ -52,6 +52,7 @@
     "./iris/js/renderers/pulse.js",
     "./iris/js/router.js",
     "./iris/js/search.js",
+    "./iris/js/local-docs.js",
     "./iris/js/settings.js",
     "./iris/js/state.js",
     "./iris/js/storage.js",

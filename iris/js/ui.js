@@ -237,11 +237,14 @@
   
   function switchMode(mode) {
     state.currentMode = mode;
-    
+
     dom.modeFiles.classList.toggle('active', mode === 'files');
     dom.modeIndex.classList.toggle('active', mode === 'index');
     dom.fileTree.classList.toggle('hidden', mode !== 'files');
     dom.indexTree.classList.toggle('hidden', mode !== 'index');
+    // 本地文件面板归属 Files 区
+    const localFilesPanel = document.getElementById('localFilesPanel');
+    if (localFilesPanel) localFilesPanel.hidden = mode !== 'files' || state.localFiles.length === 0;
   }
   
   function copyCodeToClipboard(pre) {

@@ -56,6 +56,8 @@
       state.currentFilePath = path;
       // 加载仓库内文档后清除本地文档记录，导出功能随之切回仓库文件
       state.localDoc = null;
+      // 本地文件列表保留（可随时切回），仅清除其选中高亮
+      window.MarkdownPreview.localDocs?.clearActive();
       renderMarkdown(markdown, path);
       extractAndRenderIndex(markdown);
       updateEditButton(path);

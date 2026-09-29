@@ -97,6 +97,16 @@
         <span class="search-trigger-label">搜索文档…</span>
         <kbd class="search-trigger-kbd" id="searchTriggerKbd">⌘K</kbd>
       </button>
+      <div class="local-files" id="localFilesPanel" hidden>
+        <div class="local-files-header">
+          <span class="local-files-title">本地文件</span>
+          <span class="local-files-count" id="localFilesCount">0</span>
+          <button class="local-files-clear" id="localFilesClearBtn" type="button" title="清空本地文件列表" aria-label="清空本地文件列表">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-trash"/></svg>
+          </button>
+        </div>
+        <ul class="local-files-list" id="localFilesList"></ul>
+      </div>
       <div class="file-tree" id="fileTree"></div>
       <div class="index-tree hidden" id="indexTree"></div>
     </aside>
@@ -1536,6 +1546,7 @@
   <script defer src="iris/js/ui.js"></script>
   <script defer src="iris/js/interactions.js"></script>
   <script defer src="iris/js/search.js"></script>
+  <script defer src="iris/js/local-docs.js"></script>
   <script defer src="iris/vendor/file-tree/prod.js"></script>
   <script defer src="iris/js/file-tree.js"></script>
   <script defer src="iris/js/md-render.js"></script>
@@ -1762,6 +1773,6 @@
       }, 5000);
     });
   </script>
-  <input type="file" id="localMdInput" accept=".md,.markdown,text/markdown,text/plain" style="position:fixed;top:-9999px;left:-9999px;opacity:0;">
+  <input type="file" id="localMdInput" accept=".md,.markdown,text/markdown,text/plain" multiple style="position:fixed;top:-9999px;left:-9999px;opacity:0;">
 </body>
 </html>

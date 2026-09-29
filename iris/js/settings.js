@@ -203,6 +203,11 @@
     const nextDocBtn = document.getElementById('nextDocBtn');
     const navigateDoc = (direction) => {
       const { state, fileTree, markdown } = window.MarkdownPreview;
+      // 本地文档激活时：在本地文件会话列表内循环翻页
+      if (!state.currentFilePath && state.localDoc &&
+          window.MarkdownPreview.localDocs?.navigateLocal(direction)) {
+        return;
+      }
       if (!state.currentFilePath) {
         alert('请先打开一个文档');
         return;
@@ -221,7 +226,7 @@
     prevDocBtn?.addEventListener('click', () => navigateDoc('prev'));
     nextDocBtn?.addEventListener('click', () => navigateDoc('next'));
 
-    // 打开本地 MD 文件
+    // 打开本地 MD 文件（选择结果由 local-docs.js 处理：支持多选与会话列表）
     const openLocalMdBtn = document.getElementById('openLocalMdBtn');
     const localMdInput = document.getElementById('localMdInput');
     openLocalMdBtn?.addEventListener('click', (e) => {
@@ -234,21 +239,6 @@
         menuItems.classList.remove('open');
         menuTrigger.classList.remove('active');
       }, 300);
-    });
-    localMdInput?.addEventListener('change', (e) => {
-      const file = e.target.files && e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const content = ev.target.result;
-        // 本地文件不写进 URL，刷新后丢失
-        window.MarkdownPreview.state.currentFilePath = '';
-        window.MarkdownPreview.markdown.renderMarkdownDirect(content, file.name);
-      };
-      reader.onerror = () => alert('读取文件失败，请重试');
-      reader.readAsText(file, 'utf-8');
-      // 重置 input，允许重复选择同一文件
-      e.target.value = '';
     });
 
     openSettingsBtn?.addEventListener('click', () => {
