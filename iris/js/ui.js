@@ -78,19 +78,39 @@
            !!(pptx && pptx.classList.contains('is-open'));
   }
 
-  // Ctrl/⌘+K：聚焦侧边栏搜索框；移动端先弹抽屉，桌面端先展开侧边栏
-  function focusSidebarSearch() {
+  // ---------- 搜索命令面板（Ctrl/⌘+K）----------
+
+  function isSearchPaletteOpen() {
+    return !!(dom.paletteOverlay && dom.paletteOverlay.classList.contains('active'));
+  }
+
+  function openSearchPalette() {
+    if (!dom.paletteOverlay) return;
+    // 移动端：先收抽屉，避免双层浮层
     if (window.innerWidth <= 768) {
-      if (!dom.sidebar.classList.contains('open')) {
-        window.MarkdownPreview.fileTree.toggleSidebar();
-      }
-    } else if (document.body.classList.contains('sidebar-collapsed')) {
-      window.MarkdownPreview.fileTree.toggleSidebar();
+      window.MarkdownPreview.fileTree.closeSidebar();
     }
-    const input = document.getElementById('searchInput');
-    if (input) {
-      input.focus();
-      input.select();
+    dom.paletteOverlay.classList.add('active');
+    dom.paletteOverlay.setAttribute('aria-hidden', 'false');
+    window.MarkdownPreview.search.reset();
+    dom.searchInput.focus();
+  }
+
+  function closeSearchPalette() {
+    if (!dom.paletteOverlay) return;
+    dom.paletteOverlay.classList.remove('active');
+    dom.paletteOverlay.setAttribute('aria-hidden', 'true');
+    window.MarkdownPreview.search.reset();
+  }
+
+  // Ctrl/⌘ + K：打开搜索命令面板（对齐 GitHub / Slack 惯例键位）；
+  // 面板已打开时重新聚焦输入框
+  function toggleSearchPalette() {
+    if (isSearchPaletteOpen()) {
+      dom.searchInput.focus();
+      dom.searchInput.select();
+    } else {
+      openSearchPalette();
     }
   }
 
@@ -107,9 +127,16 @@
   }
 
   function setupEventListeners() {
+    initSearchTriggerKbd();
     dom.mobileMenuBtn.addEventListener('click', window.MarkdownPreview.fileTree.toggleSidebar);
     dom.sidebarToggle.addEventListener('click', window.MarkdownPreview.fileTree.toggleSidebar);
     dom.sidebarOverlay.addEventListener('click', window.MarkdownPreview.fileTree.closeSidebar);
+
+    // 搜索命令面板
+    dom.searchTrigger?.addEventListener('click', openSearchPalette);
+    dom.paletteOverlay?.addEventListener('click', (e) => {
+      if (e.target === dom.paletteOverlay) closeSearchPalette();
+    });
 
     dom.modeFiles.addEventListener('click', () => switchMode('files'));
     dom.modeIndex.addEventListener('click', () => switchMode('index'));
@@ -126,6 +153,11 @@
         // 设置面板打开时 Esc 只关设置面板
         if (isSettingsOpen()) {
           window.MarkdownPreview.settings.close();
+          return;
+        }
+        // 搜索面板是最上层浮层，Esc 优先关闭
+        if (isSearchPaletteOpen()) {
+          closeSearchPalette();
           return;
         }
         // 编辑器 / 灯箱 / PPTX 放映有自己的 Esc 处理，不抢
@@ -169,10 +201,10 @@
         return;
       }
 
-      // Ctrl/⌘ + K ：聚焦搜索框（对齐 GitHub / Slack 惯例键位）
+      // Ctrl/⌘ + K ：搜索命令面板（对齐 GitHub / Slack 惯例键位）
       if (mod && !alt && !shift && key.toLowerCase() === 'k') {
         e.preventDefault();
-        focusSidebarSearch();
+        toggleSearchPalette();
         return;
       }
 
@@ -205,13 +237,24 @@
       });
     }
   }
-  
+
+  // 触发行快捷键提示按平台显示（Mac 用 ⌘K，其余用 Ctrl K）
+  function initSearchTriggerKbd() {
+    if (!dom.searchTriggerKbd) return;
+    const isApple = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
+    dom.searchTriggerKbd.textContent = isApple ? '⌘K' : 'Ctrl K';
+  }
+
   window.MarkdownPreview.ui = {
     updateProgress,
     setupScrollProgress,
     setupEventListeners,
     switchMode,
     copyCodeToClipboard,
-    updateActiveHeading
+    updateActiveHeading,
+    openSearchPalette,
+    closeSearchPalette,
+    isSearchPaletteOpen,
+    initSearchTriggerKbd
   };
 })();

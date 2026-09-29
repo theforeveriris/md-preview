@@ -1,36 +1,111 @@
-.search-container {
-  padding: 12px 16px;
-}
-
-#searchInput {
-  width: 100%;
-  padding: 10px 14px;
+/* ===== 搜索命令面板（Ctrl/⌘+K）===== */
+/* 侧边栏触发行：与文件树同风格，无底色 */
+.search-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: calc(100% - 32px);
+  margin: 2px 16px 4px;
+  padding: 8px 10px;
+  background: transparent;
   border: none;
   border-radius: 8px;
-  font-size: 14px;
   font-family: var(--font-body);
-  background: var(--color-bg);
-  color: var(--color-text);
-  outline: none;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
   transition: var(--transition-smooth);
 }
 
-#searchInput:focus {
+.search-trigger:hover {
+  background: var(--color-hover);
+  color: var(--color-text);
+}
+
+.search-trigger svg {
+  flex-shrink: 0;
+}
+
+.search-trigger-kbd,
+.palette-esc {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+.search-trigger-kbd {
+  margin-left: auto;
+}
+
+.palette-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(3px);
+  z-index: 300;
+  display: none;
+}
+
+.palette-overlay.active {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 12vh 16px 16px;
+}
+
+.palette {
+  width: min(560px, 100%);
   background: var(--color-surface);
-  box-shadow: 0 0 0 3px rgba(212, 165, 201, 0.15);
+  border-radius: 14px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22), 0 4px 16px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.palette-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  color: var(--color-text-muted);
+}
+
+.palette-input-row svg {
+  flex-shrink: 0;
+}
+
+#searchInput {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  font-size: 16px;
+  font-family: var(--font-body);
+  background: transparent;
+  color: var(--color-text);
+  outline: none;
+}
+
+#searchInput:focus {
+  background: transparent;
+  box-shadow: none;
 }
 
 .search-results {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-  flex-shrink: 0;
+  max-height: min(420px, 52vh);
+  overflow-y: auto;
   background: var(--color-surface);
 }
 
-.search-results.active {
-  max-height: 500px;
-  overflow-y: auto;
+/* 空状态提示（结果列表为空时显示） */
+.search-results:empty::before {
+  content: '输入关键词搜索文档';
+  display: block;
+  padding: 16px 16px 20px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  opacity: 0.7;
 }
 
 .search-result-item {

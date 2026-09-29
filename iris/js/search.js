@@ -188,6 +188,8 @@
         fileTree.highlightFileInSidebar(result.path);
         hideSearchResults();
         dom.searchInput.value = '';
+        // 结果在命令面板中展示，选中后收起面板
+        window.MarkdownPreview.ui?.closeSearchPalette?.();
       });
 
       container.appendChild(item);
@@ -197,6 +199,15 @@
   function hideSearchResults() {
     const { dom } = window.MarkdownPreview;
     dom.searchResults.classList.remove('active');
+  }
+
+  // 清空输入与结果（命令面板关闭/重新打开时调用）
+  function reset() {
+    const { dom } = window.MarkdownPreview;
+    clearTimeout(debounceTimer);
+    currentQuery = '';
+    if (dom.searchInput) dom.searchInput.value = '';
+    hideSearchResults();
   }
 
   function escapeHtml(text) {
@@ -247,6 +258,7 @@
 
   window.MarkdownPreview.search = {
     init: init,
-    buildIndex: buildIndex
+    buildIndex: buildIndex,
+    reset: reset
   };
 })();

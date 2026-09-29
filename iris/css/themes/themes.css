@@ -209,8 +209,3 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-scrollbar-hover);
 }
-
-#searchInput:focus {
-  border-color: var(--color-accent-purple);
-  box-shadow: 0 0 0 3px var(--color-hover);
-}
