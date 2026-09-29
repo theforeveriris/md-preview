@@ -213,6 +213,56 @@
     });
   }
 
+  // ---------- OGP / Twitter Card 动态同步 ----------
+  // 站点级默认值在 index.html 静态 meta；文档打开后把 og/twitter 的
+  // title、description、url 更新为当前文档。hash 路由 SPA 无 SSR，
+  // meta 能否被社交平台读到取决于其抓取端是否执行 JS，
+  // 这是运行时能做到的上限（document.title 同步早已存在）。
+  let siteBase = null;
+
+  function setMeta(attr, key, value) {
+    let el = document.head.querySelector('meta[' + attr + '="' + key + '"]');
+    if (!el) {
+      el = document.createElement('meta');
+      el.setAttribute(attr, key);
+      document.head.appendChild(el);
+    }
+    el.setAttribute('content', value);
+  }
+
+  function getSiteBase() {
+    if (siteBase == null) {
+      const staticUrl = document.head.querySelector('meta[property="og:url"]');
+      siteBase = (staticUrl && staticUrl.content) || location.origin + location.pathname;
+    }
+    return siteBase;
+  }
+
+  // 正文摘要：剥掉代码块/图片/标记语法后取前 maxLength 字
+  function extractExcerpt(markdown, maxLength = 160) {
+    const text = markdown
+      .replace(/```[\s\S]*?```/g, ' ')
+      .replace(/~~~[\s\S]*?~~~/g, ' ')
+      .replace(/`[^`\n]*`/g, ' ')
+      .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+      .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+      .replace(/^#{1,6}\s+/gm, '')
+      .replace(/[*_~>|]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength).replace(/\s+\S*$/, '') + '…';
+  }
+
+  function updateDocMeta(docTitle, description, currentPath) {
+    setMeta('property', 'og:type', currentPath ? 'article' : 'website');
+    setMeta('property', 'og:title', docTitle);
+    setMeta('property', 'og:description', description);
+    setMeta('property', 'og:url', getSiteBase() + (currentPath ? '#/' + currentPath : ''));
+    setMeta('name', 'twitter:title', docTitle);
+    setMeta('name', 'twitter:description', description);
+  }
+
   function renderMarkdown(markdown, currentPath = '') {
     const renderStartTime = performance.now();
     const { frontmatter, content } = parseFrontmatter(markdown);
@@ -227,6 +277,15 @@
         document.title = CONFIG.repo || 'Markdown Preview';
       }
     }
+
+    // OGP 随文档更新：描述优先 frontmatter.description，否则取正文摘要
+    const ogTitle = frontmatter.title ||
+      (content.match(/^#\s+(.+)$/m) || [])[1] ||
+      CONFIG.repo || 'Markdown Preview';
+    const ogDescription = frontmatter.description ||
+      extractExcerpt(content) ||
+      '一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能';
+    updateDocMeta(ogTitle, ogDescription, currentPath);
 
     state.currentFrontmatter = frontmatter;
 
