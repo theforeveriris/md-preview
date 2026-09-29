@@ -183,11 +183,11 @@
 
   function scheduleHideHandle() {
     clearTimeout(hideTimer);
-    // 延迟收回：给指针从表格移到手柄上留出时间
+    // 延迟收回：手柄在表格外侧，指针从表格移过来需要跨过间隙
     hideTimer = setTimeout(() => {
       const handle = document.getElementById(HANDLE_ID);
       if (handle) handle.classList.remove('visible');
-    }, 300);
+    }, 600);
   }
 
   function repositionVisibleHandle() {
@@ -203,7 +203,10 @@
       const table = e.target.closest('.markdown-body table, .table-wrapper table');
       if (table) {
         showHandle(table);
-      } else if (!e.target.closest('.table-handle')) {
+      } else if (e.target.closest('.table-handle')) {
+        // 指针已到手柄上：取消已排定的收回，否则手柄会在点击前消失
+        clearTimeout(hideTimer);
+      } else {
         scheduleHideHandle();
       }
     });

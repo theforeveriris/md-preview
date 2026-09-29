@@ -122,21 +122,30 @@
 
     // ---------- 悬浮球交互 ----------
     // 桌面端鼠标掠过即展开；触屏无 hover，点击仍可直接开关。
-    // 展开延迟 100ms：过滤无意飞掠，又接近即时响应；
-    // 指针离开「球 + 菜单」整体 0.5s 后自动收回，期间移回则取消。
+    // 展开延迟 100ms：过滤无意飞掠，又接近即时响应。
+    // 收回区分两种情况：
+    //   掠过（未在展开菜单内停留）→ 离开 0.4s 后快速收回；
+    //   停留过（进入展开菜单 ≥0.4s，视为有意使用）→ 离开后不快速收回，
+    //   保持展开，直到点击外部 / 滚动页面 / Esc / 选中菜单项。
     const OPEN_DELAY = 100;
-    const CLOSE_DELAY = 500;
+    const CLOSE_DELAY = 400;
+    const DWELL_DELAY = 400;
     let openTimer = null;
     let closeTimer = null;
+    let dwellTimer = null;
+    let dwelled = false;
 
     const clearTimers = () => { clearTimeout(openTimer); clearTimeout(closeTimer); };
     const openMenu = () => {
       clearTimers();
+      dwelled = false;
       menuItems.classList.add('open');
       menuTrigger.classList.add('active');
     };
     const closeMenu = () => {
       clearTimers();
+      clearTimeout(dwellTimer);
+      dwelled = false;
       menuItems.classList.remove('open');
       menuTrigger.classList.remove('active');
     };
@@ -148,9 +157,28 @@
     // 绑在整个浮层容器上：球 ↔ 菜单项之间移动不会触发离开
     floatingMenu.addEventListener('mouseleave', () => {
       clearTimeout(openTimer);
-      closeTimer = setTimeout(closeMenu, CLOSE_DELAY);
+      // 停留过则不排定自动收回；未停留（掠过）才快速收回
+      if (!dwelled) closeTimer = setTimeout(closeMenu, CLOSE_DELAY);
     });
     floatingMenu.addEventListener('mouseenter', () => clearTimeout(closeTimer));
+
+    // 停留检测：进入展开菜单 DWELL_DELAY 后标记为有意使用
+    menuItems.addEventListener('mouseenter', () => {
+      if (!menuItems.classList.contains('open')) return;
+      dwellTimer = setTimeout(() => { dwelled = true; }, DWELL_DELAY);
+    });
+    menuItems.addEventListener('mouseleave', () => clearTimeout(dwellTimer));
+
+    // 停留后保持展开的关闭途径：点击外部 / 滚动 / Esc
+    document.addEventListener('click', (e) => {
+      if (menuItems.classList.contains('open') && !floatingMenu.contains(e.target)) closeMenu();
+    });
+    window.addEventListener('scroll', () => {
+      if (menuItems.classList.contains('open') && dwelled) closeMenu();
+    }, true);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menuItems.classList.contains('open')) closeMenu();
+    });
 
     menuTrigger.addEventListener('click', () => {
       if (menuItems.classList.contains('open')) {
