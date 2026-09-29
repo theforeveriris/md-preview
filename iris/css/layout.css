@@ -247,7 +247,12 @@
 .local-files-list {
   list-style: none;
   margin: 0;
-  padding: 0;
+  /* 文件项是「本地文件」文件夹行的子级：缩进一层。
+     树内文件夹展开时 ul 带 1px 导航线（tinted-icons 注入样式），
+     这里同样补上 1px 边线 + 2×icon-size 缩进，子级文字列才能
+     与树内文件夹子级逐像素对齐 */
+  border-inline-start: 1px solid rgb(from currentColor r g b / 0.12);
+  padding: 0 0 0 calc(var(--lfi-icon-size) * 2);
   max-height: 40vh;
   overflow-y: auto;
   scrollbar-width: none;
