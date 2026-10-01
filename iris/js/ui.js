@@ -130,6 +130,12 @@
 
   function setupEventListeners() {
     initSearchTriggerKbd();
+    // PWA 快捷方式入口：?action=search 直接打开搜索命令面板
+    // （处理后即移除参数，避免刷新 / 分享链接时重复弹出）
+    if (new URLSearchParams(window.location.search).get('action') === 'search') {
+      openSearchPalette();
+      window.history.replaceState(null, '', window.location.pathname + window.location.hash);
+    }
     dom.mobileMenuBtn.addEventListener('click', window.MarkdownPreview.fileTree.toggleSidebar);
     dom.sidebarToggle.addEventListener('click', window.MarkdownPreview.fileTree.toggleSidebar);
     dom.sidebarOverlay.addEventListener('click', window.MarkdownPreview.fileTree.closeSidebar);
@@ -172,6 +178,16 @@
         // 搜索面板是最上层浮层，Esc 优先关闭
         if (isSearchPaletteOpen()) {
           closeSearchPalette();
+          return;
+        }
+        // 双栏对照模式打开时 Esc 先退出对照
+        if (window.MarkdownPreview.splitView && window.MarkdownPreview.splitView.isOpen()) {
+          window.MarkdownPreview.splitView.close();
+          return;
+        }
+        // 查找条打开时 Esc 收起（避免落到关闭侧边栏的兜底）
+        if (window.MarkdownPreview.findBar && window.MarkdownPreview.findBar.isOpen()) {
+          window.MarkdownPreview.findBar.close();
           return;
         }
         // 右键浮动菜单（LaTeX 复制 / 表格操作）打开时先关菜单
@@ -224,6 +240,13 @@
       if (mod && !alt && !shift && key.toLowerCase() === 'k') {
         e.preventDefault();
         toggleSearchPalette();
+        return;
+      }
+
+      // Ctrl/⌘ + F ：文章内查找条（接管浏览器查找；编辑器模式与输入态在上方守卫已让位）
+      if (mod && !alt && !shift && key.toLowerCase() === 'f') {
+        e.preventDefault();
+        if (window.MarkdownPreview.findBar) window.MarkdownPreview.findBar.open();
         return;
       }
 

@@ -520,3 +520,47 @@
     flex: 1 1 calc(33.33% - 10px);
   }
 }
+
+/* ============== 分享卡片模板菜单（selection-tools.js） ============== */
+.card-template-menu {
+  position: fixed;
+  z-index: 1450;
+  display: flex;
+  flex-direction: column;
+  min-width: 210px;
+  padding: 6px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, .18);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity .12s ease, transform .12s ease;
+  pointer-events: none;
+}
+.card-template-menu.open {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.card-template-title {
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+.card-template-menu button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 13.5px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+}
+.card-template-menu button:hover:not(:disabled) { background: rgba(128, 128, 128, .12); }
+.card-template-menu button:disabled { opacity: .45; cursor: not-allowed; }

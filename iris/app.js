@@ -37,6 +37,10 @@
     if (window.MarkdownPreview.selectionTools && window.MarkdownPreview.selectionTools.init) {
       window.MarkdownPreview.selectionTools.init();
     }
+    // 双栏对照阅读（悬浮球菜单入口在此装配）
+    if (window.MarkdownPreview.splitView && window.MarkdownPreview.splitView.init) {
+      window.MarkdownPreview.splitView.init();
+    }
     // 移动端手势（左右滑翻页 / 左缘右滑呼出侧边栏）
     if (window.MarkdownPreview.gestures && window.MarkdownPreview.gestures.init) {
       window.MarkdownPreview.gestures.init();

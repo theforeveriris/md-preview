@@ -10,6 +10,29 @@
   "theme_color": "#d4a5c9",
   "orientation": "any",
   "categories": ["productivity", "utilities"],
+  "shortcuts": [
+    {
+      "name": "搜索文档",
+      "short_name": "搜索",
+      "description": "打开全文搜索命令面板",
+      "url": "./index.html?action=search",
+      "icons": [{ "src": "iris/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Markdown 编辑器",
+      "short_name": "编辑器",
+      "description": "打开类 Jupyter 的 Markdown 编辑器",
+      "url": "./index.html?mode=editor",
+      "icons": [{ "src": "iris/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "郊狼波形生成器",
+      "short_name": "波形生成",
+      "description": "可视化生成 DG-LAB .pulse 波形文件",
+      "url": "./index.html?mode=pulsegen",
+      "icons": [{ "src": "iris/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
   "icons": [
     {
       "src": "iris/icons/icon-192.png",

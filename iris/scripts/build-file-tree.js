@@ -59,14 +59,19 @@ function extractTitle(content) {
 function buildTreeFromDirectory(dir, basePath = '') {
   const result = [];
   const items = fs.readdirSync(dir, { withFileTypes: true });
-  
+
   const folders = [];
   const files = [];
-  
+
+  // 排除依赖 / 版本库 / 构建产物目录（与 readme-dev 的声明一致；
+  // 本地开发装了 iris/node_modules 时会把依赖文档混进站点目录树）
+  const EXCLUDED_DIRS = new Set(['.git', 'node_modules', 'vendor', '.github']);
+
   items.forEach(item => {
+    if (item.isDirectory() && EXCLUDED_DIRS.has(item.name)) return;
     const itemPath = basePath ? `${basePath}/${item.name}` : item.name;
     const fullPath = path.join(dir, item.name);
-    
+
     if (item.isDirectory()) {
       folders.push({ name: item.name, path: itemPath, fullPath });
     } else if (item.isFile() && item.name.endsWith('.md')) {

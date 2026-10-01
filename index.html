@@ -154,6 +154,13 @@
             </svg>
             <span class="menu-item-label" data-i18n="menu.qrShare">扫码续读</span>
           </button>
+          <button class="menu-item-btn" id="splitViewBtn" title="对照阅读" data-i18n-title="menu.splitView">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="16" rx="2"/>
+              <path d="M12 4v16"/>
+            </svg>
+            <span class="menu-item-label" data-i18n="menu.splitView">对照阅读</span>
+          </button>
           <button class="menu-item-btn" id="installPwaBtn" title="安装到桌面" style="display: none;" data-i18n-title="menu.installPwa">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -580,6 +587,19 @@
                   </label>
                 </div>
               </div>
+
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label" data-i18n="settings.display.sectionCollapse">启用章节折叠</div>
+                  <div class="setting-description" data-i18n="settings.display.sectionCollapseDesc">H2 标题栏右侧出现折叠按钮，点击折叠该章节；折叠状态按文档记忆，重开自动恢复</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="sectionCollapseToggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
             </div>
 
             <div class="settings-subsection">
@@ -678,6 +698,33 @@
                   <button id="downloadHtmlBtn" class="download-btn" data-i18n="settings.actions.exportHtmlBtn">导出 HTML</button>
                 </div>
               </div>
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label" data-i18n="settings.actions.exportEpub">导出 EPUB</div>
+                  <div class="setting-description" id="exportEpubDesc" data-i18n="settings.actions.exportEpubDesc">当前文档导出为 EPUB 电子书，本地相对路径图片随文打包</div>
+                </div>
+                <div class="setting-control">
+                  <button id="downloadEpubBtn" class="download-btn" data-i18n="settings.actions.exportEpubBtn">导出 EPUB</button>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label" data-i18n="settings.actions.exportSiteEpub">整站 EPUB 合订本</div>
+                  <div class="setting-description" id="exportSiteEpubDesc" data-i18n="settings.actions.exportSiteEpubDesc">全部文档按文件树顺序合订为一本 EPUB 电子书</div>
+                </div>
+                <div class="setting-control">
+                  <button id="downloadSiteEpubBtn" class="download-btn" data-i18n="settings.actions.exportSiteEpubBtn">导出合订本</button>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label" data-i18n="settings.actions.exportSiteMd">整站 MD 打包下载</div>
+                  <div class="setting-description" id="exportSiteMdDesc" data-i18n="settings.actions.exportSiteMdDesc">全部 .md 按仓库目录结构打包为 ZIP 一键带走</div>
+                </div>
+                <div class="setting-control">
+                  <button id="downloadSiteMdBtn" class="download-btn" data-i18n="settings.actions.exportSiteMdBtn">打包下载</button>
+                </div>
+              </div>
             </div>
 
             <div class="settings-subsection">
@@ -752,6 +799,62 @@
         </div>
       </div>
       
+  <!-- 文章内查找条（Ctrl/⌘ + F 接管，find-bar.js 控制） -->
+  <div class="find-bar" id="findBar" role="search" aria-hidden="true">
+    <svg class="find-bar-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <input type="text" id="findBarInput" data-i18n-placeholder="find.placeholder" data-i18n-aria="find.placeholder" placeholder="在本文中查找…" aria-label="在本文中查找">
+    <span class="find-bar-count" id="findBarCount"></span>
+    <button type="button" class="find-bar-btn" id="findBarPrev" data-i18n-title="find.prev" title="上一个 (Shift+Enter)" aria-label="上一个">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+    </button>
+    <button type="button" class="find-bar-btn" id="findBarNext" data-i18n-title="find.next" title="下一个 (Enter)" aria-label="下一个">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <button type="button" class="find-bar-btn" id="findBarClose" data-i18n-title="common.close" title="关闭 (Esc)" aria-label="关闭">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- 双栏对照阅读（split-view.js 控制） -->
+  <div class="split-view-overlay" id="splitViewOverlay" aria-hidden="true">
+    <div class="split-view-toolbar">
+      <span class="split-view-title" data-i18n="split.title">对照阅读</span>
+      <label class="split-view-sync">
+        <input type="checkbox" id="splitSyncToggle" checked>
+        <span data-i18n="split.syncScroll">同步滚动</span>
+      </label>
+      <span class="split-view-hint" data-i18n="split.hint">Esc 退出</span>
+      <button type="button" class="find-bar-btn" id="splitViewCloseBtn" data-i18n-title="common.close" aria-label="关闭">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="split-view-panes">
+      <section class="split-pane">
+        <header class="split-pane-header"><span id="splitPaneLeftTitle"></span></header>
+        <div class="split-pane-body markdown-body" id="splitPaneLeftBody"></div>
+      </section>
+      <section class="split-pane">
+        <header class="split-pane-header">
+          <span id="splitPaneRightTitle"></span>
+          <button type="button" class="download-btn" id="splitPaneChangeBtn" data-i18n="split.changeDoc">更换文档</button>
+        </header>
+        <div class="split-pane-body markdown-body" id="splitPaneRightBody"></div>
+      </section>
+    </div>
+    <div class="split-picker" id="splitPicker" aria-hidden="true">
+      <div class="split-picker-card" role="dialog" aria-modal="true">
+        <div class="split-picker-head">
+          <span data-i18n="split.pickTitle">选择右栏文档</span>
+          <button type="button" class="find-bar-btn" id="splitPickerCloseBtn" data-i18n-title="common.close" aria-label="关闭">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <input type="text" id="splitPickerInput" data-i18n-placeholder="split.pickerPlaceholder" placeholder="按名称或路径筛选…">
+        <ul id="splitPickerList"></ul>
+      </div>
+    </div>
+  </div>
+
   <!-- 本地文件选择面板（悬浮球「打开本地文件」唤起） -->
   <div class="local-pick-overlay" id="localPickOverlay" aria-hidden="true">
     <div class="local-pick-card" role="dialog" aria-modal="true" aria-label="打开本地文件">
@@ -1746,6 +1849,11 @@
   <script defer src="iris/js/selection-tools.js"></script>
   <script defer src="iris/js/gestures.js"></script>
   <script defer src="iris/js/storage-manager.js"></script>
+  <script defer src="iris/js/zip.js"></script>
+  <script defer src="iris/js/export-bundle.js"></script>
+  <script defer src="iris/js/find-bar.js"></script>
+  <script defer src="iris/js/section-collapse.js"></script>
+  <script defer src="iris/js/split-view.js"></script>
 
   <!-- Plugin System -->
   <script defer src="iris/js/plugins/loader.js"></script>

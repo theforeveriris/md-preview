@@ -94,13 +94,21 @@ const REQUIRED_IDS = [
   // 页面骨架
   'sidebar', 'fileTree', 'markdownContent', 'readingProgress',
   // 设置面板 + 本次新增区块
-  'settingsOverlay', 'mobileGesturesToggle',
+  'settingsOverlay', 'mobileGesturesToggle', 'sectionCollapseToggle',
   'settingsExportBtn', 'settingsImportBtn', 'settingsImportInput',
   'storageUsageFill', 'storageUsageText',
   'storageNotebookList', 'storageNotebooksDesc', 'storageNotebooksClearBtn',
   'storageDataList',
+  'downloadEpubBtn', 'downloadSiteEpubBtn', 'downloadSiteMdBtn',
   // 本地文件 / 拖拽
-  'localPickOverlay', 'localMdInput', 'localMdFolderInput', 'dropOverlay'
+  'localPickOverlay', 'localMdInput', 'localMdFolderInput', 'dropOverlay',
+  // 文章内查找条
+  'findBar', 'findBarInput', 'findBarCount', 'findBarPrev', 'findBarNext', 'findBarClose',
+  // 双栏对照阅读
+  'splitViewOverlay', 'splitViewCloseBtn', 'splitSyncToggle',
+  'splitPaneLeftTitle', 'splitPaneLeftBody',
+  'splitPaneRightTitle', 'splitPaneRightBody', 'splitPaneChangeBtn',
+  'splitPicker', 'splitPickerInput', 'splitPickerList', 'splitPickerCloseBtn'
 ];
 
 const LOCAL_HREF_PREFIXES = ['iris/', '/iris/'];

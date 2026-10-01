@@ -44,16 +44,18 @@
     return window.innerWidth <= 768;
   }
 
-  // 浮层打开时让位：与 ui.js isMediaOverlayOpen 同口径，另含设置 / 搜索面板
+  // 浮层打开时让位：与 ui.js isMediaOverlayOpen 同口径，另含设置 / 搜索面板 / 双栏对照
   function overlayBlocking() {
     const lightbox = document.getElementById('lightboxOverlay');
     const pptx = document.getElementById('pptx-slideshow-overlay');
     const settingsOverlay = document.getElementById('settingsOverlay');
     const palette = document.getElementById('paletteOverlay');
+    const split = document.getElementById('splitViewOverlay');
     if (lightbox && lightbox.classList.contains('open')) return true;
     if (pptx && pptx.classList.contains('is-open')) return true;
     if (settingsOverlay && settingsOverlay.classList.contains('open')) return true;
     if (palette && palette.classList.contains('active')) return true;
+    if (split && split.classList.contains('open')) return true;
     return false;
   }
 
@@ -63,7 +65,8 @@
     '#sidebar', '#sidebarOverlay',
     '.floating-menu', '.settings-overlay', '.local-pick-overlay',
     '.palette-overlay', '.resume-toast', '.mini-toast',
-    '.doc-selection-toolbar', '.qr-share-modal', '.drop-overlay',
+    '.doc-selection-toolbar', '.card-template-menu', '.qr-share-modal', '.drop-overlay',
+    '.find-bar', '.split-view-overlay',
     'input, textarea, select, button, a, [contenteditable="true"]'
   ].join(', ');
 

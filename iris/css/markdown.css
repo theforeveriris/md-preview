@@ -1459,3 +1459,26 @@ body.table-bleed #markdownContent .table-wrapper {
     font-size: 13px;
   }
 }
+
+/* ============== 章节折叠（section-collapse.js） ============== */
+.markdown-body h2 .section-collapse-btn {
+  float: right;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-left: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform .15s ease, color .15s ease, border-color .15s ease;
+}
+.markdown-body h2 .section-collapse-btn:hover {
+  color: var(--color-text);
+  border-color: var(--color-accent-purple);
+}
+.markdown-body h2 .section-collapse-btn.is-collapsed { transform: rotate(-90deg); }
+.markdown-body .section-collapsed { display: none !important; }

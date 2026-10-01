@@ -318,7 +318,66 @@
 
     // 拖拽打开文件 / 文件夹
     'drop.title': '松开以打开',
-    'drop.desc': '支持 .md / .markdown 文件与整个文件夹'
+    'drop.desc': '支持 .md / .markdown 文件与整个文件夹',
+
+    // 悬浮球：对照阅读
+    'menu.splitView': '对照阅读',
+
+    // 文章内查找条
+    'find.placeholder': '在本文中查找…',
+    'find.prev': '上一个 (Shift+Enter)',
+    'find.next': '下一个 (Enter)',
+    'find.noResult': '无结果',
+
+    // 章节折叠
+    'collapse.collapse': '折叠本章',
+    'collapse.expand': '展开本章',
+
+    // 双栏对照阅读
+    'split.title': '对照阅读',
+    'split.syncScroll': '同步滚动',
+    'split.hint': 'Esc 退出',
+    'split.changeDoc': '更换文档',
+    'split.pickTitle': '选择右栏文档',
+    'split.pickerPlaceholder': '按名称或路径筛选…',
+    'split.pickerEmpty': '没有匹配的文档',
+    'split.rightEmpty': '右栏未选择',
+    'split.pickDoc': '选择右栏文档',
+    'split.needDoc': '请先打开一个文档',
+    'split.localUnsupported': '对照阅读暂不支持本地文件会话，请先打开站点文档',
+    'split.loadFailed': '文档加载失败，请重试',
+
+    // 设置：章节折叠 / 打包导出
+    'settings.display.sectionCollapse': '启用章节折叠',
+    'settings.display.sectionCollapseDesc': 'H2 标题栏右侧出现折叠按钮，点击折叠该章节；折叠状态按文档记忆，重开自动恢复',
+    'settings.actions.exportEpub': '导出 EPUB',
+    'settings.actions.exportEpubDesc': '当前文档导出为 EPUB 电子书，本地相对路径图片随文打包',
+    'settings.actions.exportEpubBtn': '导出 EPUB',
+    'settings.actions.exportSiteEpub': '整站 EPUB 合订本',
+    'settings.actions.exportSiteEpubDesc': '全部文档按文件树顺序合订为一本 EPUB 电子书',
+    'settings.actions.exportSiteEpubBtn': '导出合订本',
+    'settings.actions.exportSiteMd': '整站 MD 打包下载',
+    'settings.actions.exportSiteMdDesc': '全部 .md 按仓库目录结构打包为 ZIP 一键带走',
+    'settings.actions.exportSiteMdBtn': '打包下载',
+    'settings.export.phaseDocs': '拉取文档',
+    'settings.export.phaseAssets': '打包图片',
+    'settings.export.done': '已导出',
+    'settings.export.failed': '导出失败，请重试',
+
+    // 分享卡片模板
+    'sel.cardPick': '选择卡片模板',
+    'sel.cardQuote': '引言 · 横版 1200×630',
+    'sel.cardQuoteV': '引言 · 竖版 3:4',
+    'sel.cardCode': '代码卡片',
+    'sel.cardTable': '表格卡片',
+    'sel.cardTableHint': '选区需落在表格内',
+    'sel.cardTableMore': '… 其余 {n} 行未展示',
+
+    // EPUB / 打包导出
+    'export.epub.toc': '目录',
+    'export.noDocs': '没有可打包的文档（文件树未加载或为空）',
+    'export.needDoc': '请先打开一个文档',
+    'export.fetchFailed': '文档获取失败，请重试'
   };
 
   const en = {
@@ -591,7 +650,66 @@
 
     // Drag & drop import
     'drop.title': 'Drop to open',
-    'drop.desc': 'Supports .md / .markdown files and whole folders'
+    'drop.desc': 'Supports .md / .markdown files and whole folders',
+
+    // Floating menu: split view
+    'menu.splitView': 'Split Reading',
+
+    // Find bar
+    'find.placeholder': 'Find in document…',
+    'find.prev': 'Previous (Shift+Enter)',
+    'find.next': 'Next (Enter)',
+    'find.noResult': 'No results',
+
+    // Section collapse
+    'collapse.collapse': 'Collapse section',
+    'collapse.expand': 'Expand section',
+
+    // Split view
+    'split.title': 'Split Reading',
+    'split.syncScroll': 'Sync scroll',
+    'split.hint': 'Esc to exit',
+    'split.changeDoc': 'Change doc',
+    'split.pickTitle': 'Pick right pane document',
+    'split.pickerPlaceholder': 'Filter by name or path…',
+    'split.pickerEmpty': 'No matching documents',
+    'split.rightEmpty': 'Right pane not set',
+    'split.pickDoc': 'Pick right pane document',
+    'split.needDoc': 'Open a document first',
+    'split.localUnsupported': 'Split reading is not available for local file sessions. Open a site document first',
+    'split.loadFailed': 'Failed to load document, please retry',
+
+    // Settings: section collapse / bundle export
+    'settings.display.sectionCollapse': 'Enable section collapse',
+    'settings.display.sectionCollapseDesc': 'Show a toggle on H2 headings to fold each section. Collapse state is remembered per document',
+    'settings.actions.exportEpub': 'Export EPUB',
+    'settings.actions.exportEpubDesc': 'Export the current document as an EPUB e-book with local images embedded',
+    'settings.actions.exportEpubBtn': 'Export EPUB',
+    'settings.actions.exportSiteEpub': 'Site EPUB',
+    'settings.actions.exportSiteEpubDesc': 'Bind all documents into a single EPUB e-book in file-tree order',
+    'settings.actions.exportSiteEpubBtn': 'Export book',
+    'settings.actions.exportSiteMd': 'Download all docs (ZIP)',
+    'settings.actions.exportSiteMdDesc': 'Pack every .md into a ZIP archive preserving the repo folder structure',
+    'settings.actions.exportSiteMdBtn': 'Download ZIP',
+    'settings.export.phaseDocs': 'Fetching docs',
+    'settings.export.phaseAssets': 'Packing images',
+    'settings.export.done': 'Exported',
+    'settings.export.failed': 'Export failed, please retry',
+
+    // Share card templates
+    'sel.cardPick': 'Pick a card template',
+    'sel.cardQuote': 'Quote · landscape 1200×630',
+    'sel.cardQuoteV': 'Quote · portrait 3:4',
+    'sel.cardCode': 'Code card',
+    'sel.cardTable': 'Table card',
+    'sel.cardTableHint': 'Selection must be inside a table',
+    'sel.cardTableMore': '… {n} more rows hidden',
+
+    // EPUB / bundle export
+    'export.epub.toc': 'Table of Contents',
+    'export.noDocs': 'No documents to export (file tree not loaded or empty)',
+    'export.needDoc': 'Open a document first',
+    'export.fetchFailed': 'Failed to fetch the document, please retry'
   };
 
   const dicts = { zh, en };

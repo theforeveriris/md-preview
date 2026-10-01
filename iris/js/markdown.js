@@ -368,6 +368,15 @@
 
     mdRender.initCodeTabs(dom.markdownContent);
 
+    // 章节折叠：按新文档路径重建折叠按钮与已折叠状态
+    if (window.MarkdownPreview.sectionCollapse) {
+      window.MarkdownPreview.sectionCollapse.onDocRendered(currentPath);
+    }
+    // 查找条：文档已更换，清理旧高亮；查找条开着时自动重跑关键词
+    if (window.MarkdownPreview.findBar) {
+      window.MarkdownPreview.findBar.onDocRendered();
+    }
+
     setTimeout(async () => {
       console.log('[Markdown] Starting render cycle');
       const plugins = window.MarkdownPreview.plugins;

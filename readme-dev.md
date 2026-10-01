@@ -68,6 +68,11 @@
 | UI | `iris/js/ui.js` | 全局事件与快捷键路由、搜索命令面板交互 |
 | Storage | `iris/js/storage.js` | IndexedDB 笔记本存储（替代 localStorage 大内容） |
 | Storage Manager | `iris/js/storage-manager.js` | 设置面板「存储」区块：`storage.estimate()` 用量条、笔记本删除/清空、历史收藏与阅读位置清理（打开面板时由 settings.js 触发 refresh） |
+| Zip | `iris/js/zip.js` | 极简 ZIP 写入器（存储型 + CRC32 + UTF-8 文件名），整站打包与 EPUB 共用 |
+| Export Bundle | `iris/js/export-bundle.js` | 整站 MD ZIP 打包、单篇 / 整站 EPUB 导出（EPUB 3 结构：mimetype/opf/nav/xhtml 章节，本地相对路径图片随文打包，总量封顶） |
+| Find Bar | `iris/js/find-bar.js` | 文章内查找条（ui.js 转交 `Ctrl/⌘ + F`），TreeWalker 命中高亮 / 计数 / 跳转，markdown.js 渲染后回调重跑 |
+| Section Collapse | `iris/js/section-collapse.js` | 章节折叠（H2 标题栏按钮，`:scope > h2` 限定顶层章节），按「文档路径 + 标题 id」存 localStorage 记忆 |
+| Split View | `iris/js/split-view.js` | 双栏对照阅读（悬浮球入口，全屏浮层）：编辑器 Cell 同款渲染管线独立渲染两栏、比例同步滚动、内置文档选择器与栏内链接跟读 |
 | i18n | `iris/js/i18n.js` | zh/en 语言包；静态文案用 `data-i18n` 系列属性标记，动态文案走 `t(key, fallback)`；语言选择存 `localStorage('md-preview-lang')`，切换后广播 `langchange` 事件 |
 | App | `iris/js/app.js` | Hash 路由、编辑器模式 (`?mode=editor`)、Pulse 生成器 (`?mode=pulsegen`) |
 
@@ -317,6 +322,8 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │   │   ├── hover-preview.js / qr-share.js  # 链接悬浮预览 / 扫码续读
 │   │   ├── gestures.js / storage-manager.js  # 移动端手势 / 设置面板存储管理区块
 │   │   ├── search.js / ui.js     # 搜索命令面板 / 全局事件与快捷键路由
+│   │   ├── find-bar.js / section-collapse.js / split-view.js  # 文章内查找条 / 章节折叠 / 双栏对照阅读
+│   │   ├── zip.js / export-bundle.js  # ZIP 写入器 / 整站打包与 EPUB 导出
 │   │   ├── i18n.js               # zh/en 界面语言包
 │   │   ├── dom.js                # 按需加载 DOM 工具
 │   │   ├── storage.js            # IndexedDB 笔记本

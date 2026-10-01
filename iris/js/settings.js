@@ -23,7 +23,8 @@
     contentFullWidth: false,
     tableBleed: false,
     sansHeadingDigits: false,
-    mobileGestures: true
+    mobileGestures: true,
+    sectionCollapse: true
   };
 
   // 内容区宽度范围（与设置面板滑杆一致）
@@ -102,7 +103,8 @@
           contentFullWidth: parsed.contentFullWidth === true,
           tableBleed: parsed.tableBleed === true,
           sansHeadingDigits: parsed.sansHeadingDigits === true,
-          mobileGestures: parsed.mobileGestures !== false
+          mobileGestures: parsed.mobileGestures !== false,
+          sectionCollapse: parsed.sectionCollapse !== false
         };
       }
     } catch (e) {
@@ -357,6 +359,18 @@
       const settings = loadSettings();
       settings.mobileGestures = e.target.checked;
       saveSettings(settings);
+    });
+
+    // 章节折叠（section-collapse.js 读取；关闭时清掉现有折叠态）
+    document.getElementById('sectionCollapseToggle')?.addEventListener('change', (e) => {
+      const settings = loadSettings();
+      settings.sectionCollapse = e.target.checked;
+      saveSettings(settings);
+      if (!e.target.checked && window.MarkdownPreview.sectionCollapse) {
+        window.MarkdownPreview.sectionCollapse.clearAll();
+      } else if (e.target.checked && window.MarkdownPreview.sectionCollapse) {
+        window.MarkdownPreview.sectionCollapse.onDocRendered(loadSettings() && window.MarkdownPreview.state.currentFilePath);
+      }
     });
 
     resetContentWidthBtn?.addEventListener('click', () => {
@@ -762,6 +776,43 @@
     downloadPdfBtn?.addEventListener('click', exportPdf);
     downloadHtmlBtn?.addEventListener('click', exportStandaloneHtml);
 
+    // 整站打包导出（export-bundle.js）：EPUB 单篇 / EPUB 合订本 / 全部 MD ZIP
+    const bundle = window.MarkdownPreview.exportBundle;
+    const bundleButtons = [
+      { btn: 'downloadEpubBtn', desc: 'exportEpubDesc', scope: 'doc' },
+      { btn: 'downloadSiteEpubBtn', desc: 'exportSiteEpubDesc', scope: 'site' },
+      { btn: 'downloadSiteMdBtn', desc: 'exportSiteMdDesc', scope: 'md' }
+    ];
+    bundleButtons.forEach(({ btn, desc, scope }) => {
+      const btnEl = document.getElementById(btn);
+      const descEl = document.getElementById(desc);
+      btnEl?.addEventListener('click', async () => {
+        if (!bundle || btnEl.dataset.running === '1') return;
+        const defaultDesc = descEl ? descEl.textContent : '';
+        btnEl.dataset.running = '1';
+        btnEl.disabled = true;
+        const onProgress = (done, total, label) => {
+          if (!descEl) return;
+          const phase = label === 'assets'
+            ? t('settings.export.phaseAssets', '打包图片')
+            : t('settings.export.phaseDocs', '拉取文档');
+          descEl.textContent = `${phase} ${done}/${total}…`;
+        };
+        try {
+          if (scope === 'md') await bundle.exportSiteMdZip(onProgress);
+          else await bundle.exportEpub(scope, onProgress);
+          if (descEl) descEl.textContent = t('settings.export.done', '已导出');
+        } catch (e) {
+          console.error('[settings] 导出失败:', e);
+          if (descEl) descEl.textContent = t('settings.export.failed', '导出失败，请重试');
+        } finally {
+          btnEl.dataset.running = '';
+          btnEl.disabled = false;
+          setTimeout(() => { if (descEl) descEl.textContent = defaultDesc; }, 5000);
+        }
+      });
+    });
+
     // 全量离线缓存：把文件树覆盖的所有 .md 拉进 SW RUNTIME_CACHE
     cacheAllBtn?.addEventListener('click', async () => {
       const offline = window.MarkdownPreview.offline;
@@ -1106,6 +1157,8 @@ body { margin: 0; }
     if (tableBleedToggle) tableBleedToggle.checked = settings.tableBleed === true;
     if (sansHeadingDigitsToggle) sansHeadingDigitsToggle.checked = settings.sansHeadingDigits === true;
     if (mobileGesturesToggle) mobileGesturesToggle.checked = settings.mobileGestures !== false;
+    const sectionCollapseToggle = document.getElementById('sectionCollapseToggle');
+    if (sectionCollapseToggle) sectionCollapseToggle.checked = settings.sectionCollapse !== false;
 
     // 取色器显示：有自定义值用自定义值，否则显示默认色
     document.querySelectorAll('input[type="color"][data-var]').forEach(input => {
