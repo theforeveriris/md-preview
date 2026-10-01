@@ -10,6 +10,13 @@
   'use strict';
   window.MarkdownPreview = window.MarkdownPreview || {};
 
+  // i18n 文案读取：i18n 模块未加载或语言包缺 key 时回退到内置中文
+  function t(key, fallback) {
+    const i18n = window.MarkdownPreview.i18n;
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
+    return fallback;
+  }
+
   // ============== 剪贴板（带降级） ==============
   function copyText(text) {
     return new Promise((resolve, reject) => {
@@ -90,7 +97,7 @@
 
   // 点击菜单项后的「已复制」反馈：换图标文案，短暂停留后关闭
   function copiedFeedback(btn, originalHtml) {
-    btn.innerHTML = `${icon('i-check')}<span class="ctx-menu-label">已复制</span>`;
+    btn.innerHTML = `${icon('i-check')}<span class="ctx-menu-label">${t('ctx.copied', '已复制')}</span>`;
     btn.classList.add('copied');
     setTimeout(() => {
       hideMenu();
@@ -121,7 +128,7 @@
       const isBlock = target.classList.contains('katex-block');
       showMenu([{
         icon: 'i-copy',
-        label: isBlock ? '复制 LaTeX 公式' : '复制 LaTeX 公式',
+        label: t('ctx.copyLatex', '复制 LaTeX 公式'),
         action: (btn) => {
           const originalHtml = btn.innerHTML;
           copyText(latex).then(
@@ -146,7 +153,7 @@
       handle.id = HANDLE_ID;
       handle.className = 'table-handle';
       handle.type = 'button';
-      handle.title = '表格操作';
+      handle.title = t('ctx.tableOps', '表格操作');
       handle.innerHTML = icon('i-table', 14);
       handle.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -221,12 +228,12 @@
     showMenu([
       {
         icon: 'i-download',
-        label: '下载图片',
+        label: t('ctx.downloadImage', '下载图片'),
         action: () => { hideMenu(); exportTablePng(table); }
       },
       {
         icon: 'i-copy',
-        label: '复制 Markdown 源码',
+        label: t('ctx.copyMd', '复制 Markdown 源码'),
         action: (btn) => {
           const originalHtml = btn.innerHTML;
           copyText(tableToMarkdown(table)).then(
@@ -237,7 +244,7 @@
       },
       {
         icon: 'i-clipboard',
-        label: '复制 CSV',
+        label: t('ctx.copyCsv', '复制 CSV'),
         action: (btn) => {
           const originalHtml = btn.innerHTML;
           copyText(tableToCsv(table)).then(

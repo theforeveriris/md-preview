@@ -4,6 +4,13 @@
   const STORAGE_KEY = 'md-preview-settings';
   const REMOTE_FONT_STYLE_ID = 'remote-font-stylesheet';
 
+  // i18n 文案读取：i18n 模块未加载或语言包缺 key 时回退到内置中文
+  function t(key, fallback) {
+    const i18n = window.MarkdownPreview.i18n;
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
+    return fallback;
+  }
+
   const defaultSettings = {
     showReadingProgress: true,
     showWordCount: false,
@@ -235,6 +242,21 @@
       // 必须在用户手势同步上下文中触发文件选择器
       localMdInput.click();
       // 延迟收起菜单，避免干扰文件选择器
+      setTimeout(() => {
+        menuItems.classList.remove('open');
+        menuTrigger.classList.remove('active');
+      }, 300);
+    });
+
+    // 打开本地文件夹（选择结果由 local-docs.js 处理：目录树展示 + 懒加载）
+    const openLocalFolderBtn = document.getElementById('openLocalFolderBtn');
+    openLocalFolderBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const localDocs = window.MarkdownPreview.localDocs;
+      if (localDocs && localDocs.openLocalFolder) {
+        // showDirectoryPicker 必须在用户手势同步上下文中调用
+        localDocs.openLocalFolder();
+      }
       setTimeout(() => {
         menuItems.classList.remove('open');
         menuTrigger.classList.remove('active');
@@ -700,7 +722,7 @@
 
     const currentPath = state.currentFilePath;
     if (!currentPath) {
-      alert('请先打开一个文档');
+      alert(t('export.needDoc', '请先打开一个文档'));
       return;
     }
 
@@ -726,18 +748,20 @@
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Download failed:', error);
-      alert('下载失败，请重试');
+      alert(t('export.downloadFailed', '下载失败，请重试'));
     }
   }
   
   function initDownloadButtons() {
     const downloadMdBtn = document.getElementById('downloadMdBtn');
     const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+    const downloadHtmlBtn = document.getElementById('downloadHtmlBtn');
     const openEditorBtn = document.getElementById('openEditorBtn');
     const openPulseGenBtn = document.getElementById('openPulseGenBtn');
 
     downloadMdBtn?.addEventListener('click', () => downloadCurrentFile());
     downloadPdfBtn?.addEventListener('click', exportPdf);
+    downloadHtmlBtn?.addEventListener('click', exportStandaloneHtml);
     openEditorBtn?.addEventListener('click', () => {
       closeSettingsPanel();
       if (window.MarkdownPreview?.enterEditorMode) {
@@ -757,7 +781,7 @@
     const { state } = window.MarkdownPreview;
     // 仓库内文档与「打开本地 MD」渲染的文档都支持打印导出
     if (!state.currentFilePath && !state.localDoc) {
-      alert('请先打开一个文档');
+      alert(t('export.needDoc', '请先打开一个文档'));
       return;
     }
 
@@ -777,6 +801,126 @@
 
     // 短暂延迟确保打印样式生效
     setTimeout(() => window.print(), 50);
+  }
+
+  // ============== 导出单文件 HTML ==============
+  // 将当前渲染结果 + 站点全部本地样式 + 主题/配色/字体 CSS 变量
+  // 打包成一个双击即可离线打开的独立 HTML 文件。
+  // styles.css 通过 @import 引入子模块，需递归展开 CSSImportRule；
+  // 跨域样式表访问 cssRules 会抛错，直接返回空
+  function readSheetRules(sheet, depth) {
+    if (!sheet || depth > 5) return '';
+    let css = '';
+    try {
+      for (const rule of sheet.cssRules) {
+        if (rule.styleSheet && rule.cssText.startsWith('@import')) {
+          css += readSheetRules(rule.styleSheet, depth + 1);
+        } else {
+          css += rule.cssText + '\n';
+        }
+      }
+    } catch (e) {
+      return '';
+    }
+    return css;
+  }
+
+  function tryReadLoadedStylesheet(linkEl) {
+    try {
+      const sheets = Array.from(document.styleSheets);
+      const sheet = sheets.find(s => s.href === linkEl.href);
+      if (!sheet) return '';
+      return readSheetRules(sheet, 0);
+    } catch (e) {
+      return '';
+    }
+  }
+
+  // 把相对路径的图片/链接改写为绝对地址，导出后仍能加载远程资源；
+  // 本地 MD 的图片本来就不可达，保持原样
+  function absolutizeUrls(html) {
+    const tpl = document.createElement('div');
+    tpl.innerHTML = html;
+    const base = location.href;
+    tpl.querySelectorAll('img[src]').forEach(img => {
+      const src = img.getAttribute('src');
+      if (!/^(https?:|data:|blob:|#)/i.test(src)) {
+        try { img.setAttribute('src', new URL(src, base).href); } catch (e) { /* 非法路径保持原样 */ }
+      }
+    });
+    tpl.querySelectorAll('a[href]').forEach(a => {
+      const href = a.getAttribute('href');
+      if (!/^(https?:|data:|blob:|#|mailto:)/i.test(href)) {
+        try { a.setAttribute('href', new URL(href, base).href); } catch (e) { /* 非法路径保持原样 */ }
+      }
+    });
+    return tpl.innerHTML;
+  }
+
+  function exportStandaloneHtml() {
+    const { state } = window.MarkdownPreview;
+    if (!state.currentFilePath && !state.localDoc) {
+      alert(t('export.needDoc', '请先打开一个文档'));
+      return;
+    }
+
+    const article = document.getElementById('markdownContent');
+    if (!article) return;
+
+    // 内联全部已加载的本地样式表（iris/ 开头），跳过跨域 CDN
+    const collected = [];
+    document.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
+      const href = link.getAttribute('href') || '';
+      if (href.startsWith('iris/') || href.startsWith('/iris/')) {
+        const cssText = tryReadLoadedStylesheet(link);
+        if (cssText) collected.push(cssText);
+      }
+    });
+    // head 里已有的内联样式块一并带走
+    document.querySelectorAll('head style').forEach(styleEl => {
+      const cssText = styleEl.textContent;
+      if (cssText && cssText.trim()) collected.push(cssText);
+    });
+    // 远程字体（Google Fonts 等）无法读取 cssRules，保留外链
+    const remoteFontLink = document.getElementById('remote-font-stylesheet');
+    const remoteFontTag = remoteFontLink ? remoteFontLink.outerHTML : '';
+
+    // 主题与自定义配色 / 字体都通过 <html> 上的 CSS 变量与 data-theme 生效，
+    // 原样带上即可完整复刻当前外观
+    const rootAttrs = [];
+    const themeAttr = document.documentElement.getAttribute('data-theme');
+    if (themeAttr) rootAttrs.push(` data-theme="${themeAttr}"`);
+    const rootStyle = document.documentElement.getAttribute('style');
+    if (rootStyle) rootAttrs.push(` style="${rootStyle.replace(/"/g, '&quot;')}"`);
+
+    const title = (document.title || 'document').replace(/[\\/:*?"<>|]/g, '_');
+    const bodyHtml = absolutizeUrls(article.innerHTML);
+    const html = `<!DOCTYPE html>
+<html lang="${document.documentElement.getAttribute('lang') || 'zh-CN'}"${rootAttrs.join('')}>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>${title}</title>
+${remoteFontTag}
+<style>
+${collected.join('\n')}
+body { margin: 0; }
+</style>
+</head>
+<body>
+<article class="markdown-body" id="markdownContent">${bodyHtml}</article>
+</body>
+</html>`;
+
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${title}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   function init() {

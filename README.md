@@ -49,6 +49,8 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 内容区宽度可调：设置面板滑杆调整正文最大宽度，或一键占满可用宽度，快捷键 `Ctrl/⌘ + Alt + =/-/0/F` 快速调节
 - 全局快捷键：设置面板 `Ctrl/⌘ + ,`、搜索 `Ctrl/⌘ + K`、上一篇/下一篇 `[` / `]` 等，详见[快捷键](docs/shortcuts.md)
 - 打开本地 MD：临时预览本地 Markdown 文件，无需入库
+- 打开本地文件夹：整体导入一个目录（File System Access API，旧浏览器自动回退），按目录树展示、文件夹可折叠，内容懒加载点开即读，上一篇/下一篇在全部文件间循环
+- 界面多语言：中文 / English 界面语言包，默认跟随浏览器语言，设置面板一键切换
 - 阅读时间估算：自动计算预计阅读时长
 - Frontmatter：支持 YAML 元数据解析
 
@@ -71,6 +73,7 @@ Demo：https://theforeveriris.github.io/md-preview/
 
 ### 主题与外观
 
+- 自动主题：跟随系统亮暗实时切换，亮 / 暗主题配对可自由组合（默认紫粉渐变 + GitHub Dark）
 - 可视化配色取色器：强调色 / 中性色独立调整，支持自定义亮色或暗色主题
 - 字体自定义：
   - 远程字体 URL（Google Fonts 等 CSS URL 即可加载）
@@ -86,6 +89,7 @@ Demo：https://theforeveriris.github.io/md-preview/
 ### 输出与订阅
 
 - 导出 PDF：通过浏览器打印对话框导出为 PDF
+- 导出 HTML：保存为内联当前主题样式与全部本地 CSS 的单文件 HTML，双击即可离线查看
 - 导出 Markdown：下载当前文章为 `.md`
 - RSS 源：自动生成 `feed.xml`，支持 RSS 阅读器订阅
 - PWA 支持：可安装到桌面，离线访问已访问文档，更新时提示刷新
@@ -183,7 +187,7 @@ python3 iris/scripts/pptx/main.py
 |------|------|
 | Markdown 基础 | 标题、列表、表格、引用、代码块等 |
 | Mermaid 图表 | 流程图、时序图、甘特图等 18+ 种 |
-| PlantUML | UML 图、架构图、思维导图等 |
+| PlantUML | UML 图、架构图、思维导图等；多渲染服务自动切换，全部失败时降级为源码展示 |
 | ApexCharts | 交互式折线图、柱状图、饼图等 |
 | LaTeX 公式 | 基于 KaTeX 的数学公式渲染 |
 | 二维码 | 使用 `qrcode` 代码块生成二维码 |

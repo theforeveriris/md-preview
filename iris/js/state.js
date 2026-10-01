@@ -11,6 +11,8 @@
     // 本地文件会话列表（多选）：[{ id, name, content }]，纯内存，刷新即清空；由 local-docs.js 管理
     localFiles: [],
     activeLocalFileId: '',
+    // 本地文件夹模式（打开整个目录）：{ name: 根目录名 }；null 为普通多选模式
+    localFolder: null,
     currentHeadings: [],
     currentFrontmatter: {},
     // 调试面板用：文件树加载来源

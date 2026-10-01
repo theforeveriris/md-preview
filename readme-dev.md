@@ -59,6 +59,7 @@
 | File Tree | `iris/js/file-tree.js` | 侧边栏文件树 / 索引、字数、搜索结果列表、上一篇/下一篇 |
 | Markdown | `iris/js/markdown.js` | marked + 代码块高亮、标题锚点、图片灯箱（ArrowLeft/Right 翻页） |
 | Storage | `iris/js/storage.js` | IndexedDB 笔记本存储（替代 localStorage 大内容） |
+| i18n | `iris/js/i18n.js` | zh/en 语言包；静态文案用 `data-i18n` 系列属性标记，动态文案走 `t(key, fallback)`；语言选择存 `localStorage('md-preview-lang')`，切换后广播 `langchange` 事件 |
 | App | `iris/js/app.js` | Hash 路由、编辑器模式 (`?mode=editor`)、Pulse 生成器 (`?mode=pulse`) |
 
 ### 渲染器（Renderer）
@@ -136,9 +137,9 @@
 
 ### 主题配色
 
-`iris/css/themes/themes.css` 中每一个主题（`[data-theme="github-light"]` 等）仅覆盖上面的 `--color-*` 变量。新增主题时：
+主题支持 `auto` 档位：跟随系统 `prefers-color-scheme` 在「亮色配对 / 暗色配对」间实时切换（配对存 `md-preview-theme-light` / `md-preview-theme-dark`，默认 紫粉渐变 + GitHub Dark）。`themechange` 事件的 `detail.theme` 始终是解析后的实际主题 ID。新增主题时：
 
-1. 在 `theme-manager.js: validThemes` 加入 ID
+1. 在 `theme-manager.js: validThemes` 加入 ID（暗色主题还需加入 `DARK_THEMES`，亮色加入 `LIGHT_THEMES` 以支持 auto 配对）
 2. 在 `themes.css` 添加 `[data-theme="your-id"] { --color-xxx: ... }`
 3. 在 `index.html` 中 `<select id="themeSelect">` 追加 option
 

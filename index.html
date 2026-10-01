@@ -98,17 +98,17 @@
           </svg>
         </button>
       </div>
-      <button class="search-trigger" id="searchTrigger" type="button" aria-label="搜索文档" aria-haspopup="dialog">
+      <button class="search-trigger" id="searchTrigger" type="button" aria-label="搜索文档" aria-haspopup="dialog" data-i18n-aria="sidebar.searchAria">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <span class="search-trigger-label">搜索文档…</span>
+        <span class="search-trigger-label" data-i18n="sidebar.searchPlaceholder">搜索文档…</span>
         <kbd class="search-trigger-kbd" id="searchTriggerKbd">⌘K</kbd>
       </button>
       <div class="local-files" id="localFilesPanel" hidden>
         <div class="local-files-header">
           <button class="local-files-toggle" id="localFilesToggle" type="button" aria-expanded="true">
-            <span class="local-files-title">本地文件</span>
+            <span class="local-files-title" data-i18n="sidebar.localTitle">本地文件</span>
           </button>
-          <button class="local-files-clear" id="localFilesClearBtn" type="button" title="清空本地文件列表" aria-label="清空本地文件列表">
+          <button class="local-files-clear" id="localFilesClearBtn" type="button" title="清空本地文件列表" aria-label="清空本地文件列表" data-i18n-title="sidebar.localClear" data-i18n-aria="sidebar.localClear">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-trash"/></svg>
           </button>
         </div>
@@ -132,52 +132,58 @@
       <!-- Floating Menu -->
       <div class="floating-menu" id="floatingMenu">
         <div class="menu-items">
-          <button class="menu-item-btn" id="backToTopBtn" title="回到顶部">
+          <button class="menu-item-btn" id="backToTopBtn" title="回到顶部" data-i18n-title="menu.backToTop">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M18 15l-6-6-6 6"/>
             </svg>
-            <span class="menu-item-label">回到顶部</span>
+            <span class="menu-item-label" data-i18n="menu.backToTop">回到顶部</span>
           </button>
-          <button class="menu-item-btn" id="prevDocBtn" title="上一篇">
+          <button class="menu-item-btn" id="prevDocBtn" title="上一篇" data-i18n-title="menu.prev">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M15 18l-6-6 6-6"/>
             </svg>
-            <span class="menu-item-label">上一篇</span>
+            <span class="menu-item-label" data-i18n="menu.prev">上一篇</span>
           </button>
-          <button class="menu-item-btn" id="nextDocBtn" title="下一篇">
+          <button class="menu-item-btn" id="nextDocBtn" title="下一篇" data-i18n-title="menu.next">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M9 18l6-6-6-6"/>
             </svg>
-            <span class="menu-item-label">下一篇</span>
+            <span class="menu-item-label" data-i18n="menu.next">下一篇</span>
           </button>
-          <button class="menu-item-btn" id="openLocalMdBtn" title="打开本地 MD">
+          <button class="menu-item-btn" id="openLocalMdBtn" title="打开本地 MD" data-i18n-title="menu.openLocalMd">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
               <path d="M12 11v6M9 14h6"/>
             </svg>
-            <span class="menu-item-label">打开本地 MD</span>
+            <span class="menu-item-label" data-i18n="menu.openLocalMd">打开本地 MD</span>
           </button>
-          <button class="menu-item-btn" id="installPwaBtn" title="安装到桌面" style="display: none;">
+          <button class="menu-item-btn" id="openLocalFolderBtn" title="打开本地文件夹" data-i18n-title="menu.openLocalFolder">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/>
+            </svg>
+            <span class="menu-item-label" data-i18n="menu.openLocalFolder">打开本地文件夹</span>
+          </button>
+          <button class="menu-item-btn" id="installPwaBtn" title="安装到桌面" style="display: none;" data-i18n-title="menu.installPwa">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
               <polyline points="7 10 12 15 17 10"/>
               <line x1="12" y1="15" x2="12" y2="3"/>
             </svg>
-            <span class="menu-item-label">安装到桌面</span>
+            <span class="menu-item-label" data-i18n="menu.installPwa">安装到桌面</span>
           </button>
-          <a class="menu-item-btn" id="editPageBtn" title="编辑此页" target="_blank" rel="noopener noreferrer" href="#">
+          <a class="menu-item-btn" id="editPageBtn" title="编辑此页" target="_blank" rel="noopener noreferrer" href="#" data-i18n-title="menu.editPage">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
             </svg>
-            <span class="menu-item-label">编辑此页</span>
+            <span class="menu-item-label" data-i18n="menu.editPage">编辑此页</span>
           </a>
-          <button class="menu-item-btn settings-btn" id="openSettingsBtn" title="设置">
+          <button class="menu-item-btn settings-btn" id="openSettingsBtn" title="设置" data-i18n-title="menu.settings">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="3"/>
               <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
             </svg>
-            <span class="menu-item-label">设置</span>
+            <span class="menu-item-label" data-i18n="menu.settings">设置</span>
           </button>
         </div>
         <button class="menu-trigger" id="menuTrigger">
@@ -192,28 +198,46 @@
       <div class="settings-overlay" id="settingsOverlay">
         <div class="settings-panel">
           <div class="settings-header">
-            <h2 class="settings-title">设置</h2>
-            <button class="settings-close" id="closeSettingsBtn">
+            <h2 class="settings-title" data-i18n="settings.title">设置</h2>
+            <button class="settings-close" id="closeSettingsBtn" data-i18n-aria="common.close" aria-label="关闭">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="18" y1="6" x2="6" y2="18"/>
                 <line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
             </button>
           </div>
-          
+
           <div class="settings-section">
-            <h3 class="settings-section-title">外观</h3>
+            <h3 class="settings-section-title" data-i18n="settings.section.language">语言</h3>
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="settings.lang.label">界面语言</div>
+                <div class="setting-description" data-i18n="settings.lang.desc">切换界面显示语言，选择「自动」时跟随浏览器语言</div>
+              </div>
+              <div class="setting-control">
+                <select id="langSelect" class="theme-select">
+                  <option value="auto" data-i18n="settings.lang.auto">自动（跟随浏览器）</option>
+                  <option value="zh">中文</option>
+                  <option value="en">English</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h3 class="settings-section-title" data-i18n="settings.section.appearance">外观</h3>
 
             <div class="settings-subsection">
-              <div class="settings-subsection-title">主题</div>
+              <div class="settings-subsection-title" data-i18n="settings.sub.theme">主题</div>
               <div class="setting-item">
                 <div>
-                  <div class="setting-label">预设主题</div>
-                  <div class="setting-description">选择预设界面主题，会清空自定义配色</div>
+                  <div class="setting-label" data-i18n="settings.theme.label">预设主题</div>
+                  <div class="setting-description" data-i18n="settings.theme.desc">选择预设界面主题，会清空自定义配色</div>
                 </div>
                 <div class="setting-control">
                   <select id="themeSelect" class="theme-select">
-                    <option value="default">紫粉渐变</option>
+                    <option value="auto" data-i18n="settings.theme.auto">自动（跟随系统）</option>
+                    <option value="default" data-i18n="settings.theme.default">紫粉渐变</option>
                     <option value="github-light">GitHub Light</option>
                     <option value="github-dark">GitHub Dark</option>
                     <option value="notion">Notion</option>
@@ -223,68 +247,87 @@
                   </select>
                 </div>
               </div>
+              <div class="setting-item" id="autoThemePairRow" hidden>
+                <div>
+                  <div class="setting-label" data-i18n="settings.theme.autoPair">自动主题配对</div>
+                  <div class="setting-description" data-i18n="settings.theme.autoPairDesc">系统亮色时使用上方主题，暗色时使用下方主题</div>
+                </div>
+                <div class="setting-control auto-theme-pair">
+                  <select id="autoThemeLightSelect" class="theme-select" aria-label="亮色时使用的主题">
+                    <option value="default" data-i18n="settings.theme.autoLight.default">亮 · 紫粉渐变</option>
+                    <option value="github-light" data-i18n="settings.theme.autoLight.github">亮 · GitHub Light</option>
+                    <option value="notion" data-i18n="settings.theme.autoLight.notion">亮 · Notion</option>
+                  </select>
+                  <select id="autoThemeDarkSelect" class="theme-select" aria-label="暗色时使用的主题">
+                    <option value="github-dark" data-i18n="settings.theme.autoDark.github">暗 · GitHub Dark</option>
+                    <option value="arc" data-i18n="settings.theme.autoDark.arc">暗 · Arc Dark</option>
+                    <option value="dracula" data-i18n="settings.theme.autoDark.dracula">暗 · Dracula</option>
+                    <option value="nord" data-i18n="settings.theme.autoDark.nord">暗 · Nord</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
             <div class="settings-subsection">
-              <div class="settings-subsection-title">自定义配色</div>
+              <div class="settings-subsection-title" data-i18n="settings.sub.colors">自定义配色</div>
               <div class="setting-item setting-item-block">
                 <div>
-                  <div class="setting-label">强调色</div>
-                  <div class="setting-description">主色及派生色，点击色块取色</div>
+                  <div class="setting-label" data-i18n="settings.colors.accent">强调色</div>
+                  <div class="setting-description" data-i18n="settings.colors.accentDesc">主色及派生色，点击色块取色</div>
                 </div>
                 <div class="setting-control color-picker-row">
-                  <label class="color-pick" title="主色 (--color-accent-purple)">
+                  <label class="color-pick" title="主色 (--color-accent-purple)" data-i18n-title="colorTitle.main">
                     <input type="color" id="customColorPurple" data-var="--color-accent-purple" value="#d4a5c9">
-                    <span class="color-pick-label">主色</span>
+                    <span class="color-pick-label" data-i18n="settings.colors.main">主色</span>
                   </label>
-                  <label class="color-pick" title="粉色 (--color-accent-pink)">
+                  <label class="color-pick" title="粉色 (--color-accent-pink)" data-i18n-title="colorTitle.pink">
                     <input type="color" id="customColorPink" data-var="--color-accent-pink" value="#f2c4ce">
-                    <span class="color-pick-label">粉色</span>
+                    <span class="color-pick-label" data-i18n="settings.colors.pink">粉色</span>
                   </label>
-                  <label class="color-pick" title="深色 (--color-accent-purple-deep)">
+                  <label class="color-pick" title="深色 (--color-accent-purple-deep)" data-i18n-title="colorTitle.deep">
                     <input type="color" id="customColorPurpleDeep" data-var="--color-accent-purple-deep" value="#b88aad">
-                    <span class="color-pick-label">深色</span>
+                    <span class="color-pick-label" data-i18n="settings.colors.deep">深色</span>
                   </label>
                 </div>
               </div>
 
               <div class="setting-item setting-item-block">
                 <div>
-                  <div class="setting-label">中性色</div>
-                  <div class="setting-description">背景、表面、文字与边框色，可做出亮色或暗色主题</div>
+                  <div class="setting-label" data-i18n="settings.colors.neutral">中性色</div>
+                  <div class="setting-description" data-i18n="settings.colors.neutralDesc">背景、表面、文字与边框色，可做出亮色或暗色主题</div>
                 </div>
                 <div class="setting-control color-picker-row">
-                  <label class="color-pick" title="背景 (--color-bg)">
+                  <label class="color-pick" title="背景 (--color-bg)" data-i18n-title="colorTitle.bg">
                     <input type="color" id="customColorBg" data-var="--color-bg" value="#fafafa">
-                    <span class="color-pick-label">背景</span>
+                    <span class="color-pick-label" data-i18n="settings.colors.bg">背景</span>
                   </label>
-                  <label class="color-pick" title="表面 (--color-surface)">
+                  <label class="color-pick" title="表面 (--color-surface)" data-i18n-title="colorTitle.surface">
                     <input type="color" id="customColorSurface" data-var="--color-surface" value="#ffffff">
-                    <span class="color-pick-label">表面</span>
+                    <span class="color-pick-label" data-i18n="settings.colors.surface">表面</span>
                   </label>
-                  <label class="color-pick" title="边框 (--color-border)">
+                  <label class="color-pick" title="边框 (--color-border)" data-i18n-title="colorTitle.border">
                     <input type="color" id="customColorBorder" data-var="--color-border" value="#f0f0f0">
-                    <span class="color-pick-label">边框</span>
+                    <span class="color-pick-label" data-i18n="settings.colors.border">边框</span>
                   </label>
-                  <label class="color-pick" title="文字 (--color-text)">
+                  <label class="color-pick" title="文字 (--color-text)" data-i18n-title="colorTitle.text">
                     <input type="color" id="customColorText" data-var="--color-text" value="#2d2d2d">
-                    <span class="color-pick-label">文字</span>
+                    <span class="color-pick-label" data-i18n="settings.colors.text">文字</span>
                   </label>
-                  <label class="color-pick" title="次要文字 (--color-text-muted)">
+                  <label class="color-pick" title="次要文字 (--color-text-muted)" data-i18n-title="colorTitle.muted">
                     <input type="color" id="customColorTextMuted" data-var="--color-text-muted" value="#999999">
-                    <span class="color-pick-label">次要</span>
+                    <span class="color-pick-label" data-i18n="settings.colors.muted">次要</span>
                   </label>
-                  <button class="color-reset-btn" id="resetColorsBtn" type="button">重置</button>
+                  <button class="color-reset-btn" id="resetColorsBtn" type="button" data-i18n="common.reset">重置</button>
                 </div>
               </div>
             </div>
 
             <div class="settings-subsection">
-              <div class="settings-subsection-title">代码高亮</div>
+              <div class="settings-subsection-title" data-i18n="settings.sub.codeHighlight">代码高亮</div>
               <div class="setting-item">
                 <div>
-                  <div class="setting-label">代码配色方案</div>
-                  <div class="setting-description">选择代码块语法高亮主题</div>
+                  <div class="setting-label" data-i18n="settings.code.label">代码配色方案</div>
+                  <div class="setting-description" data-i18n="settings.code.desc">选择代码块语法高亮主题</div>
                 </div>
                 <div class="setting-control">
                   <select id="codeThemeSelect" class="theme-select">
@@ -305,12 +348,12 @@
 
             <!-- 字体自定义 -->
             <div class="settings-subsection">
-              <div class="settings-subsection-title">字体</div>
+              <div class="settings-subsection-title" data-i18n="settings.sub.font">字体</div>
 
               <div class="setting-item">
                 <div>
-                  <div class="setting-label">远程字体 URL</div>
-                  <div class="setting-description">加载远程字体，支持 Google Fonts 样式的 CSS URL（例：https://fonts.googleapis.com/css2?family=Noto+Sans+SC）。回车或失去焦点后应用，留空则禁用</div>
+                  <div class="setting-label" data-i18n="settings.font.remote">远程字体 URL</div>
+                  <div class="setting-description" data-i18n="settings.font.remoteDesc">加载远程字体，支持 Google Fonts 样式的 CSS URL（例：https://fonts.googleapis.com/css2?family=Noto+Sans+SC）。回车或失去焦点后应用，留空则禁用</div>
                 </div>
                 <div class="setting-control">
                   <input type="text" id="remoteFontUrl" class="custom-css-input" placeholder="https://fonts.googleapis.com/css2?family=...">
@@ -319,8 +362,8 @@
 
               <div class="setting-item">
                 <div>
-                  <div class="setting-label">展示字体族（标题等衬线体）</div>
-                  <div class="setting-description">设置 CSS font-family，多个字体用英文逗号分隔；远程字体加载完毕后可直接填字体名</div>
+                  <div class="setting-label" data-i18n="settings.font.display">展示字体族（标题等衬线体）</div>
+                  <div class="setting-description" data-i18n="settings.font.displayDesc">设置 CSS font-family，多个字体用英文逗号分隔；远程字体加载完毕后可直接填字体名</div>
                 </div>
                 <div class="setting-control">
                   <input type="text" id="fontFamilyDisplay" class="custom-css-input" placeholder="例如：'Noto Serif SC', Georgia, serif">
@@ -329,8 +372,8 @@
 
               <div class="setting-item">
                 <div>
-                  <div class="setting-label">正文字体族（UI/正文无衬线体）</div>
-                  <div class="setting-description">设置 CSS font-family，多个字体用英文逗号分隔</div>
+                  <div class="setting-label" data-i18n="settings.font.body">正文字体族（UI/正文无衬线体）</div>
+                  <div class="setting-description" data-i18n="settings.font.bodyDesc">设置 CSS font-family，多个字体用英文逗号分隔</div>
                 </div>
                 <div class="setting-control">
                   <input type="text" id="fontFamilyBody" class="custom-css-input" placeholder="例如：'Noto Sans SC', system-ui, sans-serif">
@@ -339,16 +382,16 @@
 
               <div class="setting-item setting-item-block">
                 <div>
-                  <div class="setting-label">字号</div>
-                  <div class="setting-description">控制界面与 Markdown 正文字号（单位 px）</div>
+                  <div class="setting-label" data-i18n="settings.font.size">字号</div>
+                  <div class="setting-description" data-i18n="settings.font.sizeDesc">控制界面与 Markdown 正文字号（单位 px）</div>
                 </div>
                 <div class="setting-control control-grid">
                   <label class="mini-field" title="UI 基础字号 (--font-size-body)">
-                    <span class="mini-label">UI 字号</span>
+                    <span class="mini-label" data-i18n="settings.font.sizeUi">UI 字号</span>
                     <input type="number" id="fontSizeBody" min="10" max="28" step="1" class="mini-input">
                   </label>
                   <label class="mini-field" title="Markdown 正文基础字号 (--font-size-md)">
-                    <span class="mini-label">正文</span>
+                    <span class="mini-label" data-i18n="settings.font.sizeBody">正文</span>
                     <input type="number" id="fontSizeMd" min="12" max="32" step="1" class="mini-input">
                   </label>
                   <label class="mini-field" title="H1 (--font-size-h1)">
@@ -368,68 +411,68 @@
 
               <div class="setting-item setting-item-block">
                 <div>
-                  <div class="setting-label">字重</div>
-                  <div class="setting-description">控制字体粗细（300 细 / 400 常规 / 500 中等 / 600 半粗 / 700 粗体）</div>
+                  <div class="setting-label" data-i18n="settings.font.weight">字重</div>
+                  <div class="setting-description" data-i18n="settings.font.weightDesc">控制字体粗细（300 细 / 400 常规 / 500 中等 / 600 半粗 / 700 粗体）</div>
                 </div>
                 <div class="setting-control control-grid">
                   <label class="mini-field" title="UI 基础字重">
                     <span class="mini-label">UI</span>
                     <select id="fontWeightBody" class="mini-input">
-                      <option value="300">300 细</option>
-                      <option value="400">400 常规</option>
-                      <option value="500">500 中等</option>
-                      <option value="600">600 半粗</option>
-                      <option value="700">700 粗</option>
+                      <option value="300" data-i18n="weight.300">300 细</option>
+                      <option value="400" data-i18n="weight.400">400 常规</option>
+                      <option value="500" data-i18n="weight.500">500 中等</option>
+                      <option value="600" data-i18n="weight.600">600 半粗</option>
+                      <option value="700" data-i18n="weight.700">700 粗</option>
                     </select>
                   </label>
                   <label class="mini-field" title="Markdown 正文字重">
-                    <span class="mini-label">正文</span>
+                    <span class="mini-label" data-i18n="settings.font.sizeBody">正文</span>
                     <select id="fontWeightMd" class="mini-input">
-                      <option value="300">300 细</option>
-                      <option value="400">400 常规</option>
-                      <option value="500">500 中等</option>
-                      <option value="600">600 半粗</option>
-                      <option value="700">700 粗</option>
+                      <option value="300" data-i18n="weight.300">300 细</option>
+                      <option value="400" data-i18n="weight.400">400 常规</option>
+                      <option value="500" data-i18n="weight.500">500 中等</option>
+                      <option value="600" data-i18n="weight.600">600 半粗</option>
+                      <option value="700" data-i18n="weight.700">700 粗</option>
                     </select>
                   </label>
                   <label class="mini-field" title="展示体字重">
-                    <span class="mini-label">展示体</span>
+                    <span class="mini-label" data-i18n="settings.font.weightDisplay">展示体</span>
                     <select id="fontWeightDisplay" class="mini-input">
-                      <option value="300">300 细</option>
-                      <option value="400">400 常规</option>
-                      <option value="500">500 中等</option>
-                      <option value="600">600 半粗</option>
-                      <option value="700">700 粗</option>
+                      <option value="300" data-i18n="weight.300">300 细</option>
+                      <option value="400" data-i18n="weight.400">400 常规</option>
+                      <option value="500" data-i18n="weight.500">500 中等</option>
+                      <option value="600" data-i18n="weight.600">600 半粗</option>
+                      <option value="700" data-i18n="weight.700">700 粗</option>
                     </select>
                   </label>
                   <label class="mini-field" title="H1 字重">
                     <span class="mini-label">H1</span>
                     <select id="fontWeightH1" class="mini-input">
-                      <option value="400">400 常规</option>
-                      <option value="500">500 中等</option>
-                      <option value="600">600 半粗</option>
-                      <option value="700">700 粗</option>
-                      <option value="800">800 特粗</option>
+                      <option value="400" data-i18n="weight.400">400 常规</option>
+                      <option value="500" data-i18n="weight.500">500 中等</option>
+                      <option value="600" data-i18n="weight.600">600 半粗</option>
+                      <option value="700" data-i18n="weight.700">700 粗</option>
+                      <option value="800" data-i18n="weight.800">800 特粗</option>
                     </select>
                   </label>
                   <label class="mini-field" title="H2 字重">
                     <span class="mini-label">H2</span>
                     <select id="fontWeightH2" class="mini-input">
-                      <option value="400">400 常规</option>
-                      <option value="500">500 中等</option>
-                      <option value="600">600 半粗</option>
-                      <option value="700">700 粗</option>
-                      <option value="800">800 特粗</option>
+                      <option value="400" data-i18n="weight.400">400 常规</option>
+                      <option value="500" data-i18n="weight.500">500 中等</option>
+                      <option value="600" data-i18n="weight.600">600 半粗</option>
+                      <option value="700" data-i18n="weight.700">700 粗</option>
+                      <option value="800" data-i18n="weight.800">800 特粗</option>
                     </select>
                   </label>
                   <label class="mini-field" title="H3 字重">
                     <span class="mini-label">H3</span>
                     <select id="fontWeightH3" class="mini-input">
-                      <option value="400">400 常规</option>
-                      <option value="500">500 中等</option>
-                      <option value="600">600 半粗</option>
-                      <option value="700">700 粗</option>
-                      <option value="800">800 特粗</option>
+                      <option value="400" data-i18n="weight.400">400 常规</option>
+                      <option value="500" data-i18n="weight.500">500 中等</option>
+                      <option value="600" data-i18n="weight.600">600 半粗</option>
+                      <option value="700" data-i18n="weight.700">700 粗</option>
+                      <option value="800" data-i18n="weight.800">800 特粗</option>
                     </select>
                   </label>
                 </div>
@@ -437,26 +480,26 @@
 
               <div class="setting-item setting-item-block">
                 <div>
-                  <div class="setting-label">字色</div>
-                  <div class="setting-description">主文字与次要文字颜色；强调色（链接、高亮等）在上方「自定义配色」调节</div>
+                  <div class="setting-label" data-i18n="settings.font.color">字色</div>
+                  <div class="setting-description" data-i18n="settings.font.colorDesc">主文字与次要文字颜色；强调色（链接、高亮等）在上方「自定义配色」调节</div>
                 </div>
                 <div class="setting-control color-picker-row">
-                  <label class="color-pick" title="正文字色 (--color-text)">
+                  <label class="color-pick" title="正文字色 (--color-text)" data-i18n-title="colorTitle.text">
                     <input type="color" id="fontColorText" data-var="--color-text" value="#2d2d2d">
-                    <span class="color-pick-label">正文</span>
+                    <span class="color-pick-label" data-i18n="settings.font.colorBody">正文</span>
                   </label>
-                  <label class="color-pick" title="次要文字色 (--color-text-muted)">
+                  <label class="color-pick" title="次要文字色 (--color-text-muted)" data-i18n-title="colorTitle.muted">
                     <input type="color" id="fontColorMuted" data-var="--color-text-muted" value="#999999">
-                    <span class="color-pick-label">次要</span>
+                    <span class="color-pick-label" data-i18n="settings.font.colorMuted">次要</span>
                   </label>
-                  <button class="color-reset-btn" id="resetFontBtn" type="button">重置字体</button>
+                  <button class="color-reset-btn" id="resetFontBtn" type="button" data-i18n="settings.font.resetFont">重置字体</button>
                 </div>
               </div>
 
               <div class="setting-item">
                 <div>
-                  <div class="setting-label">标题数字使用无衬线字体</div>
-                  <div class="setting-description">默认关闭，标题数字随标题字体（默认衬线体，数字同为衬线）；开启后仅标题中的阿拉伯数字改用无衬线字体渲染，其余文字不受影响</div>
+                  <div class="setting-label" data-i18n="settings.font.sansDigits">标题数字使用无衬线字体</div>
+                  <div class="setting-description" data-i18n="settings.font.sansDigitsDesc">默认关闭，标题数字随标题字体（默认衬线体，数字同为衬线）；开启后仅标题中的阿拉伯数字改用无衬线字体渲染，其余文字不受影响</div>
                 </div>
                 <div class="setting-control">
                   <label class="switch">
@@ -468,37 +511,37 @@
             </div>
 
             <div class="settings-subsection">
-              <div class="settings-subsection-title">高级</div>
+              <div class="settings-subsection-title" data-i18n="settings.sub.advanced">高级</div>
               <div class="setting-item">
                 <div>
-                  <div class="setting-label">自定义 CSS</div>
-                  <div class="setting-description">加载外部 CSS 文件 URL，回车应用</div>
+                  <div class="setting-label" data-i18n="settings.adv.customCss">自定义 CSS</div>
+                  <div class="setting-description" data-i18n="settings.adv.customCssDesc">加载外部 CSS 文件 URL，回车应用</div>
                 </div>
                 <div class="setting-control">
-                  <input type="text" id="customCSSInput" class="custom-css-input" placeholder="CSS 文件 URL">
+                  <input type="text" id="customCSSInput" class="custom-css-input" placeholder="CSS 文件 URL" data-i18n-placeholder="settings.adv.customCssPlaceholder">
                 </div>
               </div>
               <div class="setting-item">
                 <div>
-                  <div class="setting-label">自定义高亮 JS</div>
-                  <div class="setting-description">加载外部 highlight.js 主题 CSS URL，回车应用</div>
+                  <div class="setting-label" data-i18n="settings.adv.customHljs">自定义高亮 JS</div>
+                  <div class="setting-description" data-i18n="settings.adv.customHljsDesc">加载外部 highlight.js 主题 CSS URL，回车应用</div>
                 </div>
                 <div class="setting-control">
-                  <input type="text" id="customHljsInput" class="custom-css-input" placeholder="hljs 主题 CSS URL">
+                  <input type="text" id="customHljsInput" class="custom-css-input" placeholder="hljs 主题 CSS URL" data-i18n-placeholder="settings.adv.customHljsPlaceholder">
                 </div>
               </div>
             </div>
           </div>
 
           <div class="settings-section">
-            <h3 class="settings-section-title">功能</h3>
+            <h3 class="settings-section-title" data-i18n="settings.section.features">功能</h3>
 
             <div class="settings-subsection">
-              <div class="settings-subsection-title">显示</div>
+              <div class="settings-subsection-title" data-i18n="settings.sub.display">显示</div>
               <div class="setting-item">
                 <div>
-                  <div class="setting-label">显示阅读进度</div>
-                  <div class="setting-description">显示页面阅读进度</div>
+                  <div class="setting-label" data-i18n="settings.display.readingProgress">显示阅读进度</div>
+                  <div class="setting-description" data-i18n="settings.display.readingProgressDesc">显示页面阅读进度</div>
                 </div>
                 <div class="setting-control">
                   <label class="switch">
@@ -510,8 +553,8 @@
 
               <div class="setting-item">
                 <div>
-                  <div class="setting-label">显示词数统计</div>
-                  <div class="setting-description">在文件列表中显示每个文件的词数</div>
+                  <div class="setting-label" data-i18n="settings.display.wordCount">显示词数统计</div>
+                  <div class="setting-description" data-i18n="settings.display.wordCountDesc">在文件列表中显示每个文件的词数</div>
                 </div>
                 <div class="setting-control">
                   <label class="switch">
@@ -523,8 +566,8 @@
 
               <div class="setting-item">
                 <div>
-                  <div class="setting-label">折叠过长文件名</div>
-                  <div class="setting-description">开启时用省略号截断；关闭时显示完整文件名，超出部分可在该文件所在文件夹区域内横向滚动查看</div>
+                  <div class="setting-label" data-i18n="settings.display.truncate">折叠过长文件名</div>
+                  <div class="setting-description" data-i18n="settings.display.truncateDesc">开启时用省略号截断；关闭时显示完整文件名，超出部分可在该文件所在文件夹区域内横向滚动查看</div>
                 </div>
                 <div class="setting-control">
                   <label class="switch">
@@ -536,13 +579,13 @@
 
               <div class="setting-item">
                 <div>
-                  <div class="setting-label">内容区宽度</div>
-                  <div class="setting-description">调整 Markdown 正文的最大宽度，拖动即时生效；快捷键 Ctrl/⌘+B 可折叠侧边栏获得更宽空间</div>
+                  <div class="setting-label" data-i18n="settings.display.contentWidth">内容区宽度</div>
+                  <div class="setting-description" data-i18n="settings.display.contentWidthDesc">调整 Markdown 正文的最大宽度，拖动即时生效；快捷键 Ctrl/⌘+B 可折叠侧边栏获得更宽空间</div>
                 </div>
                 <div class="setting-control content-width-control">
                   <input type="range" id="contentWidthRange" class="width-slider" min="600" max="1400" step="20" value="720" aria-label="内容区宽度">
                   <span class="width-value" id="contentWidthValue">720px</span>
-                  <button id="resetContentWidthBtn" class="download-btn">重置</button>
+                  <button id="resetContentWidthBtn" class="download-btn" data-i18n="common.reset">重置</button>
                 </div>
               </div>
 
@@ -561,8 +604,8 @@
 
               <div class="setting-item">
                 <div>
-                  <div class="setting-label">长表格延伸到右侧空白</div>
-                  <div class="setting-description">内容宽度设置保持不变，宽表格向右适度越过正文边界、利用右侧空白显示更多列；仍放不下的部分在表格内横向滚动</div>
+                  <div class="setting-label" data-i18n="settings.display.tableBleed">长表格延伸到右侧空白</div>
+                  <div class="setting-description" data-i18n="settings.display.tableBleedDesc">内容宽度设置保持不变，宽表格向右适度越过正文边界、利用右侧空白显示更多列；仍放不下的部分在表格内横向滚动</div>
                 </div>
                 <div class="setting-control">
                   <label class="switch">
@@ -574,41 +617,50 @@
             </div>
 
             <div class="settings-subsection">
-              <div class="settings-subsection-title">操作</div>
+              <div class="settings-subsection-title" data-i18n="settings.sub.actions">操作</div>
               <div class="setting-item">
                 <div>
-                  <div class="setting-label">Markdown 编辑器</div>
-                  <div class="setting-description">在新标签页打开交互式编辑器，支持语法快速输入和实时渲染</div>
+                  <div class="setting-label" data-i18n="settings.actions.editor">Markdown 编辑器</div>
+                  <div class="setting-description" data-i18n="settings.actions.editorDesc">在新标签页打开交互式编辑器，支持语法快速输入和实时渲染</div>
                 </div>
                 <div class="setting-control">
-                  <button id="openEditorBtn" class="download-btn">打开编辑器</button>
+                  <button id="openEditorBtn" class="download-btn" data-i18n="settings.actions.openEditor">打开编辑器</button>
                 </div>
               </div>
               <div class="setting-item">
                 <div>
-                  <div class="setting-label">波形生成器</div>
-                  <div class="setting-description">可视化生成 DG-LAB 郊狼 .pulse 波形文件，最多 20 个</div>
+                  <div class="setting-label" data-i18n="settings.actions.pulseGen">波形生成器</div>
+                  <div class="setting-description" data-i18n="settings.actions.pulseGenDesc">可视化生成 DG-LAB 郊狼 .pulse 波形文件，最多 20 个</div>
                 </div>
                 <div class="setting-control">
-                  <button id="openPulseGenBtn" class="download-btn">打开生成器</button>
+                  <button id="openPulseGenBtn" class="download-btn" data-i18n="settings.actions.openPulseGen">打开生成器</button>
                 </div>
               </div>
               <div class="setting-item">
                 <div>
-                  <div class="setting-label">下载此文章</div>
-                  <div class="setting-description">下载当前文档为 MD 格式</div>
+                  <div class="setting-label" data-i18n="settings.actions.downloadMd">下载此文章</div>
+                  <div class="setting-description" data-i18n="settings.actions.downloadMdDesc">下载当前文档为 MD 格式</div>
                 </div>
                 <div class="setting-control">
-                  <button id="downloadMdBtn" class="download-btn">下载 MD</button>
+                  <button id="downloadMdBtn" class="download-btn" data-i18n="settings.actions.downloadMdBtn">下载 MD</button>
                 </div>
               </div>
               <div class="setting-item">
                 <div>
-                  <div class="setting-label">导出 PDF</div>
-                  <div class="setting-description">通过浏览器打印对话框导出为 PDF</div>
+                  <div class="setting-label" data-i18n="settings.actions.exportPdf">导出 PDF</div>
+                  <div class="setting-description" data-i18n="settings.actions.exportPdfDesc">通过浏览器打印对话框导出为 PDF</div>
                 </div>
                 <div class="setting-control">
-                  <button id="downloadPdfBtn" class="download-btn">导出 PDF</button>
+                  <button id="downloadPdfBtn" class="download-btn" data-i18n="settings.actions.exportPdfBtn">导出 PDF</button>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label" data-i18n="settings.actions.exportHtml">导出 HTML</div>
+                  <div class="setting-description" data-i18n="settings.actions.exportHtmlDesc">保存为内联当前主题样式的单文件 HTML，双击即可离线查看</div>
+                </div>
+                <div class="setting-control">
+                  <button id="downloadHtmlBtn" class="download-btn" data-i18n="settings.actions.exportHtmlBtn">导出 HTML</button>
                 </div>
               </div>
             </div>
@@ -618,7 +670,7 @@
       
       <article class="markdown-body" id="markdownContent">
         <div class="welcome-state">
-          <p class="welcome-text">选择一个文件开始阅读</p>
+          <p class="welcome-text" data-i18n="welcome.text">选择一个文件开始阅读</p>
         </div>
       </article>
       
@@ -635,8 +687,8 @@
     <div class="palette" role="dialog" aria-modal="true" aria-label="搜索文档">
       <div class="palette-input-row">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input type="search" id="searchInput" placeholder="搜索文档..." autocomplete="off" />
-        <button class="palette-clear" id="paletteClear" type="button" aria-label="清空搜索词" hidden>
+        <input type="search" id="searchInput" placeholder="搜索文档..." autocomplete="off" data-i18n-placeholder="palette.placeholder">
+        <button class="palette-clear" id="paletteClear" type="button" aria-label="清空搜索词" hidden data-i18n-aria="palette.clear">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
         <kbd class="palette-esc">Esc</kbd>
@@ -647,9 +699,9 @@
 
   <!-- 更新提示 Toast -->
   <div class="update-toast" id="updateToast">
-    <span class="update-toast-text">有新版本可用</span>
-    <button class="update-toast-btn" id="updateRefreshBtn">刷新</button>
-    <button class="update-toast-close" id="updateDismissBtn" aria-label="关闭">&times;</button>
+    <span class="update-toast-text" data-i18n="toast.update">有新版本可用</span>
+    <button class="update-toast-btn" id="updateRefreshBtn" data-i18n="toast.refresh">刷新</button>
+    <button class="update-toast-close" id="updateDismissBtn" aria-label="关闭" data-i18n-aria="common.close">&times;</button>
   </div>
   
   <!-- Debug Panel (shown when ?debug=1) -->
@@ -1549,6 +1601,7 @@
   <script defer src="iris/js/config.js"></script>
   <script defer src="iris/js/debug.js"></script>
   <script defer src="iris/js/state.js"></script>
+  <script defer src="iris/js/i18n.js"></script>
   <script defer src="iris/js/dom.js"></script>
   <script defer src="iris/js/ui.js"></script>
   <script defer src="iris/js/interactions.js"></script>
@@ -1781,5 +1834,6 @@
     });
   </script>
   <input type="file" id="localMdInput" accept=".md,.markdown,text/markdown,text/plain" multiple style="position:fixed;top:-9999px;left:-9999px;opacity:0;">
+  <input type="file" id="localMdFolderInput" webkitdirectory directory multiple style="position:fixed;top:-9999px;left:-9999px;opacity:0;">
 </body>
 </html>

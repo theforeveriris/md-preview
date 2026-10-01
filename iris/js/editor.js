@@ -1508,6 +1508,25 @@
     return `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>${title}</title>${headExtra}</head><body><article class="markdown-body" style="max-width:800px;margin:40px auto;padding:0 20px;">${bodyHtml}</article></body></html>`;
   }
 
+  // styles.css 通过 @import 引入子模块，需递归展开 CSSImportRule；
+  // 跨域样式表会抛错，这里直接返回空
+  function readSheetRules(sheet, depth) {
+    if (!sheet || depth > 5) return '';
+    let css = '';
+    try {
+      for (const rule of sheet.cssRules) {
+        if (rule.styleSheet && rule.cssText.startsWith('@import')) {
+          css += readSheetRules(rule.styleSheet, depth + 1);
+        } else {
+          css += rule.cssText + '\n';
+        }
+      }
+    } catch (e) {
+      return '';
+    }
+    return css;
+  }
+
   function tryReadLoadedStylesheet(linkEl) {
     // 尝试从已加载的 StyleSheet.cssRules 提取文本
     try {
@@ -1515,9 +1534,7 @@
       const href = linkEl.href;
       const sheet = sheets.find(s => s.href === href);
       if (!sheet) return '';
-      let css = '';
-      for (const rule of sheet.cssRules) css += rule.cssText + '\n';
-      return css;
+      return readSheetRules(sheet, 0);
     } catch (e) {
       // 跨域样式表会抛错，这里直接返回空
       return '';

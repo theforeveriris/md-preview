@@ -53,7 +53,7 @@
       onFilesLoaded();
     } catch (error) {
       console.error('Error loading file tree:', error);
-      dom.fileTree.innerHTML = '<div class="tree-error" style="color: var(--color-text-muted); padding: 16px;">无法加载文件列表，请检查网络或手动配置</div>';
+      dom.fileTree.innerHTML = `<div class="tree-error" style="color: var(--color-text-muted); padding: 16px;">${window.MarkdownPreview.i18n ? window.MarkdownPreview.i18n.t('tree.loadFailed') : '无法加载文件列表，请检查网络或手动配置'}</div>`;
     }
   }
   
@@ -149,7 +149,7 @@
     const { Tree, Folder, File } = window.MarkdownPreview.FileTree || {};
     if (!Tree || !Folder || !File) {
       console.error('FileTree component not loaded');
-      dom.fileTree.innerHTML = '<div style="color: var(--color-text-muted); padding: 16px;">文件树组件加载失败</div>';
+      dom.fileTree.innerHTML = `<div style="color: var(--color-text-muted); padding: 16px;">${window.MarkdownPreview.i18n ? window.MarkdownPreview.i18n.t('tree.componentFailed') : '文件树组件加载失败'}</div>`;
       return;
     }
 

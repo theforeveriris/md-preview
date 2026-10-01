@@ -5,18 +5,25 @@
   // 共享渲染模块：Alerts / LaTeX / Renderer / 画廊分组 / 轮播 / 代码高亮
   const mdRender = window.MarkdownPreview.mdRender;
 
+  // i18n 文案读取：i18n 模块未加载或语言包缺 key 时回退到内置中文
+  function t(key, fallback) {
+    const i18n = window.MarkdownPreview.i18n;
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
+    return fallback;
+  }
+
   // ============== 注册 marked-footnote 扩展 ==============
   // 支持 [^id] 引用 与 [^id]: 定义 语法，渲染为带回链的脚注区
   if (typeof marked !== 'undefined' && typeof markedFootnote !== 'undefined') {
     try {
       marked.use(markedFootnote({
         prefixId: 'fn-',
-        description: '脚注',
+        description: t('footnote.description', '脚注'),
         refMarkers: false,
         footnoteDivider: true,
         sectionClass: 'footnotes',
         headingClass: 'footnotes-heading',
-        backRefLabel: '返回引用 {0}'
+        backRefLabel: t('footnote.backRef', '返回引用 {0}')
       }));
     } catch (e) {
       console.warn('[markdown] markedFootnote 注册失败:', e);
@@ -65,7 +72,7 @@
       setupHeadingNavigation();
     } catch (error) {
       console.error('Error loading markdown:', error);
-      dom.markdownContent.innerHTML = '<div class="welcome-state"><p class="welcome-text">无法加载文件</p></div>';
+      dom.markdownContent.innerHTML = `<div class="welcome-state"><p class="welcome-text">${t('md.loadFailed', '无法加载文件')}</p></div>`;
       setTimeout(() => window.MarkdownPreview.ui.updateProgress(0), 300);
     }
   }
@@ -284,7 +291,7 @@
       CONFIG.repo || 'Markdown Preview';
     const ogDescription = frontmatter.description ||
       extractExcerpt(content) ||
-      '一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能';
+      t('md.defaultDescription', '一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能');
     updateDocMeta(ogTitle, ogDescription, currentPath);
 
     state.currentFrontmatter = frontmatter;
@@ -294,7 +301,7 @@
 
     const plainText = content.replace(/[#*`\[\]()_{}]/g, '').replace(/\n+/g, ' ').trim();
     const readingTime = calculateReadingTime(plainText);
-    const readingTimeHtml = `<div class="reading-time">预计阅读 ${readingTime} 分钟</div>`;
+    const readingTimeHtml = `<div class="reading-time">${t('md.readingTime', '预计阅读 {n} 分钟').replace('{n}', readingTime)}</div>`;
 
     const headingMatch = html.match(/<h1[^>]*>/);
     let finalHtml;
@@ -513,7 +520,7 @@
     dom.indexTree.innerHTML = '';
 
     if (state.currentHeadings.length === 0) {
-      dom.indexTree.innerHTML = '<div class="index-item" style="color: var(--color-text-muted);">当前文件无目录</div>';
+      dom.indexTree.innerHTML = `<div class="index-item" style="color: var(--color-text-muted);">${t('md.noIndex', '当前文件无目录')}</div>`;
       return;
     }
 
@@ -604,7 +611,7 @@
     rootCrumb.style.cursor = 'pointer';
     rootCrumb.style.color = 'var(--color-accent-purple-deep)';
     rootCrumb.addEventListener('click', () => {
-      dom.markdownContent.innerHTML = '<div class="welcome-state"><p class="welcome-text">选择一个文件开始阅读</p></div>';
+      dom.markdownContent.innerHTML = `<div class="welcome-state"><p class="welcome-text">${t('md.welcome', '选择一个文件开始阅读')}</p></div>`;
       state.currentFilePath = '';
       window.history.replaceState(null, '', window.location.pathname);
       dom.pageHeader.style.display = 'none';
@@ -662,8 +669,8 @@
       if (heading.tagName === 'H1' && heading.id && !heading.querySelector('.heading-anchor')) {
         const anchorBtn = document.createElement('span');
         anchorBtn.className = 'heading-anchor';
-        anchorBtn.title = '复制此标题的直达链接';
-        anchorBtn.setAttribute('aria-label', '复制此标题的直达链接');
+        anchorBtn.title = t('md.copyAnchor', '复制此标题的直达链接');
+        anchorBtn.setAttribute('aria-label', t('md.copyAnchor', '复制此标题的直达链接'));
         anchorBtn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
         heading.appendChild(anchorBtn);
       }

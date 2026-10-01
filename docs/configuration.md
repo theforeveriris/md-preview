@@ -48,6 +48,25 @@ Markdown Preview 的配置分为两层：
 | `showEditButton` | boolean | `true` | 是否显示"编辑此页"按钮 |
 | `showReadingTime` | boolean | `true` | 是否显示阅读时间估算 |
 | `showBreadcrumbs` | boolean | `true` | 是否显示面包屑导航 |
+| `plantumlServers` | array | 内置列表 | PlantUML 渲染服务列表，按顺序尝试 |
+
+#### PlantUML 渲染服务（plantumlServers）
+
+PlantUML 图表默认依次尝试官方服务器与 Kroki 公共服务，全部失败时自动降级为源码展示并提供在线编辑器链接。若你自建了 PlantUML 服务或想使用其他镜像，可在 `iris/config.json` 中覆盖：
+
+```json
+{
+  "plantumlServers": [
+    { "type": "plantuml", "base": "https://your-self-hosted/plantuml" },
+    { "type": "kroki", "base": "https://kroki.io/plantuml" }
+  ]
+}
+```
+
+| 字段 | 说明 |
+|------|------|
+| `type` | `plantuml`（PlantUML 自定义编码）或 `kroki`（标准 base64url 编码） |
+| `base` | 服务基础地址，渲染时自动拼接 `/svg/<编码>` |
 
 ### 配置加载顺序
 
@@ -65,10 +84,15 @@ Markdown Preview 的配置分为两层：
 
 ### 外观
 
+#### 语言
+
+设置面板最顶部为「语言」选择：**自动（跟随浏览器）/ 中文 / English**。选择「自动」时按浏览器语言自动判定；切换立即生效并记忆，无需刷新。
+
 #### 预设主题
 
 | ID | 名称 |
 |----|------|
+| `auto` | 自动（跟随系统亮暗） |
 | `default` | 默认（紫粉渐变） |
 | `github-light` | GitHub Light |
 | `github-dark` | GitHub Dark |
@@ -78,6 +102,8 @@ Markdown Preview 的配置分为两层：
 | `nord` | Nord |
 
 > 选择预设主题会清空自定义配色。
+
+**自动主题（auto）**：跟随系统 `prefers-color-scheme` 实时切换——系统亮色时使用「自动主题配对」中的亮色主题（默认紫粉渐变），暗色时使用暗色主题（默认 GitHub Dark）。配对可在设置面板中自由组合，系统亮暗变化时即时生效（含 PWA 桌面模式）。
 
 #### 自定义配色（取色器）
 

@@ -388,6 +388,84 @@
   background: var(--color-hover);
 }
 
+/* ---- 本地文件夹目录树：文件夹行 + 可折叠子树 ---- */
+.local-folder-item {
+  min-width: max-content;
+}
+
+.local-folder-toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  text-align: left;
+  appearance: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  user-select: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: inherit;
+  padding: var(--lfi-padding);
+  border-radius: var(--lfi-padding);
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+
+.local-folder-toggle:hover {
+  color: var(--lfi-hover-color);
+}
+
+/* 文件夹行图标：复用表头的 folder mask 图标 */
+.local-folder-toggle::before {
+  content: "";
+  display: inline-block;
+  flex-shrink: 0;
+  width: calc(var(--lfi-icon-size) * 1.5);
+  height: calc(var(--lfi-icon-size) * 1.5);
+  background: currentColor;
+  -webkit-mask: var(--lfi-svg-folder) center/contain no-repeat;
+  mask: var(--lfi-svg-folder) center/contain no-repeat;
+  margin-inline-start: calc(var(--lfi-icon-size) * -0.75);
+  margin-inline-end: calc(var(--lfi-icon-size) * 0.5 - var(--lfi-padding));
+  transform: translateY(calc(var(--lfi-icon-size) * 0.25));
+}
+
+/* 展开/收起 chevron，几何与表头一致 */
+.local-folder-toggle::after {
+  content: "";
+  display: inline-block;
+  width: var(--lfi-icon-size);
+  height: var(--lfi-icon-size);
+  background: currentColor;
+  -webkit-mask: var(--lfi-svg-opened) center/contain no-repeat;
+  mask: var(--lfi-svg-opened) center/contain no-repeat;
+  margin-inline-start: calc(var(--lfi-icon-size) * -1.25);
+  margin-inline-end: calc(var(--lfi-icon-size) * 0.75);
+  transform: translateY(calc(var(--lfi-icon-size) * 0.1));
+  order: -1;
+}
+
+.local-folder-item.collapsed .local-folder-toggle::after {
+  -webkit-mask-image: var(--lfi-svg-closed);
+  mask-image: var(--lfi-svg-closed);
+}
+
+/* 子树：与列表一致的 1px 导航线 + 2×icon-size 缩进 */
+.local-files-subtree {
+  list-style: none;
+  margin: 0;
+  border-inline-start: 1px solid rgb(from currentColor r g b / 0.12);
+  padding: 0 0 0 calc(var(--lfi-icon-size) * 2);
+}
+
+.local-files-subtree[hidden] {
+  display: none;
+}
+
 /* ===== File Tree Component ===== */
 .file-tree {
   --ft-padding: 4px;

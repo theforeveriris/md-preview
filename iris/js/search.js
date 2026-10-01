@@ -155,7 +155,7 @@
     container.classList.add('active');
 
     if (!results || results.length === 0) {
-      container.innerHTML = '<div class="search-no-results">没有找到相关文档</div>';
+      container.innerHTML = `<div class="search-no-results">${window.MarkdownPreview.i18n ? window.MarkdownPreview.i18n.t("search.noResults") : "没有找到相关文档"}</div>`;
       return;
     }
 
@@ -170,7 +170,7 @@
     }
 
     if (merged.length === 0) {
-      container.innerHTML = '<div class="search-no-results">没有找到相关文档</div>';
+      container.innerHTML = `<div class="search-no-results">${window.MarkdownPreview.i18n ? window.MarkdownPreview.i18n.t("search.noResults") : "没有找到相关文档"}</div>`;
       return;
     }
 
