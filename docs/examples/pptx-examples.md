@@ -108,6 +108,8 @@ python3 iris/scripts/pptx/main.py --verbose --file my-deck.pptx
 
 故意引用一个不存在的 slug：加载失败不会崩溃，而是渲染一张带「如何修复」指引的卡片：
 
+<!-- link-check-ignore -->
+
 ```pptx
 @[pptx](this-does-not-exist)
 ```

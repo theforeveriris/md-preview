@@ -231,7 +231,7 @@ DG-LAB 郊狼设备 `.pulse` 波形文件的完整渲染器。基于 `Dungeonlab
 
 迷你波形 `[pulsemini]` 内联版本，尺寸约 220px 宽，固定为竖线 + 滚动模式，播放头位于中央。适合在段落文字中嵌入或批量展示多个波形。标题栏提供复制源码与下载 `.pulse` 图标按钮。
 
-详细示例：[Pulse 波形示例 → 迷你波形章节](examples/pulse-examples.md#11-迷你波形内联样式)
+详细示例：[Pulse 波形示例 → 迷你波形章节](examples/pulse-examples.md#11-迷你波形-内联样式)
 
 ---
 

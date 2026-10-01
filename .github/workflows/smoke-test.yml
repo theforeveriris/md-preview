@@ -41,3 +41,6 @@ jobs:
 
     - name: Run smoke test
       run: node iris/scripts/smoke-test.js
+
+    - name: Run link check (internal full + external daily sample)
+      run: node iris/scripts/link-check.js

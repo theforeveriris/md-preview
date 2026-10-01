@@ -119,7 +119,7 @@
 | `build-search-index.yml` | push 到 `main` | 运行 `build-search-index.js`，`search-index.json` 有变化时提交回仓库 |
 | `build-pkt.yml` | push 到 `main`，且 `iris/data/pkt/raw/**` 或 `iris/data/ensp/raw/**` 变化 | 执行 `iris/scripts/pkt/main.py` 和 `iris/scripts/ensp/main.py`，把产物 push 回 `data/pkt/json`、`data/pkt/images` 等 |
 | `build-pptx.yml` | push 到 `main`，且 `iris/data/pptx/raw/**` 变化 | 安装 LibreOffice + poppler-utils，跑 `iris/scripts/pptx/main.py`：PPTX→PDF→PNG/SVG+元数据 JSON，push 回 |
-| `smoke-test.yml` | push / PR 到 `main`，或手动触发 | 跑全部构建脚本验证可执行，安装 jsdom 后运行 `iris/scripts/smoke-test.js` 冒烟测试 |
+| `smoke-test.yml` | push / PR 到 `main`，或手动触发 | 跑全部构建脚本验证可执行，安装 jsdom 后运行 `iris/scripts/smoke-test.js` 冒烟测试 + `iris/scripts/link-check.js` 死链检查（内链全量 + 外链按日抽查） |
 | `sync-to-product.yml` | push 到 `main` | 将站点产物同步到 product 分支 |
 
 ### 产物存放约定
@@ -216,6 +216,18 @@ node iris/scripts/smoke-test.js        # 需先在 iris/ 下安装 jsdom
 npm install --no-save jsdom@^29.1.1 --prefix iris   # 只装冒烟测试依赖
 ```
 `iris/scripts/smoke-test.js` 做 4 组快速校验：① 全部第一方 JS 用 `vm.Script` 语法解析；② jsdom 解析 index.html，校验关键骨架节点与脚本/样式引用真实存在；③ 隔离沙箱加载 i18n.js，校验 `data-i18n*` key 在 zh 语言包齐全；④ 数据产物（file-tree / search-index / precache 清单引用 / feed 全文标记 / sitemap / robots.txt）完好。CI 中先跑全部构建脚本再跑冒烟（见 `smoke-test.yml`）。
+
+### 死链检查
+
+```
+node iris/scripts/link-check.js [--no-external] [--external-limit=N] [--external-timeout=MS] [--all-external] [--strict-external] [--seed=STR]
+```
+
+与 smoke-test.js 同构的零依赖检查（Node 18+ 原生 fetch），CI 与本地均可运行：
+
+- **内链全量**：扫描仓库全部 `.md`（`git ls-files` 为准，本地并入未跟踪文件；大小写敏感，与 Linux 部署一致）中的链接引用，逐一对照仓库文件集校验存在性。覆盖 `[](...)` 图片 / 链接、引用式定义、HTML `<a href>` / `<img src>` 与 `<http://...>` 自动链接；相对路径按「当前文档目录」解析（与 `interceptLinks` 同语义）；`.md#锚点` 按运行时同款 slug 规则校验（标题 textContent 小写化、非 `\w`/中文连续字符替换为 `-`，见 `markdown.js`）；`@[pkt|ensp|pptx](slug)` 嵌入（正文裸写与顶层围栏内两种用法）校验 `iris/data/<type>/json/<slug>.json` 产物存在性，slug 与运行时同款 `decodeURIComponent` 解码。围栏内链接、行内代码、HTML 注释不参与检查；围栏配对与 marked 一致（四反引号围栏内的三反引号示例文本不重复解析），演示性死链可在围栏前一行写 `<!-- link-check-ignore -->` 豁免。
+- **外链抽查**：全仓库外链去重后按种子确定性抽样——默认按日轮换（seed = 当天 UTC 日期）抽 12 个，按站点分桶轮询保证覆盖不同域名；HEAD 失败回退 GET，瞬时错误重试一次。**默认仅告警不失败**（第三方服务波动不打红 CI），`--strict-external` 升级为致命；`--all-external` / `--external-limit=0` 全量检查。
+- **跳过**：`mailto:` / `javascript:` / `data:` 协议、本站自身部署地址（由 `iris/config.json` 的 owner/repo 推导）、localhost 与示例域。
 
 ### PKT / eNSP 构建
 ```
@@ -325,6 +337,7 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │       ├── build-feed.js
 │       ├── build-sitemap.js      # sitemap.xml（robots.txt 指向）
 │       ├── smoke-test.js         # CI 冒烟测试（jsdom）
+│       ├── link-check.js         # CI 死链检查（内链全量 + 外链按日抽查）
 │       ├── pkt/main.py           # .pkt 解析
 │       ├── ensp/main.py          # .topo/.zip (华为 eNSP) → xml + json
 │       └── pptx/main.py          # pptx → PDF → PNG/SVG + meta json

@@ -112,6 +112,7 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 响应式设计：完美适配桌面端和移动端
 - 按需懒加载：Mermaid / ApexCharts / Leaflet / KaTeX / Diff2Html / Cytoscape.js 等重型库只在命中对应代码块时加载，首屏体积从约 6.8MB 降至约 1MB
 - CI 冒烟测试：GitHub Actions 在 push / PR 时自动跑全部构建脚本 + 站点结构 / 语法 / i18n / 数据产物冒烟检查（`smoke-test.yml`）
+- CI 死链检查：内链全量校验（`.md#锚点` 按运行时 slug 规则匹配、`@[pkt/ensp/pptx]` 嵌入产物存在性）+ 外链按日确定性抽查，第三方失败仅告警（`smoke-test.yml`）
 
 ### 内置编辑器
 
@@ -183,6 +184,9 @@ node iris/scripts/build-feed.js
 
 # 构建 sitemap（可选）
 node iris/scripts/build-sitemap.js
+
+# 死链检查（内链全量 + 外链抽查，可选）
+node iris/scripts/link-check.js
 
 # 构建 PKT/eNSP 产物（若有 raw 目录文件）
 python3 iris/scripts/pkt/main.py
