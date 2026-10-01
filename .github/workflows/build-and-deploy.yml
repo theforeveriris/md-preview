@@ -36,6 +36,9 @@ jobs:
       - name: Build Precache Manifest
         run: node iris/scripts/build-precache.js
 
+      - name: Build Sitemap
+        run: node iris/scripts/build-sitemap.js
+
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:

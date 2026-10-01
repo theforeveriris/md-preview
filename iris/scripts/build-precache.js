@@ -46,6 +46,7 @@ const ALLOWED_EXTS = new Set([
 const EXCLUDE_PREFIXES = [
   'scripts/',  // iris/scripts/ 下的构建脚本
   'plugins/',  // iris/plugins/ 下的下载型插件，按需加载
+  'node_modules/', // 本地开发依赖（jsdom 等），不属于站点静态资源
 ];
 
 // 排除路径片段（任意位置包含即排除，主要用于 vendor/data 下的子目录）

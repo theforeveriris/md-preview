@@ -1,10 +1,15 @@
 #!/usr/bin/env node
 
 /**
- * 生成 RSS 2.0 feed.xml
+ * 生成 RSS 2.0 feed.xml（全文输出）
  *
  * 扫描 docs/ 目录下的所有 Markdown 文档，解析 frontmatter（可选），
  * 结合 git 提交时间生成 RSS 条目，输出到 iris/data/feed.xml。
+ *
+ * 全文说明：除 summary（<description>）外，每条目附带 <content:encoded>
+ * 完整正文——正文 Markdown 用本仓库内置的 marked（iris/vendor/marked.js，
+ * UMD 可直接 require）渲染为 HTML，正文内的相对链接 / 图片改写为绝对地址，
+ * 保证 RSS 阅读器在任意上下文中都能加载资源。
  *
  * 使用：
  *   node iris/scripts/build-feed.js
@@ -13,6 +18,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const marked = require('../vendor/marked.js');
 
 // 站点信息（与 index.html / config.json 保持一致）
 const SITE_TITLE = 'Markdown Preview';
@@ -120,6 +126,44 @@ function escapeXml(str) {
     .replace(/'/g, '&apos;');
 }
 
+// ============== 全文渲染 ==============
+
+/**
+ * 把正文内的相对 src / href 改写为绝对地址。
+ * base 为该文档部署后的目录 URL（含末尾斜杠），与相对引用在
+ * GitHub Pages 上的解析规则一致。
+ */
+function absolutizeHtml(html, baseUrl) {
+  return html
+    .replace(/\b(src|href)="([^"]*)"/g, (m, attr, url) => {
+      if (!url || /^(https?:|data:|blob:|mailto:|#|\/\/)/i.test(url)) return m;
+      try {
+        return `${attr}="${new URL(url, baseUrl).href}"`;
+      } catch (e) {
+        return m;
+      }
+    });
+}
+
+/**
+ * Markdown → 全文 HTML。frontmatter 已剥离；渲染失败回退为
+ * <pre> 源码，保证条目仍可输出。
+ */
+function renderFullText(body, docBaseUrl) {
+  try {
+    const html = marked.parse(body, { async: false });
+    return absolutizeHtml(html, docBaseUrl);
+  } catch (e) {
+    console.warn('  marked 渲染失败，回退为源码输出:', e.message);
+    return `<pre>${escapeXml(body)}</pre>`;
+  }
+}
+
+// CDATA 安全：把字面量 ]]> 拆开
+function wrapCdata(str) {
+  return `<![CDATA[${String(str).replace(/\]\]>/g, ']]]]><![CDATA[>')}]]>`;
+}
+
 // ============== 文件收集 ==============
 function collectFiles(dir, basePath = '') {
   const files = [];
@@ -180,12 +224,17 @@ function buildFeed() {
     const pathUrl = file.repoRelativePath.split('/').map(encodeURIComponent).join('/');
     const itemUrl = `${SITE_URL}${pathUrl}`;
 
+    // 全文 HTML：相对资源以文档所在目录为基准改写为绝对地址
+    const docBaseUrl = itemUrl.slice(0, itemUrl.lastIndexOf('/') + 1);
+    const fullText = renderFullText(body, docBaseUrl);
+
     return {
       title,
       link: itemUrl,
       guid: itemUrl,
       description,
-      pubDate
+      pubDate,
+      fullText
     };
   }).filter(Boolean);
 
@@ -208,12 +257,13 @@ function writeFeed(items) {
       `      <guid isPermaLink="true">${escapeXml(item.guid)}</guid>`,
       `      <pubDate>${pubDate}</pubDate>`,
       `      <description>${escapeXml(item.description)}</description>`,
+      `      <content:encoded>${wrapCdata(item.fullText)}</content:encoded>`,
       '    </item>'
     ].join('\n');
   }).join('\n');
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>${escapeXml(SITE_TITLE)}</title>
     <link>${escapeXml(SITE_URL)}</link>

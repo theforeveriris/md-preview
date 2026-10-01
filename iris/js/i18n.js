@@ -273,7 +273,52 @@
     'settings.offline.clear': '清除文档缓存',
     'settings.offline.cleared': '已清除全部文档缓存',
     'settings.offline.unsupported': '当前环境不支持 Service Worker（需通过 HTTPS 部署访问后使用）',
-    'settings.offline.failed': '缓存失败，请稍后重试'
+    'settings.offline.failed': '缓存失败，请稍后重试',
+
+    // 设置面板 · 移动端手势
+    'settings.display.gestures': '启用移动端手势',
+    'settings.display.gesturesDesc': '触屏设备上左右滑动正文切换上一篇 / 下一篇，自屏幕左缘右滑呼出侧边栏',
+
+    // 设置面板 · 配置备份（设置导出 / 导入）
+    'settings.sub.backup': '配置备份',
+    'settings.backup.export': '导出设置',
+    'settings.backup.exportDesc': '把主题、配色、字体、阅读偏好与界面语言保存为 JSON 文件',
+    'settings.backup.exportBtn': '导出',
+    'settings.backup.import': '导入设置',
+    'settings.backup.importDesc': '选择本站导出的 JSON 备份文件，导入后自动刷新生效',
+    'settings.backup.importBtn': '导入',
+    'settings.backup.invalid': '导入失败：不是有效的设置备份文件',
+
+    // 设置面板 · 存储管理
+    'settings.section.storage': '存储',
+    'settings.sub.storageUsage': '空间占用',
+    'settings.sub.notebooks': '编辑器笔记本',
+    'settings.sub.browsingData': '浏览数据',
+    'storage.usage': '已用 {used} / 约 {quota}（{pct}%）',
+    'storage.unavailable': '当前浏览器不支持存储用量查询',
+    'storage.estimateFailed': '存储用量查询失败',
+    'storage.notebooks.label': '笔记本数据',
+    'storage.notebooks.loading': '正在读取…',
+    'storage.notebooks.summary': '{n} 个笔记本 · 共约 {size}',
+    'storage.notebooks.empty': '暂无笔记本数据',
+    'storage.notebooks.clearAll': '全部清空',
+    'storage.notebooks.unavailable': '当前浏览器不支持 IndexedDB',
+    'storage.notebooks.loadFailed': '笔记本数据读取失败',
+    'storage.notebook.untitled': '未命名笔记本',
+    'storage.notebook.meta': '{cells} 个单元格 · 约 {size}',
+    'storage.notebook.deleteConfirm': '确定删除笔记本「{title}」？此操作不可恢复。',
+    'storage.notebook.deleteFailed': '删除失败，请重试',
+    'storage.delete': '删除',
+    'storage.clear': '清理',
+    'storage.clearConfirm': '确定清理「{label}」？此操作不可恢复。',
+    'storage.data.historyFav': '阅读历史与收藏',
+    'storage.data.historyFavDesc': '{n} 条记录 · 约 {size}',
+    'storage.data.readingPos': '阅读位置',
+    'storage.data.readingPosDesc': '{n} 篇文档 · 约 {size}',
+
+    // 拖拽打开文件 / 文件夹
+    'drop.title': '松开以打开',
+    'drop.desc': '支持 .md / .markdown 文件与整个文件夹'
   };
 
   const en = {
@@ -501,7 +546,52 @@
     'settings.offline.clear': 'Clear document cache',
     'settings.offline.cleared': 'Document cache cleared',
     'settings.offline.unsupported': 'Service Worker is unavailable (requires HTTPS deployment)',
-    'settings.offline.failed': 'Caching failed, please retry'
+    'settings.offline.failed': 'Caching failed, please retry',
+
+    // Settings · mobile gestures
+    'settings.display.gestures': 'Enable mobile gestures',
+    'settings.display.gesturesDesc': 'On touch screens, swipe horizontally to open the previous / next document; swipe right from the left edge to open the sidebar',
+
+    // Settings · settings backup (export / import)
+    'settings.sub.backup': 'Settings Backup',
+    'settings.backup.export': 'Export settings',
+    'settings.backup.exportDesc': 'Save theme, colors, fonts, reading preferences and language as a JSON file',
+    'settings.backup.exportBtn': 'Export',
+    'settings.backup.import': 'Import settings',
+    'settings.backup.importDesc': 'Pick a JSON file exported from this site; the page reloads to apply it',
+    'settings.backup.importBtn': 'Import',
+    'settings.backup.invalid': 'Import failed: not a valid settings backup file',
+
+    // Settings · storage manager
+    'settings.section.storage': 'Storage',
+    'settings.sub.storageUsage': 'Usage',
+    'settings.sub.notebooks': 'Editor notebooks',
+    'settings.sub.browsingData': 'Browsing data',
+    'storage.usage': '{used} used of ~{quota} ({pct}%)',
+    'storage.unavailable': 'Storage usage is not supported in this browser',
+    'storage.estimateFailed': 'Failed to query storage usage',
+    'storage.notebooks.label': 'Notebook data',
+    'storage.notebooks.loading': 'Loading…',
+    'storage.notebooks.summary': '{n} notebooks · ~{size}',
+    'storage.notebooks.empty': 'No notebook data',
+    'storage.notebooks.clearAll': 'Clear all',
+    'storage.notebooks.unavailable': 'IndexedDB is not supported in this browser',
+    'storage.notebooks.loadFailed': 'Failed to read notebook data',
+    'storage.notebook.untitled': 'Untitled notebook',
+    'storage.notebook.meta': '{cells} cells · ~{size}',
+    'storage.notebook.deleteConfirm': 'Delete notebook "{title}"? This cannot be undone.',
+    'storage.notebook.deleteFailed': 'Delete failed, please retry',
+    'storage.delete': 'Delete',
+    'storage.clear': 'Clear',
+    'storage.clearConfirm': 'Clear "{label}"? This cannot be undone.',
+    'storage.data.historyFav': 'History & favorites',
+    'storage.data.historyFavDesc': '{n} entries · ~{size}',
+    'storage.data.readingPos': 'Reading positions',
+    'storage.data.readingPosDesc': '{n} documents · ~{size}',
+
+    // Drag & drop import
+    'drop.title': 'Drop to open',
+    'drop.desc': 'Supports .md / .markdown files and whole folders'
   };
 
   const dicts = { zh, en };

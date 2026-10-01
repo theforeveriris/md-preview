@@ -22,7 +22,8 @@
     contentWidth: 720,
     contentFullWidth: false,
     tableBleed: false,
-    sansHeadingDigits: false
+    sansHeadingDigits: false,
+    mobileGestures: true
   };
 
   // 内容区宽度范围（与设置面板滑杆一致）
@@ -100,7 +101,8 @@
           contentWidth: normalizeContentWidth(parsed.contentWidth ?? defaultSettings.contentWidth),
           contentFullWidth: parsed.contentFullWidth === true,
           tableBleed: parsed.tableBleed === true,
-          sansHeadingDigits: parsed.sansHeadingDigits === true
+          sansHeadingDigits: parsed.sansHeadingDigits === true,
+          mobileGestures: parsed.mobileGestures !== false
         };
       }
     } catch (e) {
@@ -350,6 +352,13 @@
       applySansHeadingDigits(settings.sansHeadingDigits);
     });
 
+    // 移动端手势（左右滑翻页 / 左缘右滑呼出侧边栏）
+    document.getElementById('mobileGesturesToggle')?.addEventListener('change', (e) => {
+      const settings = loadSettings();
+      settings.mobileGestures = e.target.checked;
+      saveSettings(settings);
+    });
+
     resetContentWidthBtn?.addEventListener('click', () => {
       resetContentWidth();
     });
@@ -542,6 +551,8 @@
       settingsOverlay.classList.add('open');
       document.body.style.overflow = 'hidden';
     }
+    // 打开面板时刷新存储管理区块（用量 / 笔记本 / 浏览数据）
+    window.MarkdownPreview.storageManager?.refresh?.();
   }
 
   function closeSettingsPanel() {
@@ -826,6 +837,94 @@
         window.MarkdownPreview.enterPulseGen();
       }
     });
+
+    // 设置导出 / 导入（含主题、语言）
+    const backupExportBtn = document.getElementById('settingsExportBtn');
+    const backupImportBtn = document.getElementById('settingsImportBtn');
+    const backupImportInput = document.getElementById('settingsImportInput');
+
+    backupExportBtn?.addEventListener('click', exportSettings);
+    backupImportBtn?.addEventListener('click', () => backupImportInput?.click());
+    backupImportInput?.addEventListener('change', async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (file) await importSettings(file);
+      e.target.value = '';
+    });
+  }
+
+  // ============== 设置导出 / 导入 ==============
+  // 带走外观与阅读相关的全部 localStorage 键：设置、主题（含自动配对、
+  // 自定义 CSS / hljs）与界面语言。导入采用「写回后刷新」，保证主题、
+  // 字体、i18n 等按启动流程重新应用，避免逐项手工同步遗漏。
+  const BACKUP_KEYS = {
+    settings: 'md-preview-settings',
+    theme: 'md-preview-theme',
+    themeLight: 'md-preview-theme-light',
+    themeDark: 'md-preview-theme-dark',
+    customCss: 'md-preview-custom-css',
+    customHljs: 'md-preview-custom-hljs',
+    lang: 'md-preview-lang'
+  };
+
+  function exportSettings() {
+    const data = {};
+    Object.keys(BACKUP_KEYS).forEach(name => {
+      try {
+        const val = localStorage.getItem(BACKUP_KEYS[name]);
+        if (val != null) data[name] = val;
+      } catch (e) { /* 隐私模式等场景跳过 */ }
+    });
+    const payload = {
+      app: 'md-preview',
+      type: 'settings-backup',
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      data
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'md-preview-settings.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function validBackupLang(v) {
+    return v === 'auto' || v === 'zh' || v === 'en';
+  }
+
+  async function importSettings(file) {
+    let payload;
+    try {
+      payload = JSON.parse(await file.text());
+    } catch (e) {
+      alert(t('settings.backup.invalid', '导入失败：不是有效的设置备份文件'));
+      return;
+    }
+    if (!payload || payload.app !== 'md-preview' || payload.type !== 'settings-backup' ||
+        !payload.data || typeof payload.data !== 'object') {
+      alert(t('settings.backup.invalid', '导入失败：不是有效的设置备份文件'));
+      return;
+    }
+    const data = payload.data;
+    try {
+      // settings 单独校验：必须是可解析的 JSON 对象
+      if (typeof data.settings === 'string') JSON.parse(data.settings);
+      if (data.theme != null && typeof data.theme !== 'string') throw new Error('bad theme');
+      if (data.lang != null && !validBackupLang(data.lang)) throw new Error('bad lang');
+      Object.keys(BACKUP_KEYS).forEach(name => {
+        const val = data[name];
+        if (val == null) return;
+        localStorage.setItem(BACKUP_KEYS[name], String(val));
+      });
+    } catch (e) {
+      alert(t('settings.backup.invalid', '导入失败：不是有效的设置备份文件'));
+      return;
+    }
+    location.reload();
   }
 
   // 导出 PDF：通过浏览器打印对话框
@@ -998,6 +1097,7 @@ body { margin: 0; }
     const codeThemeSelect = document.getElementById('codeThemeSelect');
     const tableBleedToggle = document.getElementById('tableBleedToggle');
     const sansHeadingDigitsToggle = document.getElementById('sansHeadingDigitsToggle');
+    const mobileGesturesToggle = document.getElementById('mobileGesturesToggle');
 
     if (showReadingProgressToggle) showReadingProgressToggle.checked = settings.showReadingProgress;
     if (showWordCountToggle) showWordCountToggle.checked = settings.showWordCount;
@@ -1005,6 +1105,7 @@ body { margin: 0; }
     if (codeThemeSelect) codeThemeSelect.value = settings.codeTheme;
     if (tableBleedToggle) tableBleedToggle.checked = settings.tableBleed === true;
     if (sansHeadingDigitsToggle) sansHeadingDigitsToggle.checked = settings.sansHeadingDigits === true;
+    if (mobileGesturesToggle) mobileGesturesToggle.checked = settings.mobileGestures !== false;
 
     // 取色器显示：有自定义值用自定义值，否则显示默认色
     document.querySelectorAll('input[type="color"][data-var]').forEach(input => {

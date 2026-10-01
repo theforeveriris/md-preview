@@ -567,6 +567,19 @@
                   </label>
                 </div>
               </div>
+
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label" data-i18n="settings.display.gestures">启用移动端手势</div>
+                  <div class="setting-description" data-i18n="settings.display.gesturesDesc">触屏设备上左右滑动正文切换上一篇 / 下一篇，自屏幕左缘右滑呼出侧边栏</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="mobileGesturesToggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
             </div>
 
             <div class="settings-subsection">
@@ -668,6 +681,29 @@
             </div>
 
             <div class="settings-subsection">
+              <div class="settings-subsection-title" data-i18n="settings.sub.backup">配置备份</div>
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label" data-i18n="settings.backup.export">导出设置</div>
+                  <div class="setting-description" data-i18n="settings.backup.exportDesc">把主题、配色、字体、阅读偏好与界面语言保存为 JSON 文件</div>
+                </div>
+                <div class="setting-control">
+                  <button id="settingsExportBtn" class="download-btn" data-i18n="settings.backup.exportBtn">导出</button>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label" data-i18n="settings.backup.import">导入设置</div>
+                  <div class="setting-description" data-i18n="settings.backup.importDesc">选择本站导出的 JSON 备份文件，导入后自动刷新生效</div>
+                </div>
+                <div class="setting-control">
+                  <button id="settingsImportBtn" class="download-btn" data-i18n="settings.backup.importBtn">导入</button>
+                  <input type="file" id="settingsImportInput" accept=".json,application/json" hidden>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-subsection">
               <div class="settings-subsection-title" data-i18n="settings.sub.offline">离线缓存</div>
               <div class="setting-item">
                 <div>
@@ -678,6 +714,39 @@
                   <button id="cacheAllBtn" class="download-btn" data-i18n="settings.offline.btn">缓存全部文档</button>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h3 class="settings-section-title" data-i18n="settings.section.storage">存储</h3>
+
+            <div class="settings-subsection">
+              <div class="settings-subsection-title" data-i18n="settings.sub.storageUsage">空间占用</div>
+              <div class="storage-usage">
+                <div class="storage-usage-bar" role="img" aria-hidden="true">
+                  <div class="storage-usage-fill" id="storageUsageFill"></div>
+                </div>
+                <div class="storage-usage-text" id="storageUsageText">…</div>
+              </div>
+            </div>
+
+            <div class="settings-subsection">
+              <div class="settings-subsection-title" data-i18n="settings.sub.notebooks">编辑器笔记本</div>
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label" data-i18n="storage.notebooks.label">笔记本数据</div>
+                  <div class="setting-description" id="storageNotebooksDesc" data-i18n="storage.notebooks.loading">正在读取…</div>
+                </div>
+                <div class="setting-control">
+                  <button id="storageNotebooksClearBtn" class="download-btn" data-i18n="storage.notebooks.clearAll" hidden>全部清空</button>
+                </div>
+              </div>
+              <ul class="storage-notebook-list" id="storageNotebookList"></ul>
+            </div>
+
+            <div class="settings-subsection">
+              <div class="settings-subsection-title" data-i18n="settings.sub.browsingData">浏览数据</div>
+              <div id="storageDataList"></div>
             </div>
           </div>
         </div>
@@ -707,6 +776,19 @@
           <span class="local-pick-option-desc" data-i18n="local.pickFolderDesc">导入整个文件夹，按目录树展示</span>
         </span>
       </button>
+    </div>
+  </div>
+
+  <!-- 拖拽导入遮罩：拖动 .md 文件 / 文件夹进入页面时显示 -->
+  <div class="drop-overlay" id="dropOverlay" aria-hidden="true">
+    <div class="drop-overlay-card">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      <div class="drop-overlay-title" data-i18n="drop.title">松开以打开</div>
+      <div class="drop-overlay-desc" data-i18n="drop.desc">支持 .md / .markdown 文件与整个文件夹</div>
     </div>
   </div>
 
@@ -1662,6 +1744,8 @@
   <script defer src="iris/js/hover-preview.js"></script>
   <script defer src="iris/js/qr-share.js"></script>
   <script defer src="iris/js/selection-tools.js"></script>
+  <script defer src="iris/js/gestures.js"></script>
+  <script defer src="iris/js/storage-manager.js"></script>
 
   <!-- Plugin System -->
   <script defer src="iris/js/plugins/loader.js"></script>

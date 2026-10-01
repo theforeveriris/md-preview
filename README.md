@@ -53,6 +53,8 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 内容区宽度可调：设置面板滑杆调整正文最大宽度，或一键占满可用宽度，快捷键 `Ctrl/⌘ + Alt + =/-/0/F` 快速调节
 - 全局快捷键：设置面板 `Ctrl/⌘ + ,`、搜索 `Ctrl/⌘ + K`、上一篇/下一篇 `[` / `]` 等，详见[快捷键](docs/shortcuts.md)
 - 打开本地文件：悬浮球统一入口，选择面板内可选「文件」（一次多选，最多 20 个，未打开的进入侧边栏「本地文件」会话列表，可切换、移除或清空，内容仅驻内存刷新即清空）或「文件夹」（整体导入目录，File System Access API，旧浏览器自动回退；按目录树展示、可折叠，内容懒加载点开即读，上一篇/下一篇在全部文件间循环）
+- 拖拽打开：把 `.md` 文件或整个文件夹从系统拖入页面任意位置即可打开，拖入期间全屏提示，限制与手动选择一致；编辑器模式内不接管
+- 移动端手势：触屏设备上左右滑动正文切换上一篇 / 下一篇，自屏幕左缘右滑呼出侧边栏抽屉（设置面板可关闭）
 - 界面多语言：中文 / English 界面语言包，默认跟随浏览器语言，设置面板一键切换
 - 阅读时间估算：自动计算预计阅读时长
 - Frontmatter：支持 YAML 元数据解析
@@ -96,8 +98,11 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 导出 PDF：通过浏览器打印对话框导出为 PDF
 - 导出 HTML：保存为内联当前主题样式与全部本地 CSS 的单文件 HTML，双击即可离线查看
 - 导出 Markdown：下载当前文章为 `.md`
+- 设置导出 / 导入：主题、配色、字体、阅读偏好与界面语言一键备份为 JSON 文件，换设备或换浏览器一键恢复
+- 存储管理：设置面板「存储」区块可视化站点空间占用，支持编辑器笔记本逐条 / 全部删除、阅读历史 / 收藏 / 阅读位置一键清理（均有二次确认）
 - 主题化分享卡片：选中段落生成当前主题配色的 1200×630 PNG 卡片（选中文字工具条内），适合发社交媒体
-- RSS 源：自动生成 `feed.xml`，支持 RSS 阅读器订阅
+- RSS 源（全文输出）：自动生成 `feed.xml`，RSS 阅读器可直接阅读全文（正文 Markdown 渲染为 HTML，相对资源改写为绝对地址）
+- sitemap：自动生成 `sitemap.xml`（robots.txt 声明），收录首页与全部文档直链，便于搜索引擎索引
 - PWA 支持：可安装到桌面，离线访问已访问文档，更新时提示刷新；设置面板「缓存全部文档」一键预热整站文档缓存（可清除）
 
 ### 工程与开发
@@ -106,6 +111,7 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 编辑此页：悬浮球快速跳转 GitHub 编辑页面
 - 响应式设计：完美适配桌面端和移动端
 - 按需懒加载：Mermaid / ApexCharts / Leaflet / KaTeX / Diff2Html / Cytoscape.js 等重型库只在命中对应代码块时加载，首屏体积从约 6.8MB 降至约 1MB
+- CI 冒烟测试：GitHub Actions 在 push / PR 时自动跑全部构建脚本 + 站点结构 / 语法 / i18n / 数据产物冒烟检查（`smoke-test.yml`）
 
 ### 内置编辑器
 
@@ -134,6 +140,13 @@ Demo：https://theforeveriris.github.io/md-preview/
 - ✅ 扫码续读
 - ✅ 选中文字浮动工具栏 + 主题化分享卡片
 - ✅ 全量离线开关（缓存全部文档）
+- ✅ 移动端手势（左右滑翻页 + 左缘右滑呼出侧边栏）
+- ✅ 存储管理页（设置面板「存储」区块）
+- ✅ 拖拽打开文件 / 文件夹
+- ✅ 设置导出 / 导入
+- ✅ 全文 RSS
+- ✅ sitemap.xml + robots.txt
+- ✅ CI 冒烟测试
 
 以下功能已有明确规划、尚未实现，目标交互与实现要点详见[功能路线图](docs/roadmap.md)：
 
@@ -141,7 +154,6 @@ Demo：https://theforeveriris.github.io/md-preview/
 |------|----------|
 | 离线与 PWA | OS 级文件关联、系统分享目标 |
 | 写作流程 | 草稿系统（`draft: true`）、文档密码保护 |
-| 移动端与运维 | 移动端手势、存储管理页 |
 
 ## 快速开始
 
@@ -168,6 +180,9 @@ node iris/scripts/build-search-index.js
 
 # 构建 RSS feed
 node iris/scripts/build-feed.js
+
+# 构建 sitemap（可选）
+node iris/scripts/build-sitemap.js
 
 # 构建 PKT/eNSP 产物（若有 raw 目录文件）
 python3 iris/scripts/pkt/main.py
@@ -273,6 +288,7 @@ python3 iris/scripts/pptx/main.py
 ├── index.html              # 入口页面
 ├── manifest.json           # PWA 清单
 ├── sw.js                   # Service Worker
+├── robots.txt              # 爬虫规则 + Sitemap 声明
 ├── README.md               # 用户手册
 ├── readme-dev.md           # 开发者文档
 ├── iris/
@@ -293,7 +309,9 @@ python3 iris/scripts/pptx/main.py
 │   │   ├── themes/theme-manager.js  # 主题切换（含 auto 自动主题）
 │   │   ├── markdown.js     # Markdown 渲染 + 图片灯箱
 │   │   ├── renderers/      # 各代码块渲染器（mermaid/pkt/pptx 等）
-│   │   ├── local-docs.js   # 本地文件/文件夹会话
+│   │   ├── local-docs.js   # 本地文件/文件夹会话 + 拖拽打开
+│   │   ├── gestures.js     # 移动端手势（滑动翻页 / 边缘呼出侧边栏）
+│   │   ├── storage-manager.js  # 设置面板存储管理区块
 │   │   ├── i18n.js         # 界面多语言（zh/en）
 │   │   ├── interactions.js # 表格手柄、LaTeX 右键复制等内容交互
 │   │   └── storage.js      # IndexedDB 笔记本存储

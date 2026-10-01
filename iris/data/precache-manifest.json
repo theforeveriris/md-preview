@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-01T10:24:56.349Z",
+  "generatedAt": "2026-10-01T15:17:20.935Z",
   "version": 1,
-  "count": 78,
+  "count": 80,
   "urls": [
     "./",
     "./index.html",
@@ -38,6 +38,7 @@
     "./iris/js/dom.js",
     "./iris/js/editor.js",
     "./iris/js/file-tree.js",
+    "./iris/js/gestures.js",
     "./iris/js/history.js",
     "./iris/js/hover-preview.js",
     "./iris/js/i18n.js",
@@ -67,6 +68,7 @@
     "./iris/js/selection-tools.js",
     "./iris/js/settings.js",
     "./iris/js/state.js",
+    "./iris/js/storage-manager.js",
     "./iris/js/storage.js",
     "./iris/js/themes/theme-manager.js",
     "./iris/js/ui.js",

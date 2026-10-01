@@ -37,6 +37,10 @@
     if (window.MarkdownPreview.selectionTools && window.MarkdownPreview.selectionTools.init) {
       window.MarkdownPreview.selectionTools.init();
     }
+    // 移动端手势（左右滑翻页 / 左缘右滑呼出侧边栏）
+    if (window.MarkdownPreview.gestures && window.MarkdownPreview.gestures.init) {
+      window.MarkdownPreview.gestures.init();
+    }
     if (window.MarkdownPreview.plugins && window.MarkdownPreview.plugins.autoLoad) {
       await window.MarkdownPreview.plugins.autoLoad();
     }

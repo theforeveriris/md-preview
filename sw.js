@@ -1,5 +1,5 @@
-const CACHE_NAME = 'md-preview-v8.17';
-const RUNTIME_CACHE = 'md-preview-runtime-v8.17';
+const CACHE_NAME = 'md-preview-v8.18';
+const RUNTIME_CACHE = 'md-preview-runtime-v8.18';
 const PRECACHE_MANIFEST_URL = './iris/data/precache-manifest.json';
 
 // 最小化兜底清单：当 manifest 拉取失败时使用，仅保证核心骨架可离线

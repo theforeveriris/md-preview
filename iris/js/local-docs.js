@@ -22,6 +22,13 @@
  *   - 同名文件再次选择视为更新：原位替换内容并打开
  *   - 移除/清空"当前打开中"的文件时，正文保持显示，
  *     但清除 localDoc 与高亮（导出回退为"请先打开一个文档"）
+ *
+ * 拖拽打开：
+ *   - 把 .md 文件或整个文件夹从系统拖入页面任意位置即可打开，
+ *     拖入期间全屏显示提示遮罩
+ *   - 文件夹通过 DataTransferItem.webkitGetAsEntry 递归展开，
+ *     限制与「打开本地文件夹」一致（500 个 / 10MB，跳过构建目录）
+ *   - 编辑器模式下不接管拖放（编辑器有自己的文件处理）
  */
 (function() {
   'use strict';
@@ -460,6 +467,154 @@
     return true;
   }
 
+  // ============== 拖拽打开文件 / 文件夹 ==============
+
+  // DataTransferItem 的 entry 必须在 drop 事件同步阶段取出，
+  // 事件循环一旦让出（await）items 即失效
+  function collectAsEntries(dataTransfer) {
+    const entries = [];
+    const items = dataTransfer && dataTransfer.items;
+    if (items) {
+      for (const item of items) {
+        if (item.kind !== 'file') continue;
+        const entry = item.webkitGetAsEntry && item.webkitGetAsEntry();
+        if (entry) entries.push(entry);
+      }
+    }
+    return entries;
+  }
+
+  // 递归展开拖入的目录。readEntries 每次最多返回一批（常为 100 条），
+  // 需循环读到空为止才能拿全目录
+  async function walkDroppedEntry(entry, prefix, out, skipped) {
+    if (out.length >= MAX_FOLDER_FILES) return;
+    if (entry.isFile) {
+      if (!/\.(md|markdown)$/i.test(entry.name)) return;
+      let file;
+      try {
+        file = await new Promise((resolve, reject) => entry.file(resolve, reject));
+      } catch (e) {
+        skipped.push(entry.name + t('local.readFailed', '（读取失败）'));
+        return;
+      }
+      if (file.size > MAX_FILE_BYTES) {
+        skipped.push(entry.name + t('local.tooLarge', '（超过 10MB）'));
+        return;
+      }
+      out.push({
+        id: makeId(),
+        name: entry.name,
+        path: prefix ? prefix + '/' + entry.name : entry.name,
+        content: null,
+        words: null,
+        file
+      });
+    } else if (entry.isDirectory) {
+      if (SKIP_DIRS.has(entry.name) || entry.name.startsWith('.')) return;
+      const childPrefix = prefix ? prefix + '/' + entry.name : entry.name;
+      const reader = entry.createReader();
+      for (;;) {
+        let batch;
+        try {
+          batch = await new Promise((resolve, reject) => reader.readEntries(resolve, reject));
+        } catch (e) {
+          return;
+        }
+        if (!batch.length) break;
+        for (const child of batch) {
+          await walkDroppedEntry(child, childPrefix, out, skipped);
+          if (out.length >= MAX_FOLDER_FILES) return;
+        }
+      }
+    }
+  }
+
+  async function handleDroppedEntries(entries, dataTransfer) {
+    const hasDirectory = entries.some(entry => entry.isDirectory);
+
+    // 纯文件拖入：过滤 .md 后走多选文件同一管线
+    if (!hasDirectory) {
+      const files = Array.from((dataTransfer && dataTransfer.files) || [])
+        .filter(f => /\.(md|markdown)$/i.test(f.name));
+      if (files.length === 0) {
+        alert(t('local.folderEmpty', '该文件夹内没有找到 .md 文件'));
+        return;
+      }
+      await handlePickedFiles(files);
+      return;
+    }
+
+    // 含目录：整体导入为文件夹会话
+    if (!await confirmFolderReplace()) return;
+    const rootName = entries.find(entry => entry.isDirectory).name;
+    const skipped = [];
+    const out = [];
+    for (const entry of entries) {
+      await walkDroppedEntry(entry, '', out, skipped);
+    }
+    if (out.length === 0) {
+      alert(t('local.folderEmpty', '该文件夹内没有找到 .md 文件'));
+      return;
+    }
+    applyFolderSession(rootName, out);
+    if (skipped.length > 0) {
+      alert(t('local.skippedFiles', '以下文件未加入列表：\n') + skipped.join('\n'));
+    }
+  }
+
+  function isFileDrag(e) {
+    const types = e.dataTransfer && Array.from(e.dataTransfer.types || []);
+    return types && types.indexOf('Files') !== -1;
+  }
+
+  let dragDepth = 0;
+
+  function initDragDrop() {
+    const overlay = document.getElementById('dropOverlay');
+    const show = () => { if (overlay) overlay.classList.add('open'); };
+    const hide = () => {
+      dragDepth = 0;
+      if (overlay) overlay.classList.remove('open');
+    };
+
+    document.addEventListener('dragenter', (e) => {
+      // 编辑器模式有自己的拖放处理（图片 / 文件插入），不接管
+      if (document.body.classList.contains('editor-mode')) return;
+      if (!isFileDrag(e)) return;
+      e.preventDefault();
+      dragDepth += 1;
+      show();
+    });
+    document.addEventListener('dragover', (e) => {
+      if (document.body.classList.contains('editor-mode')) return;
+      if (!isFileDrag(e)) return;
+      // 允许 drop：必须持续阻止默认行为
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+    });
+    document.addEventListener('dragleave', (e) => {
+      if (!isFileDrag(e)) return;
+      dragDepth -= 1;
+      if (dragDepth <= 0) hide();
+    });
+    document.addEventListener('drop', async (e) => {
+      hide();
+      if (document.body.classList.contains('editor-mode')) return;
+      if (!isFileDrag(e)) return;
+      e.preventDefault();
+      const entries = collectAsEntries(e.dataTransfer);
+      if (entries.length === 0) return;
+      try {
+        await handleDroppedEntries(entries, e.dataTransfer);
+      } catch (err) {
+        console.error('[local-docs] 拖拽导入失败:', err);
+        alert(t('local.readFailed', '（读取失败）'));
+      }
+    });
+    window.addEventListener('dragend', hide);
+    window.addEventListener('blur', hide);
+  }
+
   // ============== 初始化 ==============
   function bindPicker() {
     inputEl = document.getElementById('localMdInput');
@@ -498,6 +653,7 @@
     });
 
     bindPicker();
+    initDragDrop();
     renderPanel();
   }
 

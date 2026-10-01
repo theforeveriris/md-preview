@@ -59,13 +59,15 @@
 | File Tree | `iris/js/file-tree.js` | 侧边栏文件树 / 索引、字数、搜索结果列表、上一篇/下一篇 |
 | Markdown | `iris/js/markdown.js` | marked + 代码块高亮、标题锚点、图片灯箱（ArrowLeft/Right 翻页）、frontmatter 解析 |
 | Interactions | `iris/js/interactions.js` | 表格悬浮手柄（主题化 PNG 导出 / 复制 Markdown / 复制 CSV）、LaTeX 右键复制 |
-| Local Docs | `iris/js/local-docs.js` | 本地 MD 多选会话（侧边栏「本地文件」面板）+ 本地文件夹导入（懒加载目录树） |
+| Local Docs | `iris/js/local-docs.js` | 本地 MD 多选会话（侧边栏「本地文件」面板）+ 本地文件夹导入（懒加载目录树）+ 拖拽打开文件 / 文件夹（全屏遮罩 + webkitGetAsEntry 递归展开） |
+| Gestures | `iris/js/gestures.js` | 移动端手势：左右滑翻上/下一篇（本地会话优先）、左缘右滑呼出侧边栏；编辑器/浮层/横向滚动容器内让位，设置开关 `mobileGestures` |
 | History | `iris/js/history.js` | 浏览历史/收藏数据；长按文件树收藏（pointer + composedPath 穿透 Shadow DOM），最近 5 篇/收藏项的树内提示类切换 |
 | Hover Preview | `iris/js/hover-preview.js` | 站内链接悬浮摘要卡片（fetch + parseFrontmatter + extractExcerpt，内存缓存） |
 | QR Share | `iris/js/qr-share.js` | 悬浮球「扫码续读」二维码弹窗（外部 API 生成，`?pos=` 参数由 reading-pos.js 消费） |
 | Search | `iris/js/search.js` | FlexSearch 全文索引加载与搜索命令面板 |
 | UI | `iris/js/ui.js` | 全局事件与快捷键路由、搜索命令面板交互 |
 | Storage | `iris/js/storage.js` | IndexedDB 笔记本存储（替代 localStorage 大内容） |
+| Storage Manager | `iris/js/storage-manager.js` | 设置面板「存储」区块：`storage.estimate()` 用量条、笔记本删除/清空、历史收藏与阅读位置清理（打开面板时由 settings.js 触发 refresh） |
 | i18n | `iris/js/i18n.js` | zh/en 语言包；静态文案用 `data-i18n` 系列属性标记，动态文案走 `t(key, fallback)`；语言选择存 `localStorage('md-preview-lang')`，切换后广播 `langchange` 事件 |
 | App | `iris/js/app.js` | Hash 路由、编辑器模式 (`?mode=editor`)、Pulse 生成器 (`?mode=pulsegen`) |
 
@@ -112,11 +114,12 @@
 
 | 工作流文件 | 触发条件 | 作用 |
 |-----------|----------|------|
-| `build-and-deploy.yml` | push 到 `main`，或手动触发 | 构建 file-tree / search-index / feed 并部署到 GitHub Pages |
-| `build-feed.yml` | push 到 `main` | 运行 `build-feed.js`，`feed.xml` 有变化时提交回仓库 |
+| `build-and-deploy.yml` | push 到 `main`，或手动触发 | 构建 file-tree / search-index / precache / sitemap 并部署到 GitHub Pages |
+| `build-feed.yml` | push 到 `main` 且 `docs/**` 变化 | 运行 `build-feed.js` + `build-sitemap.js`，`feed.xml` / `sitemap.xml` 有变化时提交回仓库 |
 | `build-search-index.yml` | push 到 `main` | 运行 `build-search-index.js`，`search-index.json` 有变化时提交回仓库 |
 | `build-pkt.yml` | push 到 `main`，且 `iris/data/pkt/raw/**` 或 `iris/data/ensp/raw/**` 变化 | 执行 `iris/scripts/pkt/main.py` 和 `iris/scripts/ensp/main.py`，把产物 push 回 `data/pkt/json`、`data/pkt/images` 等 |
 | `build-pptx.yml` | push 到 `main`，且 `iris/data/pptx/raw/**` 变化 | 安装 LibreOffice + poppler-utils，跑 `iris/scripts/pptx/main.py`：PPTX→PDF→PNG/SVG+元数据 JSON，push 回 |
+| `smoke-test.yml` | push / PR 到 `main`，或手动触发 | 跑全部构建脚本验证可执行，安装 jsdom 后运行 `iris/scripts/smoke-test.js` 冒烟测试 |
 | `sync-to-product.yml` | push 到 `main` | 将站点产物同步到 product 分支 |
 
 ### 产物存放约定
@@ -199,7 +202,20 @@ node iris/scripts/build-search-index.js
 ```
 node iris/scripts/build-feed.js
 ```
-按修改时间排序输出 Atom 1.0 格式的 `iris/data/feed.xml`。
+扫描 `docs/` 全部 `.md`，按发布时间倒序输出 RSS 2.0 的 `iris/data/feed.xml`（全文输出：正文用本地 `iris/vendor/marked.js` 渲染为 HTML，经 `<content:encoded>` 附于每条目，相对链接/图片改写为绝对地址）。
+
+### sitemap 构建
+```
+node iris/scripts/build-sitemap.js
+```
+收录站点首页与 `docs/` 下全部 `.md` 直链，`lastmod` 取 git 最后提交时间，输出 `iris/data/sitemap.xml`；根目录 `robots.txt` 声明 `Sitemap:`。
+
+### 冒烟测试
+```
+node iris/scripts/smoke-test.js        # 需先在 iris/ 下安装 jsdom
+npm install --no-save jsdom@^29.1.1 --prefix iris   # 只装冒烟测试依赖
+```
+`iris/scripts/smoke-test.js` 做 4 组快速校验：① 全部第一方 JS 用 `vm.Script` 语法解析；② jsdom 解析 index.html，校验关键骨架节点与脚本/样式引用真实存在；③ 隔离沙箱加载 i18n.js，校验 `data-i18n*` key 在 zh 语言包齐全；④ 数据产物（file-tree / search-index / precache 清单引用 / feed 全文标记 / sitemap / robots.txt）完好。CI 中先跑全部构建脚本再跑冒烟（见 `smoke-test.yml`）。
 
 ### PKT / eNSP 构建
 ```
@@ -287,6 +303,7 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │   │   ├── local-docs.js         # 本地文件/文件夹会话
 │   │   ├── history.js / reading-pos.js  # 长按收藏·树内提示 / 阅读位置续读
 │   │   ├── hover-preview.js / qr-share.js  # 链接悬浮预览 / 扫码续读
+│   │   ├── gestures.js / storage-manager.js  # 移动端手势 / 设置面板存储管理区块
 │   │   ├── search.js / ui.js     # 搜索命令面板 / 全局事件与快捷键路由
 │   │   ├── i18n.js               # zh/en 界面语言包
 │   │   ├── dom.js                # 按需加载 DOM 工具
@@ -297,7 +314,7 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │   ├── vendor/                   # 本地化的前端依赖
 │   ├── plugins/                  # 插件（qrcode / countdown / colorcard）
 │   ├── data/                     # 预构建数据
-│   │   ├── file-tree.json / search-index.json / feed.xml / precache-manifest.json
+│   │   ├── file-tree.json / search-index.json / feed.xml / precache-manifest.json / sitemap.xml
 │   │   ├── pkt/    json + images （Cisco Packet Tracer 拓扑）
 │   │   ├── ensp/   xml + json    （华为 eNSP 拓扑：xml 原始工程，json 解析产物）
 │   │   └── pptx/   json + svg/png （PPTX 渲染产物）
@@ -306,6 +323,8 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │       ├── build-file-tree.js
 │       ├── build-search-index.js
 │       ├── build-feed.js
+│       ├── build-sitemap.js      # sitemap.xml（robots.txt 指向）
+│       ├── smoke-test.js         # CI 冒烟测试（jsdom）
 │       ├── pkt/main.py           # .pkt 解析
 │       ├── ensp/main.py          # .topo/.zip (华为 eNSP) → xml + json
 │       └── pptx/main.py          # pptx → PDF → PNG/SVG + meta json
@@ -318,7 +337,8 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │   └── examples/                 # 27+ 篇功能示例
 └── .github/workflows/
     ├── build-and-deploy.yml      # 构建产物 + 部署 GitHub Pages
-    ├── build-feed.yml / build-search-index.yml  # feed / 索引重建
+    ├── build-feed.yml / build-search-index.yml  # feed + sitemap / 索引重建
     ├── build-pkt.yml / build-pptx.yml           # 拓扑 / PPTX 产物
+    ├── smoke-test.yml            # CI 冒烟测试
     └── sync-to-product.yml       # 同步 product 分支
 ```

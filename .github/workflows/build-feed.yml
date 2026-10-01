@@ -29,9 +29,12 @@ jobs:
     - name: Build RSS feed
       run: node iris/scripts/build-feed.js
 
+    - name: Build sitemap
+      run: node iris/scripts/build-sitemap.js
+
     - name: Commit and push changes
       uses: EndBug/add-and-commit@v9
       with:
-        message: 'build: update feed.xml'
-        add: 'iris/data/feed.xml'
+        message: 'build: update feed.xml and sitemap.xml'
+        add: 'iris/data/feed.xml iris/data/sitemap.xml'
         default_author: github_actions

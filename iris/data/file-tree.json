@@ -266,14 +266,14 @@
         "name": "roadmap.md",
         "type": "file",
         "path": "docs/roadmap.md",
-        "wordCount": 435,
+        "wordCount": 452,
         "title": "功能路线图"
       },
       {
         "name": "rss.md",
         "type": "file",
         "path": "docs/rss.md",
-        "wordCount": 341,
+        "wordCount": 421,
         "title": "RSS 订阅"
       },
       {
@@ -298,12 +298,3323 @@
         "title": "主题定制"
       }
     ],
-    "wordCount": 19584
+    "wordCount": 19681
   },
   {
     "name": "iris",
     "type": "folder",
     "children": [
+      {
+        "name": "node_modules",
+        "type": "folder",
+        "children": [
+          {
+            "name": "@antfu",
+            "type": "folder",
+            "children": [
+              {
+                "name": "install-pkg",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@antfu/install-pkg/README.md",
+                    "wordCount": 20,
+                    "title": "install-pkg"
+                  }
+                ],
+                "wordCount": 20
+              }
+            ],
+            "wordCount": 20
+          },
+          {
+            "name": "@asamuzakjp",
+            "type": "folder",
+            "children": [
+              {
+                "name": "css-color",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@asamuzakjp/css-color/README.md",
+                    "wordCount": 412,
+                    "title": "CSS color"
+                  }
+                ],
+                "wordCount": 412
+              },
+              {
+                "name": "dom-selector",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@asamuzakjp/dom-selector/README.md",
+                    "wordCount": 276,
+                    "title": "DOM Selector"
+                  }
+                ],
+                "wordCount": 276
+              },
+              {
+                "name": "generational-cache",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@asamuzakjp/generational-cache/README.md",
+                    "wordCount": 438,
+                    "title": "generational-cache"
+                  }
+                ],
+                "wordCount": 438
+              },
+              {
+                "name": "nwsapi",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@asamuzakjp/nwsapi/README.md",
+                    "wordCount": 415,
+                    "title": "[NWSAPI](http://dperini.github.io/nwsapi/)"
+                  }
+                ],
+                "wordCount": 415
+              }
+            ],
+            "wordCount": 1541
+          },
+          {
+            "name": "@braintree",
+            "type": "folder",
+            "children": [
+              {
+                "name": "sanitize-url",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": ".github",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "pull_request_template.md",
+                        "type": "file",
+                        "path": "iris/node_modules/@braintree/sanitize-url/.github/pull_request_template.md",
+                        "wordCount": 1,
+                        "title": "Summary of changes"
+                      }
+                    ],
+                    "wordCount": 1
+                  },
+                  {
+                    "name": "CHANGELOG.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@braintree/sanitize-url/CHANGELOG.md",
+                    "wordCount": 84,
+                    "title": "CHANGELOG"
+                  },
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@braintree/sanitize-url/README.md",
+                    "wordCount": 38,
+                    "title": "sanitize-url"
+                  }
+                ],
+                "wordCount": 123
+              }
+            ],
+            "wordCount": 123
+          },
+          {
+            "name": "@bramus",
+            "type": "folder",
+            "children": [
+              {
+                "name": "specificity",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@bramus/specificity/README.md",
+                    "wordCount": 570,
+                    "title": "Specificity"
+                  }
+                ],
+                "wordCount": 570
+              }
+            ],
+            "wordCount": 570
+          },
+          {
+            "name": "@csstools",
+            "type": "folder",
+            "children": [
+              {
+                "name": "color-helpers",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "CHANGELOG.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@csstools/color-helpers/CHANGELOG.md",
+                    "wordCount": 3,
+                    "title": "Changes to Color Helpers"
+                  },
+                  {
+                    "name": "LICENSE.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@csstools/color-helpers/LICENSE.md",
+                    "wordCount": 144
+                  },
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@csstools/color-helpers/README.md",
+                    "wordCount": 79,
+                    "title": "Color Helpers <img src=\"https://cssdb.org/images/css.svg\" alt=\"for CSS\" width=\"90\" height=\"90\" align=\"right\">"
+                  }
+                ],
+                "wordCount": 226
+              },
+              {
+                "name": "css-calc",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "CHANGELOG.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@csstools/css-calc/CHANGELOG.md",
+                    "wordCount": 3,
+                    "title": "Changes to CSS Calc"
+                  },
+                  {
+                    "name": "LICENSE.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@csstools/css-calc/LICENSE.md",
+                    "wordCount": 172
+                  },
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@csstools/css-calc/README.md",
+                    "wordCount": 133,
+                    "title": "CSS Calc <img src=\"https://cssdb.org/images/css.svg\" alt=\"for CSS\" width=\"90\" height=\"90\" align=\"right\">"
+                  }
+                ],
+                "wordCount": 308
+              },
+              {
+                "name": "css-color-parser",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "CHANGELOG.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@csstools/css-color-parser/CHANGELOG.md",
+                    "wordCount": 3,
+                    "title": "Changes to CSS Color Parser"
+                  },
+                  {
+                    "name": "LICENSE.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@csstools/css-color-parser/LICENSE.md",
+                    "wordCount": 172
+                  },
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@csstools/css-color-parser/README.md",
+                    "wordCount": 30,
+                    "title": "CSS Color Parser <img src=\"https://cssdb.org/images/css.svg\" alt=\"for CSS\" width=\"90\" height=\"90\" align=\"right\">"
+                  }
+                ],
+                "wordCount": 205
+              },
+              {
+                "name": "css-parser-algorithms",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "CHANGELOG.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@csstools/css-parser-algorithms/CHANGELOG.md",
+                    "wordCount": 3,
+                    "title": "Changes to CSS Parser Algorithms"
+                  },
+                  {
+                    "name": "LICENSE.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@csstools/css-parser-algorithms/LICENSE.md",
+                    "wordCount": 172
+                  },
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@csstools/css-parser-algorithms/README.md",
+                    "wordCount": 182,
+                    "title": "CSS Parser Algorithms <img src=\"https://cssdb.org/images/css.svg\" alt=\"for CSS\" width=\"90\" height=\"90\" align=\"right\">"
+                  }
+                ],
+                "wordCount": 357
+              },
+              {
+                "name": "css-syntax-patches-for-csstree",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "CHANGELOG.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@csstools/css-syntax-patches-for-csstree/CHANGELOG.md",
+                    "wordCount": 3,
+                    "title": "Changes to CSS Syntax Patches For CSSTree"
+                  },
+                  {
+                    "name": "LICENSE.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@csstools/css-syntax-patches-for-csstree/LICENSE.md",
+                    "wordCount": 144
+                  },
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@csstools/css-syntax-patches-for-csstree/README.md",
+                    "wordCount": 90,
+                    "title": "CSS Syntax Patches For CSSTree <img src=\"https://cssdb.org/images/css.svg\" alt=\"for CSS\" width=\"90\" height=\"90\" align=\"right\">"
+                  }
+                ],
+                "wordCount": 237
+              },
+              {
+                "name": "css-tokenizer",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "CHANGELOG.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@csstools/css-tokenizer/CHANGELOG.md",
+                    "wordCount": 3,
+                    "title": "Changes to CSS Tokenizer"
+                  },
+                  {
+                    "name": "LICENSE.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@csstools/css-tokenizer/LICENSE.md",
+                    "wordCount": 172
+                  },
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@csstools/css-tokenizer/README.md",
+                    "wordCount": 108,
+                    "title": "CSS Tokenizer <img src=\"https://cssdb.org/images/css.svg\" alt=\"for CSS\" width=\"90\" height=\"90\" align=\"right\">"
+                  }
+                ],
+                "wordCount": 283
+              }
+            ],
+            "wordCount": 1616
+          },
+          {
+            "name": "@exodus",
+            "type": "folder",
+            "children": [
+              {
+                "name": "bytes",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@exodus/bytes/README.md",
+                    "wordCount": 1784,
+                    "title": "@exodus/bytes"
+                  }
+                ],
+                "wordCount": 1784
+              }
+            ],
+            "wordCount": 1784
+          },
+          {
+            "name": "@iconify",
+            "type": "folder",
+            "children": [
+              {
+                "name": "types",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@iconify/types/README.md",
+                    "wordCount": 795,
+                    "title": "Iconify Types"
+                  }
+                ],
+                "wordCount": 795
+              },
+              {
+                "name": "utils",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "readme.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@iconify/utils/readme.md",
+                    "wordCount": 51,
+                    "title": "Iconify Utils"
+                  }
+                ],
+                "wordCount": 51
+              }
+            ],
+            "wordCount": 846
+          },
+          {
+            "name": "@mermaid-js",
+            "type": "folder",
+            "children": [
+              {
+                "name": "parser",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@mermaid-js/parser/README.md",
+                    "wordCount": 78
+                  }
+                ],
+                "wordCount": 78
+              }
+            ],
+            "wordCount": 78
+          },
+          {
+            "name": "@types",
+            "type": "folder",
+            "children": [
+              {
+                "name": "d3",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3/README.md",
+                    "wordCount": 65,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 65
+              },
+              {
+                "name": "d3-array",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-array/README.md",
+                    "wordCount": 38,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 38
+              },
+              {
+                "name": "d3-axis",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-axis/README.md",
+                    "wordCount": 35,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 35
+              },
+              {
+                "name": "d3-brush",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-brush/README.md",
+                    "wordCount": 34,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 34
+              },
+              {
+                "name": "d3-chord",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-chord/README.md",
+                    "wordCount": 34,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 34
+              },
+              {
+                "name": "d3-color",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-color/README.md",
+                    "wordCount": 38,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 38
+              },
+              {
+                "name": "d3-contour",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-contour/README.md",
+                    "wordCount": 33,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 33
+              },
+              {
+                "name": "d3-delaunay",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-delaunay/README.md",
+                    "wordCount": 30,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 30
+              },
+              {
+                "name": "d3-dispatch",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-dispatch/README.md",
+                    "wordCount": 37,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 37
+              },
+              {
+                "name": "d3-drag",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-drag/README.md",
+                    "wordCount": 34,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 34
+              },
+              {
+                "name": "d3-dsv",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-dsv/README.md",
+                    "wordCount": 35,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 35
+              },
+              {
+                "name": "d3-ease",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-ease/README.md",
+                    "wordCount": 34,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 34
+              },
+              {
+                "name": "d3-fetch",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-fetch/README.md",
+                    "wordCount": 31,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 31
+              },
+              {
+                "name": "d3-force",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-force/README.md",
+                    "wordCount": 35,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 35
+              },
+              {
+                "name": "d3-format",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-format/README.md",
+                    "wordCount": 35,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 35
+              },
+              {
+                "name": "d3-geo",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-geo/README.md",
+                    "wordCount": 36,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 36
+              },
+              {
+                "name": "d3-hierarchy",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-hierarchy/README.md",
+                    "wordCount": 36,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 36
+              },
+              {
+                "name": "d3-interpolate",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-interpolate/README.md",
+                    "wordCount": 35,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 35
+              },
+              {
+                "name": "d3-path",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-path/README.md",
+                    "wordCount": 34,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 34
+              },
+              {
+                "name": "d3-polygon",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-polygon/README.md",
+                    "wordCount": 34,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 34
+              },
+              {
+                "name": "d3-quadtree",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-quadtree/README.md",
+                    "wordCount": 35,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 35
+              },
+              {
+                "name": "d3-random",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-random/README.md",
+                    "wordCount": 34,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 34
+              },
+              {
+                "name": "d3-scale",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-scale/README.md",
+                    "wordCount": 36,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 36
+              },
+              {
+                "name": "d3-scale-chromatic",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-scale-chromatic/README.md",
+                    "wordCount": 36,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 36
+              },
+              {
+                "name": "d3-selection",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-selection/README.md",
+                    "wordCount": 37,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 37
+              },
+              {
+                "name": "d3-shape",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-shape/README.md",
+                    "wordCount": 36,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 36
+              },
+              {
+                "name": "d3-time",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-time/README.md",
+                    "wordCount": 35,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 35
+              },
+              {
+                "name": "d3-time-format",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-time-format/README.md",
+                    "wordCount": 34,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 34
+              },
+              {
+                "name": "d3-timer",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-timer/README.md",
+                    "wordCount": 35,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 35
+              },
+              {
+                "name": "d3-transition",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-transition/README.md",
+                    "wordCount": 36,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 36
+              },
+              {
+                "name": "d3-zoom",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/d3-zoom/README.md",
+                    "wordCount": 36,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 36
+              },
+              {
+                "name": "geojson",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/geojson/README.md",
+                    "wordCount": 36,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 36
+              },
+              {
+                "name": "trusted-types",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@types/trusted-types/README.md",
+                    "wordCount": 35,
+                    "title": "Installation"
+                  }
+                ],
+                "wordCount": 35
+              }
+            ],
+            "wordCount": 1184
+          },
+          {
+            "name": "@upsetjs",
+            "type": "folder",
+            "children": [
+              {
+                "name": "venn.js",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/@upsetjs/venn.js/README.md",
+                    "wordCount": 443,
+                    "title": "venn.js"
+                  }
+                ],
+                "wordCount": 443
+              }
+            ],
+            "wordCount": 443
+          },
+          {
+            "name": "abbrev",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/abbrev/README.md",
+                "wordCount": 51,
+                "title": "abbrev-js"
+              }
+            ],
+            "wordCount": 51
+          },
+          {
+            "name": "apexcharts",
+            "type": "folder",
+            "children": [
+              {
+                "name": "src",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "modules",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "tooltip",
+                        "type": "folder",
+                        "children": [
+                          {
+                            "name": "README.md",
+                            "type": "file",
+                            "path": "iris/node_modules/apexcharts/src/modules/tooltip/README.md",
+                            "wordCount": 98
+                          }
+                        ],
+                        "wordCount": 98
+                      }
+                    ],
+                    "wordCount": 98
+                  }
+                ],
+                "wordCount": 98
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/apexcharts/README.md",
+                "wordCount": 226
+              }
+            ],
+            "wordCount": 324
+          },
+          {
+            "name": "bidi-js",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/bidi-js/README.md",
+                "wordCount": 359,
+                "title": "bidi-js"
+              }
+            ],
+            "wordCount": 359
+          },
+          {
+            "name": "commander",
+            "type": "folder",
+            "children": [
+              {
+                "name": "Readme.md",
+                "type": "file",
+                "path": "iris/node_modules/commander/Readme.md",
+                "wordCount": 2513,
+                "title": "Commander.js"
+              }
+            ],
+            "wordCount": 2513
+          },
+          {
+            "name": "cose-base",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/cose-base/README.md",
+                "wordCount": 38
+              }
+            ],
+            "wordCount": 38
+          },
+          {
+            "name": "css-tree",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/css-tree/README.md",
+                "wordCount": 354,
+                "title": "CSSTree"
+              }
+            ],
+            "wordCount": 354
+          },
+          {
+            "name": "cytoscape",
+            "type": "folder",
+            "children": [
+              {
+                "name": ".github",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "ISSUE_TEMPLATE",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "bug_report.md",
+                        "type": "file",
+                        "path": "iris/node_modules/cytoscape/.github/ISSUE_TEMPLATE/bug_report.md",
+                        "wordCount": 178
+                      },
+                      {
+                        "name": "feature_request.md",
+                        "type": "file",
+                        "path": "iris/node_modules/cytoscape/.github/ISSUE_TEMPLATE/feature_request.md",
+                        "wordCount": 60
+                      }
+                    ],
+                    "wordCount": 238
+                  },
+                  {
+                    "name": "workflows",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "md",
+                        "type": "folder",
+                        "children": [
+                          {
+                            "name": "blog-issue-template.md",
+                            "type": "file",
+                            "path": "iris/node_modules/cytoscape/.github/workflows/md/blog-issue-template.md",
+                            "wordCount": 16
+                          },
+                          {
+                            "name": "Feature_Release.md",
+                            "type": "file",
+                            "path": "iris/node_modules/cytoscape/.github/workflows/md/Feature_Release.md",
+                            "wordCount": 411,
+                            "title": "Feature Release GitHub Action - README"
+                          },
+                          {
+                            "name": "Manual_Release.md",
+                            "type": "file",
+                            "path": "iris/node_modules/cytoscape/.github/workflows/md/Manual_Release.md",
+                            "wordCount": 336
+                          },
+                          {
+                            "name": "Patch_Backport_Release.md",
+                            "type": "file",
+                            "path": "iris/node_modules/cytoscape/.github/workflows/md/Patch_Backport_Release.md",
+                            "wordCount": 498,
+                            "title": "Patch/Backport Release GitHub Action - README"
+                          },
+                          {
+                            "name": "repo-setup.md",
+                            "type": "file",
+                            "path": "iris/node_modules/cytoscape/.github/workflows/md/repo-setup.md",
+                            "wordCount": 16
+                          }
+                        ],
+                        "wordCount": 1277
+                      }
+                    ],
+                    "wordCount": 1277
+                  },
+                  {
+                    "name": "PULL_REQUEST_TEMPLATE.md",
+                    "type": "file",
+                    "path": "iris/node_modules/cytoscape/.github/PULL_REQUEST_TEMPLATE.md",
+                    "wordCount": 65
+                  },
+                  {
+                    "name": "SECURITY.md",
+                    "type": "file",
+                    "path": "iris/node_modules/cytoscape/.github/SECURITY.md",
+                    "wordCount": 12,
+                    "title": "Reporting security issues in Cytoscape.js"
+                  }
+                ],
+                "wordCount": 1592
+              },
+              {
+                "name": "AGENTS.md",
+                "type": "file",
+                "path": "iris/node_modules/cytoscape/AGENTS.md",
+                "wordCount": 299,
+                "title": "Cytoscape.js AGENTS.md"
+              },
+              {
+                "name": "CODE_OF_CONDUCT.md",
+                "type": "file",
+                "path": "iris/node_modules/cytoscape/CODE_OF_CONDUCT.md",
+                "wordCount": 577,
+                "title": "Contributor Covenant Code of Conduct"
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/cytoscape/README.md",
+                "wordCount": 726,
+                "title": "Cytoscape.js"
+              }
+            ],
+            "wordCount": 3194
+          },
+          {
+            "name": "cytoscape-cose-bilkent",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/cytoscape-cose-bilkent/README.md",
+                "wordCount": 233
+              }
+            ],
+            "wordCount": 233
+          },
+          {
+            "name": "cytoscape-fcose",
+            "type": "folder",
+            "children": [
+              {
+                "name": "node_modules",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "cose-base",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "README.md",
+                        "type": "file",
+                        "path": "iris/node_modules/cytoscape-fcose/node_modules/cose-base/README.md",
+                        "wordCount": 38
+                      }
+                    ],
+                    "wordCount": 38
+                  },
+                  {
+                    "name": "layout-base",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "README.md",
+                        "type": "file",
+                        "path": "iris/node_modules/cytoscape-fcose/node_modules/layout-base/README.md",
+                        "wordCount": 37
+                      }
+                    ],
+                    "wordCount": 37
+                  }
+                ],
+                "wordCount": 75
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/cytoscape-fcose/README.md",
+                "wordCount": 430
+              }
+            ],
+            "wordCount": 505
+          },
+          {
+            "name": "d3",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3/README.md",
+                "wordCount": 64,
+                "title": "D3: Data-Driven Documents"
+              }
+            ],
+            "wordCount": 64
+          },
+          {
+            "name": "d3-array",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-array/README.md",
+                "wordCount": 5311,
+                "title": "d3-array"
+              }
+            ],
+            "wordCount": 5311
+          },
+          {
+            "name": "d3-axis",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-axis/README.md",
+                "wordCount": 1236,
+                "title": "d3-axis"
+              }
+            ],
+            "wordCount": 1236
+          },
+          {
+            "name": "d3-brush",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-brush/README.md",
+                "wordCount": 1348,
+                "title": "d3-brush"
+              }
+            ],
+            "wordCount": 1348
+          },
+          {
+            "name": "d3-chord",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-chord/README.md",
+                "wordCount": 1220,
+                "title": "d3-chord"
+              }
+            ],
+            "wordCount": 1220
+          },
+          {
+            "name": "d3-color",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-color/README.md",
+                "wordCount": 1349,
+                "title": "d3-color"
+              }
+            ],
+            "wordCount": 1349
+          },
+          {
+            "name": "d3-contour",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-contour/README.md",
+                "wordCount": 1378,
+                "title": "d3-contour"
+              }
+            ],
+            "wordCount": 1378
+          },
+          {
+            "name": "d3-delaunay",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-delaunay/README.md",
+                "wordCount": 1287,
+                "title": "d3-delaunay"
+              }
+            ],
+            "wordCount": 1287
+          },
+          {
+            "name": "d3-dispatch",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-dispatch/README.md",
+                "wordCount": 470,
+                "title": "d3-dispatch"
+              }
+            ],
+            "wordCount": 470
+          },
+          {
+            "name": "d3-drag",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-drag/README.md",
+                "wordCount": 1837,
+                "title": "d3-drag"
+              }
+            ],
+            "wordCount": 1837
+          },
+          {
+            "name": "d3-dsv",
+            "type": "folder",
+            "children": [
+              {
+                "name": "node_modules",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "commander",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "CHANGELOG.md",
+                        "type": "file",
+                        "path": "iris/node_modules/d3-dsv/node_modules/commander/CHANGELOG.md",
+                        "wordCount": 417,
+                        "title": "Changelog"
+                      },
+                      {
+                        "name": "Readme.md",
+                        "type": "file",
+                        "path": "iris/node_modules/d3-dsv/node_modules/commander/Readme.md",
+                        "wordCount": 2243,
+                        "title": "Commander.js"
+                      }
+                    ],
+                    "wordCount": 2660
+                  }
+                ],
+                "wordCount": 2660
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-dsv/README.md",
+                "wordCount": 2260,
+                "title": "d3-dsv"
+              }
+            ],
+            "wordCount": 4920
+          },
+          {
+            "name": "d3-ease",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-ease/README.md",
+                "wordCount": 856,
+                "title": "d3-ease"
+              }
+            ],
+            "wordCount": 856
+          },
+          {
+            "name": "d3-fetch",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-fetch/README.md",
+                "wordCount": 533,
+                "title": "d3-fetch"
+              }
+            ],
+            "wordCount": 533
+          },
+          {
+            "name": "d3-force",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-force/README.md",
+                "wordCount": 4643,
+                "title": "d3-force"
+              }
+            ],
+            "wordCount": 4643
+          },
+          {
+            "name": "d3-format",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-format/README.md",
+                "wordCount": 23,
+                "title": "d3-format"
+              }
+            ],
+            "wordCount": 23
+          },
+          {
+            "name": "d3-geo",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-geo/README.md",
+                "wordCount": 47,
+                "title": "d3-geo"
+              }
+            ],
+            "wordCount": 47
+          },
+          {
+            "name": "d3-hierarchy",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-hierarchy/README.md",
+                "wordCount": 3028,
+                "title": "d3-hierarchy"
+              }
+            ],
+            "wordCount": 3028
+          },
+          {
+            "name": "d3-interpolate",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-interpolate/README.md",
+                "wordCount": 2426,
+                "title": "d3-interpolate"
+              }
+            ],
+            "wordCount": 2426
+          },
+          {
+            "name": "d3-path",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-path/README.md",
+                "wordCount": 534,
+                "title": "d3-path"
+              }
+            ],
+            "wordCount": 534
+          },
+          {
+            "name": "d3-polygon",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-polygon/README.md",
+                "wordCount": 245,
+                "title": "d3-polygon"
+              }
+            ],
+            "wordCount": 245
+          },
+          {
+            "name": "d3-quadtree",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-quadtree/README.md",
+                "wordCount": 1232,
+                "title": "d3-quadtree"
+              }
+            ],
+            "wordCount": 1232
+          },
+          {
+            "name": "d3-random",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-random/README.md",
+                "wordCount": 902,
+                "title": "d3-random"
+              }
+            ],
+            "wordCount": 902
+          },
+          {
+            "name": "d3-sankey",
+            "type": "folder",
+            "children": [
+              {
+                "name": "node_modules",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "d3-array",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "README.md",
+                        "type": "file",
+                        "path": "iris/node_modules/d3-sankey/node_modules/d3-array/README.md",
+                        "wordCount": 4881,
+                        "title": "d3-array"
+                      }
+                    ],
+                    "wordCount": 4881
+                  },
+                  {
+                    "name": "d3-path",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "README.md",
+                        "type": "file",
+                        "path": "iris/node_modules/d3-sankey/node_modules/d3-path/README.md",
+                        "wordCount": 510,
+                        "title": "d3-path"
+                      }
+                    ],
+                    "wordCount": 510
+                  },
+                  {
+                    "name": "d3-shape",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "README.md",
+                        "type": "file",
+                        "path": "iris/node_modules/d3-sankey/node_modules/d3-shape/README.md",
+                        "wordCount": 8301,
+                        "title": "d3-shape"
+                      }
+                    ],
+                    "wordCount": 8301
+                  },
+                  {
+                    "name": "internmap",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "README.md",
+                        "type": "file",
+                        "path": "iris/node_modules/d3-sankey/node_modules/internmap/README.md",
+                        "wordCount": 329,
+                        "title": "InternMap"
+                      }
+                    ],
+                    "wordCount": 329
+                  }
+                ],
+                "wordCount": 14021
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-sankey/README.md",
+                "wordCount": 1111,
+                "title": "d3-sankey"
+              }
+            ],
+            "wordCount": 15132
+          },
+          {
+            "name": "d3-scale",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-scale/README.md",
+                "wordCount": 7539,
+                "title": "d3-scale"
+              }
+            ],
+            "wordCount": 7539
+          },
+          {
+            "name": "d3-scale-chromatic",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-scale-chromatic/README.md",
+                "wordCount": 50,
+                "title": "d3-scale-chromatic"
+              }
+            ],
+            "wordCount": 50
+          },
+          {
+            "name": "d3-selection",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-selection/README.md",
+                "wordCount": 4648,
+                "title": "d3-selection"
+              }
+            ],
+            "wordCount": 4648
+          },
+          {
+            "name": "d3-shape",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-shape/README.md",
+                "wordCount": 8916,
+                "title": "d3-shape"
+              }
+            ],
+            "wordCount": 8916
+          },
+          {
+            "name": "d3-time",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-time/README.md",
+                "wordCount": 2123,
+                "title": "d3-time"
+              }
+            ],
+            "wordCount": 2123
+          },
+          {
+            "name": "d3-time-format",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-time-format/README.md",
+                "wordCount": 259,
+                "title": "d3-time-format"
+              }
+            ],
+            "wordCount": 259
+          },
+          {
+            "name": "d3-timer",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-timer/README.md",
+                "wordCount": 623,
+                "title": "d3-timer"
+              }
+            ],
+            "wordCount": 623
+          },
+          {
+            "name": "d3-transition",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-transition/README.md",
+                "wordCount": 4295,
+                "title": "d3-transition"
+              }
+            ],
+            "wordCount": 4295
+          },
+          {
+            "name": "d3-zoom",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/d3-zoom/README.md",
+                "wordCount": 3423,
+                "title": "d3-zoom"
+              }
+            ],
+            "wordCount": 3423
+          },
+          {
+            "name": "dagre-d3-es",
+            "type": "folder",
+            "children": [
+              {
+                "name": "LICENSE.md",
+                "type": "file",
+                "path": "iris/node_modules/dagre-d3-es/LICENSE.md",
+                "wordCount": 196
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/dagre-d3-es/README.md",
+                "wordCount": 68,
+                "title": "dagre-d3-es"
+              }
+            ],
+            "wordCount": 264
+          },
+          {
+            "name": "data-urls",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/data-urls/README.md",
+                "wordCount": 263,
+                "title": "Parse `data:` URLs"
+              }
+            ],
+            "wordCount": 263
+          },
+          {
+            "name": "dayjs",
+            "type": "folder",
+            "children": [
+              {
+                "name": "CHANGELOG.md",
+                "type": "file",
+                "path": "iris/node_modules/dayjs/CHANGELOG.md",
+                "wordCount": 14,
+                "title": "[1.11.0](https://github.com/iamkun/dayjs/compare/v1.10.8...v1.11.0) (2022-03-14)"
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/dayjs/README.md",
+                "wordCount": 349
+              }
+            ],
+            "wordCount": 363
+          },
+          {
+            "name": "decimal.js",
+            "type": "folder",
+            "children": [
+              {
+                "name": "LICENCE.md",
+                "type": "file",
+                "path": "iris/node_modules/decimal.js/LICENCE.md",
+                "wordCount": 169
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/decimal.js/README.md",
+                "wordCount": 463
+              }
+            ],
+            "wordCount": 632
+          },
+          {
+            "name": "delaunator",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/delaunator/README.md",
+                "wordCount": 409,
+                "title": "Delaunator [![CI](https://github.com/mapbox/delaunator/actions/workflows/node.yml/badge.svg)](https://github.com/mapbox/delaunator/actions/workflows/node.yml) [![](https://img.shields.io/badge/simply-awesome-brightgreen.svg)](https://github.com/mourner/projects) [![](https://badgen.net/bundlephobia/minzip/delaunator)](https://unpkg.com/delaunator)"
+              }
+            ],
+            "wordCount": 409
+          },
+          {
+            "name": "diff",
+            "type": "folder",
+            "children": [
+              {
+                "name": "CONTRIBUTING.md",
+                "type": "file",
+                "path": "iris/node_modules/diff/CONTRIBUTING.md",
+                "wordCount": 68,
+                "title": "How to Contribute"
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/diff/README.md",
+                "wordCount": 696,
+                "title": "jsdiff"
+              },
+              {
+                "name": "release-notes.md",
+                "type": "file",
+                "path": "iris/node_modules/diff/release-notes.md",
+                "wordCount": 44,
+                "title": "Release Notes"
+              }
+            ],
+            "wordCount": 808
+          },
+          {
+            "name": "diff2html",
+            "type": "folder",
+            "children": [
+              {
+                "name": "LICENSE.md",
+                "type": "file",
+                "path": "iris/node_modules/diff2html/LICENSE.md",
+                "wordCount": 166
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/diff2html/README.md",
+                "wordCount": 967,
+                "title": "diff2html"
+              }
+            ],
+            "wordCount": 1133
+          },
+          {
+            "name": "dompurify",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/dompurify/README.md",
+                "wordCount": 2051,
+                "title": "DOMPurify"
+              }
+            ],
+            "wordCount": 2051
+          },
+          {
+            "name": "entities",
+            "type": "folder",
+            "children": [
+              {
+                "name": "readme.md",
+                "type": "file",
+                "path": "iris/node_modules/entities/readme.md",
+                "wordCount": 355,
+                "title": "entities [![NPM version](https://img.shields.io/npm/v/entities.svg)](https://npmjs.org/package/entities) [![Downloads](https://img.shields.io/npm/dm/entities.svg)](https://npmjs.org/package/entities) [![Node.js CI](https://github.com/fb55/entities/actions/workflows/nodejs-test.yml/badge.svg)](https://github.com/fb55/entities/actions/workflows/nodejs-test.yml)"
+              }
+            ],
+            "wordCount": 355
+          },
+          {
+            "name": "es-toolkit",
+            "type": "folder",
+            "children": [
+              {
+                "name": "CHANGELOG.md",
+                "type": "file",
+                "path": "iris/node_modules/es-toolkit/CHANGELOG.md",
+                "wordCount": 1353,
+                "title": "es-toolkit Changelog"
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/es-toolkit/README.md",
+                "wordCount": 95,
+                "title": "es-toolkit &middot; [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/toss/es-toolkit/blob/main/LICENSE) [![codecov](https://codecov.io/gh/toss/es-toolkit/graph/badge.svg?token=8N5S3AR3C7)](https://codecov.io/gh/toss/es-toolkit) [![NPM badge](https://img.shields.io/npm/v/es-toolkit?logo=npm)](https://www.npmjs.com/package/es-toolkit) [![JSR badge](https://jsr.io/badges/@es-toolkit/es-toolkit)](https://jsr.io/@es-toolkit/es-toolkit) [![Discord Badge](https://discord.com/api/guilds/1281071127052943361/widget.png?style=shield)](https://discord.gg/vGXbVjP2nY)"
+              }
+            ],
+            "wordCount": 1448
+          },
+          {
+            "name": "flexsearch",
+            "type": "folder",
+            "children": [
+              {
+                "name": "CHANGELOG.md",
+                "type": "file",
+                "path": "iris/node_modules/flexsearch/CHANGELOG.md",
+                "wordCount": 79,
+                "title": "Changelog"
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/flexsearch/README.md",
+                "wordCount": 5916
+              }
+            ],
+            "wordCount": 5995
+          },
+          {
+            "name": "hachure-fill",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/hachure-fill/README.md",
+                "wordCount": 145,
+                "title": "hachure-fill"
+              }
+            ],
+            "wordCount": 145
+          },
+          {
+            "name": "highlight.js",
+            "type": "folder",
+            "children": [
+              {
+                "name": "CHANGES.md",
+                "type": "file",
+                "path": "iris/node_modules/highlight.js/CHANGES.md",
+                "wordCount": 2498
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/highlight.js/README.md",
+                "wordCount": 923,
+                "title": "Highlight.js"
+              },
+              {
+                "name": "SECURITY.md",
+                "type": "file",
+                "path": "iris/node_modules/highlight.js/SECURITY.md",
+                "wordCount": 117,
+                "title": "Security Policy"
+              },
+              {
+                "name": "SUPPORTED_LANGUAGES.md",
+                "type": "file",
+                "path": "iris/node_modules/highlight.js/SUPPORTED_LANGUAGES.md",
+                "wordCount": 941,
+                "title": "Supported Languages"
+              },
+              {
+                "name": "VERSION_10_UPGRADE.md",
+                "type": "file",
+                "path": "iris/node_modules/highlight.js/VERSION_10_UPGRADE.md",
+                "wordCount": 253,
+                "title": "Upgrading to Version 10.0"
+              },
+              {
+                "name": "VERSION_11_UPGRADE.md",
+                "type": "file",
+                "path": "iris/node_modules/highlight.js/VERSION_11_UPGRADE.md",
+                "wordCount": 448,
+                "title": "Upgrading to Highlight.js v11.0"
+              }
+            ],
+            "wordCount": 5180
+          },
+          {
+            "name": "hogan.js",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/hogan.js/README.md",
+                "wordCount": 371,
+                "title": "Node.js"
+              }
+            ],
+            "wordCount": 371
+          },
+          {
+            "name": "html-encoding-sniffer",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/html-encoding-sniffer/README.md",
+                "wordCount": 229,
+                "title": "Determine the Encoding of a HTML Byte Stream"
+              }
+            ],
+            "wordCount": 229
+          },
+          {
+            "name": "iconv-lite",
+            "type": "folder",
+            "children": [
+              {
+                "name": "Changelog.md",
+                "type": "file",
+                "path": "iris/node_modules/iconv-lite/Changelog.md",
+                "wordCount": 747
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/iconv-lite/README.md",
+                "wordCount": 416
+              }
+            ],
+            "wordCount": 1163
+          },
+          {
+            "name": "import-meta-resolve",
+            "type": "folder",
+            "children": [
+              {
+                "name": "readme.md",
+                "type": "file",
+                "path": "iris/node_modules/import-meta-resolve/readme.md",
+                "wordCount": 422,
+                "title": "import-meta-resolve"
+              }
+            ],
+            "wordCount": 422
+          },
+          {
+            "name": "internmap",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/internmap/README.md",
+                "wordCount": 329,
+                "title": "InternMap"
+              }
+            ],
+            "wordCount": 329
+          },
+          {
+            "name": "is-potential-custom-element-name",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/is-potential-custom-element-name/README.md",
+                "wordCount": 37,
+                "title": "is-potential-custom-element-name [![Build status](https://travis-ci.org/mathiasbynens/is-potential-custom-element-name.svg?branch=master)](https://travis-ci.org/mathiasbynens/is-potential-custom-element-name)"
+              }
+            ],
+            "wordCount": 37
+          },
+          {
+            "name": "jsdom",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/jsdom/README.md",
+                "wordCount": 3137
+              }
+            ],
+            "wordCount": 3137
+          },
+          {
+            "name": "katex",
+            "type": "folder",
+            "children": [
+              {
+                "name": "contrib",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "auto-render",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "README.md",
+                        "type": "file",
+                        "path": "iris/node_modules/katex/contrib/auto-render/README.md",
+                        "wordCount": 42,
+                        "title": "Auto-render extension"
+                      }
+                    ],
+                    "wordCount": 42
+                  },
+                  {
+                    "name": "copy-tex",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "README.md",
+                        "type": "file",
+                        "path": "iris/node_modules/katex/contrib/copy-tex/README.md",
+                        "wordCount": 187,
+                        "title": "Copy-tex extension"
+                      }
+                    ],
+                    "wordCount": 187
+                  },
+                  {
+                    "name": "mathtex-script-type",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "README.md",
+                        "type": "file",
+                        "path": "iris/node_modules/katex/contrib/mathtex-script-type/README.md",
+                        "wordCount": 116,
+                        "title": "`math/tex` Custom Script Type Extension"
+                      }
+                    ],
+                    "wordCount": 116
+                  },
+                  {
+                    "name": "mhchem",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "README.md",
+                        "type": "file",
+                        "path": "iris/node_modules/katex/contrib/mhchem/README.md",
+                        "wordCount": 141,
+                        "title": "mhchem extension"
+                      }
+                    ],
+                    "wordCount": 141
+                  }
+                ],
+                "wordCount": 486
+              },
+              {
+                "name": "dist",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/katex/dist/README.md",
+                    "wordCount": 398
+                  }
+                ],
+                "wordCount": 398
+              },
+              {
+                "name": "src",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "metrics",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "README.md",
+                        "type": "file",
+                        "path": "iris/node_modules/katex/src/metrics/README.md",
+                        "wordCount": 70
+                      }
+                    ],
+                    "wordCount": 70
+                  }
+                ],
+                "wordCount": 70
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/katex/README.md",
+                "wordCount": 398
+              }
+            ],
+            "wordCount": 1352
+          },
+          {
+            "name": "khroma",
+            "type": "folder",
+            "children": [
+              {
+                "name": "readme.md",
+                "type": "file",
+                "path": "iris/node_modules/khroma/readme.md",
+                "wordCount": 454,
+                "title": "[Khrôma](https://en.wiktionary.org/wiki/%CF%87%CF%81%E1%BF%B6%CE%BC%CE%B1)"
+              }
+            ],
+            "wordCount": 454
+          },
+          {
+            "name": "layout-base",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/layout-base/README.md",
+                "wordCount": 37
+              }
+            ],
+            "wordCount": 37
+          },
+          {
+            "name": "leaflet",
+            "type": "folder",
+            "children": [
+              {
+                "name": "CHANGELOG.md",
+                "type": "file",
+                "path": "iris/node_modules/leaflet/CHANGELOG.md",
+                "wordCount": 6423
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/leaflet/README.md",
+                "wordCount": 411
+              }
+            ],
+            "wordCount": 6834
+          },
+          {
+            "name": "lodash-es",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/lodash-es/README.md",
+                "wordCount": 17,
+                "title": "lodash-es v4.18.1"
+              }
+            ],
+            "wordCount": 17
+          },
+          {
+            "name": "lru-cache",
+            "type": "folder",
+            "children": [
+              {
+                "name": "LICENSE.md",
+                "type": "file",
+                "path": "iris/node_modules/lru-cache/LICENSE.md",
+                "wordCount": 230,
+                "title": "Blue Oak Model License"
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/lru-cache/README.md",
+                "wordCount": 1515,
+                "title": "lru-cache"
+              }
+            ],
+            "wordCount": 1745
+          },
+          {
+            "name": "marked",
+            "type": "folder",
+            "children": [
+              {
+                "name": "man",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "marked.1.md",
+                    "type": "file",
+                    "path": "iris/node_modules/marked/man/marked.1.md",
+                    "wordCount": 154,
+                    "title": "marked(1) -- a javascript markdown parser"
+                  }
+                ],
+                "wordCount": 154
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/marked/README.md",
+                "wordCount": 77,
+                "title": "Marked"
+              }
+            ],
+            "wordCount": 231
+          },
+          {
+            "name": "mdn-data",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/mdn-data/README.md",
+                "wordCount": 164,
+                "title": "Welcome to MDN data"
+              }
+            ],
+            "wordCount": 164
+          },
+          {
+            "name": "mermaid",
+            "type": "folder",
+            "children": [
+              {
+                "name": "node_modules",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "katex",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "contrib",
+                        "type": "folder",
+                        "children": [
+                          {
+                            "name": "auto-render",
+                            "type": "folder",
+                            "children": [
+                              {
+                                "name": "README.md",
+                                "type": "file",
+                                "path": "iris/node_modules/mermaid/node_modules/katex/contrib/auto-render/README.md",
+                                "wordCount": 42,
+                                "title": "Auto-render extension"
+                              }
+                            ],
+                            "wordCount": 42
+                          },
+                          {
+                            "name": "copy-tex",
+                            "type": "folder",
+                            "children": [
+                              {
+                                "name": "README.md",
+                                "type": "file",
+                                "path": "iris/node_modules/mermaid/node_modules/katex/contrib/copy-tex/README.md",
+                                "wordCount": 187,
+                                "title": "Copy-tex extension"
+                              }
+                            ],
+                            "wordCount": 187
+                          },
+                          {
+                            "name": "mathtex-script-type",
+                            "type": "folder",
+                            "children": [
+                              {
+                                "name": "README.md",
+                                "type": "file",
+                                "path": "iris/node_modules/mermaid/node_modules/katex/contrib/mathtex-script-type/README.md",
+                                "wordCount": 116,
+                                "title": "`math/tex` Custom Script Type Extension"
+                              }
+                            ],
+                            "wordCount": 116
+                          },
+                          {
+                            "name": "mhchem",
+                            "type": "folder",
+                            "children": [
+                              {
+                                "name": "README.md",
+                                "type": "file",
+                                "path": "iris/node_modules/mermaid/node_modules/katex/contrib/mhchem/README.md",
+                                "wordCount": 141,
+                                "title": "mhchem extension"
+                              }
+                            ],
+                            "wordCount": 141
+                          }
+                        ],
+                        "wordCount": 486
+                      },
+                      {
+                        "name": "dist",
+                        "type": "folder",
+                        "children": [
+                          {
+                            "name": "README.md",
+                            "type": "file",
+                            "path": "iris/node_modules/mermaid/node_modules/katex/dist/README.md",
+                            "wordCount": 397
+                          }
+                        ],
+                        "wordCount": 397
+                      },
+                      {
+                        "name": "src",
+                        "type": "folder",
+                        "children": [
+                          {
+                            "name": "metrics",
+                            "type": "folder",
+                            "children": [
+                              {
+                                "name": "README.md",
+                                "type": "file",
+                                "path": "iris/node_modules/mermaid/node_modules/katex/src/metrics/README.md",
+                                "wordCount": 70
+                              }
+                            ],
+                            "wordCount": 70
+                          }
+                        ],
+                        "wordCount": 70
+                      },
+                      {
+                        "name": "README.md",
+                        "type": "file",
+                        "path": "iris/node_modules/mermaid/node_modules/katex/README.md",
+                        "wordCount": 397
+                      }
+                    ],
+                    "wordCount": 1350
+                  },
+                  {
+                    "name": "marked",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "man",
+                        "type": "folder",
+                        "children": [
+                          {
+                            "name": "marked.1.md",
+                            "type": "file",
+                            "path": "iris/node_modules/mermaid/node_modules/marked/man/marked.1.md",
+                            "wordCount": 154,
+                            "title": "marked(1) -- a javascript markdown parser"
+                          }
+                        ],
+                        "wordCount": 154
+                      },
+                      {
+                        "name": "LICENSE.md",
+                        "type": "file",
+                        "path": "iris/node_modules/mermaid/node_modules/marked/LICENSE.md",
+                        "wordCount": 347,
+                        "title": "License information"
+                      },
+                      {
+                        "name": "README.md",
+                        "type": "file",
+                        "path": "iris/node_modules/mermaid/node_modules/marked/README.md",
+                        "wordCount": 76,
+                        "title": "Marked"
+                      }
+                    ],
+                    "wordCount": 577
+                  }
+                ],
+                "wordCount": 1927
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/mermaid/README.md",
+                "wordCount": 774
+              },
+              {
+                "name": "README.zh-CN.md",
+                "type": "file",
+                "path": "iris/node_modules/mermaid/README.zh-CN.md",
+                "wordCount": 1035
+              }
+            ],
+            "wordCount": 3736
+          },
+          {
+            "name": "nopt",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/nopt/README.md",
+                "wordCount": 717,
+                "title": "if Array is one of the types, then it can take many"
+              }
+            ],
+            "wordCount": 717
+          },
+          {
+            "name": "package-manager-detector",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/package-manager-detector/README.md",
+                "wordCount": 207,
+                "title": "package-manager-detector"
+              }
+            ],
+            "wordCount": 207
+          },
+          {
+            "name": "pako",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/pako/README.md",
+                "wordCount": 226
+              }
+            ],
+            "wordCount": 226
+          },
+          {
+            "name": "parse5",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/parse5/README.md",
+                "wordCount": 56
+              }
+            ],
+            "wordCount": 56
+          },
+          {
+            "name": "path-data-parser",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/path-data-parser/README.md",
+                "wordCount": 213,
+                "title": "path-data-parser"
+              }
+            ],
+            "wordCount": 213
+          },
+          {
+            "name": "points-on-curve",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/points-on-curve/README.md",
+                "wordCount": 311,
+                "title": "points-on-curve"
+              }
+            ],
+            "wordCount": 311
+          },
+          {
+            "name": "points-on-path",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/points-on-path/README.md",
+                "wordCount": 130,
+                "title": "points-on-path"
+              }
+            ],
+            "wordCount": 130
+          },
+          {
+            "name": "punycode",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/punycode/README.md",
+                "wordCount": 319,
+                "title": "Punycode.js [![punycode on npm](https://img.shields.io/npm/v/punycode)](https://www.npmjs.com/package/punycode) [![](https://data.jsdelivr.com/v1/package/npm/punycode/badge)](https://www.jsdelivr.com/package/npm/punycode)"
+              }
+            ],
+            "wordCount": 319
+          },
+          {
+            "name": "require-from-string",
+            "type": "folder",
+            "children": [
+              {
+                "name": "readme.md",
+                "type": "file",
+                "path": "iris/node_modules/require-from-string/readme.md",
+                "wordCount": 47,
+                "title": "require-from-string [![Build Status](https://travis-ci.org/floatdrop/require-from-string.svg?branch=master)](https://travis-ci.org/floatdrop/require-from-string)"
+              }
+            ],
+            "wordCount": 47
+          },
+          {
+            "name": "robust-predicates",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/robust-predicates/README.md",
+                "wordCount": 232,
+                "title": "robust-predicates"
+              }
+            ],
+            "wordCount": 232
+          },
+          {
+            "name": "roughjs",
+            "type": "folder",
+            "children": [
+              {
+                "name": "CHANGELOG.md",
+                "type": "file",
+                "path": "iris/node_modules/roughjs/CHANGELOG.md",
+                "wordCount": 12,
+                "title": "Change Log"
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/roughjs/README.md",
+                "wordCount": 206,
+                "title": "Rough.js"
+              }
+            ],
+            "wordCount": 218
+          },
+          {
+            "name": "rw",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/rw/README.md",
+                "wordCount": 843,
+                "title": "rw - Now stdin and stdout are files."
+              }
+            ],
+            "wordCount": 843
+          },
+          {
+            "name": "safer-buffer",
+            "type": "folder",
+            "children": [
+              {
+                "name": "Porting-Buffer.md",
+                "type": "file",
+                "path": "iris/node_modules/safer-buffer/Porting-Buffer.md",
+                "wordCount": 1202,
+                "title": "Porting to the Buffer.from/Buffer.alloc API"
+              },
+              {
+                "name": "Readme.md",
+                "type": "file",
+                "path": "iris/node_modules/safer-buffer/Readme.md",
+                "wordCount": 771,
+                "title": "safer-buffer [![travis][travis-image]][travis-url] [![npm][npm-image]][npm-url] [![javascript style guide][standard-image]][standard-url] [![Security Responsible Disclosure][secuirty-image]][secuirty-url]"
+              }
+            ],
+            "wordCount": 1973
+          },
+          {
+            "name": "saxes",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/saxes/README.md",
+                "wordCount": 1961,
+                "title": "saxes"
+              }
+            ],
+            "wordCount": 1961
+          },
+          {
+            "name": "source-map-js",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/source-map-js/README.md",
+                "wordCount": 1331,
+                "title": "Source Map JS"
+              }
+            ],
+            "wordCount": 1331
+          },
+          {
+            "name": "stylis",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/stylis/README.md",
+                "wordCount": 412,
+                "title": "STYLIS"
+              }
+            ],
+            "wordCount": 412
+          },
+          {
+            "name": "symbol-tree",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/symbol-tree/README.md",
+                "wordCount": 1228
+              }
+            ],
+            "wordCount": 1228
+          },
+          {
+            "name": "tinyexec",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/tinyexec/README.md",
+                "wordCount": 577,
+                "title": "tinyexec 📟"
+              }
+            ],
+            "wordCount": 577
+          },
+          {
+            "name": "tldts",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/tldts/README.md",
+                "wordCount": 488,
+                "title": "tldts - Blazing Fast URL Parsing"
+              }
+            ],
+            "wordCount": 488
+          },
+          {
+            "name": "tldts-core",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/tldts-core/README.md",
+                "wordCount": 0,
+                "title": "`tldts-core`"
+              }
+            ],
+            "wordCount": 0
+          },
+          {
+            "name": "tough-cookie",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/tough-cookie/README.md",
+                "wordCount": 369,
+                "title": "Tough Cookie &middot; [![RFC6265][rfc6265-badge]][rfc6265-tracker] [![RFC6265bis][rfc6265bis-badge]][rfc6265bis-tracker] [![npm version][npm-badge]][npm-repo] [![CI on Github Actions: salesforce/tough-cookie][ci-badge]][ci-url] ![PRs Welcome][prs-welcome-badge]"
+              }
+            ],
+            "wordCount": 369
+          },
+          {
+            "name": "tr46",
+            "type": "folder",
+            "children": [
+              {
+                "name": "LICENSE.md",
+                "type": "file",
+                "path": "iris/node_modules/tr46/LICENSE.md",
+                "wordCount": 170
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/tr46/README.md",
+                "wordCount": 161,
+                "title": "tr46"
+              }
+            ],
+            "wordCount": 331
+          },
+          {
+            "name": "ts-dedent",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/ts-dedent/README.md",
+                "wordCount": 322,
+                "title": "TypeScript Dedent"
+              }
+            ],
+            "wordCount": 322
+          },
+          {
+            "name": "undici",
+            "type": "folder",
+            "children": [
+              {
+                "name": "docs",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "docs",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "api",
+                        "type": "folder",
+                        "children": [
+                          {
+                            "name": "Agent.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/Agent.md",
+                            "wordCount": 51,
+                            "title": "Agent"
+                          },
+                          {
+                            "name": "api-lifecycle.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/api-lifecycle.md",
+                            "wordCount": 674,
+                            "title": "Client Lifecycle"
+                          },
+                          {
+                            "name": "BalancedPool.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/BalancedPool.md",
+                            "wordCount": 79,
+                            "title": "Class: BalancedPool"
+                          },
+                          {
+                            "name": "CacheStorage.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/CacheStorage.md",
+                            "wordCount": 68,
+                            "title": "CacheStorage"
+                          },
+                          {
+                            "name": "CacheStore.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/CacheStore.md",
+                            "wordCount": 429,
+                            "title": "Cache Store"
+                          },
+                          {
+                            "name": "Client.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/Client.md",
+                            "wordCount": 212,
+                            "title": "Class: Client"
+                          },
+                          {
+                            "name": "ClientStats.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/ClientStats.md",
+                            "wordCount": 39,
+                            "title": "Class: ClientStats"
+                          },
+                          {
+                            "name": "Connector.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/Connector.md",
+                            "wordCount": 79,
+                            "title": "Connector"
+                          },
+                          {
+                            "name": "ContentType.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/ContentType.md",
+                            "wordCount": 42,
+                            "title": "MIME Type Parsing"
+                          },
+                          {
+                            "name": "Cookies.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/Cookies.md",
+                            "wordCount": 46,
+                            "title": "Cookie Handling"
+                          },
+                          {
+                            "name": "Debug.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/Debug.md",
+                            "wordCount": 47,
+                            "title": "Debug"
+                          },
+                          {
+                            "name": "DiagnosticsChannel.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/DiagnosticsChannel.md",
+                            "wordCount": 408,
+                            "title": "Diagnostics Channel Support"
+                          },
+                          {
+                            "name": "Dispatcher.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/Dispatcher.md",
+                            "wordCount": 1191,
+                            "title": "Dispatcher"
+                          },
+                          {
+                            "name": "EnvHttpProxyAgent.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/EnvHttpProxyAgent.md",
+                            "wordCount": 166,
+                            "title": "Class: EnvHttpProxyAgent"
+                          },
+                          {
+                            "name": "Errors.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/Errors.md",
+                            "wordCount": 196,
+                            "title": "Errors"
+                          },
+                          {
+                            "name": "EventSource.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/EventSource.md",
+                            "wordCount": 57,
+                            "title": "EventSource"
+                          },
+                          {
+                            "name": "Fetch.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/Fetch.md",
+                            "wordCount": 195,
+                            "title": "Fetch"
+                          },
+                          {
+                            "name": "GlobalInstallation.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/GlobalInstallation.md",
+                            "wordCount": 137,
+                            "title": "Global Installation"
+                          },
+                          {
+                            "name": "H2CClient.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/H2CClient.md",
+                            "wordCount": 158,
+                            "title": "Class: H2CClient"
+                          },
+                          {
+                            "name": "MockAgent.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/MockAgent.md",
+                            "wordCount": 344,
+                            "title": "Class: MockAgent"
+                          },
+                          {
+                            "name": "MockCallHistory.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/MockCallHistory.md",
+                            "wordCount": 166,
+                            "title": "Class: MockCallHistory"
+                          },
+                          {
+                            "name": "MockCallHistoryLog.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/MockCallHistoryLog.md",
+                            "wordCount": 21,
+                            "title": "Class: MockCallHistoryLog"
+                          },
+                          {
+                            "name": "MockClient.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/MockClient.md",
+                            "wordCount": 54,
+                            "title": "Class: MockClient"
+                          },
+                          {
+                            "name": "MockErrors.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/MockErrors.md",
+                            "wordCount": 44,
+                            "title": "MockErrors"
+                          },
+                          {
+                            "name": "MockPool.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/MockPool.md",
+                            "wordCount": 277,
+                            "title": "Class: MockPool"
+                          },
+                          {
+                            "name": "Pool.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/Pool.md",
+                            "wordCount": 51,
+                            "title": "Class: Pool"
+                          },
+                          {
+                            "name": "PoolStats.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/PoolStats.md",
+                            "wordCount": 75,
+                            "title": "Class: PoolStats"
+                          },
+                          {
+                            "name": "ProxyAgent.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/ProxyAgent.md",
+                            "wordCount": 225,
+                            "title": "Class: ProxyAgent"
+                          },
+                          {
+                            "name": "RedirectHandler.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/RedirectHandler.md",
+                            "wordCount": 58,
+                            "title": "Class: RedirectHandler"
+                          },
+                          {
+                            "name": "RetryAgent.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/RetryAgent.md",
+                            "wordCount": 14,
+                            "title": "Class: RetryAgent"
+                          },
+                          {
+                            "name": "RetryHandler.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/RetryHandler.md",
+                            "wordCount": 69,
+                            "title": "Class: RetryHandler"
+                          },
+                          {
+                            "name": "RoundRobinPool.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/RoundRobinPool.md",
+                            "wordCount": 278,
+                            "title": "Class: RoundRobinPool"
+                          },
+                          {
+                            "name": "SnapshotAgent.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/SnapshotAgent.md",
+                            "wordCount": 338,
+                            "title": "SnapshotAgent"
+                          },
+                          {
+                            "name": "Socks5ProxyAgent.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/Socks5ProxyAgent.md",
+                            "wordCount": 186,
+                            "title": "Class: Socks5ProxyAgent"
+                          },
+                          {
+                            "name": "Util.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/Util.md",
+                            "wordCount": 40,
+                            "title": "Util"
+                          },
+                          {
+                            "name": "WebSocket.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/api/WebSocket.md",
+                            "wordCount": 157,
+                            "title": "Class: WebSocket"
+                          }
+                        ],
+                        "wordCount": 6671
+                      },
+                      {
+                        "name": "best-practices",
+                        "type": "folder",
+                        "children": [
+                          {
+                            "name": "client-certificate.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/best-practices/client-certificate.md",
+                            "wordCount": 94,
+                            "title": "Client certificate"
+                          },
+                          {
+                            "name": "crawling.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/best-practices/crawling.md",
+                            "wordCount": 310,
+                            "title": "Crawling"
+                          },
+                          {
+                            "name": "mocking-request.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/best-practices/mocking-request.md",
+                            "wordCount": 147,
+                            "title": "Mocking Request"
+                          },
+                          {
+                            "name": "proxy.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/best-practices/proxy.md",
+                            "wordCount": 63,
+                            "title": "Connecting through a proxy"
+                          },
+                          {
+                            "name": "undici-vs-builtin-fetch.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/best-practices/undici-vs-builtin-fetch.md",
+                            "wordCount": 427,
+                            "title": "Undici Module vs. Node.js Built-in Fetch"
+                          },
+                          {
+                            "name": "writing-tests.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/docs/docs/best-practices/writing-tests.md",
+                            "wordCount": 155,
+                            "title": "Writing tests"
+                          }
+                        ],
+                        "wordCount": 1196
+                      }
+                    ],
+                    "wordCount": 7867
+                  }
+                ],
+                "wordCount": 7867
+              },
+              {
+                "name": "lib",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "web",
+                    "type": "folder",
+                    "children": [
+                      {
+                        "name": "subresource-integrity",
+                        "type": "folder",
+                        "children": [
+                          {
+                            "name": "Readme.md",
+                            "type": "file",
+                            "path": "iris/node_modules/undici/lib/web/subresource-integrity/Readme.md",
+                            "wordCount": 38,
+                            "title": "Subresource Integrity"
+                          }
+                        ],
+                        "wordCount": 38
+                      }
+                    ],
+                    "wordCount": 38
+                  }
+                ],
+                "wordCount": 38
+              },
+              {
+                "name": "types",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/node_modules/undici/types/README.md",
+                    "wordCount": 43,
+                    "title": "undici-types"
+                  }
+                ],
+                "wordCount": 43
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/undici/README.md",
+                "wordCount": 1370,
+                "title": "undici"
+              }
+            ],
+            "wordCount": 9318
+          },
+          {
+            "name": "uuid",
+            "type": "folder",
+            "children": [
+              {
+                "name": "LICENSE.md",
+                "type": "file",
+                "path": "iris/node_modules/uuid/LICENSE.md",
+                "wordCount": 173
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/uuid/README.md",
+                "wordCount": 859,
+                "title": "uuid [![CI](https://github.com/uuidjs/uuid/workflows/CI/badge.svg)](https://github.com/uuidjs/uuid/actions?query=workflow%3ACI) [![Browser](https://github.com/uuidjs/uuid/workflows/Browser/badge.svg)](https://github.com/uuidjs/uuid/actions/workflows/browser.yml)"
+              }
+            ],
+            "wordCount": 1032
+          },
+          {
+            "name": "w3c-xmlserializer",
+            "type": "folder",
+            "children": [
+              {
+                "name": "LICENSE.md",
+                "type": "file",
+                "path": "iris/node_modules/w3c-xmlserializer/LICENSE.md",
+                "wordCount": 169
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/w3c-xmlserializer/README.md",
+                "wordCount": 120,
+                "title": "w3c-xmlserializer"
+              }
+            ],
+            "wordCount": 289
+          },
+          {
+            "name": "webidl-conversions",
+            "type": "folder",
+            "children": [
+              {
+                "name": "LICENSE.md",
+                "type": "file",
+                "path": "iris/node_modules/webidl-conversions/LICENSE.md",
+                "wordCount": 190,
+                "title": "The BSD 2-Clause License"
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/webidl-conversions/README.md",
+                "wordCount": 983,
+                "title": "Web IDL Type Conversions on JavaScript Values"
+              }
+            ],
+            "wordCount": 1173
+          },
+          {
+            "name": "whatwg-mimetype",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/whatwg-mimetype/README.md",
+                "wordCount": 322,
+                "title": "Parse, serialize, manipulate, and sniff MIME types"
+              }
+            ],
+            "wordCount": 322
+          },
+          {
+            "name": "whatwg-url",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/whatwg-url/README.md",
+                "wordCount": 342
+              }
+            ],
+            "wordCount": 342
+          },
+          {
+            "name": "xml-name-validator",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/xml-name-validator/README.md",
+                "wordCount": 64,
+                "title": "Validate XML Names and Qualified Names"
+              }
+            ],
+            "wordCount": 64
+          },
+          {
+            "name": "xmlchars",
+            "type": "folder",
+            "children": [
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "iris/node_modules/xmlchars/README.md",
+                "wordCount": 166
+              }
+            ],
+            "wordCount": 166
+          }
+        ],
+        "wordCount": 162194
+      },
       {
         "name": "scripts",
         "type": "folder",
@@ -326,20 +3637,20 @@
         "wordCount": 166
       }
     ],
-    "wordCount": 166
+    "wordCount": 162360
   },
   {
     "name": "readme-dev.md",
     "type": "file",
     "path": "readme-dev.md",
-    "wordCount": 1172,
+    "wordCount": 1340,
     "title": "Markdown Preview — 开发者文档"
   },
   {
     "name": "README.md",
     "type": "file",
     "path": "README.md",
-    "wordCount": 1034,
+    "wordCount": 1076,
     "title": "Markdown Preview"
   }
 ]
