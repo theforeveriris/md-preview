@@ -100,6 +100,47 @@
   animation: spin 1s linear infinite;
 }
 
+/* 合并入口：打开本地文件（主按钮）+ 打开本地文件夹（右侧圆形小图标） */
+.menu-item-split {
+  padding: 8px 10px 8px 16px;
+  gap: 6px;
+}
+
+.menu-split-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.menu-split-alt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-left: auto;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  transition: background .15s, color .15s;
+}
+
+.menu-split-alt:hover {
+  background: color-mix(in srgb, var(--color-accent-purple) 18%, transparent);
+  color: var(--color-accent-purple-deep);
+}
+
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

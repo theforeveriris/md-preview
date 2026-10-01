@@ -205,34 +205,6 @@
       menuTrigger.classList.remove('active');
     });
 
-    // 上一篇/下一篇：复用 file-tree.getAdjacentFiles
-    const prevDocBtn = document.getElementById('prevDocBtn');
-    const nextDocBtn = document.getElementById('nextDocBtn');
-    const navigateDoc = (direction) => {
-      const { state, fileTree, markdown } = window.MarkdownPreview;
-      // 本地文档激活时：在本地文件会话列表内循环翻页
-      if (!state.currentFilePath && state.localDoc &&
-          window.MarkdownPreview.localDocs?.navigateLocal(direction)) {
-        return;
-      }
-      if (!state.currentFilePath) {
-        alert('请先打开一个文档');
-        return;
-      }
-      const { prev, next } = fileTree.getAdjacentFiles(state.currentFilePath);
-      const target = direction === 'prev' ? prev : next;
-      if (target) {
-        markdown.loadMarkdownFile(target.path);
-        fileTree.highlightFileInSidebar(target.path);
-      } else {
-        alert(direction === 'prev' ? '已经是第一篇了' : '已经是最后一篇了');
-      }
-      menuItems.classList.remove('open');
-      menuTrigger.classList.remove('active');
-    };
-    prevDocBtn?.addEventListener('click', () => navigateDoc('prev'));
-    nextDocBtn?.addEventListener('click', () => navigateDoc('next'));
-
     // 打开本地 MD 文件（选择结果由 local-docs.js 处理：支持多选与会话列表）
     const openLocalMdBtn = document.getElementById('openLocalMdBtn');
     const localMdInput = document.getElementById('localMdInput');

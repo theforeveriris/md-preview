@@ -35,9 +35,7 @@
 
     // 悬浮球菜单
     'menu.backToTop': '回到顶部',
-    'menu.prev': '上一篇',
-    'menu.next': '下一篇',
-    'menu.openLocalMd': '打开本地 MD',
+    'menu.openLocal': '打开本地文件',
     'menu.openLocalFolder': '打开本地文件夹',
     'menu.installPwa': '安装到桌面',
     'menu.editPage': '编辑此页',
@@ -231,9 +229,6 @@
     // 动态文案：扫码续读（悬浮球）
     'menu.qrShare': '扫码续读',
     'qr.title': '扫码续读',
-    'qr.hint': '用手机扫码，接着读当前文档',
-    'qr.position': '当前读到 {pct}%，手机打开后将定位到此处',
-    'qr.fromTop': '手机打开后将从头开始阅读',
 
     // 动态文案：阅读位置续读
     'reading.resume': '上次读到 {pct}%，继续？',
@@ -282,12 +277,10 @@
     'sidebar.localClear': 'Clear local file list',
 
     'menu.backToTop': 'Back to Top',
-    'menu.prev': 'Previous',
-    'menu.next': 'Next',
-    'menu.openLocalMd': 'Open Local MD',
+    'menu.openLocal': 'Open Local Files',
     'menu.openLocalFolder': 'Open Local Folder',
     'menu.installPwa': 'Install App',
-    'menu.editPage': 'Edit this Page',
+    'menu.editPage': 'Edit This Page',
     'menu.settings': 'Settings',
 
     'settings.title': 'Settings',
@@ -460,9 +453,6 @@
 
     'menu.qrShare': 'Continue on phone',
     'qr.title': 'Continue on Phone',
-    'qr.hint': 'Scan with your phone to keep reading',
-    'qr.position': 'You are at {pct}% — the phone will jump here',
-    'qr.fromTop': 'The phone will start from the top',
 
     'reading.resume': 'Continue from {pct}%?',
     'reading.resumeGo': 'Continue',

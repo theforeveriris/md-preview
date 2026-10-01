@@ -238,7 +238,7 @@
         "name": "configuration.md",
         "type": "file",
         "path": "docs/configuration.md",
-        "wordCount": 1289,
+        "wordCount": 1283,
         "title": "配置参考"
       },
       {
@@ -298,7 +298,7 @@
         "title": "主题定制"
       }
     ],
-    "wordCount": 19367
+    "wordCount": 19361
   },
   {
     "name": "iris",

@@ -50,8 +50,6 @@
         <button type="button" class="qr-share-close" aria-label="${t('common.close', '关闭')}">✕</button>
         <div class="qr-share-title">${t('qr.title', '扫码续读')}</div>
         <div class="qr-share-img-wrap"><img class="qr-share-img" alt="QR Code"></div>
-        <div class="qr-share-meta"></div>
-        <div class="qr-share-hint">${t('qr.hint', '用手机扫码，接着读当前文档')}</div>
       </div>
     `;
     document.body.appendChild(dialogEl);
@@ -77,7 +75,6 @@
 
     const el = ensureDialog();
     const img = el.querySelector('.qr-share-img');
-    const meta = el.querySelector('.qr-share-meta');
     const size = 220;
     // 双端点回退：主服务失败时换 Google Chart（与 qrcode 插件同策略）
     img.onerror = () => {
@@ -87,11 +84,6 @@
     };
     delete img.dataset.fallback;
     img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}`;
-
-    const pct = currentPct();
-    meta.textContent = (pct >= 5)
-      ? t('qr.position', '当前读到 {pct}%，手机打开后将定位到此处').replace('{pct}', pct)
-      : t('qr.fromTop', '手机打开后将从头开始阅读');
 
     el.classList.add('open');
   }
