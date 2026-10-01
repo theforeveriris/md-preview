@@ -5,474 +5,13 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 01 Oct 2026 15:21:11 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 01 Oct 2026 15:21:36 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>配置参考</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
-      <pubDate>Thu, 01 Oct 2026 10:39:53 GMT</pubDate>
-      <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
-      <content:encoded><![CDATA[<h1>配置参考</h1>
-<p>Markdown Preview 的配置分为两层：</p>
-<ol>
-<li><strong>构建/部署配置</strong> — <code>iris/config.json</code>（仓库级，所有访客共享）</li>
-<li><strong>运行时设置</strong> — 浏览器 localStorage（用户级，仅当前浏览器生效）</li>
-</ol>
-<hr>
-<h2>一、<code>iris/config.json</code>（仓库级配置）</h2>
-<p>修改此文件后需推送代码触发重新部署。</p>
-<h3>基础配置</h3>
-<pre><code class="language-json">{
-  &quot;owner&quot;: &quot;your-username&quot;,
-  &quot;repo&quot;: &quot;your-repo-name&quot;
-}
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>默认值</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>owner</code></td>
-<td>string</td>
-<td>-</td>
-<td>GitHub 用户名或组织名</td>
-</tr>
-<tr>
-<td><code>repo</code></td>
-<td>string</td>
-<td>-</td>
-<td>仓库名</td>
-</tr>
-</tbody></table>
-<h3>完整配置项</h3>
-<pre><code class="language-json">{
-  &quot;owner&quot;: &quot;&quot;,
-  &quot;repo&quot;: &quot;&quot;,
-  &quot;branch&quot;: &quot;main&quot;,
-  &quot;title&quot;: &quot;Markdown Preview&quot;,
-  &quot;defaultTheme&quot;: &quot;default&quot;,
-  &quot;showEditButton&quot;: true,
-  &quot;showReadingTime&quot;: true,
-  &quot;showBreadcrumbs&quot;: true
-}
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>默认值</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>branch</code></td>
-<td>string</td>
-<td><code>main</code></td>
-<td>文档所在的 Git 分支</td>
-</tr>
-<tr>
-<td><code>title</code></td>
-<td>string</td>
-<td><code>Markdown Preview</code></td>
-<td>站点标题</td>
-</tr>
-<tr>
-<td><code>defaultTheme</code></td>
-<td>string</td>
-<td><code>default</code></td>
-<td>默认主题 ID</td>
-</tr>
-<tr>
-<td><code>showEditButton</code></td>
-<td>boolean</td>
-<td><code>true</code></td>
-<td>是否显示&quot;编辑此页&quot;按钮</td>
-</tr>
-<tr>
-<td><code>showReadingTime</code></td>
-<td>boolean</td>
-<td><code>true</code></td>
-<td>是否显示阅读时间估算</td>
-</tr>
-<tr>
-<td><code>showBreadcrumbs</code></td>
-<td>boolean</td>
-<td><code>true</code></td>
-<td>是否显示面包屑导航</td>
-</tr>
-<tr>
-<td><code>plantumlServers</code></td>
-<td>array</td>
-<td>内置列表</td>
-<td>PlantUML 渲染服务列表，按顺序尝试</td>
-</tr>
-</tbody></table>
-<h4>PlantUML 渲染服务（plantumlServers）</h4>
-<p>PlantUML 图表默认依次尝试官方服务器与 Kroki 公共服务，全部失败时自动降级为源码展示并提供在线编辑器链接。若你自建了 PlantUML 服务或想使用其他镜像，可在 <code>iris/config.json</code> 中覆盖：</p>
-<pre><code class="language-json">{
-  &quot;plantumlServers&quot;: [
-    { &quot;type&quot;: &quot;plantuml&quot;, &quot;base&quot;: &quot;https://your-self-hosted/plantuml&quot; },
-    { &quot;type&quot;: &quot;kroki&quot;, &quot;base&quot;: &quot;https://kroki.io/plantuml&quot; }
-  ]
-}
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>type</code></td>
-<td><code>plantuml</code>（PlantUML 自定义编码）或 <code>kroki</code>（标准 base64url 编码）</td>
-</tr>
-<tr>
-<td><code>base</code></td>
-<td>服务基础地址，渲染时自动拼接 <code>/svg/&lt;编码&gt;</code></td>
-</tr>
-</tbody></table>
-<h3>配置加载顺序</h3>
-<ol>
-<li>内置默认配置</li>
-<li><code>iris/config.json</code> 中的配置（覆盖默认值）</li>
-<li>用户本地存储的设置（如主题选择，会覆盖前两者）</li>
-</ol>
-<hr>
-<h2>二、运行时设置（用户级）</h2>
-<p>通过悬浮球菜单 → <strong>设置</strong> 打开设置面板，所有改动保存在浏览器 localStorage，仅对当前浏览器生效。</p>
-<p>设置面板分四个区块：<strong>语言 / 外观 / 阅读 / 工具与导出</strong>。</p>
-<h3>语言</h3>
-<p>设置面板最顶部为「语言」选择：<strong>自动（跟随浏览器）/ 中文 / English</strong>。选择「自动」时按浏览器语言自动判定；切换立即生效并记忆，无需刷新。</p>
-<h3>外观</h3>
-<h4>预设主题</h4>
-<table>
-<thead>
-<tr>
-<th>ID</th>
-<th>名称</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>auto</code></td>
-<td>自动（跟随系统亮暗）</td>
-</tr>
-<tr>
-<td><code>default</code></td>
-<td>默认（紫粉渐变）</td>
-</tr>
-<tr>
-<td><code>github-light</code></td>
-<td>GitHub Light</td>
-</tr>
-<tr>
-<td><code>github-dark</code></td>
-<td>GitHub Dark</td>
-</tr>
-<tr>
-<td><code>notion</code></td>
-<td>Notion</td>
-</tr>
-<tr>
-<td><code>arc-dark</code></td>
-<td>Arc Dark</td>
-</tr>
-<tr>
-<td><code>dracula</code></td>
-<td>Dracula</td>
-</tr>
-<tr>
-<td><code>nord</code></td>
-<td>Nord</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>选择预设主题会清空自定义配色。</p>
-</blockquote>
-<p><strong>自动主题（auto）</strong>：跟随系统 <code>prefers-color-scheme</code> 实时切换——系统亮色时使用「自动主题配对」中的亮色主题（默认紫粉渐变），暗色时使用暗色主题（默认 GitHub Dark）。配对可在设置面板中自由组合，系统亮暗变化时即时生效（含 PWA 桌面模式）。</p>
-<h4>自定义配色（取色器）</h4>
-<p>无需写 CSS，直接通过取色器调整：</p>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>可调变量</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>强调色</strong></td>
-<td><code>--color-accent-purple</code> / <code>--color-accent-pink</code> / <code>--color-accent-purple-deep</code></td>
-<td>主色及派生色</td>
-</tr>
-<tr>
-<td><strong>中性色</strong></td>
-<td><code>--color-bg</code> / <code>--color-surface</code> / <code>--color-border</code> / <code>--color-text</code> / <code>--color-text-muted</code></td>
-<td>背景、表面、文字与边框</td>
-</tr>
-</tbody></table>
-<p>通过中性色调整即可做出亮色或暗色主题。点击「重置」恢复默认值。</p>
-<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/theme-customization.md">主题定制</a>。</p>
-<h4>字体自定义</h4>
-<p>设置面板 → <strong>外观 → 字体</strong>，无需写 CSS 即可精细控制排版：</p>
-<table>
-<thead>
-<tr>
-<th>选项</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>远程字体 URL</td>
-<td>填写 Google Fonts 等 CSS URL 即可加载远程字体</td>
-</tr>
-<tr>
-<td>展示字体族</td>
-<td>标题衬线体，独立于正文</td>
-</tr>
-<tr>
-<td>正文字体族</td>
-<td>UI / 正文无衬线体</td>
-</tr>
-<tr>
-<td>字号细调</td>
-<td>UI / 正文 / H1 / H2 / H3 独立设置</td>
-</tr>
-<tr>
-<td>字重细调</td>
-<td>UI / 正文 / 展示体 / H1 / H2 / H3 独立选择（300 ~ 800）</td>
-</tr>
-<tr>
-<td>字色</td>
-<td>正文与次要文字颜色独立取色</td>
-</tr>
-<tr>
-<td>标题数字无衬线</td>
-<td>默认标题数字随标题字体（衬线）；开启后仅数字改用无衬线字形</td>
-</tr>
-<tr>
-<td>重置字体</td>
-<td>一键恢复全部字体默认值</td>
-</tr>
-</tbody></table>
-<h4>代码高亮主题</h4>
-<table>
-<thead>
-<tr>
-<th>主题 ID</th>
-<th>名称</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>github</code></td>
-<td>GitHub Light</td>
-<td>亮色</td>
-</tr>
-<tr>
-<td><code>github-dark</code></td>
-<td>GitHub Dark</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>atom-one-light</code></td>
-<td>Atom One Light</td>
-<td>亮色</td>
-</tr>
-<tr>
-<td><code>atom-one-dark</code></td>
-<td>Atom One Dark</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>monokai</code></td>
-<td>Monokai</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>dracula</code></td>
-<td>Dracula</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>nord</code></td>
-<td>Nord</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>vs2015</code></td>
-<td>VS 2015</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>solarized-light</code></td>
-<td>Solarized Light</td>
-<td>亮色</td>
-</tr>
-<tr>
-<td><code>solarized-dark</code></td>
-<td>Solarized Dark</td>
-<td>暗色</td>
-</tr>
-</tbody></table>
-<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md">代码高亮主题</a>。</p>
-<p>在「外观 → 代码高亮」中还可填写<strong>自定义高亮主题</strong>：加载外部 highlight.js 主题 CSS URL，回车应用（覆盖内置代码主题）。</p>
-<h4>自定义 CSS</h4>
-<p>在「外观 → 自定义 CSS」中填写<strong>外部样式表 URL</strong>，加载外部 CSS 文件进一步定制页面，回车应用。</p>
-<h3>阅读</h3>
-<h4>显示选项</h4>
-<table>
-<thead>
-<tr>
-<th>选项</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>显示阅读进度</td>
-<td>控制顶部进度条</td>
-</tr>
-<tr>
-<td>显示字数统计</td>
-<td>控制文件树中每个文件旁的字数显示</td>
-</tr>
-<tr>
-<td>截断长文件名</td>
-<td>开启时文件名过长省略号显示，关闭时展开（区域可横向滚动，隐藏滚动条）</td>
-</tr>
-</tbody></table>
-<h4>布局</h4>
-<table>
-<thead>
-<tr>
-<th>选项</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>内容区宽度</td>
-<td>滑杆调整 Markdown 正文最大宽度（600–1400px，默认 720px），拖动即时生效，可一键重置</td>
-</tr>
-<tr>
-<td>正文占满可用宽度</td>
-<td>开启后正文铺满窗口可用宽度，忽略上方宽度设置，适合宽屏显示器</td>
-</tr>
-<tr>
-<td>长表格延伸到右侧空白</td>
-<td>内容宽度设置保持不变，宽表格向右适度越过正文边界、利用右侧空白显示更多列</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>侧边栏折叠：桌面端可通过侧边栏标题栏的汉堡按钮或快捷键 <code>Ctrl/⌘ + B</code> 折叠/展开侧边栏，折叠后左上角浮现展开按钮，状态自动记忆（与移动端抽屉行为一致）。</p>
-<p>以上宽度与侧边栏操作均有键盘快捷键（<code>Ctrl/⌘ + Alt + =/-/0/F</code>、<code>Ctrl/⌘ + B</code>、<code>[</code> / <code>]</code> 等），完整清单见 <a href="https://theforeveriris.github.io/md-preview/docs/shortcuts.md">快捷键</a>。</p>
-</blockquote>
-<h3>工具与导出</h3>
-<h4>工具</h4>
-<table>
-<thead>
-<tr>
-<th>工具</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Markdown 编辑器</td>
-<td>在新标签页打开交互式编辑器（<code>?mode=editor</code>），支持语法快速输入和实时渲染</td>
-</tr>
-<tr>
-<td>波形生成器</td>
-<td>可视化生成 DG-LAB 郊狼 <code>.pulse</code> 波形文件（<code>?mode=pulsegen</code>），最多 20 个</td>
-</tr>
-</tbody></table>
-<h4>导出</h4>
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>下载 Markdown</td>
-<td>下载当前打开的 <code>.md</code> 源文件</td>
-</tr>
-<tr>
-<td>导出 PDF</td>
-<td>通过浏览器打印对话框导出为 PDF（自动隐藏侧边栏、悬浮球等 UI）</td>
-</tr>
-<tr>
-<td>导出 HTML</td>
-<td>保存为内联当前主题样式与全部本地 CSS 的单文件 HTML，双击即可离线查看</td>
-</tr>
-</tbody></table>
-<h4>离线缓存</h4>
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>全量离线缓存</td>
-<td>把文件树覆盖的所有文档拉进 PWA 缓存（带进度反馈），离线也能整站阅读；支持一键清除文档缓存。需 HTTPS 部署访问后可用</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>三、悬浮球菜单</h2>
-<p>悬浮球展开后提供 6 个快捷入口：</p>
-<table>
-<thead>
-<tr>
-<th>入口</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>回到顶部</td>
-<td>平滑滚动到文档顶部</td>
-</tr>
-<tr>
-<td>打开本地文件</td>
-<td>点击弹出选择面板：「选择文件…」可一次选中一个或多个本地 <code>.md</code> 文件预览（不写入 URL，刷新后丢失），未打开的文件进入侧边栏「本地文件」会话列表，可切换、移除或清空；「选择文件夹…」整体导入一个目录（File System Access API，旧浏览器回退 <code>webkitdirectory</code>），按目录树展示、文件夹可折叠、内容懒加载；最多收集 500 个文件，单文件 ≤ 10MB。受浏览器限制，文件与文件夹需在面板中二选一进入</td>
-</tr>
-<tr>
-<td>扫码续读</td>
-<td>生成当前文档 + 阅读位置的二维码，手机扫码接着看</td>
-</tr>
-<tr>
-<td>安装到桌面</td>
-<td>PWA 安装（仅浏览器支持时显示）</td>
-</tr>
-<tr>
-<td>编辑此页</td>
-<td>在新标签页打开 GitHub 编辑界面</td>
-</tr>
-<tr>
-<td>设置</td>
-<td>打开设置面板</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>四、RSS 订阅</h2>
-<p>站点自动生成 RSS feed，订阅地址：</p>
-<pre><code>https://&lt;owner&gt;.github.io/&lt;repo&gt;/iris/data/feed.xml
-</code></pre>
-<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/rss.md">RSS 订阅</a>。</p>
-]]></content:encoded>
-    </item>
     <item>
       <title>功能路线图</title>
       <link>https://theforeveriris.github.io/md-preview/docs/roadmap.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/roadmap.md</guid>
-      <pubDate>Thu, 01 Oct 2026 05:50:00 GMT</pubDate>
+      <pubDate>Thu, 01 Oct 2026 15:20:17 GMT</pubDate>
       <description>本文档收录项目的功能规划。标注「已实现」的功能已落地可用（正式说明见 README 特性清单与相关专题文档），其余仍为规划，描述目标交互、可以复用的现有基建、实现要点与边界。功能落地后，对应章节会更新为正式文档并标注版本。 &gt; 状态速记：已完成功能见 README 特性清单 与各专题文档；未标注「已实现」的章节均为「规划中（未实现）」。 --- | 分组 | 功能 | 一句话说明 | 主要复用基建</description>
       <content:encoded><![CDATA[<h1>功能路线图</h1>
 <p>本文档收录项目的功能规划。<strong>标注「已实现」的功能已落地可用</strong>（正式说明见 README 特性清单与相关专题文档），其余仍为规划，描述目标交互、可以复用的现有基建、实现要点与边界。功能落地后，对应章节会更新为正式文档并标注版本。</p>
@@ -988,6 +527,612 @@
 <blockquote>
 <p>以上顺序仅为建议，实际取舍以维护者的版本规划为准。功能实现后请同步更新：本文件对应章节、<a href="https://theforeveriris.github.io/md-preview/README.md">README</a> 特性清单、相关专题文档与 <a href="https://theforeveriris.github.io/md-preview/docs/show.md">show.md</a> 截图页。</p>
 </blockquote>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>RSS 订阅</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/rss.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/rss.md</guid>
+      <pubDate>Thu, 01 Oct 2026 15:20:17 GMT</pubDate>
+      <description>Markdown Preview 自动为 目录下的所有 Markdown 文档生成 RSS 2.0 feed，方便他人通过 RSS 阅读器订阅你的文档更新。 --- 部署后，RSS feed 位于： 例如本站： &gt; feed.xml 不放在仓库根目录，而是放在 下，与 、 等预构建数据并列。 中已添加： 主流浏览器和 RSS 阅读器扩展会自动发现并提示订阅。 每篇文档对应一个 ，包含： | 字段 </description>
+      <content:encoded><![CDATA[<h1>RSS 订阅</h1>
+<p>Markdown Preview 自动为 <code>docs/</code> 目录下的所有 Markdown 文档生成 RSS 2.0 feed，方便他人通过 RSS 阅读器订阅你的文档更新。</p>
+<hr>
+<h2>订阅地址</h2>
+<p>部署后，RSS feed 位于：</p>
+<pre><code>https://&lt;owner&gt;.github.io/&lt;repo&gt;/iris/data/feed.xml
+</code></pre>
+<p>例如本站：</p>
+<pre><code>https://theforeveriris.github.io/md-preview/iris/data/feed.xml
+</code></pre>
+<blockquote>
+<p>feed.xml 不放在仓库根目录，而是放在 <code>iris/data/</code> 下，与 <code>file-tree.json</code>、<code>search-index.json</code> 等预构建数据并列。</p>
+</blockquote>
+<h2>自动发现</h2>
+<p><code>index.html</code> 中已添加：</p>
+<pre><code class="language-html">&lt;link rel=&quot;alternate&quot; type=&quot;application/rss+xml&quot; title=&quot;Markdown Preview&quot; href=&quot;iris/data/feed.xml&quot;&gt;
+</code></pre>
+<p>主流浏览器和 RSS 阅读器扩展会自动发现并提示订阅。</p>
+<h2>Feed 内容</h2>
+<p>每篇文档对应一个 <code>&lt;item&gt;</code>，包含：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&lt;title&gt;</code></td>
+<td>frontmatter.title → 文档首个 <code>#</code> 标题 → 文件名</td>
+</tr>
+<tr>
+<td><code>&lt;link&gt;</code></td>
+<td>站点 URL + <code>docs/</code> 文档相对路径，指向可直接抓取的原始 Markdown 文件（标准 RSS 阅读器不执行站点 JS，hash fragment <code>#/docs/foo.md</code> 无法解析）</td>
+</tr>
+<tr>
+<td><code>&lt;guid&gt;</code></td>
+<td>与 <code>&lt;link&gt;</code> 相同，作为永久链接</td>
+</tr>
+<tr>
+<td><code>&lt;pubDate&gt;</code></td>
+<td>frontmatter.date → git 最后提交时间 → 文件 mtime</td>
+</tr>
+<tr>
+<td><code>&lt;description&gt;</code></td>
+<td>frontmatter.description → 正文前 200 字（去除代码块/标题/markdown 符号），作为摘要</td>
+</tr>
+<tr>
+<td><code>&lt;content:encoded&gt;</code></td>
+<td><strong>全文 HTML</strong>：正文 Markdown 渲染为完整 HTML，供支持的阅读器直接阅读全文</td>
+</tr>
+</tbody></table>
+<p><code>&lt;channel&gt;</code> 包含站点标题、链接、描述、语言、最后构建时间和自引用 <code>&lt;atom:link&gt;</code>。</p>
+<h3>全文输出</h3>
+<p>feed 为 RSS 2.0 + <code>content</code> 命名空间（<code>xmlns:content=&quot;http://purl.org/rss/1.0/modules/content/&quot;</code>），每条目在 <code>&lt;description&gt;</code> 摘要之外附带 <code>&lt;content:encoded&gt;</code> 完整正文：</p>
+<ul>
+<li>Markdown 渲染使用仓库内置的 <code>iris/vendor/marked.js</code>（UMD，Node 端直接 require），与站点阅读视图同源，构建期零额外依赖；</li>
+<li>正文内的相对链接 / 图片（<code>image/foo.png</code>、<code>./bar.md</code> 等）按文档部署路径改写为绝对地址，RSS 阅读器在任意上下文都能加载资源；</li>
+<li>渲染失败时回退为 <code>&lt;pre&gt;</code> 源码输出，条目不会丢失。</li>
+</ul>
+<h2>通过 Frontmatter 自定义</h2>
+<p>在 Markdown 文件头部添加 YAML frontmatter 可自定义 feed 条目：</p>
+<pre><code class="language-markdown">---
+title: 我的自定义标题
+description: 这是一段自定义摘要，会显示在 RSS 阅读器中
+date: 2026-01-15
+---
+
+# 正文开始
+...
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>title</code></td>
+<td>覆盖自动提取的标题</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>覆盖自动提取的摘要</td>
+</tr>
+<tr>
+<td><code>date</code></td>
+<td>覆盖 git 提交时间作为发布时间（格式：<code>YYYY-MM-DD</code> 或 ISO 8601）</td>
+</tr>
+</tbody></table>
+<h2>自动重建</h2>
+<p>GitHub Actions 工作流 <a href="https://theforeveriris.github.io/md-preview/.github/workflows/build-feed.yml">.github/workflows/build-feed.yml</a> 会在以下情况自动重建 feed：</p>
+<ul>
+<li><code>main</code> 分支上 <code>docs/**</code> 路径下文件变更</li>
+<li>手动触发（workflow_dispatch）</li>
+</ul>
+<p>工作流步骤：</p>
+<ol>
+<li><code>fetch-depth: 0</code> 拉取完整 git 历史（用于读取文件提交时间）</li>
+<li>运行 <code>node iris/scripts/build-feed.js</code></li>
+<li>运行 <code>node iris/scripts/build-sitemap.js</code></li>
+<li>自动提交并推送 <code>iris/data/feed.xml</code> 与 <code>iris/data/sitemap.xml</code></li>
+</ol>
+<h2>手动构建</h2>
+<p>本地预览或调试时，可手动运行：</p>
+<pre><code class="language-bash">node iris/scripts/build-feed.js
+</code></pre>
+<p>会扫描 <code>docs/</code> 下所有 <code>.md</code> 文件，生成 <code>iris/data/feed.xml</code>。</p>
+<blockquote>
+<p>本地运行时若文件未被 git 跟踪，<code>git log</code> 失败会自动回退到文件 mtime。</p>
+</blockquote>
+<h2>实现细节</h2>
+<p>构建脚本：<a href="https://theforeveriris.github.io/md-preview/iris/scripts/build-feed.js">iris/scripts/build-feed.js</a></p>
+<ul>
+<li>递归扫描 <code>docs/</code> 目录（不读 <code>file-tree.json</code>，避免 node_modules 噪音）</li>
+<li>仅处理 <code>.md</code> 文件</li>
+<li>XML 特殊字符转义（<code>&amp;</code> <code>&lt;</code> <code>&gt;</code> <code>&quot;</code> <code>&#39;</code>）</li>
+<li>按 <code>pubDate</code> 倒序排列</li>
+<li>输出 RSS 2.0 + Atom 命名空间（支持 <code>&lt;atom:link rel=&quot;self&quot;&gt;</code> 自引用）+ content 命名空间（全文 <code>&lt;content:encoded&gt;</code>）</li>
+</ul>
+<h2>Sitemap（搜索引擎收录）</h2>
+<p><a href="https://theforeveriris.github.io/md-preview/iris/scripts/build-sitemap.js">iris/scripts/build-sitemap.js</a> 生成 <code>iris/data/sitemap.xml</code>，与 RSS 同源同节奏构建（同一工作流触发、一起提交）：</p>
+<ul>
+<li>收录站点首页与 <code>docs/</code> 下全部 <code>.md</code> 文件的直链（hash 路由的 SPA 页面无法被搜索引擎抓取渲染结果，收录原始 <code>.md</code> 与 RSS 取径一致）；</li>
+<li>每条 <code>&lt;url&gt;</code> 携带 <code>&lt;lastmod&gt;</code>（git 最后提交时间，回退文件 mtime）；</li>
+<li>根目录 <code>robots.txt</code> 通过 <code>Sitemap:</code> 行声明该文件，便于爬虫自动发现。</li>
+</ul>
+<p>手动构建：</p>
+<pre><code class="language-bash">node iris/scripts/build-sitemap.js
+</code></pre>
+<h2>验证</h2>
+<p>生成后可使用以下工具验证 feed 合规性：</p>
+<ul>
+<li><a href="https://validator.w3.org/feed/">W3C Feed Validation Service</a></li>
+<li>RSS 阅读器（Feedly、Inoreader、NetNewsWire 等）直接订阅测试</li>
+</ul>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>配置参考</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
+      <pubDate>Thu, 01 Oct 2026 10:39:53 GMT</pubDate>
+      <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
+      <content:encoded><![CDATA[<h1>配置参考</h1>
+<p>Markdown Preview 的配置分为两层：</p>
+<ol>
+<li><strong>构建/部署配置</strong> — <code>iris/config.json</code>（仓库级，所有访客共享）</li>
+<li><strong>运行时设置</strong> — 浏览器 localStorage（用户级，仅当前浏览器生效）</li>
+</ol>
+<hr>
+<h2>一、<code>iris/config.json</code>（仓库级配置）</h2>
+<p>修改此文件后需推送代码触发重新部署。</p>
+<h3>基础配置</h3>
+<pre><code class="language-json">{
+  &quot;owner&quot;: &quot;your-username&quot;,
+  &quot;repo&quot;: &quot;your-repo-name&quot;
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>owner</code></td>
+<td>string</td>
+<td>-</td>
+<td>GitHub 用户名或组织名</td>
+</tr>
+<tr>
+<td><code>repo</code></td>
+<td>string</td>
+<td>-</td>
+<td>仓库名</td>
+</tr>
+</tbody></table>
+<h3>完整配置项</h3>
+<pre><code class="language-json">{
+  &quot;owner&quot;: &quot;&quot;,
+  &quot;repo&quot;: &quot;&quot;,
+  &quot;branch&quot;: &quot;main&quot;,
+  &quot;title&quot;: &quot;Markdown Preview&quot;,
+  &quot;defaultTheme&quot;: &quot;default&quot;,
+  &quot;showEditButton&quot;: true,
+  &quot;showReadingTime&quot;: true,
+  &quot;showBreadcrumbs&quot;: true
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>branch</code></td>
+<td>string</td>
+<td><code>main</code></td>
+<td>文档所在的 Git 分支</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>string</td>
+<td><code>Markdown Preview</code></td>
+<td>站点标题</td>
+</tr>
+<tr>
+<td><code>defaultTheme</code></td>
+<td>string</td>
+<td><code>default</code></td>
+<td>默认主题 ID</td>
+</tr>
+<tr>
+<td><code>showEditButton</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>是否显示&quot;编辑此页&quot;按钮</td>
+</tr>
+<tr>
+<td><code>showReadingTime</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>是否显示阅读时间估算</td>
+</tr>
+<tr>
+<td><code>showBreadcrumbs</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>是否显示面包屑导航</td>
+</tr>
+<tr>
+<td><code>plantumlServers</code></td>
+<td>array</td>
+<td>内置列表</td>
+<td>PlantUML 渲染服务列表，按顺序尝试</td>
+</tr>
+</tbody></table>
+<h4>PlantUML 渲染服务（plantumlServers）</h4>
+<p>PlantUML 图表默认依次尝试官方服务器与 Kroki 公共服务，全部失败时自动降级为源码展示并提供在线编辑器链接。若你自建了 PlantUML 服务或想使用其他镜像，可在 <code>iris/config.json</code> 中覆盖：</p>
+<pre><code class="language-json">{
+  &quot;plantumlServers&quot;: [
+    { &quot;type&quot;: &quot;plantuml&quot;, &quot;base&quot;: &quot;https://your-self-hosted/plantuml&quot; },
+    { &quot;type&quot;: &quot;kroki&quot;, &quot;base&quot;: &quot;https://kroki.io/plantuml&quot; }
+  ]
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>type</code></td>
+<td><code>plantuml</code>（PlantUML 自定义编码）或 <code>kroki</code>（标准 base64url 编码）</td>
+</tr>
+<tr>
+<td><code>base</code></td>
+<td>服务基础地址，渲染时自动拼接 <code>/svg/&lt;编码&gt;</code></td>
+</tr>
+</tbody></table>
+<h3>配置加载顺序</h3>
+<ol>
+<li>内置默认配置</li>
+<li><code>iris/config.json</code> 中的配置（覆盖默认值）</li>
+<li>用户本地存储的设置（如主题选择，会覆盖前两者）</li>
+</ol>
+<hr>
+<h2>二、运行时设置（用户级）</h2>
+<p>通过悬浮球菜单 → <strong>设置</strong> 打开设置面板，所有改动保存在浏览器 localStorage，仅对当前浏览器生效。</p>
+<p>设置面板分四个区块：<strong>语言 / 外观 / 阅读 / 工具与导出</strong>。</p>
+<h3>语言</h3>
+<p>设置面板最顶部为「语言」选择：<strong>自动（跟随浏览器）/ 中文 / English</strong>。选择「自动」时按浏览器语言自动判定；切换立即生效并记忆，无需刷新。</p>
+<h3>外观</h3>
+<h4>预设主题</h4>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>auto</code></td>
+<td>自动（跟随系统亮暗）</td>
+</tr>
+<tr>
+<td><code>default</code></td>
+<td>默认（紫粉渐变）</td>
+</tr>
+<tr>
+<td><code>github-light</code></td>
+<td>GitHub Light</td>
+</tr>
+<tr>
+<td><code>github-dark</code></td>
+<td>GitHub Dark</td>
+</tr>
+<tr>
+<td><code>notion</code></td>
+<td>Notion</td>
+</tr>
+<tr>
+<td><code>arc-dark</code></td>
+<td>Arc Dark</td>
+</tr>
+<tr>
+<td><code>dracula</code></td>
+<td>Dracula</td>
+</tr>
+<tr>
+<td><code>nord</code></td>
+<td>Nord</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>选择预设主题会清空自定义配色。</p>
+</blockquote>
+<p><strong>自动主题（auto）</strong>：跟随系统 <code>prefers-color-scheme</code> 实时切换——系统亮色时使用「自动主题配对」中的亮色主题（默认紫粉渐变），暗色时使用暗色主题（默认 GitHub Dark）。配对可在设置面板中自由组合，系统亮暗变化时即时生效（含 PWA 桌面模式）。</p>
+<h4>自定义配色（取色器）</h4>
+<p>无需写 CSS，直接通过取色器调整：</p>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>可调变量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>强调色</strong></td>
+<td><code>--color-accent-purple</code> / <code>--color-accent-pink</code> / <code>--color-accent-purple-deep</code></td>
+<td>主色及派生色</td>
+</tr>
+<tr>
+<td><strong>中性色</strong></td>
+<td><code>--color-bg</code> / <code>--color-surface</code> / <code>--color-border</code> / <code>--color-text</code> / <code>--color-text-muted</code></td>
+<td>背景、表面、文字与边框</td>
+</tr>
+</tbody></table>
+<p>通过中性色调整即可做出亮色或暗色主题。点击「重置」恢复默认值。</p>
+<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/theme-customization.md">主题定制</a>。</p>
+<h4>字体自定义</h4>
+<p>设置面板 → <strong>外观 → 字体</strong>，无需写 CSS 即可精细控制排版：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>远程字体 URL</td>
+<td>填写 Google Fonts 等 CSS URL 即可加载远程字体</td>
+</tr>
+<tr>
+<td>展示字体族</td>
+<td>标题衬线体，独立于正文</td>
+</tr>
+<tr>
+<td>正文字体族</td>
+<td>UI / 正文无衬线体</td>
+</tr>
+<tr>
+<td>字号细调</td>
+<td>UI / 正文 / H1 / H2 / H3 独立设置</td>
+</tr>
+<tr>
+<td>字重细调</td>
+<td>UI / 正文 / 展示体 / H1 / H2 / H3 独立选择（300 ~ 800）</td>
+</tr>
+<tr>
+<td>字色</td>
+<td>正文与次要文字颜色独立取色</td>
+</tr>
+<tr>
+<td>标题数字无衬线</td>
+<td>默认标题数字随标题字体（衬线）；开启后仅数字改用无衬线字形</td>
+</tr>
+<tr>
+<td>重置字体</td>
+<td>一键恢复全部字体默认值</td>
+</tr>
+</tbody></table>
+<h4>代码高亮主题</h4>
+<table>
+<thead>
+<tr>
+<th>主题 ID</th>
+<th>名称</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>github</code></td>
+<td>GitHub Light</td>
+<td>亮色</td>
+</tr>
+<tr>
+<td><code>github-dark</code></td>
+<td>GitHub Dark</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>atom-one-light</code></td>
+<td>Atom One Light</td>
+<td>亮色</td>
+</tr>
+<tr>
+<td><code>atom-one-dark</code></td>
+<td>Atom One Dark</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>monokai</code></td>
+<td>Monokai</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>dracula</code></td>
+<td>Dracula</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>nord</code></td>
+<td>Nord</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>vs2015</code></td>
+<td>VS 2015</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>solarized-light</code></td>
+<td>Solarized Light</td>
+<td>亮色</td>
+</tr>
+<tr>
+<td><code>solarized-dark</code></td>
+<td>Solarized Dark</td>
+<td>暗色</td>
+</tr>
+</tbody></table>
+<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md">代码高亮主题</a>。</p>
+<p>在「外观 → 代码高亮」中还可填写<strong>自定义高亮主题</strong>：加载外部 highlight.js 主题 CSS URL，回车应用（覆盖内置代码主题）。</p>
+<h4>自定义 CSS</h4>
+<p>在「外观 → 自定义 CSS」中填写<strong>外部样式表 URL</strong>，加载外部 CSS 文件进一步定制页面，回车应用。</p>
+<h3>阅读</h3>
+<h4>显示选项</h4>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>显示阅读进度</td>
+<td>控制顶部进度条</td>
+</tr>
+<tr>
+<td>显示字数统计</td>
+<td>控制文件树中每个文件旁的字数显示</td>
+</tr>
+<tr>
+<td>截断长文件名</td>
+<td>开启时文件名过长省略号显示，关闭时展开（区域可横向滚动，隐藏滚动条）</td>
+</tr>
+</tbody></table>
+<h4>布局</h4>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>内容区宽度</td>
+<td>滑杆调整 Markdown 正文最大宽度（600–1400px，默认 720px），拖动即时生效，可一键重置</td>
+</tr>
+<tr>
+<td>正文占满可用宽度</td>
+<td>开启后正文铺满窗口可用宽度，忽略上方宽度设置，适合宽屏显示器</td>
+</tr>
+<tr>
+<td>长表格延伸到右侧空白</td>
+<td>内容宽度设置保持不变，宽表格向右适度越过正文边界、利用右侧空白显示更多列</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>侧边栏折叠：桌面端可通过侧边栏标题栏的汉堡按钮或快捷键 <code>Ctrl/⌘ + B</code> 折叠/展开侧边栏，折叠后左上角浮现展开按钮，状态自动记忆（与移动端抽屉行为一致）。</p>
+<p>以上宽度与侧边栏操作均有键盘快捷键（<code>Ctrl/⌘ + Alt + =/-/0/F</code>、<code>Ctrl/⌘ + B</code>、<code>[</code> / <code>]</code> 等），完整清单见 <a href="https://theforeveriris.github.io/md-preview/docs/shortcuts.md">快捷键</a>。</p>
+</blockquote>
+<h3>工具与导出</h3>
+<h4>工具</h4>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Markdown 编辑器</td>
+<td>在新标签页打开交互式编辑器（<code>?mode=editor</code>），支持语法快速输入和实时渲染</td>
+</tr>
+<tr>
+<td>波形生成器</td>
+<td>可视化生成 DG-LAB 郊狼 <code>.pulse</code> 波形文件（<code>?mode=pulsegen</code>），最多 20 个</td>
+</tr>
+</tbody></table>
+<h4>导出</h4>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>下载 Markdown</td>
+<td>下载当前打开的 <code>.md</code> 源文件</td>
+</tr>
+<tr>
+<td>导出 PDF</td>
+<td>通过浏览器打印对话框导出为 PDF（自动隐藏侧边栏、悬浮球等 UI）</td>
+</tr>
+<tr>
+<td>导出 HTML</td>
+<td>保存为内联当前主题样式与全部本地 CSS 的单文件 HTML，双击即可离线查看</td>
+</tr>
+</tbody></table>
+<h4>离线缓存</h4>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>全量离线缓存</td>
+<td>把文件树覆盖的所有文档拉进 PWA 缓存（带进度反馈），离线也能整站阅读；支持一键清除文档缓存。需 HTTPS 部署访问后可用</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>三、悬浮球菜单</h2>
+<p>悬浮球展开后提供 6 个快捷入口：</p>
+<table>
+<thead>
+<tr>
+<th>入口</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>回到顶部</td>
+<td>平滑滚动到文档顶部</td>
+</tr>
+<tr>
+<td>打开本地文件</td>
+<td>点击弹出选择面板：「选择文件…」可一次选中一个或多个本地 <code>.md</code> 文件预览（不写入 URL，刷新后丢失），未打开的文件进入侧边栏「本地文件」会话列表，可切换、移除或清空；「选择文件夹…」整体导入一个目录（File System Access API，旧浏览器回退 <code>webkitdirectory</code>），按目录树展示、文件夹可折叠、内容懒加载；最多收集 500 个文件，单文件 ≤ 10MB。受浏览器限制，文件与文件夹需在面板中二选一进入</td>
+</tr>
+<tr>
+<td>扫码续读</td>
+<td>生成当前文档 + 阅读位置的二维码，手机扫码接着看</td>
+</tr>
+<tr>
+<td>安装到桌面</td>
+<td>PWA 安装（仅浏览器支持时显示）</td>
+</tr>
+<tr>
+<td>编辑此页</td>
+<td>在新标签页打开 GitHub 编辑界面</td>
+</tr>
+<tr>
+<td>设置</td>
+<td>打开设置面板</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>四、RSS 订阅</h2>
+<p>站点自动生成 RSS feed，订阅地址：</p>
+<pre><code>https://&lt;owner&gt;.github.io/&lt;repo&gt;/iris/data/feed.xml
+</code></pre>
+<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/rss.md">RSS 订阅</a>。</p>
 ]]></content:encoded>
     </item>
     <item>
@@ -2662,151 +2807,6 @@ Pulse 格式与示例：<a href="https://theforeveriris.github.io/md-preview/doc
 <td>自定义 highlight.js 主题 URL</td>
 </tr>
 </tbody></table>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>RSS 订阅</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/rss.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/rss.md</guid>
-      <pubDate>Mon, 28 Sep 2026 17:47:50 GMT</pubDate>
-      <description>Markdown Preview 自动为 目录下的所有 Markdown 文档生成 RSS 2.0 feed，方便他人通过 RSS 阅读器订阅你的文档更新。 --- 部署后，RSS feed 位于： 例如本站： &gt; feed.xml 不放在仓库根目录，而是放在 下，与 、 等预构建数据并列。 中已添加： 主流浏览器和 RSS 阅读器扩展会自动发现并提示订阅。 每篇文档对应一个 ，包含： | 字段 </description>
-      <content:encoded><![CDATA[<h1>RSS 订阅</h1>
-<p>Markdown Preview 自动为 <code>docs/</code> 目录下的所有 Markdown 文档生成 RSS 2.0 feed，方便他人通过 RSS 阅读器订阅你的文档更新。</p>
-<hr>
-<h2>订阅地址</h2>
-<p>部署后，RSS feed 位于：</p>
-<pre><code>https://&lt;owner&gt;.github.io/&lt;repo&gt;/iris/data/feed.xml
-</code></pre>
-<p>例如本站：</p>
-<pre><code>https://theforeveriris.github.io/md-preview/iris/data/feed.xml
-</code></pre>
-<blockquote>
-<p>feed.xml 不放在仓库根目录，而是放在 <code>iris/data/</code> 下，与 <code>file-tree.json</code>、<code>search-index.json</code> 等预构建数据并列。</p>
-</blockquote>
-<h2>自动发现</h2>
-<p><code>index.html</code> 中已添加：</p>
-<pre><code class="language-html">&lt;link rel=&quot;alternate&quot; type=&quot;application/rss+xml&quot; title=&quot;Markdown Preview&quot; href=&quot;iris/data/feed.xml&quot;&gt;
-</code></pre>
-<p>主流浏览器和 RSS 阅读器扩展会自动发现并提示订阅。</p>
-<h2>Feed 内容</h2>
-<p>每篇文档对应一个 <code>&lt;item&gt;</code>，包含：</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>来源</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>&lt;title&gt;</code></td>
-<td>frontmatter.title → 文档首个 <code>#</code> 标题 → 文件名</td>
-</tr>
-<tr>
-<td><code>&lt;link&gt;</code></td>
-<td>站点 URL + <code>docs/</code> 文档相对路径，指向可直接抓取的原始 Markdown 文件（标准 RSS 阅读器不执行站点 JS，hash fragment <code>#/docs/foo.md</code> 无法解析）</td>
-</tr>
-<tr>
-<td><code>&lt;guid&gt;</code></td>
-<td>与 <code>&lt;link&gt;</code> 相同，作为永久链接</td>
-</tr>
-<tr>
-<td><code>&lt;pubDate&gt;</code></td>
-<td>frontmatter.date → git 最后提交时间 → 文件 mtime</td>
-</tr>
-<tr>
-<td><code>&lt;description&gt;</code></td>
-<td>frontmatter.description → 正文前 200 字（去除代码块/标题/markdown 符号），作为摘要</td>
-</tr>
-<tr>
-<td><code>&lt;content:encoded&gt;</code></td>
-<td><strong>全文 HTML</strong>：正文 Markdown 渲染为完整 HTML，供支持的阅读器直接阅读全文</td>
-</tr>
-</tbody></table>
-<p><code>&lt;channel&gt;</code> 包含站点标题、链接、描述、语言、最后构建时间和自引用 <code>&lt;atom:link&gt;</code>。</p>
-<h3>全文输出</h3>
-<p>feed 为 RSS 2.0 + <code>content</code> 命名空间（<code>xmlns:content=&quot;http://purl.org/rss/1.0/modules/content/&quot;</code>），每条目在 <code>&lt;description&gt;</code> 摘要之外附带 <code>&lt;content:encoded&gt;</code> 完整正文：</p>
-<ul>
-<li>Markdown 渲染使用仓库内置的 <code>iris/vendor/marked.js</code>（UMD，Node 端直接 require），与站点阅读视图同源，构建期零额外依赖；</li>
-<li>正文内的相对链接 / 图片（<code>image/foo.png</code>、<code>./bar.md</code> 等）按文档部署路径改写为绝对地址，RSS 阅读器在任意上下文都能加载资源；</li>
-<li>渲染失败时回退为 <code>&lt;pre&gt;</code> 源码输出，条目不会丢失。</li>
-</ul>
-<h2>通过 Frontmatter 自定义</h2>
-<p>在 Markdown 文件头部添加 YAML frontmatter 可自定义 feed 条目：</p>
-<pre><code class="language-markdown">---
-title: 我的自定义标题
-description: 这是一段自定义摘要，会显示在 RSS 阅读器中
-date: 2026-01-15
----
-
-# 正文开始
-...
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>title</code></td>
-<td>覆盖自动提取的标题</td>
-</tr>
-<tr>
-<td><code>description</code></td>
-<td>覆盖自动提取的摘要</td>
-</tr>
-<tr>
-<td><code>date</code></td>
-<td>覆盖 git 提交时间作为发布时间（格式：<code>YYYY-MM-DD</code> 或 ISO 8601）</td>
-</tr>
-</tbody></table>
-<h2>自动重建</h2>
-<p>GitHub Actions 工作流 <a href="https://theforeveriris.github.io/md-preview/.github/workflows/build-feed.yml">.github/workflows/build-feed.yml</a> 会在以下情况自动重建 feed：</p>
-<ul>
-<li><code>main</code> 分支上 <code>docs/**</code> 路径下文件变更</li>
-<li>手动触发（workflow_dispatch）</li>
-</ul>
-<p>工作流步骤：</p>
-<ol>
-<li><code>fetch-depth: 0</code> 拉取完整 git 历史（用于读取文件提交时间）</li>
-<li>运行 <code>node iris/scripts/build-feed.js</code></li>
-<li>运行 <code>node iris/scripts/build-sitemap.js</code></li>
-<li>自动提交并推送 <code>iris/data/feed.xml</code> 与 <code>iris/data/sitemap.xml</code></li>
-</ol>
-<h2>手动构建</h2>
-<p>本地预览或调试时，可手动运行：</p>
-<pre><code class="language-bash">node iris/scripts/build-feed.js
-</code></pre>
-<p>会扫描 <code>docs/</code> 下所有 <code>.md</code> 文件，生成 <code>iris/data/feed.xml</code>。</p>
-<blockquote>
-<p>本地运行时若文件未被 git 跟踪，<code>git log</code> 失败会自动回退到文件 mtime。</p>
-</blockquote>
-<h2>实现细节</h2>
-<p>构建脚本：<a href="https://theforeveriris.github.io/md-preview/iris/scripts/build-feed.js">iris/scripts/build-feed.js</a></p>
-<ul>
-<li>递归扫描 <code>docs/</code> 目录（不读 <code>file-tree.json</code>，避免 node_modules 噪音）</li>
-<li>仅处理 <code>.md</code> 文件</li>
-<li>XML 特殊字符转义（<code>&amp;</code> <code>&lt;</code> <code>&gt;</code> <code>&quot;</code> <code>&#39;</code>）</li>
-<li>按 <code>pubDate</code> 倒序排列</li>
-<li>输出 RSS 2.0 + Atom 命名空间（支持 <code>&lt;atom:link rel=&quot;self&quot;&gt;</code> 自引用）+ content 命名空间（全文 <code>&lt;content:encoded&gt;</code>）</li>
-</ul>
-<h2>Sitemap（搜索引擎收录）</h2>
-<p><a href="https://theforeveriris.github.io/md-preview/iris/scripts/build-sitemap.js">iris/scripts/build-sitemap.js</a> 生成 <code>iris/data/sitemap.xml</code>，与 RSS 同源同节奏构建（同一工作流触发、一起提交）：</p>
-<ul>
-<li>收录站点首页与 <code>docs/</code> 下全部 <code>.md</code> 文件的直链（hash 路由的 SPA 页面无法被搜索引擎抓取渲染结果，收录原始 <code>.md</code> 与 RSS 取径一致）；</li>
-<li>每条 <code>&lt;url&gt;</code> 携带 <code>&lt;lastmod&gt;</code>（git 最后提交时间，回退文件 mtime）；</li>
-<li>根目录 <code>robots.txt</code> 通过 <code>Sitemap:</code> 行声明该文件，便于爬虫自动发现。</li>
-</ul>
-<p>手动构建：</p>
-<pre><code class="language-bash">node iris/scripts/build-sitemap.js
-</code></pre>
-<h2>验证</h2>
-<p>生成后可使用以下工具验证 feed 合规性：</p>
-<ul>
-<li><a href="https://validator.w3.org/feed/">W3C Feed Validation Service</a></li>
-<li>RSS 阅读器（Feedly、Inoreader、NetNewsWire 等）直接订阅测试</li>
-</ul>
 ]]></content:encoded>
     </item>
     <item>
