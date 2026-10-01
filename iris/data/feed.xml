@@ -5,8 +5,22 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 01 Oct 2026 05:51:18 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 01 Oct 2026 05:51:46 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>功能路线图</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/roadmap.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/roadmap.md</guid>
+      <pubDate>Thu, 01 Oct 2026 05:50:00 GMT</pubDate>
+      <description>本文档收录项目的功能规划。标注「已实现」的功能已落地可用（正式说明见 README 特性清单与相关专题文档），其余仍为规划，描述目标交互、可以复用的现有基建、实现要点与边界。功能落地后，对应章节会更新为正式文档并标注版本。 &gt; 状态速记：已完成功能见 README 特性清单 与各专题文档；未标注「已实现」的章节均为「规划中（未实现）」。 --- | 分组 | 功能 | 一句话说明 | 主要复用基建</description>
+    </item>
+    <item>
+      <title>快捷键</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/shortcuts.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/shortcuts.md</guid>
+      <pubDate>Thu, 01 Oct 2026 05:50:00 GMT</pubDate>
+      <description>Markdown Preview 支持一组全局键盘快捷键，覆盖侧边栏、设置、搜索、文档导航与内容区宽度调节。 表示 macOS 的 Cmd 键， 表示 Windows / Linux 的 Ctrl 键。 --- | 按键 | 功能 | 说明 | |------|------|------| | | 折叠 / 展开侧边栏 | 对齐 VS Code 的侧边栏键位；折叠后左上角会浮现展开按钮；状态自动记</description>
+    </item>
     <item>
       <title>配置参考</title>
       <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
@@ -41,20 +55,6 @@
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/getting-started.md</guid>
       <pubDate>Thu, 01 Oct 2026 05:07:11 GMT</pubDate>
       <description>点击右上角的 Fork 按钮，将仓库复制到你的账号下。 1. 进入 Fork 后的仓库 2. 点击 Settings → Pages 3. 在 Build and deployment 中，Source 选择 GitHub Actions 编辑 ，将 和 改为你的信息： 提交修改并推送到 分支，GitHub Actions 会自动构建并部署。部署完成后，访问 即可查看。 在仓库的任意位置创建 文件</description>
-    </item>
-    <item>
-      <title>功能路线图</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/roadmap.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/roadmap.md</guid>
-      <pubDate>Thu, 01 Oct 2026 05:07:11 GMT</pubDate>
-      <description>本文档收录项目的功能规划。标注「已实现」的功能已落地可用（正式说明见 README 特性清单与相关专题文档），其余仍为规划，描述目标交互、可以复用的现有基建、实现要点与边界。功能落地后，对应章节会更新为正式文档并标注版本。 &gt; 状态速记：已完成功能见 README 特性清单 与各专题文档；未标注「已实现」的章节均为「规划中（未实现）」。 --- | 分组 | 功能 | 一句话说明 | 主要复用基建</description>
-    </item>
-    <item>
-      <title>快捷键</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/shortcuts.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/shortcuts.md</guid>
-      <pubDate>Thu, 01 Oct 2026 05:07:11 GMT</pubDate>
-      <description>Markdown Preview 支持一组全局键盘快捷键，覆盖侧边栏、设置、搜索、文档导航与内容区宽度调节。 表示 macOS 的 Cmd 键， 表示 Windows / Linux 的 Ctrl 键。 --- | 按键 | 功能 | 说明 | |------|------|------| | | 折叠 / 展开侧边栏 | 对齐 VS Code 的侧边栏键位；折叠后左上角会浮现展开按钮；状态自动记</description>
     </item>
     <item>
       <title>系统运行时截图</title>
