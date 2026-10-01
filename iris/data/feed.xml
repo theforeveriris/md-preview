@@ -5,49 +5,70 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 01 Oct 2026 05:07:56 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 01 Oct 2026 05:08:24 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>功能路线图</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/roadmap.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/roadmap.md</guid>
-      <pubDate>Thu, 01 Oct 2026 05:07:52 GMT</pubDate>
-      <description>本文档收录项目的功能规划。标注「已实现」的功能已落地可用（正式说明见 README 特性清单与相关专题文档），其余仍为规划，描述目标交互、可以复用的现有基建、实现要点与边界。功能落地后，对应章节会更新为正式文档并标注版本。 &gt; 状态速记：已完成功能见 README 特性清单 与各专题文档；未标注「已实现」的章节均为「规划中（未实现）」。 --- | 分组 | 功能 | 一句话说明 | 主要复用基建</description>
+      <title>配置参考</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
+      <pubDate>Thu, 01 Oct 2026 05:07:11 GMT</pubDate>
+      <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
     </item>
     <item>
-      <title>Cisco IOS / 华为 VRP 配置高亮示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/ios-vrp-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/ios-vrp-examples.md</guid>
-      <pubDate>Thu, 01 Oct 2026 05:07:52 GMT</pubDate>
-      <description>内置两个网络设备配置语法包：（Cisco IOS / IOS-XE）与 （华为 VRP）。命令关键字、注释、字符串与地址分级着色，与内置 10 套代码高亮主题自动兼容。 ! 接口配置 interface GigabitEthernet0/0/1 description TO-CORE-SW-01 ip address 10.0.0.1 255.255.255.252 ip ospf 1 area </description>
+      <title>Markdown 编辑器</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/editor.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/editor.md</guid>
+      <pubDate>Thu, 01 Oct 2026 05:07:11 GMT</pubDate>
+      <description>Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可在浏览器内即时编写、运行、预览 Markdown，并支持自动保存、搜索替换、导入导出等能力。 编辑器以全屏覆盖层的形式叠加在文档站之上，复用站点已有的渲染管线（marked.js + 各扩展渲染器），所有渲染结果与文档站完全一致。 --- 三种方式任选其一： 1. URL 参数：在站点任意 </description>
     </item>
     <item>
       <title>CSV / TSV 交互表格示例</title>
       <link>https://theforeveriris.github.io/md-preview/docs/examples/csv-examples.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/csv-examples.md</guid>
-      <pubDate>Thu, 01 Oct 2026 05:07:52 GMT</pubDate>
+      <pubDate>Thu, 01 Oct 2026 05:07:11 GMT</pubDate>
       <description>/ 代码块会渲染为可排序、可搜索、可按列筛选的交互表格，贴数据不用再截图。 - 点击表头排序：升 → 降 → 恢复原始顺序，数值列按数值比较 - 表头漏斗按钮：按该列的唯一值勾选筛选 - 工具栏搜索框：即时过滤任意单元格命中的行 - 右侧按钮：复制 CSV / 下载 CSV（保留原文） 逗号或换行出现在单元格内时，用双引号包裹（RFC 4180），引号本身写两个：</description>
     </item>
     <item>
-      <title>配置参考</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
-      <pubDate>Thu, 01 Oct 2026 03:31:11 GMT</pubDate>
-      <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
-    </item>
-    <item>
-      <title>快捷键</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/shortcuts.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/shortcuts.md</guid>
-      <pubDate>Tue, 29 Sep 2026 13:11:00 GMT</pubDate>
-      <description>Markdown Preview 支持一组全局键盘快捷键，覆盖侧边栏、设置、搜索、文档导航与内容区宽度调节。 表示 macOS 的 Cmd 键， 表示 Windows / Linux 的 Ctrl 键。 --- | 按键 | 功能 | 说明 | |------|------|------| | | 折叠 / 展开侧边栏 | 对齐 VS Code 的侧边栏键位；折叠后左上角会浮现展开按钮；状态自动记</description>
+      <title>Cisco IOS / 华为 VRP 配置高亮示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/ios-vrp-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/ios-vrp-examples.md</guid>
+      <pubDate>Thu, 01 Oct 2026 05:07:11 GMT</pubDate>
+      <description>内置两个网络设备配置语法包：（Cisco IOS / IOS-XE）与 （华为 VRP）。命令关键字、注释、字符串与地址分级着色，与内置 10 套代码高亮主题自动兼容。 ! 接口配置 interface GigabitEthernet0/0/1 description TO-CORE-SW-01 ip address 10.0.0.1 255.255.255.252 ip ospf 1 area </description>
     </item>
     <item>
       <title>快速开始</title>
       <link>https://theforeveriris.github.io/md-preview/docs/getting-started.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/getting-started.md</guid>
-      <pubDate>Tue, 29 Sep 2026 09:52:43 GMT</pubDate>
+      <pubDate>Thu, 01 Oct 2026 05:07:11 GMT</pubDate>
       <description>点击右上角的 Fork 按钮，将仓库复制到你的账号下。 1. 进入 Fork 后的仓库 2. 点击 Settings → Pages 3. 在 Build and deployment 中，Source 选择 GitHub Actions 编辑 ，将 和 改为你的信息： 提交修改并推送到 分支，GitHub Actions 会自动构建并部署。部署完成后，访问 即可查看。 在仓库的任意位置创建 文件</description>
+    </item>
+    <item>
+      <title>功能路线图</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/roadmap.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/roadmap.md</guid>
+      <pubDate>Thu, 01 Oct 2026 05:07:11 GMT</pubDate>
+      <description>本文档收录项目的功能规划。标注「已实现」的功能已落地可用（正式说明见 README 特性清单与相关专题文档），其余仍为规划，描述目标交互、可以复用的现有基建、实现要点与边界。功能落地后，对应章节会更新为正式文档并标注版本。 &gt; 状态速记：已完成功能见 README 特性清单 与各专题文档；未标注「已实现」的章节均为「规划中（未实现）」。 --- | 分组 | 功能 | 一句话说明 | 主要复用基建</description>
+    </item>
+    <item>
+      <title>快捷键</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/shortcuts.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/shortcuts.md</guid>
+      <pubDate>Thu, 01 Oct 2026 05:07:11 GMT</pubDate>
+      <description>Markdown Preview 支持一组全局键盘快捷键，覆盖侧边栏、设置、搜索、文档导航与内容区宽度调节。 表示 macOS 的 Cmd 键， 表示 Windows / Linux 的 Ctrl 键。 --- | 按键 | 功能 | 说明 | |------|------|------| | | 折叠 / 展开侧边栏 | 对齐 VS Code 的侧边栏键位；折叠后左上角会浮现展开按钮；状态自动记</description>
+    </item>
+    <item>
+      <title>系统运行时截图</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/show.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/show.md</guid>
+      <pubDate>Thu, 01 Oct 2026 05:07:11 GMT</pubDate>
+      <description>本文档按功能模块整理了 Markdown Preview 站点的完整运行时界面截图，每个截图附有功能介绍，并指向 中对应的详细示例文档。特殊页面会额外标注访问 URL。 --- 站点默认以左侧文档目录树 + 右侧正文阅读区的两栏布局呈现。侧边栏自动扫描仓库中所有 文件，构建嵌套目录结构并显示字数统计；顶部显示面包屑路径与搜索框；右上角悬浮球提供回到顶部、上一篇/下一篇、打开本地 MD、安装 PWA</description>
+    </item>
+    <item>
+      <title>主题定制</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/theme-customization.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/theme-customization.md</guid>
+      <pubDate>Thu, 01 Oct 2026 05:07:11 GMT</pubDate>
+      <description>Markdown Preview 提供三种层级的外观定制方式，由易到难： 1. 预设主题 — 内置 7 套配色，一键切换 2. 可视化取色器 — 拖动色块即可调整主题色，无需写 CSS 3. 自定义 CSS — 加载外部 CSS 文件，完全控制样式 --- | ID | 名称 | 说明 | |----|------|------| | | 默认 | 浅紫浅粉渐变风格 | | | GitHub Li</description>
     </item>
     <item>
       <title>RSS 订阅</title>
@@ -69,20 +90,6 @@
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/pkt-huawei-vrp-%E8%A7%A3%E6%9E%90%E7%A4%BA%E4%BE%8B.md</guid>
       <pubDate>Fri, 31 Jul 2026 16:00:35 GMT</pubDate>
       <description>&gt; ⚠️ 重要说明：PKT 渲染器当前的解析逻辑并不是特别健壮。 &gt; &gt; PKT 拓扑渲染器（）中&quot;可能的配置过程&quot;推算逻辑基于正则表达式 + 段落分割实现，并非真正的语法解析器。它对常见的、格式规范的 VRP 配置文本能给出合理的步骤拆分，但在以下情况下可能产生错误、遗漏或乱序： &gt; &gt; - 配置文本被压缩、加密或经过非标准格式化（多余空格、Tab/空格混用、换行符不统一等） &gt; - 使用了未覆</description>
-    </item>
-    <item>
-      <title>系统运行时截图</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/show.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/show.md</guid>
-      <pubDate>Fri, 31 Jul 2026 16:00:35 GMT</pubDate>
-      <description>本文档按功能模块整理了 Markdown Preview 站点的完整运行时界面截图，每个截图附有功能介绍，并指向 中对应的详细示例文档。特殊页面会额外标注访问 URL。 --- 站点默认以左侧文档目录树 + 右侧正文阅读区的两栏布局呈现。侧边栏自动扫描仓库中所有 文件，构建嵌套目录结构并显示字数统计；顶部显示面包屑路径与搜索框；右上角悬浮球提供回到顶部、上一篇/下一篇、打开本地 MD、安装 PWA</description>
-    </item>
-    <item>
-      <title>Markdown 编辑器</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/editor.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/editor.md</guid>
-      <pubDate>Fri, 31 Jul 2026 15:49:43 GMT</pubDate>
-      <description>Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可在浏览器内即时编写、运行、预览 Markdown，并支持自动保存、搜索替换、导入导出等能力。 编辑器以全屏覆盖层的形式叠加在文档站之上，复用站点已有的渲染管线（marked.js + 各扩展渲染器），所有渲染结果与文档站完全一致。 --- 三种方式任选其一： 1. URL 参数：在站点任意 </description>
     </item>
     <item>
       <title>Pulse 波形示例</title>
@@ -174,13 +181,6 @@
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md</guid>
       <pubDate>Mon, 13 Jul 2026 01:54:24 GMT</pubDate>
       <description>Markdown Preview 使用 highlight.js 进行代码语法高亮。内置了 10 种常用主题，并支持自定义主题。 | 主题 ID | 名称 | 类型 | |---------|------|------| | | GitHub Light | 亮色 | | | GitHub Dark | 暗色 | | | Atom One Light | 亮色 | | | Atom One Dar</description>
-    </item>
-    <item>
-      <title>主题定制</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/theme-customization.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/theme-customization.md</guid>
-      <pubDate>Mon, 13 Jul 2026 01:54:24 GMT</pubDate>
-      <description>Markdown Preview 提供三种层级的外观定制方式，由易到难： 1. 预设主题 — 内置 7 套配色，一键切换 2. 可视化取色器 — 拖动色块即可调整主题色，无需写 CSS 3. 自定义 CSS — 加载外部 CSS 文件，完全控制样式 --- | ID | 名称 | 说明 | |----|------|------| | | 默认 | 浅紫浅粉渐变风格 | | | GitHub Li</description>
     </item>
     <item>
       <title>表格使用示例</title>
