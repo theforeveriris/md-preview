@@ -335,6 +335,15 @@
                   </select>
                 </div>
               </div>
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label" data-i18n="settings.adv.customHljs">自定义高亮主题</div>
+                  <div class="setting-description" data-i18n="settings.adv.customHljsDesc">加载外部 highlight.js 主题 CSS URL，回车应用</div>
+                </div>
+                <div class="setting-control">
+                  <input type="text" id="customHljsInput" class="custom-css-input" placeholder="hljs 主题 CSS URL" data-i18n-placeholder="settings.adv.customHljsPlaceholder">
+                </div>
+              </div>
             </div>
 
             <!-- 字体自定义 -->
@@ -502,33 +511,24 @@
             </div>
 
             <div class="settings-subsection">
-              <div class="settings-subsection-title" data-i18n="settings.sub.advanced">高级</div>
+              <div class="settings-subsection-title" data-i18n="settings.sub.customCss">自定义 CSS</div>
               <div class="setting-item">
                 <div>
-                  <div class="setting-label" data-i18n="settings.adv.customCss">自定义 CSS</div>
+                  <div class="setting-label" data-i18n="settings.adv.customCss">外部样式表 URL</div>
                   <div class="setting-description" data-i18n="settings.adv.customCssDesc">加载外部 CSS 文件 URL，回车应用</div>
                 </div>
                 <div class="setting-control">
                   <input type="text" id="customCSSInput" class="custom-css-input" placeholder="CSS 文件 URL" data-i18n-placeholder="settings.adv.customCssPlaceholder">
                 </div>
               </div>
-              <div class="setting-item">
-                <div>
-                  <div class="setting-label" data-i18n="settings.adv.customHljs">自定义高亮 JS</div>
-                  <div class="setting-description" data-i18n="settings.adv.customHljsDesc">加载外部 highlight.js 主题 CSS URL，回车应用</div>
-                </div>
-                <div class="setting-control">
-                  <input type="text" id="customHljsInput" class="custom-css-input" placeholder="hljs 主题 CSS URL" data-i18n-placeholder="settings.adv.customHljsPlaceholder">
-                </div>
-              </div>
             </div>
           </div>
 
           <div class="settings-section">
-            <h3 class="settings-section-title" data-i18n="settings.section.features">功能</h3>
+            <h3 class="settings-section-title" data-i18n="settings.section.reading">阅读</h3>
 
             <div class="settings-subsection">
-              <div class="settings-subsection-title" data-i18n="settings.sub.display">显示</div>
+              <div class="settings-subsection-title" data-i18n="settings.sub.display">显示选项</div>
               <div class="setting-item">
                 <div>
                   <div class="setting-label" data-i18n="settings.display.readingProgress">显示阅读进度</div>
@@ -567,7 +567,10 @@
                   </label>
                 </div>
               </div>
+            </div>
 
+            <div class="settings-subsection">
+              <div class="settings-subsection-title" data-i18n="settings.sub.layout">布局</div>
               <div class="setting-item">
                 <div>
                   <div class="setting-label" data-i18n="settings.display.contentWidth">内容区宽度</div>
@@ -606,9 +609,13 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <div class="settings-section">
+            <h3 class="settings-section-title" data-i18n="settings.section.toolsExport">工具与导出</h3>
 
             <div class="settings-subsection">
-              <div class="settings-subsection-title" data-i18n="settings.sub.actions">操作</div>
+              <div class="settings-subsection-title" data-i18n="settings.sub.tools">工具</div>
               <div class="setting-item">
                 <div>
                   <div class="setting-label" data-i18n="settings.actions.editor">Markdown 编辑器</div>
@@ -627,6 +634,10 @@
                   <button id="openPulseGenBtn" class="download-btn" data-i18n="settings.actions.openPulseGen">打开生成器</button>
                 </div>
               </div>
+            </div>
+
+            <div class="settings-subsection">
+              <div class="settings-subsection-title" data-i18n="settings.sub.export">导出</div>
               <div class="setting-item">
                 <div>
                   <div class="setting-label" data-i18n="settings.actions.downloadMd">下载此文章</div>
@@ -654,6 +665,10 @@
                   <button id="downloadHtmlBtn" class="download-btn" data-i18n="settings.actions.exportHtmlBtn">导出 HTML</button>
                 </div>
               </div>
+            </div>
+
+            <div class="settings-subsection">
+              <div class="settings-subsection-title" data-i18n="settings.sub.offline">离线缓存</div>
               <div class="setting-item">
                 <div>
                   <div class="setting-label" data-i18n="settings.offline.label">全量离线缓存</div>
