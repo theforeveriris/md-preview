@@ -205,34 +205,48 @@
       menuTrigger.classList.remove('active');
     });
 
-    // 打开本地 MD 文件（选择结果由 local-docs.js 处理：支持多选与会话列表）
-    const openLocalMdBtn = document.getElementById('openLocalMdBtn');
+    // 打开本地文件：先弹出选择面板（文件 / 文件夹），由面板按钮触发对应选择器
+    // （浏览器原生对话框无法同时选择文件与文件夹，故在面板内二选一）
+    const openLocalBtn = document.getElementById('openLocalBtn');
+    const localPickOverlay = document.getElementById('localPickOverlay');
+    const pickLocalFilesBtn = document.getElementById('pickLocalFilesBtn');
+    const pickLocalFolderBtn = document.getElementById('pickLocalFolderBtn');
+    const localPickCloseBtn = document.getElementById('localPickCloseBtn');
     const localMdInput = document.getElementById('localMdInput');
-    openLocalMdBtn?.addEventListener('click', (e) => {
+    const closeLocalPick = () => {
+      localPickOverlay.classList.remove('open');
+      localPickOverlay.setAttribute('aria-hidden', 'true');
+    };
+    openLocalBtn?.addEventListener('click', (e) => {
       e.stopPropagation();
+      localPickOverlay.classList.add('open');
+      localPickOverlay.setAttribute('aria-hidden', 'false');
+      menuItems.classList.remove('open');
+      menuTrigger.classList.remove('active');
+    });
+    localPickOverlay?.addEventListener('click', (e) => {
+      if (e.target === localPickOverlay) closeLocalPick();
+    });
+    localPickCloseBtn?.addEventListener('click', closeLocalPick);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && localPickOverlay.classList.contains('open')) {
+        e.stopPropagation();
+        closeLocalPick();
+      }
+    }, true);
+    pickLocalFilesBtn?.addEventListener('click', () => {
+      closeLocalPick();
       if (!localMdInput) return;
       // 必须在用户手势同步上下文中触发文件选择器
       localMdInput.click();
-      // 延迟收起菜单，避免干扰文件选择器
-      setTimeout(() => {
-        menuItems.classList.remove('open');
-        menuTrigger.classList.remove('active');
-      }, 300);
     });
-
-    // 打开本地文件夹（选择结果由 local-docs.js 处理：目录树展示 + 懒加载）
-    const openLocalFolderBtn = document.getElementById('openLocalFolderBtn');
-    openLocalFolderBtn?.addEventListener('click', (e) => {
-      e.stopPropagation();
+    pickLocalFolderBtn?.addEventListener('click', () => {
+      closeLocalPick();
       const localDocs = window.MarkdownPreview.localDocs;
       if (localDocs && localDocs.openLocalFolder) {
         // showDirectoryPicker 必须在用户手势同步上下文中调用
         localDocs.openLocalFolder();
       }
-      setTimeout(() => {
-        menuItems.classList.remove('open');
-        menuTrigger.classList.remove('active');
-      }, 300);
     });
 
     openSettingsBtn?.addEventListener('click', () => {

@@ -36,10 +36,15 @@
     // 悬浮球菜单
     'menu.backToTop': '回到顶部',
     'menu.openLocal': '打开本地文件',
-    'menu.openLocalFolder': '打开本地文件夹',
     'menu.installPwa': '安装到桌面',
     'menu.editPage': '编辑此页',
     'menu.settings': '设置',
+
+    // 本地文件选择面板
+    'local.pickFiles': '选择文件…',
+    'local.pickFilesDesc': '选择一个或多个 .md 文件（可多选）',
+    'local.pickFolder': '选择文件夹…',
+    'local.pickFolderDesc': '导入整个文件夹，按目录树展示',
 
     // 设置面板：骨架
     'settings.title': '设置',
@@ -278,10 +283,14 @@
 
     'menu.backToTop': 'Back to Top',
     'menu.openLocal': 'Open Local Files',
-    'menu.openLocalFolder': 'Open Local Folder',
     'menu.installPwa': 'Install App',
     'menu.editPage': 'Edit This Page',
     'menu.settings': 'Settings',
+
+    'local.pickFiles': 'Choose files…',
+    'local.pickFilesDesc': 'Pick one or more .md files (multi-select)',
+    'local.pickFolder': 'Choose a folder…',
+    'local.pickFolderDesc': 'Import a whole folder as a tree',
 
     'settings.title': 'Settings',
     'settings.section.language': 'Language',
