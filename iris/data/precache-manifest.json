@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-01T04:56:30.273Z",
+  "generatedAt": "2026-10-01T05:36:05.236Z",
   "version": 1,
-  "count": 77,
+  "count": 78,
   "urls": [
     "./",
     "./index.html",
@@ -39,6 +39,7 @@
     "./iris/js/editor.js",
     "./iris/js/file-tree.js",
     "./iris/js/history.js",
+    "./iris/js/hover-preview.js",
     "./iris/js/i18n.js",
     "./iris/js/interactions.js",
     "./iris/js/langs/net-config.js",
@@ -49,6 +50,7 @@
     "./iris/js/pkt/pkt-renderer.js",
     "./iris/js/plugins/loader.js",
     "./iris/js/pulse-generator.js",
+    "./iris/js/qr-share.js",
     "./iris/js/reading-pos.js",
     "./iris/js/renderers/apexcharts.js",
     "./iris/js/renderers/csv-table.js",
@@ -64,7 +66,6 @@
     "./iris/js/search.js",
     "./iris/js/selection-tools.js",
     "./iris/js/settings.js",
-    "./iris/js/slides.js",
     "./iris/js/state.js",
     "./iris/js/storage.js",
     "./iris/js/themes/theme-manager.js",

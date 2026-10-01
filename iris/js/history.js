@@ -1,18 +1,24 @@
 /**
- * 浏览历史与收藏夹
+ * 浏览历史与收藏（文件树内提示）
  *
- * localStorage 记录阅读轨迹，侧边栏新增「最近阅读」「收藏」两个分组，
- * 与「本地文件」面板同级（位于其下、文件树之上），空组自动隐藏。
+ * 不设独立的侧边栏分组，直接在文件树上呈现：
+ *   - 长按文件树中的文档（约 600ms）→ 收藏 / 取消收藏；
+ *     收藏文档的文件图标变为强调色（默认主题下为淡紫色，随主题变量适配）
+ *   - 最近打开的最多 5 篇文档在文件树中淡化显示（文件名颜色变浅）
  *
- * 存储：
+ * 存储（localStorage）：
  *   - md-preview-history    最近打开的仓库文档（去重置顶，上限 50 条）
- *   - md-preview-favorites  收藏的文档（收藏按钮置顶/取消，上限 100 条）
+ *   - md-preview-favorites  收藏的文档（上限 100 条）
  *   条目：{ path, title, ts }
  *
- * 收藏入口：页头右侧星标按钮（与「文档放映 / 分享卡片」同区），
- * 当前文档已收藏时常亮；悬停文档列表项的 × 可移除。
- *
- * 仅记录仓库文档；本地文件刷新即失效，不入历史。
+ * 实现要点：
+ *   - 路径 → li 映射来自 file-tree.js 的 state.fileLiMap（li 位于
+ *     vendor 组件的 Shadow DOM 内）；提示样式由 file-tree.js 注入
+ *     shadow 的 CSS 定义（li.fav / li.recent 类），颜色走主题变量
+ *   - 长按通过 pointer 事件 + composedPath 穿透 Shadow DOM 定位 li；
+ *     触发后拦截随之而来的 vendor click（避免误开文档），并抑制
+ *     移动端长按弹出的系统菜单
+ *   - 仅记录仓库文档；本地文件刷新即失效，不入历史
  */
 (function() {
   'use strict';
@@ -22,10 +28,14 @@
   const FAV_KEY = 'md-preview-favorites';
   const HISTORY_LIMIT = 50;
   const FAV_LIMIT = 100;
+  const RECENT_LIMIT = 5;
+  const LONG_PRESS_MS = 600;
+  const MOVE_TOLERANCE = 8;
 
-  let historyPanel = null;
-  let favPanel = null;
-  let favBtn = null;
+  let pressTimer = null;
+  let pressStart = null;      // { x, y, li, pointerType }
+  let lastPointerType = '';
+  let suppressClickUntil = 0; // 长按后拦截 vendor click 的时间窗
 
   function t(key, fallback) {
     const i18n = window.MarkdownPreview.i18n;
@@ -70,171 +80,148 @@
     return true;
   }
 
-  function removeItem(key, path) {
-    save(key, load(key).filter(item => item.path !== path));
-  }
-
-  function clearKey(key) {
-    save(key, []);
-  }
-
-  // ============== 侧边栏面板 ==============
-  function icon(name, size) {
-    return `<svg width="${size || 13}" height="${size || 13}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#${name}"/></svg>`;
-  }
-
-  function ensurePanels() {
-    const sidebar = document.querySelector('.sidebar');
-    if (!sidebar) return;
-    const fileTree = document.getElementById('fileTree');
-    if (!fileTree) return;
-
-    if (!historyPanel) {
-      historyPanel = document.createElement('div');
-      historyPanel.className = 'local-files history-panel';
-      historyPanel.id = 'historyPanel';
-      historyPanel.hidden = true;
-    }
-    if (!favPanel) {
-      favPanel = document.createElement('div');
-      favPanel.className = 'local-files fav-panel';
-      favPanel.id = 'favPanel';
-      favPanel.hidden = true;
-    }
-    // 插入到文件树之前、本地文件面板之后
-    const localPanel = document.getElementById('localFilesPanel');
-    const anchor = localPanel ? localPanel.nextSibling : fileTree;
-    if (historyPanel.parentNode !== sidebar) sidebar.insertBefore(historyPanel, anchor);
-    if (favPanel.parentNode !== sidebar) sidebar.insertBefore(favPanel, anchor);
-  }
-
-  function buildPanel(panel, entries, opts) {
-    panel.innerHTML = `
-      <div class="local-files-header">
-        <button type="button" class="local-files-toggle" aria-expanded="true">
-          <span class="local-files-title"></span>
-        </button>
-        ${opts.clearable ? `<button type="button" class="local-files-clear" title="${esc(opts.clearTitle)}" aria-label="${esc(opts.clearTitle)}">${icon('i-trash')}</button>` : ''}
-      </div>
-      <ul class="local-files-list"></ul>
-    `;
-    panel.querySelector('.local-files-title').textContent = opts.title;
-    // 折叠 / 展开（与会话记忆不同：组内不做持久化，简单切换即可）
-    const toggle = panel.querySelector('.local-files-toggle');
-    toggle.addEventListener('click', () => {
-      const collapsed = panel.classList.toggle('collapsed');
-      toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
-    });
-    if (opts.clearable) {
-      panel.querySelector('.local-files-clear').addEventListener('click', () => {
-        clearKey(opts.key);
-        renderPanels();
-      });
-    }
-
-    const list = panel.querySelector('.local-files-list');
-    entries.forEach(item => {
-      const li = document.createElement('li');
-      li.className = 'local-file-item history-item';
-
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'local-file-name history-item-name';
-      btn.title = item.path;
-      btn.textContent = item.title || item.path;
-      btn.addEventListener('click', () => {
-        window.MarkdownPreview.markdown.loadMarkdownFile(item.path);
-        window.MarkdownPreview.fileTree.highlightFileInSidebar(item.path);
-        window.MarkdownPreview.fileTree.closeSidebarOnMobile();
-      });
-
-      const remove = document.createElement('button');
-      remove.type = 'button';
-      remove.className = 'local-file-remove';
-      remove.title = esc(opts.removeTitle);
-      remove.setAttribute('aria-label', esc(opts.removeTitle));
-      remove.innerHTML = icon('i-x', 11);
-      remove.addEventListener('click', (e) => {
-        e.stopPropagation();
-        removeItem(opts.key, item.path);
-        renderPanels();
-      });
-
-      li.appendChild(btn);
-      li.appendChild(remove);
-      list.appendChild(li);
-    });
-
-    panel.hidden = entries.length === 0;
-  }
-
-  function esc(s) {
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
-
-  function renderPanels() {
-    ensurePanels();
-    if (!historyPanel || !favPanel) return;
-    buildPanel(historyPanel, load(HISTORY_KEY), {
-      key: HISTORY_KEY,
-      title: t('history.title', '最近阅读'),
-      clearable: true,
-      clearTitle: t('history.clear', '清空阅读历史'),
-      removeTitle: t('history.remove', '从历史中移除')
-    });
-    buildPanel(favPanel, load(FAV_KEY), {
-      key: FAV_KEY,
-      title: t('fav.title', '收藏'),
-      clearable: false,
-      removeTitle: t('fav.remove', '取消收藏')
-    });
-    syncFavButton();
-  }
-
-  // ============== 页头星标按钮 ==============
-  function ensureFavButton() {
-    if (favBtn) return favBtn;
-    favBtn = document.getElementById('favDocBtn');
-    if (!favBtn) return null;
-    favBtn.addEventListener('click', () => {
-      const st = window.MarkdownPreview.state;
-      if (!st.currentFilePath) return;
-      toggleFavorite(st.currentFilePath, st.docTitle);
-      renderPanels();
-    });
-    return favBtn;
-  }
-
-  function syncFavButton() {
+  // ============== 文件树提示（fav / recent 类） ==============
+  function syncTreeHints() {
     const st = window.MarkdownPreview.state;
-    if (!favBtn) return;
-    const active = st.currentFilePath && isFavorite(st.currentFilePath);
-    favBtn.classList.toggle('active', !!active);
-    favBtn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    if (!st || !st.fileLiMap) return;
+    const favs = new Set(load(FAV_KEY).map(item => item.path));
+    const recents = new Set(load(HISTORY_KEY).slice(0, RECENT_LIMIT).map(item => item.path));
+    for (const [path, li] of st.fileLiMap) {
+      li.classList.toggle('fav', favs.has(path));
+      li.classList.toggle('recent', recents.has(path));
+    }
   }
 
-  // ---------- 对外钩子 ----------
+  // ============== 长按收藏 ==============
+  function findLiFromEvent(e) {
+    const path = e.composedPath ? e.composedPath() : [];
+    for (const node of path) {
+      if (node.nodeType === 1 && node.tagName === 'LI' &&
+          (node.classList && (node.classList.contains('file') || node.classList.contains('text')))) {
+        return node;
+      }
+    }
+    return null;
+  }
 
-  // 文档渲染完成（markdown.js 调用）：记录历史 + 同步星标态
+  function pathForLi(li) {
+    const st = window.MarkdownPreview.state;
+    if (!st || !st.fileLiMap) return null;
+    for (const [path, item] of st.fileLiMap) {
+      if (item === li) return path;
+    }
+    return null;
+  }
+
+  function basename(path) {
+    try {
+      return decodeURIComponent(path.split('/').pop() || '').replace(/\.md$/i, '');
+    } catch (e) {
+      return path.split('/').pop() || path;
+    }
+  }
+
+  let toastEl = null;
+  let toastTimer = null;
+  function showFavToast(text) {
+    if (!toastEl) {
+      toastEl = document.createElement('div');
+      toastEl.className = 'mini-toast';
+      toastEl.setAttribute('role', 'status');
+      document.body.appendChild(toastEl);
+    }
+    toastEl.textContent = text;
+    toastEl.classList.add('open');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('open'), 1800);
+  }
+
+  function fireLongPress() {
+    const start = pressStart;
+    clearTimeout(pressTimer);
+    pressStart = null;
+    if (!start) return;
+    const path = pathForLi(start.li);
+    if (!path) return;
+    const title = basename(path);
+    const added = toggleFavorite(path, title);
+    if (navigator.vibrate) { try { navigator.vibrate(30); } catch (e) { /* 忽略 */ } }
+    // 拦截随之而来的 vendor click，避免长按后误开文档
+    suppressClickUntil = Date.now() + 400;
+    showFavToast(added
+      ? t('fav.added', '已收藏《{t}》').replace('{t}', title)
+      : t('fav.removed', '已取消收藏《{t}》').replace('{t}', title));
+    syncTreeHints();
+  }
+
+  function initLongPress() {
+    const treeRoot = document.getElementById('fileTree');
+    if (!treeRoot || treeRoot.dataset.longPressInit) return;
+    treeRoot.dataset.longPressInit = '1';
+
+    treeRoot.addEventListener('pointerdown', (e) => {
+      const li = findLiFromEvent(e);
+      lastPointerType = e.pointerType || '';
+      if (!li) return;
+      pressStart = { x: e.clientX, y: e.clientY, li };
+      clearTimeout(pressTimer);
+      pressTimer = setTimeout(fireLongPress, LONG_PRESS_MS);
+    });
+    const cancelPress = () => {
+      clearTimeout(pressTimer);
+      pressStart = null;
+    };
+    treeRoot.addEventListener('pointermove', (e) => {
+      if (!pressStart) return;
+      if (Math.hypot(e.clientX - pressStart.x, e.clientY - pressStart.y) > MOVE_TOLERANCE) {
+        cancelPress();
+      }
+    });
+    treeRoot.addEventListener('pointerup', cancelPress);
+    treeRoot.addEventListener('pointercancel', cancelPress);
+
+    // 长按触发后的 click（vendor 自定义事件）不打开文档
+    treeRoot.addEventListener('click', (e) => {
+      if (Date.now() > suppressClickUntil) return;
+      if (e.detail && typeof e.detail === 'object' &&
+          e.detail.action === 'click' && !e.detail.folder) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        suppressClickUntil = 0;
+      }
+    }, true);
+
+    // 触摸长按时抑制系统菜单，保证收藏手势可靠
+    treeRoot.addEventListener('contextmenu', (e) => {
+      if (lastPointerType === 'touch') e.preventDefault();
+    });
+  }
+
+  // ============== 对外钩子 ==============
+
+  // 文档渲染完成（markdown.js 调用）：记录历史 + 刷新树内提示
   function onDocRendered(path, title) {
     if (!path) return;
     recordHistory(path, title);
-    renderPanels();
+    // 已收藏的文档同步更新标题（文件名 → 文档标题）
+    const arr = load(FAV_KEY);
+    const fav = arr.find(item => item.path === path);
+    if (fav && title && fav.title !== title) {
+      fav.title = title;
+      save(FAV_KEY, arr);
+    }
+    syncTreeHints();
   }
 
   function init() {
-    ensureFavButton();
-    renderPanels();
-    // 语言切换后重建面板文案
-    document.addEventListener('langchange', renderPanels);
+    initLongPress();
+    // 文件树（重）渲染后的提示刷新由 file-tree.js 渲染完成后直接调用 syncTreeHints()
   }
 
   window.MarkdownPreview.history = {
     init,
     onDocRendered,
-    renderPanels,
+    syncTreeHints,
     isFavorite,
     toggleFavorite
   };

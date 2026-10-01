@@ -234,7 +234,14 @@
         ':host(.tinted-icons) li.folder>button::before{background:currentColor;-webkit-mask:var(--svg-closed) center/contain no-repeat;mask:var(--svg-closed) center/contain no-repeat}',
         ':host(.tinted-icons) li.folder.opened>button::before{background-image:none;-webkit-mask-image:var(--svg-opened);mask-image:var(--svg-opened)}',
         // 导航线：vendor 的 1px dotted 换成更淡的 1px 实线，颜色仍跟随文字色
-        ':host(.tinted-icons) li.folder.opened>ul{border-inline-start:1px solid rgb(from currentColor r g b / .12)}'
+        ':host(.tinted-icons) li.folder.opened>ul{border-inline-start:1px solid rgb(from currentColor r g b / .12)}',
+        // 收藏 / 最近阅读提示（history.js 切换 li 的 .fav / .recent 类）：
+        // 收藏 = 文件图标用强调色（md 文档是 li.text，其他文件是 li.file）；
+        // 最近 = 文件名淡化（active 选中态优先）
+        ':host(.tinted-icons) li.file.fav::before,:host(.tinted-icons) li.text.fav::before{background:var(--color-accent-purple)}',
+        ':host li.file.recent>button,:host li.text.recent>button{color:color-mix(in srgb, var(--color-text) 55%, transparent)}',
+        ':host li.file.recent.active>button{color:var(--color-accent-purple-deep)}',
+        ':host li.file.recent.active>button>.file-name{font-weight:500}'
       ].join('\n');
       shadow.appendChild(styleEl);
     }
@@ -314,6 +321,11 @@
       var settings = window.MarkdownPreview.settings && window.MarkdownPreview.settings.load ? window.MarkdownPreview.settings.load() : {};
       setWordCountVisibility(settings.showWordCount === true);
       setTruncateNames(settings.truncateFileNames !== false);
+
+      // 树重建后刷新收藏/最近阅读提示（history.js）
+      if (window.MarkdownPreview.history && window.MarkdownPreview.history.syncTreeHints) {
+        window.MarkdownPreview.history.syncTreeHints();
+      }
     });
   }
   

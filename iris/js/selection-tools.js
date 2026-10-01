@@ -6,9 +6,7 @@
  *
  * 分享卡片：Canvas 手绘 1200×630 卡片（与 OGP 分享图同尺寸），
  * 配色取当前主题 CSS 变量（--color-bg / --color-text / 强调色渐变），
- * 深浅主题自动适配。入口：
- *   - 选中文字工具条「分享卡片」（截取选中文本）
- *   - 页头「分享卡片」按钮（整篇：标题 + 正文摘要）
+ * 深浅主题自动适配。入口仅有选中文字工具条「分享卡片」。
  */
 (function() {
   'use strict';
@@ -272,18 +270,6 @@
     }, 'image/png');
   }
 
-  // 整篇文档卡片：标题 + 摘要（frontmatter.description > 正文首段）
-  function exportDocCard() {
-    const st = window.MarkdownPreview.state || {};
-    let excerpt = st.currentFrontmatter && st.currentFrontmatter.description;
-    if (!excerpt) {
-      const p = document.querySelector('.markdown-body > p');
-      excerpt = p ? p.textContent.trim() : '';
-    }
-    excerpt = (excerpt || '').replace(/\s+/g, ' ').slice(0, CARD_MAX_CHARS);
-    exportShareCard({ title: docTitle(), excerpt });
-  }
-
   // ============== 初始化 ==============
   function init() {
     document.addEventListener('mouseup', (e) => {
@@ -320,15 +306,10 @@
         hideToolbar();
       }
     }, true);
-
-    // 页头「分享卡片」按钮（整篇）
-    const btn = document.getElementById('shareCardBtn');
-    if (btn) btn.addEventListener('click', exportDocCard);
   }
 
   window.MarkdownPreview.selectionTools = {
     init,
-    exportShareCard,
-    exportDocCard
+    exportShareCard
   };
 })();

@@ -21,15 +21,18 @@
     if (window.MarkdownPreview.debug && window.MarkdownPreview.debug.init) {
       window.MarkdownPreview.debug.init();
     }
-    // 阅读位置续读 / 历史收藏 / 演示模式 / 选中工具栏
+    // 阅读位置续读 / 历史收藏 / 悬浮预览 / 扫码续读 / 选中工具栏
     if (window.MarkdownPreview.readingPos && window.MarkdownPreview.readingPos.init) {
       window.MarkdownPreview.readingPos.init();
     }
     if (window.MarkdownPreview.history && window.MarkdownPreview.history.init) {
       window.MarkdownPreview.history.init();
     }
-    if (window.MarkdownPreview.slides && window.MarkdownPreview.slides.init) {
-      window.MarkdownPreview.slides.init();
+    if (window.MarkdownPreview.hoverPreview && window.MarkdownPreview.hoverPreview.init) {
+      window.MarkdownPreview.hoverPreview.init();
+    }
+    if (window.MarkdownPreview.qrShare && window.MarkdownPreview.qrShare.init) {
+      window.MarkdownPreview.qrShare.init();
     }
     if (window.MarkdownPreview.selectionTools && window.MarkdownPreview.selectionTools.init) {
       window.MarkdownPreview.selectionTools.init();

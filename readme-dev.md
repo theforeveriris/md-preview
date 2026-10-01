@@ -60,6 +60,9 @@
 | Markdown | `iris/js/markdown.js` | marked + 代码块高亮、标题锚点、图片灯箱（ArrowLeft/Right 翻页）、frontmatter 解析 |
 | Interactions | `iris/js/interactions.js` | 表格悬浮手柄（主题化 PNG 导出 / 复制 Markdown / 复制 CSV）、LaTeX 右键复制 |
 | Local Docs | `iris/js/local-docs.js` | 本地 MD 多选会话（侧边栏「本地文件」面板）+ 本地文件夹导入（懒加载目录树） |
+| History | `iris/js/history.js` | 浏览历史/收藏数据；长按文件树收藏（pointer + composedPath 穿透 Shadow DOM），最近 5 篇/收藏项的树内提示类切换 |
+| Hover Preview | `iris/js/hover-preview.js` | 站内链接悬浮摘要卡片（fetch + parseFrontmatter + extractExcerpt，内存缓存） |
+| QR Share | `iris/js/qr-share.js` | 悬浮球「扫码续读」二维码弹窗（外部 API 生成，`?pos=` 参数由 reading-pos.js 消费） |
 | Search | `iris/js/search.js` | FlexSearch 全文索引加载与搜索命令面板 |
 | UI | `iris/js/ui.js` | 全局事件与快捷键路由、搜索命令面板交互 |
 | Storage | `iris/js/storage.js` | IndexedDB 笔记本存储（替代 localStorage 大内容） |
@@ -282,6 +285,8 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │   │   ├── file-tree.js          # 侧边栏/搜索/索引
 │   │   ├── interactions.js       # 表格手柄、LaTeX 右键复制
 │   │   ├── local-docs.js         # 本地文件/文件夹会话
+│   │   ├── history.js / reading-pos.js  # 长按收藏·树内提示 / 阅读位置续读
+│   │   ├── hover-preview.js / qr-share.js  # 链接悬浮预览 / 扫码续读
 │   │   ├── search.js / ui.js     # 搜索命令面板 / 全局事件与快捷键路由
 │   │   ├── i18n.js               # zh/en 界面语言包
 │   │   ├── dom.js                # 按需加载 DOM 工具

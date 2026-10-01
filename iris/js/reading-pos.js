@@ -112,11 +112,33 @@
 
   // ---------- 对外钩子（markdown.js 调用） ----------
 
-  // 新文档渲染完成：若该篇有记录且不在首尾，弹出续读提示
+  // 扫码续读：URL 带 ?pos=N 时一次性定位到 N%，随后把参数从 URL 移除
+  // （避免站内继续导航时每篇都跳）。返回是否消费了参数。
+  function consumePosParam() {
+    let pct = null;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get('pos');
+      if (raw !== null) {
+        const n = parseInt(raw, 10);
+        if (Number.isFinite(n) && n >= MIN_PCT && n <= MAX_PCT) pct = n;
+        params.delete('pos');
+        const qs = params.toString();
+        history.replaceState(null, '',
+          window.location.pathname + (qs ? '?' + qs : '') + window.location.hash);
+      }
+    } catch (e) { /* 忽略 */ }
+    if (pct === null) return false;
+    setTimeout(() => jumpTo(pct), 700);
+    return true;
+  }
+
+  // 新文档渲染完成：?pos= 优先（扫码续读）；否则若该篇有记录且不在首尾，弹续读提示
   function onDocRendered(path) {
     hideToast();
     currentPath = path || '';
     if (!path) return;
+    if (consumePosParam()) return;
     const rec = loadStore()[path];
     if (rec && rec.pct >= MIN_PCT && rec.pct <= MAX_PCT) {
       // 延迟到渲染 / 图片布局基本稳定后再弹

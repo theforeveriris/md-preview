@@ -130,17 +130,6 @@
       
       <div class="page-header" id="pageHeader">
         <div class="page-breadcrumbs" id="pageBreadcrumbs"></div>
-        <div class="page-header-actions">
-          <button class="header-action-btn" id="slidesBtn" type="button" title="文档放映" data-i18n-title="header.slides">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-play"/></svg>
-          </button>
-          <button class="header-action-btn" id="favDocBtn" type="button" title="收藏此文档" aria-pressed="false" data-i18n-title="header.fav">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-star"/></svg>
-          </button>
-          <button class="header-action-btn" id="shareCardBtn" type="button" title="生成分享卡片" data-i18n-title="header.shareCard">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-image"/></svg>
-          </button>
-        </div>
       </div>
       
       <!-- Floating Menu -->
@@ -176,6 +165,13 @@
               <path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/>
             </svg>
             <span class="menu-item-label" data-i18n="menu.openLocalFolder">打开本地文件夹</span>
+          </button>
+          <button class="menu-item-btn" id="qrShareBtn" title="扫码续读" data-i18n-title="menu.qrShare">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+              <path d="M14 14h3v3h-3zM21 14v.01M14 21v.01M17.5 17.5h.01M21 21h-3M21 17.5h.01"/>
+            </svg>
+            <span class="menu-item-label" data-i18n="menu.qrShare">扫码续读</span>
           </button>
           <button class="menu-item-btn" id="installPwaBtn" title="安装到桌面" style="display: none;" data-i18n-title="menu.installPwa">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1640,7 +1636,8 @@
   <script defer src="iris/js/reading-pos.js"></script>
   <script defer src="iris/js/history.js"></script>
   <script defer src="iris/js/offline.js"></script>
-  <script defer src="iris/js/slides.js"></script>
+  <script defer src="iris/js/hover-preview.js"></script>
+  <script defer src="iris/js/qr-share.js"></script>
   <script defer src="iris/js/selection-tools.js"></script>
 
   <!-- Plugin System -->

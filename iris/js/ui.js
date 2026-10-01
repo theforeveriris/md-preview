@@ -70,14 +70,12 @@
     return !!(overlay && overlay.classList.contains('open'));
   }
 
-  // 灯箱 / PPTX 放映 / 文档演示打开时，普通按键不抢（翻页键由各自 handler 处理）
+  // 灯箱 / PPTX 放映打开时，普通按键不抢（翻页键由各自 handler 处理）
   function isMediaOverlayOpen() {
     const lightbox = document.getElementById('lightboxOverlay');
     const pptx = document.getElementById('pptx-slideshow-overlay');
-    const slides = document.getElementById('slides-overlay');
     return !!(lightbox && lightbox.classList.contains('open')) ||
-           !!(pptx && pptx.classList.contains('is-open')) ||
-           !!(slides && slides.classList.contains('is-open'));
+           !!(pptx && pptx.classList.contains('is-open'));
   }
 
   // ---------- 搜索命令面板（Ctrl/⌘+K）----------

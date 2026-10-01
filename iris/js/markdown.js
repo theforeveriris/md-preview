@@ -62,9 +62,6 @@
     if (window.MarkdownPreview.history?.onDocRendered) {
       window.MarkdownPreview.history.onDocRendered(path, st.docTitle);
     }
-    if (window.MarkdownPreview.slides?.onDocRendered) {
-      window.MarkdownPreview.slides.onDocRendered(path);
-    }
   }
 
   async function loadMarkdownFile(path) {
@@ -920,10 +917,9 @@
 
     document.addEventListener('keydown', (e) => {
       if (!overlay.classList.contains('open')) return;
-      // 如果 PPTX 放映 / 文档演示 overlay 也开着，键盘优先交给它们（各自的 keydown 控制）
+      // 如果 PPTX 放映 overlay 也开着，键盘优先交给 PPTX（由 PPTX 自己的 keydown 控制）
       const pptxOpen = document.getElementById('pptx-slideshow-overlay')?.classList.contains('is-open');
-      const slidesOpen = document.getElementById('slides-overlay')?.classList.contains('is-open');
-      if (pptxOpen || slidesOpen) return;
+      if (pptxOpen) return;
       if (e.key === 'Escape') closeLightbox();
       else if (e.key === 'ArrowLeft') navigateLightbox(-1);
       else if (e.key === 'ArrowRight') navigateLightbox(1);
@@ -1041,6 +1037,7 @@
     setActiveIndexById,
     updateEditButton,
     parseFrontmatter,
+    extractExcerpt,
     updateBreadcrumbs,
     setupHeadingNavigation,
     calculateReadingTime,

@@ -109,7 +109,7 @@
             "name": "ios-vrp-examples.md",
             "type": "file",
             "path": "docs/examples/ios-vrp-examples.md",
-            "wordCount": 141,
+            "wordCount": 150,
             "title": "Cisco IOS / 华为 VRP 配置高亮示例"
           },
           {
@@ -225,7 +225,7 @@
             "title": "Twitter/X 嵌入示例"
           }
         ],
-        "wordCount": 11222
+        "wordCount": 11231
       },
       {
         "name": "code-highlight-theme.md",
@@ -266,7 +266,7 @@
         "name": "roadmap.md",
         "type": "file",
         "path": "docs/roadmap.md",
-        "wordCount": 437,
+        "wordCount": 435,
         "title": "功能路线图"
       },
       {
@@ -280,7 +280,7 @@
         "name": "shortcuts.md",
         "type": "file",
         "path": "docs/shortcuts.md",
-        "wordCount": 587,
+        "wordCount": 529,
         "title": "快捷键"
       },
       {
@@ -298,7 +298,7 @@
         "title": "主题定制"
       }
     ],
-    "wordCount": 19418
+    "wordCount": 19367
   },
   {
     "name": "iris",
@@ -332,7 +332,7 @@
     "name": "readme-dev.md",
     "type": "file",
     "path": "readme-dev.md",
-    "wordCount": 1064,
+    "wordCount": 1172,
     "title": "Markdown Preview — 开发者文档"
   },
   {

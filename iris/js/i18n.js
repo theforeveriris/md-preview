@@ -222,27 +222,23 @@
     'plantuml.renderError': 'PlantUML 渲染错误',
     'plantuml.openInEditor': '在 PlantUML 在线编辑器中打开',
 
-    // 动态文案：页头文档操作（放映 / 收藏 / 分享卡片）
-    'header.slides': '文档放映',
-    'header.fav': '收藏此文档',
-    'header.shareCard': '生成分享卡片',
+    // 动态文案：收藏（长按文件树）与悬浮预览
+    'fav.added': '已收藏《{t}》',
+    'fav.removed': '已取消收藏《{t}》',
+    'preview.loading': '加载中…',
+    'preview.noExcerpt': '（暂无摘要）',
 
-    // 动态文案：浏览历史 / 收藏夹（侧边栏分组）
-    'history.title': '最近阅读',
-    'history.clear': '清空阅读历史',
-    'history.remove': '从历史中移除',
-    'fav.title': '收藏',
-    'fav.remove': '取消收藏',
+    // 动态文案：扫码续读（悬浮球）
+    'menu.qrShare': '扫码续读',
+    'qr.title': '扫码续读',
+    'qr.hint': '用手机扫码，接着读当前文档',
+    'qr.position': '当前读到 {pct}%，手机打开后将定位到此处',
+    'qr.fromTop': '手机打开后将从头开始阅读',
 
     // 动态文案：阅读位置续读
     'reading.resume': '上次读到 {pct}%，继续？',
     'reading.resumeGo': '继续阅读',
     'reading.resumeDismiss': '忽略',
-
-    // 动态文案：文档演示模式
-    'slides.close': '退出放映',
-    'slides.prev': '上一页',
-    'slides.next': '下一页',
 
     // 动态文案：选中文字浮动工具栏
     'sel.copy': '复制',
@@ -457,23 +453,20 @@
     'plantuml.renderError': 'PlantUML render error',
     'plantuml.openInEditor': 'Open in the PlantUML online editor',
 
-    'header.slides': 'Present document',
-    'header.fav': 'Favorite this document',
-    'header.shareCard': 'Create share card',
+    'fav.added': 'Favorited "{t}"',
+    'fav.removed': 'Removed favorite "{t}"',
+    'preview.loading': 'Loading…',
+    'preview.noExcerpt': '(no excerpt)',
 
-    'history.title': 'Recently Read',
-    'history.clear': 'Clear reading history',
-    'history.remove': 'Remove from history',
-    'fav.title': 'Favorites',
-    'fav.remove': 'Remove favorite',
+    'menu.qrShare': 'Continue on phone',
+    'qr.title': 'Continue on Phone',
+    'qr.hint': 'Scan with your phone to keep reading',
+    'qr.position': 'You are at {pct}% — the phone will jump here',
+    'qr.fromTop': 'The phone will start from the top',
 
     'reading.resume': 'Continue from {pct}%?',
     'reading.resumeGo': 'Continue',
     'reading.resumeDismiss': 'Dismiss',
-
-    'slides.close': 'Exit presentation',
-    'slides.prev': 'Previous slide',
-    'slides.next': 'Next slide',
 
     'sel.copy': 'Copy',
     'sel.search': 'Search docs',
