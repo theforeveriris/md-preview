@@ -5,8 +5,221 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 01 Oct 2026 16:30:54 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 01 Oct 2026 18:18:45 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>快捷键</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/shortcuts.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/shortcuts.md</guid>
+      <pubDate>Thu, 01 Oct 2026 18:18:03 GMT</pubDate>
+      <description>Markdown Preview 支持一组全局键盘快捷键，覆盖侧边栏、设置、搜索、文档导航与内容区宽度调节。 表示 macOS 的 Cmd 键， 表示 Windows / Linux 的 Ctrl 键。 --- | 按键 | 功能 | 说明 | |------|------|------| | | 折叠 / 展开侧边栏 | 对齐 VS Code 的侧边栏键位；折叠后左上角会浮现展开按钮；状态自动记</description>
+      <content:encoded><![CDATA[<h1>快捷键</h1>
+<p>Markdown Preview 支持一组全局键盘快捷键，覆盖侧边栏、设置、搜索、文档导航与内容区宽度调节。<code>⌘</code> 表示 macOS 的 Cmd 键，<code>Ctrl</code> 表示 Windows / Linux 的 Ctrl 键。</p>
+<hr>
+<h2>一、文档站快捷键</h2>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>功能</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Ctrl/⌘ + B</code></td>
+<td>折叠 / 展开侧边栏</td>
+<td>对齐 VS Code 的侧边栏键位；折叠后左上角会浮现展开按钮；状态自动记忆</td>
+</tr>
+<tr>
+<td><code>Ctrl/⌘ + ,</code></td>
+<td>打开 / 关闭设置面板</td>
+<td>对齐通用「设置」键位惯例，面板打开时再按一次即关闭</td>
+</tr>
+<tr>
+<td><code>Ctrl/⌘ + K</code></td>
+<td>打开搜索命令面板</td>
+<td>对齐 GitHub / Slack 的搜索键位；面板居中弹出，也可点击侧边栏顶部「搜索文档…」触发行唤起；面板已打开时再按重新聚焦输入框</td>
+</tr>
+<tr>
+<td><code>Ctrl/⌘ + F</code></td>
+<td>文章内查找条</td>
+<td>接管浏览器查找：全部命中高亮 + 「当前/总数」计数；<code>Enter</code> / <code>Shift+Enter</code> 下一个 / 上一个，<code>F3</code> / <code>Shift+F3</code> 同义，<code>Esc</code> 关闭；编辑器模式与输入态不接管</td>
+</tr>
+<tr>
+<td><code>[</code></td>
+<td>上一篇文档</td>
+<td>按 DFS 顺序跳转文件树中的上一篇，对齐 GitHub 代码评审的翻页键位</td>
+</tr>
+<tr>
+<td><code>]</code></td>
+<td>下一篇文档</td>
+<td>同上，方向相反</td>
+</tr>
+<tr>
+<td><code>Ctrl/⌘ + Alt + =</code></td>
+<td>内容区加宽 20px</td>
+<td>步进与设置面板滑杆一致（600–1400px）；全宽模式下会先退出全宽再微调</td>
+</tr>
+<tr>
+<td><code>Ctrl/⌘ + Alt + -</code></td>
+<td>内容区收窄 20px</td>
+<td>同上</td>
+</tr>
+<tr>
+<td><code>Ctrl/⌘ + Alt + 0</code></td>
+<td>内容区宽度重置</td>
+<td>恢复默认 720px</td>
+</tr>
+<tr>
+<td><code>Ctrl/⌘ + Alt + F</code></td>
+<td>正文占满可用宽度</td>
+<td>开关式；开启后正文铺满窗口，忽略滑杆值</td>
+</tr>
+<tr>
+<td><code>Esc</code></td>
+<td>关闭搜索命令面板</td>
+<td>面板打开时，Esc 优先关闭面板</td>
+</tr>
+<tr>
+<td><code>Esc</code></td>
+<td>退出双栏对照阅读</td>
+<td>对照模式打开时，Esc 优先退出对照</td>
+</tr>
+<tr>
+<td><code>Esc</code></td>
+<td>收起文章内查找条</td>
+<td>查找条打开时，Esc 收起并清除高亮</td>
+</tr>
+<tr>
+<td><code>Esc</code></td>
+<td>关闭设置面板</td>
+<td>设置面板打开时，Esc 只关闭面板</td>
+</tr>
+<tr>
+<td><code>Esc</code></td>
+<td>展开折叠的侧边栏</td>
+<td>桌面端侧边栏折叠时，Esc 可展开；移动端为关闭抽屉</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>内容区宽度调整时若设置面板正开着，可实时看到滑杆与数值同步变化。</p>
+</blockquote>
+<hr>
+<h2>二、媒体查看键位</h2>
+<p>以下键位仅在对应浮层打开时生效，与上面的全局快捷键互不干扰：</p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>生效场景</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>←</code> / <code>→</code></td>
+<td>图片灯箱</td>
+<td>上一张 / 下一张</td>
+</tr>
+<tr>
+<td><code>+</code> / <code>-</code> / <code>0</code></td>
+<td>图片灯箱</td>
+<td>放大 / 缩小 / 重置缩放</td>
+</tr>
+<tr>
+<td><code>Esc</code></td>
+<td>图片灯箱 / PPT 放映</td>
+<td>关闭</td>
+</tr>
+<tr>
+<td><code>←</code> / <code>→</code></td>
+<td>PPTX 全屏放映</td>
+<td>上一页 / 下一页</td>
+</tr>
+<tr>
+<td><code>Space</code> / <code>Shift + Space</code></td>
+<td>PPTX 全屏放映</td>
+<td>下一页 / 上一页</td>
+</tr>
+<tr>
+<td><code>Home</code> / <code>End</code></td>
+<td>PPTX 全屏放映</td>
+<td>第一页 / 最后一页</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>三、内置编辑器快捷键</h2>
+<p>编辑器模式（<code>?mode=editor</code>）有独立的快捷键体系，与文档站快捷键完全隔离：</p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Ctrl/⌘ + Enter</code></td>
+<td>运行当前 Cell</td>
+</tr>
+<tr>
+<td><code>Ctrl/⌘ + Shift + Enter</code></td>
+<td>运行全部 Cell</td>
+</tr>
+<tr>
+<td><code>Ctrl/⌘ + Shift + N</code></td>
+<td>当前 Cell 下方新建</td>
+</tr>
+<tr>
+<td><code>Ctrl/⌘ + F</code> / <code>Ctrl/⌘ + H</code></td>
+<td>搜索 / 替换</td>
+</tr>
+<tr>
+<td><code>Ctrl/⌘ + B</code> / <code>Ctrl/⌘ + I</code></td>
+<td>粗体 / 斜体</td>
+</tr>
+<tr>
+<td><code>Ctrl/⌘ + K</code></td>
+<td>链接</td>
+</tr>
+<tr>
+<td><code>Ctrl/⌘ + \</code> `</td>
+<td>行内代码</td>
+</tr>
+<tr>
+<td><code>Tab</code> / <code>Shift + Tab</code></td>
+<td>缩进 / 反缩进</td>
+</tr>
+<tr>
+<td><code>F3</code> / <code>Shift + F3</code></td>
+<td>搜索下一个 / 上一个</td>
+</tr>
+<tr>
+<td><code>Ctrl/⌘ + Alt + T</code></td>
+<td>新建编辑器标签</td>
+</tr>
+<tr>
+<td><code>Ctrl/⌘ + Tab</code></td>
+<td>切换编辑器标签</td>
+</tr>
+</tbody></table>
+<p>完整说明见 <a href="https://theforeveriris.github.io/md-preview/docs/editor.md">编辑器说明</a>。</p>
+<hr>
+<h2>四、冲突保护规则</h2>
+<p>全局快捷键在以下情况自动失效，避免抢占输入或误触：</p>
+<ol>
+<li><strong>编辑器模式</strong>：<code>body.editor-mode</code> 激活时，文档站快捷键全部让位给编辑器键位（如 <code>Ctrl+B</code> 在编辑器中是粗体）；</li>
+<li><strong>输入状态</strong>：焦点位于 <code>input</code> / <code>textarea</code> / <code>select</code> / <code>contenteditable</code> 内时不触发（搜索框、设置面板输入项等）；</li>
+<li><strong>设置面板打开</strong>：<code>Ctrl/⌘ + ,</code>、宽度调整键与 <code>Esc</code> 仍可用（便于边看面板边调），其余键位暂停；</li>
+<li><strong>灯箱 / PPTX 放映打开</strong>：<code>[</code> <code>]</code> 等文档导航键不响应，翻页键交给浮层处理；</li>
+<li>加了 <code>Ctrl/⌘ + Alt</code> 修饰的宽度键位特意避开了浏览器的 <code>Ctrl + =</code> / <code>Ctrl + -</code> 页面缩放。</li>
+</ol>
+<h2>实现位置</h2>
+<ul>
+<li>快捷键路由：<a href="https://theforeveriris.github.io/md-preview/iris/js/ui.js">iris/js/ui.js</a>（<code>setupEventListeners</code>）</li>
+<li>宽度调整 / 设置开关 API：<a href="https://theforeveriris.github.io/md-preview/iris/js/settings.js">iris/js/settings.js</a>（<code>nudgeContentWidth</code> / <code>resetContentWidth</code> / <code>toggleContentFullWidth</code> / <code>toggleSettingsPanel</code>）</li>
+<li>侧边栏折叠：<a href="https://theforeveriris.github.io/md-preview/iris/js/file-tree.js">iris/js/file-tree.js</a>（<code>toggleSidebar</code> / <code>setSidebarCollapsed</code>）</li>
+</ul>
+]]></content:encoded>
+    </item>
     <item>
       <title>PPTX 演示嵌入示例</title>
       <link>https://theforeveriris.github.io/md-preview/docs/examples/pptx-examples.md</link>
@@ -1650,204 +1863,6 @@ date: 2026-01-15
 <pre><code>https://&lt;owner&gt;.github.io/&lt;repo&gt;/iris/data/feed.xml
 </code></pre>
 <p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/rss.md">RSS 订阅</a>。</p>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>快捷键</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/shortcuts.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/shortcuts.md</guid>
-      <pubDate>Thu, 01 Oct 2026 05:50:00 GMT</pubDate>
-      <description>Markdown Preview 支持一组全局键盘快捷键，覆盖侧边栏、设置、搜索、文档导航与内容区宽度调节。 表示 macOS 的 Cmd 键， 表示 Windows / Linux 的 Ctrl 键。 --- | 按键 | 功能 | 说明 | |------|------|------| | | 折叠 / 展开侧边栏 | 对齐 VS Code 的侧边栏键位；折叠后左上角会浮现展开按钮；状态自动记</description>
-      <content:encoded><![CDATA[<h1>快捷键</h1>
-<p>Markdown Preview 支持一组全局键盘快捷键，覆盖侧边栏、设置、搜索、文档导航与内容区宽度调节。<code>⌘</code> 表示 macOS 的 Cmd 键，<code>Ctrl</code> 表示 Windows / Linux 的 Ctrl 键。</p>
-<hr>
-<h2>一、文档站快捷键</h2>
-<table>
-<thead>
-<tr>
-<th>按键</th>
-<th>功能</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>Ctrl/⌘ + B</code></td>
-<td>折叠 / 展开侧边栏</td>
-<td>对齐 VS Code 的侧边栏键位；折叠后左上角会浮现展开按钮；状态自动记忆</td>
-</tr>
-<tr>
-<td><code>Ctrl/⌘ + ,</code></td>
-<td>打开 / 关闭设置面板</td>
-<td>对齐通用「设置」键位惯例，面板打开时再按一次即关闭</td>
-</tr>
-<tr>
-<td><code>Ctrl/⌘ + K</code></td>
-<td>打开搜索命令面板</td>
-<td>对齐 GitHub / Slack 的搜索键位；面板居中弹出，也可点击侧边栏顶部「搜索文档…」触发行唤起；面板已打开时再按重新聚焦输入框</td>
-</tr>
-<tr>
-<td><code>[</code></td>
-<td>上一篇文档</td>
-<td>按 DFS 顺序跳转文件树中的上一篇，对齐 GitHub 代码评审的翻页键位</td>
-</tr>
-<tr>
-<td><code>]</code></td>
-<td>下一篇文档</td>
-<td>同上，方向相反</td>
-</tr>
-<tr>
-<td><code>Ctrl/⌘ + Alt + =</code></td>
-<td>内容区加宽 20px</td>
-<td>步进与设置面板滑杆一致（600–1400px）；全宽模式下会先退出全宽再微调</td>
-</tr>
-<tr>
-<td><code>Ctrl/⌘ + Alt + -</code></td>
-<td>内容区收窄 20px</td>
-<td>同上</td>
-</tr>
-<tr>
-<td><code>Ctrl/⌘ + Alt + 0</code></td>
-<td>内容区宽度重置</td>
-<td>恢复默认 720px</td>
-</tr>
-<tr>
-<td><code>Ctrl/⌘ + Alt + F</code></td>
-<td>正文占满可用宽度</td>
-<td>开关式；开启后正文铺满窗口，忽略滑杆值</td>
-</tr>
-<tr>
-<td><code>Esc</code></td>
-<td>关闭搜索命令面板</td>
-<td>面板打开时，Esc 优先关闭面板</td>
-</tr>
-<tr>
-<td><code>Esc</code></td>
-<td>关闭设置面板</td>
-<td>设置面板打开时，Esc 只关闭面板</td>
-</tr>
-<tr>
-<td><code>Esc</code></td>
-<td>展开折叠的侧边栏</td>
-<td>桌面端侧边栏折叠时，Esc 可展开；移动端为关闭抽屉</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>内容区宽度调整时若设置面板正开着，可实时看到滑杆与数值同步变化。</p>
-</blockquote>
-<hr>
-<h2>二、媒体查看键位</h2>
-<p>以下键位仅在对应浮层打开时生效，与上面的全局快捷键互不干扰：</p>
-<table>
-<thead>
-<tr>
-<th>按键</th>
-<th>生效场景</th>
-<th>功能</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>←</code> / <code>→</code></td>
-<td>图片灯箱</td>
-<td>上一张 / 下一张</td>
-</tr>
-<tr>
-<td><code>+</code> / <code>-</code> / <code>0</code></td>
-<td>图片灯箱</td>
-<td>放大 / 缩小 / 重置缩放</td>
-</tr>
-<tr>
-<td><code>Esc</code></td>
-<td>图片灯箱 / PPT 放映</td>
-<td>关闭</td>
-</tr>
-<tr>
-<td><code>←</code> / <code>→</code></td>
-<td>PPTX 全屏放映</td>
-<td>上一页 / 下一页</td>
-</tr>
-<tr>
-<td><code>Space</code> / <code>Shift + Space</code></td>
-<td>PPTX 全屏放映</td>
-<td>下一页 / 上一页</td>
-</tr>
-<tr>
-<td><code>Home</code> / <code>End</code></td>
-<td>PPTX 全屏放映</td>
-<td>第一页 / 最后一页</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>三、内置编辑器快捷键</h2>
-<p>编辑器模式（<code>?mode=editor</code>）有独立的快捷键体系，与文档站快捷键完全隔离：</p>
-<table>
-<thead>
-<tr>
-<th>按键</th>
-<th>功能</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>Ctrl/⌘ + Enter</code></td>
-<td>运行当前 Cell</td>
-</tr>
-<tr>
-<td><code>Ctrl/⌘ + Shift + Enter</code></td>
-<td>运行全部 Cell</td>
-</tr>
-<tr>
-<td><code>Ctrl/⌘ + Shift + N</code></td>
-<td>当前 Cell 下方新建</td>
-</tr>
-<tr>
-<td><code>Ctrl/⌘ + F</code> / <code>Ctrl/⌘ + H</code></td>
-<td>搜索 / 替换</td>
-</tr>
-<tr>
-<td><code>Ctrl/⌘ + B</code> / <code>Ctrl/⌘ + I</code></td>
-<td>粗体 / 斜体</td>
-</tr>
-<tr>
-<td><code>Ctrl/⌘ + K</code></td>
-<td>链接</td>
-</tr>
-<tr>
-<td><code>Ctrl/⌘ + \</code> `</td>
-<td>行内代码</td>
-</tr>
-<tr>
-<td><code>Tab</code> / <code>Shift + Tab</code></td>
-<td>缩进 / 反缩进</td>
-</tr>
-<tr>
-<td><code>F3</code> / <code>Shift + F3</code></td>
-<td>搜索下一个 / 上一个</td>
-</tr>
-<tr>
-<td><code>Ctrl/⌘ + Alt + T</code></td>
-<td>新建编辑器标签</td>
-</tr>
-<tr>
-<td><code>Ctrl/⌘ + Tab</code></td>
-<td>切换编辑器标签</td>
-</tr>
-</tbody></table>
-<p>完整说明见 <a href="https://theforeveriris.github.io/md-preview/docs/editor.md">编辑器说明</a>。</p>
-<hr>
-<h2>四、冲突保护规则</h2>
-<p>全局快捷键在以下情况自动失效，避免抢占输入或误触：</p>
-<ol>
-<li><strong>编辑器模式</strong>：<code>body.editor-mode</code> 激活时，文档站快捷键全部让位给编辑器键位（如 <code>Ctrl+B</code> 在编辑器中是粗体）；</li>
-<li><strong>输入状态</strong>：焦点位于 <code>input</code> / <code>textarea</code> / <code>select</code> / <code>contenteditable</code> 内时不触发（搜索框、设置面板输入项等）；</li>
-<li><strong>设置面板打开</strong>：<code>Ctrl/⌘ + ,</code>、宽度调整键与 <code>Esc</code> 仍可用（便于边看面板边调），其余键位暂停；</li>
-<li><strong>灯箱 / PPTX 放映打开</strong>：<code>[</code> <code>]</code> 等文档导航键不响应，翻页键交给浮层处理；</li>
-<li>加了 <code>Ctrl/⌘ + Alt</code> 修饰的宽度键位特意避开了浏览器的 <code>Ctrl + =</code> / <code>Ctrl + -</code> 页面缩放。</li>
-</ol>
-<h2>实现位置</h2>
-<ul>
-<li>快捷键路由：<a href="https://theforeveriris.github.io/md-preview/iris/js/ui.js">iris/js/ui.js</a>（<code>setupEventListeners</code>）</li>
-<li>宽度调整 / 设置开关 API：<a href="https://theforeveriris.github.io/md-preview/iris/js/settings.js">iris/js/settings.js</a>（<code>nudgeContentWidth</code> / <code>resetContentWidth</code> / <code>toggleContentFullWidth</code> / <code>toggleSettingsPanel</code>）</li>
-<li>侧边栏折叠：<a href="https://theforeveriris.github.io/md-preview/iris/js/file-tree.js">iris/js/file-tree.js</a>（<code>toggleSidebar</code> / <code>setSidebarCollapsed</code>）</li>
-</ul>
 ]]></content:encoded>
     </item>
     <item>
