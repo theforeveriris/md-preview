@@ -50,6 +50,13 @@
             "title": "Countdown 插件示例"
           },
           {
+            "name": "csv-examples.md",
+            "type": "file",
+            "path": "docs/examples/csv-examples.md",
+            "wordCount": 58,
+            "title": "CSV / TSV 交互表格示例"
+          },
+          {
             "name": "diff-examples.md",
             "type": "file",
             "path": "docs/examples/diff-examples.md",
@@ -97,6 +104,13 @@
             "path": "docs/examples/image-gallery-examples.md",
             "wordCount": 1514,
             "title": "图片画廊与懒加载示例"
+          },
+          {
+            "name": "ios-vrp-examples.md",
+            "type": "file",
+            "path": "docs/examples/ios-vrp-examples.md",
+            "wordCount": 141,
+            "title": "Cisco IOS / 华为 VRP 配置高亮示例"
           },
           {
             "name": "latex-examples.md",
@@ -211,7 +225,7 @@
             "title": "Twitter/X 嵌入示例"
           }
         ],
-        "wordCount": 11023
+        "wordCount": 11222
       },
       {
         "name": "code-highlight-theme.md",
@@ -224,14 +238,14 @@
         "name": "configuration.md",
         "type": "file",
         "path": "docs/configuration.md",
-        "wordCount": 701,
+        "wordCount": 1289,
         "title": "配置参考"
       },
       {
         "name": "editor.md",
         "type": "file",
         "path": "docs/editor.md",
-        "wordCount": 1010,
+        "wordCount": 1342,
         "title": "Markdown 编辑器"
       },
       {
@@ -249,6 +263,13 @@
         "title": "插件开发指南"
       },
       {
+        "name": "roadmap.md",
+        "type": "file",
+        "path": "docs/roadmap.md",
+        "wordCount": 437,
+        "title": "功能路线图"
+      },
+      {
         "name": "rss.md",
         "type": "file",
         "path": "docs/rss.md",
@@ -259,25 +280,25 @@
         "name": "shortcuts.md",
         "type": "file",
         "path": "docs/shortcuts.md",
-        "wordCount": 489,
+        "wordCount": 587,
         "title": "快捷键"
       },
       {
         "name": "show.md",
         "type": "file",
         "path": "docs/show.md",
-        "wordCount": 2339,
+        "wordCount": 2718,
         "title": "系统运行时截图"
       },
       {
         "name": "theme-customization.md",
         "type": "file",
         "path": "docs/theme-customization.md",
-        "wordCount": 495,
+        "wordCount": 576,
         "title": "主题定制"
       }
     ],
-    "wordCount": 17304
+    "wordCount": 19418
   },
   {
     "name": "iris",
@@ -311,14 +332,14 @@
     "name": "readme-dev.md",
     "type": "file",
     "path": "readme-dev.md",
-    "wordCount": 850,
+    "wordCount": 1064,
     "title": "Markdown Preview — 开发者文档"
   },
   {
     "name": "README.md",
     "type": "file",
     "path": "README.md",
-    "wordCount": 942,
+    "wordCount": 1034,
     "title": "Markdown Preview"
   }
 ]

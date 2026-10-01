@@ -101,6 +101,16 @@ Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可�
 - **运行此 Cell 及下方**：右键菜单
 - 运行后状态点变绿；编辑后变橙（已修改，需重新运行）
 
+### 双屏编辑模式
+
+每个 Cell 头部有「双屏编辑」按钮（分栏图标），点击进入全屏双屏 overlay：
+
+- **布局**：左侧为该 Cell 的编辑器（保留原实例与撤销栈），右侧为该 Cell 内容的实时预览；
+- **实时渲染**：输入 250ms 防抖后自动重渲染，渲染管线与文档站一致；
+- **分隔条拖拽**：拖动中间分隔条调整左右宽度；
+- **同步滚动**：可在开关控制下让编辑区与预览区滚动联动；
+- **退出**：`Esc` 或右上角退出按钮，CodeMirror 宿主移回原 Cell，其它 Cell 完全不受影响。
+
 ---
 
 ## 四、顶部工具栏菜单
@@ -112,7 +122,7 @@ Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可�
 | 分组 | 项 |
 |------|------|
 | 标题 | H1 ~ H6 |
-| 格式 | 粗体 / 斜体 / 粗斜体 / 删除线 / 行内代码 / 高亮 |
+| 格式 | 粗体 / 斜体 / 粗斜体 / 删除线 / 行内代码 |
 | 列表 | 无序 / 有序 / 任务 / 已完成任务 |
 | 插入 | 链接 / 带标题链接 / 图片 / 带尺寸图片 / 代码块 / 引用 / 分隔线 |
 | 表格 | 2 / 3 / 4 列表格 |
@@ -135,6 +145,7 @@ Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可�
 |------|------|
 | 画廊样式 | 17 种：grid / cardstack / filmstrip / polaroid / stack / mosaic / scattered / hexagon / coverflow / tape / duotone / frame / arch / masonry / slider / ticket / panorama |
 | GitHub 提示框 | NOTE / IMPORTANT / WARNING / TIP / CAUTION |
+| 多栏与遮罩 | 代码选项卡 code-tabs / 多列布局 columns / 剧透遮罩 spoiler / Pulse 波形 `[pulse]...[/pulse]` |
 | 文档结构 | Frontmatter 头信息 / 目录 TOC |
 
 > 画廊样式详细说明见 [图片画廊布局](examples/gallery-layouts.md) 与 [图片画廊示例](examples/image-gallery-examples.md)。
@@ -146,7 +157,8 @@ Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可�
 | Mermaid 图表（15 种） | flowchart / sequenceDiagram / classDiagram / stateDiagram-v2 / erDiagram / gantt / pie / journey / mindmap / timeline / quadrantChart / gitGraph / block / C4Context / xychart-beta |
 | PlantUML（12 种） | 时序图 / 类图 / 用例图 / 活动图 / 状态图 / 组件图 / 部署图 / 思维导图 / WBS / JSON 数据图 / ER 实体关系图 / 线框图 salt |
 | ApexCharts（13 种） | 折线 / 面积 / 柱状（分组）/ 堆叠柱状 / 条形（水平）/ 饼图 / 环形 donut / 雷达 / 散点 scatter / 气泡 bubble / 极坐标 polarArea / 范围区域 rangeArea / 烛台 candlestick |
-| 代码与数学 | Diff 差异 / KaTeX 公式块 / 行内公式 / 矩阵 pmatrix / 方程组 cases / 求和与极限 / 二维码 / 二维码（自定义尺寸）/ ABC 乐谱 |
+| 代码与数学 | Diff 差异 / KaTeX 公式块 / 行内公式 / 矩阵 pmatrix / 方程组 cases / 求和与极限 / 二维码 / 二维码（自定义尺寸） |
+| 插件渲染 | ColorCard 颜色卡片 / Countdown 倒计时（日期或相对时长） |
 | 地理 | 坐标地图（北京 / 上海）/ GeoJSON 多点 / GeoJSON 线 / GeoJSON 多边形 / TopoJSON |
 
 ### 5. 插入
@@ -169,6 +181,7 @@ Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可�
 | 设计稿 | Figma |
 | 地图 | Google Maps / OpenStreetMap |
 | 办公文档 | Google Docs |
+| 网络拓扑 | eNSP 拓扑（` ```pkt ` 包裹 `@[ensp](slug)`） |
 
 ### 7. 下载
 
@@ -188,21 +201,24 @@ Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可�
 
 ## 五、自动补全
 
-在编辑区输入触发字符即弹出补全列表，支持 ↑↓ 选择、Enter / Tab 确认、Esc 关闭。共 12 类触发字符，120+ 条目。
+在编辑区输入触发字符即弹出补全列表，支持 ↑↓ 选择、Enter / Tab 确认、Esc 关闭。共 14 类触发字符，120+ 条目。
 
 | 触发字符 | 补全内容 |
 |----------|----------|
-| `@` | 17 种画廊样式 + 13 种嵌入服务（YouTube / Bilibili / Vimeo / Twitter / Gist / CodePen / JSFiddle / StackBlitz / Replit / Figma / Google Maps / OpenStreetMap / Google Docs） |
-| ` ``` ` | Mermaid 12 种 + PlantUML 10 种 + ApexCharts 9 种 + geo / geojson / topojson / qrcode / abc / diff + 19 种编程语言 |
+| `@` | 17 种画廊样式 + 13 种嵌入服务（YouTube / Bilibili / Vimeo / Twitter / Gist / CodePen / JSFiddle / StackBlitz / Replit / Figma / Google Maps / OpenStreetMap / Google Docs）+ `@tab` 选项卡分隔 |
+| ` ``` ` | Mermaid 12 种 + PlantUML 10 种 + ApexCharts 9 种 + geo / geojson / topojson / qrcode / diff + 19 种编程语言 |
 | `> [!` | 5 种 GitHub Alerts |
 | `#` | 6 级标题 |
 | `-` | 无序列表 / 任务列表 |
 | `\|` | 2 / 3 / 4 列表格 |
+| `\|\|` | 剧透遮罩 spoiler |
+| `:::` | 容器语法：code-tabs 代码选项卡 / columns 多列布局 |
 | `---` | 水平分割线 / Frontmatter |
 | `>` | 普通引用 |
 | `$$` | KaTeX 公式块 |
 | `![` | 图片 / 带标题图片 |
 | `[` | 链接 / 带标题链接 / 引用式链接 |
+| `[pulse` | DG-LAB 波形 `[pulse]...[/pulse]` |
 
 ---
 
@@ -255,7 +271,9 @@ Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可�
 | `Tab` | 缩进 2 空格 |
 | `Shift + Tab` | 移除行首 2 空格 |
 | `F3` / `Shift + F3` | 搜索下一个 / 上一个 |
-| `Esc` | 关闭右键菜单 / 补全 / 搜索面板 |
+| `Ctrl/Cmd + Alt + T` | 新建编辑器标签 |
+| `Ctrl/Cmd + Tab` | 切换编辑器标签 |
+| `Esc` | 关闭右键菜单 / 补全 / 搜索面板；双屏编辑模式中退出双屏 |
 
 ---
 
@@ -273,22 +291,23 @@ Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可�
 
 ## 九、自动保存
 
-编辑器启用 localStorage 自动保存，**无需手动保存**：
+编辑器启用自动保存，**无需手动保存**，存储层为 IndexedDB（`iris/js/storage.js`），突破 localStorage 5MB 容量限制并支持多笔记本（多标签）：
 
-- **存储键**：`mdnb_autosave_v2`
 - **触发**：内容变更后 1.5 秒防抖写入
 - **保存内容**：每个 Cell 的 `id` / `type` / `content` / `output_html`
-- **恢复**：再次进入编辑器时自动加载，重建所有 Cell
+- **多标签**：每个编辑器标签对应一个独立笔记本（IndexedDB `notebooks` 对象存储），标签顺序与激活项记录在 `meta` 对象存储
+- **恢复**：再次进入编辑器时自动加载当前笔记本，重建所有 Cell
 - **状态指示**：底部状态栏右侧显示「未保存 *」（橙色）/「已保存 ✓」（绿色）/「保存失败」（红色）
+- **旧数据迁移**：首次加载时若 IndexedDB 无数据而 localStorage 存在旧版自动保存数据（键 `mdnb_autosave_v2`），自动迁移到 IndexedDB 并清除旧键
 
-其他持久化设置：
+其他持久化设置（localStorage）：
 
 | 键 | 内容 |
 |----|------|
 | `mdnb_fontsize` | 编辑区字号（12 / 14 / 16 / 18） |
 | `mdnb_theme` | 编辑器主题（light / dark） |
 
-> 自动保存仅写入浏览器本地存储，不会同步到仓库。如需持久分享，请使用「下载」菜单导出 `.mdnb` 笔记本或合并 `.md` 文件。
+> 自动保存仅写入浏览器本地存储，不会同步到仓库。如需持久分享，请使用「下载」菜单导出 `.mdnb` 笔记本或合并 `.md` 文件。存储层细节见 [开发者文档](../readme-dev.md)。
 
 ---
 

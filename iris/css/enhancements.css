@@ -1,0 +1,511 @@
+/**
+ * enhancements.css — 新增功能样式
+ *  - CSV/TSV 交互表格（csv-table.js）
+ *  - 阅读位置续读提示条（reading-pos.js）
+ *  - 文档演示模式（slides.js）
+ *  - 选中文字浮动工具栏（selection-tools.js）
+ *  - 页头文档操作按钮（收藏 / 分享卡片 / 放映）
+ * 全部使用主题 CSS 变量，跟随 7 套预设主题与自定义配色。
+ */
+
+/* ============== CSV / TSV 交互表格 ============== */
+
+.csv-table {
+  margin: 1em 0;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.csv-table-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
+  flex-wrap: wrap;
+}
+
+.csv-table-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  min-width: 160px;
+}
+
+.csv-table-search:focus-within {
+  border-color: var(--color-accent-purple);
+}
+
+.csv-search-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 13px;
+  width: 100%;
+}
+
+.csv-table-count {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.csv-table-toolbar-space {
+  flex: 1;
+}
+
+.csv-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+}
+
+.csv-tool-btn:hover {
+  color: var(--color-accent-purple-deep);
+  border-color: var(--color-accent-purple);
+}
+
+.csv-table-scroll {
+  overflow: auto;
+  max-height: 520px;
+}
+
+.csv-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  font-size: 13.5px;
+}
+
+.csv-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--color-bg);
+  border-bottom: 2px solid var(--color-border);
+  padding: 0;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.csv-table th .csv-sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 9px 4px 9px 12px;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.csv-table th .csv-sort-arrow {
+  color: var(--color-accent-purple-deep);
+  min-width: 12px;
+  display: inline-block;
+}
+
+.csv-table th .csv-filter-btn {
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
+.csv-table th .csv-filter-btn:hover,
+.csv-table th .csv-filter-btn.active {
+  color: var(--color-accent-purple-deep);
+}
+
+.csv-table th.has-filter .csv-col-name {
+  text-decoration: underline dotted var(--color-accent-purple);
+  text-underline-offset: 3px;
+}
+
+.csv-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.csv-table tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--color-bg) 55%, transparent);
+}
+
+.csv-table tbody tr:hover {
+  background: color-mix(in srgb, var(--color-accent-purple) 8%, transparent);
+}
+
+.csv-table .csv-empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: 22px 0;
+}
+
+.csv-filter-popover {
+  position: fixed;
+  z-index: 1000;
+  width: 220px;
+  max-height: 320px;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: var(--color-shadow, 0 4px 16px rgba(0,0,0,.08));
+  font-size: 13px;
+}
+
+.csv-filter-title {
+  padding: 8px 12px;
+  font-weight: 600;
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.csv-filter-list {
+  overflow: auto;
+  padding: 4px 0;
+  flex: 1;
+}
+
+.csv-filter-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.csv-filter-item:hover {
+  background: color-mix(in srgb, var(--color-accent-purple) 8%, transparent);
+}
+
+.csv-filter-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.csv-filter-actions {
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+.csv-filter-actions button {
+  flex: 1;
+  padding: 4px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.csv-filter-actions button:hover {
+  color: var(--color-accent-purple-deep);
+  border-color: var(--color-accent-purple);
+}
+
+/* ============== 阅读位置续读提示条 ============== */
+
+/* 历史 / 收藏面板复用 .local-files 结构：折叠态隐藏列表 */
+.history-panel.collapsed .local-files-list,
+.fav-panel.collapsed .local-files-list {
+  display: none;
+}
+
+.resume-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translate(-50%, 16px);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .14);
+  color: var(--color-text);
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s, transform .25s;
+  z-index: 900;
+  max-width: min(92vw, 460px);
+}
+
+.resume-toast.open {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
+
+.resume-toast-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.resume-toast-actions button {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  border-radius: 7px;
+  padding: 5px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.resume-toast-actions .resume-toast-go {
+  background: var(--color-accent-purple);
+  border-color: var(--color-accent-purple);
+  color: #fff;
+}
+
+.resume-toast-actions .resume-toast-go:hover {
+  filter: brightness(1.06);
+}
+
+.resume-toast-actions .resume-toast-dismiss:hover {
+  color: var(--color-text-muted);
+}
+
+/* ============== 文档演示模式 ============== */
+
+.slides-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 950;
+}
+
+.slides-overlay.is-open {
+  display: block;
+}
+
+.slides-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .55);
+}
+
+.slides-stage {
+  position: absolute;
+  inset: 3vh 4vw 64px;
+  margin: auto;
+  background: var(--color-bg);
+  border-radius: 14px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, .3);
+  overflow: auto;
+}
+
+.slides-page {
+  min-height: 100%;
+  display: none;
+  padding: clamp(24px, 5vh, 56px) clamp(28px, 6vw, 96px);
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.slides-page-content.slides-active {
+  display: block;
+}
+
+/* 放映页内隐藏页头独有元素（阅读时长徽章跟随正文，保留） */
+.slides-page .doc-navigation,
+.slides-page .heading-anchor {
+  display: none !important;
+}
+
+.slides-close,
+.slides-nav {
+  position: absolute;
+  z-index: 3;
+  border: none;
+  background: rgba(255, 255, 255, .12);
+  color: #fff;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s;
+}
+
+.slides-close:hover,
+.slides-nav:hover {
+  background: rgba(255, 255, 255, .26);
+}
+
+.slides-close {
+  top: 16px;
+  right: 16px;
+}
+
+.slides-nav {
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 28px;
+}
+
+.slides-nav--prev { left: 14px; }
+.slides-nav--next { right: 14px; }
+
+.slides-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  color: rgba(255, 255, 255, .85);
+  font-size: 13px;
+  z-index: 3;
+}
+
+.slides-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 70%;
+}
+
+.slides-counter {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 768px) {
+  .slides-stage {
+    inset: 2vh 2vw 56px;
+  }
+  .slides-nav {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+/* ============== 选中文字浮动工具栏 ============== */
+
+.doc-selection-toolbar {
+  position: fixed;
+  z-index: 920;
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .16);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .12s;
+}
+
+.doc-selection-toolbar.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.doc-selection-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.doc-selection-toolbar button:hover {
+  background: color-mix(in srgb, var(--color-accent-purple) 12%, transparent);
+  color: var(--color-accent-purple-deep);
+}
+
+/* ============== 页头文档操作按钮（收藏 / 分享卡片 / 放映） ============== */
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.page-header-actions .header-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color .15s, background .15s;
+}
+
+.page-header-actions .header-action-btn:hover {
+  color: var(--color-accent-purple-deep);
+  background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent);
+}
+
+.page-header-actions .header-action-btn.active {
+  color: var(--color-accent-purple-deep);
+}
+
+.page-header-actions .header-action-btn.active svg {
+  fill: var(--color-accent-purple);
+  stroke: var(--color-accent-purple-deep);
+}

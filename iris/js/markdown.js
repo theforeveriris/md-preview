@@ -38,6 +38,35 @@
     if (dom.progressBar) dom.progressBar.style.width = '0%';
   }
 
+  // 文档渲染完成后的跨模块通知：阅读位置续读 / 浏览历史与收藏 / 演示模式。
+  // 统一在此解析文档标题（frontmatter > 首个 H1 > 文件名），写入 state.docTitle；
+  // H1 内注入的阅读时长徽章不参与标题
+  function notifyDocRendered(path) {
+    const st = window.MarkdownPreview.state;
+    if (!st) return;
+    let h1Title = '';
+    const h1 = dom.markdownContent.querySelector('h1');
+    if (h1) {
+      const clone = h1.cloneNode(true);
+      const rt = clone.querySelector('.reading-time');
+      if (rt) rt.remove();
+      h1Title = clone.textContent.trim();
+    }
+    st.docTitle = st.currentFrontmatter.title ||
+      h1Title ||
+      decodeURIComponent(path.split('/').pop() || '').replace(/\.md$/i, '');
+
+    if (window.MarkdownPreview.readingPos?.onDocRendered) {
+      window.MarkdownPreview.readingPos.onDocRendered(path);
+    }
+    if (window.MarkdownPreview.history?.onDocRendered) {
+      window.MarkdownPreview.history.onDocRendered(path, st.docTitle);
+    }
+    if (window.MarkdownPreview.slides?.onDocRendered) {
+      window.MarkdownPreview.slides.onDocRendered(path);
+    }
+  }
+
   async function loadMarkdownFile(path) {
     try {
       // 立即更新 URL，提供即时反馈
@@ -70,6 +99,7 @@
       updateEditButton(path);
       updateBreadcrumbs(path);
       setupHeadingNavigation();
+      notifyDocRendered(path);
     } catch (error) {
       console.error('Error loading markdown:', error);
       dom.markdownContent.innerHTML = `<div class="welcome-state"><p class="welcome-text">${t('md.loadFailed', '无法加载文件')}</p></div>`;
@@ -366,6 +396,7 @@
       await safeRun('embedded', () => window.MarkdownPreview.renderers.embedded.render());
       await safeRun('katex', () => window.MarkdownPreview.renderers.katex.render());
       await safeRun('pulse', () => window.MarkdownPreview.renderers.pulse.render());
+      await safeRun('csvtable', () => window.MarkdownPreview.renderers.csvtable?.render(dom.markdownContent));
       console.log('[Markdown] Render cycle complete');
     }, 100);
 
@@ -889,9 +920,10 @@
 
     document.addEventListener('keydown', (e) => {
       if (!overlay.classList.contains('open')) return;
-      // 如果 PPTX 放映 overlay 也开着，键盘优先交给 PPTX（由 PPTX 自己的 keydown 控制）
+      // 如果 PPTX 放映 / 文档演示 overlay 也开着，键盘优先交给它们（各自的 keydown 控制）
       const pptxOpen = document.getElementById('pptx-slideshow-overlay')?.classList.contains('is-open');
-      if (pptxOpen) return;
+      const slidesOpen = document.getElementById('slides-overlay')?.classList.contains('is-open');
+      if (pptxOpen || slidesOpen) return;
       if (e.key === 'Escape') closeLightbox();
       else if (e.key === 'ArrowLeft') navigateLightbox(-1);
       else if (e.key === 'ArrowRight') navigateLightbox(1);

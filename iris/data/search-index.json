@@ -45,6 +45,11 @@
     "preview": "Countdown 倒计时插件示例 countdown 插件将 Markdown 代码块渲染为实时刷新的倒计时 / 正计时卡片，适合用于： - 距离某个固定时间点的倒计时（截止日期、活动开始、考试倒计时等） - 自某个历史时间点起的正计时（项目开始至今、产品上线至今等） - 相对时长的倒计时（30 分钟后、1 天 2 小时后等） 基础用法 1. ISO 日期字符串 直接传入任何 Date.pars"
   },
   {
+    "path": "docs/examples/csv-examples.md",
+    "title": "CSV / TSV 交互表格示例",
+    "preview": "CSV / TSV 交互表格示例 csv / tsv 代码块会渲染为可排序、可搜索、可按列筛选的交互表格，贴数据不用再截图。 基础 CSV - 点击表头排序：升 → 降 → 恢复原始顺序，数值列按数值比较 - 表头漏斗按钮：按该列的唯一值勾选筛选 - 工具栏搜索框：即时过滤任意单元格命中的行 - 右侧按钮：复制 CSV / 下载 CSV（保留原文） 数值排序 带引号转义的 CSV 逗号或换行出现在"
+  },
+  {
     "path": "docs/examples/diff-examples.md",
     "title": "Git Diff 可视化示例",
     "preview": "Git Diff 可视化示例 本页面展示如何使用 diff2html 可视化展示 Git Diff 内容。 --- 1. 基本用法 简单的文件修改 源码格式： 渲染效果： --- 2. 多文件修改 渲染效果： --- 3. 不同类型的变更 新增文件 删除文件 重命名文件 --- 4. 复杂示例 完整的功能变更 --- 5. 使用说明 语法规则 1. 使用 diff diff --git a/旧文件"
@@ -78,6 +83,11 @@
     "path": "docs/examples/image-gallery-examples.md",
     "title": "图片画廊与懒加载示例",
     "preview": "图片画廊与懒加载示例 本页面展示图片的懒加载、画廊模式（含多种布局样式）、图片灯箱和错误降级功能。 --- 1. 图片懒加载 所有图片都自动添加了 loading=\"lazy\" 属性，会在图片进入视口时才加载。 语法格式： 图片会在滚动到视口时才开始加载，提升页面性能。 --- 2. 画廊模式 当文档中出现连续两张或以上的图片（中间无其他内容）时，会自动包装成画廊布局。 两张图片画廊 以下两张图片"
+  },
+  {
+    "path": "docs/examples/ios-vrp-examples.md",
+    "title": "Cisco IOS / 华为 VRP 配置高亮示例",
+    "preview": "Cisco IOS / 华为 VRP 配置高亮示例 内置两个网络设备配置语法包：ios（Cisco IOS / IOS-XE）与 vrp（华为 VRP）。命令关键字、注释、字符串与地址分级着色，与内置 10 套代码高亮主题自动兼容。 Cisco IOS（ios ! 接口配置 interface GigabitEthernet0/0/1 description TO-CORE-SW-01 ip ad"
   },
   {
     "path": "docs/examples/latex-examples.md",
@@ -168,6 +178,11 @@
     "path": "docs/plugin-development.md",
     "title": "插件开发指南",
     "preview": "插件开发指南 插件机制概述 Markdown Preview 的插件系统允许你扩展 Markdown 渲染能力，自定义处理特定的代码块。插件放入 iris/plugins/ 目录后，加载器会自动发现并注册。 插件接口（v2） 每个插件是一个导出对象的 JavaScript 模块（ES Module），支持以下接口： API 说明 | 字段/方法 | 类型 | 必填 | 说明 | |--------"
+  },
+  {
+    "path": "docs/roadmap.md",
+    "title": "功能路线图",
+    "preview": "功能路线图 本文档收录项目的功能规划。标注「已实现」的功能已落地可用（正式说明见 README 特性清单与相关专题文档），其余仍为规划，描述目标交互、可以复用的现有基建、实现要点与边界。功能落地后，对应章节会更新为正式文档并标注版本。 > 状态速记：已完成功能见 README 特性清单 与各专题文档；未标注「已实现」的章节均为「规划中（未实现）」。 --- 总览 | 分组 | 功能 | 一句话说明"
   },
   {
     "path": "docs/rss.md",

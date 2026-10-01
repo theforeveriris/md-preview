@@ -21,6 +21,19 @@
     if (window.MarkdownPreview.debug && window.MarkdownPreview.debug.init) {
       window.MarkdownPreview.debug.init();
     }
+    // 阅读位置续读 / 历史收藏 / 演示模式 / 选中工具栏
+    if (window.MarkdownPreview.readingPos && window.MarkdownPreview.readingPos.init) {
+      window.MarkdownPreview.readingPos.init();
+    }
+    if (window.MarkdownPreview.history && window.MarkdownPreview.history.init) {
+      window.MarkdownPreview.history.init();
+    }
+    if (window.MarkdownPreview.slides && window.MarkdownPreview.slides.init) {
+      window.MarkdownPreview.slides.init();
+    }
+    if (window.MarkdownPreview.selectionTools && window.MarkdownPreview.selectionTools.init) {
+      window.MarkdownPreview.selectionTools.init();
+    }
     if (window.MarkdownPreview.plugins && window.MarkdownPreview.plugins.autoLoad) {
       await window.MarkdownPreview.plugins.autoLoad();
     }

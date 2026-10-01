@@ -45,7 +45,7 @@ Mermaid 渲染器支持 18+ 种图表类型：流程图、时序图、类图、�
 
 ![渲染-plantuml图表](image/渲染-plantuml图表.png)
 
-通过公共 PlantUML 服务器渲染 UML 系列图表：时序图、类图、用例图、活动图、状态图、组件图、部署图、思维导图、WBS 工作分解图、JSON 数据图、ER 图、线框图 salt 等 12 大类。
+通过公共 PlantUML 服务器渲染 UML 系列图表：时序图、类图、用例图、活动图、状态图、组件图、部署图、思维导图、WBS 工作分解图、JSON 数据图、ER 图、线框图 salt 等 12 大类。渲染服务依序尝试（官方服务器 → Kroki，可经 `plantumlServers` 配置覆盖），全部失败时自动降级为源码展示并提供在线编辑器链接。
 
 详细示例：[PlantUML 示例](examples/plantuml-examples.md)
 
@@ -107,7 +107,10 @@ ApexCharts 交互式图表渲染器，涵盖 13 种常见类型：折线、面�
 
 ![渲染-过长的表格启用滚动](image/渲染-过长的表格启用滚动.png)
 
-当表格列数过多、超出正文宽度时，自动包裹 `.table-wrapper` 并启用横向滚动条，表格行保持斑马纹与悬浮高亮，表头可固定视口顶部。
+当表格列数过多、超出正文宽度时，自动包裹 `.table-wrapper` 并启用横向滚动条，表格行保持斑马纹与悬浮高亮，表头可固定视口顶部。另有两个增强：
+
+- **延伸到右侧空白**（设置面板可选）：宽表格越过正文边界，利用右侧留白显示更多列；
+- **表格悬浮手柄**：表格第一行左侧浮现手柄，提供「下载主题化 PNG / 复制 Markdown 源码 / 复制 CSV」三项操作，全部使用内联 SVG 图标。
 
 详细示例：[表格展示与优化](examples/table-examples.md)
 
@@ -267,6 +270,8 @@ DG-LAB 郊狼设备 `.pulse` 波形文件的完整渲染器。基于 `Dungeonlab
 ![设置-允许自定义预设主题或自行配色](image/设置-允许自定义预设主题或自行配色.png)
 
 7 种内置主题（default / github-light / github-dark / notion / arc-dark / dracula / nord）一键切换；在此基础上提供：
+- **自动主题（auto）**：跟随系统亮暗实时切换，亮 / 暗配对可自由组合（默认紫粉渐变 + GitHub Dark）
+- **界面语言**：中文 / English，默认跟随浏览器语言，设置面板顶部一键切换
 - **强调色取色器**：主色 / 粉色 / 深色 独立调整
 - **中性色取色器**：背景 / 表面 / 边框 / 文字 / 次要文字 五个维度，可自由组合亮色或暗色主题
 - 所有配色持久化到 localStorage
@@ -285,6 +290,7 @@ DG-LAB 郊狼设备 `.pulse` 波形文件的完整渲染器。基于 `Dungeonlab
 - **字号细调**：UI / 正文 / H1 / H2 / H3 五档独立设置
 - **字重细调**：UI / 正文 / 展示体 / H1 / H2 / H3 六档独立选择（300~800）
 - **字色**：正文与次要文字颜色独立取色
+- **标题数字无衬线**：默认标题数字随标题字体（衬线），开启后仅数字改用无衬线字形
 - 一键「重置字体」恢复默认
 
 ---
@@ -328,13 +334,14 @@ atom-one-dark、atom-one-light、dracula、github-dark、github、monokai、nord
 
 ## 四、输出与订阅功能
 
-### 导出文章为 Markdown 或 PDF
+### 导出文章为 Markdown / PDF / 单文件 HTML
 
 ![允许导出文章为md或pdf](image/允许导出文章为md或pdf.png)
 
 设置面板 → 操作 → 导出能力：
 - **下载 Markdown**：下载当前打开的 `.md` 源文件
 - **导出 PDF**：通过 `window.print()` + `@media print` 专用样式自动隐藏侧边栏/悬浮球等 UI，调用浏览器打印对话框，选择「另存为 PDF」即可
+- **导出 HTML**：保存为内联当前主题样式与全部本地 CSS（递归展开 `@import` 子模块）的单文件 HTML，双击即可离线查看
 
 ---
 
@@ -371,8 +378,9 @@ atom-one-dark、atom-one-light、dracula、github-dark、github、monokai、nord
 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，以全屏覆盖层叠加在文档站之上，特点包括：
 - Cell 模型（markdown / plaintext 两种类型），每 Cell 独立编辑 + 渲染输出
 - 运行当前（`Ctrl+Enter`）/ 全部（`Ctrl+Shift+Enter`）/ 此 Cell 及下方
-- localStorage 自动保存（1.5s 防抖，刷新不丢内容）
-- 11 类触发字符自动补全，120+ 条目
+- 双屏编辑模式：Cell 头部一键进入全屏双屏，左侧编辑右侧实时预览，分隔条可拖宽、同步滚动
+- IndexedDB 自动保存（1.5s 防抖，多笔记本多标签，刷新不丢内容）
+- 14 类触发字符自动补全，120+ 条目
 - 8 大工具栏下拉菜单：Markdown / HTML / 私有语法 / 工具渲染 / 插入 / 嵌入 / 下载 / 导入
 - 2 列右键菜单（17 项操作）、视口边界自适应定位
 - 跨 Cell 搜索替换（F3 / Shift+F3 导航）
@@ -399,6 +407,36 @@ atom-one-dark、atom-one-light、dracula、github-dark、github、monokai、nord
 
 详细文档：[郊狼波形批量生成页说明](examples/pulse-generator-page.md)
 Pulse 格式与示例：[Pulse 波形示例](examples/pulse-examples.md)
+
+---
+
+## 六、界面与导航增强（截图待补）
+
+以下功能已上线但尚未补充运行时截图，功能说明与详细文档先行收录：
+
+### 搜索命令面板（`Ctrl/⌘ + K`）
+
+搜索改造为居中弹出的命令面板（Claude/ZCode 风格）：基于 FlexSearch 的中文分词全文检索、结果关键词高亮；侧边栏仅保留一行轻量搜索入口唤起面板。
+
+相关文档：[快捷键](shortcuts.md)
+
+### 侧边栏折叠 + 内容区宽度可调
+
+桌面端可用汉堡按钮或 `Ctrl/⌘ + B` 折叠/展开侧边栏（状态自动记忆）；正文最大宽度可在设置面板滑杆调整（600–1400px），或一键占满可用宽度，快捷键 `Ctrl/⌘ + Alt + =/-/0/F`。
+
+相关文档：[快捷键](shortcuts.md) / [配置参考](configuration.md)
+
+### 本地文件会话列表 + 打开本地文件夹
+
+「打开本地 MD」支持一次多选（最多 20 个），未打开的文件进入侧边栏「本地文件」面板，可点击切换、单个移除、一键清空；「打开本地文件夹」整体导入目录（File System Access API，旧浏览器自动回退），按目录树展示、可折叠、内容懒加载，上一篇/下一篇在全部文件间循环。
+
+相关文档：[配置参考](configuration.md)
+
+### 自动主题 / 界面多语言 / 单文件 HTML 导出
+
+详见「设置面板」一节与 README 特性清单：自动主题跟随系统亮暗实时切换；界面语言中文 / English 一键切换；导出 HTML 生成内联全部样式的单文件离线页面。
+
+相关文档：[主题定制](theme-customization.md) / [配置参考](configuration.md)
 
 ---
 

@@ -220,7 +220,60 @@
     // 动态文案：PlantUML
     'plantuml.renderFailed': 'PlantUML 渲染服务均不可用，已回退为源码展示',
     'plantuml.renderError': 'PlantUML 渲染错误',
-    'plantuml.openInEditor': '在 PlantUML 在线编辑器中打开'
+    'plantuml.openInEditor': '在 PlantUML 在线编辑器中打开',
+
+    // 动态文案：页头文档操作（放映 / 收藏 / 分享卡片）
+    'header.slides': '文档放映',
+    'header.fav': '收藏此文档',
+    'header.shareCard': '生成分享卡片',
+
+    // 动态文案：浏览历史 / 收藏夹（侧边栏分组）
+    'history.title': '最近阅读',
+    'history.clear': '清空阅读历史',
+    'history.remove': '从历史中移除',
+    'fav.title': '收藏',
+    'fav.remove': '取消收藏',
+
+    // 动态文案：阅读位置续读
+    'reading.resume': '上次读到 {pct}%，继续？',
+    'reading.resumeGo': '继续阅读',
+    'reading.resumeDismiss': '忽略',
+
+    // 动态文案：文档演示模式
+    'slides.close': '退出放映',
+    'slides.prev': '上一页',
+    'slides.next': '下一页',
+
+    // 动态文案：选中文字浮动工具栏
+    'sel.copy': '复制',
+    'sel.search': '站内搜索',
+    'sel.card': '分享卡片',
+
+    // 动态文案：CSV / TSV 交互表格
+    'csv.searchPlaceholder': '搜索表格…',
+    'csv.rowCount': '{n} 行',
+    'csv.filteredCount': '{m} / {n} 行',
+    'csv.copyCsv': '复制 CSV',
+    'csv.downloadCsv': '下载 CSV',
+    'csv.sort': '排序',
+    'csv.filter': '按列筛选',
+    'csv.filterBy': '筛选',
+    'csv.selectAll': '全选',
+    'csv.clearFilter': '清除',
+    'csv.empty': '没有匹配的行',
+    'csv.untitled': '列',
+
+    // 动态文案：设置面板 · 全量离线缓存
+    'settings.offline.label': '全量离线缓存',
+    'settings.offline.desc': '把文件树覆盖的所有文档拉进 PWA 缓存，离线也能整站阅读',
+    'settings.offline.btn': '缓存全部文档',
+    'settings.offline.progress': '缓存中 {done}/{total}…',
+    'settings.offline.done': '已缓存 {n} 篇文档，离线也能整站阅读',
+    'settings.offline.doneFailed': '已缓存 {done} 篇文档（{failed} 篇失败）',
+    'settings.offline.clear': '清除文档缓存',
+    'settings.offline.cleared': '已清除全部文档缓存',
+    'settings.offline.unsupported': '当前环境不支持 Service Worker（需通过 HTTPS 部署访问后使用）',
+    'settings.offline.failed': '缓存失败，请稍后重试'
   };
 
   const en = {
@@ -402,7 +455,53 @@
 
     'plantuml.renderFailed': 'All PlantUML render servers unavailable; showing source instead',
     'plantuml.renderError': 'PlantUML render error',
-    'plantuml.openInEditor': 'Open in the PlantUML online editor'
+    'plantuml.openInEditor': 'Open in the PlantUML online editor',
+
+    'header.slides': 'Present document',
+    'header.fav': 'Favorite this document',
+    'header.shareCard': 'Create share card',
+
+    'history.title': 'Recently Read',
+    'history.clear': 'Clear reading history',
+    'history.remove': 'Remove from history',
+    'fav.title': 'Favorites',
+    'fav.remove': 'Remove favorite',
+
+    'reading.resume': 'Continue from {pct}%?',
+    'reading.resumeGo': 'Continue',
+    'reading.resumeDismiss': 'Dismiss',
+
+    'slides.close': 'Exit presentation',
+    'slides.prev': 'Previous slide',
+    'slides.next': 'Next slide',
+
+    'sel.copy': 'Copy',
+    'sel.search': 'Search docs',
+    'sel.card': 'Share card',
+
+    'csv.searchPlaceholder': 'Search table…',
+    'csv.rowCount': '{n} rows',
+    'csv.filteredCount': '{m} / {n} rows',
+    'csv.copyCsv': 'Copy CSV',
+    'csv.downloadCsv': 'Download CSV',
+    'csv.sort': 'Sort',
+    'csv.filter': 'Filter column',
+    'csv.filterBy': 'Filter',
+    'csv.selectAll': 'Select all',
+    'csv.clearFilter': 'Clear',
+    'csv.empty': 'No matching rows',
+    'csv.untitled': 'Column',
+
+    'settings.offline.label': 'Full offline cache',
+    'settings.offline.desc': 'Cache every document in the file tree for full offline reading',
+    'settings.offline.btn': 'Cache all documents',
+    'settings.offline.progress': 'Caching {done}/{total}…',
+    'settings.offline.done': 'Cached {n} documents — full offline reading ready',
+    'settings.offline.doneFailed': 'Cached {done} documents ({failed} failed)',
+    'settings.offline.clear': 'Clear document cache',
+    'settings.offline.cleared': 'Document cache cleared',
+    'settings.offline.unsupported': 'Service Worker is unavailable (requires HTTPS deployment)',
+    'settings.offline.failed': 'Caching failed, please retry'
   };
 
   const dicts = { zh, en };

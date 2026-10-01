@@ -5,8 +5,29 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 01 Oct 2026 03:31:35 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 01 Oct 2026 05:07:56 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>功能路线图</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/roadmap.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/roadmap.md</guid>
+      <pubDate>Thu, 01 Oct 2026 05:07:52 GMT</pubDate>
+      <description>本文档收录项目的功能规划。标注「已实现」的功能已落地可用（正式说明见 README 特性清单与相关专题文档），其余仍为规划，描述目标交互、可以复用的现有基建、实现要点与边界。功能落地后，对应章节会更新为正式文档并标注版本。 &gt; 状态速记：已完成功能见 README 特性清单 与各专题文档；未标注「已实现」的章节均为「规划中（未实现）」。 --- | 分组 | 功能 | 一句话说明 | 主要复用基建</description>
+    </item>
+    <item>
+      <title>Cisco IOS / 华为 VRP 配置高亮示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/ios-vrp-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/ios-vrp-examples.md</guid>
+      <pubDate>Thu, 01 Oct 2026 05:07:52 GMT</pubDate>
+      <description>内置两个网络设备配置语法包：（Cisco IOS / IOS-XE）与 （华为 VRP）。命令关键字、注释、字符串与地址分级着色，与内置 10 套代码高亮主题自动兼容。 ! 接口配置 interface GigabitEthernet0/0/1 description TO-CORE-SW-01 ip address 10.0.0.1 255.255.255.252 ip ospf 1 area </description>
+    </item>
+    <item>
+      <title>CSV / TSV 交互表格示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/csv-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/csv-examples.md</guid>
+      <pubDate>Thu, 01 Oct 2026 05:07:52 GMT</pubDate>
+      <description>/ 代码块会渲染为可排序、可搜索、可按列筛选的交互表格，贴数据不用再截图。 - 点击表头排序：升 → 降 → 恢复原始顺序，数值列按数值比较 - 表头漏斗按钮：按该列的唯一值勾选筛选 - 工具栏搜索框：即时过滤任意单元格命中的行 - 右侧按钮：复制 CSV / 下载 CSV（保留原文） 逗号或换行出现在单元格内时，用双引号包裹（RFC 4180），引号本身写两个：</description>
+    </item>
     <item>
       <title>配置参考</title>
       <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>

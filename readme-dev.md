@@ -57,10 +57,14 @@
 | Theme Manager | `iris/js/themes/theme-manager.js` | 预设主题切换、自定义 CSS / hljs 主题加载 |
 | Settings | `iris/js/settings.js` | 设置面板 UI、`customColors`、`fontConfig`、远程字体注入 |
 | File Tree | `iris/js/file-tree.js` | 侧边栏文件树 / 索引、字数、搜索结果列表、上一篇/下一篇 |
-| Markdown | `iris/js/markdown.js` | marked + 代码块高亮、标题锚点、图片灯箱（ArrowLeft/Right 翻页） |
+| Markdown | `iris/js/markdown.js` | marked + 代码块高亮、标题锚点、图片灯箱（ArrowLeft/Right 翻页）、frontmatter 解析 |
+| Interactions | `iris/js/interactions.js` | 表格悬浮手柄（主题化 PNG 导出 / 复制 Markdown / 复制 CSV）、LaTeX 右键复制 |
+| Local Docs | `iris/js/local-docs.js` | 本地 MD 多选会话（侧边栏「本地文件」面板）+ 本地文件夹导入（懒加载目录树） |
+| Search | `iris/js/search.js` | FlexSearch 全文索引加载与搜索命令面板 |
+| UI | `iris/js/ui.js` | 全局事件与快捷键路由、搜索命令面板交互 |
 | Storage | `iris/js/storage.js` | IndexedDB 笔记本存储（替代 localStorage 大内容） |
 | i18n | `iris/js/i18n.js` | zh/en 语言包；静态文案用 `data-i18n` 系列属性标记，动态文案走 `t(key, fallback)`；语言选择存 `localStorage('md-preview-lang')`，切换后广播 `langchange` 事件 |
-| App | `iris/js/app.js` | Hash 路由、编辑器模式 (`?mode=editor`)、Pulse 生成器 (`?mode=pulse`) |
+| App | `iris/js/app.js` | Hash 路由、编辑器模式 (`?mode=editor`)、Pulse 生成器 (`?mode=pulsegen`) |
 
 ### 渲染器（Renderer）
 
@@ -105,9 +109,12 @@
 
 | 工作流文件 | 触发条件 | 作用 |
 |-----------|----------|------|
-| `build-site.yml` | push 到 `main`，或 `docs/**` / `index.html` / `iris/**` 变化 | 构建 file-tree / search-index / feed，提交到 main，GitHub Pages 自动发布 |
+| `build-and-deploy.yml` | push 到 `main`，或手动触发 | 构建 file-tree / search-index / feed 并部署到 GitHub Pages |
+| `build-feed.yml` | push 到 `main` | 运行 `build-feed.js`，`feed.xml` 有变化时提交回仓库 |
+| `build-search-index.yml` | push 到 `main` | 运行 `build-search-index.js`，`search-index.json` 有变化时提交回仓库 |
 | `build-pkt.yml` | push 到 `main`，且 `iris/data/pkt/raw/**` 或 `iris/data/ensp/raw/**` 变化 | 执行 `iris/scripts/pkt/main.py` 和 `iris/scripts/ensp/main.py`，把产物 push 回 `data/pkt/json`、`data/pkt/images` 等 |
 | `build-pptx.yml` | push 到 `main`，且 `iris/data/pptx/raw/**` 变化 | 安装 LibreOffice + poppler-utils，跑 `iris/scripts/pptx/main.py`：PPTX→PDF→PNG/SVG+元数据 JSON，push 回 |
+| `sync-to-product.yml` | push 到 `main` | 将站点产物同步到 product 分支 |
 
 ### 产物存放约定
 
@@ -264,6 +271,7 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │   │   ├── floating.css          # 悬浮球、设置面板、工具栏、字体小网格
 │   │   ├── editor.css            # Markdown 编辑器模式样式
 │   │   ├── pulse-generator.css   # Pulse 波形生成器样式
+│   │   ├── galleries.css / components.css / responsive.css  # 画廊 / 组件 / 响应式
 │   │   ├── pkt/pkt.css           # Packet Tracer 渲染样式
 │   │   ├── pptx.css              # PPTX 网格 + 放映样式
 │   │   └── themes/themes.css     # 7 种预设主题的 --color-* 覆盖
@@ -272,14 +280,19 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │   │   ├── themes/theme-manager.js
 │   │   ├── markdown.js           # 渲染管线 + 图片灯箱
 │   │   ├── file-tree.js          # 侧边栏/搜索/索引
+│   │   ├── interactions.js       # 表格手柄、LaTeX 右键复制
+│   │   ├── local-docs.js         # 本地文件/文件夹会话
+│   │   ├── search.js / ui.js     # 搜索命令面板 / 全局事件与快捷键路由
+│   │   ├── i18n.js               # zh/en 界面语言包
 │   │   ├── dom.js                # 按需加载 DOM 工具
 │   │   ├── storage.js            # IndexedDB 笔记本
 │   │   ├── pulse.js              # DG-LAB .pulse 波形解析与 [pulse]/[pulsemini] 渲染
-│   │   ├── pulse-generator.js    # ?mode=pulse 可视化波形生成器
+│   │   ├── pulse-generator.js    # ?mode=pulsegen 可视化波形生成器
 │   │   └── renderers/            # 14+ 个代码块/嵌入渲染器
 │   ├── vendor/                   # 本地化的前端依赖
+│   ├── plugins/                  # 插件（qrcode / countdown / colorcard）
 │   ├── data/                     # 预构建数据
-│   │   ├── file-tree.json / search-index.json / feed.xml
+│   │   ├── file-tree.json / search-index.json / feed.xml / precache-manifest.json
 │   │   ├── pkt/    json + images （Cisco Packet Tracer 拓扑）
 │   │   ├── ensp/   xml + json    （华为 eNSP 拓扑：xml 原始工程，json 解析产物）
 │   │   └── pptx/   json + svg/png （PPTX 渲染产物）
@@ -294,11 +307,13 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 ├── docs/
 │   ├── show.md / getting-started.md
 │   ├── editor.md / configuration.md
+│   ├── roadmap.md / shortcuts.md
 │   ├── theme-customization.md / code-highlight-theme.md
 │   ├── plugin-development.md / rss.md
 │   └── examples/                 # 27+ 篇功能示例
 └── .github/workflows/
-    ├── build-site.yml
-    ├── build-pkt.yml
-    └── build-pptx.yml
+    ├── build-and-deploy.yml      # 构建产物 + 部署 GitHub Pages
+    ├── build-feed.yml / build-search-index.yml  # feed / 索引重建
+    ├── build-pkt.yml / build-pptx.yml           # 拓扑 / PPTX 产物
+    └── sync-to-product.yml       # 同步 product 分支
 ```

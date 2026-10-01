@@ -42,13 +42,16 @@ Demo：https://theforeveriris.github.io/md-preview/
 
 - 自动发现：自动扫描仓库中所有 `.md` 文件，构建文档目录树（含字数统计）；侧边栏优先显示文档标题（frontmatter `title` 或首个 `#` 标题），无标题时回退为去掉 `.md` 的文件名
 - 全文搜索：基于 FlexSearch 的中文分词全文检索，结果关键词高亮；`Ctrl/⌘ + K` 唤起居中搜索命令面板（Claude/ZCode 风格），侧边栏仅保留一行轻量入口
-- 内容快捷操作：右键 LaTeX 公式复制源码；悬浮表格手柄支持导出当前主题样式的 PNG 图片、复制 Markdown 源码 / CSV（不用 emoji，全部使用内联 SVG 图标库）
+- 内容快捷操作：右键 LaTeX 公式复制源码；悬浮表格手柄支持导出当前主题样式的 PNG 图片、复制 Markdown 源码 / CSV（不用 emoji，全部使用内联 SVG 图标库）；划选正文文字浮出工具条（复制 / 站内搜索 / 生成分享卡片）
+- 文档演示模式：页头「放映」按钮或 URL 加 `?mode=slides`，按 H2 分页、方向键翻页、全屏放映，写完文档直接拿去讲
+- 浏览历史与收藏夹：侧边栏「最近阅读」「收藏」分组（localStorage），页头星标一键收藏
+- 阅读位置续读：每篇文档记住滚动位置，重新打开时提示「上次读到 62%，继续？」一键跳回
 - Hash 路由：每个文档有独立 URL，支持分享和书签
-- 上一篇 / 下一篇：悬浮球快速翻阅相邻文档
+- 上一篇 / 下一篇：悬浮球快速翻阅相邻文档（桌面端 hover 自动展开悬浮球菜单）
 - 侧边栏折叠：桌面端可用汉堡按钮或 `Ctrl/⌘ + B` 折叠/展开侧边栏，状态自动记忆
 - 内容区宽度可调：设置面板滑杆调整正文最大宽度，或一键占满可用宽度，快捷键 `Ctrl/⌘ + Alt + =/-/0/F` 快速调节
 - 全局快捷键：设置面板 `Ctrl/⌘ + ,`、搜索 `Ctrl/⌘ + K`、上一篇/下一篇 `[` / `]` 等，详见[快捷键](docs/shortcuts.md)
-- 打开本地 MD：临时预览本地 Markdown 文件，无需入库
+- 打开本地 MD：临时预览本地 Markdown 文件，无需入库；支持一次多选（最多 20 个），未打开的文件进入侧边栏「本地文件」会话列表，可点击切换、单个移除或一键清空（内容仅驻内存，刷新即清空）
 - 打开本地文件夹：整体导入一个目录（File System Access API，旧浏览器自动回退），按目录树展示、文件夹可折叠，内容懒加载点开即读，上一篇/下一篇在全部文件间循环
 - 界面多语言：中文 / English 界面语言包，默认跟随浏览器语言，设置面板一键切换
 - 阅读时间估算：自动计算预计阅读时长
@@ -60,6 +63,8 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 图片灯箱：点击放大、缩放、键盘左右键翻页
 - GitHub 风格 Alerts：支持 `[!NOTE]` `[!WARNING]` 等提示语法
 - 代码块增强：一键复制按钮、语言标签、横向滚动优化、代码 Tabs
+- CSV / TSV 交互表格：`csv` / `tsv` 代码块渲染为可排序、可按列筛选、可搜索的表格，支持复制 / 下载 CSV
+- Cisco IOS / 华为 VRP 配置高亮：自定义语法包，`ios` / `vrp`（别名 `cisco` / `huawei`）渲染路由器配置
 - 长表格优化：自动包裹支持横向滚动；可选「延伸到右侧空白」，宽表格越过正文边界利用右侧空间显示更多列（内容宽度设置不变）
 - 标题锚点分享：标题悬浮出现复制链接按钮，直达章节
 - Packet Tracer 拓扑：解析 Cisco `.pkt` 文件，渲染交互式网络拓扑图（基于 Cytoscape.js）
@@ -91,8 +96,9 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 导出 PDF：通过浏览器打印对话框导出为 PDF
 - 导出 HTML：保存为内联当前主题样式与全部本地 CSS 的单文件 HTML，双击即可离线查看
 - 导出 Markdown：下载当前文章为 `.md`
+- 主题化分享卡片：选中段落或整篇文档生成当前主题配色的 1200×630 PNG 卡片，适合发社交媒体
 - RSS 源：自动生成 `feed.xml`，支持 RSS 阅读器订阅
-- PWA 支持：可安装到桌面，离线访问已访问文档，更新时提示刷新
+- PWA 支持：可安装到桌面，离线访问已访问文档，更新时提示刷新；设置面板「缓存全部文档」一键预热整站文档缓存（可清除）
 
 ### 工程与开发
 
@@ -105,6 +111,7 @@ Demo：https://theforeveriris.github.io/md-preview/
 
 - 类 Jupyter Cell 编辑器：全屏覆盖层，按 Cell 编写并即时渲染 Markdown
 - 运行与预览：单 Cell 运行 / 运行全部 / 运行至下方，渲染管线与文档站一致
+- 双屏编辑模式：Cell 头部一键进入全屏双屏，左侧编辑右侧实时预览，分隔条可拖宽、支持同步滚动
 - 自动保存：IndexedDB 存储 + 1.5s 防抖保存，刷新不丢内容，多笔记本多 Tab 支持
 - 搜索替换：跨所有 Cell 查找、替换、跳转
 - 11 类自动补全：`@` / `` ``` `` / `#` / `$$` / `![` 等触发字符即弹补全，120+ 条目
@@ -114,6 +121,27 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 字号与主题：4 档字号、亮/暗主题独立切换
 
 详见 [编辑器说明](docs/editor.md)。
+
+## 功能路线图
+
+以下功能已实现（标记 ✅，说明见 [功能路线图](docs/roadmap.md)）：
+
+- ✅ 文档演示模式（`?mode=slides`，按 H2 分页全屏放映）
+- ✅ CSV / TSV 交互表格（排序 / 筛选 / 搜索）
+- ✅ Cisco IOS / 华为 VRP 配置高亮
+- ✅ 浏览历史与收藏夹（侧边栏分组）
+- ✅ 阅读位置续读
+- ✅ 选中文字浮动工具栏 + 主题化分享卡片
+- ✅ 全量离线开关（缓存全部文档）
+
+以下功能已有明确规划、尚未实现，目标交互与实现要点详见[功能路线图](docs/roadmap.md)：
+
+| 分组 | 规划功能 |
+|------|----------|
+| 阅读与导航 | 链接悬浮预览 |
+| 离线与 PWA | OS 级文件关联、系统分享目标、扫码续读 |
+| 写作流程 | 草稿系统（`draft: true`）、文档密码保护 |
+| 移动端与运维 | 移动端手势、存储管理页 |
 
 ## 快速开始
 
@@ -220,6 +248,8 @@ python3 iris/scripts/pptx/main.py
 | `code-tabs-examples.md` | 代码 Tabs 多语言并排 |
 | `countdown-examples.md` | Countdown 倒计时组件 |
 | `qrcode-examples.md` | 二维码生成 |
+| `csv-examples.md` | CSV / TSV 交互表格 |
+| `ios-vrp-examples.md` | Cisco IOS / 华为 VRP 配置高亮 |
 | `mermaid-examples.md` | Mermaid 各类图表 |
 | `plantuml-examples.md` | PlantUML UML 与架构图 |
 | `apexcharts-examples.md` | ApexCharts 交互式图表 |
@@ -260,9 +290,12 @@ python3 iris/scripts/pptx/main.py
 │   │   └── pptx.css        # PPTX 缩略图网格与放映样式
 │   ├── js/                 # 核心功能模块
 │   │   ├── settings.js     # 设置面板、配色、字体自定义
-│   │   ├── themes/theme-manager.js  # 主题切换
+│   │   ├── themes/theme-manager.js  # 主题切换（含 auto 自动主题）
 │   │   ├── markdown.js     # Markdown 渲染 + 图片灯箱
 │   │   ├── renderers/      # 各代码块渲染器（mermaid/pkt/pptx 等）
+│   │   ├── local-docs.js   # 本地文件/文件夹会话
+│   │   ├── i18n.js         # 界面多语言（zh/en）
+│   │   ├── interactions.js # 表格手柄、LaTeX 右键复制等内容交互
 │   │   └── storage.js      # IndexedDB 笔记本存储
 │   ├── vendor/             # 第三方依赖（本地化）
 │   ├── plugins/            # 插件目录
@@ -285,6 +318,8 @@ python3 iris/scripts/pptx/main.py
 │   ├── editor.md
 │   ├── show.md             # 运行时截图展示
 │   ├── configuration.md
+│   ├── roadmap.md          # 功能路线图（规划中功能）
+│   ├── shortcuts.md        # 快捷键
 │   ├── theme-customization.md
 │   ├── code-highlight-theme.md
 │   ├── plugin-development.md
@@ -301,6 +336,7 @@ python3 iris/scripts/pptx/main.py
 - [快捷键](docs/shortcuts.md)
 - [编辑器说明](docs/editor.md)
 - [配置参考](docs/configuration.md)
+- [功能路线图](docs/roadmap.md)
 - [主题定制](docs/theme-customization.md)
 - [代码高亮主题](docs/code-highlight-theme.md)
 - [插件开发指南](docs/plugin-development.md)

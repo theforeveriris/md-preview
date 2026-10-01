@@ -24,6 +24,14 @@ Markdown Preview 提供三种层级的外观定制方式，由易到难：
 
 > **注意**：选择预设主题会清空自定义配色，恢复为该主题的默认变量值。
 
+### 自动主题（跟随系统亮暗）
+
+预设主题支持 `auto` 档位：跟随系统 `prefers-color-scheme` 实时切换——系统亮色时使用「亮色配对」主题（默认紫粉渐变），暗色时使用「暗色配对」主题（默认 GitHub Dark）。
+
+- 亮 / 暗配对可在设置面板中自由组合；
+- 系统亮暗变化时即时生效，无需刷新（含 PWA 桌面模式）；
+- 深层实现：`themechange` 事件携带的始终是解析后的实际主题 ID，自定义 CSS / 代码高亮联动不受影响。
+
 ---
 
 ## 二、可视化取色器（推荐）
@@ -139,7 +147,9 @@ Markdown Preview 提供三种层级的外观定制方式，由易到难：
 
 | Key | 内容 |
 |-----|------|
-| `md-preview-theme` | 当前预设主题 ID |
+| `md-preview-theme` | 当前预设主题 ID（选自动主题时为 `auto`） |
+| `md-preview-theme-light` | 自动主题的亮色配对主题 ID |
+| `md-preview-theme-dark` | 自动主题的暗色配对主题 ID |
 | `md-preview-settings` | 自定义配色（取色器值） |
 | `md-preview-custom-css` | 自定义 CSS URL |
 | `md-preview-custom-hljs` | 自定义 highlight.js 主题 URL |

@@ -52,6 +52,9 @@
   <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg">
     <symbol id="i-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
     <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8V4z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l2.95 5.98 6.6.96-4.78 4.66 1.13 6.58L12 17.57l-5.9 3.11 1.13-6.58L2.45 9.44l6.6-.96L12 2.5z"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.5 10 19 14 21 14 12.5 22 3"/></symbol>
     <symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
     <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></symbol>
     <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></symbol>
@@ -127,6 +130,17 @@
       
       <div class="page-header" id="pageHeader">
         <div class="page-breadcrumbs" id="pageBreadcrumbs"></div>
+        <div class="page-header-actions">
+          <button class="header-action-btn" id="slidesBtn" type="button" title="文档放映" data-i18n-title="header.slides">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-play"/></svg>
+          </button>
+          <button class="header-action-btn" id="favDocBtn" type="button" title="收藏此文档" aria-pressed="false" data-i18n-title="header.fav">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-star"/></svg>
+          </button>
+          <button class="header-action-btn" id="shareCardBtn" type="button" title="生成分享卡片" data-i18n-title="header.shareCard">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-image"/></svg>
+          </button>
+        </div>
       </div>
       
       <!-- Floating Menu -->
@@ -661,6 +675,15 @@
                 </div>
                 <div class="setting-control">
                   <button id="downloadHtmlBtn" class="download-btn" data-i18n="settings.actions.exportHtmlBtn">导出 HTML</button>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label" data-i18n="settings.offline.label">全量离线缓存</div>
+                  <div class="setting-description" id="offlineCacheDesc" data-i18n="settings.offline.desc">把文件树覆盖的所有文档拉进 PWA 缓存，离线也能整站阅读</div>
+                </div>
+                <div class="setting-control">
+                  <button id="cacheAllBtn" class="download-btn" data-i18n="settings.offline.btn">缓存全部文档</button>
                 </div>
               </div>
             </div>
@@ -1589,6 +1612,7 @@
   <script defer src="iris/vendor/marked.js"></script>
   <script defer src="iris/vendor/marked-footnote.min.js"></script>
   <script defer src="iris/vendor/highlight.js/highlight.min.js"></script>
+  <script defer src="iris/js/langs/net-config.js"></script>
   <script defer src="iris/vendor/flexsearch.bundle.js"></script>
   <!-- 以下重型 vendor 库改为按需懒加载（由各 renderer 在 DOM 出现对应内容时调用 dom.js#loadScript/loadStyle）：
        mermaid.min.js / pako.min.js / leaflet.js / apexcharts.min.js
@@ -1613,6 +1637,11 @@
   <script defer src="iris/js/markdown.js"></script>
   <script defer src="iris/js/router.js"></script>
   <script defer src="iris/js/settings.js"></script>
+  <script defer src="iris/js/reading-pos.js"></script>
+  <script defer src="iris/js/history.js"></script>
+  <script defer src="iris/js/offline.js"></script>
+  <script defer src="iris/js/slides.js"></script>
+  <script defer src="iris/js/selection-tools.js"></script>
 
   <!-- Plugin System -->
   <script defer src="iris/js/plugins/loader.js"></script>
@@ -1628,6 +1657,7 @@
   <script defer src="iris/js/renderers/embedded.js"></script>
   <script defer src="iris/js/renderers/katex.js"></script>
   <script defer src="iris/js/renderers/pulse.js"></script>
+  <script defer src="iris/js/renderers/csv-table.js"></script>
   <script defer src="iris/js/pulse-generator.js"></script>
 
   <!-- Packet Tracer 拓扑渲染器（cytoscape.min.js 已改为按需懒加载，见 pkt-renderer.js#loadAndRender） -->

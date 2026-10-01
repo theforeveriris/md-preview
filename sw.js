@@ -1,5 +1,5 @@
-const CACHE_NAME = 'md-preview-v8.12';
-const RUNTIME_CACHE = 'md-preview-runtime-v8.12';
+const CACHE_NAME = 'md-preview-v8.13';
+const RUNTIME_CACHE = 'md-preview-runtime-v8.13';
 const PRECACHE_MANIFEST_URL = './iris/data/precache-manifest.json';
 
 // 最小化兜底清单：当 manifest 拉取失败时使用，仅保证核心骨架可离线
@@ -180,5 +180,16 @@ self.addEventListener('fetch', event => {
 self.addEventListener('message', event => {
   if (event.data?.type === 'SKIP_WAITING') {
     self.skipWaiting();
+  }
+  // 清空文档缓存（设置面板「清除文档缓存」）：仅删 .md 条目，保留静态资源
+  if (event.data?.type === 'CLEAR_DOC_CACHE') {
+    event.waitUntil(
+      caches.open(RUNTIME_CACHE).then(cache =>
+        cache.keys().then(keys =>
+          Promise.all(keys.filter(req => new URL(req.url).pathname.endsWith('.md'))
+            .map(req => cache.delete(req)))
+        )
+      )
+    );
   }
 });

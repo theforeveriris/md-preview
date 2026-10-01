@@ -758,10 +758,76 @@
     const downloadHtmlBtn = document.getElementById('downloadHtmlBtn');
     const openEditorBtn = document.getElementById('openEditorBtn');
     const openPulseGenBtn = document.getElementById('openPulseGenBtn');
+    const cacheAllBtn = document.getElementById('cacheAllBtn');
+    const offlineCacheDesc = document.getElementById('offlineCacheDesc');
 
     downloadMdBtn?.addEventListener('click', () => downloadCurrentFile());
     downloadPdfBtn?.addEventListener('click', exportPdf);
     downloadHtmlBtn?.addEventListener('click', exportStandaloneHtml);
+
+    // 全量离线缓存：把文件树覆盖的所有 .md 拉进 SW RUNTIME_CACHE
+    cacheAllBtn?.addEventListener('click', async () => {
+      const offline = window.MarkdownPreview.offline;
+      if (!offline) return;
+      const defaultDesc = offlineCacheDesc ? offlineCacheDesc.textContent : '';
+      if (!offline.swSupported()) {
+        if (offlineCacheDesc) {
+          offlineCacheDesc.textContent = t('settings.offline.unsupported',
+            '当前环境不支持 Service Worker（需通过 HTTPS 部署访问后使用）');
+        }
+        return;
+      }
+      if (cacheAllBtn.dataset.running === '1') return;
+      cacheAllBtn.dataset.running = '1';
+      cacheAllBtn.disabled = true;
+      const total = offline.docPaths().length;
+      const onProgress = (done, all) => {
+        if (offlineCacheDesc) {
+          offlineCacheDesc.textContent = t('settings.offline.progress', '缓存中 {done}/{total}…')
+            .replace('{done}', done).replace('{total}', all);
+        }
+      };
+      onProgress(0, total);
+      try {
+        const result = await offline.cacheAll({ onProgress });
+        if (offlineCacheDesc) {
+          if (result.failed > 0) {
+            offlineCacheDesc.textContent = t('settings.offline.doneFailed',
+              '已缓存 {done} 篇文档（{failed} 篇失败）')
+              .replace('{done}', result.done).replace('{failed}', result.failed);
+          } else {
+            offlineCacheDesc.textContent = t('settings.offline.done',
+              '已缓存 {n} 篇文档，离线也能整站阅读').replace('{n}', result.done);
+          }
+          // 追加「清除文档缓存」入口
+          const clear = document.createElement('button');
+          clear.type = 'button';
+          clear.className = 'download-btn';
+          clear.style.marginLeft = '8px';
+          clear.textContent = t('settings.offline.clear', '清除文档缓存');
+          clear.addEventListener('click', async () => {
+            const ok = await offline.clearDocCache();
+            offlineCacheDesc.textContent = ok
+              ? t('settings.offline.cleared', '已清除全部文档缓存')
+              : t('settings.offline.unsupported', '当前环境不支持 Service Worker（需通过 HTTPS 部署访问后使用）');
+            setTimeout(() => { offlineCacheDesc.textContent = defaultDesc; }, 2500);
+          });
+          offlineCacheDesc.appendChild(clear);
+        }
+      } catch (e) {
+        console.error('[settings] 缓存全部文档失败:', e);
+        if (offlineCacheDesc) offlineCacheDesc.textContent = t('settings.offline.failed', '缓存失败，请稍后重试');
+      } finally {
+        cacheAllBtn.dataset.running = '';
+        cacheAllBtn.disabled = false;
+        // 完成文案停留一段时间后恢复默认描述（清除按钮随之移除）
+        setTimeout(() => {
+          if (offlineCacheDesc && offlineCacheDesc.querySelector('.download-btn')) return;
+          if (offlineCacheDesc) offlineCacheDesc.textContent = defaultDesc;
+        }, 6000);
+      }
+    });
+
     openEditorBtn?.addEventListener('click', () => {
       closeSettingsPanel();
       if (window.MarkdownPreview?.enterEditorMode) {
