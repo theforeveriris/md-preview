@@ -5,8 +5,15 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 29 Sep 2026 13:11:18 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 01 Oct 2026 03:31:35 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>配置参考</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
+      <pubDate>Thu, 01 Oct 2026 03:31:11 GMT</pubDate>
+      <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
+    </item>
     <item>
       <title>快捷键</title>
       <link>https://theforeveriris.github.io/md-preview/docs/shortcuts.md</link>
@@ -20,13 +27,6 @@
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/getting-started.md</guid>
       <pubDate>Tue, 29 Sep 2026 09:52:43 GMT</pubDate>
       <description>点击右上角的 Fork 按钮，将仓库复制到你的账号下。 1. 进入 Fork 后的仓库 2. 点击 Settings → Pages 3. 在 Build and deployment 中，Source 选择 GitHub Actions 编辑 ，将 和 改为你的信息： 提交修改并推送到 分支，GitHub Actions 会自动构建并部署。部署完成后，访问 即可查看。 在仓库的任意位置创建 文件</description>
-    </item>
-    <item>
-      <title>配置参考</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
-      <pubDate>Mon, 28 Sep 2026 18:50:01 GMT</pubDate>
-      <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
     </item>
     <item>
       <title>RSS 订阅</title>
