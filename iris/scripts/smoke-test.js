@@ -105,7 +105,7 @@ const REQUIRED_IDS = [
   // 文章内查找条
   'findBar', 'findBarInput', 'findBarCount', 'findBarPrev', 'findBarNext', 'findBarClose',
   // 双栏对照阅读
-  'splitViewOverlay', 'splitViewCloseBtn', 'splitSyncToggle',
+  'splitViewOverlay', 'splitSyncScrollToggle',
   'splitPaneLeftTitle', 'splitPaneLeftBody',
   'splitPaneRightTitle', 'splitPaneRightBody', 'splitPaneChangeBtn',
   'splitPicker', 'splitPickerInput', 'splitPickerList', 'splitPickerCloseBtn'

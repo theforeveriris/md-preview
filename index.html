@@ -600,6 +600,19 @@
                   </label>
                 </div>
               </div>
+
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label" data-i18n="settings.display.splitSyncScroll">对照阅读默认同步滚动</div>
+                  <div class="setting-description" data-i18n="settings.display.splitSyncScrollDesc">打开双栏对照阅读时两栏按比例同步滚动（快捷键 Ctrl/⌘+Alt+S 可随时开关本次会话的同步）</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="splitSyncScrollToggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
             </div>
 
             <div class="settings-subsection">
@@ -815,19 +828,8 @@
     </button>
   </div>
 
-  <!-- 双栏对照阅读（split-view.js 控制） -->
+  <!-- 双栏对照阅读（split-view.js 控制；无顶栏沉浸式，Esc 退出，Ctrl/⌘+\ 开关） -->
   <div class="split-view-overlay" id="splitViewOverlay" aria-hidden="true">
-    <div class="split-view-toolbar">
-      <span class="split-view-title" data-i18n="split.title">对照阅读</span>
-      <label class="split-view-sync">
-        <input type="checkbox" id="splitSyncToggle" checked>
-        <span data-i18n="split.syncScroll">同步滚动</span>
-      </label>
-      <span class="split-view-hint" data-i18n="split.hint">Esc 退出</span>
-      <button type="button" class="find-bar-btn" id="splitViewCloseBtn" data-i18n-title="common.close" aria-label="关闭">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-      </button>
-    </div>
     <div class="split-view-panes">
       <section class="split-pane">
         <header class="split-pane-header"><span id="splitPaneLeftTitle"></span></header>
@@ -1840,6 +1842,8 @@
   <script defer src="iris/js/md-render.js"></script>
   <script defer src="iris/js/markdown.js"></script>
   <script defer src="iris/js/router.js"></script>
+  <script defer src="iris/js/zip.js"></script>
+  <script defer src="iris/js/export-bundle.js"></script>
   <script defer src="iris/js/settings.js"></script>
   <script defer src="iris/js/reading-pos.js"></script>
   <script defer src="iris/js/history.js"></script>
@@ -1849,8 +1853,6 @@
   <script defer src="iris/js/selection-tools.js"></script>
   <script defer src="iris/js/gestures.js"></script>
   <script defer src="iris/js/storage-manager.js"></script>
-  <script defer src="iris/js/zip.js"></script>
-  <script defer src="iris/js/export-bundle.js"></script>
   <script defer src="iris/js/find-bar.js"></script>
   <script defer src="iris/js/section-collapse.js"></script>
   <script defer src="iris/js/split-view.js"></script>

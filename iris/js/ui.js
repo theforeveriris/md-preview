@@ -250,6 +250,26 @@
         return;
       }
 
+      // Ctrl/⌘ + \ ：双栏对照阅读开关（对齐 VS Code 分屏键位）
+      if (mod && !alt && !shift && key === '\\') {
+        e.preventDefault();
+        if (window.MarkdownPreview.splitView) {
+          window.MarkdownPreview.splitView.isOpen()
+            ? window.MarkdownPreview.splitView.close()
+            : window.MarkdownPreview.splitView.open();
+        }
+        return;
+      }
+
+      // Ctrl/⌘ + Alt + S ：开关本次对照会话的同步滚动（仅对照模式打开时）
+      if (mod && alt && key.toLowerCase() === 's') {
+        if (window.MarkdownPreview.splitView && window.MarkdownPreview.splitView.isOpen()) {
+          e.preventDefault();
+          window.MarkdownPreview.splitView.toggleSync();
+        }
+        return;
+      }
+
       // [ / ] ：上一篇 / 下一篇（对齐 GitHub 代码评审翻页键位）
       if (!mod && !alt && !shift && (key === '[' || key === ']')) {
         if (isMediaOverlayOpen()) return;

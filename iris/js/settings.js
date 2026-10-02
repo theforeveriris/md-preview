@@ -24,7 +24,8 @@
     tableBleed: false,
     sansHeadingDigits: false,
     mobileGestures: true,
-    sectionCollapse: true
+    sectionCollapse: true,
+    splitSyncScroll: true
   };
 
   // 内容区宽度范围（与设置面板滑杆一致）
@@ -104,7 +105,8 @@
           tableBleed: parsed.tableBleed === true,
           sansHeadingDigits: parsed.sansHeadingDigits === true,
           mobileGestures: parsed.mobileGestures !== false,
-          sectionCollapse: parsed.sectionCollapse !== false
+          sectionCollapse: parsed.sectionCollapse !== false,
+          splitSyncScroll: parsed.splitSyncScroll !== false
         };
       }
     } catch (e) {
@@ -370,6 +372,16 @@
         window.MarkdownPreview.sectionCollapse.clearAll();
       } else if (e.target.checked && window.MarkdownPreview.sectionCollapse) {
         window.MarkdownPreview.sectionCollapse.onDocRendered(loadSettings() && window.MarkdownPreview.state.currentFilePath);
+      }
+    });
+
+    // 对照阅读默认同步滚动（split-view.js 打开时读取；开着时即时生效）
+    document.getElementById('splitSyncScrollToggle')?.addEventListener('change', (e) => {
+      const settings = loadSettings();
+      settings.splitSyncScroll = e.target.checked;
+      saveSettings(settings);
+      if (window.MarkdownPreview.splitView && window.MarkdownPreview.splitView.isOpen()) {
+        window.MarkdownPreview.splitView.setSyncEnabled(e.target.checked);
       }
     });
 
@@ -776,8 +788,9 @@
     downloadPdfBtn?.addEventListener('click', exportPdf);
     downloadHtmlBtn?.addEventListener('click', exportStandaloneHtml);
 
-    // 整站打包导出（export-bundle.js）：EPUB 单篇 / EPUB 合订本 / 全部 MD ZIP
-    const bundle = window.MarkdownPreview.exportBundle;
+    // 整站打包导出（export-bundle.js）：EPUB 单篇 / EPUB 合订本 / 全部 MD ZIP。
+    // bundle 必须在点击时惰性获取：deferred 脚本按序执行，settings.js 的 init
+    // 先于 export-bundle.js 运行，init 时模块尚未注册，捕获会产生恒 undefined
     const bundleButtons = [
       { btn: 'downloadEpubBtn', desc: 'exportEpubDesc', scope: 'doc' },
       { btn: 'downloadSiteEpubBtn', desc: 'exportSiteEpubDesc', scope: 'site' },
@@ -787,6 +800,7 @@
       const btnEl = document.getElementById(btn);
       const descEl = document.getElementById(desc);
       btnEl?.addEventListener('click', async () => {
+        const bundle = window.MarkdownPreview.exportBundle;
         if (!bundle || btnEl.dataset.running === '1') return;
         const defaultDesc = descEl ? descEl.textContent : '';
         btnEl.dataset.running = '1';
@@ -1159,6 +1173,8 @@ body { margin: 0; }
     if (mobileGesturesToggle) mobileGesturesToggle.checked = settings.mobileGestures !== false;
     const sectionCollapseToggle = document.getElementById('sectionCollapseToggle');
     if (sectionCollapseToggle) sectionCollapseToggle.checked = settings.sectionCollapse !== false;
+    const splitSyncScrollToggle = document.getElementById('splitSyncScrollToggle');
+    if (splitSyncScrollToggle) splitSyncScrollToggle.checked = settings.splitSyncScroll !== false;
 
     // 取色器显示：有自定义值用自定义值，否则显示默认色
     document.querySelectorAll('input[type="color"][data-var]').forEach(input => {

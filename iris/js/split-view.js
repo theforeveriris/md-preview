@@ -2,9 +2,13 @@
  * split-view - 双栏对照阅读
  *
  * 同屏左右两篇文档对照阅读（原文 + 译文 / 配置 + 说明），支持两栏比例
- * 同步滚动（可关）。悬浮球菜单「对照阅读」进入，Esc 或关闭按钮退出。
+ * 同步滚动。悬浮球菜单「对照阅读」或 Ctrl/⌘+\ 进入，Esc 退出；
+ * Ctrl/⌘+Alt+S 随时开关本次会话的同步滚动（默认值取设置面板
+ * 「对照阅读默认同步滚动」，settings.splitSyncScroll）。
  * 左栏为当前文档，右栏通过内置选择器挑一篇站点文档（也支持右栏点站内
  * 链接跟读）。本地文件会话文档暂不参与对照。
+ *
+ * 沉浸式：无顶部工具条，状态反馈走 mini-toast。
  *
  * 渲染：与编辑器 Cell 同管线——mdRender.parseMarkdown + 画廊/轮播/代码
  * 高亮/代码 Tabs + 各渲染器（全局扫描、已处理元素幂等跳过）。
@@ -14,11 +18,13 @@
   'use strict';
   window.MarkdownPreview = window.MarkdownPreview || {};
 
-  let overlay = null, syncToggle = null;
+  let overlay = null;
   let leftBody = null, rightBody = null, leftTitle = null, rightTitle = null;
   let picker = null, pickerInput = null, pickerList = null;
   let rightPath = '';
   let syncing = false;
+  let syncEnabled = true;
+  let toastEl = null, toastTimer = 0;
 
   function t(key, fallback) {
     const i18n = window.MarkdownPreview.i18n;
@@ -33,6 +39,20 @@
   }
 
   function isOpen() { return !!(overlay && overlay.classList.contains('open')); }
+
+  // mini-toast 反馈（同 history.js 模式，样式见 enhancements.css）
+  function showToast(text) {
+    if (!toastEl) {
+      toastEl = document.createElement('div');
+      toastEl.className = 'mini-toast';
+      toastEl.setAttribute('role', 'status');
+      document.body.appendChild(toastEl);
+    }
+    toastEl.textContent = text;
+    toastEl.classList.add('open');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('open'), 1800);
+  }
 
   // 与 markdown.js interceptLinks / simplifyPath 同语义的相对路径解析
   function resolvePath(fromDoc, rel) {
@@ -185,7 +205,7 @@
   // ============== 开关 ==============
 
   function open() {
-    const { state } = window.MarkdownPreview;
+    const { state, settings } = window.MarkdownPreview;
     const currentPath = state.currentFilePath;
     if (!currentPath) {
       // 本地文件会话没有站点路径，暂不支持对照
@@ -193,6 +213,8 @@
       alert(t('split.needDoc', '请先打开一个文档'));
       return;
     }
+    // 本次会话的同步开关取设置默认值
+    if (settings && settings.load) syncEnabled = settings.load().splitSyncScroll !== false;
     ensure();
     overlay.classList.add('open');
     overlay.setAttribute('aria-hidden', 'false');
@@ -229,12 +251,13 @@
   function bindSyncScroll() {
     const bind = (src, dst) => {
       src.addEventListener('scroll', () => {
-        if (syncing || (syncToggle && !syncToggle.checked)) return;
+        if (syncing || !syncEnabled) return;
         syncing = true;
         const maxSrc = src.scrollHeight - src.clientHeight;
         const maxDst = dst.scrollHeight - dst.clientHeight;
         if (maxSrc > 0 && maxDst > 0) dst.scrollTop = (src.scrollTop / maxSrc) * maxDst;
-        requestAnimationFrame(() => { syncing = false; });
+        // 不用 rAF：后台标签页 rAF 不触发会永久卡住同步守卫
+        setTimeout(() => { syncing = false; }, 50);
       });
     };
     bind(leftBody, rightBody);
@@ -245,7 +268,6 @@
     if (overlay) return;
     overlay = document.getElementById('splitViewOverlay');
     if (!overlay) return;
-    syncToggle = document.getElementById('splitSyncToggle');
     leftBody = document.getElementById('splitPaneLeftBody');
     rightBody = document.getElementById('splitPaneRightBody');
     leftTitle = document.getElementById('splitPaneLeftTitle');
@@ -254,7 +276,6 @@
     pickerInput = document.getElementById('splitPickerInput');
     pickerList = document.getElementById('splitPickerList');
 
-    document.getElementById('splitViewCloseBtn').addEventListener('click', close);
     document.getElementById('splitPaneChangeBtn').addEventListener('click', openPicker);
     document.getElementById('splitPickerCloseBtn').addEventListener('click', closePicker);
     picker.addEventListener('click', (e) => { if (e.target === picker) closePicker(); });
@@ -284,9 +305,22 @@
     });
   }
 
+  // 同步滚动开关（Ctrl/⌘+Alt+S）：只影响本次会话，默认值来自设置面板
+  function toggleSync() {
+    if (!isOpen()) return;
+    setSyncEnabled(!syncEnabled);
+  }
+
+  function setSyncEnabled(v) {
+    syncEnabled = !!v;
+    showToast(syncEnabled ? t('split.syncOn', '同步滚动：开') : t('split.syncOff', '同步滚动：关'));
+  }
+
+  function isSyncEnabled() { return syncEnabled; }
+
   function init() {
     ensure();
   }
 
-  window.MarkdownPreview.splitView = { open, close, isOpen, init };
+  window.MarkdownPreview.splitView = { open, close, toggle: open, isOpen, init, toggleSync, setSyncEnabled, isSyncEnabled };
 })();
