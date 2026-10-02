@@ -304,9 +304,18 @@
       rightTitle.textContent = t('split.rightEmpty', '右栏未选择');
       rightBody.innerHTML = `
         <div class="split-pane-empty">
-          <button type="button" id="splitPaneEmptyPick">${esc(t('split.pickDoc', '选择右栏文档'))}</button>
+          <div class="split-pane-empty-card" role="button" tabindex="0" aria-label="${esc(t('split.pickDoc', '选择右栏文档'))}">
+            <svg class="split-pane-empty-icon" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/><path d="M6.5 8h3M6.5 11h3" opacity=".55"/></svg>
+            <p class="split-pane-empty-text">${esc(t('split.emptyText', '选择一篇文档开始对照'))}</p>
+            <p class="split-pane-empty-hint">${esc(t('split.emptyHint', '站点文档与本地会话文档都可以选'))}</p>
+            <button type="button" id="splitPaneEmptyPick" class="download-btn">${esc(t('split.pickDoc', '选择右栏文档'))}</button>
+          </div>
         </div>`;
-      rightBody.querySelector('#splitPaneEmptyPick').addEventListener('click', openPicker);
+      // 整卡可点（按钮点击冒泡到卡片，统一走 openPicker）
+      rightBody.querySelector('.split-pane-empty-card').addEventListener('click', openPicker);
+      rightBody.querySelector('.split-pane-empty-card').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPicker(); }
+      });
     }
   }
 

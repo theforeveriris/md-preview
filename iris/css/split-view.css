@@ -47,12 +47,43 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* 右栏空态 */
+/* 右栏空态：虚线卡片 + 图标 + 提示，整卡可点唤起选择器 */
 .split-pane-empty {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
+  padding: 24px;
+}
+.split-pane-empty-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 36px 48px;
+  border: 1.5px dashed var(--color-border);
+  border-radius: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+.split-pane-empty-card:hover,
+.split-pane-empty-card:focus-visible {
+  border-color: var(--color-accent-purple);
+  background: rgba(128, 128, 128, .05);
+  outline: none;
+}
+.split-pane-empty-icon { color: var(--color-text-muted); opacity: .75; }
+.split-pane-empty-text {
+  margin: 6px 0 0;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+.split-pane-empty-hint {
+  margin: 0 0 8px;
+  font-size: 12.5px;
+  color: var(--color-text-muted);
 }
 
 /* 右栏文档选择器 */
