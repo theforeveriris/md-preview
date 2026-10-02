@@ -1,4 +1,4 @@
-const CACHE_NAME = 'md-preview-v8.20';
+const CACHE_NAME = 'md-preview-v8.21';
 const RUNTIME_CACHE = 'md-preview-runtime-v8.18';
 const PRECACHE_MANIFEST_URL = './iris/data/precache-manifest.json';
 

@@ -161,6 +161,16 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.split-picker-badge {
+  flex: none;
+  margin-left: auto;
+  padding: 1px 8px;
+  font-size: 11px;
+  line-height: 1.6;
+  border: 1px solid var(--color-accent-purple);
+  color: var(--color-accent-purple-deep);
+  border-radius: 999px;
+}
 .split-picker-empty {
   padding: 28px 10px;
   text-align: center;

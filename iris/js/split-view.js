@@ -5,8 +5,12 @@
  * 同步滚动。悬浮球菜单「对照阅读」或 Ctrl/⌘+\ 进入，Esc 退出；
  * Ctrl/⌘+Alt+S 随时开关本次会话的同步滚动（默认值取设置面板
  * 「对照阅读默认同步滚动」，settings.splitSyncScroll）。
- * 左栏为当前文档，右栏通过内置选择器挑一篇站点文档（也支持右栏点站内
- * 链接跟读）。本地文件会话文档暂不参与对照。
+ * 左栏为当前文档（站点文档或本地文件会话文档），右栏通过内置选择器挑
+ * 一篇文档——选择器合并站点文件树与本地文件会话（带「本地」标识），
+ * 也支持右栏点站内链接跟读。
+ *
+ * 本地文档无站点根目录：相对路径图片不解析（与主视图本地阅读一致）；
+ * 内容经 local-docs 的同一懒加载管道读取，纯内存、刷新即失。
  *
  * 沉浸式：无顶部工具条，状态反馈走 mini-toast。
  *
@@ -21,7 +25,8 @@
   let overlay = null;
   let leftBody = null, rightBody = null, leftTitle = null, rightTitle = null;
   let picker = null, pickerInput = null, pickerList = null;
-  let rightPath = '';
+  // 右栏当前条目：{kind:'site', path} 或 {kind:'local', id, name}，重开时恢复
+  let rightEntry = null;
   let syncing = false;
   let syncEnabled = true;
   let toastEl = null, toastTimer = 0;
@@ -95,7 +100,8 @@
     });
   }
 
-  // 站内 .md 链接在本栏内跟读；同文档锚点在栏内滚动；外链新标签
+  // 站内 .md 链接在本栏内跟读；同文档锚点在栏内滚动；外链新标签。
+  // 本地文档传 path=''：相对链接按站点根解析（与主视图本地阅读同语义）
   function interceptLinks(container, docPath, load) {
     container.querySelectorAll('a[href]').forEach(a => {
       const href = a.getAttribute('href') || '';
@@ -143,15 +149,15 @@
     }, 150);
   }
 
-  async function renderInto(bodyEl, titleEl, path) {
-    const resp = await fetch(path, { cache: 'no-cache' });
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    const md = await resp.text();
+  // 渲染一篇文档到栏内（站点 fetch 与本地内存读取共用此编排）
+  function renderContent(bodyEl, titleEl, md, opts) {
+    const path = opts.path || '';
+    const fallbackTitle = opts.fallbackTitle || 'document';
 
     const fm = md.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
     const body = fm ? md.slice(fm[0].length) : md;
-    titleEl.textContent = extractTitle(md, path.replace(/\.md$/i, '').split('/').pop());
-    titleEl.title = path;
+    titleEl.textContent = extractTitle(md, fallbackTitle);
+    titleEl.title = path || fallbackTitle;
 
     const mdRender = window.MarkdownPreview.mdRender;
     const { html } = mdRender.parseMarkdown(body);
@@ -171,6 +177,42 @@
     runRenderers(bodyEl);
   }
 
+  async function renderInto(bodyEl, titleEl, path) {
+    const resp = await fetch(path, { cache: 'no-cache' });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const md = await resp.text();
+    renderContent(bodyEl, titleEl, md, {
+      path,
+      fallbackTitle: decodeURIComponent(path.replace(/\.md$/i, '').split('/').pop())
+    });
+  }
+
+  // 本地会话文档：内容在内存，懒加载走 local-docs 的同一读取管道
+  async function renderLocalInto(bodyEl, titleEl, file) {
+    let content = file.content;
+    if (content == null) {
+      const localDocs = window.MarkdownPreview.localDocs;
+      if (localDocs && typeof localDocs.getFileContent === 'function') {
+        content = await localDocs.getFileContent(file.id);
+      }
+    }
+    if (content == null) throw new Error('local content unavailable');
+    renderContent(bodyEl, titleEl, content, {
+      path: '',
+      fallbackTitle: file.name.replace(/\.md$/i, '')
+    });
+  }
+
+  function renderRightEntry() {
+    if (!rightEntry) return false;
+    if (rightEntry.kind === 'local') {
+      renderLocalInto(rightBody, rightTitle, { id: rightEntry.id, name: rightEntry.name }).catch(showLoadError);
+    } else {
+      renderInto(rightBody, rightTitle, rightEntry.path).catch(showLoadError);
+    }
+    return true;
+  }
+
   function showLoadError(e) {
     console.warn('[split-view] 文档加载失败:', e);
     const mdRender = window.MarkdownPreview.mdRender;
@@ -180,11 +222,27 @@
 
   // ============== 右栏文档选择器 ==============
 
-  function openPicker() {
-    if (!picker) return;
+  // 合并本地文件会话与站点文件树（本地在前，带「本地」标识）
+  function collectPickerEntries() {
+    const entries = [];
+    const state = window.MarkdownPreview.state;
+    if (state && Array.isArray(state.localFiles)) {
+      for (const f of state.localFiles) {
+        entries.push({ kind: 'local', id: f.id, name: f.name.replace(/\.md$/i, '') });
+      }
+    }
     const fileTree = window.MarkdownPreview.fileTree;
     const files = (fileTree && fileTree.getAllFilesInDFSOrder) ? fileTree.getAllFilesInDFSOrder() : [];
-    renderPickerList(files, '');
+    for (const f of files) {
+      const dir = f.path.includes('/') ? f.path.slice(0, f.path.lastIndexOf('/')) : '';
+      entries.push({ kind: 'site', path: f.path, name: f.name, dir });
+    }
+    return entries;
+  }
+
+  function openPicker() {
+    if (!picker) return;
+    renderPickerList(collectPickerEntries(), '');
     pickerInput.value = '';
     picker.classList.add('open');
     pickerInput.focus();
@@ -194,16 +252,24 @@
     if (picker) picker.classList.remove('open');
   }
 
-  function renderPickerList(files, keyword) {
+  function renderPickerList(entries, keyword) {
     const kw = keyword.trim().toLowerCase();
-    const filtered = files.filter(f => !kw || f.path.toLowerCase().includes(kw) || f.name.toLowerCase().includes(kw));
+    const filtered = entries.filter(en => !kw ||
+      en.name.toLowerCase().includes(kw) ||
+      (en.dir || '').toLowerCase().includes(kw) ||
+      (en.path || '').toLowerCase().includes(kw));
     const docIcon = '<svg class="split-picker-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
-    pickerList.innerHTML = filtered.slice(0, 300).map(f => {
-      // 单行布局：文档名居左，所属目录居右（根目录文档不显示目录段）
-      const dir = f.path.includes('/') ? f.path.slice(0, f.path.lastIndexOf('/')) : '';
-      return `<li><button type="button" data-path="${esc(f.path)}">${docIcon}` +
-        `<span class="split-picker-name">${esc(f.name)}</span>` +
-        (dir ? `<span class="split-picker-path">${esc(dir)}</span>` : '') +
+    const badge = `<span class="split-picker-badge">${esc(t('split.localBadge', '本地'))}</span>`;
+    pickerList.innerHTML = filtered.slice(0, 300).map(en => {
+      // 单行布局：文档名居左；站点文档右侧显所属目录，本地文档右侧显「本地」标识
+      const meta = en.kind === 'local'
+        ? badge
+        : (en.dir ? `<span class="split-picker-path">${esc(en.dir)}</span>` : '');
+      const data = en.kind === 'local'
+        ? `data-kind="local" data-id="${esc(en.id)}" data-name="${esc(en.name)}"`
+        : `data-kind="site" data-path="${esc(en.path)}"`;
+      return `<li><button type="button" ${data}>${docIcon}` +
+        `<span class="split-picker-name">${esc(en.name)}</span>${meta}` +
         `</button></li>`;
     }).join('') || `<li class="split-picker-empty">${esc(t('split.pickerEmpty', '没有匹配的文档'))}</li>`;
   }
@@ -212,10 +278,10 @@
 
   function open() {
     const { state, settings } = window.MarkdownPreview;
+    if (!state) return;
+    const localDoc = state.localDoc;
     const currentPath = state.currentFilePath;
-    if (!currentPath) {
-      // 本地文件会话没有站点路径，暂不支持对照
-      if (state.localDoc) { alert(t('split.localUnsupported', '对照阅读暂不支持本地文件会话，请先打开站点文档')); return; }
+    if (!currentPath && !localDoc) {
       alert(t('split.needDoc', '请先打开一个文档'));
       return;
     }
@@ -226,10 +292,15 @@
     overlay.setAttribute('aria-hidden', 'false');
     document.body.classList.add('split-view-mode');
 
-    renderInto(leftBody, leftTitle, currentPath).catch(showLoadError);
-    if (rightPath) {
-      renderInto(rightBody, rightTitle, rightPath).catch(showLoadError);
+    if (localDoc) {
+      // 本地会话文档：从内存渲染，无需站点路径
+      renderLocalInto(leftBody, leftTitle, { id: '', name: localDoc.name || 'document.md', content: localDoc.content })
+        .catch(showLoadError);
     } else {
+      renderInto(leftBody, leftTitle, currentPath).catch(showLoadError);
+    }
+
+    if (!renderRightEntry()) {
       rightTitle.textContent = t('split.rightEmpty', '右栏未选择');
       rightBody.innerHTML = `
         <div class="split-pane-empty">
@@ -237,7 +308,6 @@
         </div>`;
       rightBody.querySelector('#splitPaneEmptyPick').addEventListener('click', openPicker);
     }
-    // 左栏滚动时右栏跟随（反之亦然）
   }
 
   function close() {
@@ -286,16 +356,18 @@
     document.getElementById('splitPickerCloseBtn').addEventListener('click', closePicker);
     picker.addEventListener('click', (e) => { if (e.target === picker) closePicker(); });
     pickerInput.addEventListener('input', () => {
-      const fileTree = window.MarkdownPreview.fileTree;
-      const files = (fileTree && fileTree.getAllFilesInDFSOrder) ? fileTree.getAllFilesInDFSOrder() : [];
-      renderPickerList(files, pickerInput.value);
+      renderPickerList(collectPickerEntries(), pickerInput.value);
     });
     pickerList.addEventListener('click', (e) => {
-      const btn = e.target.closest('button[data-path]');
+      const btn = e.target.closest('button[data-kind]');
       if (!btn) return;
       closePicker();
-      rightPath = btn.dataset.path;
-      renderInto(rightBody, rightTitle, rightPath).catch(showLoadError);
+      if (btn.dataset.kind === 'local') {
+        rightEntry = { kind: 'local', id: btn.dataset.id, name: btn.dataset.name };
+      } else {
+        rightEntry = { kind: 'site', path: btn.dataset.path };
+      }
+      renderRightEntry();
     });
 
     bindSyncScroll();

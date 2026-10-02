@@ -346,7 +346,7 @@
     'split.rightEmpty': '右栏未选择',
     'split.pickDoc': '选择右栏文档',
     'split.needDoc': '请先打开一个文档',
-    'split.localUnsupported': '对照阅读暂不支持本地文件会话，请先打开站点文档',
+    'split.localBadge': '本地',
     'split.loadFailed': '文档加载失败，请重试',
 
     // 设置：章节折叠 / 打包导出
@@ -682,7 +682,7 @@
     'split.rightEmpty': 'Right pane not set',
     'split.pickDoc': 'Pick right pane document',
     'split.needDoc': 'Open a document first',
-    'split.localUnsupported': 'Split reading is not available for local file sessions. Open a site document first',
+    'split.localBadge': 'Local',
     'split.loadFailed': 'Failed to load document, please retry',
 
     // Settings: section collapse / bundle export

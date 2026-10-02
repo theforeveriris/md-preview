@@ -210,8 +210,7 @@
 
   // ============== 打开 / 移除 / 清空 ==============
   // 文件夹模式的文件内容懒加载：首次打开时才读取
-  async function loadEntryContent(file) {
-    if (file.content != null) return file.content;
+  async function loadEntryContent(file) {    if (file.content != null) return file.content;
     try {
       let f = file.file;
       if (!f && file.handle) f = await file.handle.getFile();
@@ -228,6 +227,15 @@
       alert(file.name + t('local.readFailed', '（读取失败）'));
       return null;
     }
+  }
+
+  // 供其他模块（双栏对照等）按 id 读取本地会话文档内容：
+  // 走与主视图相同的懒加载管道，超限 / 读取失败的提示行为一致
+  async function getFileContent(id) {
+    const state = getState();
+    const file = state.localFiles.find(f => f.id === id);
+    if (!file) return null;
+    return loadEntryContent(file);
   }
 
   async function openLocalFile(id) {
@@ -664,6 +672,7 @@
     clearLocalFiles,
     clearActive,
     navigateLocal,
+    getFileContent,
     refresh,
     init
   };
