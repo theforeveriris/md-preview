@@ -39,19 +39,13 @@
   }
 
   // 文档渲染完成后的跨模块通知：阅读位置续读 / 浏览历史与收藏 / 演示模式。
-  // 统一在此解析文档标题（frontmatter > 首个 H1 > 文件名），写入 state.docTitle；
-  // H1 内注入的阅读时长徽章不参与标题
+  // 统一在此解析文档标题（frontmatter > 首个 H1 > 文件名），写入 state.docTitle
   function notifyDocRendered(path) {
     const st = window.MarkdownPreview.state;
     if (!st) return;
     let h1Title = '';
     const h1 = dom.markdownContent.querySelector('h1');
-    if (h1) {
-      const clone = h1.cloneNode(true);
-      const rt = clone.querySelector('.reading-time');
-      if (rt) rt.remove();
-      h1Title = clone.textContent.trim();
-    }
+    if (h1) h1Title = h1.textContent.trim();
     st.docTitle = st.currentFrontmatter.title ||
       h1Title ||
       decodeURIComponent(path.split('/').pop() || '').replace(/\.md$/i, '');
@@ -92,7 +86,7 @@
       // 本地文件列表保留（可随时切回），仅清除其选中高亮
       window.MarkdownPreview.localDocs?.clearActive();
       renderMarkdown(markdown, path);
-      extractAndRenderIndex(markdown);
+      extractAndRenderIndex();
       updateEditButton(path);
       updateBreadcrumbs(path);
       setupHeadingNavigation();
@@ -333,8 +327,10 @@
     const headingMatch = html.match(/<h1[^>]*>/);
     let finalHtml;
     if (headingMatch) {
-      const insertIndex = headingMatch.index + headingMatch[0].length;
-      finalHtml = html.slice(0, insertIndex) + readingTimeHtml + html.slice(insertIndex);
+      // 插在 h1 开标签之前（兄弟节点）：注入为 h1 子元素会被计入
+      // heading.textContent，H1 的 id 带上「预计阅读 N 分钟」后随字数变化，
+      // 复制出的标题锚点链接会在文档更新后失效
+      finalHtml = html.slice(0, headingMatch.index) + readingTimeHtml + html.slice(headingMatch.index);
     } else {
       finalHtml = readingTimeHtml + html;
     }
@@ -538,17 +534,20 @@
     return result.join('/');
   }
 
-  function extractAndRenderIndex(markdown) {
+  // 目录与正文标题 id 同源：直接从渲染后的 DOM 收集（renderMarkdown 已按
+  // textContent 生成标题 id）。此前从 Markdown 源文本重算 slug，标题含
+  // 链接 / 图片 / 强调 / 行内代码 / HTML 实体时与渲染后的 id 不一致导致目录
+  // 跳不动，代码块内的 # 注释还会混入幻影条目——DOM 收集一并解决。
+  function extractAndRenderIndex() {
     state.currentHeadings = [];
-    const headingRegex = /^(#{1,6})\s+(.+)$/gm;
-    let match;
-
-    while ((match = headingRegex.exec(markdown)) !== null) {
-      const level = match[1].length;
-      const text = match[2].trim();
-      const id = text.toLowerCase().replace(/[^\w\u4e00-\u9fa5]+/g, '-').replace(/^-|-$/g, '');
-      state.currentHeadings.push({ level, text, id });
-    }
+    dom.markdownContent.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(heading => {
+      if (!heading.id) return;
+      state.currentHeadings.push({
+        level: Number(heading.tagName[1]),
+        text: heading.textContent.trim(),
+        id: heading.id
+      });
+    });
 
     renderIndex();
   }
