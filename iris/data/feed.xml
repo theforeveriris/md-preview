@@ -5,13 +5,13 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 01 Oct 2026 18:18:45 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 02 Oct 2026 10:50:22 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>快捷键</title>
       <link>https://theforeveriris.github.io/md-preview/docs/shortcuts.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/shortcuts.md</guid>
-      <pubDate>Thu, 01 Oct 2026 18:18:03 GMT</pubDate>
+      <pubDate>Fri, 02 Oct 2026 10:49:48 GMT</pubDate>
       <description>Markdown Preview 支持一组全局键盘快捷键，覆盖侧边栏、设置、搜索、文档导航与内容区宽度调节。 表示 macOS 的 Cmd 键， 表示 Windows / Linux 的 Ctrl 键。 --- | 按键 | 功能 | 说明 | |------|------|------| | | 折叠 / 展开侧边栏 | 对齐 VS Code 的侧边栏键位；折叠后左上角会浮现展开按钮；状态自动记</description>
       <content:encoded><![CDATA[<h1>快捷键</h1>
 <p>Markdown Preview 支持一组全局键盘快捷键，覆盖侧边栏、设置、搜索、文档导航与内容区宽度调节。<code>⌘</code> 表示 macOS 的 Cmd 键，<code>Ctrl</code> 表示 Windows / Linux 的 Ctrl 键。</p>
@@ -44,6 +44,16 @@
 <td><code>Ctrl/⌘ + F</code></td>
 <td>文章内查找条</td>
 <td>接管浏览器查找：全部命中高亮 + 「当前/总数」计数；<code>Enter</code> / <code>Shift+Enter</code> 下一个 / 上一个，<code>F3</code> / <code>Shift+F3</code> 同义，<code>Esc</code> 关闭；编辑器模式与输入态不接管</td>
+</tr>
+<tr>
+<td><code>Ctrl/⌘ + \</code></td>
+<td>双栏对照阅读开关</td>
+<td>对齐 VS Code 分屏键位；打开后左栏为当前文档，右栏经内置选择器挑一篇文档，<code>Esc</code> 退出</td>
+</tr>
+<tr>
+<td><code>Ctrl/⌘ + Alt + S</code></td>
+<td>开关对照阅读同步滚动</td>
+<td>仅对照模式打开时生效，反馈见底部 mini-toast；默认值取设置面板「对照阅读默认同步滚动」</td>
 </tr>
 <tr>
 <td><code>[</code></td>
