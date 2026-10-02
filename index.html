@@ -846,12 +846,15 @@
     <div class="split-picker" id="splitPicker" aria-hidden="true">
       <div class="split-picker-card" role="dialog" aria-modal="true">
         <div class="split-picker-head">
-          <span data-i18n="split.pickTitle">选择右栏文档</span>
+          <span class="split-picker-title" data-i18n="split.pickTitle">选择右栏文档</span>
           <button type="button" class="find-bar-btn" id="splitPickerCloseBtn" data-i18n-title="common.close" aria-label="关闭">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
           </button>
         </div>
-        <input type="text" id="splitPickerInput" data-i18n-placeholder="split.pickerPlaceholder" placeholder="按名称或路径筛选…">
+        <label class="split-picker-search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="text" id="splitPickerInput" data-i18n-placeholder="split.pickerPlaceholder" placeholder="按名称或路径筛选…" aria-label="筛选文档">
+        </label>
         <ul id="splitPickerList"></ul>
       </div>
     </div>

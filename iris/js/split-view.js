@@ -197,9 +197,15 @@
   function renderPickerList(files, keyword) {
     const kw = keyword.trim().toLowerCase();
     const filtered = files.filter(f => !kw || f.path.toLowerCase().includes(kw) || f.name.toLowerCase().includes(kw));
-    pickerList.innerHTML = filtered.slice(0, 300).map(f =>
-      `<li><button type="button" data-path="${esc(f.path)}"><span class="split-picker-name">${esc(f.name)}</span><span class="split-picker-path">${esc(f.path)}</span></button></li>`
-    ).join('') || `<li class="split-picker-empty">${esc(t('split.pickerEmpty', '没有匹配的文档'))}</li>`;
+    const docIcon = '<svg class="split-picker-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
+    pickerList.innerHTML = filtered.slice(0, 300).map(f => {
+      // 单行布局：文档名居左，所属目录居右（根目录文档不显示目录段）
+      const dir = f.path.includes('/') ? f.path.slice(0, f.path.lastIndexOf('/')) : '';
+      return `<li><button type="button" data-path="${esc(f.path)}">${docIcon}` +
+        `<span class="split-picker-name">${esc(f.name)}</span>` +
+        (dir ? `<span class="split-picker-path">${esc(dir)}</span>` : '') +
+        `</button></li>`;
+    }).join('') || `<li class="split-picker-empty">${esc(t('split.pickerEmpty', '没有匹配的文档'))}</li>`;
   }
 
   // ============== 开关 ==============

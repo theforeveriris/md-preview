@@ -63,62 +63,110 @@
   display: none;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, .35);
+  padding: 24px;
+  background: rgba(20, 20, 28, .38);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
 }
 .split-picker.open { display: flex; }
 .split-picker-card {
-  width: min(520px, 92vw);
-  max-height: 74vh;
+  width: min(560px, 94vw);
+  max-height: 76vh;
   display: flex;
   flex-direction: column;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 14px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 18px 50px rgba(0, 0, 0, .3);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, .28);
+  animation: split-picker-in .16s ease;
+}
+@keyframes split-picker-in {
+  from { opacity: 0; transform: translateY(10px) scale(.98); }
+  to { opacity: 1; transform: none; }
 }
 .split-picker-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
+  gap: 8px;
+  padding: 14px 16px 10px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--color-text);
+  color: var(--color-text-muted);
+  letter-spacing: .02em;
 }
-#splitPickerInput {
-  margin: 0 16px 10px;
-  padding: 9px 12px;
+.split-picker-head .split-picker-title { flex: 1; }
+.split-picker-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 14px 12px;
+  padding: 0 12px;
   border: 1px solid var(--color-border);
   border-radius: 10px;
   background: var(--color-bg);
+  color: var(--color-text-muted);
+  cursor: text;
+  transition: border-color .15s ease;
+}
+.split-picker-search:focus-within { border-color: var(--color-accent-purple); }
+.split-picker-search svg { flex: none; }
+#splitPickerInput {
+  flex: 1;
+  padding: 9px 0;
+  border: none;
+  background: transparent;
   color: var(--color-text);
+  font-size: 14px;
   outline: none;
 }
-#splitPickerInput:focus { border-color: var(--color-accent-purple); }
 #splitPickerList {
   list-style: none;
   margin: 0;
-  padding: 6px;
+  padding: 4px 10px 12px;
   overflow-y: auto;
   flex: 1;
 }
 #splitPickerList button {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  gap: 10px;
   width: 100%;
-  text-align: left;
-  padding: 8px 10px;
+  padding: 9px 10px;
   border: none;
   background: transparent;
   color: var(--color-text);
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
+  text-align: left;
 }
-#splitPickerList button:hover { background: rgba(128, 128, 128, .12); }
-.split-picker-name { font-size: 14px; font-weight: 500; }
-.split-picker-path { font-size: 12px; color: var(--color-text-muted); word-break: break-all; }
-.split-picker-empty { padding: 18px; text-align: center; color: var(--color-text-muted); }
+#splitPickerList button:hover { background: rgba(128, 128, 128, .1); }
+.split-picker-icon { flex: none; color: var(--color-text-muted); }
+.split-picker-name {
+  flex: none;
+  max-width: 62%;
+  font-size: 14px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.split-picker-path {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.split-picker-empty {
+  padding: 28px 10px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
 
 @media (max-width: 900px) {
   .split-view-panes { flex-direction: column; }
