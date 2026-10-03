@@ -636,6 +636,16 @@
     root.style.setProperty('--content-width', `${settings.contentWidth}px`);
   }
 
+  // 双栏对照期间的临时宽度：只改实时样式、不写入用户设置。
+  // 进入时套默认 720（非默认宽度下分栏正文会越过分栏边界），退出恢复已保存值
+  function applyTempContentWidth(width) {
+    applyContentWidthSettings({ ...loadSettings(), contentFullWidth: false, contentWidth: normalizeContentWidth(width) });
+  }
+
+  function restoreContentWidth() {
+    applyContentWidthSettings(loadSettings());
+  }
+
   // 把宽度配置回填到设置面板控件
   function syncContentWidthControls(settings) {
     const range = document.getElementById('contentWidthRange');
@@ -1187,6 +1197,8 @@ body { margin: 0; }
   window.MarkdownPreview.settings = {
     load: loadSettings,
     save: saveSettings,
+    applyTempContentWidth,
+    restoreContentWidth,
     open: openSettingsPanel,
     close: closeSettingsPanel,
     toggle: toggleSettingsPanel,

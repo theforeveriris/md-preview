@@ -45,6 +45,10 @@
   overflow-y: auto;
   padding: 22px 30px 60px;
   -webkit-overflow-scrolling: touch;
+  /* 栏体同时带 .markdown-body（max-width: var(--content-width) + margin: 0 auto），
+     作为 flex 子项会按 fit-content 取宽而越过分栏边界——这里强制撑满本栏 */
+  max-width: none;
+  margin: 0;
 }
 
 /* 右栏空态：虚线卡片 + 图标 + 提示，整卡可点唤起选择器 */

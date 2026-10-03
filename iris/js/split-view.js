@@ -287,6 +287,11 @@
     }
     // 本次会话的同步开关取设置默认值
     if (settings && settings.load) syncEnabled = settings.load().splitSyncScroll !== false;
+    // 分栏期间临时套用默认内容宽度：非默认宽度会让栏体（.markdown-body）
+    // 按 fit-content 取宽越过分栏边界；退出时由 close() 恢复用户原值
+    if (window.MarkdownPreview.settings && window.MarkdownPreview.settings.applyTempContentWidth) {
+      window.MarkdownPreview.settings.applyTempContentWidth(720);
+    }
     ensure();
     overlay.classList.add('open');
     overlay.setAttribute('aria-hidden', 'false');
@@ -327,6 +332,10 @@
     leftBody.innerHTML = '';
     rightBody.innerHTML = '';
     closePicker();
+    // 恢复进入分栏前用户设置的内容区宽度
+    if (window.MarkdownPreview.settings && window.MarkdownPreview.settings.restoreContentWidth) {
+      window.MarkdownPreview.settings.restoreContentWidth();
+    }
     // 右栏渲染产生的拓扑实例随 DOM 移除成为孤儿，统一清理
     if (window.MarkdownPreview.pkt && window.MarkdownPreview.pkt.destroyOrphaned) {
       window.MarkdownPreview.pkt.destroyOrphaned();
