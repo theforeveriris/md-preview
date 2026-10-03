@@ -1,0 +1,719 @@
+/**
+ * enhancements.css — 新增功能样式
+ *  - CSV/TSV 交互表格（csv-table.js）
+ *  - 阅读位置续读提示条（reading-pos.js）
+ *  - 链接悬浮预览卡片（hover-preview.js）
+ *  - 扫码续读弹窗（qr-share.js）
+ *  - 选中文字浮动工具栏（selection-tools.js）
+ *  - 收藏反馈 mini-toast（history.js）
+ * 全部使用主题 CSS 变量，跟随 7 套预设主题与自定义配色。
+ */
+
+/* ============== CSV / TSV 交互表格 ============== */
+
+.csv-table {
+  margin: 1em 0;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.csv-table-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
+  flex-wrap: wrap;
+}
+
+.csv-table-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  min-width: 160px;
+}
+
+.csv-table-search:focus-within {
+  border-color: var(--color-accent-purple);
+}
+
+.csv-search-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 13px;
+  width: 100%;
+}
+
+.csv-table-count {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.csv-table-toolbar-space {
+  flex: 1;
+}
+
+.csv-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+}
+
+.csv-tool-btn:hover {
+  color: var(--color-accent-purple-deep);
+  border-color: var(--color-accent-purple);
+}
+
+.csv-table-scroll {
+  overflow: auto;
+  max-height: 520px;
+}
+
+.csv-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  font-size: 13.5px;
+}
+
+.csv-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--color-bg);
+  border-bottom: 2px solid var(--color-border);
+  padding: 0;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.csv-table th .csv-sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 9px 4px 9px 12px;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.csv-table th .csv-sort-arrow {
+  color: var(--color-accent-purple-deep);
+  min-width: 12px;
+  display: inline-block;
+}
+
+.csv-table th .csv-filter-btn {
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
+.csv-table th .csv-filter-btn:hover,
+.csv-table th .csv-filter-btn.active {
+  color: var(--color-accent-purple-deep);
+}
+
+.csv-table th.has-filter .csv-col-name {
+  text-decoration: underline dotted var(--color-accent-purple);
+  text-underline-offset: 3px;
+}
+
+.csv-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.csv-table tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--color-bg) 55%, transparent);
+}
+
+.csv-table tbody tr:hover {
+  background: color-mix(in srgb, var(--color-accent-purple) 8%, transparent);
+}
+
+.csv-table .csv-empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: 22px 0;
+}
+
+.csv-filter-popover {
+  position: fixed;
+  z-index: 1000;
+  width: 220px;
+  max-height: 320px;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: var(--color-shadow, 0 4px 16px rgba(0,0,0,.08));
+  font-size: 13px;
+}
+
+.csv-filter-title {
+  padding: 8px 12px;
+  font-weight: 600;
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.csv-filter-list {
+  overflow: auto;
+  padding: 4px 0;
+  flex: 1;
+}
+
+.csv-filter-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.csv-filter-item:hover {
+  background: color-mix(in srgb, var(--color-accent-purple) 8%, transparent);
+}
+
+.csv-filter-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.csv-filter-actions {
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+.csv-filter-actions button {
+  flex: 1;
+  padding: 4px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.csv-filter-actions button:hover {
+  color: var(--color-accent-purple-deep);
+  border-color: var(--color-accent-purple);
+}
+
+/* ============== 阅读位置续读提示条 ============== */
+
+.resume-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translate(-50%, 16px);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .14);
+  color: var(--color-text);
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s, transform .25s;
+  z-index: 900;
+  max-width: min(92vw, 460px);
+}
+
+.resume-toast.open {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
+
+.resume-toast-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.resume-toast-actions button {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  border-radius: 7px;
+  padding: 5px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.resume-toast-actions .resume-toast-go {
+  background: var(--color-accent-purple);
+  border-color: var(--color-accent-purple);
+  color: #fff;
+}
+
+.resume-toast-actions .resume-toast-go:hover {
+  filter: brightness(1.06);
+}
+
+.resume-toast-actions .resume-toast-dismiss:hover {
+  color: var(--color-text-muted);
+}
+
+/* ============== 收藏反馈 mini-toast（history.js） ============== */
+
+.mini-toast {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translate(-50%, -8px);
+  padding: 8px 18px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .16);
+  color: var(--color-text);
+  font-size: 13px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s, transform .2s;
+  z-index: 960;
+  max-width: min(88vw, 420px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mini-toast.open {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ============== 链接悬浮预览卡片 ============== */
+
+.hover-preview-card {
+  position: fixed;
+  z-index: 880;
+  width: 340px;
+  max-width: min(86vw, 340px);
+  padding: 12px 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, .16);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity .15s, transform .15s;
+  cursor: pointer;
+}
+
+.hover-preview-card.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.hover-preview-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hover-preview-excerpt {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.hover-preview-meta {
+  font-size: 11.5px;
+  color: var(--color-accent-purple-deep);
+}
+
+.hover-preview-loading {
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+/* ============== 扫码续读弹窗 ============== */
+
+.qr-share-dialog {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 970;
+}
+
+.qr-share-dialog.open {
+  display: block;
+}
+
+.qr-share-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .45);
+}
+
+.qr-share-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(88vw, 300px);
+  padding: 22px 22px 18px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, .3);
+  text-align: center;
+}
+
+.qr-share-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 14px;
+}
+
+.qr-share-img-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+/* 二维码恒用白底，保证深色主题下可被扫描 */
+.qr-share-img {
+  width: 220px;
+  height: 220px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 6px;
+}
+
+.qr-share-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.qr-share-close:hover {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent);
+}
+
+/* ============== 本地文件选择面板（悬浮球「打开本地文件」唤起） ============== */
+
+.local-pick-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 970;
+}
+
+.local-pick-overlay.open {
+  display: block;
+}
+
+.local-pick-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(88vw, 360px);
+  padding: 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, .25);
+}
+
+.local-pick-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.local-pick-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color .15s, background .15s;
+}
+
+.local-pick-option:last-child {
+  margin-bottom: 0;
+}
+
+.local-pick-option:hover {
+  border-color: var(--color-accent-purple);
+  background: color-mix(in srgb, var(--color-accent-purple) 8%, var(--color-bg));
+}
+
+.local-pick-option svg {
+  stroke: var(--color-accent-purple);
+  flex-shrink: 0;
+}
+
+.local-pick-option-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.local-pick-option-desc {
+  display: block;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.local-pick-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.local-pick-close:hover {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent);
+}
+
+/* ============== 选中文字浮动工具栏 ============== */
+
+.doc-selection-toolbar {
+  position: fixed;
+  z-index: 920;
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .16);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .12s;
+}
+
+.doc-selection-toolbar.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.doc-selection-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.doc-selection-toolbar button:hover {
+  background: color-mix(in srgb, var(--color-accent-purple) 12%, transparent);
+  color: var(--color-accent-purple-deep);
+}
+
+/* ============== 拖拽打开文件 / 文件夹（全屏遮罩） ============== */
+
+.drop-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 990;
+  background: color-mix(in srgb, var(--color-accent-purple) 12%, rgba(0, 0, 0, 0.35));
+  pointer-events: none;
+}
+
+.drop-overlay.open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drop-overlay-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 32px 48px;
+  background: var(--color-surface);
+  border: 2px dashed var(--color-accent-purple);
+  border-radius: 16px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, .25);
+  color: var(--color-accent-purple-deep);
+}
+
+.drop-overlay-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.drop-overlay-desc {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* ============== 存储管理页（设置面板「存储」区块） ============== */
+
+.storage-usage {
+  padding: 4px 0 12px;
+}
+
+.storage-usage-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-text-muted) 18%, transparent);
+  overflow: hidden;
+}
+
+.storage-usage-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--color-accent-purple), var(--color-accent-pink));
+  transition: width .4s ease;
+}
+
+.storage-usage-text {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.storage-notebook-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.storage-notebook-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.storage-notebook-item:last-child {
+  border-bottom: none;
+}
+
+.storage-notebook-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.storage-notebook-name {
+  font-size: 14px;
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.storage-notebook-meta {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.storage-notebook-delete {
+  flex-shrink: 0;
+}
+
+.storage-data-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.storage-data-row:not(:last-child) {
+  border-bottom: 1px solid var(--color-border);
+}

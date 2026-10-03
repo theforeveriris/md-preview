@@ -1,0 +1,46 @@
+name: Smoke Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # sitemap / feed 读取文件提交时间
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Build data files (file-tree / search-index / precache / feed / sitemap)
+      run: |
+        node iris/scripts/build-file-tree.js
+        node iris/scripts/build-search-index.js
+        node iris/scripts/build-precache.js
+        node iris/scripts/build-feed.js
+        node iris/scripts/build-sitemap.js
+
+    - name: Install jsdom (smoke test only)
+      working-directory: iris
+      run: npm install --no-save --no-audit --no-fund jsdom@^29.1.1
+
+    - name: Run smoke test
+      run: node iris/scripts/smoke-test.js
+
+    - name: Run link check (internal full + external daily sample)
+      run: node iris/scripts/link-check.js

@@ -1,0 +1,133 @@
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    box-shadow: none;
+    z-index: 200;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
+    z-index: 200;
+  }
+
+  .sidebar-header {
+    padding: 20px 16px;
+  }
+
+  .sidebar-title {
+    font-size: 1.25rem;
+  }
+
+  .main-content {
+    margin-left: 0;
+    overflow-x: hidden;
+  }
+
+  .mobile-menu-btn {
+    display: flex;
+    z-index: 150;
+  }
+
+  .sidebar-overlay.active {
+    display: block;
+    z-index: 199;
+  }
+
+  .markdown-body {
+    padding: 80px 24px 100px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .markdown-body pre {
+    overflow-x: auto;
+    max-width: 100%;
+    white-space: pre;
+  }
+
+  .markdown-body code {
+    word-break: break-all;
+    word-wrap: break-word;
+  }
+
+  .markdown-body table {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  .reading-progress {
+    left: 0;
+  }
+
+  .progress-bar {
+    height: 1.5px;
+  }
+
+  .welcome-state {
+    min-height: 50vh;
+  }
+
+  .page-header {
+    padding: 6px 16px;
+  }
+
+  .edit-fab {
+    bottom: 20px;
+    right: 20px;
+    width: 48px;
+    height: 48px;
+  }
+
+  .edit-fab svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .comments-section {
+    padding: 0 16px;
+    margin: 32px auto 64px;
+  }
+
+  .floating-menu {
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .menu-trigger {
+    width: 48px;
+    height: 48px;
+  }
+
+  .menu-item-btn {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .menu-item-label {
+    display: none;
+  }
+
+  .settings-panel {
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .settings-section {
+    padding: 16px;
+  }
+
+  .setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .setting-control {
+    margin-left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+}

@@ -1,0 +1,468 @@
+{
+  "meta": {
+    "source": "example.pkt",
+    "ptVersion": "PT 8.x",
+    "generatedAt": "2026-07-13T11:56:55.143056Z",
+    "deviceCount": 6,
+    "linkCount": 5,
+    "configCount": 6,
+    "parserVersion": "1.0.0"
+  },
+  "devices": [
+    {
+      "id": "1",
+      "name": "Router0",
+      "type": "router",
+      "rawType": "2811",
+      "model": "2811",
+      "x": 200.0,
+      "y": 100.0,
+      "primaryIp": "192.168.1.1",
+      "interfaceCount": 3,
+      "vlanCount": 0,
+      "aclCount": 1,
+      "routeCount": 5
+    },
+    {
+      "id": "2",
+      "name": "Switch0",
+      "type": "switch",
+      "rawType": "2960",
+      "model": "2960-24TT",
+      "x": 200.0,
+      "y": 250.0,
+      "primaryIp": "",
+      "interfaceCount": 2,
+      "vlanCount": 2,
+      "aclCount": 0,
+      "routeCount": 0
+    },
+    {
+      "id": "3",
+      "name": "PC0",
+      "type": "pc",
+      "rawType": "PC-PT",
+      "model": "PC",
+      "x": 100.0,
+      "y": 400.0,
+      "primaryIp": "192.168.1.10",
+      "interfaceCount": 1,
+      "vlanCount": 0,
+      "aclCount": 0,
+      "routeCount": 1
+    },
+    {
+      "id": "4",
+      "name": "PC1",
+      "type": "pc",
+      "rawType": "PC-PT",
+      "model": "PC",
+      "x": 300.0,
+      "y": 400.0,
+      "primaryIp": "192.168.1.11",
+      "interfaceCount": 1,
+      "vlanCount": 0,
+      "aclCount": 0,
+      "routeCount": 1
+    },
+    {
+      "id": "5",
+      "name": "Router1",
+      "type": "router",
+      "rawType": "2901",
+      "model": "2901",
+      "x": 500.0,
+      "y": 100.0,
+      "primaryIp": "10.0.0.2",
+      "interfaceCount": 2,
+      "vlanCount": 0,
+      "aclCount": 0,
+      "routeCount": 3
+    },
+    {
+      "id": "6",
+      "name": "Server0",
+      "type": "server",
+      "rawType": "Server-PT",
+      "model": "Server",
+      "x": 600.0,
+      "y": 250.0,
+      "primaryIp": "172.16.0.100",
+      "interfaceCount": 1,
+      "vlanCount": 0,
+      "aclCount": 0,
+      "routeCount": 1
+    }
+  ],
+  "links": [
+    {
+      "id": "L1",
+      "source": "1",
+      "target": "2",
+      "sourceInterface": "GigabitEthernet0/0",
+      "targetInterface": "GigabitEthernet0/1",
+      "cableType": "straight",
+      "cableRawType": "Copper-Straight",
+      "bandwidth": null
+    },
+    {
+      "id": "L2",
+      "source": "2",
+      "target": "3",
+      "sourceInterface": "FastEthernet0/1",
+      "targetInterface": "FastEthernet0",
+      "cableType": "straight",
+      "cableRawType": "Copper-Straight",
+      "bandwidth": null
+    },
+    {
+      "id": "L3",
+      "source": "2",
+      "target": "4",
+      "sourceInterface": "FastEthernet0/2",
+      "targetInterface": "FastEthernet0",
+      "cableType": "straight",
+      "cableRawType": "Copper-Straight",
+      "bandwidth": null
+    },
+    {
+      "id": "L4",
+      "source": "1",
+      "target": "5",
+      "sourceInterface": "GigabitEthernet0/1",
+      "targetInterface": "GigabitEthernet0/0",
+      "cableType": "crossover",
+      "cableRawType": "Copper-Cross-Over",
+      "bandwidth": null
+    },
+    {
+      "id": "L5",
+      "source": "5",
+      "target": "6",
+      "sourceInterface": "GigabitEthernet0/1",
+      "targetInterface": "FastEthernet0",
+      "cableType": "straight",
+      "cableRawType": "Copper-Straight",
+      "bandwidth": null
+    }
+  ],
+  "configs": [
+    {
+      "deviceId": "1",
+      "deviceName": "Router0",
+      "config": "!\ninterface GigabitEthernet0/0\n ip address 192.168.1.1 255.255.255.0\n duplex auto\n speed auto\n description to-Switch0\n!\ninterface GigabitEthernet0/1\n ip address 10.0.0.1 255.255.255.252\n description to-Router1\n!\ninterface Loopback0\n ip address 1.1.1.1 255.255.255.255\n!\nip route 0.0.0.0 0.0.0.0 192.168.1.254\n!\nrouter ospf 1\n network 192.168.1.0 0.0.0.255 area 0\n!\nip access-list extended BLOCK_WEB\n deny tcp any any eq 80\n permit ip any any\n!"
+    },
+    {
+      "deviceId": "2",
+      "deviceName": "Switch0",
+      "config": "!\ninterface FastEthernet0/1\n switchport access vlan 10\n!\ninterface FastEthernet0/2\n switchport access vlan 20\n!\nvlan 10\n name USERS\nvlan 20\n name SERVERS\n!"
+    },
+    {
+      "deviceId": "3",
+      "deviceName": "PC0",
+      "config": "!\ninterface FastEthernet0\n ip address 192.168.1.10 255.255.255.0\n!"
+    },
+    {
+      "deviceId": "4",
+      "deviceName": "PC1",
+      "config": "!\ninterface FastEthernet0\n ip address 192.168.1.11 255.255.255.0\n!"
+    },
+    {
+      "deviceId": "5",
+      "deviceName": "Router1",
+      "config": "!\ninterface GigabitEthernet0/0\n ip address 10.0.0.2 255.255.255.252\n description to-Router0\n!\ninterface GigabitEthernet0/1\n ip address 172.16.0.1 255.255.255.0\n!\nip route 192.168.1.0 255.255.255.0 10.0.0.1\n!"
+    },
+    {
+      "deviceId": "6",
+      "deviceName": "Server0",
+      "config": "!\ninterface FastEthernet0\n ip address 172.16.0.100 255.255.255.0\n!"
+    }
+  ],
+  "interfaces": {
+    "1": [
+      {
+        "name": "GigabitEthernet0/0",
+        "ip": "192.168.1.1",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "to-Switch0",
+        "bandwidth": null,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": false,
+        "status": "up"
+      },
+      {
+        "name": "GigabitEthernet0/1",
+        "ip": "10.0.0.1",
+        "mask": "255.255.255.252",
+        "cidr": 30,
+        "description": "to-Router1",
+        "bandwidth": null,
+        "duplex": "",
+        "speed": "",
+        "shutdown": false,
+        "status": "up"
+      },
+      {
+        "name": "Loopback0",
+        "ip": "1.1.1.1",
+        "mask": "255.255.255.255",
+        "cidr": 32,
+        "description": "",
+        "bandwidth": null,
+        "duplex": "",
+        "speed": "",
+        "shutdown": false,
+        "status": "up"
+      }
+    ],
+    "2": [
+      {
+        "name": "FastEthernet0/1",
+        "ip": "",
+        "mask": "",
+        "cidr": null,
+        "description": "",
+        "bandwidth": null,
+        "duplex": "",
+        "speed": "",
+        "shutdown": false,
+        "status": "no-ip"
+      },
+      {
+        "name": "FastEthernet0/2",
+        "ip": "",
+        "mask": "",
+        "cidr": null,
+        "description": "",
+        "bandwidth": null,
+        "duplex": "",
+        "speed": "",
+        "shutdown": false,
+        "status": "no-ip"
+      }
+    ],
+    "3": [
+      {
+        "name": "FastEthernet0",
+        "ip": "192.168.1.10",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": null,
+        "duplex": "",
+        "speed": "",
+        "shutdown": false,
+        "status": "up"
+      }
+    ],
+    "4": [
+      {
+        "name": "FastEthernet0",
+        "ip": "192.168.1.11",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": null,
+        "duplex": "",
+        "speed": "",
+        "shutdown": false,
+        "status": "up"
+      }
+    ],
+    "5": [
+      {
+        "name": "GigabitEthernet0/0",
+        "ip": "10.0.0.2",
+        "mask": "255.255.255.252",
+        "cidr": 30,
+        "description": "to-Router0",
+        "bandwidth": null,
+        "duplex": "",
+        "speed": "",
+        "shutdown": false,
+        "status": "up"
+      },
+      {
+        "name": "GigabitEthernet0/1",
+        "ip": "172.16.0.1",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": null,
+        "duplex": "",
+        "speed": "",
+        "shutdown": false,
+        "status": "up"
+      }
+    ],
+    "6": [
+      {
+        "name": "FastEthernet0",
+        "ip": "172.16.0.100",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": null,
+        "duplex": "",
+        "speed": "",
+        "shutdown": false,
+        "status": "up"
+      }
+    ]
+  },
+  "vlans": {
+    "1": [],
+    "2": [
+      {
+        "id": "10",
+        "name": "USERS"
+      },
+      {
+        "id": "20",
+        "name": "SERVERS"
+      }
+    ],
+    "3": [],
+    "4": [],
+    "5": [],
+    "6": []
+  },
+  "acls": {
+    "1": [
+      {
+        "name": "BLOCK_WEB",
+        "type": "named",
+        "rules": [
+          "deny tcp any any eq 80",
+          "permit ip any any"
+        ],
+        "raw": "ip access-list extended BLOCK_WEB\n deny tcp any any eq 80\n permit ip any any"
+      }
+    ],
+    "2": [],
+    "3": [],
+    "4": [],
+    "5": [],
+    "6": []
+  },
+  "routes": {
+    "1": [
+      {
+        "type": "connected",
+        "network": "192.168.1.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "GigabitEthernet0/0",
+        "source": "interface"
+      },
+      {
+        "type": "connected",
+        "network": "10.0.0.0",
+        "mask": "255.255.255.252",
+        "cidr": 30,
+        "nextHop": "directly connected",
+        "interface": "GigabitEthernet0/1",
+        "source": "interface"
+      },
+      {
+        "type": "connected",
+        "network": "1.1.1.1",
+        "mask": "255.255.255.255",
+        "cidr": 32,
+        "nextHop": "directly connected",
+        "interface": "Loopback0",
+        "source": "interface"
+      },
+      {
+        "type": "static",
+        "network": "0.0.0.0",
+        "mask": "0.0.0.0",
+        "cidr": 0,
+        "nextHop": "192.168.1.254",
+        "metric": 1,
+        "interface": "",
+        "source": "ip route"
+      },
+      {
+        "type": "ospf",
+        "network": "192.168.1.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "OSPF area 0",
+        "processId": "1",
+        "area": "0",
+        "interface": "",
+        "source": "router ospf"
+      }
+    ],
+    "2": [],
+    "3": [
+      {
+        "type": "connected",
+        "network": "192.168.1.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet0",
+        "source": "interface"
+      }
+    ],
+    "4": [
+      {
+        "type": "connected",
+        "network": "192.168.1.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet0",
+        "source": "interface"
+      }
+    ],
+    "5": [
+      {
+        "type": "connected",
+        "network": "10.0.0.0",
+        "mask": "255.255.255.252",
+        "cidr": 30,
+        "nextHop": "directly connected",
+        "interface": "GigabitEthernet0/0",
+        "source": "interface"
+      },
+      {
+        "type": "connected",
+        "network": "172.16.0.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "GigabitEthernet0/1",
+        "source": "interface"
+      },
+      {
+        "type": "static",
+        "network": "192.168.1.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "10.0.0.1",
+        "metric": 1,
+        "interface": "",
+        "source": "ip route"
+      }
+    ],
+    "6": [
+      {
+        "type": "connected",
+        "network": "172.16.0.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet0",
+        "source": "interface"
+      }
+    ]
+  },
+  "groups": [],
+  "error": null
+}

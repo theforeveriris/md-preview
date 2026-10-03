@@ -1,0 +1,1181 @@
+{
+  "meta": {
+    "source": "ospf-bgp-rip over.pkt",
+    "ptVersion": "PT 8.x",
+    "generatedAt": "2026-07-14T08:01:57.520310Z",
+    "deviceCount": 9,
+    "linkCount": 9,
+    "configCount": 8,
+    "parserVersion": "1.0.0"
+  },
+  "devices": [
+    {
+      "id": "1",
+      "name": "路由器0",
+      "type": "router",
+      "rawType": "Router",
+      "model": "2811",
+      "x": 414.5,
+      "y": 148.0,
+      "primaryIp": "172.16.1.1",
+      "interfaceCount": 4,
+      "vlanCount": 0,
+      "aclCount": 0,
+      "routeCount": 3,
+      "gateway": "",
+      "dns": "",
+      "mac": "00E0.B054.6601"
+    },
+    {
+      "id": "2",
+      "name": "Power Distribution Device0",
+      "type": "unknown",
+      "rawType": "Power Distribution Device",
+      "model": "Power Distribution Device",
+      "x": 3898.0,
+      "y": 3900.0,
+      "primaryIp": "",
+      "interfaceCount": 0,
+      "vlanCount": 0,
+      "aclCount": 0,
+      "routeCount": 0,
+      "gateway": "",
+      "dns": "",
+      "mac": ""
+    },
+    {
+      "id": "3",
+      "name": "路由器1",
+      "type": "router",
+      "rawType": "Router",
+      "model": "2811",
+      "x": 776.5,
+      "y": 169.0,
+      "primaryIp": "172.16.1.2",
+      "interfaceCount": 4,
+      "vlanCount": 0,
+      "aclCount": 0,
+      "routeCount": 7,
+      "gateway": "",
+      "dns": "",
+      "mac": "00D0.D397.3001"
+    },
+    {
+      "id": "4",
+      "name": "路由器2",
+      "type": "router",
+      "rawType": "Router",
+      "model": "2811",
+      "x": 606.5,
+      "y": 294.0,
+      "primaryIp": "172.16.2.2",
+      "interfaceCount": 4,
+      "vlanCount": 0,
+      "aclCount": 0,
+      "routeCount": 4,
+      "gateway": "",
+      "dns": "",
+      "mac": "0030.A3C3.9301"
+    },
+    {
+      "id": "5",
+      "name": "路由器3",
+      "type": "router",
+      "rawType": "Router",
+      "model": "2811",
+      "x": 1040.5,
+      "y": 206.0,
+      "primaryIp": "192.168.1.1",
+      "interfaceCount": 4,
+      "vlanCount": 0,
+      "aclCount": 0,
+      "routeCount": 9,
+      "gateway": "",
+      "dns": "",
+      "mac": "0030.A301.1001"
+    },
+    {
+      "id": "6",
+      "name": "路由器4",
+      "type": "router",
+      "rawType": "Router",
+      "model": "2811",
+      "x": 1097.5,
+      "y": 353.0,
+      "primaryIp": "192.168.3.1",
+      "interfaceCount": 4,
+      "vlanCount": 0,
+      "aclCount": 0,
+      "routeCount": 5,
+      "gateway": "",
+      "dns": "",
+      "mac": "0090.2B5A.E701"
+    },
+    {
+      "id": "7",
+      "name": "路由器5",
+      "type": "router",
+      "rawType": "Router",
+      "model": "2811",
+      "x": 1394.5,
+      "y": 168.0,
+      "primaryIp": "192.168.1.2",
+      "interfaceCount": 4,
+      "vlanCount": 0,
+      "aclCount": 0,
+      "routeCount": 7,
+      "gateway": "",
+      "dns": "",
+      "mac": "0000.0C28.DC01"
+    },
+    {
+      "id": "8",
+      "name": "主机0",
+      "type": "pc",
+      "rawType": "Pc",
+      "model": "PC-PT",
+      "x": 443.5,
+      "y": 505.0,
+      "primaryIp": "172.16.4.2",
+      "interfaceCount": 1,
+      "vlanCount": 0,
+      "aclCount": 0,
+      "routeCount": 0,
+      "gateway": "172.16.4.1",
+      "dns": "",
+      "mac": "0005.5E60.4966"
+    },
+    {
+      "id": "9",
+      "name": "主机1",
+      "type": "pc",
+      "rawType": "Pc",
+      "model": "PC-PT",
+      "x": 1416.5,
+      "y": 460.0,
+      "primaryIp": "192.168.4.2",
+      "interfaceCount": 1,
+      "vlanCount": 0,
+      "aclCount": 0,
+      "routeCount": 0,
+      "gateway": "192.168.4.1",
+      "dns": "",
+      "mac": "0060.7020.6924"
+    }
+  ],
+  "links": [
+    {
+      "id": "L1",
+      "source": "1",
+      "target": "3",
+      "sourceInterface": "FastEthernet0/0",
+      "targetInterface": "FastEthernet0/0",
+      "cableType": "crossover",
+      "cableRawType": "eCrossOver",
+      "bandwidth": 100000,
+      "subnet": "172.16.1.0/24",
+      "srcIp": "172.16.1.1",
+      "dstIp": "172.16.1.2"
+    },
+    {
+      "id": "L2",
+      "source": "1",
+      "target": "4",
+      "sourceInterface": "FastEthernet0/1",
+      "targetInterface": "FastEthernet0/0",
+      "cableType": "crossover",
+      "cableRawType": "eCrossOver",
+      "bandwidth": 100000,
+      "subnet": "172.16.2.0/24",
+      "srcIp": "172.16.2.1",
+      "dstIp": "172.16.2.2"
+    },
+    {
+      "id": "L3",
+      "source": "4",
+      "target": "3",
+      "sourceInterface": "FastEthernet0/1",
+      "targetInterface": "FastEthernet0/1",
+      "cableType": "crossover",
+      "cableRawType": "eCrossOver",
+      "bandwidth": 100000,
+      "subnet": "172.16.3.0/24",
+      "srcIp": "172.16.3.1",
+      "dstIp": "172.16.3.2"
+    },
+    {
+      "id": "L4",
+      "source": "3",
+      "target": "5",
+      "sourceInterface": "FastEthernet1/0",
+      "targetInterface": "FastEthernet1/0",
+      "cableType": "crossover",
+      "cableRawType": "eCrossOver",
+      "bandwidth": 100000,
+      "subnet": "172.16.5.0/24",
+      "srcIp": "172.16.5.1",
+      "dstIp": "172.16.5.2"
+    },
+    {
+      "id": "L5",
+      "source": "6",
+      "target": "7",
+      "sourceInterface": "FastEthernet0/0",
+      "targetInterface": "FastEthernet0/1",
+      "cableType": "crossover",
+      "cableRawType": "eCrossOver",
+      "bandwidth": 100000,
+      "subnet": "192.168.3.0/24",
+      "srcIp": "192.168.3.1",
+      "dstIp": "192.168.3.2"
+    },
+    {
+      "id": "L6",
+      "source": "7",
+      "target": "5",
+      "sourceInterface": "FastEthernet0/0",
+      "targetInterface": "FastEthernet0/0",
+      "cableType": "crossover",
+      "cableRawType": "eCrossOver",
+      "bandwidth": 100000,
+      "subnet": "192.168.1.0/24",
+      "srcIp": "192.168.1.2",
+      "dstIp": "192.168.1.1"
+    },
+    {
+      "id": "L7",
+      "source": "7",
+      "target": "9",
+      "sourceInterface": "FastEthernet1/0",
+      "targetInterface": "FastEthernet0",
+      "cableType": "crossover",
+      "cableRawType": "eCrossOver",
+      "bandwidth": 100000,
+      "subnet": "192.168.4.0/24",
+      "srcIp": "192.168.4.1",
+      "dstIp": "192.168.4.2"
+    },
+    {
+      "id": "L8",
+      "source": "8",
+      "target": "4",
+      "sourceInterface": "FastEthernet0",
+      "targetInterface": "FastEthernet1/0",
+      "cableType": "crossover",
+      "cableRawType": "eCrossOver",
+      "bandwidth": 100000,
+      "subnet": "172.16.4.0/24",
+      "srcIp": "172.16.4.2",
+      "dstIp": "172.16.4.1"
+    },
+    {
+      "id": "L9",
+      "source": "6",
+      "target": "5",
+      "sourceInterface": "FastEthernet0/1",
+      "targetInterface": "FastEthernet0/1",
+      "cableType": "crossover",
+      "cableRawType": "eCrossOver",
+      "bandwidth": 100000,
+      "subnet": "192.168.2.0/24",
+      "srcIp": "192.168.2.2",
+      "dstIp": "192.168.2.1"
+    }
+  ],
+  "configs": [
+    {
+      "deviceId": "1",
+      "deviceName": "路由器0",
+      "config": "!\nversion 12.4\nno service timestamps log datetime msec\nno service timestamps debug datetime msec\nno service password-encryption\n!\nhostname Router\n!\n!\n!\n!\n!\n!\n!\n!\nno ip cef\nno ipv6 cef\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\nspanning-tree mode pvst\n!\n!\n!\n!\n!\n!\ninterface FastEthernet0/0\n ip address 172.16.1.1 255.255.255.0\n duplex auto\n speed auto\n!\ninterface FastEthernet0/1\n ip address 172.16.2.1 255.255.255.0\n duplex auto\n speed auto\n!\ninterface FastEthernet1/0\n no ip address\n duplex auto\n speed auto\n shutdown\n!\ninterface Vlan1\n no ip address\n shutdown\n!\nrouter ospf 1\n log-adjacency-changes\n network 172.16.1.0 0.0.0.255 area 0\n network 172.16.2.0 0.0.0.255 area 0\n!\nip classless\nip route 0.0.0.0 0.0.0.0 172.16.1.2 \n!\nip flow-export version 9\n!\n!\n!\n!\n!\n!\n!\n!\nline con 0\n!\nline aux 0\n!\nline vty 0 4\n login\n!\n!\n!\nend"
+    },
+    {
+      "deviceId": "3",
+      "deviceName": "路由器1",
+      "config": "!\nversion 12.4\nno service timestamps log datetime msec\nno service timestamps debug datetime msec\nno service password-encryption\n!\nhostname Router\n!\n!\n!\n!\n!\n!\n!\n!\nno ip cef\nno ipv6 cef\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\nspanning-tree mode pvst\n!\n!\n!\n!\n!\n!\ninterface FastEthernet0/0\n ip address 172.16.1.2 255.255.255.0\n duplex auto\n speed auto\n!\ninterface FastEthernet0/1\n ip address 172.16.3.2 255.255.255.0\n duplex auto\n speed auto\n!\ninterface FastEthernet1/0\n ip address 172.16.5.1 255.255.255.0\n duplex auto\n speed auto\n!\ninterface Vlan1\n no ip address\n shutdown\n!\nrouter ospf 1\n log-adjacency-changes\n network 172.16.1.0 0.0.0.255 area 0\n network 172.16.3.0 0.0.0.255 area 0\n!\nrouter bgp 100\n bgp log-neighbor-changes\n no synchronization\n neighbor 172.16.5.2 remote-as 101\n network 172.16.1.0 mask 255.255.255.0\n network 172.16.2.0 mask 255.255.255.0\n network 172.16.3.0 mask 255.255.255.0\n network 172.16.4.0 mask 255.255.255.0\n!\nip classless\n!\nip flow-export version 9\n!\n!\n!\n!\n!\n!\n!\n!\nline con 0\n!\nline aux 0\n!\nline vty 0 4\n login\n!\n!\n!\nend"
+    },
+    {
+      "deviceId": "4",
+      "deviceName": "路由器2",
+      "config": "!\nversion 12.4\nno service timestamps log datetime msec\nno service timestamps debug datetime msec\nno service password-encryption\n!\nhostname Router\n!\n!\n!\n!\n!\n!\n!\n!\nno ip cef\nno ipv6 cef\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\nspanning-tree mode pvst\n!\n!\n!\n!\n!\n!\ninterface FastEthernet0/0\n ip address 172.16.2.2 255.255.255.0\n duplex auto\n speed auto\n!\ninterface FastEthernet0/1\n ip address 172.16.3.1 255.255.255.0\n duplex auto\n speed auto\n!\ninterface FastEthernet1/0\n ip address 172.16.4.1 255.255.255.0\n duplex auto\n speed auto\n!\ninterface Vlan1\n no ip address\n shutdown\n!\nrouter ospf 1\n log-adjacency-changes\n network 172.16.2.0 0.0.0.255 area 0\n network 172.16.3.0 0.0.0.255 area 0\n network 172.16.4.0 0.0.0.255 area 0\n!\nip classless\nip route 0.0.0.0 0.0.0.0 172.16.3.2 \n!\nip flow-export version 9\n!\n!\n!\n!\n!\n!\n!\n!\nline con 0\n!\nline aux 0\n!\nline vty 0 4\n login\n!\n!\n!\nend"
+    },
+    {
+      "deviceId": "5",
+      "deviceName": "路由器3",
+      "config": "!\nversion 12.4\nno service timestamps log datetime msec\nno service timestamps debug datetime msec\nno service password-encryption\n!\nhostname Router\n!\n!\n!\n!\n!\n!\n!\n!\nno ip cef\nno ipv6 cef\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\nspanning-tree mode pvst\n!\n!\n!\n!\n!\n!\ninterface FastEthernet0/0\n ip address 192.168.1.1 255.255.255.0\n duplex auto\n speed auto\n!\ninterface FastEthernet0/1\n ip address 192.168.2.1 255.255.255.0\n duplex auto\n speed auto\n!\ninterface FastEthernet1/0\n ip address 172.16.5.2 255.255.255.0\n duplex auto\n speed auto\n!\ninterface Vlan1\n no ip address\n shutdown\n!\nrouter bgp 101\n bgp log-neighbor-changes\n no synchronization\n neighbor 172.16.5.1 remote-as 100\n network 192.168.1.0\n network 192.168.2.0\n network 192.168.3.0\n network 192.168.4.0\n!\nrouter rip\n version 2\n network 192.168.1.0\n network 192.168.2.0\n!\nip classless\n!\nip flow-export version 9\n!\n!\n!\n!\n!\n!\n!\n!\nline con 0\n!\nline aux 0\n!\nline vty 0 4\n login\n!\n!\n!\nend"
+    },
+    {
+      "deviceId": "6",
+      "deviceName": "路由器4",
+      "config": "!\nversion 12.4\nno service timestamps log datetime msec\nno service timestamps debug datetime msec\nno service password-encryption\n!\nhostname Router\n!\n!\n!\n!\n!\n!\n!\n!\nno ip cef\nno ipv6 cef\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\nspanning-tree mode pvst\n!\n!\n!\n!\n!\n!\ninterface FastEthernet0/0\n ip address 192.168.3.1 255.255.255.0\n duplex auto\n speed auto\n!\ninterface FastEthernet0/1\n ip address 192.168.2.2 255.255.255.0\n duplex auto\n speed auto\n!\ninterface FastEthernet1/0\n no ip address\n duplex auto\n speed auto\n shutdown\n!\ninterface Vlan1\n no ip address\n shutdown\n!\nrouter rip\n version 2\n network 192.168.2.0\n network 192.168.3.0\n!\nip classless\nip route 0.0.0.0 0.0.0.0 192.16.2.1 \n!\nip flow-export version 9\n!\n!\n!\n!\n!\n!\n!\n!\nline con 0\n!\nline aux 0\n!\nline vty 0 4\n login\n!\n!\n!\nend"
+    },
+    {
+      "deviceId": "7",
+      "deviceName": "路由器5",
+      "config": "!\nversion 12.4\nno service timestamps log datetime msec\nno service timestamps debug datetime msec\nno service password-encryption\n!\nhostname Router\n!\n!\n!\n!\n!\n!\n!\n!\nno ip cef\nno ipv6 cef\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\nspanning-tree mode pvst\n!\n!\n!\n!\n!\n!\ninterface FastEthernet0/0\n ip address 192.168.1.2 255.255.255.0\n duplex auto\n speed auto\n!\ninterface FastEthernet0/1\n ip address 192.168.3.2 255.255.255.0\n duplex auto\n speed auto\n!\ninterface FastEthernet1/0\n ip address 192.168.4.1 255.255.255.0\n duplex auto\n speed auto\n!\ninterface Vlan1\n no ip address\n shutdown\n!\nrouter rip\n version 2\n network 192.168.1.0\n network 192.168.3.0\n network 192.168.4.0\n!\nip classless\nip route 0.0.0.0 0.0.0.0 192.168.1.1 \n!\nip flow-export version 9\n!\n!\n!\n!\n!\n!\n!\n!\nline con 0\n!\nline aux 0\n!\nline vty 0 4\n login\n!\n!\n!\nend"
+    },
+    {
+      "deviceId": "8",
+      "deviceName": "主机0",
+      "config": "! PC 配置\ninterface FastEthernet0\n ip address 172.16.4.2 255.255.255.0\n mac-address 0005.5E60.4966\n duplex full\n!\nip default-gateway 172.16.4.1\n!"
+    },
+    {
+      "deviceId": "9",
+      "deviceName": "主机1",
+      "config": "! PC 配置\ninterface FastEthernet0\n ip address 192.168.4.2 255.255.255.0\n mac-address 0060.7020.6924\n duplex full\n!\nip default-gateway 192.168.4.1\n!"
+    }
+  ],
+  "interfaces": {
+    "1": [
+      {
+        "name": "FastEthernet0/0",
+        "ip": "172.16.1.1",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": 100000,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": false,
+        "status": "up",
+        "mac": "00E0.B054.6601",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      },
+      {
+        "name": "FastEthernet0/1",
+        "ip": "172.16.2.1",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": 100000,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": false,
+        "status": "up",
+        "mac": "00E0.B054.6602",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      },
+      {
+        "name": "FastEthernet1/0",
+        "ip": "",
+        "mask": "",
+        "cidr": null,
+        "description": "",
+        "bandwidth": null,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": true,
+        "status": "down",
+        "mac": "",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      },
+      {
+        "name": "Vlan1",
+        "ip": "",
+        "mask": "",
+        "cidr": null,
+        "description": "",
+        "bandwidth": null,
+        "duplex": "",
+        "speed": "",
+        "shutdown": true,
+        "status": "down",
+        "mac": "",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      }
+    ],
+    "3": [
+      {
+        "name": "FastEthernet0/0",
+        "ip": "172.16.1.2",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": 100000,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": false,
+        "status": "up",
+        "mac": "00D0.D397.3001",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      },
+      {
+        "name": "FastEthernet0/1",
+        "ip": "172.16.3.2",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": 100000,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": false,
+        "status": "up",
+        "mac": "00D0.D397.3002",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      },
+      {
+        "name": "FastEthernet1/0",
+        "ip": "172.16.5.1",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": 100000,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": false,
+        "status": "up",
+        "mac": "0002.1606.6666",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      },
+      {
+        "name": "Vlan1",
+        "ip": "",
+        "mask": "",
+        "cidr": null,
+        "description": "",
+        "bandwidth": null,
+        "duplex": "",
+        "speed": "",
+        "shutdown": true,
+        "status": "down",
+        "mac": "",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      }
+    ],
+    "4": [
+      {
+        "name": "FastEthernet0/0",
+        "ip": "172.16.2.2",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": 100000,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": false,
+        "status": "up",
+        "mac": "0030.A3C3.9301",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      },
+      {
+        "name": "FastEthernet0/1",
+        "ip": "172.16.3.1",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": 100000,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": false,
+        "status": "up",
+        "mac": "0030.A3C3.9302",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      },
+      {
+        "name": "FastEthernet1/0",
+        "ip": "172.16.4.1",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": 100000,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": false,
+        "status": "up",
+        "mac": "0060.2F21.ACA1",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      },
+      {
+        "name": "Vlan1",
+        "ip": "",
+        "mask": "",
+        "cidr": null,
+        "description": "",
+        "bandwidth": null,
+        "duplex": "",
+        "speed": "",
+        "shutdown": true,
+        "status": "down",
+        "mac": "",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      }
+    ],
+    "5": [
+      {
+        "name": "FastEthernet0/0",
+        "ip": "192.168.1.1",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": 100000,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": false,
+        "status": "up",
+        "mac": "0030.A301.1001",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      },
+      {
+        "name": "FastEthernet0/1",
+        "ip": "192.168.2.1",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": 100000,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": false,
+        "status": "up",
+        "mac": "0030.A301.1002",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      },
+      {
+        "name": "FastEthernet1/0",
+        "ip": "172.16.5.2",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": 100000,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": false,
+        "status": "up",
+        "mac": "0001.978D.E48B",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      },
+      {
+        "name": "Vlan1",
+        "ip": "",
+        "mask": "",
+        "cidr": null,
+        "description": "",
+        "bandwidth": null,
+        "duplex": "",
+        "speed": "",
+        "shutdown": true,
+        "status": "down",
+        "mac": "",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      }
+    ],
+    "6": [
+      {
+        "name": "FastEthernet0/0",
+        "ip": "192.168.3.1",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": 100000,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": false,
+        "status": "up",
+        "mac": "0090.2B5A.E701",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      },
+      {
+        "name": "FastEthernet0/1",
+        "ip": "192.168.2.2",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": 100000,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": false,
+        "status": "up",
+        "mac": "0090.2B5A.E702",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      },
+      {
+        "name": "FastEthernet1/0",
+        "ip": "",
+        "mask": "",
+        "cidr": null,
+        "description": "",
+        "bandwidth": null,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": true,
+        "status": "down",
+        "mac": "",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      },
+      {
+        "name": "Vlan1",
+        "ip": "",
+        "mask": "",
+        "cidr": null,
+        "description": "",
+        "bandwidth": null,
+        "duplex": "",
+        "speed": "",
+        "shutdown": true,
+        "status": "down",
+        "mac": "",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      }
+    ],
+    "7": [
+      {
+        "name": "FastEthernet0/0",
+        "ip": "192.168.1.2",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": 100000,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": false,
+        "status": "up",
+        "mac": "0000.0C28.DC01",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      },
+      {
+        "name": "FastEthernet0/1",
+        "ip": "192.168.3.2",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": 100000,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": false,
+        "status": "up",
+        "mac": "0000.0C28.DC02",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      },
+      {
+        "name": "FastEthernet1/0",
+        "ip": "192.168.4.1",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": 100000,
+        "duplex": "auto",
+        "speed": "auto",
+        "shutdown": false,
+        "status": "up",
+        "mac": "0060.7068.5559",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      },
+      {
+        "name": "Vlan1",
+        "ip": "",
+        "mask": "",
+        "cidr": null,
+        "description": "",
+        "bandwidth": null,
+        "duplex": "",
+        "speed": "",
+        "shutdown": true,
+        "status": "down",
+        "mac": "",
+        "gateway": "",
+        "dns": "",
+        "dhcp": false
+      }
+    ],
+    "8": [
+      {
+        "name": "FastEthernet0",
+        "ip": "172.16.4.2",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": 100000,
+        "duplex": "full",
+        "speed": "",
+        "shutdown": false,
+        "status": "up",
+        "mac": "0005.5E60.4966",
+        "gateway": "172.16.4.1",
+        "dns": "",
+        "dhcp": false
+      }
+    ],
+    "9": [
+      {
+        "name": "FastEthernet0",
+        "ip": "192.168.4.2",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "description": "",
+        "bandwidth": 100000,
+        "duplex": "full",
+        "speed": "",
+        "shutdown": false,
+        "status": "up",
+        "mac": "0060.7020.6924",
+        "gateway": "192.168.4.1",
+        "dns": "",
+        "dhcp": false
+      }
+    ]
+  },
+  "vlans": {
+    "1": [],
+    "3": [],
+    "4": [],
+    "5": [],
+    "6": [],
+    "7": [],
+    "8": [],
+    "9": []
+  },
+  "acls": {
+    "1": [],
+    "3": [],
+    "4": [],
+    "5": [],
+    "6": [],
+    "7": [],
+    "8": [],
+    "9": []
+  },
+  "routes": {
+    "1": [
+      {
+        "type": "connected",
+        "network": "172.16.1.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet0/0",
+        "source": "interface"
+      },
+      {
+        "type": "connected",
+        "network": "172.16.2.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet0/1",
+        "source": "interface"
+      },
+      {
+        "type": "default",
+        "network": "0.0.0.0",
+        "mask": "0.0.0.0",
+        "cidr": 0,
+        "nextHop": "172.16.1.2",
+        "metric": 1,
+        "interface": "",
+        "source": "ip route"
+      }
+    ],
+    "3": [
+      {
+        "type": "connected",
+        "network": "172.16.1.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet0/0",
+        "source": "interface"
+      },
+      {
+        "type": "connected",
+        "network": "172.16.3.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet0/1",
+        "source": "interface"
+      },
+      {
+        "type": "connected",
+        "network": "172.16.5.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet1/0",
+        "source": "interface"
+      },
+      {
+        "type": "bgp",
+        "network": "172.16.1.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "BGP AS 100",
+        "processId": "100",
+        "neighbors": [
+          {
+            "ip": "172.16.5.2",
+            "remoteAs": "101"
+          }
+        ],
+        "interface": "",
+        "source": "bgp"
+      },
+      {
+        "type": "bgp",
+        "network": "172.16.2.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "BGP AS 100",
+        "processId": "100",
+        "neighbors": [
+          {
+            "ip": "172.16.5.2",
+            "remoteAs": "101"
+          }
+        ],
+        "interface": "",
+        "source": "bgp"
+      },
+      {
+        "type": "bgp",
+        "network": "172.16.3.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "BGP AS 100",
+        "processId": "100",
+        "neighbors": [
+          {
+            "ip": "172.16.5.2",
+            "remoteAs": "101"
+          }
+        ],
+        "interface": "",
+        "source": "bgp"
+      },
+      {
+        "type": "bgp",
+        "network": "172.16.4.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "BGP AS 100",
+        "processId": "100",
+        "neighbors": [
+          {
+            "ip": "172.16.5.2",
+            "remoteAs": "101"
+          }
+        ],
+        "interface": "",
+        "source": "bgp"
+      }
+    ],
+    "4": [
+      {
+        "type": "connected",
+        "network": "172.16.2.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet0/0",
+        "source": "interface"
+      },
+      {
+        "type": "connected",
+        "network": "172.16.3.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet0/1",
+        "source": "interface"
+      },
+      {
+        "type": "connected",
+        "network": "172.16.4.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet1/0",
+        "source": "interface"
+      },
+      {
+        "type": "default",
+        "network": "0.0.0.0",
+        "mask": "0.0.0.0",
+        "cidr": 0,
+        "nextHop": "172.16.3.2",
+        "metric": 1,
+        "interface": "",
+        "source": "ip route"
+      }
+    ],
+    "5": [
+      {
+        "type": "connected",
+        "network": "192.168.1.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet0/0",
+        "source": "interface"
+      },
+      {
+        "type": "connected",
+        "network": "192.168.2.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet0/1",
+        "source": "interface"
+      },
+      {
+        "type": "connected",
+        "network": "172.16.5.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet1/0",
+        "source": "interface"
+      },
+      {
+        "type": "bgp",
+        "network": "192.168.1.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "BGP AS 101",
+        "processId": "101",
+        "neighbors": [
+          {
+            "ip": "172.16.5.1",
+            "remoteAs": "100"
+          }
+        ],
+        "interface": "",
+        "source": "bgp"
+      },
+      {
+        "type": "bgp",
+        "network": "192.168.2.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "BGP AS 101",
+        "processId": "101",
+        "neighbors": [
+          {
+            "ip": "172.16.5.1",
+            "remoteAs": "100"
+          }
+        ],
+        "interface": "",
+        "source": "bgp"
+      },
+      {
+        "type": "bgp",
+        "network": "192.168.3.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "BGP AS 101",
+        "processId": "101",
+        "neighbors": [
+          {
+            "ip": "172.16.5.1",
+            "remoteAs": "100"
+          }
+        ],
+        "interface": "",
+        "source": "bgp"
+      },
+      {
+        "type": "bgp",
+        "network": "192.168.4.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "BGP AS 101",
+        "processId": "101",
+        "neighbors": [
+          {
+            "ip": "172.16.5.1",
+            "remoteAs": "100"
+          }
+        ],
+        "interface": "",
+        "source": "bgp"
+      },
+      {
+        "type": "rip",
+        "network": "192.168.1.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "RIP",
+        "processId": "rip",
+        "interface": "",
+        "source": "rip"
+      },
+      {
+        "type": "rip",
+        "network": "192.168.2.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "RIP",
+        "processId": "rip",
+        "interface": "",
+        "source": "rip"
+      }
+    ],
+    "6": [
+      {
+        "type": "connected",
+        "network": "192.168.3.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet0/0",
+        "source": "interface"
+      },
+      {
+        "type": "connected",
+        "network": "192.168.2.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet0/1",
+        "source": "interface"
+      },
+      {
+        "type": "default",
+        "network": "0.0.0.0",
+        "mask": "0.0.0.0",
+        "cidr": 0,
+        "nextHop": "192.16.2.1",
+        "metric": 1,
+        "interface": "",
+        "source": "ip route"
+      },
+      {
+        "type": "rip",
+        "network": "192.168.2.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "RIP",
+        "processId": "rip",
+        "interface": "",
+        "source": "rip"
+      },
+      {
+        "type": "rip",
+        "network": "192.168.3.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "RIP",
+        "processId": "rip",
+        "interface": "",
+        "source": "rip"
+      }
+    ],
+    "7": [
+      {
+        "type": "connected",
+        "network": "192.168.1.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet0/0",
+        "source": "interface"
+      },
+      {
+        "type": "connected",
+        "network": "192.168.3.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet0/1",
+        "source": "interface"
+      },
+      {
+        "type": "connected",
+        "network": "192.168.4.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "directly connected",
+        "interface": "FastEthernet1/0",
+        "source": "interface"
+      },
+      {
+        "type": "default",
+        "network": "0.0.0.0",
+        "mask": "0.0.0.0",
+        "cidr": 0,
+        "nextHop": "192.168.1.1",
+        "metric": 1,
+        "interface": "",
+        "source": "ip route"
+      },
+      {
+        "type": "rip",
+        "network": "192.168.1.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "RIP",
+        "processId": "rip",
+        "interface": "",
+        "source": "rip"
+      },
+      {
+        "type": "rip",
+        "network": "192.168.3.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "RIP",
+        "processId": "rip",
+        "interface": "",
+        "source": "rip"
+      },
+      {
+        "type": "rip",
+        "network": "192.168.4.0",
+        "mask": "255.255.255.0",
+        "cidr": 24,
+        "nextHop": "RIP",
+        "processId": "rip",
+        "interface": "",
+        "source": "rip"
+      }
+    ],
+    "8": [],
+    "9": []
+  },
+  "groups": [],
+  "error": null
+}

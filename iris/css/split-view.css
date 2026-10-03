@@ -1,0 +1,222 @@
+/* split-view - 双栏对照阅读（split-view.js） */
+/* 沉浸式：无顶部工具条，Esc 退出（Ctrl/⌘+\），同步滚动 Ctrl/⌘+Alt+S */
+.split-view-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1700;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease;
+}
+.split-view-overlay.open { opacity: 1; pointer-events: auto; }
+
+.split-view-panes { flex: 1; display: flex; min-height: 0; }
+.split-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-right: 1px solid var(--color-border);
+}
+.split-pane:last-child { border-right: none; }
+.split-pane-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 16px;
+  min-height: 44px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-text);
+  border-bottom: 1px dashed var(--color-border);
+  background: var(--color-surface);
+}
+.split-pane-header span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.split-pane-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 22px 30px 60px;
+  -webkit-overflow-scrolling: touch;
+  /* 栏体同时带 .markdown-body（max-width: var(--content-width) + margin: 0 auto），
+     作为 flex 子项会按 fit-content 取宽而越过分栏边界——这里强制撑满本栏 */
+  max-width: none;
+  margin: 0;
+}
+
+/* 右栏空态：虚线卡片 + 图标 + 提示，整卡可点唤起选择器 */
+.split-pane-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 24px;
+}
+.split-pane-empty-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 36px 48px;
+  border: 1.5px dashed var(--color-border);
+  border-radius: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+.split-pane-empty-card:hover,
+.split-pane-empty-card:focus-visible {
+  border-color: var(--color-accent-purple);
+  background: rgba(128, 128, 128, .05);
+  outline: none;
+}
+.split-pane-empty-icon { color: var(--color-text-muted); opacity: .75; }
+.split-pane-empty-text {
+  margin: 6px 0 0;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+.split-pane-empty-hint {
+  margin: 0 0 8px;
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+/* 右栏文档选择器 */
+.split-picker {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(20, 20, 28, .38);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+.split-picker.open { display: flex; }
+.split-picker-card {
+  width: min(560px, 94vw);
+  max-height: 76vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, .28);
+  animation: split-picker-in .16s ease;
+}
+@keyframes split-picker-in {
+  from { opacity: 0; transform: translateY(10px) scale(.98); }
+  to { opacity: 1; transform: none; }
+}
+.split-picker-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  letter-spacing: .02em;
+}
+.split-picker-head .split-picker-title { flex: 1; }
+.split-picker-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 14px 12px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  cursor: text;
+  transition: border-color .15s ease;
+}
+.split-picker-search:focus-within { border-color: var(--color-accent-purple); }
+.split-picker-search svg { flex: none; }
+#splitPickerInput {
+  flex: 1;
+  padding: 9px 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 14px;
+  outline: none;
+}
+#splitPickerList {
+  list-style: none;
+  margin: 0;
+  padding: 4px 10px 12px;
+  overflow-y: auto;
+  flex: 1;
+}
+#splitPickerList button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+}
+#splitPickerList button:hover { background: rgba(128, 128, 128, .1); }
+.split-picker-icon { flex: none; color: var(--color-text-muted); }
+.split-picker-name {
+  flex: none;
+  max-width: 62%;
+  font-size: 14px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.split-picker-path {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.split-picker-badge {
+  flex: none;
+  margin-left: auto;
+  padding: 1px 8px;
+  font-size: 11px;
+  line-height: 1.6;
+  border: 1px solid var(--color-accent-purple);
+  color: var(--color-accent-purple-deep);
+  border-radius: 999px;
+}
+.split-picker-empty {
+  padding: 28px 10px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .split-view-panes { flex-direction: column; }
+  .split-pane {
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+}
