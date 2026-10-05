@@ -5,13 +5,2155 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 02 Oct 2026 10:50:22 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 05 Oct 2026 03:18:32 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ApexCharts 交互式图表示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/apexcharts-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/apexcharts-examples.md</guid>
+      <pubDate>Mon, 05 Oct 2026 03:18:09 GMT</pubDate>
+      <description>本页面展示 ApexCharts 的各种图表类型和配置方式。 --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： -</description>
+      <content:encoded><![CDATA[<h1>ApexCharts 交互式图表示例</h1>
+<p>本页面展示 ApexCharts 的各种图表类型和配置方式。</p>
+<hr>
+<h2>1. 折线图</h2>
+<h3>基础折线图</h3>
+<p><strong>源码：</strong></p>
+<pre><code class="language-txt">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;line&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [{&quot;name&quot;: &quot;销量&quot;, &quot;data&quot;: [30, 40, 35, 50, 49, 60, 70]}],
+  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;周一&quot;, &quot;周二&quot;, &quot;周三&quot;, &quot;周四&quot;, &quot;周五&quot;, &quot;周六&quot;, &quot;周日&quot;]}
+}
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-apexcharts">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;line&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [{&quot;name&quot;: &quot;销量&quot;, &quot;data&quot;: [30, 40, 35, 50, 49, 60, 70]}],
+  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;周一&quot;, &quot;周二&quot;, &quot;周三&quot;, &quot;周四&quot;, &quot;周五&quot;, &quot;周六&quot;, &quot;周日&quot;]}
+}
+</code></pre>
+<hr>
+<h3>多系列折线图</h3>
+<p><strong>源码：</strong></p>
+<pre><code class="language-txt">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;line&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [
+    {&quot;name&quot;: &quot;销量&quot;, &quot;data&quot;: [30, 40, 35, 50, 49, 60, 70]},
+    {&quot;name&quot;: &quot;利润&quot;, &quot;data&quot;: [20, 30, 25, 35, 40, 50, 55]}
+  ],
+  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;周一&quot;, &quot;周二&quot;, &quot;周三&quot;, &quot;周四&quot;, &quot;周五&quot;, &quot;周六&quot;, &quot;周日&quot;]}
+}
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-apexcharts">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;line&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [
+    {&quot;name&quot;: &quot;销量&quot;, &quot;data&quot;: [30, 40, 35, 50, 49, 60, 70]},
+    {&quot;name&quot;: &quot;利润&quot;, &quot;data&quot;: [20, 30, 25, 35, 40, 50, 55]}
+  ],
+  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;周一&quot;, &quot;周二&quot;, &quot;周三&quot;, &quot;周四&quot;, &quot;周五&quot;, &quot;周六&quot;, &quot;周日&quot;]}
+}
+</code></pre>
+<hr>
+<h2>2. 面积图</h2>
+<h3>基础面积图</h3>
+<p><strong>源码：</strong></p>
+<pre><code class="language-txt">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;area&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [{&quot;name&quot;: &quot;访问量&quot;, &quot;data&quot;: [31, 40, 28, 51, 42, 109, 100]}],
+  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;一月&quot;, &quot;二月&quot;, &quot;三月&quot;, &quot;四月&quot;, &quot;五月&quot;, &quot;六月&quot;, &quot;七月&quot;]}
+}
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-apexcharts">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;area&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [{&quot;name&quot;: &quot;访问量&quot;, &quot;data&quot;: [31, 40, 28, 51, 42, 109, 100]}],
+  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;一月&quot;, &quot;二月&quot;, &quot;三月&quot;, &quot;四月&quot;, &quot;五月&quot;, &quot;六月&quot;, &quot;七月&quot;]}
+}
+</code></pre>
+<hr>
+<h3>多系列面积图</h3>
+<p><strong>源码：</strong></p>
+<pre><code class="language-txt">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;area&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [
+    {&quot;name&quot;: &quot;产品A&quot;, &quot;data&quot;: [31, 40, 28, 51, 42, 109, 100]},
+    {&quot;name&quot;: &quot;产品B&quot;, &quot;data&quot;: [11, 32, 45, 32, 34, 52, 41]}
+  ],
+  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;一月&quot;, &quot;二月&quot;, &quot;三月&quot;, &quot;四月&quot;, &quot;五月&quot;, &quot;六月&quot;, &quot;七月&quot;]}
+}
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-apexcharts">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;area&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [
+    {&quot;name&quot;: &quot;产品A&quot;, &quot;data&quot;: [31, 40, 28, 51, 42, 109, 100]},
+    {&quot;name&quot;: &quot;产品B&quot;, &quot;data&quot;: [11, 32, 45, 32, 34, 52, 41]}
+  ],
+  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;一月&quot;, &quot;二月&quot;, &quot;三月&quot;, &quot;四月&quot;, &quot;五月&quot;, &quot;六月&quot;, &quot;七月&quot;]}
+}
+</code></pre>
+<hr>
+<h2>3. 柱状图</h2>
+<h3>基础柱状图</h3>
+<p><strong>源码：</strong></p>
+<pre><code class="language-txt">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;bar&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [{&quot;name&quot;: &quot;销售额&quot;, &quot;data&quot;: [30, 40, 35, 50, 49, 60, 70]}],
+  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;一月&quot;, &quot;二月&quot;, &quot;三月&quot;, &quot;四月&quot;, &quot;五月&quot;, &quot;六月&quot;, &quot;七月&quot;]}
+}
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-apexcharts">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;bar&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [{&quot;name&quot;: &quot;销售额&quot;, &quot;data&quot;: [30, 40, 35, 50, 49, 60, 70]}],
+  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;一月&quot;, &quot;二月&quot;, &quot;三月&quot;, &quot;四月&quot;, &quot;五月&quot;, &quot;六月&quot;, &quot;七月&quot;]}
+}
+</code></pre>
+<hr>
+<h3>分组柱状图</h3>
+<p><strong>源码：</strong></p>
+<pre><code class="language-txt">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;bar&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [
+    {&quot;name&quot;: &quot;2023年&quot;, &quot;data&quot;: [30, 40, 35, 50]},
+    {&quot;name&quot;: &quot;2024年&quot;, &quot;data&quot;: [45, 52, 48, 65]}
+  ],
+  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;一季度&quot;, &quot;二季度&quot;, &quot;三季度&quot;, &quot;四季度&quot;]}
+}
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-apexcharts">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;bar&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [
+    {&quot;name&quot;: &quot;2023年&quot;, &quot;data&quot;: [30, 40, 35, 50]},
+    {&quot;name&quot;: &quot;2024年&quot;, &quot;data&quot;: [45, 52, 48, 65]}
+  ],
+  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;一季度&quot;, &quot;二季度&quot;, &quot;三季度&quot;, &quot;四季度&quot;]}
+}
+</code></pre>
+<hr>
+<h2>4. 条形图</h2>
+<h3>基础条形图</h3>
+<p><strong>源码：</strong></p>
+<pre><code class="language-txt">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;bar&quot;, &quot;height&quot;: 350, &quot;horizontal&quot;: true},
+  &quot;series&quot;: [{&quot;name&quot;: &quot;销售额&quot;, &quot;data&quot;: [30, 40, 35, 50, 49, 60, 70]}],
+  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;北京&quot;, &quot;上海&quot;, &quot;广州&quot;, &quot;深圳&quot;, &quot;杭州&quot;, &quot;成都&quot;, &quot;武汉&quot;]}
+}
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-apexcharts">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;bar&quot;, &quot;height&quot;: 350, &quot;horizontal&quot;: true},
+  &quot;series&quot;: [{&quot;name&quot;: &quot;销售额&quot;, &quot;data&quot;: [30, 40, 35, 50, 49, 60, 70]}],
+  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;北京&quot;, &quot;上海&quot;, &quot;广州&quot;, &quot;深圳&quot;, &quot;杭州&quot;, &quot;成都&quot;, &quot;武汉&quot;]}
+}
+</code></pre>
+<hr>
+<h2>5. 饼图</h2>
+<h3>基础饼图</h3>
+<p><strong>源码：</strong></p>
+<pre><code class="language-txt">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;pie&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [44, 55, 13, 43, 22],
+  &quot;labels&quot;: [&quot;产品A&quot;, &quot;产品B&quot;, &quot;产品C&quot;, &quot;产品D&quot;, &quot;产品E&quot;]
+}
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-apexcharts">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;pie&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [44, 55, 13, 43, 22],
+  &quot;labels&quot;: [&quot;产品A&quot;, &quot;产品B&quot;, &quot;产品C&quot;, &quot;产品D&quot;, &quot;产品E&quot;]
+}
+</code></pre>
+<hr>
+<h3>环形图</h3>
+<p><strong>源码：</strong></p>
+<pre><code class="language-txt">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;donut&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [44, 55, 13, 43, 22],
+  &quot;labels&quot;: [&quot;直接访问&quot;, &quot;搜索引擎&quot;, &quot;推荐网站&quot;, &quot;广告&quot;, &quot;其他&quot;]
+}
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-apexcharts">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;donut&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [44, 55, 13, 43, 22],
+  &quot;labels&quot;: [&quot;直接访问&quot;, &quot;搜索引擎&quot;, &quot;推荐网站&quot;, &quot;广告&quot;, &quot;其他&quot;]
+}
+</code></pre>
+<hr>
+<h2>6. 散点图</h2>
+<p><strong>源码：</strong></p>
+<pre><code class="language-txt">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;scatter&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [
+    {&quot;name&quot;: &quot;产品A&quot;, &quot;data&quot;: [[30, 40], [42, 53], [28, 38], [55, 65], [48, 58]]},
+    {&quot;name&quot;: &quot;产品B&quot;, &quot;data&quot;: [[20, 30], [35, 45], [25, 35], [45, 55], [40, 50]]}
+  ]
+}
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-apexcharts">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;scatter&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [
+    {&quot;name&quot;: &quot;产品A&quot;, &quot;data&quot;: [[30, 40], [42, 53], [28, 38], [55, 65], [48, 58]]},
+    {&quot;name&quot;: &quot;产品B&quot;, &quot;data&quot;: [[20, 30], [35, 45], [25, 35], [45, 55], [40, 50]]}
+  ]
+}
+</code></pre>
+<hr>
+<h2>7. 气泡图</h2>
+<p><strong>源码：</strong></p>
+<pre><code class="language-txt">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;bubble&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [
+    {&quot;name&quot;: &quot;产品A&quot;, &quot;data&quot;: [[20, 30, 5], [40, 50, 8], [30, 35, 6]]},
+    {&quot;name&quot;: &quot;产品B&quot;, &quot;data&quot;: [[25, 35, 7], [45, 55, 9], [35, 40, 6]]}
+  ]
+}
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-apexcharts">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;bubble&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [
+    {&quot;name&quot;: &quot;产品A&quot;, &quot;data&quot;: [[20, 30, 5], [40, 50, 8], [30, 35, 6]]},
+    {&quot;name&quot;: &quot;产品B&quot;, &quot;data&quot;: [[25, 35, 7], [45, 55, 9], [35, 40, 6]]}
+  ]
+}
+</code></pre>
+<hr>
+<h2>8. 雷达图</h2>
+<p><strong>源码：</strong></p>
+<pre><code class="language-txt">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;radar&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [
+    {&quot;name&quot;: &quot;产品A&quot;, &quot;data&quot;: [80, 50, 60, 70, 85]},
+    {&quot;name&quot;: &quot;产品B&quot;, &quot;data&quot;: [70, 60, 80, 50, 75]}
+  ],
+  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;性能&quot;, &quot;价格&quot;, &quot;外观&quot;, &quot;续航&quot;, &quot;服务&quot;]}
+}
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-apexcharts">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;radar&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [
+    {&quot;name&quot;: &quot;产品A&quot;, &quot;data&quot;: [80, 50, 60, 70, 85]},
+    {&quot;name&quot;: &quot;产品B&quot;, &quot;data&quot;: [70, 60, 80, 50, 75]}
+  ],
+  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;性能&quot;, &quot;价格&quot;, &quot;外观&quot;, &quot;续航&quot;, &quot;服务&quot;]}
+}
+</code></pre>
+<hr>
+<h2>9. 极坐标图</h2>
+<p><strong>源码：</strong></p>
+<pre><code class="language-txt">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;polarArea&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [42, 55, 67, 83, 45],
+  &quot;labels&quot;: [&quot;一月&quot;, &quot;二月&quot;, &quot;三月&quot;, &quot;四月&quot;, &quot;五月&quot;]
+}
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-apexcharts">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;polarArea&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [42, 55, 67, 83, 45],
+  &quot;labels&quot;: [&quot;一月&quot;, &quot;二月&quot;, &quot;三月&quot;, &quot;四月&quot;, &quot;五月&quot;]
+}
+</code></pre>
+<hr>
+<h2>10. 范围区域图</h2>
+<p><strong>源码：</strong></p>
+<pre><code class="language-txt">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;rangeArea&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [
+    {&quot;name&quot;: &quot;温度范围&quot;, &quot;data&quot;: [{&quot;x&quot;: &quot;周一&quot;, &quot;y&quot;: [10, 25]}, {&quot;x&quot;: &quot;周二&quot;, &quot;y&quot;: [12, 28]}, {&quot;x&quot;: &quot;周三&quot;, &quot;y&quot;: [8, 22]}, {&quot;x&quot;: &quot;周四&quot;, &quot;y&quot;: [15, 30]}, {&quot;x&quot;: &quot;周五&quot;, &quot;y&quot;: [18, 32]}]}
+  ]
+}
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-apexcharts">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;rangeArea&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [
+    {&quot;name&quot;: &quot;温度范围&quot;, &quot;data&quot;: [{&quot;x&quot;: &quot;周一&quot;, &quot;y&quot;: [10, 25]}, {&quot;x&quot;: &quot;周二&quot;, &quot;y&quot;: [12, 28]}, {&quot;x&quot;: &quot;周三&quot;, &quot;y&quot;: [8, 22]}, {&quot;x&quot;: &quot;周四&quot;, &quot;y&quot;: [15, 30]}, {&quot;x&quot;: &quot;周五&quot;, &quot;y&quot;: [18, 32]}]}
+  ]
+}
+</code></pre>
+<hr>
+<h2>11. 烛台图</h2>
+<p><strong>源码：</strong></p>
+<pre><code class="language-txt">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;candlestick&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [{&quot;name&quot;: &quot;股价&quot;, &quot;data&quot;: [{&quot;x&quot;: &quot;周一&quot;, &quot;y&quot;: [100, 120, 90, 115]}, {&quot;x&quot;: &quot;周二&quot;, &quot;y&quot;: [115, 130, 105, 125]}, {&quot;x&quot;: &quot;周三&quot;, &quot;y&quot;: [125, 140, 115, 135]}, {&quot;x&quot;: &quot;周四&quot;, &quot;y&quot;: [135, 150, 125, 145]}, {&quot;x&quot;: &quot;周五&quot;, &quot;y&quot;: [145, 160, 140, 155]}]}]
+}
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-apexcharts">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;candlestick&quot;, &quot;height&quot;: 350},
+  &quot;series&quot;: [{&quot;name&quot;: &quot;股价&quot;, &quot;data&quot;: [{&quot;x&quot;: &quot;周一&quot;, &quot;y&quot;: [100, 120, 90, 115]}, {&quot;x&quot;: &quot;周二&quot;, &quot;y&quot;: [115, 130, 105, 125]}, {&quot;x&quot;: &quot;周三&quot;, &quot;y&quot;: [125, 140, 115, 135]}, {&quot;x&quot;: &quot;周四&quot;, &quot;y&quot;: [135, 150, 125, 145]}, {&quot;x&quot;: &quot;周五&quot;, &quot;y&quot;: [145, 160, 140, 155]}]}]
+}
+</code></pre>
+<hr>
+<h2>12. 瀑布图</h2>
+<p><strong>源码：</strong></p>
+<pre><code class="language-txt">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;bar&quot;, &quot;height&quot;: 350, &quot;stacked&quot;: false},
+  &quot;series&quot;: [
+    {&quot;name&quot;: &quot;收入&quot;, &quot;data&quot;: [150, 120, -50, -30, 80]},
+    {&quot;name&quot;: &quot;支出&quot;, &quot;data&quot;: [0, 0, 30, 20, 0]}
+  ],
+  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;周一&quot;, &quot;周二&quot;, &quot;周三&quot;, &quot;周四&quot;, &quot;周五&quot;]}
+}
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-apexcharts">{
+  &quot;chart&quot;: {&quot;type&quot;: &quot;bar&quot;, &quot;height&quot;: 350, &quot;stacked&quot;: false},
+  &quot;series&quot;: [
+    {&quot;name&quot;: &quot;收入&quot;, &quot;data&quot;: [150, 120, -50, -30, 80]},
+    {&quot;name&quot;: &quot;支出&quot;, &quot;data&quot;: [0, 0, 30, 20, 0]}
+  ],
+  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;周一&quot;, &quot;周二&quot;, &quot;周三&quot;, &quot;周四&quot;, &quot;周五&quot;]}
+}
+</code></pre>
+<hr>
+<h2>总结</h2>
+<p>ApexCharts 提供了丰富的交互式图表类型，包括：</p>
+<ul>
+<li><strong>折线图/面积图</strong>：展示趋势变化</li>
+<li><strong>柱状图/条形图</strong>：比较分类数据</li>
+<li><strong>饼图/环形图</strong>：展示占比关系</li>
+<li><strong>散点图/气泡图</strong>：展示相关性</li>
+<li><strong>雷达图</strong>：多维度对比</li>
+<li><strong>极坐标图</strong>：循环数据展示</li>
+<li><strong>烛台图</strong>：金融数据展示</li>
+<li><strong>瀑布图</strong>：财务流水展示</li>
+</ul>
+<p>所有图表都支持交互功能，包括缩放、导出、数据点悬停提示等。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>CSV / TSV 交互表格示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/csv-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/csv-examples.md</guid>
+      <pubDate>Mon, 05 Oct 2026 03:18:09 GMT</pubDate>
+      <description>/ 代码块会渲染为可排序、可搜索、可按列筛选的交互表格，贴数据不用再截图。 - 点击表头排序：升 → 降 → 恢复原始顺序，数值列按数值比较 - 表头漏斗按钮：按该列的唯一值勾选筛选 - 工具栏搜索框：即时过滤任意单元格命中的行 - 右侧按钮：复制 CSV / 下载 CSV（保留原文） 逗号或换行出现在单元格内时，用双引号包裹（RFC 4180），引号本身写两个：</description>
+      <content:encoded><![CDATA[<h1>CSV / TSV 交互表格示例</h1>
+<p><code>csv</code> / <code>tsv</code> 代码块会渲染为可排序、可搜索、可按列筛选的交互表格，贴数据不用再截图。</p>
+<h2>基础 CSV</h2>
+<pre><code class="language-csv">协议,端口,传输层,说明
+HTTP,80,TCP,超文本传输协议
+HTTPS,443,TCP,TLS 加密的 HTTP
+DNS,53,UDP/TCP,域名解析
+SSH,22,TCP,安全远程登录
+FTP,21,TCP,文件传输
+SNMP,161,UDP,网络设备管理
+</code></pre>
+<ul>
+<li>点击表头排序：升 → 降 → 恢复原始顺序，数值列按数值比较</li>
+<li>表头漏斗按钮：按该列的唯一值勾选筛选</li>
+<li>工具栏搜索框：即时过滤任意单元格命中的行</li>
+<li>右侧按钮：复制 CSV / 下载 CSV（保留原文）</li>
+</ul>
+<h2>数值排序</h2>
+<pre><code class="language-csv">设备,CPU (%),内存 (MB),在线天数
+R1,23.5,512,120
+R2,7.2,256,45
+SW1,45.0,1024,301
+SW2,12.8,512,88
+FW1,67.3,2048,12
+</code></pre>
+<h2>带引号转义的 CSV</h2>
+<p>逗号或换行出现在单元格内时，用双引号包裹（RFC 4180），引号本身写两个：</p>
+<pre><code class="language-csv">姓名,职务,备注
+&quot;张三&quot;,&quot;网络工程师&quot;,&quot;CCIE,HCIE 双证&quot;
+&quot;李四&quot;,&quot;运维工程师&quot;,&quot;擅长 &quot;&quot;救火&quot;&quot;&quot;
+</code></pre>
+<h2>TSV（制表符分隔）</h2>
+<pre><code class="language-tsv">命令	模式	作用
+show version	用户/特权	查看版本与运行时间
+show ip route	特权	查看路由表
+display current-configuration	用户/特权	查看当前配置（VRP）
+</code></pre>
+<h2>长表格（自动横向滚动）</h2>
+<pre><code class="language-csv">编号,设备名,管理地址,环回地址,厂商,型号,软件版本,上联端口,带宽 (Mbps),所属机房,责任人,备注
+1,core-rtr-01,10.0.0.1,1.1.1.1,Cisco,ASR 9006,IOS-XR 7.5.2,MGT0/0,1000,DC-A,张三,核心路由器
+2,core-rtr-02,10.0.0.2,1.1.1.2,Cisco,ASR 9006,IOS-XR 7.5.2,MGT0/0,1000,DC-A,张三,核心路由器（备）
+3,agg-sw-01,10.0.1.1,1.1.2.1,Huawei,CE12804,V200R005,GE0/0/1,10000,DC-A,李四,汇聚交换机
+4,agg-sw-02,10.0.1.2,1.1.2.2,Huawei,CE12804,V200R005,GE0/0/1,10000,DC-A,李四,汇聚交换机（备）
+5,acc-sw-11,10.0.2.11,1.1.3.11,Cisco,C9300,17.6.4,GE1/0/24,1000,DC-B,王五,接入交换机
+6,acc-sw-12,10.0.2.12,1.1.3.12,Cisco,C9300,17.6.4,GE1/0/24,1000,DC-B,王五,接入交换机
+7,fw-01,10.0.3.1,1.1.4.1,Fortinet,FG-600F,7.2.4,port1,10000,DC-A,赵六,边界防火墙
+8,lb-01,10.0.4.1,1.1.5.1,F5,BIG-IP i5800,17.0,mgmt,1000,DC-A,赵六,负载均衡
+9,edge-rtr-01,10.0.5.1,1.1.6.1,Huawei,NE40E,V800R010,GE0/0/0,10000,DC-B,钱七,出口路由器
+10,edge-rtr-02,10.0.5.2,1.1.6.2,Huawei,NE40E,V800R010,GE0/0/0,10000,DC-B,钱七,出口路由器（备）
+</code></pre>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>eNSP 拓扑渲染示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/ensp-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/ensp-examples.md</guid>
+      <pubDate>Mon, 05 Oct 2026 03:18:09 GMT</pubDate>
+      <description>本站点支持在 Markdown 文档中嵌入华为 eNSP 拓扑图。将 或 压缩包放入 目录，构建脚本会自动解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。 使用 嵌入语法引用预处理好的拓扑 JSON，需要用 代码块包裹（即三反引号 + 语言标记）： &gt; 提示：如果文件名包含空格，引用时请使用 URL 编码（空格替换为 ）。例如 。 9 台设备、8 条链路的华为设备</description>
+      <content:encoded><![CDATA[<h1>华为 eNSP 拓扑渲染</h1>
+<p>本站点支持在 Markdown 文档中嵌入华为 eNSP 拓扑图。将 <code>.topo</code> 或 <code>.zip</code> 压缩包放入 <code>iris/data/ensp/raw/</code> 目录，构建脚本会自动解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。</p>
+<h2>基本用法</h2>
+<p>使用 <code>@[ensp](文件名)</code> 嵌入语法引用预处理好的拓扑 JSON，需要用 <code>ensp</code> 代码块包裹（即三反引号 + <code>ensp</code> 语言标记）：</p>
+<pre><code class="language-markdown">@[ensp](filename)
+</code></pre>
+<blockquote>
+<p><strong>提示</strong>：如果文件名包含空格，引用时请使用 URL 编码（空格替换为 <code>%20</code>）。例如 <code>@[ensp](my%20topo)</code>。</p>
+</blockquote>
+<h2>示例拓扑</h2>
+<h3>OSPF / IS-IS 排错综合实验</h3>
+<p>9 台设备、8 条链路的华为设备组网拓扑，涵盖 AR 路由器、S3700 交换机、串行链路和以太网链路，包含 Serial 串口、Copper 双绞线两种线缆类型，演示 OSPF 路由的规划与排错场景。</p>
+<pre><code class="language-ensp">@[ensp](OSPF%20IS-IS%E6%8E%92%E9%94%99)
+</code></pre>
+<h2>可用拓扑一览</h2>
+<table>
+<thead>
+<tr>
+<th>拓扑名称</th>
+<th>设备数</th>
+<th>链路数</th>
+<th>设备型号</th>
+<th>路由协议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OSPF IS-IS排错</td>
+<td>9</td>
+<td>8</td>
+<td>AR2220 / S3700</td>
+<td>OSPF、Serial PPP</td>
+</tr>
+</tbody></table>
+<h2>支持的输入格式</h2>
+<p>eNSP 解析器支持以下两种输入方式：</p>
+<table>
+<thead>
+<tr>
+<th>格式</th>
+<th>扩展名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>单个拓扑文件</td>
+<td><code>.topo</code></td>
+<td>直接解析 XML 格式的拓扑描述</td>
+</tr>
+<tr>
+<td>工程压缩包</td>
+<td><code>.zip</code></td>
+<td>自动解压 ZIP，内部需包含 <code>.topo</code> 和按 UUID 命名的设备目录</td>
+</tr>
+</tbody></table>
+<h3>ZIP 压缩包内部结构</h3>
+<pre><code>my-topo.zip
+├── my-topo.topo                  # 拓扑描述文件
+├── {UUID-1}/                     # 设备 1 目录（按 UUID 命名）
+│   └── vrpcfg.zip                # 设备配置（VRP 命令）
+├── {UUID-2}/
+│   └── vrpcfg.zip
+└── ...
+</code></pre>
+<p>每个设备目录名对应 <code>.topo</code> 中 <code>&lt;dev id=&quot;UUID&quot;&gt;</code> 的设备 ID，内部 <code>vrpcfg.zip</code> 包含该设备的 VRP 配置（<code>vrpcfg.cfg</code>）。</p>
+<h2>交互功能</h2>
+<ul>
+<li><strong>缩放平移</strong>：鼠标滚轮缩放，拖拽平移画布</li>
+<li><strong>节点拖拽</strong>：拖动设备节点重新排列</li>
+<li><strong>hover 高亮</strong>：鼠标悬停连线显示接口、线缆和所属网段</li>
+<li><strong>点击详情</strong>：点击设备节点弹出右侧抽屉，查看接口表 / VRP 配置 / VLAN / ACL / 路由表</li>
+<li><strong>搜索过滤</strong>：在搜索框输入设备名 / IP / 类型，匹配设备高亮</li>
+<li><strong>布局切换</strong>：eNSP 原始坐标 ↔ 力导向自动布局</li>
+<li><strong>网格背景</strong>：可切换点阵网格 / 透明背景</li>
+<li><strong>导出</strong>：支持导出 PNG 图片 / JSON 数据 / Markdown 表格</li>
+</ul>
+<h2>线缆类型颜色编码</h2>
+<table>
+<thead>
+<tr>
+<th>颜色</th>
+<th>线缆类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>橙色</td>
+<td>串口线 (Serial)</td>
+</tr>
+<tr>
+<td>蓝色</td>
+<td>双绞线 (Copper)</td>
+</tr>
+<tr>
+<td>紫色</td>
+<td>光纤 (Fiber)</td>
+</tr>
+<tr>
+<td>绿色</td>
+<td>控制台线 (Console)</td>
+</tr>
+</tbody></table>
+<h2>设备类型图标</h2>
+<p>支持以下设备类型的图标渲染：AR 路由器、S 系列交换机、PC、服务器、防火墙、AP、Cloud 等。</p>
+<h2>工作流程</h2>
+<ol>
+<li>将 <code>.topo</code> 或 <code>.zip</code> 文件放入 <code>iris/data/ensp/raw/</code></li>
+<li>本地运行 <code>python iris/scripts/ensp/main.py</code> 或推送到 GitHub 触发 CI</li>
+<li>脚本自动解压（ZIP）→ 解析 XML → 读取 <code>vrpcfg.zip</code> 配置 → 输出 JSON</li>
+<li>在 Markdown 中用 <code>@[ensp](文件名)</code> 引用</li>
+</ol>
+<h3>文件命名建议</h3>
+<ul>
+<li>推荐使用英文、数字、连字符（<code>-</code>）和下划线（<code>_</code>）</li>
+<li>避免空格和特殊字符</li>
+<li>含空格的文件名引用时需用 <code>%20</code> 编码</li>
+</ul>
+<h2>解析的信息</h2>
+<p>每个设备可查看以下信息：</p>
+<ul>
+<li><strong>接口表</strong>：接口名、IP、掩码、状态、速率、双工、描述</li>
+<li><strong>配置</strong>：完整 <code>vrpcfg.cfg</code>（VRP 命令），按 interface 分块折叠，VRP 语法高亮</li>
+<li><strong>VLAN</strong>：VLAN ID 和名称</li>
+<li><strong>ACL</strong>：访问控制列表规则</li>
+<li><strong>路由表</strong>：直连路由、静态路由、OSPF 路由（从配置推算）</li>
+</ul>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>GeoJSON / TopoJSON 示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/geojson-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/geojson-examples.md</guid>
+      <pubDate>Mon, 05 Oct 2026 03:18:09 GMT</pubDate>
+      <description>本页面展示地理数据可视化功能，支持 GeoJSON 和 TopoJSON 格式的嵌入渲染。 --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果：</description>
+      <content:encoded><![CDATA[<h1>GeoJSON / TopoJSON 示例</h1>
+<p>本页面展示地理数据可视化功能，支持 GeoJSON 和 TopoJSON 格式的嵌入渲染。</p>
+<hr>
+<h2>1. GeoJSON 点数据</h2>
+<h3>单个点</h3>
+<p><strong>源码：</strong></p>
+<pre><code class="language-markdown">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[116.4074,39.9042]},&quot;properties&quot;:{&quot;name&quot;:&quot;北京&quot;}}]})
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-geojson">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[116.4074,39.9042]},&quot;properties&quot;:{&quot;name&quot;:&quot;北京&quot;}}]})
+</code></pre>
+<hr>
+<h3>多个城市点</h3>
+<p><strong>源码：</strong></p>
+<pre><code class="language-markdown">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[116.4074,39.9042]},&quot;properties&quot;:{&quot;name&quot;:&quot;北京&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[121.4737,31.2304]},&quot;properties&quot;:{&quot;name&quot;:&quot;上海&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[113.2644,23.1291]},&quot;properties&quot;:{&quot;name&quot;:&quot;广州&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[104.0668,30.5728]},&quot;properties&quot;:{&quot;name&quot;:&quot;成都&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[120.1552,30.2741]},&quot;properties&quot;:{&quot;name&quot;:&quot;杭州&quot;}}]})
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-geojson">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[116.4074,39.9042]},&quot;properties&quot;:{&quot;name&quot;:&quot;北京&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[121.4737,31.2304]},&quot;properties&quot;:{&quot;name&quot;:&quot;上海&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[113.2644,23.1291]},&quot;properties&quot;:{&quot;name&quot;:&quot;广州&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[104.0668,30.5728]},&quot;properties&quot;:{&quot;name&quot;:&quot;成都&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[120.1552,30.2741]},&quot;properties&quot;:{&quot;name&quot;:&quot;杭州&quot;}}]})
+</code></pre>
+<hr>
+<h2>2. GeoJSON 线数据</h2>
+<h3>简单线段</h3>
+<p><strong>源码：</strong></p>
+<pre><code class="language-markdown">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[116.4074,39.9042],[121.4737,31.2304]]},&quot;properties&quot;:{&quot;name&quot;:&quot;京沪线&quot;}}]})
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-geojson">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[116.4074,39.9042],[121.4737,31.2304]]},&quot;properties&quot;:{&quot;name&quot;:&quot;京沪线&quot;}}]})
+</code></pre>
+<hr>
+<h3>多段线路</h3>
+<p><strong>源码：</strong></p>
+<pre><code class="language-markdown">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[116.4074,39.9042],[113.2644,23.1291]]},&quot;properties&quot;:{&quot;name&quot;:&quot;京广线&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[121.4737,31.2304],[104.0668,30.5728]]},&quot;properties&quot;:{&quot;name&quot;:&quot;沪蓉线&quot;}}]})
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-geojson">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[116.4074,39.9042],[113.2644,23.1291]]},&quot;properties&quot;:{&quot;name&quot;:&quot;京广线&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[121.4737,31.2304],[104.0668,30.5728]]},&quot;properties&quot;:{&quot;name&quot;:&quot;沪蓉线&quot;}}]})
+</code></pre>
+<hr>
+<h2>3. GeoJSON 多边形数据</h2>
+<h3>简单多边形</h3>
+<p><strong>源码：</strong></p>
+<pre><code class="language-markdown">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Polygon&quot;,&quot;coordinates&quot;:[[[116.2,39.8],[116.6,39.8],[116.6,40.0],[116.2,40.0],[116.2,39.8]]]},&quot;properties&quot;:{&quot;name&quot;:&quot;北京市中心区域&quot;}}]})
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-geojson">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Polygon&quot;,&quot;coordinates&quot;:[[[116.2,39.8],[116.6,39.8],[116.6,40.0],[116.2,40.0],[116.2,39.8]]]},&quot;properties&quot;:{&quot;name&quot;:&quot;北京市中心区域&quot;}}]})
+</code></pre>
+<hr>
+<h3>带孔多边形</h3>
+<p><strong>源码：</strong></p>
+<pre><code class="language-markdown">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Polygon&quot;,&quot;coordinates&quot;:[[[116.0,39.5],[117.0,39.5],[117.0,40.5],[116.0,40.5],[116.0,39.5]],[[116.3,39.8],[116.7,39.8],[116.7,40.2],[116.3,40.2],[116.3,39.8]]]},&quot;properties&quot;:{&quot;name&quot;:&quot;环形区域&quot;}}]})
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-geojson">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Polygon&quot;,&quot;coordinates&quot;:[[[116.0,39.5],[117.0,39.5],[117.0,40.5],[116.0,40.5],[116.0,39.5]],[[116.3,39.8],[116.7,39.8],[116.7,40.2],[116.3,40.2],[116.3,39.8]]]},&quot;properties&quot;:{&quot;name&quot;:&quot;环形区域&quot;}}]})
+</code></pre>
+<hr>
+<h2>4. TopoJSON 数据</h2>
+<h3>TopoJSON 点数据</h3>
+<p><strong>源码：</strong></p>
+<pre><code class="language-markdown">@[topojson]({&quot;type&quot;:&quot;Topology&quot;,&quot;objects&quot;:{&quot;cities&quot;:{&quot;type&quot;:&quot;GeometryCollection&quot;,&quot;geometries&quot;:[{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[116.4074,39.9042],&quot;properties&quot;:{&quot;name&quot;:&quot;北京&quot;}},{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[121.4737,31.2304],&quot;properties&quot;:{&quot;name&quot;:&quot;上海&quot;}}]},&quot;arcs&quot;:[],&quot;transform&quot;:{&quot;scale&quot;:[1,1],&quot;translate&quot;:[0,0]}}})
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-topojson">@[topojson]({&quot;type&quot;:&quot;Topology&quot;,&quot;objects&quot;:{&quot;cities&quot;:{&quot;type&quot;:&quot;GeometryCollection&quot;,&quot;geometries&quot;:[{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[116.4074,39.9042],&quot;properties&quot;:{&quot;name&quot;:&quot;北京&quot;}},{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[121.4737,31.2304],&quot;properties&quot;:{&quot;name&quot;:&quot;上海&quot;}}]},&quot;arcs&quot;:[],&quot;transform&quot;:{&quot;scale&quot;:[1,1],&quot;translate&quot;:[0,0]}}})
+</code></pre>
+<hr>
+<h2>5. 综合示例</h2>
+<h3>城市与交通网络</h3>
+<p><strong>源码：</strong></p>
+<pre><code class="language-markdown">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[116.4074,39.9042]},&quot;properties&quot;:{&quot;name&quot;:&quot;北京&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[121.4737,31.2304]},&quot;properties&quot;:{&quot;name&quot;:&quot;上海&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[113.2644,23.1291]},&quot;properties&quot;:{&quot;name&quot;:&quot;广州&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[116.4074,39.9042],[121.4737,31.2304]]},&quot;properties&quot;:{&quot;name&quot;:&quot;京沪高速&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[116.4074,39.9042],[113.2644,23.1291]]},&quot;properties&quot;:{&quot;name&quot;:&quot;京广高速&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[121.4737,31.2304],[113.2644,23.1291]]},&quot;properties&quot;:{&quot;name&quot;:&quot;沪昆高速&quot;}}]})
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-geojson">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[116.4074,39.9042]},&quot;properties&quot;:{&quot;name&quot;:&quot;北京&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[121.4737,31.2304]},&quot;properties&quot;:{&quot;name&quot;:&quot;上海&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[113.2644,23.1291]},&quot;properties&quot;:{&quot;name&quot;:&quot;广州&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[116.4074,39.9042],[121.4737,31.2304]]},&quot;properties&quot;:{&quot;name&quot;:&quot;京沪高速&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[116.4074,39.9042],[113.2644,23.1291]]},&quot;properties&quot;:{&quot;name&quot;:&quot;京广高速&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[121.4737,31.2304],[113.2644,23.1291]]},&quot;properties&quot;:{&quot;name&quot;:&quot;沪昆高速&quot;}}]})
+</code></pre>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Cisco IOS / 华为 VRP 配置高亮示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/ios-vrp-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/ios-vrp-examples.md</guid>
+      <pubDate>Mon, 05 Oct 2026 03:18:09 GMT</pubDate>
+      <description>内置两个网络设备配置语法包：（Cisco IOS / IOS-XE）与 （华为 VRP）。命令关键字、注释、字符串与地址分级着色，与内置 10 套代码高亮主题自动兼容。 ! 接口配置 interface GigabitEthernet0/0/1 description TO-CORE-SW-01 ip address 10.0.0.1 255.255.255.252 ip ospf 1 area </description>
+      <content:encoded><![CDATA[<h1>Cisco IOS / 华为 VRP 配置高亮示例</h1>
+<p>内置两个网络设备配置语法包：<code>ios</code>（Cisco IOS / IOS-XE）与 <code>vrp</code>（华为 VRP）。命令关键字、注释、字符串与地址分级着色，与内置 10 套代码高亮主题自动兼容。</p>
+<h2>Cisco IOS（```ios）</h2>
+<pre><code class="language-ios">! 接口配置
+interface GigabitEthernet0/0/1
+ description TO-CORE-SW-01
+ ip address 10.0.0.1 255.255.255.252
+ ip ospf 1 area 0
+ no shutdown
+!
+! OSPF 进程
+router ospf 1
+ router-id 1.1.1.1
+ network 10.0.0.0 0.0.0.3 area 0
+ passive-interface default
+ no passive-interface GigabitEthernet0/0/1
+!
+! ACL 与 NAT
+ip access-list extended LAN-OUT
+ permit ip 192.168.0.0 0.0.255.255 any
+ deny   ip any any log
+!
+ip route 0.0.0.0 0.0.0.0 203.0.113.1
+!
+line vty 0 4
+ transport input ssh
+ login local
+!
+banner motd # Authorized access only! #
+end
+</code></pre>
+<p>语法说明：</p>
+<ul>
+<li><code>!</code> 开头的行按注释着色（<code>show running-config</code> 的分段线同款）</li>
+<li><code>banner motd #...#</code> 这类以 <code>#</code> 界定的标语：界符内的 <code>!</code> 不会误判为注释，建议用引号或注意排版</li>
+<li>关键字不区分大小写，<code>interface</code> / <code>INTERFACE</code> 均可</li>
+</ul>
+<h2>别名 ```cisco</h2>
+<pre><code class="language-cisco">hostname edge-rtr-01
+enable secret 9 $9$xxxx
+username admin privilege 15 secret 9 $9$yyyy
+crypto key generate rsa modulus 2048
+ip domain-name example.com
+</code></pre>
+<h2>华为 VRP（```vrp）</h2>
+<pre><code class="language-vrp"># sysname core-sw-01
+#
+vlan batch 10 20 30
+#
+interface GigabitEthernet0/0/1
+ description TO-AGG-SW-01
+ port link-type trunk
+ port trunk allow-pass vlan 10 20 30
+ stp root secondary
+#
+# OSPF
+ospf 1 router-id 1.1.1.1
+ area 0.0.0.0
+  network 10.0.0.0 0.0.0.3
+#
+# ACL
+acl number 3000
+ rule 5 permit ip source 192.168.0.0 0.0.255.255
+ rule 10 deny ip
+#
+ip route-static 0.0.0.0 0.0.0.0 203.0.113.1
+#
+user-interface vty 0 4
+ authentication-mode aaa
+ protocol inbound ssh
+#
+return
+</code></pre>
+<p>语法说明：</p>
+<ul>
+<li><code>#</code> 开头的行按注释着色（VRP 配置的分段符同款）</li>
+<li><code>display</code> / <code>undo</code> / <code>port link-type</code> 等 VRP 特有关键字均在词表内</li>
+</ul>
+<h2>别名 ```huawei</h2>
+<pre><code class="language-huawei">sysname agg-sw-01
+dhcp enable
+interface Vlanif10
+ ip address 192.168.10.1 255.255.255.0
+ dhcp select relay
+ dhcp relay server-ip 10.0.4.5
+</code></pre>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>LaTeX 公式示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/latex-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/latex-examples.md</guid>
+      <pubDate>Mon, 05 Oct 2026 03:18:09 GMT</pubDate>
+      <description>本文档展示了 KaTeX 支持的各类数学公式及其渲染效果。 --- 行内公式使用单个 \$ 包裹，例如： - 勾股定理：$a^2 + b^2 = c^2$ - 欧拉公式：$e^{i\pi} + 1 = 0$ - 二次方程根：$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$ - 积分：$\int{a}^{b} f(x) dx$ - 求和：$\sum{n=1}^{\in</description>
+      <content:encoded><![CDATA[<h1>LaTeX 公式示例</h1>
+<p>本文档展示了 KaTeX 支持的各类数学公式及其渲染效果。</p>
+<hr>
+<h2>1. 行内公式</h2>
+<p>行内公式使用单个 $ 包裹，例如：</p>
+<ul>
+<li>勾股定理：$a^2 + b^2 = c^2$</li>
+<li>欧拉公式：$e^{i\pi} + 1 = 0$</li>
+<li>二次方程根：$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$</li>
+<li>积分：$\int_{a}^{b} f(x) dx$</li>
+<li>求和：$\sum_{n=1}^{\infty} \frac{1}{n^2}$</li>
+</ul>
+<hr>
+<h2>2. 块级公式</h2>
+<p>块级公式使用双 $$ 包裹，居中显示：</p>
+<h3>2.1 基础公式</h3>
+<p><strong>勾股定理：</strong></p>
+<p>$$
+a^2 + b^2 = c^2
+$$</p>
+<p><strong>欧拉公式：</strong></p>
+<p>$$
+e^{i\pi} + 1 = 0
+$$</p>
+<p><strong>二次方程求根公式：</strong></p>
+<p>$$
+x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+$$</p>
+<h3>2.2 微积分</h3>
+<p><strong>定积分：</strong></p>
+<p>$$
+\int_{a}^{b} f(x) dx = F(b) - F(a)
+$$</p>
+<p><strong>不定积分：</strong></p>
+<p>$$
+\int x^n dx = \frac{x^{n+1}}{n+1} + C
+$$</p>
+<p><strong>导数：</strong></p>
+<p>$$
+\frac{d}{dx} f(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}
+$$</p>
+<p><strong>偏导数：</strong></p>
+<p>$$
+\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} = 0
+$$</p>
+<h3>2.3 求和与乘积</h3>
+<p><strong>求和公式：</strong></p>
+<p>$$
+\sum_{n=1}^{\infty} \frac{1}{n^2} = \frac{\pi^2}{6}
+$$</p>
+<p><strong>乘积公式：</strong></p>
+<p>$$
+\prod_{k=1}^{n} k = n!
+$$</p>
+<h3>2.4 极限</h3>
+<p><strong>基本极限：</strong></p>
+<p>$$
+\lim_{x \to 0} \frac{\sin x}{x} = 1
+$$</p>
+<p><strong>重要极限：</strong></p>
+<p>$$
+\lim_{n \to \infty} \left(1 + \frac{1}{n}\right)^n = e
+$$</p>
+<hr>
+<h2>3. 矩阵</h2>
+<h3>3.1 基础矩阵</h3>
+<p>$$
+\begin{matrix}
+a &amp; b \
+c &amp; d
+\end{matrix}
+$$</p>
+<h3>3.2 带括号的矩阵</h3>
+<p>$$
+\begin{pmatrix}
+a &amp; b \
+c &amp; d
+\end{pmatrix}
+$$</p>
+<p>$$
+\begin{bmatrix}
+a &amp; b \
+c &amp; d
+\end{bmatrix}
+$$</p>
+<p>$$
+\begin{vmatrix}
+a &amp; b \
+c &amp; d
+\end{vmatrix}
+$$</p>
+<p>$$
+\begin{Vmatrix}
+a &amp; b \
+c &amp; d
+\end{Vmatrix}
+$$</p>
+<h3>3.3 大型矩阵</h3>
+<p>$$
+\begin{pmatrix}
+1 &amp; 0 &amp; 0 &amp; 0 \
+0 &amp; 1 &amp; 0 &amp; 0 \
+0 &amp; 0 &amp; 1 &amp; 0 \
+0 &amp; 0 &amp; 0 &amp; 1
+\end{pmatrix}
+$$</p>
+<h3>3.4 矩阵运算</h3>
+<p>矩阵乘法：</p>
+<h1>$$
+\begin{pmatrix}
+a_{11} &amp; a_{12} \
+a_{21} &amp; a_{22}
+\end{pmatrix}
+\begin{pmatrix}
+b_{11} &amp; b_{12} \
+b_{21} &amp; b_{22}
+\end{pmatrix}</h1>
+<p>\begin{pmatrix}
+a_{11}b_{11}+a_{12}b_{21} &amp; a_{11}b_{12}+a_{12}b_{22} \
+a_{21}b_{11}+a_{22}b_{21} &amp; a_{21}b_{12}+a_{22}b_{22}
+\end{pmatrix}
+$$</p>
+<hr>
+<h2>4. 方程组与等式</h2>
+<h3>4.1 线性方程组</h3>
+<p>$$
+\begin{cases}
+a_{11}x_1 + a_{12}x_2 + \cdots + a_{1n}x_n = b_1 \
+a_{21}x_1 + a_{22}x_2 + \cdots + a_{2n}x_n = b_2 \
+\cdots \
+a_{m1}x_1 + a_{m2}x_2 + \cdots + a_{mn}x_n = b_m
+\end{cases}
+$$</p>
+<h3>4.2 对齐的等式</h3>
+<p>$$
+\begin{align*}
+f(x) &amp;= (x + 1)^2 \
+&amp;= x^2 + 2x + 1
+\end{align*}
+$$</p>
+<hr>
+<h2>5. 希腊字母</h2>
+<h3>5.1 小写希腊字母</h3>
+<p>$\alpha, \beta, \gamma, \delta, \epsilon, \zeta $
+$\eta, \theta, \iota, \kappa, \lambda, \mu, \nu $
+$\xi, \pi, \rho, \sigma, \tau, \upsilon, \phi, \chi $
+$\psi, \omega$</p>
+<h3>5.2 大写希腊字母</h3>
+<p>$\Gamma, \Delta, \Theta, \Lambda, \Xi, \Pi, \Sigma, \Phi, \Psi, \Omega$</p>
+<hr>
+<h2>6. 函数与运算符</h2>
+<h3>6.1 常用函数</h3>
+<p>三角函数：</p>
+<p>$$
+\sin^2 x + \cos^2 x = 1
+$$</p>
+<p>$$
+\tan x = \frac{\sin x}{\cos x}
+$$</p>
+<p>对数函数：</p>
+<p>$$
+\log_a b = \frac{\ln b}{\ln a}
+$$</p>
+<p>指数函数：</p>
+<p>$$
+e^x = \sum_{n=0}^{\infty} \frac{x^n}{n!}
+$$</p>
+<h3>6.2 运算符</h3>
+<p>模运算：</p>
+<p>$$
+a \equiv b \pmod{n}
+$$</p>
+<p>极限运算：</p>
+<p>$$
+\limsup_{n \to \infty} a_n \geq \liminf_{n \to \infty} a_n
+$$</p>
+<hr>
+<h2>7. 统计与概率</h2>
+<h3>7.1 概率</h3>
+<p>$$
+P(A|B) = \frac{P(B|A)P(A)}{P(B)}
+$$</p>
+<h3>7.2 期望与方差</h3>
+<p>期望：</p>
+<p>$$
+E[X] = \sum_{i=1}^{n} x_i p_i
+$$</p>
+<p>方差：</p>
+<p>$$
+Var(X) = E[X^2] - (E[X])^2
+$$</p>
+<h3>7.3 正态分布</h3>
+<p>$$
+f(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}
+$$</p>
+<hr>
+<h2>8. 物理公式</h2>
+<h3>8.1 力学</h3>
+<p>牛顿第二定律：</p>
+<p>$F = ma$</p>
+<p>万有引力定律：</p>
+<p>$F = G \frac{m_1 m_2}{r^2}$</p>
+<h3>8.2 电磁学</h3>
+<p>麦克斯韦方程组：</p>
+<p>$$
+\begin{cases}
+\nabla \cdot \mathbf{E} = \frac{\rho}{\epsilon_0} \
+\nabla \cdot \mathbf{B} = 0 \
+\nabla \times \mathbf{E} = -\frac{\partial \mathbf{B}}{\partial t} \
+\nabla \times \mathbf{B} = \mu_0 \left(\mathbf{J} + \epsilon_0 \frac{\partial \mathbf{E}}{\partial t}\right)
+\end{cases}
+$$</p>
+<h3>8.3 量子力学</h3>
+<p>薛定谔方程：</p>
+<p>$$
+i\hbar \frac{\partial}{\partial t} \Psi(\mathbf{r}, t) = \hat{H} \Psi(\mathbf{r}, t)
+$$</p>
+<hr>
+<h2>9. 化学公式</h2>
+<h3>9.1 化学方程式</h3>
+<p>$$
+2H_2 + O_2 \rightarrow 2H_2O
+$$</p>
+<p>$$
+NaCl \rightarrow Na^+ + Cl^-
+$$</p>
+<h3>9.2 有机化学</h3>
+<p>苯的结构：</p>
+<p>$$
+\text{C}_6\text{H}_6
+$$</p>
+<hr>
+<h2>10. 高级数学</h2>
+<h3>10.1 傅里叶变换</h3>
+<p>$$
+\hat{f}(\xi) = \int_{-\infty}^{\infty} f(x) e^{-2\pi i x \xi} dx
+$$</p>
+<h3>10.2 拉普拉斯变换</h3>
+<p>$$
+\mathcal{L}{f(t)}(s) = \int_{0}^{\infty} f(t) e^{-st} dt
+$$</p>
+<h3>10.3 张量分析</h3>
+<p>爱因斯坦求和约定：</p>
+<p>$$
+g_{\mu\nu} dx^\mu dx^\nu
+$$</p>
+<h3>10.4 微分几何</h3>
+<p>$$
+ds^2 = g_{ij} dx^i dx^j
+$$</p>
+<hr>
+<h2>11. 表格与数组</h2>
+<h3>11.1 简单表格</h3>
+<p>$$
+\begin{array}{|c|c|c|}
+\hline
+n &amp; n^2 &amp; n^3 \
+\hline
+1 &amp; 1 &amp; 1 \
+2 &amp; 4 &amp; 8 \
+3 &amp; 9 &amp; 27 \
+4 &amp; 16 &amp; 64 \
+\hline
+\end{array}
+$$</p>
+<hr>
+<h2>12. 特殊符号</h2>
+<h3>12.1 箭头</h3>
+<p>$\leftarrow, \rightarrow, \leftrightarrow, \Leftarrow, \Rightarrow, \Leftrightarrow, \uparrow, \downarrow, \updownarrow$</p>
+<h3>12.2 关系符号</h3>
+<p>$\leq, \geq, \neq, \equiv, \approx, \sim, \simeq, \cong, \propto$</p>
+<h3>12.3 集合符号</h3>
+<p>$\in, \notin, \subset, \supset, \subseteq, \supseteq, \cup, \cap, \emptyset, \mathbb{N}, \mathbb{Z}, \mathbb{Q}, \mathbb{R}, \mathbb{C}$</p>
+<hr>
+<h2>总结</h2>
+<p>KaTeX 支持丰富的 LaTeX 数学公式语法，包括：</p>
+<ol>
+<li><strong>行内公式</strong> - 使用单个 $ 包裹</li>
+<li><strong>块级公式</strong> - 使用双 $$ 包裹</li>
+<li><strong>微积分</strong> - 积分、导数、极限</li>
+<li><strong>矩阵</strong> - 各种矩阵表示</li>
+<li><strong>方程组</strong> - 对齐、分组</li>
+<li><strong>希腊字母</strong> - 大小写</li>
+<li><strong>函数与运算符</strong> - 常用数学函数</li>
+<li><strong>统计概率</strong> - 分布、期望、方差</li>
+<li><strong>物理化学公式</strong> - 专业领域公式</li>
+<li><strong>高级数学</strong> - 傅里叶变换、张量等</li>
+</ol>
+<p>更多详细信息请参考 <a href="https://katex.org/">KaTeX 官方文档</a>。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Live 预览与 JSON 树示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/live-preview-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/live-preview-examples.md</guid>
+      <pubDate>Mon, 05 Oct 2026 03:18:09 GMT</pubDate>
+      <description>fence 信息串追加 标记的 / / 代码块会在文档内提供沙箱运行预览； 代码块自动渲染为可折叠树（追加 标记保留源码展示）。脚本运行在隔离 iframe（opaque origin）中，无法访问页面数据。 html live html live &lt;div style=&quot;font-family: system-ui; text-align: center; padding: 16px;&quot;&gt; &lt;h</description>
+      <content:encoded><![CDATA[<h1>Live 预览与 JSON 树</h1>
+<p>fence 信息串追加 <code>live</code> 标记的 <code>html</code> / <code>js</code> / <code>css</code> 代码块会在文档内提供沙箱运行预览；<code>json</code> 代码块自动渲染为可折叠树（追加 <code>raw</code> 标记保留源码展示）。脚本运行在隔离 iframe（opaque origin）中，无法访问页面数据。</p>
+<h2>HTML live 预览</h2>
+<p><code>```html live</code> 写法：</p>
+<pre><code class="language-html">&lt;div style=&quot;font-family: system-ui; text-align: center; padding: 16px;&quot;&gt;
+  &lt;h2 style=&quot;margin: 0 0 8px;&quot;&gt;Hello, Sandbox!&lt;/h2&gt;
+  &lt;button onclick=&quot;this.textContent = &#39;点击了 &#39; + (++window._n || (window._n = 1)) + &#39; 次&#39;&quot;&gt;
+    点我
+  &lt;/button&gt;
+&lt;/div&gt;
+</code></pre>
+<h2>JavaScript live 预览</h2>
+<p><code>```js live</code> 写法，console 输出显示在预览面板：</p>
+<pre><code class="language-js">// height: 220
+const sizes = [&#39;S&#39;, &#39;M&#39;, &#39;L&#39;];
+sizes.forEach((s, i) =&gt; console.log(i, &#39;尺码:&#39;, s));
+console.warn(&#39;这是一条 warning&#39;);
+console.log({ name: &#39;md-preview&#39;, stars: 42 });
+</code></pre>
+<h2>CSS live 预览</h2>
+<p><code>```css live</code> 写法，样式作用在预置示例骨架上：</p>
+<pre><code class="language-css">main { max-width: 320px; margin: 0 auto; }
+h1 { color: #b88aad; border-bottom: 2px dashed #d4a5c9; }
+button { background: #d4a5c9; color: #fff; border: none; border-radius: 999px; padding: 6px 18px; }
+li:hover { color: #b88aad; }
+.__box { background: linear-gradient(135deg, #d4a5c9, #f2c4ce); }
+</code></pre>
+<h2>JSON 可折叠树</h2>
+<p><code>```json</code> 自动渲染为可折叠树（节点可折叠、可复制路径）：</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;md-preview&quot;,
+  &quot;features&quot;: {
+    &quot;renderer&quot;: [&quot;mermaid&quot;, &quot;plantuml&quot;, &quot;apexcharts&quot;],
+    &quot;export&quot;: [&quot;pdf&quot;, &quot;html&quot;, &quot;epub&quot;, &quot;zip&quot;]
+  },
+  &quot;nested&quot;: { &quot;deep&quot;: { &quot;deeper&quot;: { &quot;leaf&quot;: true } } },
+  &quot;count&quot;: 44,
+  &quot;openSource&quot;: true
+}
+</code></pre>
+<p>保留源码展示时，追加 <code>raw</code> 标记：</p>
+<pre><code class="language-json">{ &quot;note&quot;: &quot;这棵不会变成树，仍显示为普通代码块&quot; }
+</code></pre>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Mermaid 图表示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/mermaid-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/mermaid-examples.md</guid>
+      <pubDate>Mon, 05 Oct 2026 03:18:09 GMT</pubDate>
+      <description>本文档展示了 Mermaid 支持的各类图表及其渲染效果。 --- 渲染效果： 渲染效果： 渲染效果： --- 渲染效果： 渲染效果： --- 渲染效果： 渲染效果： --- 渲染效果： 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- </description>
+      <content:encoded><![CDATA[<h1>Mermaid 图表示例</h1>
+<p>本文档展示了 Mermaid 支持的各类图表及其渲染效果。</p>
+<hr>
+<h2>1. 流程图 (Flowchart)</h2>
+<h3>垂直流程图 (Top to Bottom)</h3>
+<pre><code class="language-txt">flowchart TD
+    A[开始] --&gt; B{条件判断}
+    B --&gt;|是| C[执行操作 A]
+    B --&gt;|否| D[执行操作 B]
+    C --&gt; E[结束]
+    D --&gt; E
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">flowchart TD
+    A[开始] --&gt; B{条件判断}
+    B --&gt;|是| C[执行操作 A]
+    B --&gt;|否| D[执行操作 B]
+    C --&gt; E[结束]
+    D --&gt; E
+</code></pre>
+<h3>水平流程图 (Left to Right)</h3>
+<pre><code class="language-txt">flowchart LR
+    A[用户输入] --&gt; B[验证]
+    B --&gt; C{有效?}
+    C --&gt;|是| D[处理]
+    C --&gt;|否| E[提示错误]
+    D --&gt; F[保存结果]
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">flowchart LR
+    A[用户输入] --&gt; B[验证]
+    B --&gt; C{有效?}
+    C --&gt;|是| D[处理]
+    C --&gt;|否| E[提示错误]
+    D --&gt; F[保存结果]
+</code></pre>
+<h3>复杂流程图 (包含子图)</h3>
+<pre><code class="language-txt">flowchart TB
+    subgraph Frontend
+        A[Web 页面]
+        B[客户端逻辑]
+    end
+    
+    subgraph Backend
+        C[API 服务]
+        D[业务逻辑]
+    end
+    
+    subgraph Database
+        E[(主数据库)]
+        F[(缓存)]
+    end
+    
+    A --&gt; B
+    B --&gt; C
+    C --&gt; D
+    D --&gt; E
+    D &lt;--&gt; F
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">flowchart TB
+    subgraph Frontend
+        A[Web 页面]
+        B[客户端逻辑]
+    end
+    
+    subgraph Backend
+        C[API 服务]
+        D[业务逻辑]
+    end
+    
+    subgraph Database
+        E[(主数据库)]
+        F[(缓存)]
+    end
+    
+    A --&gt; B
+    B --&gt; C
+    C --&gt; D
+    D --&gt; E
+    D &lt;--&gt; F
+</code></pre>
+<hr>
+<h2>2. 时序图 (Sequence Diagram)</h2>
+<h3>基础时序图</h3>
+<pre><code class="language-txt">sequenceDiagram
+    participant User
+    participant Client
+    participant Server
+    participant DB
+    
+    User-&gt;&gt;Client: 点击提交
+    Client-&gt;&gt;Server: 发送请求
+    activate Server
+    Server-&gt;&gt;DB: 查询数据
+    activate DB
+    DB--&gt;&gt;Server: 返回结果
+    deactivate DB
+    Server--&gt;&gt;Client: 响应成功
+    deactivate Server
+    Client--&gt;&gt;User: 显示结果
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant User
+    participant Client
+    participant Server
+    participant DB
+    
+    User-&gt;&gt;Client: 点击提交
+    Client-&gt;&gt;Server: 发送请求
+    activate Server
+    Server-&gt;&gt;DB: 查询数据
+    activate DB
+    DB--&gt;&gt;Server: 返回结果
+    deactivate DB
+    Server--&gt;&gt;Client: 响应成功
+    deactivate Server
+    Client--&gt;&gt;User: 显示结果
+</code></pre>
+<h3>循环与条件</h3>
+<pre><code class="language-txt">sequenceDiagram
+    User-&gt;&gt;App: 请求分页数据
+    loop 每一页
+        App-&gt;&gt;API: GET /items?page=n
+        API-&gt;&gt;DB: SELECT * LIMIT 10 OFFSET n*10
+        DB--&gt;&gt;API: 10条记录
+        API--&gt;&gt;App: 数据 + total
+        App--&gt;&gt;User: 显示第n页
+    end
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">sequenceDiagram
+    User-&gt;&gt;App: 请求分页数据
+    loop 每一页
+        App-&gt;&gt;API: GET /items?page=n
+        API-&gt;&gt;DB: SELECT * LIMIT 10 OFFSET n*10
+        DB--&gt;&gt;API: 10条记录
+        API--&gt;&gt;App: 数据 + total
+        App--&gt;&gt;User: 显示第n页
+    end
+</code></pre>
+<hr>
+<h2>3. 类图 (Class Diagram)</h2>
+<h3>基础类图</h3>
+<pre><code class="language-txt">classDiagram
+    class Animal {
+        +String name
+        +int age
+        +makeSound()
+        +eat()
+    }
+    class Dog {
+        +String breed
+        +bark()
+        +fetch()
+    }
+    class Cat {
+        +boolean indoor
+        +meow()
+        +scratch()
+    }
+    
+    Animal &lt;|-- Dog : 继承
+    Animal &lt;|-- Cat : 继承
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">classDiagram
+    class Animal {
+        +String name
+        +int age
+        +makeSound()
+        +eat()
+    }
+    class Dog {
+        +String breed
+        +bark()
+        +fetch()
+    }
+    class Cat {
+        +boolean indoor
+        +meow()
+        +scratch()
+    }
+    
+    Animal &lt;|-- Dog : 继承
+    Animal &lt;|-- Cat : 继承
+</code></pre>
+<h3>复杂类关系</h3>
+<pre><code class="language-txt">classDiagram
+    class User {
+        +String id
+        +String name
+        +String email
+        +login()
+        +logout()
+    }
+    
+    class Order {
+        +String id
+        +Date orderDate
+        +Status status
+        +totalAmount()
+    }
+    
+    class Product {
+        +String id
+        +String name
+        +float price
+        +int stock
+    }
+    
+    class OrderItem {
+        +int quantity
+        +float price
+    }
+    
+    User &quot;1&quot; --&gt; &quot;*&quot; Order : 创建
+    Order &quot;1&quot; --&gt; &quot;*&quot; OrderItem : 包含
+    OrderItem &quot;*&quot; --&gt; &quot;1&quot; Product : 对应
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">classDiagram
+    class User {
+        +String id
+        +String name
+        +String email
+        +login()
+        +logout()
+    }
+    
+    class Order {
+        +String id
+        +Date orderDate
+        +Status status
+        +totalAmount()
+    }
+    
+    class Product {
+        +String id
+        +String name
+        +float price
+        +int stock
+    }
+    
+    class OrderItem {
+        +int quantity
+        +float price
+    }
+    
+    User &quot;1&quot; --&gt; &quot;*&quot; Order : 创建
+    Order &quot;1&quot; --&gt; &quot;*&quot; OrderItem : 包含
+    OrderItem &quot;*&quot; --&gt; &quot;1&quot; Product : 对应
+</code></pre>
+<hr>
+<h2>4. 状态图 (State Diagram)</h2>
+<h3>基础状态图</h3>
+<pre><code class="language-txt">stateDiagram-v2
+    [*] --&gt; 草稿
+    草稿 --&gt; 审核中: 提交审核
+    审核中 --&gt; 已发布: 审核通过
+    审核中 --&gt; 已拒绝: 审核不通过
+    已拒绝 --&gt; 草稿: 修改后重提
+    已发布 --&gt; [*]
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">stateDiagram-v2
+    [*] --&gt; 草稿
+    草稿 --&gt; 审核中: 提交审核
+    审核中 --&gt; 已发布: 审核通过
+    审核中 --&gt; 已拒绝: 审核不通过
+    已拒绝 --&gt; 草稿: 修改后重提
+    已发布 --&gt; [*]
+</code></pre>
+<h3>带选择的状态图</h3>
+<pre><code class="language-txt">stateDiagram-v2
+    [*] --&gt; 空闲
+    
+    state 空闲 {
+        [*] --&gt; 等待
+        等待 --&gt; 处理中: 收到任务
+        处理中 --&gt; 等待: 任务完成
+    }
+    
+    空闲 --&gt; 错误: 异常发生
+    错误 --&gt; 空闲: 恢复
+    错误 --&gt; [*]
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">stateDiagram-v2
+    [*] --&gt; 空闲
+    
+    state 空闲 {
+        [*] --&gt; 等待
+        等待 --&gt; 处理中: 收到任务
+        处理中 --&gt; 等待: 任务完成
+    }
+    
+    空闲 --&gt; 错误: 异常发生
+    错误 --&gt; 空闲: 恢复
+    错误 --&gt; [*]
+</code></pre>
+<hr>
+<h2>5. 实体关系图 (ER Diagram)</h2>
+<h3>基础 ER 图</h3>
+<pre><code class="language-txt">erDiagram
+    CUSTOMER ||--o{ ORDER : places
+    ORDER ||--|{ LINE-ITEM : contains
+    PRODUCT ||--o{ LINE-ITEM : &quot;ordered in&quot;
+    CUSTOMER {
+        int customerId PK
+        string name
+        string email
+        date registerDate
+    }
+    ORDER {
+        int orderId PK
+        date orderDate
+        string status
+        float totalAmount
+    }
+    LINE-ITEM {
+        int quantity
+        float unitPrice
+        float subtotal
+    }
+    PRODUCT {
+        int productId PK
+        string name
+        float price
+        int stock
+    }
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">erDiagram
+    CUSTOMER ||--o{ ORDER : places
+    ORDER ||--|{ LINE-ITEM : contains
+    PRODUCT ||--o{ LINE-ITEM : &quot;ordered in&quot;
+    CUSTOMER {
+        int customerId PK
+        string name
+        string email
+        date registerDate
+    }
+    ORDER {
+        int orderId PK
+        date orderDate
+        string status
+        float totalAmount
+    }
+    LINE-ITEM {
+        int quantity
+        float unitPrice
+        float subtotal
+    }
+    PRODUCT {
+        int productId PK
+        string name
+        float price
+        int stock
+    }
+</code></pre>
+<hr>
+<h2>6. 甘特图 (Gantt Chart)</h2>
+<h3>项目计划甘特图</h3>
+<pre><code class="language-txt">gantt
+    title 项目开发计划
+    dateFormat  YYYY-MM-DD
+    excludes    weekends
+    section 设计
+    需求分析       :a1, 2024-01-01, 10d
+    UI设计         :a2, after a1, 14d
+    架构设计       :a3, after a2, 7d
+    section 开发
+    后端开发       :b1, after a3, 28d
+    前端开发       :b2, after a3, 21d
+    section 测试
+    单元测试       :c1, after b1, 7d
+    集成测试       :c2, after b1 b2, 7d
+    系统测试       :c3, after c2, 5d
+    section 部署
+    预发布         :d1, after c3, 3d
+    正式发布       :d2, after d1, 2d
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">gantt
+    title 项目开发计划
+    dateFormat  YYYY-MM-DD
+    excludes    weekends
+    section 设计
+    需求分析       :a1, 2024-01-01, 10d
+    UI设计         :a2, after a1, 14d
+    架构设计       :a3, after a2, 7d
+    section 开发
+    后端开发       :b1, after a3, 28d
+    前端开发       :b2, after a3, 21d
+    section 测试
+    单元测试       :c1, after b1, 7d
+    集成测试       :c2, after b1 b2, 7d
+    系统测试       :c3, after c2, 5d
+    section 部署
+    预发布         :d1, after c3, 3d
+    正式发布       :d2, after d1, 2d
+</code></pre>
+<hr>
+<h2>7. 饼图 (Pie Chart) &amp; 甜甜圈图 (Donut Chart)</h2>
+<h3>饼图</h3>
+<pre><code class="language-txt">pie title 编程语言使用统计
+    &quot;JavaScript&quot; : 45
+    &quot;Python&quot; : 30
+    &quot;Java&quot; : 15
+    &quot;Go&quot; : 10
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">pie title 编程语言使用统计
+    &quot;JavaScript&quot; : 45
+    &quot;Python&quot; : 30
+    &quot;Java&quot; : 15
+    &quot;Go&quot; : 10
+</code></pre>
+<h3>预算分配 (甜甜圈图效果)</h3>
+<pre><code class="language-txt">pie title 项目预算分配
+    &quot;人力资源&quot; : 50
+    &quot;基础设施&quot; : 25
+    &quot;市场营销&quot; : 15
+    &quot;研发工具&quot; : 10
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">pie title 项目预算分配
+    &quot;人力资源&quot; : 50
+    &quot;基础设施&quot; : 25
+    &quot;市场营销&quot; : 15
+    &quot;研发工具&quot; : 10
+</code></pre>
+<hr>
+<h2>8. Git 分支图 (Git Graph)</h2>
+<h3>基础 Git 分支图</h3>
+<pre><code class="language-txt">gitGraph
+    commit id: &quot;Initial commit&quot;
+    branch feature/login
+    checkout feature/login
+    commit id: &quot;Add login page&quot;
+    commit id: &quot;Implement login logic&quot;
+    checkout main
+    merge feature/login id: &quot;Merge login feature&quot;
+    commit id: &quot;Fix bug #123&quot;
+    branch hotfix
+    checkout hotfix
+    commit id: &quot;Fix critical issue&quot;
+    checkout main
+    merge hotfix id: &quot;Apply hotfix&quot;
+    commit id: &quot;Release v1.0&quot;
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">gitGraph
+    commit id: &quot;Initial commit&quot;
+    branch feature/login
+    checkout feature/login
+    commit id: &quot;Add login page&quot;
+    commit id: &quot;Implement login logic&quot;
+    checkout main
+    merge feature/login id: &quot;Merge login feature&quot;
+    commit id: &quot;Fix bug #123&quot;
+    branch hotfix
+    checkout hotfix
+    commit id: &quot;Fix critical issue&quot;
+    checkout main
+    merge hotfix id: &quot;Apply hotfix&quot;
+    commit id: &quot;Release v1.0&quot;
+</code></pre>
+<hr>
+<h2>9. 用户旅程图 (User Journey)</h2>
+<h3>购物流程用户旅程</h3>
+<pre><code class="language-txt">journey
+    title 用户购物流程
+    section 浏览商品
+      搜索商品: 5: 用户
+      查看详情: 4: 用户
+      比较价格: 3: 用户
+    section 下单
+      加入购物车: 5: 用户
+      填写收货信息: 3: 用户
+      选择支付方式: 4: 用户
+      确认支付: 1: 用户
+    section 收货
+      查看物流: 3: 用户
+      确认收货: 4: 用户
+      评价商品: 2: 用户
+    section 售后
+      申请退换: 1: 用户
+      客服处理: 3: 客服
+      完成退换: 4: 用户
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">journey
+    title 用户购物流程
+    section 浏览商品
+      搜索商品: 5: 用户
+      查看详情: 4: 用户
+      比较价格: 3: 用户
+    section 下单
+      加入购物车: 5: 用户
+      填写收货信息: 3: 用户
+      选择支付方式: 4: 用户
+      确认支付: 1: 用户
+    section 收货
+      查看物流: 3: 用户
+      确认收货: 4: 用户
+      评价商品: 2: 用户
+    section 售后
+      申请退换: 1: 用户
+      客服处理: 3: 客服
+      完成退换: 4: 用户
+</code></pre>
+<hr>
+<h2>10. 思维导图 (Mind Map)</h2>
+<h3>项目规划思维导图</h3>
+<pre><code class="language-txt">mindmap
+  root((项目规划))
+    设计阶段
+      需求分析
+        功能需求
+        非功能需求
+      UI/UX设计
+        原型设计
+        视觉设计
+      架构设计
+        系统架构
+        数据库设计
+    开发阶段
+      后端开发
+        API接口
+        业务逻辑
+        数据访问
+      前端开发
+        页面开发
+        组件开发
+        交互开发
+    测试阶段
+      单元测试
+      集成测试
+      系统测试
+      用户验收测试
+    部署阶段
+      环境准备
+      部署执行
+      监控运维
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">mindmap
+  root((项目规划))
+    设计阶段
+      需求分析
+        功能需求
+        非功能需求
+      UI/UX设计
+        原型设计
+        视觉设计
+      架构设计
+        系统架构
+        数据库设计
+    开发阶段
+      后端开发
+        API接口
+        业务逻辑
+        数据访问
+      前端开发
+        页面开发
+        组件开发
+        交互开发
+    测试阶段
+      单元测试
+      集成测试
+      系统测试
+      用户验收测试
+    部署阶段
+      环境准备
+      部署执行
+      监控运维
+</code></pre>
+<hr>
+<h2>11. 时间线图 (Timeline)</h2>
+<h3>技术发展时间线</h3>
+<pre><code class="language-txt">timeline
+    title 技术发展历程
+    2000-2010 : Web 1.0 时代
+        静态网页
+        表格布局
+        IE 浏览器主导
+    2010-2015 : Web 2.0 时代
+        动态网页
+        Ajax 技术
+        jQuery 流行
+    2015-2020 : 移动互联网时代
+        智能手机普及
+        响应式设计
+        Vue / React 框架
+    2020-至今 : AI 时代
+        大语言模型
+        智能应用
+        云原生技术
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">timeline
+    title 技术发展历程
+    2000-2010 : Web 1.0 时代
+        静态网页
+        表格布局
+        IE 浏览器主导
+    2010-2015 : Web 2.0 时代
+        动态网页
+        Ajax 技术
+        jQuery 流行
+    2015-2020 : 移动互联网时代
+        智能手机普及
+        响应式设计
+        Vue / React 框架
+    2020-至今 : AI 时代
+        大语言模型
+        智能应用
+        云原生技术
+</code></pre>
+<hr>
+<h2>12. 四象限图 (Quadrant Chart)</h2>
+<h3>项目优先级矩阵</h3>
+<pre><code class="language-txt">quadrantChart
+    title 项目优先级矩阵
+    x-axis 低影响 --&gt; 高影响
+    y-axis 低成本 --&gt; 高成本
+    quadrant-1 立即执行
+    quadrant-2 重点规划
+    quadrant-3 暂缓考虑
+    quadrant-4 审慎评估
+    功能A: [0.30, 0.60]
+    功能B: [0.70, 0.80]
+    功能C: [0.20, 0.30]
+    功能D: [0.80, 0.40]
+    功能E: [0.50, 0.50]
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">quadrantChart
+    title 项目优先级矩阵
+    x-axis 低影响 --&gt; 高影响
+    y-axis 低成本 --&gt; 高成本
+    quadrant-1 立即执行
+    quadrant-2 重点规划
+    quadrant-3 暂缓考虑
+    quadrant-4 审慎评估
+    功能A: [0.30, 0.60]
+    功能B: [0.70, 0.80]
+    功能C: [0.20, 0.30]
+    功能D: [0.80, 0.40]
+    功能E: [0.50, 0.50]
+</code></pre>
+<hr>
+<h2>13. 块图 (Block Diagram)</h2>
+<h3>系统架构块图</h3>
+<pre><code class="language-txt">block
+    columns 3
+    web[&quot;客户端&quot;]
+    app[&quot;应用服务&quot;]
+    cache[&quot;缓存&quot;]
+
+    db[(&quot;数据库&quot;)]
+    queue[&quot;消息队列&quot;]
+
+    web --&gt; app
+    app --&gt; cache
+    app --&gt; db
+    app --&gt; queue
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">block
+    columns 3
+    web[&quot;客户端&quot;]
+    app[&quot;应用服务&quot;]
+    cache[&quot;缓存&quot;]
+
+    db[(&quot;数据库&quot;)]
+    queue[&quot;消息队列&quot;]
+
+    web --&gt; app
+    app --&gt; cache
+    app --&gt; db
+    app --&gt; queue
+</code></pre>
+<hr>
+<h2>14. C4 架构图 (C4 Model)</h2>
+<h3>C4 系统上下文图</h3>
+<pre><code class="language-txt">C4Context
+    title 系统上下文图
+    
+    Person(user, &quot;用户&quot;, &quot;使用系统的人员&quot;)
+    System(web, &quot;Web 应用&quot;, &quot;提供用户界面和交互&quot;)
+    System(api, &quot;API 服务&quot;, &quot;处理业务逻辑&quot;)
+    SystemDb(database, &quot;数据库&quot;, &quot;存储业务数据&quot;)
+    
+    Rel(user, web, &quot;使用浏览器访问&quot;)
+    Rel(web, api, &quot;调用 API&quot;)
+    Rel(api, database, &quot;读写数据&quot;)
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">C4Context
+    title 系统上下文图
+    
+    Person(user, &quot;用户&quot;, &quot;使用系统的人员&quot;)
+    System(web, &quot;Web 应用&quot;, &quot;提供用户界面和交互&quot;)
+    System(api, &quot;API 服务&quot;, &quot;处理业务逻辑&quot;)
+    SystemDb(database, &quot;数据库&quot;, &quot;存储业务数据&quot;)
+    
+    Rel(user, web, &quot;使用浏览器访问&quot;)
+    Rel(web, api, &quot;调用 API&quot;)
+    Rel(api, database, &quot;读写数据&quot;)
+</code></pre>
+<hr>
+<h2>15. XY 图表 (XY Chart)</h2>
+<h3>销售数据趋势图</h3>
+<pre><code class="language-txt">xychart-beta horizontal
+    title &quot;Quarterly Report&quot;
+    x-axis [Q1, Q2, Q3, Q4]
+    y-axis &quot;Revenue (k$)&quot; 0 --&gt; 100
+    bar [65, 59, 80, 81]
+    line [60, 55, 75, 85]
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">xychart-beta horizontal
+    title &quot;Quarterly Report&quot;
+    x-axis [Q1, Q2, Q3, Q4]
+    y-axis &quot;Revenue (k$)&quot; 0 --&gt; 100
+    bar [65, 59, 80, 81]
+    line [60, 55, 75, 85]
+</code></pre>
+<hr>
+<h2>16. 网络拓扑图 (Network Topology)</h2>
+<h3>企业网络拓扑</h3>
+<pre><code class="language-txt">flowchart TB
+    subgraph Internet
+        User1([用户A])
+        User2([用户B])
+        CDN[CDN 节点]
+    end
+    
+    subgraph DMZ
+        LB[负载均衡]
+        WAF[Web 防火墙]
+    end
+    
+    subgraph Application
+        Web1[Web 服务器1]
+        Web2[Web 服务器2]
+        App1[应用服务器1]
+        App2[应用服务器2]
+    end
+    
+    subgraph Data
+        DB[(主数据库)]
+        DBSlave[(从数据库)]
+        Redis[(Redis 缓存)]
+        Storage[(对象存储)]
+    end
+    
+    User1 --&gt; CDN
+    User2 --&gt; CDN
+    CDN --&gt; WAF
+    WAF --&gt; LB
+    LB --&gt; Web1
+    LB --&gt; Web2
+    Web1 --&gt; App1
+    Web2 --&gt; App2
+    App1 --&gt; Redis
+    App2 --&gt; Redis
+    App1 --&gt; DB
+    App2 --&gt; DB
+    DB --&gt; DBSlave
+    App1 --&gt; Storage
+    App2 --&gt; Storage
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">flowchart TB
+    subgraph Internet
+        User1([用户A])
+        User2([用户B])
+        CDN[CDN 节点]
+    end
+    
+    subgraph DMZ
+        LB[负载均衡]
+        WAF[Web 防火墙]
+    end
+    
+    subgraph Application
+        Web1[Web 服务器1]
+        Web2[Web 服务器2]
+        App1[应用服务器1]
+        App2[应用服务器2]
+    end
+    
+    subgraph Data
+        DB[(主数据库)]
+        DBSlave[(从数据库)]
+        Redis[(Redis 缓存)]
+        Storage[(对象存储)]
+    end
+    
+    User1 --&gt; CDN
+    User2 --&gt; CDN
+    CDN --&gt; WAF
+    WAF --&gt; LB
+    LB --&gt; Web1
+    LB --&gt; Web2
+    Web1 --&gt; App1
+    Web2 --&gt; App2
+    App1 --&gt; Redis
+    App2 --&gt; Redis
+    App1 --&gt; DB
+    App2 --&gt; DB
+    DB --&gt; DBSlave
+    App1 --&gt; Storage
+    App2 --&gt; Storage
+</code></pre>
+<hr>
+<h2>17. 看板 (Kanban Board)</h2>
+<h3>任务看板</h3>
+<pre><code class="language-txt">flowchart LR
+    subgraph Backlog[&quot;📋 待办&quot;]
+        Task1[&quot;🔴 紧急任务&quot;]
+        Task2[&quot;🟡 普通任务&quot;]
+        Task3[&quot;🟢 低优先级&quot;]
+    end
+    
+    subgraph InProgress[&quot;⚡ 进行中&quot;]
+        Task4[&quot;🔵 开发中&quot;]
+        Task5[&quot;🟣 设计中&quot;]
+    end
+    
+    subgraph Review[&quot;👀 审核中&quot;]
+        Task6[&quot;🟠 代码审查&quot;]
+        Task7[&quot;⚪ UI 验收&quot;]
+    end
+    
+    subgraph Done[&quot;✅ 已完成&quot;]
+        Task8[&quot;✅ 任务完成&quot;]
+        Task9[&quot;✅ 已上线&quot;]
+    end
+    
+    Task1 --&gt; Task4
+    Task2 --&gt; Task5
+    Task4 --&gt; Task6
+    Task5 --&gt; Task7
+    Task6 --&gt; Task8
+    Task7 --&gt; Task9
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">flowchart LR
+    subgraph Backlog[&quot;📋 待办&quot;]
+        Task1[&quot;🔴 紧急任务&quot;]
+        Task2[&quot;🟡 普通任务&quot;]
+        Task3[&quot;🟢 低优先级&quot;]
+    end
+    
+    subgraph InProgress[&quot;⚡ 进行中&quot;]
+        Task4[&quot;🔵 开发中&quot;]
+        Task5[&quot;🟣 设计中&quot;]
+    end
+    
+    subgraph Review[&quot;👀 审核中&quot;]
+        Task6[&quot;🟠 代码审查&quot;]
+        Task7[&quot;⚪ UI 验收&quot;]
+    end
+    
+    subgraph Done[&quot;✅ 已完成&quot;]
+        Task8[&quot;✅ 任务完成&quot;]
+        Task9[&quot;✅ 已上线&quot;]
+    end
+    
+    Task1 --&gt; Task4
+    Task2 --&gt; Task5
+    Task4 --&gt; Task6
+    Task5 --&gt; Task7
+    Task6 --&gt; Task8
+    Task7 --&gt; Task9
+</code></pre>
+<hr>
+<h2>18. 需求图 (Requirement Diagram)</h2>
+<h3>软件需求图</h3>
+<pre><code class="language-txt">flowchart TB
+    subgraph 业务需求
+        BR1[&quot;BR1: 提高用户体验&quot;]
+        BR2[&quot;BR2: 增加收入来源&quot;]
+    end
+    
+    subgraph 用户需求
+        UR1[&quot;UR1: 快速登录&quot;]
+        UR2[&quot;UR2: 支付便捷&quot;]
+        UR3[&quot;UR3: 订单追踪&quot;]
+    end
+    
+    subgraph 功能需求
+        FR1[&quot;FR1: 第三方登录&quot;]
+        FR2[&quot;FR2: 多支付方式&quot;]
+        FR3[&quot;FR3: 物流查询&quot;]
+        FR4[&quot;FR4: 消息通知&quot;]
+    end
+    
+    BR1 --&gt; UR1
+    BR1 --&gt; UR3
+    BR2 --&gt; UR2
+    
+    UR1 --&gt; FR1
+    UR2 --&gt; FR2
+    UR3 --&gt; FR3
+    UR1 --&gt; FR4
+    UR3 --&gt; FR4
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<pre><code class="language-mermaid">flowchart TB
+    subgraph 业务需求
+        BR1[&quot;BR1: 提高用户体验&quot;]
+        BR2[&quot;BR2: 增加收入来源&quot;]
+    end
+    
+    subgraph 用户需求
+        UR1[&quot;UR1: 快速登录&quot;]
+        UR2[&quot;UR2: 支付便捷&quot;]
+        UR3[&quot;UR3: 订单追踪&quot;]
+    end
+    
+    subgraph 功能需求
+        FR1[&quot;FR1: 第三方登录&quot;]
+        FR2[&quot;FR2: 多支付方式&quot;]
+        FR3[&quot;FR3: 物流查询&quot;]
+        FR4[&quot;FR4: 消息通知&quot;]
+    end
+    
+    BR1 --&gt; UR1
+    BR1 --&gt; UR3
+    BR2 --&gt; UR2
+    
+    UR1 --&gt; FR1
+    UR2 --&gt; FR2
+    UR3 --&gt; FR3
+    UR1 --&gt; FR4
+    UR3 --&gt; FR4
+</code></pre>
+<hr>
+<h2>总结</h2>
+<p>本文档展示了 Mermaid 支持的各类图表，包括：</p>
+<ol>
+<li><strong>流程图</strong> - 垂直、水平、复杂流程图</li>
+<li><strong>时序图</strong> - 基础时序、循环与条件</li>
+<li><strong>类图</strong> - 类关系、属性、方法</li>
+<li><strong>状态图</strong> - 状态转换、嵌套状态</li>
+<li><strong>ER 图</strong> - 实体关系、属性</li>
+<li><strong>甘特图</strong> - 项目计划、时间线</li>
+<li><strong>饼图</strong> - 数据分布、比例展示</li>
+<li><strong>Git 分支图</strong> - Git 工作流</li>
+<li><strong>用户旅程图</strong> - 用户体验流程</li>
+<li><strong>思维导图</strong> - 层次结构、脑图</li>
+<li><strong>时间线图</strong> - 历史发展、里程碑</li>
+<li><strong>四象限图</strong> - 优先级矩阵</li>
+<li><strong>块图</strong> - 系统架构块</li>
+<li><strong>C4 架构图</strong> - 系统上下文</li>
+<li><strong>XY 图表</strong> - 趋势图表</li>
+<li><strong>网络拓扑图</strong> - 网络结构</li>
+<li><strong>看板</strong> - 任务管理</li>
+<li><strong>需求图</strong> - 需求层次</li>
+</ol>
+<p>更多详细信息请参考 <a href="https://mermaid.js.org/">Mermaid 官方文档</a>。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Packet Tracer 拓扑渲染示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/pkt-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/pkt-examples.md</guid>
+      <pubDate>Mon, 05 Oct 2026 03:18:09 GMT</pubDate>
+      <description>本站点支持在 Markdown 文档中嵌入 Cisco Packet Tracer 拓扑图。将 文件放入 目录，构建脚本会自动解密、解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。 使用 嵌入语法引用预处理好的拓扑 JSON，需要用 代码块包裹（即三反引号 + 语言标记）： 渲染效果如下： &gt; 提示：如果文件名包含空格，引用时请使用 URL 编码（空格替换为 ）。</description>
+      <content:encoded><![CDATA[<h1>Packet Tracer 拓扑渲染</h1>
+<p>本站点支持在 Markdown 文档中嵌入 Cisco Packet Tracer 拓扑图。将 <code>.pkt</code> 文件放入 <code>iris/data/pkt/raw/</code> 目录，构建脚本会自动解密、解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。</p>
+<h2>基本用法</h2>
+<p>使用 <code>@[pkt](文件名)</code> 嵌入语法引用预处理好的拓扑 JSON，需要用 <code>pkt</code> 代码块包裹（即三反引号 + <code>pkt</code> 语言标记）：</p>
+<pre><code>@[pkt](example)
+</code></pre>
+<p>渲染效果如下：</p>
+<pre><code class="language-pkt">@[pkt](example)
+</code></pre>
+<blockquote>
+<p><strong>提示</strong>：如果文件名包含空格，引用时请使用 URL 编码（空格替换为 <code>%20</code>）。例如 <code>@[pkt](my%20topology)</code>。</p>
+</blockquote>
+<h2>示例拓扑</h2>
+<h3>基础网络示例</h3>
+<p>简单的双路由器 + 交换机 + PC + 服务器拓扑，包含 VLAN 划分、OSPF 路由、ACL 访问控制列表。</p>
+<pre><code class="language-pkt">@[pkt](example)
+</code></pre>
+<h3>路由协议综合实验</h3>
+<p>包含 OSPF、BGP、RIP 三种路由协议的综合实验拓扑，6 台路由器、2 台 PC、9 条链路，展示多种路由协议的配置与互通。</p>
+<pre><code class="language-pkt">@[pkt](ospf-bgp-rip%20over)
+</code></pre>
+<h2>可用拓扑一览</h2>
+<table>
+<thead>
+<tr>
+<th>拓扑名称</th>
+<th>设备数</th>
+<th>链路数</th>
+<th>技术点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>example</td>
+<td>6</td>
+<td>5</td>
+<td>VLAN、OSPF、ACL</td>
+</tr>
+<tr>
+<td>ospf-bgp-rip over</td>
+<td>9</td>
+<td>9</td>
+<td>OSPF、BGP、RIP</td>
+</tr>
+</tbody></table>
+<h2>交互功能</h2>
+<ul>
+<li><strong>缩放平移</strong>：鼠标滚轮缩放，拖拽平移画布</li>
+<li><strong>节点拖拽</strong>：拖动设备节点重新排列</li>
+<li><strong>hover 高亮</strong>：鼠标悬停连线显示接口和线缆信息</li>
+<li><strong>点击详情</strong>：点击设备节点弹出右侧抽屉，查看接口表/配置/VLAN/ACL/路由</li>
+<li><strong>搜索过滤</strong>：在搜索框输入设备名/IP/类型，匹配设备高亮</li>
+<li><strong>布局切换</strong>：PT 原始坐标 ↔ 力导向自动布局</li>
+<li><strong>网格背景</strong>：可切换点阵网格/透明背景</li>
+<li><strong>导出</strong>：支持导出 PNG 图片 / JSON 数据 / Markdown 表格</li>
+</ul>
+<h2>线缆类型颜色编码</h2>
+<table>
+<thead>
+<tr>
+<th>颜色</th>
+<th>线缆类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>蓝色</td>
+<td>直连线 (Straight)</td>
+</tr>
+<tr>
+<td>红色</td>
+<td>交叉线 (Crossover)</td>
+</tr>
+<tr>
+<td>紫色</td>
+<td>光纤 (Fiber)</td>
+</tr>
+<tr>
+<td>橙色</td>
+<td>串口线 (Serial)</td>
+</tr>
+<tr>
+<td>绿色</td>
+<td>控制台线 (Console)</td>
+</tr>
+<tr>
+<td>青色</td>
+<td>无线 (Wireless)</td>
+</tr>
+</tbody></table>
+<h2>设备类型图标</h2>
+<p>支持 13 种设备类型的图标渲染：路由器、交换机、PC、服务器、笔记本、防火墙、IP 电话、无线接入点、云、集线器、电视、平板、未知设备。</p>
+<h2>工作流程</h2>
+<ol>
+<li>将 <code>.pkt</code> 文件放入 <code>iris/data/pkt/raw/</code></li>
+<li>本地运行 <code>python iris/scripts/pkt/main.py</code> 或推送到 GitHub 触发 CI</li>
+<li>脚本自动解密（XOR / Twofish EAX）→ 解压（zlib）→ 解析 XML → 输出 JSON</li>
+<li>在 Markdown 中用 <code>@[pkt](文件名)</code> 引用</li>
+</ol>
+<h3>文件命名建议</h3>
+<ul>
+<li>推荐使用英文、数字、连字符（<code>-</code>）和下划线（<code>_</code>）</li>
+<li>避免空格和特殊字符</li>
+<li>含空格的文件名引用时需用 <code>%20</code> 编码</li>
+</ul>
+<h2>支持的 PT 版本</h2>
+<ul>
+<li>PT 5.x / 6.x / 7.0-7.2（XOR 加密）</li>
+<li>PT 7.3+ / 8.x（Twofish EAX 加密）</li>
+</ul>
+<h2>解析的信息</h2>
+<p>每个设备可查看以下信息：</p>
+<ul>
+<li><strong>接口表</strong>：接口名、IP、掩码、状态、双工、速率、描述</li>
+<li><strong>配置</strong>：完整 startup-config，按 interface 分块折叠，IOS 语法高亮</li>
+<li><strong>VLAN</strong>：VLAN ID 和名称</li>
+<li><strong>ACL</strong>：访问控制列表规则</li>
+<li><strong>路由表</strong>：直连路由、静态路由、OSPF 路由（从配置推算）</li>
+</ul>
+<h2>华为 VRP 配置步骤推算</h2>
+<p>PKT 渲染器内置了对华为 VRP 配置的&quot;可能的配置过程&quot;推算能力——把一段完整的 VRP 配置 <code>display current-configuration</code> 输出，按配置最佳实践顺序重组为带视图提示符的交互式命令步骤（系统视图 → VLAN → 接口 → 路由协议 → ... → 保存），方便学习与排错参考。</p>
+<p>推算逻辑基于正则表达式 + 段落分割，支持 OSPF / BGP / IS-IS / RIP / ACL / NAT / DHCP / VRRP / AAA / SSH / NTP / SNMP / STP / 前缀列表 / 路由策略 等常见协议，已修复命令缩写归一化、<code>#</code> 分隔符缺失 fallback、OSPF 多进程 VRF、BGP 地址族子视图等边界情况。完整示例与已知限制详见：</p>
+<blockquote>
+<p><strong>👉 <a href="https://theforeveriris.github.io/md-preview/docs/examples/pkt-huawei-vrp-%E8%A7%A3%E6%9E%90%E7%A4%BA%E4%BE%8B.md">PKT 华为 VRP 命令解析示例</a></strong></p>
+<p>包含：解析器工作流程 / 典型配置完整输入输出对照 / 识别规则速查 / 已修复问题与已知限制。</p>
+</blockquote>
+]]></content:encoded>
+    </item>
     <item>
       <title>快捷键</title>
       <link>https://theforeveriris.github.io/md-preview/docs/shortcuts.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/shortcuts.md</guid>
-      <pubDate>Fri, 02 Oct 2026 10:49:48 GMT</pubDate>
+      <pubDate>Mon, 05 Oct 2026 03:18:09 GMT</pubDate>
       <description>Markdown Preview 支持一组全局键盘快捷键，覆盖侧边栏、设置、搜索、文档导航与内容区宽度调节。 表示 macOS 的 Cmd 键， 表示 Windows / Linux 的 Ctrl 键。 --- | 按键 | 功能 | 说明 | |------|------|------| | | 折叠 / 展开侧边栏 | 对齐 VS Code 的侧边栏键位；折叠后左上角会浮现展开按钮；状态自动记</description>
       <content:encoded><![CDATA[<h1>快捷键</h1>
 <p>Markdown Preview 支持一组全局键盘快捷键，覆盖侧边栏、设置、搜索、文档导航与内容区宽度调节。<code>⌘</code> 表示 macOS 的 Cmd 键，<code>Ctrl</code> 表示 Windows / Linux 的 Ctrl 键。</p>
@@ -38,7 +2180,7 @@
 <tr>
 <td><code>Ctrl/⌘ + K</code></td>
 <td>打开搜索命令面板</td>
-<td>对齐 GitHub / Slack 的搜索键位；面板居中弹出，也可点击侧边栏顶部「搜索文档…」触发行唤起；面板已打开时再按重新聚焦输入框</td>
+<td>对齐 GitHub / Slack 的搜索键位；面板居中弹出，也可点击侧边栏顶部「搜索文档…」触发行唤起；面板已打开时再按重新聚焦输入框；空态与结果末尾列出高频命令（切主题 / 专注模式 / 导出 / 随机读一篇等），查询以 <code>&gt;</code> 开头进入纯命令模式</td>
 </tr>
 <tr>
 <td><code>Ctrl/⌘ + F</code></td>
@@ -2530,158 +4672,6 @@ date: 2026-01-15
 ]]></content:encoded>
     </item>
     <item>
-      <title>CSV / TSV 交互表格示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/csv-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/csv-examples.md</guid>
-      <pubDate>Thu, 01 Oct 2026 05:07:11 GMT</pubDate>
-      <description>/ 代码块会渲染为可排序、可搜索、可按列筛选的交互表格，贴数据不用再截图。 - 点击表头排序：升 → 降 → 恢复原始顺序，数值列按数值比较 - 表头漏斗按钮：按该列的唯一值勾选筛选 - 工具栏搜索框：即时过滤任意单元格命中的行 - 右侧按钮：复制 CSV / 下载 CSV（保留原文） 逗号或换行出现在单元格内时，用双引号包裹（RFC 4180），引号本身写两个：</description>
-      <content:encoded><![CDATA[<h1>CSV / TSV 交互表格示例</h1>
-<p><code>csv</code> / <code>tsv</code> 代码块会渲染为可排序、可搜索、可按列筛选的交互表格，贴数据不用再截图。</p>
-<h2>基础 CSV</h2>
-<pre><code class="language-csv">协议,端口,传输层,说明
-HTTP,80,TCP,超文本传输协议
-HTTPS,443,TCP,TLS 加密的 HTTP
-DNS,53,UDP/TCP,域名解析
-SSH,22,TCP,安全远程登录
-FTP,21,TCP,文件传输
-SNMP,161,UDP,网络设备管理
-</code></pre>
-<ul>
-<li>点击表头排序：升 → 降 → 恢复原始顺序，数值列按数值比较</li>
-<li>表头漏斗按钮：按该列的唯一值勾选筛选</li>
-<li>工具栏搜索框：即时过滤任意单元格命中的行</li>
-<li>右侧按钮：复制 CSV / 下载 CSV（保留原文）</li>
-</ul>
-<h2>数值排序</h2>
-<pre><code class="language-csv">设备,CPU (%),内存 (MB),在线天数
-R1,23.5,512,120
-R2,7.2,256,45
-SW1,45.0,1024,301
-SW2,12.8,512,88
-FW1,67.3,2048,12
-</code></pre>
-<h2>带引号转义的 CSV</h2>
-<p>逗号或换行出现在单元格内时，用双引号包裹（RFC 4180），引号本身写两个：</p>
-<pre><code class="language-csv">姓名,职务,备注
-&quot;张三&quot;,&quot;网络工程师&quot;,&quot;CCIE,HCIE 双证&quot;
-&quot;李四&quot;,&quot;运维工程师&quot;,&quot;擅长 &quot;&quot;救火&quot;&quot;&quot;
-</code></pre>
-<h2>TSV（制表符分隔）</h2>
-<pre><code class="language-tsv">命令	模式	作用
-show version	用户/特权	查看版本与运行时间
-show ip route	特权	查看路由表
-display current-configuration	用户/特权	查看当前配置（VRP）
-</code></pre>
-<h2>长表格（自动横向滚动）</h2>
-<pre><code class="language-csv">编号,设备名,管理地址,环回地址,厂商,型号,软件版本,上联端口,带宽 (Mbps),所属机房,责任人,备注
-1,core-rtr-01,10.0.0.1,1.1.1.1,Cisco,ASR 9006,IOS-XR 7.5.2,MGT0/0,1000,DC-A,张三,核心路由器
-2,core-rtr-02,10.0.0.2,1.1.1.2,Cisco,ASR 9006,IOS-XR 7.5.2,MGT0/0,1000,DC-A,张三,核心路由器（备）
-3,agg-sw-01,10.0.1.1,1.1.2.1,Huawei,CE12804,V200R005,GE0/0/1,10000,DC-A,李四,汇聚交换机
-4,agg-sw-02,10.0.1.2,1.1.2.2,Huawei,CE12804,V200R005,GE0/0/1,10000,DC-A,李四,汇聚交换机（备）
-5,acc-sw-11,10.0.2.11,1.1.3.11,Cisco,C9300,17.6.4,GE1/0/24,1000,DC-B,王五,接入交换机
-6,acc-sw-12,10.0.2.12,1.1.3.12,Cisco,C9300,17.6.4,GE1/0/24,1000,DC-B,王五,接入交换机
-7,fw-01,10.0.3.1,1.1.4.1,Fortinet,FG-600F,7.2.4,port1,10000,DC-A,赵六,边界防火墙
-8,lb-01,10.0.4.1,1.1.5.1,F5,BIG-IP i5800,17.0,mgmt,1000,DC-A,赵六,负载均衡
-9,edge-rtr-01,10.0.5.1,1.1.6.1,Huawei,NE40E,V800R010,GE0/0/0,10000,DC-B,钱七,出口路由器
-10,edge-rtr-02,10.0.5.2,1.1.6.2,Huawei,NE40E,V800R010,GE0/0/0,10000,DC-B,钱七,出口路由器（备）
-</code></pre>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>Cisco IOS / 华为 VRP 配置高亮示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/ios-vrp-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/ios-vrp-examples.md</guid>
-      <pubDate>Thu, 01 Oct 2026 05:07:11 GMT</pubDate>
-      <description>内置两个网络设备配置语法包：（Cisco IOS / IOS-XE）与 （华为 VRP）。命令关键字、注释、字符串与地址分级着色，与内置 10 套代码高亮主题自动兼容。 ! 接口配置 interface GigabitEthernet0/0/1 description TO-CORE-SW-01 ip address 10.0.0.1 255.255.255.252 ip ospf 1 area </description>
-      <content:encoded><![CDATA[<h1>Cisco IOS / 华为 VRP 配置高亮示例</h1>
-<p>内置两个网络设备配置语法包：<code>ios</code>（Cisco IOS / IOS-XE）与 <code>vrp</code>（华为 VRP）。命令关键字、注释、字符串与地址分级着色，与内置 10 套代码高亮主题自动兼容。</p>
-<h2>Cisco IOS（```ios）</h2>
-<pre><code class="language-ios">! 接口配置
-interface GigabitEthernet0/0/1
- description TO-CORE-SW-01
- ip address 10.0.0.1 255.255.255.252
- ip ospf 1 area 0
- no shutdown
-!
-! OSPF 进程
-router ospf 1
- router-id 1.1.1.1
- network 10.0.0.0 0.0.0.3 area 0
- passive-interface default
- no passive-interface GigabitEthernet0/0/1
-!
-! ACL 与 NAT
-ip access-list extended LAN-OUT
- permit ip 192.168.0.0 0.0.255.255 any
- deny   ip any any log
-!
-ip route 0.0.0.0 0.0.0.0 203.0.113.1
-!
-line vty 0 4
- transport input ssh
- login local
-!
-banner motd # Authorized access only! #
-end
-</code></pre>
-<p>语法说明：</p>
-<ul>
-<li><code>!</code> 开头的行按注释着色（<code>show running-config</code> 的分段线同款）</li>
-<li><code>banner motd #...#</code> 这类以 <code>#</code> 界定的标语：界符内的 <code>!</code> 不会误判为注释，建议用引号或注意排版</li>
-<li>关键字不区分大小写，<code>interface</code> / <code>INTERFACE</code> 均可</li>
-</ul>
-<h2>别名 ```cisco</h2>
-<pre><code class="language-cisco">hostname edge-rtr-01
-enable secret 9 $9$xxxx
-username admin privilege 15 secret 9 $9$yyyy
-crypto key generate rsa modulus 2048
-ip domain-name example.com
-</code></pre>
-<h2>华为 VRP（```vrp）</h2>
-<pre><code class="language-vrp"># sysname core-sw-01
-#
-vlan batch 10 20 30
-#
-interface GigabitEthernet0/0/1
- description TO-AGG-SW-01
- port link-type trunk
- port trunk allow-pass vlan 10 20 30
- stp root secondary
-#
-# OSPF
-ospf 1 router-id 1.1.1.1
- area 0.0.0.0
-  network 10.0.0.0 0.0.0.3
-#
-# ACL
-acl number 3000
- rule 5 permit ip source 192.168.0.0 0.0.255.255
- rule 10 deny ip
-#
-ip route-static 0.0.0.0 0.0.0.0 203.0.113.1
-#
-user-interface vty 0 4
- authentication-mode aaa
- protocol inbound ssh
-#
-return
-</code></pre>
-<p>语法说明：</p>
-<ul>
-<li><code>#</code> 开头的行按注释着色（VRP 配置的分段符同款）</li>
-<li><code>display</code> / <code>undo</code> / <code>port link-type</code> 等 VRP 特有关键字均在词表内</li>
-</ul>
-<h2>别名 ```huawei</h2>
-<pre><code class="language-huawei">sysname agg-sw-01
-dhcp enable
-interface Vlanif10
- ip address 192.168.10.1 255.255.255.0
- dhcp select relay
- dhcp relay server-ip 10.0.4.5
-</code></pre>
-]]></content:encoded>
-    </item>
-    <item>
       <title>快速开始</title>
       <link>https://theforeveriris.github.io/md-preview/docs/getting-started.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/getting-started.md</guid>
@@ -2989,138 +4979,6 @@ open index.html
 <td>自定义 highlight.js 主题 URL</td>
 </tr>
 </tbody></table>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>Packet Tracer 拓扑渲染示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/pkt-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/pkt-examples.md</guid>
-      <pubDate>Fri, 31 Jul 2026 16:00:35 GMT</pubDate>
-      <description>本站点支持在 Markdown 文档中嵌入 Cisco Packet Tracer 拓扑图。将 文件放入 目录，构建脚本会自动解密、解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。 使用 嵌入语法引用预处理好的拓扑 JSON，需要用 代码块包裹（即三反引号 + 语言标记）： 渲染效果如下： &gt; 提示：如果文件名包含空格，引用时请使用 URL 编码（空格替换为 ）。</description>
-      <content:encoded><![CDATA[<h1>Packet Tracer 拓扑渲染</h1>
-<p>本站点支持在 Markdown 文档中嵌入 Cisco Packet Tracer 拓扑图。将 <code>.pkt</code> 文件放入 <code>iris/data/pkt/raw/</code> 目录，构建脚本会自动解密、解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。</p>
-<h2>基本用法</h2>
-<p>使用 <code>@[pkt](文件名)</code> 嵌入语法引用预处理好的拓扑 JSON，需要用 <code>pkt</code> 代码块包裹（即三反引号 + <code>pkt</code> 语言标记）：</p>
-<pre><code>@[pkt](example)
-</code></pre>
-<p>渲染效果如下：</p>
-<pre><code class="language-pkt">@[pkt](example)
-</code></pre>
-<blockquote>
-<p><strong>提示</strong>：如果文件名包含空格，引用时请使用 URL 编码（空格替换为 <code>%20</code>）。例如 <code>@[pkt](my%20topology)</code>。</p>
-</blockquote>
-<h2>示例拓扑</h2>
-<h3>基础网络示例</h3>
-<p>简单的双路由器 + 交换机 + PC + 服务器拓扑，包含 VLAN 划分、OSPF 路由、ACL 访问控制列表。</p>
-<pre><code class="language-pkt">@[pkt](example)
-</code></pre>
-<h3>路由协议综合实验</h3>
-<p>包含 OSPF、BGP、RIP 三种路由协议的综合实验拓扑，6 台路由器、2 台 PC、9 条链路，展示多种路由协议的配置与互通。</p>
-<pre><code class="language-pkt">@[pkt](ospf-bgp-rip%20over)
-</code></pre>
-<h2>可用拓扑一览</h2>
-<table>
-<thead>
-<tr>
-<th>拓扑名称</th>
-<th>设备数</th>
-<th>链路数</th>
-<th>技术点</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>example</td>
-<td>6</td>
-<td>5</td>
-<td>VLAN、OSPF、ACL</td>
-</tr>
-<tr>
-<td>ospf-bgp-rip over</td>
-<td>9</td>
-<td>9</td>
-<td>OSPF、BGP、RIP</td>
-</tr>
-</tbody></table>
-<h2>交互功能</h2>
-<ul>
-<li><strong>缩放平移</strong>：鼠标滚轮缩放，拖拽平移画布</li>
-<li><strong>节点拖拽</strong>：拖动设备节点重新排列</li>
-<li><strong>hover 高亮</strong>：鼠标悬停连线显示接口和线缆信息</li>
-<li><strong>点击详情</strong>：点击设备节点弹出右侧抽屉，查看接口表/配置/VLAN/ACL/路由</li>
-<li><strong>搜索过滤</strong>：在搜索框输入设备名/IP/类型，匹配设备高亮</li>
-<li><strong>布局切换</strong>：PT 原始坐标 ↔ 力导向自动布局</li>
-<li><strong>网格背景</strong>：可切换点阵网格/透明背景</li>
-<li><strong>导出</strong>：支持导出 PNG 图片 / JSON 数据 / Markdown 表格</li>
-</ul>
-<h2>线缆类型颜色编码</h2>
-<table>
-<thead>
-<tr>
-<th>颜色</th>
-<th>线缆类型</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>蓝色</td>
-<td>直连线 (Straight)</td>
-</tr>
-<tr>
-<td>红色</td>
-<td>交叉线 (Crossover)</td>
-</tr>
-<tr>
-<td>紫色</td>
-<td>光纤 (Fiber)</td>
-</tr>
-<tr>
-<td>橙色</td>
-<td>串口线 (Serial)</td>
-</tr>
-<tr>
-<td>绿色</td>
-<td>控制台线 (Console)</td>
-</tr>
-<tr>
-<td>青色</td>
-<td>无线 (Wireless)</td>
-</tr>
-</tbody></table>
-<h2>设备类型图标</h2>
-<p>支持 13 种设备类型的图标渲染：路由器、交换机、PC、服务器、笔记本、防火墙、IP 电话、无线接入点、云、集线器、电视、平板、未知设备。</p>
-<h2>工作流程</h2>
-<ol>
-<li>将 <code>.pkt</code> 文件放入 <code>iris/data/pkt/raw/</code></li>
-<li>本地运行 <code>python iris/scripts/pkt/main.py</code> 或推送到 GitHub 触发 CI</li>
-<li>脚本自动解密（XOR / Twofish EAX）→ 解压（zlib）→ 解析 XML → 输出 JSON</li>
-<li>在 Markdown 中用 <code>@[pkt](文件名)</code> 引用</li>
-</ol>
-<h3>文件命名建议</h3>
-<ul>
-<li>推荐使用英文、数字、连字符（<code>-</code>）和下划线（<code>_</code>）</li>
-<li>避免空格和特殊字符</li>
-<li>含空格的文件名引用时需用 <code>%20</code> 编码</li>
-</ul>
-<h2>支持的 PT 版本</h2>
-<ul>
-<li>PT 5.x / 6.x / 7.0-7.2（XOR 加密）</li>
-<li>PT 7.3+ / 8.x（Twofish EAX 加密）</li>
-</ul>
-<h2>解析的信息</h2>
-<p>每个设备可查看以下信息：</p>
-<ul>
-<li><strong>接口表</strong>：接口名、IP、掩码、状态、双工、速率、描述</li>
-<li><strong>配置</strong>：完整 startup-config，按 interface 分块折叠，IOS 语法高亮</li>
-<li><strong>VLAN</strong>：VLAN ID 和名称</li>
-<li><strong>ACL</strong>：访问控制列表规则</li>
-<li><strong>路由表</strong>：直连路由、静态路由、OSPF 路由（从配置推算）</li>
-</ul>
-<h2>华为 VRP 配置步骤推算</h2>
-<p>PKT 渲染器内置了对华为 VRP 配置的&quot;可能的配置过程&quot;推算能力——把一段完整的 VRP 配置 <code>display current-configuration</code> 输出，按配置最佳实践顺序重组为带视图提示符的交互式命令步骤（系统视图 → VLAN → 接口 → 路由协议 → ... → 保存），方便学习与排错参考。</p>
-<p>推算逻辑基于正则表达式 + 段落分割，支持 OSPF / BGP / IS-IS / RIP / ACL / NAT / DHCP / VRRP / AAA / SSH / NTP / SNMP / STP / 前缀列表 / 路由策略 等常见协议，已修复命令缩写归一化、<code>#</code> 分隔符缺失 fallback、OSPF 多进程 VRF、BGP 地址族子视图等边界情况。完整示例与已知限制详见：</p>
-<blockquote>
-<p><strong>👉 <a href="https://theforeveriris.github.io/md-preview/docs/examples/pkt-huawei-vrp-%E8%A7%A3%E6%9E%90%E7%A4%BA%E4%BE%8B.md">PKT 华为 VRP 命令解析示例</a></strong></p>
-<p>包含：解析器工作流程 / 典型配置完整输入输出对照 / 识别规则速查 / 已修复问题与已知限制。</p>
-</blockquote>
 ]]></content:encoded>
     </item>
     <item>
@@ -5358,138 +7216,6 @@ not-a-color
 ]]></content:encoded>
     </item>
     <item>
-      <title>eNSP 拓扑渲染示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/ensp-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/ensp-examples.md</guid>
-      <pubDate>Thu, 16 Jul 2026 06:57:26 GMT</pubDate>
-      <description>本站点支持在 Markdown 文档中嵌入华为 eNSP 拓扑图。将 或 压缩包放入 目录，构建脚本会自动解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。 使用 嵌入语法引用预处理好的拓扑 JSON，需要用 代码块包裹（即三反引号 + 语言标记）： &gt; 提示：如果文件名包含空格，引用时请使用 URL 编码（空格替换为 ）。例如 。 9 台设备、8 条链路的华为设备</description>
-      <content:encoded><![CDATA[<h1>华为 eNSP 拓扑渲染</h1>
-<p>本站点支持在 Markdown 文档中嵌入华为 eNSP 拓扑图。将 <code>.topo</code> 或 <code>.zip</code> 压缩包放入 <code>iris/data/ensp/raw/</code> 目录，构建脚本会自动解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。</p>
-<h2>基本用法</h2>
-<p>使用 <code>@[ensp](文件名)</code> 嵌入语法引用预处理好的拓扑 JSON，需要用 <code>ensp</code> 代码块包裹（即三反引号 + <code>ensp</code> 语言标记）：</p>
-<pre><code class="language-markdown">@[ensp](filename)
-</code></pre>
-<blockquote>
-<p><strong>提示</strong>：如果文件名包含空格，引用时请使用 URL 编码（空格替换为 <code>%20</code>）。例如 <code>@[ensp](my%20topo)</code>。</p>
-</blockquote>
-<h2>示例拓扑</h2>
-<h3>OSPF / IS-IS 排错综合实验</h3>
-<p>9 台设备、8 条链路的华为设备组网拓扑，涵盖 AR 路由器、S3700 交换机、串行链路和以太网链路，包含 Serial 串口、Copper 双绞线两种线缆类型，演示 OSPF 路由的规划与排错场景。</p>
-<pre><code class="language-ensp">@[ensp](OSPF%20IS-IS%E6%8E%92%E9%94%99)
-</code></pre>
-<h2>可用拓扑一览</h2>
-<table>
-<thead>
-<tr>
-<th>拓扑名称</th>
-<th>设备数</th>
-<th>链路数</th>
-<th>设备型号</th>
-<th>路由协议</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>OSPF IS-IS排错</td>
-<td>9</td>
-<td>8</td>
-<td>AR2220 / S3700</td>
-<td>OSPF、Serial PPP</td>
-</tr>
-</tbody></table>
-<h2>支持的输入格式</h2>
-<p>eNSP 解析器支持以下两种输入方式：</p>
-<table>
-<thead>
-<tr>
-<th>格式</th>
-<th>扩展名</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>单个拓扑文件</td>
-<td><code>.topo</code></td>
-<td>直接解析 XML 格式的拓扑描述</td>
-</tr>
-<tr>
-<td>工程压缩包</td>
-<td><code>.zip</code></td>
-<td>自动解压 ZIP，内部需包含 <code>.topo</code> 和按 UUID 命名的设备目录</td>
-</tr>
-</tbody></table>
-<h3>ZIP 压缩包内部结构</h3>
-<pre><code>my-topo.zip
-├── my-topo.topo                  # 拓扑描述文件
-├── {UUID-1}/                     # 设备 1 目录（按 UUID 命名）
-│   └── vrpcfg.zip                # 设备配置（VRP 命令）
-├── {UUID-2}/
-│   └── vrpcfg.zip
-└── ...
-</code></pre>
-<p>每个设备目录名对应 <code>.topo</code> 中 <code>&lt;dev id=&quot;UUID&quot;&gt;</code> 的设备 ID，内部 <code>vrpcfg.zip</code> 包含该设备的 VRP 配置（<code>vrpcfg.cfg</code>）。</p>
-<h2>交互功能</h2>
-<ul>
-<li><strong>缩放平移</strong>：鼠标滚轮缩放，拖拽平移画布</li>
-<li><strong>节点拖拽</strong>：拖动设备节点重新排列</li>
-<li><strong>hover 高亮</strong>：鼠标悬停连线显示接口、线缆和所属网段</li>
-<li><strong>点击详情</strong>：点击设备节点弹出右侧抽屉，查看接口表 / VRP 配置 / VLAN / ACL / 路由表</li>
-<li><strong>搜索过滤</strong>：在搜索框输入设备名 / IP / 类型，匹配设备高亮</li>
-<li><strong>布局切换</strong>：eNSP 原始坐标 ↔ 力导向自动布局</li>
-<li><strong>网格背景</strong>：可切换点阵网格 / 透明背景</li>
-<li><strong>导出</strong>：支持导出 PNG 图片 / JSON 数据 / Markdown 表格</li>
-</ul>
-<h2>线缆类型颜色编码</h2>
-<table>
-<thead>
-<tr>
-<th>颜色</th>
-<th>线缆类型</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>橙色</td>
-<td>串口线 (Serial)</td>
-</tr>
-<tr>
-<td>蓝色</td>
-<td>双绞线 (Copper)</td>
-</tr>
-<tr>
-<td>紫色</td>
-<td>光纤 (Fiber)</td>
-</tr>
-<tr>
-<td>绿色</td>
-<td>控制台线 (Console)</td>
-</tr>
-</tbody></table>
-<h2>设备类型图标</h2>
-<p>支持以下设备类型的图标渲染：AR 路由器、S 系列交换机、PC、服务器、防火墙、AP、Cloud 等。</p>
-<h2>工作流程</h2>
-<ol>
-<li>将 <code>.topo</code> 或 <code>.zip</code> 文件放入 <code>iris/data/ensp/raw/</code></li>
-<li>本地运行 <code>python iris/scripts/ensp/main.py</code> 或推送到 GitHub 触发 CI</li>
-<li>脚本自动解压（ZIP）→ 解析 XML → 读取 <code>vrpcfg.zip</code> 配置 → 输出 JSON</li>
-<li>在 Markdown 中用 <code>@[ensp](文件名)</code> 引用</li>
-</ol>
-<h3>文件命名建议</h3>
-<ul>
-<li>推荐使用英文、数字、连字符（<code>-</code>）和下划线（<code>_</code>）</li>
-<li>避免空格和特殊字符</li>
-<li>含空格的文件名引用时需用 <code>%20</code> 编码</li>
-</ul>
-<h2>解析的信息</h2>
-<p>每个设备可查看以下信息：</p>
-<ul>
-<li><strong>接口表</strong>：接口名、IP、掩码、状态、速率、双工、描述</li>
-<li><strong>配置</strong>：完整 <code>vrpcfg.cfg</code>（VRP 命令），按 interface 分块折叠，VRP 语法高亮</li>
-<li><strong>VLAN</strong>：VLAN ID 和名称</li>
-<li><strong>ACL</strong>：访问控制列表规则</li>
-<li><strong>路由表</strong>：直连路由、静态路由、OSPF 路由（从配置推算）</li>
-</ul>
-]]></content:encoded>
-    </item>
-    <item>
       <title>画廊布局样式速查</title>
       <link>https://theforeveriris.github.io/md-preview/docs/examples/gallery-layouts.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/gallery-layouts.md</guid>
@@ -6780,85 +8506,6 @@ not-a-color
 ]]></content:encoded>
     </item>
     <item>
-      <title>GeoJSON / TopoJSON 示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/geojson-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/geojson-examples.md</guid>
-      <pubDate>Sun, 24 May 2026 06:39:14 GMT</pubDate>
-      <description>本页面展示地理数据可视化功能，支持 GeoJSON 和 TopoJSON 格式的嵌入渲染。 --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果：</description>
-      <content:encoded><![CDATA[<h1>GeoJSON / TopoJSON 示例</h1>
-<p>本页面展示地理数据可视化功能，支持 GeoJSON 和 TopoJSON 格式的嵌入渲染。</p>
-<hr>
-<h2>1. GeoJSON 点数据</h2>
-<h3>单个点</h3>
-<p><strong>源码：</strong></p>
-<pre><code class="language-markdown">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[116.4074,39.9042]},&quot;properties&quot;:{&quot;name&quot;:&quot;北京&quot;}}]})
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-geojson">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[116.4074,39.9042]},&quot;properties&quot;:{&quot;name&quot;:&quot;北京&quot;}}]})
-</code></pre>
-<hr>
-<h3>多个城市点</h3>
-<p><strong>源码：</strong></p>
-<pre><code class="language-markdown">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[116.4074,39.9042]},&quot;properties&quot;:{&quot;name&quot;:&quot;北京&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[121.4737,31.2304]},&quot;properties&quot;:{&quot;name&quot;:&quot;上海&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[113.2644,23.1291]},&quot;properties&quot;:{&quot;name&quot;:&quot;广州&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[104.0668,30.5728]},&quot;properties&quot;:{&quot;name&quot;:&quot;成都&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[120.1552,30.2741]},&quot;properties&quot;:{&quot;name&quot;:&quot;杭州&quot;}}]})
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-geojson">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[116.4074,39.9042]},&quot;properties&quot;:{&quot;name&quot;:&quot;北京&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[121.4737,31.2304]},&quot;properties&quot;:{&quot;name&quot;:&quot;上海&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[113.2644,23.1291]},&quot;properties&quot;:{&quot;name&quot;:&quot;广州&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[104.0668,30.5728]},&quot;properties&quot;:{&quot;name&quot;:&quot;成都&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[120.1552,30.2741]},&quot;properties&quot;:{&quot;name&quot;:&quot;杭州&quot;}}]})
-</code></pre>
-<hr>
-<h2>2. GeoJSON 线数据</h2>
-<h3>简单线段</h3>
-<p><strong>源码：</strong></p>
-<pre><code class="language-markdown">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[116.4074,39.9042],[121.4737,31.2304]]},&quot;properties&quot;:{&quot;name&quot;:&quot;京沪线&quot;}}]})
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-geojson">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[116.4074,39.9042],[121.4737,31.2304]]},&quot;properties&quot;:{&quot;name&quot;:&quot;京沪线&quot;}}]})
-</code></pre>
-<hr>
-<h3>多段线路</h3>
-<p><strong>源码：</strong></p>
-<pre><code class="language-markdown">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[116.4074,39.9042],[113.2644,23.1291]]},&quot;properties&quot;:{&quot;name&quot;:&quot;京广线&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[121.4737,31.2304],[104.0668,30.5728]]},&quot;properties&quot;:{&quot;name&quot;:&quot;沪蓉线&quot;}}]})
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-geojson">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[116.4074,39.9042],[113.2644,23.1291]]},&quot;properties&quot;:{&quot;name&quot;:&quot;京广线&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[121.4737,31.2304],[104.0668,30.5728]]},&quot;properties&quot;:{&quot;name&quot;:&quot;沪蓉线&quot;}}]})
-</code></pre>
-<hr>
-<h2>3. GeoJSON 多边形数据</h2>
-<h3>简单多边形</h3>
-<p><strong>源码：</strong></p>
-<pre><code class="language-markdown">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Polygon&quot;,&quot;coordinates&quot;:[[[116.2,39.8],[116.6,39.8],[116.6,40.0],[116.2,40.0],[116.2,39.8]]]},&quot;properties&quot;:{&quot;name&quot;:&quot;北京市中心区域&quot;}}]})
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-geojson">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Polygon&quot;,&quot;coordinates&quot;:[[[116.2,39.8],[116.6,39.8],[116.6,40.0],[116.2,40.0],[116.2,39.8]]]},&quot;properties&quot;:{&quot;name&quot;:&quot;北京市中心区域&quot;}}]})
-</code></pre>
-<hr>
-<h3>带孔多边形</h3>
-<p><strong>源码：</strong></p>
-<pre><code class="language-markdown">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Polygon&quot;,&quot;coordinates&quot;:[[[116.0,39.5],[117.0,39.5],[117.0,40.5],[116.0,40.5],[116.0,39.5]],[[116.3,39.8],[116.7,39.8],[116.7,40.2],[116.3,40.2],[116.3,39.8]]]},&quot;properties&quot;:{&quot;name&quot;:&quot;环形区域&quot;}}]})
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-geojson">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Polygon&quot;,&quot;coordinates&quot;:[[[116.0,39.5],[117.0,39.5],[117.0,40.5],[116.0,40.5],[116.0,39.5]],[[116.3,39.8],[116.7,39.8],[116.7,40.2],[116.3,40.2],[116.3,39.8]]]},&quot;properties&quot;:{&quot;name&quot;:&quot;环形区域&quot;}}]})
-</code></pre>
-<hr>
-<h2>4. TopoJSON 数据</h2>
-<h3>TopoJSON 点数据</h3>
-<p><strong>源码：</strong></p>
-<pre><code class="language-markdown">@[topojson]({&quot;type&quot;:&quot;Topology&quot;,&quot;objects&quot;:{&quot;cities&quot;:{&quot;type&quot;:&quot;GeometryCollection&quot;,&quot;geometries&quot;:[{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[116.4074,39.9042],&quot;properties&quot;:{&quot;name&quot;:&quot;北京&quot;}},{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[121.4737,31.2304],&quot;properties&quot;:{&quot;name&quot;:&quot;上海&quot;}}]},&quot;arcs&quot;:[],&quot;transform&quot;:{&quot;scale&quot;:[1,1],&quot;translate&quot;:[0,0]}}})
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-topojson">@[topojson]({&quot;type&quot;:&quot;Topology&quot;,&quot;objects&quot;:{&quot;cities&quot;:{&quot;type&quot;:&quot;GeometryCollection&quot;,&quot;geometries&quot;:[{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[116.4074,39.9042],&quot;properties&quot;:{&quot;name&quot;:&quot;北京&quot;}},{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[121.4737,31.2304],&quot;properties&quot;:{&quot;name&quot;:&quot;上海&quot;}}]},&quot;arcs&quot;:[],&quot;transform&quot;:{&quot;scale&quot;:[1,1],&quot;translate&quot;:[0,0]}}})
-</code></pre>
-<hr>
-<h2>5. 综合示例</h2>
-<h3>城市与交通网络</h3>
-<p><strong>源码：</strong></p>
-<pre><code class="language-markdown">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[116.4074,39.9042]},&quot;properties&quot;:{&quot;name&quot;:&quot;北京&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[121.4737,31.2304]},&quot;properties&quot;:{&quot;name&quot;:&quot;上海&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[113.2644,23.1291]},&quot;properties&quot;:{&quot;name&quot;:&quot;广州&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[116.4074,39.9042],[121.4737,31.2304]]},&quot;properties&quot;:{&quot;name&quot;:&quot;京沪高速&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[116.4074,39.9042],[113.2644,23.1291]]},&quot;properties&quot;:{&quot;name&quot;:&quot;京广高速&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[121.4737,31.2304],[113.2644,23.1291]]},&quot;properties&quot;:{&quot;name&quot;:&quot;沪昆高速&quot;}}]})
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-geojson">@[geojson]({&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[116.4074,39.9042]},&quot;properties&quot;:{&quot;name&quot;:&quot;北京&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[121.4737,31.2304]},&quot;properties&quot;:{&quot;name&quot;:&quot;上海&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[113.2644,23.1291]},&quot;properties&quot;:{&quot;name&quot;:&quot;广州&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[116.4074,39.9042],[121.4737,31.2304]]},&quot;properties&quot;:{&quot;name&quot;:&quot;京沪高速&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[116.4074,39.9042],[113.2644,23.1291]]},&quot;properties&quot;:{&quot;name&quot;:&quot;京广高速&quot;}},{&quot;type&quot;:&quot;Feature&quot;,&quot;geometry&quot;:{&quot;type&quot;:&quot;LineString&quot;,&quot;coordinates&quot;:[[121.4737,31.2304],[113.2644,23.1291]]},&quot;properties&quot;:{&quot;name&quot;:&quot;沪昆高速&quot;}}]})
-</code></pre>
-]]></content:encoded>
-    </item>
-    <item>
       <title>Twitter/X 嵌入示例</title>
       <link>https://theforeveriris.github.io/md-preview/docs/examples/twitter-embed-examples.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/twitter-embed-examples.md</guid>
@@ -7371,303 +9018,6 @@ C D E F|G A B c|
 <li>JSON 配置（支持自定义大小）</li>
 <li>自动显示二维码下方的内容预览</li>
 </ul>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>LaTeX 公式示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/latex-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/latex-examples.md</guid>
-      <pubDate>Fri, 22 May 2026 12:50:14 GMT</pubDate>
-      <description>本文档展示了 KaTeX 支持的各类数学公式及其渲染效果。 --- 行内公式使用单个 \$ 包裹，例如： - 勾股定理：$a^2 + b^2 = c^2$ - 欧拉公式：$e^{i\pi} + 1 = 0$ - 二次方程根：$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$ - 积分：$\int{a}^{b} f(x) dx$ - 求和：$\sum{n=1}^{\in</description>
-      <content:encoded><![CDATA[<h1>LaTeX 公式示例</h1>
-<p>本文档展示了 KaTeX 支持的各类数学公式及其渲染效果。</p>
-<hr>
-<h2>1. 行内公式</h2>
-<p>行内公式使用单个 $ 包裹，例如：</p>
-<ul>
-<li>勾股定理：$a^2 + b^2 = c^2$</li>
-<li>欧拉公式：$e^{i\pi} + 1 = 0$</li>
-<li>二次方程根：$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$</li>
-<li>积分：$\int_{a}^{b} f(x) dx$</li>
-<li>求和：$\sum_{n=1}^{\infty} \frac{1}{n^2}$</li>
-</ul>
-<hr>
-<h2>2. 块级公式</h2>
-<p>块级公式使用双 $$ 包裹，居中显示：</p>
-<h3>2.1 基础公式</h3>
-<p><strong>勾股定理：</strong></p>
-<p>$$
-a^2 + b^2 = c^2
-$$</p>
-<p><strong>欧拉公式：</strong></p>
-<p>$$
-e^{i\pi} + 1 = 0
-$$</p>
-<p><strong>二次方程求根公式：</strong></p>
-<p>$$
-x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
-$$</p>
-<h3>2.2 微积分</h3>
-<p><strong>定积分：</strong></p>
-<p>$$
-\int_{a}^{b} f(x) dx = F(b) - F(a)
-$$</p>
-<p><strong>不定积分：</strong></p>
-<p>$$
-\int x^n dx = \frac{x^{n+1}}{n+1} + C
-$$</p>
-<p><strong>导数：</strong></p>
-<p>$$
-\frac{d}{dx} f(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}
-$$</p>
-<p><strong>偏导数：</strong></p>
-<p>$$
-\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} = 0
-$$</p>
-<h3>2.3 求和与乘积</h3>
-<p><strong>求和公式：</strong></p>
-<p>$$
-\sum_{n=1}^{\infty} \frac{1}{n^2} = \frac{\pi^2}{6}
-$$</p>
-<p><strong>乘积公式：</strong></p>
-<p>$$
-\prod_{k=1}^{n} k = n!
-$$</p>
-<h3>2.4 极限</h3>
-<p><strong>基本极限：</strong></p>
-<p>$$
-\lim_{x \to 0} \frac{\sin x}{x} = 1
-$$</p>
-<p><strong>重要极限：</strong></p>
-<p>$$
-\lim_{n \to \infty} \left(1 + \frac{1}{n}\right)^n = e
-$$</p>
-<hr>
-<h2>3. 矩阵</h2>
-<h3>3.1 基础矩阵</h3>
-<p>$$
-\begin{matrix}
-a &amp; b \
-c &amp; d
-\end{matrix}
-$$</p>
-<h3>3.2 带括号的矩阵</h3>
-<p>$$
-\begin{pmatrix}
-a &amp; b \
-c &amp; d
-\end{pmatrix}
-$$</p>
-<p>$$
-\begin{bmatrix}
-a &amp; b \
-c &amp; d
-\end{bmatrix}
-$$</p>
-<p>$$
-\begin{vmatrix}
-a &amp; b \
-c &amp; d
-\end{vmatrix}
-$$</p>
-<p>$$
-\begin{Vmatrix}
-a &amp; b \
-c &amp; d
-\end{Vmatrix}
-$$</p>
-<h3>3.3 大型矩阵</h3>
-<p>$$
-\begin{pmatrix}
-1 &amp; 0 &amp; 0 &amp; 0 \
-0 &amp; 1 &amp; 0 &amp; 0 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{pmatrix}
-$$</p>
-<h3>3.4 矩阵运算</h3>
-<p>矩阵乘法：</p>
-<h1>$$
-\begin{pmatrix}
-a_{11} &amp; a_{12} \
-a_{21} &amp; a_{22}
-\end{pmatrix}
-\begin{pmatrix}
-b_{11} &amp; b_{12} \
-b_{21} &amp; b_{22}
-\end{pmatrix}</h1>
-<p>\begin{pmatrix}
-a_{11}b_{11}+a_{12}b_{21} &amp; a_{11}b_{12}+a_{12}b_{22} \
-a_{21}b_{11}+a_{22}b_{21} &amp; a_{21}b_{12}+a_{22}b_{22}
-\end{pmatrix}
-$$</p>
-<hr>
-<h2>4. 方程组与等式</h2>
-<h3>4.1 线性方程组</h3>
-<p>$$
-\begin{cases}
-a_{11}x_1 + a_{12}x_2 + \cdots + a_{1n}x_n = b_1 \
-a_{21}x_1 + a_{22}x_2 + \cdots + a_{2n}x_n = b_2 \
-\cdots \
-a_{m1}x_1 + a_{m2}x_2 + \cdots + a_{mn}x_n = b_m
-\end{cases}
-$$</p>
-<h3>4.2 对齐的等式</h3>
-<p>$$
-\begin{align*}
-f(x) &amp;= (x + 1)^2 \
-&amp;= x^2 + 2x + 1
-\end{align*}
-$$</p>
-<hr>
-<h2>5. 希腊字母</h2>
-<h3>5.1 小写希腊字母</h3>
-<p>$\alpha, \beta, \gamma, \delta, \epsilon, \zeta $
-$\eta, \theta, \iota, \kappa, \lambda, \mu, \nu $
-$\xi, \pi, \rho, \sigma, \tau, \upsilon, \phi, \chi $
-$\psi, \omega$</p>
-<h3>5.2 大写希腊字母</h3>
-<p>$\Gamma, \Delta, \Theta, \Lambda, \Xi, \Pi, \Sigma, \Phi, \Psi, \Omega$</p>
-<hr>
-<h2>6. 函数与运算符</h2>
-<h3>6.1 常用函数</h3>
-<p>三角函数：</p>
-<p>$$
-\sin^2 x + \cos^2 x = 1
-$$</p>
-<p>$$
-\tan x = \frac{\sin x}{\cos x}
-$$</p>
-<p>对数函数：</p>
-<p>$$
-\log_a b = \frac{\ln b}{\ln a}
-$$</p>
-<p>指数函数：</p>
-<p>$$
-e^x = \sum_{n=0}^{\infty} \frac{x^n}{n!}
-$$</p>
-<h3>6.2 运算符</h3>
-<p>模运算：</p>
-<p>$$
-a \equiv b \pmod{n}
-$$</p>
-<p>极限运算：</p>
-<p>$$
-\limsup_{n \to \infty} a_n \geq \liminf_{n \to \infty} a_n
-$$</p>
-<hr>
-<h2>7. 统计与概率</h2>
-<h3>7.1 概率</h3>
-<p>$$
-P(A|B) = \frac{P(B|A)P(A)}{P(B)}
-$$</p>
-<h3>7.2 期望与方差</h3>
-<p>期望：</p>
-<p>$$
-E[X] = \sum_{i=1}^{n} x_i p_i
-$$</p>
-<p>方差：</p>
-<p>$$
-Var(X) = E[X^2] - (E[X])^2
-$$</p>
-<h3>7.3 正态分布</h3>
-<p>$$
-f(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}
-$$</p>
-<hr>
-<h2>8. 物理公式</h2>
-<h3>8.1 力学</h3>
-<p>牛顿第二定律：</p>
-<p>$F = ma$</p>
-<p>万有引力定律：</p>
-<p>$F = G \frac{m_1 m_2}{r^2}$</p>
-<h3>8.2 电磁学</h3>
-<p>麦克斯韦方程组：</p>
-<p>$$
-\begin{cases}
-\nabla \cdot \mathbf{E} = \frac{\rho}{\epsilon_0} \
-\nabla \cdot \mathbf{B} = 0 \
-\nabla \times \mathbf{E} = -\frac{\partial \mathbf{B}}{\partial t} \
-\nabla \times \mathbf{B} = \mu_0 \left(\mathbf{J} + \epsilon_0 \frac{\partial \mathbf{E}}{\partial t}\right)
-\end{cases}
-$$</p>
-<h3>8.3 量子力学</h3>
-<p>薛定谔方程：</p>
-<p>$$
-i\hbar \frac{\partial}{\partial t} \Psi(\mathbf{r}, t) = \hat{H} \Psi(\mathbf{r}, t)
-$$</p>
-<hr>
-<h2>9. 化学公式</h2>
-<h3>9.1 化学方程式</h3>
-<p>$$
-2H_2 + O_2 \rightarrow 2H_2O
-$$</p>
-<p>$$
-NaCl \rightarrow Na^+ + Cl^-
-$$</p>
-<h3>9.2 有机化学</h3>
-<p>苯的结构：</p>
-<p>$$
-\text{C}_6\text{H}_6
-$$</p>
-<hr>
-<h2>10. 高级数学</h2>
-<h3>10.1 傅里叶变换</h3>
-<p>$$
-\hat{f}(\xi) = \int_{-\infty}^{\infty} f(x) e^{-2\pi i x \xi} dx
-$$</p>
-<h3>10.2 拉普拉斯变换</h3>
-<p>$$
-\mathcal{L}{f(t)}(s) = \int_{0}^{\infty} f(t) e^{-st} dt
-$$</p>
-<h3>10.3 张量分析</h3>
-<p>爱因斯坦求和约定：</p>
-<p>$$
-g_{\mu\nu} dx^\mu dx^\nu
-$$</p>
-<h3>10.4 微分几何</h3>
-<p>$$
-ds^2 = g_{ij} dx^i dx^j
-$$</p>
-<hr>
-<h2>11. 表格与数组</h2>
-<h3>11.1 简单表格</h3>
-<p>$$
-\begin{array}{|c|c|c|}
-\hline
-n &amp; n^2 &amp; n^3 \
-\hline
-1 &amp; 1 &amp; 1 \
-2 &amp; 4 &amp; 8 \
-3 &amp; 9 &amp; 27 \
-4 &amp; 16 &amp; 64 \
-\hline
-\end{array}
-$$</p>
-<hr>
-<h2>12. 特殊符号</h2>
-<h3>12.1 箭头</h3>
-<p>$\leftarrow, \rightarrow, \leftrightarrow, \Leftarrow, \Rightarrow, \Leftrightarrow, \uparrow, \downarrow, \updownarrow$</p>
-<h3>12.2 关系符号</h3>
-<p>$\leq, \geq, \neq, \equiv, \approx, \sim, \simeq, \cong, \propto$</p>
-<h3>12.3 集合符号</h3>
-<p>$\in, \notin, \subset, \supset, \subseteq, \supseteq, \cup, \cap, \emptyset, \mathbb{N}, \mathbb{Z}, \mathbb{Q}, \mathbb{R}, \mathbb{C}$</p>
-<hr>
-<h2>总结</h2>
-<p>KaTeX 支持丰富的 LaTeX 数学公式语法，包括：</p>
-<ol>
-<li><strong>行内公式</strong> - 使用单个 $ 包裹</li>
-<li><strong>块级公式</strong> - 使用双 $$ 包裹</li>
-<li><strong>微积分</strong> - 积分、导数、极限</li>
-<li><strong>矩阵</strong> - 各种矩阵表示</li>
-<li><strong>方程组</strong> - 对齐、分组</li>
-<li><strong>希腊字母</strong> - 大小写</li>
-<li><strong>函数与运算符</strong> - 常用数学函数</li>
-<li><strong>统计概率</strong> - 分布、期望、方差</li>
-<li><strong>物理化学公式</strong> - 专业领域公式</li>
-<li><strong>高级数学</strong> - 傅里叶变换、张量等</li>
-</ol>
-<p>更多详细信息请参考 <a href="https://katex.org/">KaTeX 官方文档</a>。</p>
 ]]></content:encoded>
     </item>
     <item>
@@ -8270,329 +9620,6 @@ index 旧哈希..新哈希 文件权限
 <li>支持多个文件的 diff 同时展示</li>
 <li>代码块标记必须是 <code>diff</code> 类型</li>
 </ol>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>ApexCharts 交互式图表示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/apexcharts-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/apexcharts-examples.md</guid>
-      <pubDate>Wed, 20 May 2026 04:17:35 GMT</pubDate>
-      <description>本页面展示 ApexCharts 的各种图表类型和配置方式。 --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： -</description>
-      <content:encoded><![CDATA[<h1>ApexCharts 交互式图表示例</h1>
-<p>本页面展示 ApexCharts 的各种图表类型和配置方式。</p>
-<hr>
-<h2>1. 折线图</h2>
-<h3>基础折线图</h3>
-<p><strong>源码：</strong></p>
-<pre><code class="language-txt">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;line&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [{&quot;name&quot;: &quot;销量&quot;, &quot;data&quot;: [30, 40, 35, 50, 49, 60, 70]}],
-  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;周一&quot;, &quot;周二&quot;, &quot;周三&quot;, &quot;周四&quot;, &quot;周五&quot;, &quot;周六&quot;, &quot;周日&quot;]}
-}
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-apexcharts">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;line&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [{&quot;name&quot;: &quot;销量&quot;, &quot;data&quot;: [30, 40, 35, 50, 49, 60, 70]}],
-  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;周一&quot;, &quot;周二&quot;, &quot;周三&quot;, &quot;周四&quot;, &quot;周五&quot;, &quot;周六&quot;, &quot;周日&quot;]}
-}
-</code></pre>
-<hr>
-<h3>多系列折线图</h3>
-<p><strong>源码：</strong></p>
-<pre><code class="language-txt">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;line&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [
-    {&quot;name&quot;: &quot;销量&quot;, &quot;data&quot;: [30, 40, 35, 50, 49, 60, 70]},
-    {&quot;name&quot;: &quot;利润&quot;, &quot;data&quot;: [20, 30, 25, 35, 40, 50, 55]}
-  ],
-  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;周一&quot;, &quot;周二&quot;, &quot;周三&quot;, &quot;周四&quot;, &quot;周五&quot;, &quot;周六&quot;, &quot;周日&quot;]}
-}
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-apexcharts">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;line&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [
-    {&quot;name&quot;: &quot;销量&quot;, &quot;data&quot;: [30, 40, 35, 50, 49, 60, 70]},
-    {&quot;name&quot;: &quot;利润&quot;, &quot;data&quot;: [20, 30, 25, 35, 40, 50, 55]}
-  ],
-  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;周一&quot;, &quot;周二&quot;, &quot;周三&quot;, &quot;周四&quot;, &quot;周五&quot;, &quot;周六&quot;, &quot;周日&quot;]}
-}
-</code></pre>
-<hr>
-<h2>2. 面积图</h2>
-<h3>基础面积图</h3>
-<p><strong>源码：</strong></p>
-<pre><code class="language-txt">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;area&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [{&quot;name&quot;: &quot;访问量&quot;, &quot;data&quot;: [31, 40, 28, 51, 42, 109, 100]}],
-  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;一月&quot;, &quot;二月&quot;, &quot;三月&quot;, &quot;四月&quot;, &quot;五月&quot;, &quot;六月&quot;, &quot;七月&quot;]}
-}
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-apexcharts">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;area&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [{&quot;name&quot;: &quot;访问量&quot;, &quot;data&quot;: [31, 40, 28, 51, 42, 109, 100]}],
-  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;一月&quot;, &quot;二月&quot;, &quot;三月&quot;, &quot;四月&quot;, &quot;五月&quot;, &quot;六月&quot;, &quot;七月&quot;]}
-}
-</code></pre>
-<hr>
-<h3>多系列面积图</h3>
-<p><strong>源码：</strong></p>
-<pre><code class="language-txt">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;area&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [
-    {&quot;name&quot;: &quot;产品A&quot;, &quot;data&quot;: [31, 40, 28, 51, 42, 109, 100]},
-    {&quot;name&quot;: &quot;产品B&quot;, &quot;data&quot;: [11, 32, 45, 32, 34, 52, 41]}
-  ],
-  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;一月&quot;, &quot;二月&quot;, &quot;三月&quot;, &quot;四月&quot;, &quot;五月&quot;, &quot;六月&quot;, &quot;七月&quot;]}
-}
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-apexcharts">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;area&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [
-    {&quot;name&quot;: &quot;产品A&quot;, &quot;data&quot;: [31, 40, 28, 51, 42, 109, 100]},
-    {&quot;name&quot;: &quot;产品B&quot;, &quot;data&quot;: [11, 32, 45, 32, 34, 52, 41]}
-  ],
-  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;一月&quot;, &quot;二月&quot;, &quot;三月&quot;, &quot;四月&quot;, &quot;五月&quot;, &quot;六月&quot;, &quot;七月&quot;]}
-}
-</code></pre>
-<hr>
-<h2>3. 柱状图</h2>
-<h3>基础柱状图</h3>
-<p><strong>源码：</strong></p>
-<pre><code class="language-txt">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;bar&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [{&quot;name&quot;: &quot;销售额&quot;, &quot;data&quot;: [30, 40, 35, 50, 49, 60, 70]}],
-  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;一月&quot;, &quot;二月&quot;, &quot;三月&quot;, &quot;四月&quot;, &quot;五月&quot;, &quot;六月&quot;, &quot;七月&quot;]}
-}
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-apexcharts">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;bar&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [{&quot;name&quot;: &quot;销售额&quot;, &quot;data&quot;: [30, 40, 35, 50, 49, 60, 70]}],
-  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;一月&quot;, &quot;二月&quot;, &quot;三月&quot;, &quot;四月&quot;, &quot;五月&quot;, &quot;六月&quot;, &quot;七月&quot;]}
-}
-</code></pre>
-<hr>
-<h3>分组柱状图</h3>
-<p><strong>源码：</strong></p>
-<pre><code class="language-txt">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;bar&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [
-    {&quot;name&quot;: &quot;2023年&quot;, &quot;data&quot;: [30, 40, 35, 50]},
-    {&quot;name&quot;: &quot;2024年&quot;, &quot;data&quot;: [45, 52, 48, 65]}
-  ],
-  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;一季度&quot;, &quot;二季度&quot;, &quot;三季度&quot;, &quot;四季度&quot;]}
-}
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-apexcharts">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;bar&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [
-    {&quot;name&quot;: &quot;2023年&quot;, &quot;data&quot;: [30, 40, 35, 50]},
-    {&quot;name&quot;: &quot;2024年&quot;, &quot;data&quot;: [45, 52, 48, 65]}
-  ],
-  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;一季度&quot;, &quot;二季度&quot;, &quot;三季度&quot;, &quot;四季度&quot;]}
-}
-</code></pre>
-<hr>
-<h2>4. 条形图</h2>
-<h3>基础条形图</h3>
-<p><strong>源码：</strong></p>
-<pre><code class="language-txt">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;bar&quot;, &quot;height&quot;: 350, &quot;horizontal&quot;: true},
-  &quot;series&quot;: [{&quot;name&quot;: &quot;销售额&quot;, &quot;data&quot;: [30, 40, 35, 50, 49, 60, 70]}],
-  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;北京&quot;, &quot;上海&quot;, &quot;广州&quot;, &quot;深圳&quot;, &quot;杭州&quot;, &quot;成都&quot;, &quot;武汉&quot;]}
-}
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-apexcharts">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;bar&quot;, &quot;height&quot;: 350, &quot;horizontal&quot;: true},
-  &quot;series&quot;: [{&quot;name&quot;: &quot;销售额&quot;, &quot;data&quot;: [30, 40, 35, 50, 49, 60, 70]}],
-  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;北京&quot;, &quot;上海&quot;, &quot;广州&quot;, &quot;深圳&quot;, &quot;杭州&quot;, &quot;成都&quot;, &quot;武汉&quot;]}
-}
-</code></pre>
-<hr>
-<h2>5. 饼图</h2>
-<h3>基础饼图</h3>
-<p><strong>源码：</strong></p>
-<pre><code class="language-txt">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;pie&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [44, 55, 13, 43, 22],
-  &quot;labels&quot;: [&quot;产品A&quot;, &quot;产品B&quot;, &quot;产品C&quot;, &quot;产品D&quot;, &quot;产品E&quot;]
-}
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-apexcharts">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;pie&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [44, 55, 13, 43, 22],
-  &quot;labels&quot;: [&quot;产品A&quot;, &quot;产品B&quot;, &quot;产品C&quot;, &quot;产品D&quot;, &quot;产品E&quot;]
-}
-</code></pre>
-<hr>
-<h3>环形图</h3>
-<p><strong>源码：</strong></p>
-<pre><code class="language-txt">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;donut&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [44, 55, 13, 43, 22],
-  &quot;labels&quot;: [&quot;直接访问&quot;, &quot;搜索引擎&quot;, &quot;推荐网站&quot;, &quot;广告&quot;, &quot;其他&quot;]
-}
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-apexcharts">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;donut&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [44, 55, 13, 43, 22],
-  &quot;labels&quot;: [&quot;直接访问&quot;, &quot;搜索引擎&quot;, &quot;推荐网站&quot;, &quot;广告&quot;, &quot;其他&quot;]
-}
-</code></pre>
-<hr>
-<h2>6. 散点图</h2>
-<p><strong>源码：</strong></p>
-<pre><code class="language-txt">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;scatter&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [
-    {&quot;name&quot;: &quot;产品A&quot;, &quot;data&quot;: [[30, 40], [42, 53], [28, 38], [55, 65], [48, 58]]},
-    {&quot;name&quot;: &quot;产品B&quot;, &quot;data&quot;: [[20, 30], [35, 45], [25, 35], [45, 55], [40, 50]]}
-  ]
-}
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-apexcharts">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;scatter&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [
-    {&quot;name&quot;: &quot;产品A&quot;, &quot;data&quot;: [[30, 40], [42, 53], [28, 38], [55, 65], [48, 58]]},
-    {&quot;name&quot;: &quot;产品B&quot;, &quot;data&quot;: [[20, 30], [35, 45], [25, 35], [45, 55], [40, 50]]}
-  ]
-}
-</code></pre>
-<hr>
-<h2>7. 气泡图</h2>
-<p><strong>源码：</strong></p>
-<pre><code class="language-txt">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;bubble&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [
-    {&quot;name&quot;: &quot;产品A&quot;, &quot;data&quot;: [[20, 30, 5], [40, 50, 8], [30, 35, 6]]},
-    {&quot;name&quot;: &quot;产品B&quot;, &quot;data&quot;: [[25, 35, 7], [45, 55, 9], [35, 40, 6]]}
-  ]
-}
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-apexcharts">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;bubble&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [
-    {&quot;name&quot;: &quot;产品A&quot;, &quot;data&quot;: [[20, 30, 5], [40, 50, 8], [30, 35, 6]]},
-    {&quot;name&quot;: &quot;产品B&quot;, &quot;data&quot;: [[25, 35, 7], [45, 55, 9], [35, 40, 6]]}
-  ]
-}
-</code></pre>
-<hr>
-<h2>8. 雷达图</h2>
-<p><strong>源码：</strong></p>
-<pre><code class="language-txt">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;radar&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [
-    {&quot;name&quot;: &quot;产品A&quot;, &quot;data&quot;: [80, 50, 60, 70, 85]},
-    {&quot;name&quot;: &quot;产品B&quot;, &quot;data&quot;: [70, 60, 80, 50, 75]}
-  ],
-  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;性能&quot;, &quot;价格&quot;, &quot;外观&quot;, &quot;续航&quot;, &quot;服务&quot;]}
-}
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-apexcharts">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;radar&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [
-    {&quot;name&quot;: &quot;产品A&quot;, &quot;data&quot;: [80, 50, 60, 70, 85]},
-    {&quot;name&quot;: &quot;产品B&quot;, &quot;data&quot;: [70, 60, 80, 50, 75]}
-  ],
-  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;性能&quot;, &quot;价格&quot;, &quot;外观&quot;, &quot;续航&quot;, &quot;服务&quot;]}
-}
-</code></pre>
-<hr>
-<h2>9. 极坐标图</h2>
-<p><strong>源码：</strong></p>
-<pre><code class="language-txt">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;polarArea&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [42, 55, 67, 83, 45],
-  &quot;labels&quot;: [&quot;一月&quot;, &quot;二月&quot;, &quot;三月&quot;, &quot;四月&quot;, &quot;五月&quot;]
-}
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-apexcharts">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;polarArea&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [42, 55, 67, 83, 45],
-  &quot;labels&quot;: [&quot;一月&quot;, &quot;二月&quot;, &quot;三月&quot;, &quot;四月&quot;, &quot;五月&quot;]
-}
-</code></pre>
-<hr>
-<h2>10. 范围区域图</h2>
-<p><strong>源码：</strong></p>
-<pre><code class="language-txt">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;rangeArea&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [
-    {&quot;name&quot;: &quot;温度范围&quot;, &quot;data&quot;: [{&quot;x&quot;: &quot;周一&quot;, &quot;y&quot;: [10, 25]}, {&quot;x&quot;: &quot;周二&quot;, &quot;y&quot;: [12, 28]}, {&quot;x&quot;: &quot;周三&quot;, &quot;y&quot;: [8, 22]}, {&quot;x&quot;: &quot;周四&quot;, &quot;y&quot;: [15, 30]}, {&quot;x&quot;: &quot;周五&quot;, &quot;y&quot;: [18, 32]}]}
-  ]
-}
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-apexcharts">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;rangeArea&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [
-    {&quot;name&quot;: &quot;温度范围&quot;, &quot;data&quot;: [{&quot;x&quot;: &quot;周一&quot;, &quot;y&quot;: [10, 25]}, {&quot;x&quot;: &quot;周二&quot;, &quot;y&quot;: [12, 28]}, {&quot;x&quot;: &quot;周三&quot;, &quot;y&quot;: [8, 22]}, {&quot;x&quot;: &quot;周四&quot;, &quot;y&quot;: [15, 30]}, {&quot;x&quot;: &quot;周五&quot;, &quot;y&quot;: [18, 32]}]}
-  ]
-}
-</code></pre>
-<hr>
-<h2>11. 烛台图</h2>
-<p><strong>源码：</strong></p>
-<pre><code class="language-txt">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;candlestick&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [{&quot;name&quot;: &quot;股价&quot;, &quot;data&quot;: [{&quot;x&quot;: &quot;周一&quot;, &quot;y&quot;: [100, 120, 90, 115]}, {&quot;x&quot;: &quot;周二&quot;, &quot;y&quot;: [115, 130, 105, 125]}, {&quot;x&quot;: &quot;周三&quot;, &quot;y&quot;: [125, 140, 115, 135]}, {&quot;x&quot;: &quot;周四&quot;, &quot;y&quot;: [135, 150, 125, 145]}, {&quot;x&quot;: &quot;周五&quot;, &quot;y&quot;: [145, 160, 140, 155]}]}]
-}
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-apexcharts">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;candlestick&quot;, &quot;height&quot;: 350},
-  &quot;series&quot;: [{&quot;name&quot;: &quot;股价&quot;, &quot;data&quot;: [{&quot;x&quot;: &quot;周一&quot;, &quot;y&quot;: [100, 120, 90, 115]}, {&quot;x&quot;: &quot;周二&quot;, &quot;y&quot;: [115, 130, 105, 125]}, {&quot;x&quot;: &quot;周三&quot;, &quot;y&quot;: [125, 140, 115, 135]}, {&quot;x&quot;: &quot;周四&quot;, &quot;y&quot;: [135, 150, 125, 145]}, {&quot;x&quot;: &quot;周五&quot;, &quot;y&quot;: [145, 160, 140, 155]}]}]
-}
-</code></pre>
-<hr>
-<h2>12. 瀑布图</h2>
-<p><strong>源码：</strong></p>
-<pre><code class="language-txt">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;bar&quot;, &quot;height&quot;: 350, &quot;stacked&quot;: false},
-  &quot;series&quot;: [
-    {&quot;name&quot;: &quot;收入&quot;, &quot;data&quot;: [150, 120, -50, -30, 80]},
-    {&quot;name&quot;: &quot;支出&quot;, &quot;data&quot;: [0, 0, 30, 20, 0]}
-  ],
-  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;周一&quot;, &quot;周二&quot;, &quot;周三&quot;, &quot;周四&quot;, &quot;周五&quot;]}
-}
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-apexcharts">{
-  &quot;chart&quot;: {&quot;type&quot;: &quot;bar&quot;, &quot;height&quot;: 350, &quot;stacked&quot;: false},
-  &quot;series&quot;: [
-    {&quot;name&quot;: &quot;收入&quot;, &quot;data&quot;: [150, 120, -50, -30, 80]},
-    {&quot;name&quot;: &quot;支出&quot;, &quot;data&quot;: [0, 0, 30, 20, 0]}
-  ],
-  &quot;xaxis&quot;: {&quot;categories&quot;: [&quot;周一&quot;, &quot;周二&quot;, &quot;周三&quot;, &quot;周四&quot;, &quot;周五&quot;]}
-}
-</code></pre>
-<hr>
-<h2>总结</h2>
-<p>ApexCharts 提供了丰富的交互式图表类型，包括：</p>
-<ul>
-<li><strong>折线图/面积图</strong>：展示趋势变化</li>
-<li><strong>柱状图/条形图</strong>：比较分类数据</li>
-<li><strong>饼图/环形图</strong>：展示占比关系</li>
-<li><strong>散点图/气泡图</strong>：展示相关性</li>
-<li><strong>雷达图</strong>：多维度对比</li>
-<li><strong>极坐标图</strong>：循环数据展示</li>
-<li><strong>烛台图</strong>：金融数据展示</li>
-<li><strong>瀑布图</strong>：财务流水展示</li>
-</ul>
-<p>所有图表都支持交互功能，包括缩放、导出、数据点悬停提示等。</p>
 ]]></content:encoded>
     </item>
     <item>
@@ -10993,982 +12020,6 @@ Formula3 -down-&gt; Formula4
 <li><strong>数学公式图</strong> - 数学公式</li>
 </ol>
 <p>更多详细信息请参考 <a href="https://plantuml.com/zh/">PlantUML 官方文档</a>。</p>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>Mermaid 图表示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/mermaid-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/mermaid-examples.md</guid>
-      <pubDate>Wed, 20 May 2026 01:43:14 GMT</pubDate>
-      <description>本文档展示了 Mermaid 支持的各类图表及其渲染效果。 --- 渲染效果： 渲染效果： 渲染效果： --- 渲染效果： 渲染效果： --- 渲染效果： 渲染效果： --- 渲染效果： 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- </description>
-      <content:encoded><![CDATA[<h1>Mermaid 图表示例</h1>
-<p>本文档展示了 Mermaid 支持的各类图表及其渲染效果。</p>
-<hr>
-<h2>1. 流程图 (Flowchart)</h2>
-<h3>垂直流程图 (Top to Bottom)</h3>
-<pre><code class="language-txt">flowchart TD
-    A[开始] --&gt; B{条件判断}
-    B --&gt;|是| C[执行操作 A]
-    B --&gt;|否| D[执行操作 B]
-    C --&gt; E[结束]
-    D --&gt; E
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">flowchart TD
-    A[开始] --&gt; B{条件判断}
-    B --&gt;|是| C[执行操作 A]
-    B --&gt;|否| D[执行操作 B]
-    C --&gt; E[结束]
-    D --&gt; E
-</code></pre>
-<h3>水平流程图 (Left to Right)</h3>
-<pre><code class="language-txt">flowchart LR
-    A[用户输入] --&gt; B[验证]
-    B --&gt; C{有效?}
-    C --&gt;|是| D[处理]
-    C --&gt;|否| E[提示错误]
-    D --&gt; F[保存结果]
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">flowchart LR
-    A[用户输入] --&gt; B[验证]
-    B --&gt; C{有效?}
-    C --&gt;|是| D[处理]
-    C --&gt;|否| E[提示错误]
-    D --&gt; F[保存结果]
-</code></pre>
-<h3>复杂流程图 (包含子图)</h3>
-<pre><code class="language-txt">flowchart TB
-    subgraph Frontend
-        A[Web 页面]
-        B[客户端逻辑]
-    end
-    
-    subgraph Backend
-        C[API 服务]
-        D[业务逻辑]
-    end
-    
-    subgraph Database
-        E[(主数据库)]
-        F[(缓存)]
-    end
-    
-    A --&gt; B
-    B --&gt; C
-    C --&gt; D
-    D --&gt; E
-    D &lt;--&gt; F
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">flowchart TB
-    subgraph Frontend
-        A[Web 页面]
-        B[客户端逻辑]
-    end
-    
-    subgraph Backend
-        C[API 服务]
-        D[业务逻辑]
-    end
-    
-    subgraph Database
-        E[(主数据库)]
-        F[(缓存)]
-    end
-    
-    A --&gt; B
-    B --&gt; C
-    C --&gt; D
-    D --&gt; E
-    D &lt;--&gt; F
-</code></pre>
-<hr>
-<h2>2. 时序图 (Sequence Diagram)</h2>
-<h3>基础时序图</h3>
-<pre><code class="language-txt">sequenceDiagram
-    participant User
-    participant Client
-    participant Server
-    participant DB
-    
-    User-&gt;&gt;Client: 点击提交
-    Client-&gt;&gt;Server: 发送请求
-    activate Server
-    Server-&gt;&gt;DB: 查询数据
-    activate DB
-    DB--&gt;&gt;Server: 返回结果
-    deactivate DB
-    Server--&gt;&gt;Client: 响应成功
-    deactivate Server
-    Client--&gt;&gt;User: 显示结果
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">sequenceDiagram
-    participant User
-    participant Client
-    participant Server
-    participant DB
-    
-    User-&gt;&gt;Client: 点击提交
-    Client-&gt;&gt;Server: 发送请求
-    activate Server
-    Server-&gt;&gt;DB: 查询数据
-    activate DB
-    DB--&gt;&gt;Server: 返回结果
-    deactivate DB
-    Server--&gt;&gt;Client: 响应成功
-    deactivate Server
-    Client--&gt;&gt;User: 显示结果
-</code></pre>
-<h3>循环与条件</h3>
-<pre><code class="language-txt">sequenceDiagram
-    User-&gt;&gt;App: 请求分页数据
-    loop 每一页
-        App-&gt;&gt;API: GET /items?page=n
-        API-&gt;&gt;DB: SELECT * LIMIT 10 OFFSET n*10
-        DB--&gt;&gt;API: 10条记录
-        API--&gt;&gt;App: 数据 + total
-        App--&gt;&gt;User: 显示第n页
-    end
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">sequenceDiagram
-    User-&gt;&gt;App: 请求分页数据
-    loop 每一页
-        App-&gt;&gt;API: GET /items?page=n
-        API-&gt;&gt;DB: SELECT * LIMIT 10 OFFSET n*10
-        DB--&gt;&gt;API: 10条记录
-        API--&gt;&gt;App: 数据 + total
-        App--&gt;&gt;User: 显示第n页
-    end
-</code></pre>
-<hr>
-<h2>3. 类图 (Class Diagram)</h2>
-<h3>基础类图</h3>
-<pre><code class="language-txt">classDiagram
-    class Animal {
-        +String name
-        +int age
-        +makeSound()
-        +eat()
-    }
-    class Dog {
-        +String breed
-        +bark()
-        +fetch()
-    }
-    class Cat {
-        +boolean indoor
-        +meow()
-        +scratch()
-    }
-    
-    Animal &lt;|-- Dog : 继承
-    Animal &lt;|-- Cat : 继承
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">classDiagram
-    class Animal {
-        +String name
-        +int age
-        +makeSound()
-        +eat()
-    }
-    class Dog {
-        +String breed
-        +bark()
-        +fetch()
-    }
-    class Cat {
-        +boolean indoor
-        +meow()
-        +scratch()
-    }
-    
-    Animal &lt;|-- Dog : 继承
-    Animal &lt;|-- Cat : 继承
-</code></pre>
-<h3>复杂类关系</h3>
-<pre><code class="language-txt">classDiagram
-    class User {
-        +String id
-        +String name
-        +String email
-        +login()
-        +logout()
-    }
-    
-    class Order {
-        +String id
-        +Date orderDate
-        +Status status
-        +totalAmount()
-    }
-    
-    class Product {
-        +String id
-        +String name
-        +float price
-        +int stock
-    }
-    
-    class OrderItem {
-        +int quantity
-        +float price
-    }
-    
-    User &quot;1&quot; --&gt; &quot;*&quot; Order : 创建
-    Order &quot;1&quot; --&gt; &quot;*&quot; OrderItem : 包含
-    OrderItem &quot;*&quot; --&gt; &quot;1&quot; Product : 对应
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">classDiagram
-    class User {
-        +String id
-        +String name
-        +String email
-        +login()
-        +logout()
-    }
-    
-    class Order {
-        +String id
-        +Date orderDate
-        +Status status
-        +totalAmount()
-    }
-    
-    class Product {
-        +String id
-        +String name
-        +float price
-        +int stock
-    }
-    
-    class OrderItem {
-        +int quantity
-        +float price
-    }
-    
-    User &quot;1&quot; --&gt; &quot;*&quot; Order : 创建
-    Order &quot;1&quot; --&gt; &quot;*&quot; OrderItem : 包含
-    OrderItem &quot;*&quot; --&gt; &quot;1&quot; Product : 对应
-</code></pre>
-<hr>
-<h2>4. 状态图 (State Diagram)</h2>
-<h3>基础状态图</h3>
-<pre><code class="language-txt">stateDiagram-v2
-    [*] --&gt; 草稿
-    草稿 --&gt; 审核中: 提交审核
-    审核中 --&gt; 已发布: 审核通过
-    审核中 --&gt; 已拒绝: 审核不通过
-    已拒绝 --&gt; 草稿: 修改后重提
-    已发布 --&gt; [*]
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">stateDiagram-v2
-    [*] --&gt; 草稿
-    草稿 --&gt; 审核中: 提交审核
-    审核中 --&gt; 已发布: 审核通过
-    审核中 --&gt; 已拒绝: 审核不通过
-    已拒绝 --&gt; 草稿: 修改后重提
-    已发布 --&gt; [*]
-</code></pre>
-<h3>带选择的状态图</h3>
-<pre><code class="language-txt">stateDiagram-v2
-    [*] --&gt; 空闲
-    
-    state 空闲 {
-        [*] --&gt; 等待
-        等待 --&gt; 处理中: 收到任务
-        处理中 --&gt; 等待: 任务完成
-    }
-    
-    空闲 --&gt; 错误: 异常发生
-    错误 --&gt; 空闲: 恢复
-    错误 --&gt; [*]
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">stateDiagram-v2
-    [*] --&gt; 空闲
-    
-    state 空闲 {
-        [*] --&gt; 等待
-        等待 --&gt; 处理中: 收到任务
-        处理中 --&gt; 等待: 任务完成
-    }
-    
-    空闲 --&gt; 错误: 异常发生
-    错误 --&gt; 空闲: 恢复
-    错误 --&gt; [*]
-</code></pre>
-<hr>
-<h2>5. 实体关系图 (ER Diagram)</h2>
-<h3>基础 ER 图</h3>
-<pre><code class="language-txt">erDiagram
-    CUSTOMER ||--o{ ORDER : places
-    ORDER ||--|{ LINE-ITEM : contains
-    PRODUCT ||--o{ LINE-ITEM : &quot;ordered in&quot;
-    CUSTOMER {
-        int customerId PK
-        string name
-        string email
-        date registerDate
-    }
-    ORDER {
-        int orderId PK
-        date orderDate
-        string status
-        float totalAmount
-    }
-    LINE-ITEM {
-        int quantity
-        float unitPrice
-        float subtotal
-    }
-    PRODUCT {
-        int productId PK
-        string name
-        float price
-        int stock
-    }
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">erDiagram
-    CUSTOMER ||--o{ ORDER : places
-    ORDER ||--|{ LINE-ITEM : contains
-    PRODUCT ||--o{ LINE-ITEM : &quot;ordered in&quot;
-    CUSTOMER {
-        int customerId PK
-        string name
-        string email
-        date registerDate
-    }
-    ORDER {
-        int orderId PK
-        date orderDate
-        string status
-        float totalAmount
-    }
-    LINE-ITEM {
-        int quantity
-        float unitPrice
-        float subtotal
-    }
-    PRODUCT {
-        int productId PK
-        string name
-        float price
-        int stock
-    }
-</code></pre>
-<hr>
-<h2>6. 甘特图 (Gantt Chart)</h2>
-<h3>项目计划甘特图</h3>
-<pre><code class="language-txt">gantt
-    title 项目开发计划
-    dateFormat  YYYY-MM-DD
-    excludes    weekends
-    section 设计
-    需求分析       :a1, 2024-01-01, 10d
-    UI设计         :a2, after a1, 14d
-    架构设计       :a3, after a2, 7d
-    section 开发
-    后端开发       :b1, after a3, 28d
-    前端开发       :b2, after a3, 21d
-    section 测试
-    单元测试       :c1, after b1, 7d
-    集成测试       :c2, after b1 b2, 7d
-    系统测试       :c3, after c2, 5d
-    section 部署
-    预发布         :d1, after c3, 3d
-    正式发布       :d2, after d1, 2d
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">gantt
-    title 项目开发计划
-    dateFormat  YYYY-MM-DD
-    excludes    weekends
-    section 设计
-    需求分析       :a1, 2024-01-01, 10d
-    UI设计         :a2, after a1, 14d
-    架构设计       :a3, after a2, 7d
-    section 开发
-    后端开发       :b1, after a3, 28d
-    前端开发       :b2, after a3, 21d
-    section 测试
-    单元测试       :c1, after b1, 7d
-    集成测试       :c2, after b1 b2, 7d
-    系统测试       :c3, after c2, 5d
-    section 部署
-    预发布         :d1, after c3, 3d
-    正式发布       :d2, after d1, 2d
-</code></pre>
-<hr>
-<h2>7. 饼图 (Pie Chart) &amp; 甜甜圈图 (Donut Chart)</h2>
-<h3>饼图</h3>
-<pre><code class="language-txt">pie title 编程语言使用统计
-    &quot;JavaScript&quot; : 45
-    &quot;Python&quot; : 30
-    &quot;Java&quot; : 15
-    &quot;Go&quot; : 10
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">pie title 编程语言使用统计
-    &quot;JavaScript&quot; : 45
-    &quot;Python&quot; : 30
-    &quot;Java&quot; : 15
-    &quot;Go&quot; : 10
-</code></pre>
-<h3>预算分配 (甜甜圈图效果)</h3>
-<pre><code class="language-txt">pie title 项目预算分配
-    &quot;人力资源&quot; : 50
-    &quot;基础设施&quot; : 25
-    &quot;市场营销&quot; : 15
-    &quot;研发工具&quot; : 10
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">pie title 项目预算分配
-    &quot;人力资源&quot; : 50
-    &quot;基础设施&quot; : 25
-    &quot;市场营销&quot; : 15
-    &quot;研发工具&quot; : 10
-</code></pre>
-<hr>
-<h2>8. Git 分支图 (Git Graph)</h2>
-<h3>基础 Git 分支图</h3>
-<pre><code class="language-txt">gitGraph
-    commit id: &quot;Initial commit&quot;
-    branch feature/login
-    checkout feature/login
-    commit id: &quot;Add login page&quot;
-    commit id: &quot;Implement login logic&quot;
-    checkout main
-    merge feature/login id: &quot;Merge login feature&quot;
-    commit id: &quot;Fix bug #123&quot;
-    branch hotfix
-    checkout hotfix
-    commit id: &quot;Fix critical issue&quot;
-    checkout main
-    merge hotfix id: &quot;Apply hotfix&quot;
-    commit id: &quot;Release v1.0&quot;
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">gitGraph
-    commit id: &quot;Initial commit&quot;
-    branch feature/login
-    checkout feature/login
-    commit id: &quot;Add login page&quot;
-    commit id: &quot;Implement login logic&quot;
-    checkout main
-    merge feature/login id: &quot;Merge login feature&quot;
-    commit id: &quot;Fix bug #123&quot;
-    branch hotfix
-    checkout hotfix
-    commit id: &quot;Fix critical issue&quot;
-    checkout main
-    merge hotfix id: &quot;Apply hotfix&quot;
-    commit id: &quot;Release v1.0&quot;
-</code></pre>
-<hr>
-<h2>9. 用户旅程图 (User Journey)</h2>
-<h3>购物流程用户旅程</h3>
-<pre><code class="language-txt">journey
-    title 用户购物流程
-    section 浏览商品
-      搜索商品: 5: 用户
-      查看详情: 4: 用户
-      比较价格: 3: 用户
-    section 下单
-      加入购物车: 5: 用户
-      填写收货信息: 3: 用户
-      选择支付方式: 4: 用户
-      确认支付: 1: 用户
-    section 收货
-      查看物流: 3: 用户
-      确认收货: 4: 用户
-      评价商品: 2: 用户
-    section 售后
-      申请退换: 1: 用户
-      客服处理: 3: 客服
-      完成退换: 4: 用户
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">journey
-    title 用户购物流程
-    section 浏览商品
-      搜索商品: 5: 用户
-      查看详情: 4: 用户
-      比较价格: 3: 用户
-    section 下单
-      加入购物车: 5: 用户
-      填写收货信息: 3: 用户
-      选择支付方式: 4: 用户
-      确认支付: 1: 用户
-    section 收货
-      查看物流: 3: 用户
-      确认收货: 4: 用户
-      评价商品: 2: 用户
-    section 售后
-      申请退换: 1: 用户
-      客服处理: 3: 客服
-      完成退换: 4: 用户
-</code></pre>
-<hr>
-<h2>10. 思维导图 (Mind Map)</h2>
-<h3>项目规划思维导图</h3>
-<pre><code class="language-txt">mindmap
-  root((项目规划))
-    设计阶段
-      需求分析
-        功能需求
-        非功能需求
-      UI/UX设计
-        原型设计
-        视觉设计
-      架构设计
-        系统架构
-        数据库设计
-    开发阶段
-      后端开发
-        API接口
-        业务逻辑
-        数据访问
-      前端开发
-        页面开发
-        组件开发
-        交互开发
-    测试阶段
-      单元测试
-      集成测试
-      系统测试
-      用户验收测试
-    部署阶段
-      环境准备
-      部署执行
-      监控运维
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">mindmap
-  root((项目规划))
-    设计阶段
-      需求分析
-        功能需求
-        非功能需求
-      UI/UX设计
-        原型设计
-        视觉设计
-      架构设计
-        系统架构
-        数据库设计
-    开发阶段
-      后端开发
-        API接口
-        业务逻辑
-        数据访问
-      前端开发
-        页面开发
-        组件开发
-        交互开发
-    测试阶段
-      单元测试
-      集成测试
-      系统测试
-      用户验收测试
-    部署阶段
-      环境准备
-      部署执行
-      监控运维
-</code></pre>
-<hr>
-<h2>11. 时间线图 (Timeline)</h2>
-<h3>技术发展时间线</h3>
-<pre><code class="language-txt">timeline
-    title 技术发展历程
-    2000-2010 : Web 1.0 时代
-        静态网页
-        表格布局
-        IE 浏览器主导
-    2010-2015 : Web 2.0 时代
-        动态网页
-        Ajax 技术
-        jQuery 流行
-    2015-2020 : 移动互联网时代
-        智能手机普及
-        响应式设计
-        Vue / React 框架
-    2020-至今 : AI 时代
-        大语言模型
-        智能应用
-        云原生技术
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">timeline
-    title 技术发展历程
-    2000-2010 : Web 1.0 时代
-        静态网页
-        表格布局
-        IE 浏览器主导
-    2010-2015 : Web 2.0 时代
-        动态网页
-        Ajax 技术
-        jQuery 流行
-    2015-2020 : 移动互联网时代
-        智能手机普及
-        响应式设计
-        Vue / React 框架
-    2020-至今 : AI 时代
-        大语言模型
-        智能应用
-        云原生技术
-</code></pre>
-<hr>
-<h2>12. 四象限图 (Quadrant Chart)</h2>
-<h3>项目优先级矩阵</h3>
-<pre><code class="language-txt">quadrantChart
-    title 项目优先级矩阵
-    x-axis 低影响 --&gt; 高影响
-    y-axis 低成本 --&gt; 高成本
-    quadrant-1 立即执行
-    quadrant-2 重点规划
-    quadrant-3 暂缓考虑
-    quadrant-4 审慎评估
-    功能A: [0.30, 0.60]
-    功能B: [0.70, 0.80]
-    功能C: [0.20, 0.30]
-    功能D: [0.80, 0.40]
-    功能E: [0.50, 0.50]
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">quadrantChart
-    title 项目优先级矩阵
-    x-axis 低影响 --&gt; 高影响
-    y-axis 低成本 --&gt; 高成本
-    quadrant-1 立即执行
-    quadrant-2 重点规划
-    quadrant-3 暂缓考虑
-    quadrant-4 审慎评估
-    功能A: [0.30, 0.60]
-    功能B: [0.70, 0.80]
-    功能C: [0.20, 0.30]
-    功能D: [0.80, 0.40]
-    功能E: [0.50, 0.50]
-</code></pre>
-<hr>
-<h2>13. 块图 (Block Diagram)</h2>
-<h3>系统架构块图</h3>
-<pre><code class="language-txt">block
-    columns 3
-    web[&quot;客户端&quot;]
-    app[&quot;应用服务&quot;]
-    cache[&quot;缓存&quot;]
-
-    db[(&quot;数据库&quot;)]
-    queue[&quot;消息队列&quot;]
-
-    web --&gt; app
-    app --&gt; cache
-    app --&gt; db
-    app --&gt; queue
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">block
-    columns 3
-    web[&quot;客户端&quot;]
-    app[&quot;应用服务&quot;]
-    cache[&quot;缓存&quot;]
-
-    db[(&quot;数据库&quot;)]
-    queue[&quot;消息队列&quot;]
-
-    web --&gt; app
-    app --&gt; cache
-    app --&gt; db
-    app --&gt; queue
-</code></pre>
-<hr>
-<h2>14. C4 架构图 (C4 Model)</h2>
-<h3>C4 系统上下文图</h3>
-<pre><code class="language-txt">C4Context
-    title 系统上下文图
-    
-    Person(user, &quot;用户&quot;, &quot;使用系统的人员&quot;)
-    System(web, &quot;Web 应用&quot;, &quot;提供用户界面和交互&quot;)
-    System(api, &quot;API 服务&quot;, &quot;处理业务逻辑&quot;)
-    SystemDb(database, &quot;数据库&quot;, &quot;存储业务数据&quot;)
-    
-    Rel(user, web, &quot;使用浏览器访问&quot;)
-    Rel(web, api, &quot;调用 API&quot;)
-    Rel(api, database, &quot;读写数据&quot;)
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">C4Context
-    title 系统上下文图
-    
-    Person(user, &quot;用户&quot;, &quot;使用系统的人员&quot;)
-    System(web, &quot;Web 应用&quot;, &quot;提供用户界面和交互&quot;)
-    System(api, &quot;API 服务&quot;, &quot;处理业务逻辑&quot;)
-    SystemDb(database, &quot;数据库&quot;, &quot;存储业务数据&quot;)
-    
-    Rel(user, web, &quot;使用浏览器访问&quot;)
-    Rel(web, api, &quot;调用 API&quot;)
-    Rel(api, database, &quot;读写数据&quot;)
-</code></pre>
-<hr>
-<h2>15. XY 图表 (XY Chart)</h2>
-<h3>销售数据趋势图</h3>
-<pre><code class="language-txt">xychart-beta horizontal
-    title &quot;Quarterly Report&quot;
-    x-axis [Q1, Q2, Q3, Q4]
-    y-axis &quot;Revenue (k$)&quot; 0 --&gt; 100
-    bar [65, 59, 80, 81]
-    line [60, 55, 75, 85]
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">xychart-beta horizontal
-    title &quot;Quarterly Report&quot;
-    x-axis [Q1, Q2, Q3, Q4]
-    y-axis &quot;Revenue (k$)&quot; 0 --&gt; 100
-    bar [65, 59, 80, 81]
-    line [60, 55, 75, 85]
-</code></pre>
-<hr>
-<h2>16. 网络拓扑图 (Network Topology)</h2>
-<h3>企业网络拓扑</h3>
-<pre><code class="language-txt">flowchart TB
-    subgraph Internet
-        User1([用户A])
-        User2([用户B])
-        CDN[CDN 节点]
-    end
-    
-    subgraph DMZ
-        LB[负载均衡]
-        WAF[Web 防火墙]
-    end
-    
-    subgraph Application
-        Web1[Web 服务器1]
-        Web2[Web 服务器2]
-        App1[应用服务器1]
-        App2[应用服务器2]
-    end
-    
-    subgraph Data
-        DB[(主数据库)]
-        DBSlave[(从数据库)]
-        Redis[(Redis 缓存)]
-        Storage[(对象存储)]
-    end
-    
-    User1 --&gt; CDN
-    User2 --&gt; CDN
-    CDN --&gt; WAF
-    WAF --&gt; LB
-    LB --&gt; Web1
-    LB --&gt; Web2
-    Web1 --&gt; App1
-    Web2 --&gt; App2
-    App1 --&gt; Redis
-    App2 --&gt; Redis
-    App1 --&gt; DB
-    App2 --&gt; DB
-    DB --&gt; DBSlave
-    App1 --&gt; Storage
-    App2 --&gt; Storage
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">flowchart TB
-    subgraph Internet
-        User1([用户A])
-        User2([用户B])
-        CDN[CDN 节点]
-    end
-    
-    subgraph DMZ
-        LB[负载均衡]
-        WAF[Web 防火墙]
-    end
-    
-    subgraph Application
-        Web1[Web 服务器1]
-        Web2[Web 服务器2]
-        App1[应用服务器1]
-        App2[应用服务器2]
-    end
-    
-    subgraph Data
-        DB[(主数据库)]
-        DBSlave[(从数据库)]
-        Redis[(Redis 缓存)]
-        Storage[(对象存储)]
-    end
-    
-    User1 --&gt; CDN
-    User2 --&gt; CDN
-    CDN --&gt; WAF
-    WAF --&gt; LB
-    LB --&gt; Web1
-    LB --&gt; Web2
-    Web1 --&gt; App1
-    Web2 --&gt; App2
-    App1 --&gt; Redis
-    App2 --&gt; Redis
-    App1 --&gt; DB
-    App2 --&gt; DB
-    DB --&gt; DBSlave
-    App1 --&gt; Storage
-    App2 --&gt; Storage
-</code></pre>
-<hr>
-<h2>17. 看板 (Kanban Board)</h2>
-<h3>任务看板</h3>
-<pre><code class="language-txt">flowchart LR
-    subgraph Backlog[&quot;📋 待办&quot;]
-        Task1[&quot;🔴 紧急任务&quot;]
-        Task2[&quot;🟡 普通任务&quot;]
-        Task3[&quot;🟢 低优先级&quot;]
-    end
-    
-    subgraph InProgress[&quot;⚡ 进行中&quot;]
-        Task4[&quot;🔵 开发中&quot;]
-        Task5[&quot;🟣 设计中&quot;]
-    end
-    
-    subgraph Review[&quot;👀 审核中&quot;]
-        Task6[&quot;🟠 代码审查&quot;]
-        Task7[&quot;⚪ UI 验收&quot;]
-    end
-    
-    subgraph Done[&quot;✅ 已完成&quot;]
-        Task8[&quot;✅ 任务完成&quot;]
-        Task9[&quot;✅ 已上线&quot;]
-    end
-    
-    Task1 --&gt; Task4
-    Task2 --&gt; Task5
-    Task4 --&gt; Task6
-    Task5 --&gt; Task7
-    Task6 --&gt; Task8
-    Task7 --&gt; Task9
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">flowchart LR
-    subgraph Backlog[&quot;📋 待办&quot;]
-        Task1[&quot;🔴 紧急任务&quot;]
-        Task2[&quot;🟡 普通任务&quot;]
-        Task3[&quot;🟢 低优先级&quot;]
-    end
-    
-    subgraph InProgress[&quot;⚡ 进行中&quot;]
-        Task4[&quot;🔵 开发中&quot;]
-        Task5[&quot;🟣 设计中&quot;]
-    end
-    
-    subgraph Review[&quot;👀 审核中&quot;]
-        Task6[&quot;🟠 代码审查&quot;]
-        Task7[&quot;⚪ UI 验收&quot;]
-    end
-    
-    subgraph Done[&quot;✅ 已完成&quot;]
-        Task8[&quot;✅ 任务完成&quot;]
-        Task9[&quot;✅ 已上线&quot;]
-    end
-    
-    Task1 --&gt; Task4
-    Task2 --&gt; Task5
-    Task4 --&gt; Task6
-    Task5 --&gt; Task7
-    Task6 --&gt; Task8
-    Task7 --&gt; Task9
-</code></pre>
-<hr>
-<h2>18. 需求图 (Requirement Diagram)</h2>
-<h3>软件需求图</h3>
-<pre><code class="language-txt">flowchart TB
-    subgraph 业务需求
-        BR1[&quot;BR1: 提高用户体验&quot;]
-        BR2[&quot;BR2: 增加收入来源&quot;]
-    end
-    
-    subgraph 用户需求
-        UR1[&quot;UR1: 快速登录&quot;]
-        UR2[&quot;UR2: 支付便捷&quot;]
-        UR3[&quot;UR3: 订单追踪&quot;]
-    end
-    
-    subgraph 功能需求
-        FR1[&quot;FR1: 第三方登录&quot;]
-        FR2[&quot;FR2: 多支付方式&quot;]
-        FR3[&quot;FR3: 物流查询&quot;]
-        FR4[&quot;FR4: 消息通知&quot;]
-    end
-    
-    BR1 --&gt; UR1
-    BR1 --&gt; UR3
-    BR2 --&gt; UR2
-    
-    UR1 --&gt; FR1
-    UR2 --&gt; FR2
-    UR3 --&gt; FR3
-    UR1 --&gt; FR4
-    UR3 --&gt; FR4
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<pre><code class="language-mermaid">flowchart TB
-    subgraph 业务需求
-        BR1[&quot;BR1: 提高用户体验&quot;]
-        BR2[&quot;BR2: 增加收入来源&quot;]
-    end
-    
-    subgraph 用户需求
-        UR1[&quot;UR1: 快速登录&quot;]
-        UR2[&quot;UR2: 支付便捷&quot;]
-        UR3[&quot;UR3: 订单追踪&quot;]
-    end
-    
-    subgraph 功能需求
-        FR1[&quot;FR1: 第三方登录&quot;]
-        FR2[&quot;FR2: 多支付方式&quot;]
-        FR3[&quot;FR3: 物流查询&quot;]
-        FR4[&quot;FR4: 消息通知&quot;]
-    end
-    
-    BR1 --&gt; UR1
-    BR1 --&gt; UR3
-    BR2 --&gt; UR2
-    
-    UR1 --&gt; FR1
-    UR2 --&gt; FR2
-    UR3 --&gt; FR3
-    UR1 --&gt; FR4
-    UR3 --&gt; FR4
-</code></pre>
-<hr>
-<h2>总结</h2>
-<p>本文档展示了 Mermaid 支持的各类图表，包括：</p>
-<ol>
-<li><strong>流程图</strong> - 垂直、水平、复杂流程图</li>
-<li><strong>时序图</strong> - 基础时序、循环与条件</li>
-<li><strong>类图</strong> - 类关系、属性、方法</li>
-<li><strong>状态图</strong> - 状态转换、嵌套状态</li>
-<li><strong>ER 图</strong> - 实体关系、属性</li>
-<li><strong>甘特图</strong> - 项目计划、时间线</li>
-<li><strong>饼图</strong> - 数据分布、比例展示</li>
-<li><strong>Git 分支图</strong> - Git 工作流</li>
-<li><strong>用户旅程图</strong> - 用户体验流程</li>
-<li><strong>思维导图</strong> - 层次结构、脑图</li>
-<li><strong>时间线图</strong> - 历史发展、里程碑</li>
-<li><strong>四象限图</strong> - 优先级矩阵</li>
-<li><strong>块图</strong> - 系统架构块</li>
-<li><strong>C4 架构图</strong> - 系统上下文</li>
-<li><strong>XY 图表</strong> - 趋势图表</li>
-<li><strong>网络拓扑图</strong> - 网络结构</li>
-<li><strong>看板</strong> - 任务管理</li>
-<li><strong>需求图</strong> - 需求层次</li>
-</ol>
-<p>更多详细信息请参考 <a href="https://mermaid.js.org/">Mermaid 官方文档</a>。</p>
 ]]></content:encoded>
     </item>
     <item>

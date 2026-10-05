@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://theforeveriris.github.io/md-preview/</loc>
-    <lastmod>2026-10-02T10:50:03.000Z</lastmod>
+    <lastmod>2026-10-05T03:18:09.000Z</lastmod>
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md</loc>
@@ -18,7 +18,7 @@
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/apexcharts-examples.md</loc>
-    <lastmod>2026-05-20T04:17:35.000Z</lastmod>
+    <lastmod>2026-10-05T03:18:09.000Z</lastmod>
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/basic-usage.md</loc>
@@ -42,7 +42,7 @@
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/csv-examples.md</loc>
-    <lastmod>2026-10-01T05:07:56.000Z</lastmod>
+    <lastmod>2026-10-05T03:18:09.000Z</lastmod>
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/diff-examples.md</loc>
@@ -54,7 +54,7 @@
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/ensp-examples.md</loc>
-    <lastmod>2026-07-16T06:57:26.000Z</lastmod>
+    <lastmod>2026-10-05T03:18:09.000Z</lastmod>
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/gallery-layouts.md</loc>
@@ -62,7 +62,7 @@
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/geojson-examples.md</loc>
-    <lastmod>2026-05-24T06:39:14.000Z</lastmod>
+    <lastmod>2026-10-05T03:18:09.000Z</lastmod>
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/github-alerts-examples.md</loc>
@@ -74,11 +74,15 @@
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/ios-vrp-examples.md</loc>
-    <lastmod>2026-10-01T05:07:56.000Z</lastmod>
+    <lastmod>2026-10-05T03:18:09.000Z</lastmod>
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/latex-examples.md</loc>
-    <lastmod>2026-05-22T12:50:14.000Z</lastmod>
+    <lastmod>2026-10-05T03:18:09.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://theforeveriris.github.io/md-preview/docs/examples/live-preview-examples.md</loc>
+    <lastmod>2026-10-05T03:18:09.000Z</lastmod>
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/markdown-syntax.md</loc>
@@ -86,7 +90,7 @@
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/mermaid-examples.md</loc>
-    <lastmod>2026-05-20T01:43:14.000Z</lastmod>
+    <lastmod>2026-10-05T03:18:09.000Z</lastmod>
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/native-html-examples.md</loc>
@@ -94,7 +98,7 @@
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/pkt-examples.md</loc>
-    <lastmod>2026-07-31T16:00:35.000Z</lastmod>
+    <lastmod>2026-10-05T03:18:09.000Z</lastmod>
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/pkt-huawei-vrp-%E8%A7%A3%E6%9E%90%E7%A4%BA%E4%BE%8B.md</loc>
@@ -158,7 +162,7 @@
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/shortcuts.md</loc>
-    <lastmod>2026-10-02T10:50:03.000Z</lastmod>
+    <lastmod>2026-10-05T03:18:09.000Z</lastmod>
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/show.md</loc>
