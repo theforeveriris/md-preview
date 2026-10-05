@@ -1,0 +1,15 @@
+{
+  "devDependencies": {
+    "jsdom": "^29.1.1",
+    "marked": "^18.0.5"
+  },
+  "dependencies": {
+    "apexcharts": "^5.16.0",
+    "diff2html": "^3.4.47",
+    "flexsearch": "^0.7.31",
+    "katex": "^0.16.10",
+    "leaflet": "^1.9.4",
+    "mermaid": "^11.16.0",
+    "pako": "^2.1.0"
+  }
+}

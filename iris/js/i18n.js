@@ -1,0 +1,989 @@
+/**
+ * i18n - 界面多语言（zh / en）
+ *
+ * 设计：
+ *   - 语言包在下方字典中维护，zh 为基准语言（key 缺失时回退 zh）
+ *   - 静态 HTML 文案通过 data-i18n（textContent）/ data-i18n-title /
+ *     data-i18n-aria（aria-label）/ data-i18n-placeholder 属性标记，
+ *     apply() 按当前语言批量替换
+ *   - JS 动态生成的文案通过 t(key, fallback) 取词，fallback 为中文原文，
+ *     保证 i18n 模块缺失或 key 未登记时界面不至于空缺
+ *   - 语言选择持久化在 localStorage('md-preview-lang')：
+ *     'auto'（默认，跟随浏览器语言）/ 'zh' / 'en'
+ *   - 切换语言后广播 'langchange' 事件，动态渲染的模块（本地文件面板等）
+ *     监听后自行重渲染
+ *
+ * 迁移说明：编辑器（editor.js 工具栏/菜单）文案暂未纳入语言包，
+ * 仍为中文；后续可按 data-i18n + t() 模式逐步迁移。
+ */
+(function() {
+  'use strict';
+  window.MarkdownPreview = window.MarkdownPreview || {};
+
+  const LANG_KEY = 'md-preview-lang';
+
+  const zh = {
+    // 通用
+    'common.reset': '重置',
+    'common.close': '关闭',
+
+    // 侧边栏
+    'sidebar.searchPlaceholder': '搜索文档…',
+    'sidebar.searchAria': '搜索文档',
+    'sidebar.localTitle': '本地文件',
+    'sidebar.localClear': '清空本地文件列表',
+
+    // 悬浮球菜单
+    'menu.backToTop': '回到顶部',
+    'menu.openLocal': '打开本地文件',
+    'menu.installPwa': '安装到桌面',
+    'menu.editPage': '编辑此页',
+    'menu.settings': '设置',
+
+    // 本地文件选择面板
+    'local.pickFiles': '选择文件…',
+    'local.pickFilesDesc': '选择一个或多个 .md 文件（可多选）',
+    'local.pickFolder': '选择文件夹…',
+    'local.pickFolderDesc': '导入整个文件夹，按目录树展示',
+
+    // 设置面板：骨架
+    'settings.title': '设置',
+    'settings.section.language': '语言',
+    'settings.section.appearance': '外观',
+    'settings.section.reading': '阅读',
+    'settings.section.toolsExport': '工具与导出',
+    'settings.sub.theme': '主题',
+    'settings.sub.colors': '自定义配色',
+    'settings.sub.codeHighlight': '代码高亮',
+    'settings.sub.font': '字体',
+    'settings.sub.customCss': '自定义 CSS',
+    'settings.sub.display': '显示选项',
+    'settings.sub.layout': '布局',
+    'settings.sub.tools': '工具',
+    'settings.sub.export': '导出',
+    'settings.sub.offline': '离线缓存',
+
+    // 语言
+    'settings.lang.label': '界面语言',
+    'settings.lang.desc': '切换界面显示语言，选择「自动」时跟随浏览器语言',
+    'settings.lang.auto': '自动（跟随浏览器）',
+
+    // 主题
+    'settings.theme.label': '预设主题',
+    'settings.theme.desc': '选择预设界面主题，会清空自定义配色',
+    'settings.theme.auto': '自动（跟随系统）',
+    'settings.theme.autoPair': '自动主题配对',
+    'settings.theme.autoPairDesc': '系统亮色时使用亮色主题，暗色时使用暗色主题',
+    'settings.theme.autoLight.default': '亮 · 紫粉渐变',
+    'settings.theme.autoLight.github': '亮 · GitHub Light',
+    'settings.theme.autoLight.notion': '亮 · Notion',
+    'settings.theme.autoDark.github': '暗 · GitHub Dark',
+    'settings.theme.autoDark.arc': '暗 · Arc Dark',
+    'settings.theme.autoDark.dracula': '暗 · Dracula',
+    'settings.theme.autoDark.nord': '暗 · Nord',
+    'settings.theme.default': '紫粉渐变',
+
+    // 自定义配色
+    'settings.colors.accent': '强调色',
+    'settings.colors.accentDesc': '主色及派生色，点击色块取色',
+    'settings.colors.main': '主色',
+    'settings.colors.pink': '粉色',
+    'settings.colors.deep': '深色',
+    'settings.colors.neutral': '中性色',
+    'settings.colors.neutralDesc': '背景、表面、文字与边框色，可做出亮色或暗色主题',
+    'settings.colors.bg': '背景',
+    'settings.colors.surface': '表面',
+    'settings.colors.border': '边框',
+    'settings.colors.text': '文字',
+    'settings.colors.muted': '次要',
+    'colorTitle.main': '主色 (--color-accent-purple)',
+    'colorTitle.pink': '粉色 (--color-accent-pink)',
+    'colorTitle.deep': '深色 (--color-accent-purple-deep)',
+    'colorTitle.bg': '背景 (--color-bg)',
+    'colorTitle.surface': '表面 (--color-surface)',
+    'colorTitle.border': '边框 (--color-border)',
+    'colorTitle.text': '文字 (--color-text)',
+    'colorTitle.muted': '次要文字 (--color-text-muted)',
+
+    // 代码高亮
+    'settings.code.label': '代码配色方案',
+    'settings.code.desc': '选择代码块语法高亮主题',
+
+    // 字体
+    'settings.font.remote': '远程字体 URL',
+    'settings.font.remoteDesc': '加载远程字体，支持 Google Fonts 样式的 CSS URL（例：https://fonts.googleapis.com/css2?family=Noto+Sans+SC）。回车或失去焦点后应用，留空则禁用',
+    'settings.font.display': '展示字体族（标题等衬线体）',
+    'settings.font.displayDesc': '设置 CSS font-family，多个字体用英文逗号分隔；远程字体加载完毕后可直接填字体名',
+    'settings.font.body': '正文字体族（UI/正文无衬线体）',
+    'settings.font.bodyDesc': '设置 CSS font-family，多个字体用英文逗号分隔',
+    'settings.font.size': '字号',
+    'settings.font.sizeDesc': '控制界面与 Markdown 正文字号（单位 px）',
+    'settings.font.sizeUi': 'UI 字号',
+    'settings.font.sizeBody': '正文',
+    'settings.font.weight': '字重',
+    'settings.font.weightDesc': '控制字体粗细（300 细 / 400 常规 / 500 中等 / 600 半粗 / 700 粗体）',
+    'settings.font.weightDisplay': '展示体',
+    'weight.300': '300 细',
+    'weight.400': '400 常规',
+    'weight.500': '500 中等',
+    'weight.600': '600 半粗',
+    'weight.700': '700 粗',
+    'weight.800': '800 特粗',
+    'settings.font.color': '字色',
+    'settings.font.colorDesc': '主文字与次要文字颜色；强调色（链接、高亮等）在上方「自定义配色」调节',
+    'settings.font.colorBody': '正文',
+    'settings.font.colorMuted': '次要',
+    'settings.font.resetFont': '重置字体',
+    'settings.font.sansDigits': '标题数字使用无衬线字体',
+    'settings.font.sansDigitsDesc': '默认关闭，标题数字随标题字体（默认衬线体，数字同为衬线）；开启后仅标题中的阿拉伯数字改用无衬线字体渲染，其余文字不受影响',
+
+    // 高级
+    'settings.adv.customCss': '外部样式表 URL',
+    'settings.adv.customCssDesc': '加载外部 CSS 文件 URL，回车应用',
+    'settings.adv.customCssPlaceholder': 'CSS 文件 URL',
+    'settings.adv.customHljs': '自定义高亮主题',
+    'settings.adv.customHljsDesc': '加载外部 highlight.js 主题 CSS URL，回车应用',
+    'settings.adv.customHljsPlaceholder': 'hljs 主题 CSS URL',
+
+    // 显示
+    'settings.display.readingProgress': '显示阅读进度',
+    'settings.display.readingProgressDesc': '显示页面阅读进度',
+    'settings.display.wordCount': '显示词数统计',
+    'settings.display.wordCountDesc': '在文件列表中显示每个文件的词数',
+    'settings.display.truncate': '折叠过长文件名',
+    'settings.display.truncateDesc': '开启时用省略号截断；关闭时显示完整文件名，超出部分可在该文件所在文件夹区域内横向滚动查看',
+    'settings.display.contentWidth': '内容区宽度',
+    'settings.display.contentWidthDesc': '调整 Markdown 正文的最大宽度，拖动即时生效；快捷键 Ctrl/⌘+B 可折叠侧边栏获得更宽空间',
+    'settings.display.tableBleed': '长表格延伸到右侧空白',
+    'settings.display.tableBleedDesc': '内容宽度设置保持不变，宽表格向右适度越过正文边界、利用右侧空白显示更多列；仍放不下的部分在表格内横向滚动',
+
+    // 操作
+    'settings.actions.editor': 'Markdown 编辑器',
+    'settings.actions.editorDesc': '在新标签页打开交互式编辑器，支持语法快速输入和实时渲染',
+    'settings.actions.openEditor': '打开编辑器',
+    'settings.actions.pulseGen': '波形生成器',
+    'settings.actions.pulseGenDesc': '可视化生成 DG-LAB 郊狼 .pulse 波形文件，最多 20 个',
+    'settings.actions.openPulseGen': '打开生成器',
+    'settings.actions.downloadMd': '下载此文章',
+    'settings.actions.downloadMdDesc': '下载当前文档为 MD 格式',
+    'settings.actions.downloadMdBtn': '下载 MD',
+    'settings.actions.exportPdf': '导出 PDF',
+    'settings.actions.exportPdfDesc': '通过浏览器打印对话框导出为 PDF',
+    'settings.actions.exportPdfBtn': '导出 PDF',
+    'settings.actions.exportHtml': '导出 HTML',
+    'settings.actions.exportHtmlDesc': '保存为内联当前主题样式的单文件 HTML，双击即可离线查看',
+    'settings.actions.exportHtmlBtn': '导出 HTML',
+
+    // 欢迎页 / 更新提示 / 搜索面板
+    'welcome.text': '选择一个文件开始阅读',
+    'toast.update': '有新版本可用',
+    'toast.refresh': '刷新',
+    'palette.placeholder': '搜索文档，或输入 > 执行命令...',
+    'palette.clear': '清空搜索词',
+    'palette.dialog': '搜索文档',
+
+    // 动态文案：markdown 渲染
+    'md.readingTime': '预计阅读 {n} 分钟',
+    'md.loadFailed': '无法加载文件',
+    'md.welcome': '选择一个文件开始阅读',
+    'md.copyAnchor': '复制此标题的直达链接',
+    'md.noIndex': '当前文件无目录',
+    'md.defaultDescription': '一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能',
+    'footnote.description': '脚注',
+    'footnote.backRef': '返回引用 {0}',
+
+    // 动态文案：搜索 / 文件树
+    'search.noResults': '没有找到相关文档',
+    'tree.loadFailed': '无法加载文件列表，请检查网络或手动配置',
+    'tree.componentFailed': '文件树组件加载失败',
+
+    // 动态文案：内容右键菜单 / 表格手柄
+    'ctx.copied': '已复制',
+    'ctx.copyLatex': '复制 LaTeX 公式',
+    'ctx.tableOps': '表格操作',
+    'ctx.downloadImage': '下载图片',
+    'ctx.copyMd': '复制 Markdown 源码',
+    'ctx.copyCsv': '复制 CSV',
+    'ctx.copySrc': '复制源码',
+    'ctx.srcCopied': '源码已复制',
+    'ctx.copyFailed': '复制失败',
+    'ctx.exportSvg': '导出 SVG',
+    'ctx.exportPng': '导出 PNG',
+    'ctx.svgUnavailable': '该图表无 SVG 可导出，请用 PNG',
+    'ctx.exportFailed': '导出失败：图片服务不允许跨域获取',
+
+    // 动态文案：导出
+    'export.needDoc': '请先打开一个文档',
+    'export.downloadFailed': '下载失败，请重试',
+
+    // 动态文案：本地文件 / 本地文件夹
+    'local.title': '本地文件',
+    'local.remove': '从列表移除',
+    'local.removeAria': '移除 ',
+    'local.tooLarge': '（超过 10MB）',
+    'local.tooLargeOpen': '（超过 10MB，无法打开）',
+    'local.readFailed': '（读取失败）',
+    'local.listFull': '（列表已满 20 个）',
+    'local.skippedFiles': '以下文件未加入列表：\n',
+    'local.folderEmpty': '该文件夹内没有找到 .md 文件',
+    'local.folderFull': '（超出 500 个文件上限）',
+    'local.folderReplaceConfirm': '打开新文件夹将替换当前本地文件列表，是否继续？',
+    'local.folderUnsupported': '当前浏览器不支持打开文件夹，请使用多选文件的方式',
+    'wordCount.unit': ' words',
+
+    // 动态文案：PlantUML
+    'plantuml.renderFailed': 'PlantUML 渲染服务均不可用，已回退为源码展示',
+    'plantuml.renderError': 'PlantUML 渲染错误',
+    'plantuml.openInEditor': '在 PlantUML 在线编辑器中打开',
+
+    // 动态文案：收藏（长按文件树）与悬浮预览
+    'fav.added': '已收藏《{t}》',
+    'fav.removed': '已取消收藏《{t}》',
+    'preview.loading': '加载中…',
+    'preview.noExcerpt': '（暂无摘要）',
+
+    // 动态文案：扫码续读（悬浮球）
+    'menu.qrShare': '扫码续读',
+    'qr.title': '扫码续读',
+
+    // 动态文案：阅读位置续读
+    'reading.resume': '上次读到 {pct}%，继续？',
+    'reading.resumeGo': '继续阅读',
+    'reading.resumeDismiss': '忽略',
+
+    // 动态文案：选中文字浮动工具栏
+    'sel.copy': '复制',
+    'sel.search': '站内搜索',
+    'sel.card': '分享卡片',
+
+    // 动态文案：CSV / TSV 交互表格
+    'csv.searchPlaceholder': '搜索表格…',
+    'csv.rowCount': '{n} 行',
+    'csv.filteredCount': '{m} / {n} 行',
+    'csv.copyCsv': '复制 CSV',
+    'csv.downloadCsv': '下载 CSV',
+    'csv.sort': '排序',
+    'csv.filter': '按列筛选',
+    'csv.filterBy': '筛选',
+    'csv.selectAll': '全选',
+    'csv.clearFilter': '清除',
+    'csv.empty': '没有匹配的行',
+    'csv.untitled': '列',
+
+    // 动态文案：设置面板 · 全量离线缓存
+    'settings.offline.label': '全量离线缓存',
+    'settings.offline.desc': '把文件树覆盖的所有文档拉进 PWA 缓存，离线也能整站阅读',
+    'settings.offline.btn': '缓存全部文档',
+    'settings.offline.progress': '缓存中 {done}/{total}…',
+    'settings.offline.done': '已缓存 {n} 篇文档，离线也能整站阅读',
+    'settings.offline.doneFailed': '已缓存 {done} 篇文档（{failed} 篇失败）',
+    'settings.offline.clear': '清除文档缓存',
+    'settings.offline.cleared': '已清除全部文档缓存',
+    'settings.offline.unsupported': '当前环境不支持 Service Worker（需通过 HTTPS 部署访问后使用）',
+    'settings.offline.failed': '缓存失败，请稍后重试',
+
+    // 设置面板 · 移动端手势
+    'settings.display.gestures': '启用移动端手势',
+    'settings.display.gesturesDesc': '触屏设备上左右滑动正文切换上一篇 / 下一篇，自屏幕左缘右滑呼出侧边栏',
+
+    // 设置面板 · 配置备份（设置导出 / 导入）
+    'settings.sub.backup': '配置备份',
+    'settings.backup.export': '导出设置',
+    'settings.backup.exportDesc': '把主题、配色、字体、阅读偏好与界面语言保存为 JSON 文件',
+    'settings.backup.exportBtn': '导出',
+    'settings.backup.import': '导入设置',
+    'settings.backup.importDesc': '选择本站导出的 JSON 备份文件，导入后自动刷新生效',
+    'settings.backup.importBtn': '导入',
+    'settings.backup.invalid': '导入失败：不是有效的设置备份文件',
+
+    // 设置面板 · 存储管理
+    'settings.section.storage': '存储',
+    'settings.sub.storageUsage': '空间占用',
+    'settings.sub.notebooks': '编辑器笔记本',
+    'settings.sub.browsingData': '浏览数据',
+    'storage.usage': '已用 {used} / 约 {quota}（{pct}%）',
+    'storage.unavailable': '当前浏览器不支持存储用量查询',
+    'storage.estimateFailed': '存储用量查询失败',
+    'storage.notebooks.label': '笔记本数据',
+    'storage.notebooks.loading': '正在读取…',
+    'storage.notebooks.summary': '{n} 个笔记本 · 共约 {size}',
+    'storage.notebooks.empty': '暂无笔记本数据',
+    'storage.notebooks.clearAll': '全部清空',
+    'storage.notebooks.unavailable': '当前浏览器不支持 IndexedDB',
+    'storage.notebooks.loadFailed': '笔记本数据读取失败',
+    'storage.notebook.untitled': '未命名笔记本',
+    'storage.notebook.meta': '{cells} 个单元格 · 约 {size}',
+    'storage.notebook.deleteConfirm': '确定删除笔记本「{title}」？此操作不可恢复。',
+    'storage.notebook.deleteFailed': '删除失败，请重试',
+    'storage.delete': '删除',
+    'storage.clear': '清理',
+    'storage.clearConfirm': '确定清理「{label}」？此操作不可恢复。',
+    'storage.data.historyFav': '阅读历史与收藏',
+    'storage.data.historyFavDesc': '{n} 条记录 · 约 {size}',
+    'storage.data.readingPos': '阅读位置',
+    'storage.data.readingPosDesc': '{n} 篇文档 · 约 {size}',
+
+    // 拖拽打开文件 / 文件夹
+    'drop.title': '松开以打开',
+    'drop.desc': '支持 .md / .markdown 文件与整个文件夹',
+
+    // 悬浮球：对照阅读
+    'menu.splitView': '对照阅读',
+    'menu.snapshotShare': '快照分享',
+    'menu.openMenu': '打开菜单',
+
+    // 文章内查找条
+    'find.placeholder': '在本文中查找…',
+    'find.prev': '上一个 (Shift+Enter)',
+    'find.next': '下一个 (Enter)',
+    'find.noResult': '无结果',
+
+    // JSON 可折叠树
+    'json.items': '{n} 项',
+    'json.keys': '{n} 个键',
+    'json.copyPath': '复制路径',
+    'json.collapseAll': '收起',
+    'json.expandAll': '展开',
+    'json.copyJson': '复制 JSON',
+    'json.download': '下载 .json',
+    'json.rootArray': '根数组 · {n} 项',
+    'json.rootObject': '根对象 · {n} 个键',
+
+    // 代码块 live 预览沙箱
+    'sandbox.consoleEmpty': '没有 console 输出。用 console.log() 试试',
+    'sandbox.hint': '脚本在隔离沙箱中运行',
+    'sandbox.run': '运行',
+    'sandbox.reset': '重置',
+    'sandbox.runPreview': '点击运行预览',
+    'sandbox.source': '源码',
+    'sandbox.frameTitle': '代码运行预览',
+    'sandbox.cssSampleText': '这是一段示例文本，包含 ',
+    'sandbox.cssSampleLink': '链接',
+    'sandbox.cssSampleBold': '加粗',
+    'sandbox.cssSampleButton': '按钮',
+    'sandbox.cssSampleList': '列表项一',
+    'sandbox.cssSampleList2': '列表项二',
+
+    // 标签系统
+    'tags.panelTitle': '标签',
+    'tags.openTag': '查看该标签下的文档',
+    'tags.pageTitle': '标签',
+    'tags.docCount': '共 {n} 篇文档',
+    'tags.empty': '该标签下暂无文档',
+
+    // 快照分享
+    'snap.loadFailed': '文档内容获取失败',
+    'snap.noDoc': '当前没有可分享的文档',
+    'snap.compressFailed': '压缩组件加载失败',
+    'snap.badLinkTitle': '快照链接无效',
+    'snap.badLinkBody': '链接中的快照数据缺失或已损坏。',
+    'snap.name': '快照',
+    'snap.bannerTitle': '这是一份快照分享',
+    'snap.bannerBody': '内容仅存在于链接与本机，不会被上传或收录',
+    'snap.saveSession': '存入本地会话',
+    'snap.working': '正在生成快照链接…',
+    'snap.copied': '已复制快照链接，发给对方即可打开',
+    'snap.copiedOversize': '已复制快照链接（内容较大，部分环境可能打不开）',
+
+    // 万能命令面板
+    'cmd.groupCommands': '命令',
+    'cmd.groupAction': '命令',
+    'cmd.groupTheme': '主题',
+    'cmd.noMatch': '没有匹配的命令',
+    'cmd.toggleSidebar': '开关侧边栏',
+    'cmd.openSettings': '打开设置',
+    'cmd.focusMode': '专注模式',
+    'cmd.randomDoc': '随机读一篇',
+    'cmd.copyLink': '复制页面链接',
+    'cmd.exportPdf': '导出 PDF（打印）',
+    'cmd.exportMd': '导出 Markdown',
+    'cmd.exportHtml': '导出单文件 HTML',
+    'cmd.cacheAll': '缓存全部文档（离线）',
+    'cmd.openEditor': '打开编辑器',
+    'cmd.cacheDone': '已缓存 {n} 篇',
+
+    // 章节折叠
+    'collapse.collapse': '折叠本章',
+    'collapse.expand': '展开本章',
+
+    // 双栏对照阅读
+    'split.title': '对照阅读',
+    'split.syncScroll': '同步滚动',
+    'split.hint': 'Esc 退出',
+    'split.syncOn': '同步滚动：开',
+    'split.syncOff': '同步滚动：关',
+    'split.changeDoc': '更换文档',
+    'split.pickTitle': '选择右栏文档',
+    'split.pickerPlaceholder': '按名称或路径筛选…',
+    'split.pickerEmpty': '没有匹配的文档',
+    'split.rightEmpty': '右栏未选择',
+    'split.pickDoc': '选择右栏文档',
+    'split.emptyText': '选择一篇文档开始对照',
+    'split.emptyHint': '站点文档与本地会话文档都可以选',
+    'split.needDoc': '请先打开一个文档',
+    'split.localBadge': '本地',
+    'split.loadFailed': '文档加载失败，请重试',
+
+    // 设置：章节折叠 / 打包导出
+    'settings.display.sectionCollapse': '启用章节折叠',
+    'settings.display.sectionCollapseDesc': 'H2 标题栏右侧出现折叠按钮，点击折叠该章节；折叠状态按文档记忆，重开自动恢复',
+    'settings.display.splitSyncScroll': '对照阅读默认同步滚动',
+    'settings.display.focusMode': '专注模式',
+    'settings.display.focusModeDesc': '当前阅读段落保持高亮，其余内容淡化（也可在 Ctrl/⌘+K 命令面板开关）',
+    'settings.display.splitSyncScrollDesc': '打开双栏对照阅读时两栏按比例同步滚动（快捷键 Ctrl/⌘+Alt+S 可随时开关本次会话的同步）',
+    'settings.actions.exportEpub': '导出 EPUB',
+    'settings.actions.exportEpubDesc': '当前文档导出为 EPUB 电子书，本地相对路径图片随文打包',
+    'settings.actions.exportEpubBtn': '导出 EPUB',
+    'settings.actions.exportSiteEpub': '整站 EPUB 合订本',
+    'settings.actions.exportSiteEpubDesc': '全部文档按文件树顺序合订为一本 EPUB 电子书',
+    'settings.actions.exportSiteEpubBtn': '导出合订本',
+    'settings.actions.exportSiteMd': '整站 MD 打包下载',
+    'settings.actions.exportSiteMdDesc': '全部 .md 按仓库目录结构打包为 ZIP 一键带走',
+    'settings.actions.exportSiteMdBtn': '打包下载',
+    'settings.export.phaseDocs': '拉取文档',
+    'settings.export.phaseAssets': '打包图片',
+    'settings.export.done': '已导出',
+    'settings.export.failed': '导出失败，请重试',
+
+    // 分享卡片模板
+    'sel.cardPick': '选择卡片模板',
+    'sel.cardQuote': '引言 · 横版 1200×630',
+    'sel.cardQuoteV': '引言 · 竖版 3:4',
+    'sel.cardCode': '代码卡片',
+    'sel.cardTable': '表格卡片',
+    'sel.cardTableHint': '选区需落在表格内',
+    'sel.cardTableMore': '… 其余 {n} 行未展示',
+    'sel.issue': '反馈问题',
+    'sel.issueDoc': '**文档**：',
+    'sel.issueWhere': '**位置**：',
+    'sel.issueQuote': '**引文**：',
+    'sel.issueDesc': '**问题描述**：',
+
+    // EPUB / 打包导出
+    'export.epub.toc': '目录',
+    'export.noDocs': '没有可打包的文档（文件树未加载或为空）',
+    'export.needDoc': '请先打开一个文档',
+    'export.fetchFailed': '文档获取失败，请重试'
+  };
+
+  const en = {
+    'common.reset': 'Reset',
+    'common.close': 'Close',
+
+    'sidebar.searchPlaceholder': 'Search docs…',
+    'sidebar.searchAria': 'Search docs',
+    'sidebar.localTitle': 'Local Files',
+    'sidebar.localClear': 'Clear local file list',
+
+    'menu.backToTop': 'Back to Top',
+    'menu.openLocal': 'Open Local Files',
+    'menu.installPwa': 'Install App',
+    'menu.editPage': 'Edit This Page',
+    'menu.settings': 'Settings',
+
+    'local.pickFiles': 'Choose files…',
+    'local.pickFilesDesc': 'Pick one or more .md files (multi-select)',
+    'local.pickFolder': 'Choose a folder…',
+    'local.pickFolderDesc': 'Import a whole folder as a tree',
+
+    'settings.title': 'Settings',
+    'settings.section.language': 'Language',
+    'settings.section.appearance': 'Appearance',
+    'settings.section.reading': 'Reading',
+    'settings.section.toolsExport': 'Tools & Export',
+    'settings.sub.theme': 'Theme',
+    'settings.sub.colors': 'Custom Colors',
+    'settings.sub.codeHighlight': 'Code Highlighting',
+    'settings.sub.font': 'Fonts',
+    'settings.sub.customCss': 'Custom CSS',
+    'settings.sub.display': 'Display options',
+    'settings.sub.layout': 'Layout',
+    'settings.sub.tools': 'Tools',
+    'settings.sub.export': 'Export',
+    'settings.sub.offline': 'Offline cache',
+
+    'settings.lang.label': 'Interface Language',
+    'settings.lang.desc': 'Switch the UI language. "Auto" follows the browser language',
+    'settings.lang.auto': 'Auto (follow browser)',
+
+    'settings.theme.label': 'Preset Theme',
+    'settings.theme.desc': 'Pick a preset theme; custom colors will be cleared',
+    'settings.theme.auto': 'Auto (follow system)',
+    'settings.theme.autoPair': 'Auto Theme Pair',
+    'settings.theme.autoPairDesc': 'Use the light theme when the system is light, and the dark theme when it is dark',
+    'settings.theme.autoLight.default': 'Light · Purple Gradient',
+    'settings.theme.autoLight.github': 'Light · GitHub Light',
+    'settings.theme.autoLight.notion': 'Light · Notion',
+    'settings.theme.autoDark.github': 'Dark · GitHub Dark',
+    'settings.theme.autoDark.arc': 'Dark · Arc Dark',
+    'settings.theme.autoDark.dracula': 'Dark · Dracula',
+    'settings.theme.autoDark.nord': 'Dark · Nord',
+    'settings.theme.default': 'Purple Gradient',
+
+    'settings.colors.accent': 'Accent Colors',
+    'settings.colors.accentDesc': 'Primary and derived colors, click a swatch to pick',
+    'settings.colors.main': 'Main',
+    'settings.colors.pink': 'Pink',
+    'settings.colors.deep': 'Deep',
+    'settings.colors.neutral': 'Neutral Colors',
+    'settings.colors.neutralDesc': 'Background, surface, text and border colors — build your own light or dark theme',
+    'settings.colors.bg': 'Background',
+    'settings.colors.surface': 'Surface',
+    'settings.colors.border': 'Border',
+    'settings.colors.text': 'Text',
+    'settings.colors.muted': 'Muted',
+    'colorTitle.main': 'Main (--color-accent-purple)',
+    'colorTitle.pink': 'Pink (--color-accent-pink)',
+    'colorTitle.deep': 'Deep (--color-accent-purple-deep)',
+    'colorTitle.bg': 'Background (--color-bg)',
+    'colorTitle.surface': 'Surface (--color-surface)',
+    'colorTitle.border': 'Border (--color-border)',
+    'colorTitle.text': 'Text (--color-text)',
+    'colorTitle.muted': 'Muted text (--color-text-muted)',
+
+    'settings.code.label': 'Code Color Scheme',
+    'settings.code.desc': 'Choose the syntax highlighting theme for code blocks',
+
+    'settings.font.remote': 'Remote Font URL',
+    'settings.font.remoteDesc': 'Load a remote font via a Google Fonts style CSS URL (e.g. https://fonts.googleapis.com/css2?family=Noto+Sans+SC). Press Enter or blur to apply; leave empty to disable',
+    'settings.font.display': 'Display Font Family (serif headings)',
+    'settings.font.displayDesc': 'Set a CSS font-family; separate multiple fonts with commas. After a remote font loads you can use its name directly',
+    'settings.font.body': 'Body Font Family (UI/body sans-serif)',
+    'settings.font.bodyDesc': 'Set a CSS font-family; separate multiple fonts with commas',
+    'settings.font.size': 'Font Size',
+    'settings.font.sizeDesc': 'Controls UI and Markdown body font size (px)',
+    'settings.font.sizeUi': 'UI size',
+    'settings.font.sizeBody': 'Body',
+    'settings.font.weight': 'Font Weight',
+    'settings.font.weightDesc': 'Controls font weight (300 light / 400 regular / 500 medium / 600 semibold / 700 bold)',
+    'settings.font.weightDisplay': 'Display',
+    'weight.300': '300 Light',
+    'weight.400': '400 Regular',
+    'weight.500': '500 Medium',
+    'weight.600': '600 SemiBold',
+    'weight.700': '700 Bold',
+    'weight.800': '800 ExtraBold',
+    'settings.font.color': 'Text Color',
+    'settings.font.colorDesc': 'Primary and muted text colors; accent colors (links, highlights, etc.) are adjusted under "Custom Colors" above',
+    'settings.font.colorBody': 'Body',
+    'settings.font.colorMuted': 'Muted',
+    'settings.font.resetFont': 'Reset Fonts',
+    'settings.font.sansDigits': 'Sans-serif Digits in Headings',
+    'settings.font.sansDigitsDesc': 'Off by default: heading digits follow the heading font (serif). When on, only Arabic digits in headings render in a sans-serif face; other text is unaffected',
+
+    'settings.adv.customCss': 'External stylesheet URL',
+    'settings.adv.customCssDesc': 'Load an external CSS file URL, press Enter to apply',
+    'settings.adv.customCssPlaceholder': 'CSS file URL',
+    'settings.adv.customHljs': 'Custom highlight theme',
+    'settings.adv.customHljsDesc': 'Load an external highlight.js theme CSS URL, press Enter to apply',
+    'settings.adv.customHljsPlaceholder': 'hljs theme CSS URL',
+
+    'settings.display.readingProgress': 'Reading Progress',
+    'settings.display.readingProgressDesc': 'Show the page reading progress bar',
+    'settings.display.wordCount': 'Word Count',
+    'settings.display.wordCountDesc': 'Show each file\'s word count in the file list',
+    'settings.display.truncate': 'Truncate Long File Names',
+    'settings.display.truncateDesc': 'Truncate with ellipsis when on; when off, full names are shown and overflow scrolls horizontally within the folder area',
+    'settings.display.contentWidth': 'Content Width',
+    'settings.display.contentWidthDesc': 'Adjust the max width of the Markdown body, applies live; Ctrl/⌘+B collapses the sidebar for more room',
+    'settings.display.tableBleed': 'Wide Tables Extend Right',
+    'settings.display.tableBleedDesc': 'Content width stays unchanged; wide tables extend past the body edge into the right margin to show more columns, scrolling horizontally if still too wide',
+
+    'settings.actions.editor': 'Markdown Editor',
+    'settings.actions.editorDesc': 'Open the interactive editor in a new tab with syntax shortcuts and live preview',
+    'settings.actions.openEditor': 'Open Editor',
+    'settings.actions.pulseGen': 'Pulse Generator',
+    'settings.actions.pulseGenDesc': 'Visually generate DG-LAB .pulse waveforms, up to 20',
+    'settings.actions.openPulseGen': 'Open Generator',
+    'settings.actions.downloadMd': 'Download Article',
+    'settings.actions.downloadMdDesc': 'Download the current document as Markdown',
+    'settings.actions.downloadMdBtn': 'Download MD',
+    'settings.actions.exportPdf': 'Export PDF',
+    'settings.actions.exportPdfDesc': 'Export as PDF via the browser print dialog',
+    'settings.actions.exportPdfBtn': 'Export PDF',
+    'settings.actions.exportHtml': 'Export HTML',
+    'settings.actions.exportHtmlDesc': 'Save as a single-file HTML with the current theme inlined — double-click to view offline',
+    'settings.actions.exportHtmlBtn': 'Export HTML',
+
+    'welcome.text': 'Select a file to start reading',
+    'toast.update': 'A new version is available',
+    'toast.refresh': 'Refresh',
+    'palette.placeholder': 'Search docs, or type > for commands...',
+    'palette.clear': 'Clear search',
+    'palette.dialog': 'Search docs',
+
+    'md.readingTime': '{n} min read',
+    'md.loadFailed': 'Failed to load file',
+    'md.welcome': 'Select a file to start reading',
+    'md.copyAnchor': 'Copy link to this heading',
+    'md.noIndex': 'No headings in this file',
+    'md.defaultDescription': 'A clean, elegant Markdown preview site with rich rendering support',
+    'footnote.description': 'Footnotes',
+    'footnote.backRef': 'Back to reference {0}',
+
+    'search.noResults': 'No matching documents found',
+    'tree.loadFailed': 'Failed to load the file list. Check your network or configure manually',
+    'tree.componentFailed': 'Failed to load the file tree component',
+
+    'ctx.copied': 'Copied',
+    'ctx.copyLatex': 'Copy LaTeX formula',
+    'ctx.tableOps': 'Table actions',
+    'ctx.downloadImage': 'Download image',
+    'ctx.copyMd': 'Copy Markdown source',
+    'ctx.copyCsv': 'Copy CSV',
+    'ctx.copySrc': 'Copy source',
+    'ctx.srcCopied': 'Source copied',
+    'ctx.copyFailed': 'Copy failed',
+    'ctx.exportSvg': 'Export SVG',
+    'ctx.exportPng': 'Export PNG',
+    'ctx.svgUnavailable': 'No SVG available for this diagram — use PNG',
+    'ctx.exportFailed': 'Export failed: the image service does not allow cross-origin fetch',
+
+    'export.needDoc': 'Open a document first',
+    'export.downloadFailed': 'Download failed, please retry',
+
+    'local.title': 'Local Files',
+    'local.remove': 'Remove from list',
+    'local.removeAria': 'Remove ',
+    'local.tooLarge': ' (over 10MB)',
+    'local.tooLargeOpen': ' (over 10MB, cannot open)',
+    'local.readFailed': ' (failed to read)',
+    'local.listFull': ' (list is full, 20 max)',
+    'local.skippedFiles': 'These files were not added:\n',
+    'local.folderEmpty': 'No .md files found in this folder',
+    'local.folderFull': ' (exceeds the 500-file limit)',
+    'local.folderReplaceConfirm': 'Opening a new folder will replace the current local file list. Continue?',
+    'local.folderUnsupported': 'This browser cannot open folders; please pick multiple files instead',
+    'wordCount.unit': ' words',
+
+    'plantuml.renderFailed': 'All PlantUML render servers unavailable; showing source instead',
+    'plantuml.renderError': 'PlantUML render error',
+    'plantuml.openInEditor': 'Open in the PlantUML online editor',
+
+    'fav.added': 'Favorited "{t}"',
+    'fav.removed': 'Removed favorite "{t}"',
+    'preview.loading': 'Loading…',
+    'preview.noExcerpt': '(no excerpt)',
+
+    'menu.qrShare': 'Continue on phone',
+    'qr.title': 'Continue on Phone',
+
+    'reading.resume': 'Continue from {pct}%?',
+    'reading.resumeGo': 'Continue',
+    'reading.resumeDismiss': 'Dismiss',
+
+    'sel.copy': 'Copy',
+    'sel.search': 'Search docs',
+    'sel.card': 'Share card',
+
+    'csv.searchPlaceholder': 'Search table…',
+    'csv.rowCount': '{n} rows',
+    'csv.filteredCount': '{m} / {n} rows',
+    'csv.copyCsv': 'Copy CSV',
+    'csv.downloadCsv': 'Download CSV',
+    'csv.sort': 'Sort',
+    'csv.filter': 'Filter column',
+    'csv.filterBy': 'Filter',
+    'csv.selectAll': 'Select all',
+    'csv.clearFilter': 'Clear',
+    'csv.empty': 'No matching rows',
+    'csv.untitled': 'Column',
+
+    'settings.offline.label': 'Full offline cache',
+    'settings.offline.desc': 'Cache every document in the file tree for full offline reading',
+    'settings.offline.btn': 'Cache all documents',
+    'settings.offline.progress': 'Caching {done}/{total}…',
+    'settings.offline.done': 'Cached {n} documents — full offline reading ready',
+    'settings.offline.doneFailed': 'Cached {done} documents ({failed} failed)',
+    'settings.offline.clear': 'Clear document cache',
+    'settings.offline.cleared': 'Document cache cleared',
+    'settings.offline.unsupported': 'Service Worker is unavailable (requires HTTPS deployment)',
+    'settings.offline.failed': 'Caching failed, please retry',
+
+    // Settings · mobile gestures
+    'settings.display.gestures': 'Enable mobile gestures',
+    'settings.display.gesturesDesc': 'On touch screens, swipe horizontally to open the previous / next document; swipe right from the left edge to open the sidebar',
+
+    // Settings · settings backup (export / import)
+    'settings.sub.backup': 'Settings Backup',
+    'settings.backup.export': 'Export settings',
+    'settings.backup.exportDesc': 'Save theme, colors, fonts, reading preferences and language as a JSON file',
+    'settings.backup.exportBtn': 'Export',
+    'settings.backup.import': 'Import settings',
+    'settings.backup.importDesc': 'Pick a JSON file exported from this site; the page reloads to apply it',
+    'settings.backup.importBtn': 'Import',
+    'settings.backup.invalid': 'Import failed: not a valid settings backup file',
+
+    // Settings · storage manager
+    'settings.section.storage': 'Storage',
+    'settings.sub.storageUsage': 'Usage',
+    'settings.sub.notebooks': 'Editor notebooks',
+    'settings.sub.browsingData': 'Browsing data',
+    'storage.usage': '{used} used of ~{quota} ({pct}%)',
+    'storage.unavailable': 'Storage usage is not supported in this browser',
+    'storage.estimateFailed': 'Failed to query storage usage',
+    'storage.notebooks.label': 'Notebook data',
+    'storage.notebooks.loading': 'Loading…',
+    'storage.notebooks.summary': '{n} notebooks · ~{size}',
+    'storage.notebooks.empty': 'No notebook data',
+    'storage.notebooks.clearAll': 'Clear all',
+    'storage.notebooks.unavailable': 'IndexedDB is not supported in this browser',
+    'storage.notebooks.loadFailed': 'Failed to read notebook data',
+    'storage.notebook.untitled': 'Untitled notebook',
+    'storage.notebook.meta': '{cells} cells · ~{size}',
+    'storage.notebook.deleteConfirm': 'Delete notebook "{title}"? This cannot be undone.',
+    'storage.notebook.deleteFailed': 'Delete failed, please retry',
+    'storage.delete': 'Delete',
+    'storage.clear': 'Clear',
+    'storage.clearConfirm': 'Clear "{label}"? This cannot be undone.',
+    'storage.data.historyFav': 'History & favorites',
+    'storage.data.historyFavDesc': '{n} entries · ~{size}',
+    'storage.data.readingPos': 'Reading positions',
+    'storage.data.readingPosDesc': '{n} documents · ~{size}',
+
+    // Drag & drop import
+    'drop.title': 'Drop to open',
+    'drop.desc': 'Supports .md / .markdown files and whole folders',
+
+    // Floating menu: split view
+    'menu.splitView': 'Split Reading',
+    'menu.snapshotShare': 'Snapshot link',
+    'menu.openMenu': 'Open menu',
+
+    // Find bar
+    'find.placeholder': 'Find in document…',
+    'find.prev': 'Previous (Shift+Enter)',
+    'find.next': 'Next (Enter)',
+    'find.noResult': 'No results',
+
+    // JSON tree
+    'json.items': '{n} items',
+    'json.keys': '{n} keys',
+    'json.copyPath': 'Copy path',
+    'json.collapseAll': 'Collapse',
+    'json.expandAll': 'Expand',
+    'json.copyJson': 'Copy JSON',
+    'json.download': 'Download .json',
+    'json.rootArray': 'Root array · {n} items',
+    'json.rootObject': 'Root object · {n} keys',
+
+    // Live code sandbox
+    'sandbox.consoleEmpty': 'No console output. Try console.log()',
+    'sandbox.hint': 'Scripts run in an isolated sandbox',
+    'sandbox.run': 'Run',
+    'sandbox.reset': 'Reset',
+    'sandbox.runPreview': 'Click to run preview',
+    'sandbox.source': 'Source',
+    'sandbox.frameTitle': 'Code preview',
+    'sandbox.cssSampleText': 'A sample paragraph with ',
+    'sandbox.cssSampleLink': 'a link',
+    'sandbox.cssSampleBold': 'bold text',
+    'sandbox.cssSampleButton': 'Button',
+    'sandbox.cssSampleList': 'List item one',
+    'sandbox.cssSampleList2': 'List item two',
+
+    // Tags
+    'tags.panelTitle': 'Tags',
+    'tags.openTag': 'View documents with this tag',
+    'tags.pageTitle': 'Tag',
+    'tags.docCount': '{n} documents',
+    'tags.empty': 'No documents with this tag yet',
+
+    // Snapshot sharing
+    'snap.loadFailed': 'Failed to fetch document content',
+    'snap.noDoc': 'No document to share',
+    'snap.compressFailed': 'Failed to load the compressor',
+    'snap.badLinkTitle': 'Invalid snapshot link',
+    'snap.badLinkBody': 'The snapshot data in this link is missing or corrupted.',
+    'snap.name': 'Snapshot',
+    'snap.bannerTitle': 'This is a snapshot share',
+    'snap.bannerBody': 'Content lives only in the link and on your device — never uploaded or indexed',
+    'snap.saveSession': 'Save to local session',
+    'snap.working': 'Generating snapshot link…',
+    'snap.copied': 'Snapshot link copied — send it to anyone to open',
+    'snap.copiedOversize': 'Snapshot link copied (large content may fail to open in some browsers)',
+
+    // Command palette
+    'cmd.groupCommands': 'Commands',
+    'cmd.groupAction': 'Command',
+    'cmd.groupTheme': 'Theme',
+    'cmd.noMatch': 'No matching command',
+    'cmd.toggleSidebar': 'Toggle sidebar',
+    'cmd.openSettings': 'Open settings',
+    'cmd.focusMode': 'Focus mode',
+    'cmd.randomDoc': 'Random document',
+    'cmd.copyLink': 'Copy page link',
+    'cmd.exportPdf': 'Export PDF (print)',
+    'cmd.exportMd': 'Export Markdown',
+    'cmd.exportHtml': 'Export standalone HTML',
+    'cmd.cacheAll': 'Cache all documents (offline)',
+    'cmd.openEditor': 'Open editor',
+    'cmd.cacheDone': 'Cached {n} docs',
+
+    // Section collapse
+    'collapse.collapse': 'Collapse section',
+    'collapse.expand': 'Expand section',
+
+    // Split view
+    'split.title': 'Split Reading',
+    'split.syncScroll': 'Sync scroll',
+    'split.hint': 'Esc to exit',
+    'split.syncOn': 'Sync scroll: on',
+    'split.syncOff': 'Sync scroll: off',
+    'split.changeDoc': 'Change doc',
+    'split.pickTitle': 'Pick right pane document',
+    'split.pickerPlaceholder': 'Filter by name or path…',
+    'split.pickerEmpty': 'No matching documents',
+    'split.rightEmpty': 'Right pane not set',
+    'split.pickDoc': 'Pick right pane document',
+    'split.emptyText': 'Pick a document to compare',
+    'split.emptyHint': 'Both site docs and local session docs can be picked',
+    'split.needDoc': 'Open a document first',
+    'split.localBadge': 'Local',
+    'split.loadFailed': 'Failed to load document, please retry',
+
+    // Settings: section collapse / bundle export
+    'settings.display.sectionCollapse': 'Enable section collapse',
+    'settings.display.sectionCollapseDesc': 'Show a toggle on H2 headings to fold each section. Collapse state is remembered per document',
+    'settings.display.splitSyncScroll': 'Split reading: sync scroll by default',
+    'settings.display.focusMode': 'Focus mode',
+    'settings.display.focusModeDesc': 'Keep the paragraph you are reading highlighted and dim the rest (also in the Ctrl/⌘+K palette)',
+    'settings.display.splitSyncScrollDesc': 'Sync both panes proportionally when split reading opens (Ctrl/⌘+Alt+S toggles sync for the current session)',
+    'settings.actions.exportEpub': 'Export EPUB',
+    'settings.actions.exportEpubDesc': 'Export the current document as an EPUB e-book with local images embedded',
+    'settings.actions.exportEpubBtn': 'Export EPUB',
+    'settings.actions.exportSiteEpub': 'Site EPUB',
+    'settings.actions.exportSiteEpubDesc': 'Bind all documents into a single EPUB e-book in file-tree order',
+    'settings.actions.exportSiteEpubBtn': 'Export book',
+    'settings.actions.exportSiteMd': 'Download all docs (ZIP)',
+    'settings.actions.exportSiteMdDesc': 'Pack every .md into a ZIP archive preserving the repo folder structure',
+    'settings.actions.exportSiteMdBtn': 'Download ZIP',
+    'settings.export.phaseDocs': 'Fetching docs',
+    'settings.export.phaseAssets': 'Packing images',
+    'settings.export.done': 'Exported',
+    'settings.export.failed': 'Export failed, please retry',
+
+    // Share card templates
+    'sel.cardPick': 'Pick a card template',
+    'sel.cardQuote': 'Quote · landscape 1200×630',
+    'sel.cardQuoteV': 'Quote · portrait 3:4',
+    'sel.cardCode': 'Code card',
+    'sel.cardTable': 'Table card',
+    'sel.cardTableHint': 'Selection must be inside a table',
+    'sel.cardTableMore': '… {n} more rows hidden',
+    'sel.issue': 'Report issue',
+    'sel.issueDoc': '**Document**: ',
+    'sel.issueWhere': '**Location**: ',
+    'sel.issueQuote': '**Quoted text**: ',
+    'sel.issueDesc': '**Problem description**: ',
+
+    // EPUB / bundle export
+    'export.epub.toc': 'Table of Contents',
+    'export.noDocs': 'No documents to export (file tree not loaded or empty)',
+    'export.needDoc': 'Open a document first',
+    'export.fetchFailed': 'Failed to fetch the document, please retry'
+  };
+
+  const dicts = { zh, en };
+
+  let setting = 'auto';   // 'auto' | 'zh' | 'en'
+  let currentLang = 'zh'; // 解析结果：'zh' | 'en'
+
+  function detectLang() {
+    const langs = navigator.languages || [navigator.language || 'zh-CN'];
+    const zhMatch = langs.some(l => typeof l === 'string' && /^zh\b|^zh-/i.test(l));
+    return zhMatch ? 'zh' : 'en';
+  }
+
+  function resolve() {
+    return setting === 'auto' ? detectLang() : setting;
+  }
+
+  function t(key, fallback) {
+    const dict = dicts[currentLang] || zh;
+    if (dict[key] != null) return dict[key];
+    if (zh[key] != null) return zh[key];
+    return fallback != null ? fallback : key;
+  }
+
+  function setHtmlLang() {
+    document.documentElement.lang = currentLang === 'en' ? 'en' : 'zh-CN';
+  }
+
+  // 批量替换静态标记的文案
+  function apply(root) {
+    const scope = root || document;
+    scope.querySelectorAll('[data-i18n]').forEach(el => {
+      const v = t(el.getAttribute('data-i18n'));
+      if (v != null) el.textContent = v;
+    });
+    scope.querySelectorAll('[data-i18n-title]').forEach(el => {
+      el.title = t(el.getAttribute('data-i18n-title'));
+    });
+    scope.querySelectorAll('[data-i18n-aria]').forEach(el => {
+      el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria')));
+    });
+    scope.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+    });
+    setHtmlLang();
+  }
+
+  function setLang(next) {
+    if (!['auto', 'zh', 'en'].includes(next)) return;
+    setting = next;
+    try {
+      localStorage.setItem(LANG_KEY, next);
+    } catch (e) { /* 忽略存储失败 */ }
+    currentLang = resolve();
+    apply();
+    const sel = document.getElementById('langSelect');
+    if (sel) sel.value = setting;
+    window.dispatchEvent(new CustomEvent('langchange', { detail: { lang: currentLang } }));
+  }
+
+  function getLang() {
+    return currentLang;
+  }
+
+  function getSetting() {
+    return setting;
+  }
+
+  function init() {
+    try {
+      const saved = localStorage.getItem(LANG_KEY);
+      if (saved === 'zh' || saved === 'en' || saved === 'auto') setting = saved;
+    } catch (e) { /* 忽略读取失败 */ }
+    currentLang = resolve();
+
+    apply();
+
+    const sel = document.getElementById('langSelect');
+    if (sel) {
+      sel.value = setting;
+      sel.addEventListener('change', () => setLang(sel.value));
+    }
+  }
+
+  // 模块加载即解析语言，保证其他模块在 DOMContentLoaded 前调用 t() 已有正确语向
+  try {
+    const saved = localStorage.getItem(LANG_KEY);
+    if (saved === 'zh' || saved === 'en' || saved === 'auto') setting = saved;
+  } catch (e) { /* 忽略读取失败 */ }
+  currentLang = resolve();
+
+  window.MarkdownPreview.i18n = {
+    t,
+    apply,
+    setLang,
+    getLang,
+    getSetting
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
