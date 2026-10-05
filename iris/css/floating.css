@@ -8,33 +8,111 @@
   align-items: flex-end;
 }
 
+/* 悬浮球：透明玻璃透镜——近透明的轻磨砂球体，质感靠边缘亮环、
+   内侧微高光与柔和投影撑起，反光刻意收敛（ref: iOS AssistiveTouch 玻璃态）。
+   图标用主题文字色自适应：浅色页深色图标、暗色页白色图标。
+   backdrop-filter 不可用时降级为半透明中性底。 */
 .menu-trigger {
+  --fab-tint: rgba(255, 255, 255, 0.30);
+  --fab-tint-strong: rgba(112, 100, 120, 0.30);
+  --fab-rim: rgba(255, 255, 255, 0.75);
+  --fab-edge: rgba(0, 0, 0, 0.05);
+  --fab-shadow: rgba(0, 0, 0, 0.12);
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-accent-purple) 0%, var(--color-accent-pink) 100%);
+  background-color: var(--fab-tint);
+  background-image:
+    radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0) 46%),
+    radial-gradient(circle at 72% 82%, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 52%);
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(212, 165, 201, 0.4);
-  transition: var(--transition-smooth);
+  box-shadow:
+    inset 0 0 0 1px var(--fab-rim),
+    inset 0 1px 1px rgba(255, 255, 255, 0.5),
+    inset 0 -8px 14px rgba(255, 255, 255, 0.06),
+    0 0 0 1px var(--fab-edge),
+    0 2px 6px rgba(0, 0, 0, 0.1),
+    0 10px 24px var(--fab-shadow);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
   margin-top: 12px;
 }
 
+/* 暗色主题：玻璃边环改为微光，投影加深 */
+body[data-theme="github-dark"] .menu-trigger,
+body[data-theme="arc"] .menu-trigger,
+body[data-theme="dracula"] .menu-trigger,
+body[data-theme="nord"] .menu-trigger {
+  --fab-tint: rgba(255, 255, 255, 0.07);
+  --fab-tint-strong: rgba(255, 255, 255, 0.16);
+  --fab-rim: rgba(255, 255, 255, 0.3);
+  --fab-edge: rgba(255, 255, 255, 0.1);
+  --fab-shadow: rgba(0, 0, 0, 0.45);
+}
+
 .menu-trigger:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(212, 165, 201, 0.5);
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 0 0 1px var(--fab-rim),
+    inset 0 1px 1px rgba(255, 255, 255, 0.55),
+    inset 0 -8px 14px rgba(255, 255, 255, 0.07),
+    0 0 0 1px var(--fab-edge),
+    0 4px 10px rgba(0, 0, 0, 0.12),
+    0 14px 30px var(--fab-shadow);
+}
+
+.menu-trigger:active {
+  transform: translateY(0) scale(0.96);
+  background-color: var(--fab-tint-strong);
+}
+
+.menu-trigger:focus-visible {
+  outline: 2px solid var(--color-accent-purple);
+  outline-offset: 3px;
+}
+
+/* 展开时球体加一层底色提升对比（配合图标旋转 45°） */
+.menu-trigger.active {
+  background-color: var(--fab-tint-strong);
 }
 
 .menu-trigger svg {
-  stroke: white;
-  transition: transform 0.3s ease;
+  stroke: var(--color-text);
+  /* 常态无图标：纯玻璃球（ref: AssistiveTouch 玻璃态）；
+     展开后加号旋转 45° 成 ×，淡入提示可关闭 */
+  opacity: 0;
+  transform: scale(0.5);
+  transition: transform 0.28s ease, opacity 0.18s ease;
 }
 
 .menu-trigger.active svg {
-  transform: rotate(45deg);
+  opacity: 0.9;
+  transform: rotate(45deg) scale(1);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .menu-trigger,
+  .menu-trigger.active {
+    background-color: rgba(140, 130, 145, 0.4);
+  }
+  body[data-theme="github-dark"] .menu-trigger,
+  body[data-theme="arc"] .menu-trigger,
+  body[data-theme="dracula"] .menu-trigger,
+  body[data-theme="nord"] .menu-trigger {
+    background-color: rgba(255, 255, 255, 0.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-trigger,
+  .menu-trigger svg {
+    transition: none;
+  }
 }
 
 .menu-items {
@@ -54,27 +132,39 @@
   pointer-events: auto;
 }
 
+/* 菜单药丸：与悬浮球同材质的深色磨砂（亮暗主题同款），图标保留品牌强调色 */
 .menu-item-btn {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  background: var(--color-surface);
+  background: rgba(32, 32, 40, 0.62);
+  backdrop-filter: blur(16px) saturate(1.5);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
   border: none;
   border-radius: 24px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: var(--transition-smooth);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 2px 6px rgba(0, 0, 0, 0.14),
+    0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.18s ease, background 0.18s ease;
   text-decoration: none;
-  color: var(--color-text);
+  color: #f2f2f5;
   font-size: 14px;
   font-weight: 500;
 }
 
 .menu-item-btn:hover {
-  background: var(--color-accent-light);
+  background: rgba(48, 48, 58, 0.72);
   transform: translateX(-4px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .menu-item-btn {
+    background: rgba(40, 40, 48, 0.94);
+  }
 }
 
 .menu-item-btn svg {
@@ -84,7 +174,7 @@
 
 .menu-item-label {
   white-space: nowrap;
-  color: var(--color-text);
+  color: #f2f2f5;
 }
 
 .menu-item-btn.settings-btn svg {
@@ -110,17 +200,17 @@
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background: rgba(212, 165, 201, 0.1);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   font-size: 13px;
-  color: var(--color-accent-purple);
+  color: #f2f2f5;
   margin-top: 8px;
 }
 
 .install-progress-spinner {
   width: 16px;
   height: 16px;
-  border: 2px solid var(--color-accent-purple);
+  border: 2px solid rgba(255, 255, 255, 0.85);
   border-top-color: transparent;
   border-radius: 50%;
   animation: spin 1s linear infinite;

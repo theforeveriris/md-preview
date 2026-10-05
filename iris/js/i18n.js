@@ -330,6 +330,7 @@
     // 悬浮球：对照阅读
     'menu.splitView': '对照阅读',
     'menu.snapshotShare': '快照分享',
+    'menu.openMenu': '打开菜单',
 
     // 文章内查找条
     'find.placeholder': '在本文中查找…',
@@ -747,6 +748,7 @@
     // Floating menu: split view
     'menu.splitView': 'Split Reading',
     'menu.snapshotShare': 'Snapshot link',
+    'menu.openMenu': 'Open menu',
 
     // Find bar
     'find.placeholder': 'Find in document…',
