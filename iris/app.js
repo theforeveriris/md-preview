@@ -45,6 +45,18 @@
     if (window.MarkdownPreview.gestures && window.MarkdownPreview.gestures.init) {
       window.MarkdownPreview.gestures.init();
     }
+    // 多标签页状态同步（主题 / 设置 / 界面语言）
+    if (window.MarkdownPreview.syncTabs && window.MarkdownPreview.syncTabs.init) {
+      window.MarkdownPreview.syncTabs.init();
+    }
+    // 标签系统（侧边栏标签面板 + #/tag/ 聚合页）
+    if (window.MarkdownPreview.tags && window.MarkdownPreview.tags.init) {
+      window.MarkdownPreview.tags.init();
+    }
+    // 无部署快照分享（悬浮球入口 + #/s?z= 接收）
+    if (window.MarkdownPreview.snapshot && window.MarkdownPreview.snapshot.init) {
+      window.MarkdownPreview.snapshot.init();
+    }
     if (window.MarkdownPreview.plugins && window.MarkdownPreview.plugins.autoLoad) {
       await window.MarkdownPreview.plugins.autoLoad();
     }

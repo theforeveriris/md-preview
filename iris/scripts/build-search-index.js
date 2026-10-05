@@ -28,6 +28,22 @@ function extractPreview(content) {
   return text.substring(0, 200);
 }
 
+function extractTags(content) {
+  const frontmatterMatch = content.match(/^---\s*\n([\s\S]*?)\n---/);
+  if (!frontmatterMatch) return [];
+  const tagsLine = frontmatterMatch[1].split('\n').find(l => l.trim().startsWith('tags:'));
+  if (!tagsLine) return [];
+  const raw = tagsLine.trim().replace(/^tags:\s*/, '').trim();
+
+  let list = [];
+  if (raw.startsWith('[')) {
+    list = raw.replace(/^\[/, '').replace(/\]$/, '').split(',');
+  } else {
+    list = raw.split(/[,，]/);
+  }
+  return list.map(s => s.trim().replace(/^["']|["']$/g, '')).filter(Boolean).slice(0, 20);
+}
+
 function collectFiles(dir, basePath = '') {
   const files = [];
   const items = fs.readdirSync(dir);
@@ -68,11 +84,15 @@ async function buildIndex() {
       const title = extractTitle(content) || file.path.replace('.md', '');
       const preview = extractPreview(content);
       
-      index.push({
+      const tags = extractTags(content);
+
+      const entry = {
         path: file.path,
         title: title,
         preview: preview
-      });
+      };
+      if (tags.length > 0) entry.tags = tags;
+      index.push(entry);
       
       console.log(`Indexed: ${file.path}`);
     } catch (e) {

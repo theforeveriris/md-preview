@@ -104,6 +104,8 @@
           const container = document.createElement('div');
           container.className = 'mermaid-diagram';
           container.innerHTML = svg;
+          // 源码标记：供悬浮工具条「复制源码」使用（interactions.js）
+          container.dataset.src = mermaidCode;
 
           if (pre.parentNode && document.body.contains(pre)) {
             console.log('[Mermaid] Replacing pre with container');

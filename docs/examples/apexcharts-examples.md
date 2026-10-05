@@ -1,3 +1,8 @@
+---
+title: ApexCharts 交互式图表示例
+tags: [图表, 数据]
+---
+
 # ApexCharts 交互式图表示例
 
 本页面展示 ApexCharts 的各种图表类型和配置方式。

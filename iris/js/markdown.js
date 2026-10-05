@@ -399,6 +399,8 @@
       await safeRun('katex', () => window.MarkdownPreview.renderers.katex.render());
       await safeRun('pulse', () => window.MarkdownPreview.renderers.pulse.render());
       await safeRun('csvtable', () => window.MarkdownPreview.renderers.csvtable?.render(dom.markdownContent));
+      await safeRun('jsontree', () => window.MarkdownPreview.renderers.jsontree?.render(dom.markdownContent));
+      await safeRun('sandbox', () => window.MarkdownPreview.renderers.sandbox?.render(dom.markdownContent));
       console.log('[Markdown] Render cycle complete');
     }, 100);
 
@@ -1019,6 +1021,19 @@
   window.MarkdownPreview.markdown = {
     loadMarkdownFile,
     renderMarkdown,
+    // 渲染虚拟文档（标签聚合页等站内合成内容）：保留当前 hash（#/tag/x 可分享），
+    // 不经过 fetch；内容视同本地文档（导出 MD / PDF 直接取用合成文本）
+    renderVirtualDoc: function(content, fileName) {
+      resetReadingProgress();
+      state.localDoc = { name: fileName || 'document.md', content: content, virtual: true };
+      if (fileName) {
+        const bc = document.getElementById('pageBreadcrumbs');
+        const header = document.getElementById('pageHeader');
+        if (bc) bc.textContent = fileName;
+        if (header) header.style.display = 'flex';
+      }
+      renderMarkdown(content, '');
+    },
     // 直接渲染内容字符串（用于本地 MD 文件，不经过 fetch 和 URL）
     renderMarkdownDirect: function(content, fileName) {
       // 清空 URL hash，避免刷新后仍尝试加载原路径

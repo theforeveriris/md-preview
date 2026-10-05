@@ -130,16 +130,35 @@
     await ensureIndexLoaded();
 
     const { dom } = window.MarkdownPreview;
+    const palette = window.MarkdownPreview.palette;
+
+    // 纯命令模式：> 前缀只匹配动作
+    if (palette && palette.isCommandQuery(query)) {
+      currentQuery = query.trim();
+      palette.renderCommands(palette.stripPrefix(query));
+      return;
+    }
+
     if (!query.trim()) {
-      hideSearchResults();
+      // 空查询：命令面板空态列出全部动作（万能命令面板）
+      if (palette) palette.renderCommands('');
+      else hideSearchResults();
       return;
     }
 
     currentQuery = query.trim();
     console.log('Searching for:', query);
 
+    // tag:xxx 过滤 token：拆出后按文档标签过滤结果
+    const tagsMod = window.MarkdownPreview.tags;
+    const tagFilter = tagsMod ? tagsMod.extractTagFilters(currentQuery) : { text: currentQuery, tags: [] };
+    const searchText = tagFilter.text;
+
     try {
-      const results = flexIndex ? flexSearch(query) : simpleSearch(query);
+      let results = flexIndex ? flexSearch(searchText) : simpleSearch(searchText);
+      if (tagFilter.tags.length > 0) {
+        results = results.filter(id => tagsMod.docHasTags(documents[id], tagFilter.tags));
+      }
       console.log('Results count:', results.length);
       displaySearchResults(results);
     } catch (e) {
@@ -156,6 +175,9 @@
 
     if (!results || results.length === 0) {
       container.innerHTML = `<div class="search-no-results">${window.MarkdownPreview.i18n ? window.MarkdownPreview.i18n.t("search.noResults") : "没有找到相关文档"}</div>`;
+      if (window.MarkdownPreview.palette) {
+        window.MarkdownPreview.palette.appendInline(window.MarkdownPreview.palette.stripPrefix(currentQuery), container, 4);
+      }
       return;
     }
 
@@ -184,16 +206,33 @@
       `;
 
       item.addEventListener('click', () => {
-        markdown.loadMarkdownFile(result.path);
+        const palette = window.MarkdownPreview.palette;
+        // 直达关键词：文档渲染后用查找条定位首次命中（剔除 > 前缀与 tag: 过滤 token）
+        let keyword = palette ? palette.stripPrefix(currentQuery) : currentQuery;
+        if (window.MarkdownPreview.tags) {
+          keyword = window.MarkdownPreview.tags.extractTagFilters(keyword).text;
+        }
+        const load = markdown.loadMarkdownFile(result.path);
         fileTree.highlightFileInSidebar(result.path);
         hideSearchResults();
         dom.searchInput.value = '';
         // 结果在命令面板中展示，选中后收起面板
         window.MarkdownPreview.ui?.closeSearchPalette?.();
+        if (keyword && window.MarkdownPreview.findBar) {
+          Promise.resolve(load).then(() => {
+            setTimeout(() => window.MarkdownPreview.findBar.openWithQuery(keyword), 350);
+          });
+        }
       });
 
       container.appendChild(item);
     });
+
+    // 混排：文档结果之后追加命中的命令动作
+    if (window.MarkdownPreview.palette) {
+      window.MarkdownPreview.palette.appendInline(
+        window.MarkdownPreview.palette.stripPrefix(currentQuery), container, 4);
+    }
   }
 
   function hideSearchResults() {

@@ -41,6 +41,23 @@
       }
     }
 
+    // 虚拟路由：标签聚合页 #/tag/<name>（path 已在最上方统一 decodeURIComponent）
+    if (path.startsWith('tag/')) {
+      const tagName = path.slice(4);
+      if (window.MarkdownPreview.tags && window.MarkdownPreview.tags.openTagPage) {
+        window.MarkdownPreview.tags.openTagPage(tagName);
+      }
+      return;
+    }
+
+    // 虚拟路由：无部署快照分享 #/s?z=<deflate-base64>
+    if (path === 's' || path.startsWith('s?')) {
+      if (window.MarkdownPreview.snapshot) {
+        window.MarkdownPreview.snapshot.handleRoute();
+      }
+      return;
+    }
+
     if (path && path.endsWith('.md')) {
       const { markdown, fileTree } = window.MarkdownPreview;
       isUpdating = true;

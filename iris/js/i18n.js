@@ -178,7 +178,7 @@
     'welcome.text': '选择一个文件开始阅读',
     'toast.update': '有新版本可用',
     'toast.refresh': '刷新',
-    'palette.placeholder': '搜索文档...',
+    'palette.placeholder': '搜索文档，或输入 > 执行命令...',
     'palette.clear': '清空搜索词',
     'palette.dialog': '搜索文档',
 
@@ -204,6 +204,13 @@
     'ctx.downloadImage': '下载图片',
     'ctx.copyMd': '复制 Markdown 源码',
     'ctx.copyCsv': '复制 CSV',
+    'ctx.copySrc': '复制源码',
+    'ctx.srcCopied': '源码已复制',
+    'ctx.copyFailed': '复制失败',
+    'ctx.exportSvg': '导出 SVG',
+    'ctx.exportPng': '导出 PNG',
+    'ctx.svgUnavailable': '该图表无 SVG 可导出，请用 PNG',
+    'ctx.exportFailed': '导出失败：图片服务不允许跨域获取',
 
     // 动态文案：导出
     'export.needDoc': '请先打开一个文档',
@@ -322,12 +329,77 @@
 
     // 悬浮球：对照阅读
     'menu.splitView': '对照阅读',
+    'menu.snapshotShare': '快照分享',
 
     // 文章内查找条
     'find.placeholder': '在本文中查找…',
     'find.prev': '上一个 (Shift+Enter)',
     'find.next': '下一个 (Enter)',
     'find.noResult': '无结果',
+
+    // JSON 可折叠树
+    'json.items': '{n} 项',
+    'json.keys': '{n} 个键',
+    'json.copyPath': '复制路径',
+    'json.collapseAll': '收起',
+    'json.expandAll': '展开',
+    'json.copyJson': '复制 JSON',
+    'json.download': '下载 .json',
+    'json.rootArray': '根数组 · {n} 项',
+    'json.rootObject': '根对象 · {n} 个键',
+
+    // 代码块 live 预览沙箱
+    'sandbox.consoleEmpty': '没有 console 输出。用 console.log() 试试',
+    'sandbox.hint': '脚本在隔离沙箱中运行',
+    'sandbox.run': '运行',
+    'sandbox.reset': '重置',
+    'sandbox.runPreview': '点击运行预览',
+    'sandbox.source': '源码',
+    'sandbox.frameTitle': '代码运行预览',
+    'sandbox.cssSampleText': '这是一段示例文本，包含 ',
+    'sandbox.cssSampleLink': '链接',
+    'sandbox.cssSampleBold': '加粗',
+    'sandbox.cssSampleButton': '按钮',
+    'sandbox.cssSampleList': '列表项一',
+    'sandbox.cssSampleList2': '列表项二',
+
+    // 标签系统
+    'tags.panelTitle': '标签',
+    'tags.openTag': '查看该标签下的文档',
+    'tags.pageTitle': '标签',
+    'tags.docCount': '共 {n} 篇文档',
+    'tags.empty': '该标签下暂无文档',
+
+    // 快照分享
+    'snap.loadFailed': '文档内容获取失败',
+    'snap.noDoc': '当前没有可分享的文档',
+    'snap.compressFailed': '压缩组件加载失败',
+    'snap.badLinkTitle': '快照链接无效',
+    'snap.badLinkBody': '链接中的快照数据缺失或已损坏。',
+    'snap.name': '快照',
+    'snap.bannerTitle': '这是一份快照分享',
+    'snap.bannerBody': '内容仅存在于链接与本机，不会被上传或收录',
+    'snap.saveSession': '存入本地会话',
+    'snap.working': '正在生成快照链接…',
+    'snap.copied': '已复制快照链接，发给对方即可打开',
+    'snap.copiedOversize': '已复制快照链接（内容较大，部分环境可能打不开）',
+
+    // 万能命令面板
+    'cmd.groupCommands': '命令',
+    'cmd.groupAction': '命令',
+    'cmd.groupTheme': '主题',
+    'cmd.noMatch': '没有匹配的命令',
+    'cmd.toggleSidebar': '开关侧边栏',
+    'cmd.openSettings': '打开设置',
+    'cmd.focusMode': '专注模式',
+    'cmd.randomDoc': '随机读一篇',
+    'cmd.copyLink': '复制页面链接',
+    'cmd.exportPdf': '导出 PDF（打印）',
+    'cmd.exportMd': '导出 Markdown',
+    'cmd.exportHtml': '导出单文件 HTML',
+    'cmd.cacheAll': '缓存全部文档（离线）',
+    'cmd.openEditor': '打开编辑器',
+    'cmd.cacheDone': '已缓存 {n} 篇',
 
     // 章节折叠
     'collapse.collapse': '折叠本章',
@@ -355,6 +427,8 @@
     'settings.display.sectionCollapse': '启用章节折叠',
     'settings.display.sectionCollapseDesc': 'H2 标题栏右侧出现折叠按钮，点击折叠该章节；折叠状态按文档记忆，重开自动恢复',
     'settings.display.splitSyncScroll': '对照阅读默认同步滚动',
+    'settings.display.focusMode': '专注模式',
+    'settings.display.focusModeDesc': '当前阅读段落保持高亮，其余内容淡化（也可在 Ctrl/⌘+K 命令面板开关）',
     'settings.display.splitSyncScrollDesc': '打开双栏对照阅读时两栏按比例同步滚动（快捷键 Ctrl/⌘+Alt+S 可随时开关本次会话的同步）',
     'settings.actions.exportEpub': '导出 EPUB',
     'settings.actions.exportEpubDesc': '当前文档导出为 EPUB 电子书，本地相对路径图片随文打包',
@@ -378,6 +452,11 @@
     'sel.cardTable': '表格卡片',
     'sel.cardTableHint': '选区需落在表格内',
     'sel.cardTableMore': '… 其余 {n} 行未展示',
+    'sel.issue': '反馈问题',
+    'sel.issueDoc': '**文档**：',
+    'sel.issueWhere': '**位置**：',
+    'sel.issueQuote': '**引文**：',
+    'sel.issueDesc': '**问题描述**：',
 
     // EPUB / 打包导出
     'export.epub.toc': '目录',
@@ -528,7 +607,7 @@
     'welcome.text': 'Select a file to start reading',
     'toast.update': 'A new version is available',
     'toast.refresh': 'Refresh',
-    'palette.placeholder': 'Search docs...',
+    'palette.placeholder': 'Search docs, or type > for commands...',
     'palette.clear': 'Clear search',
     'palette.dialog': 'Search docs',
 
@@ -551,6 +630,13 @@
     'ctx.downloadImage': 'Download image',
     'ctx.copyMd': 'Copy Markdown source',
     'ctx.copyCsv': 'Copy CSV',
+    'ctx.copySrc': 'Copy source',
+    'ctx.srcCopied': 'Source copied',
+    'ctx.copyFailed': 'Copy failed',
+    'ctx.exportSvg': 'Export SVG',
+    'ctx.exportPng': 'Export PNG',
+    'ctx.svgUnavailable': 'No SVG available for this diagram — use PNG',
+    'ctx.exportFailed': 'Export failed: the image service does not allow cross-origin fetch',
 
     'export.needDoc': 'Open a document first',
     'export.downloadFailed': 'Download failed, please retry',
@@ -660,12 +746,77 @@
 
     // Floating menu: split view
     'menu.splitView': 'Split Reading',
+    'menu.snapshotShare': 'Snapshot link',
 
     // Find bar
     'find.placeholder': 'Find in document…',
     'find.prev': 'Previous (Shift+Enter)',
     'find.next': 'Next (Enter)',
     'find.noResult': 'No results',
+
+    // JSON tree
+    'json.items': '{n} items',
+    'json.keys': '{n} keys',
+    'json.copyPath': 'Copy path',
+    'json.collapseAll': 'Collapse',
+    'json.expandAll': 'Expand',
+    'json.copyJson': 'Copy JSON',
+    'json.download': 'Download .json',
+    'json.rootArray': 'Root array · {n} items',
+    'json.rootObject': 'Root object · {n} keys',
+
+    // Live code sandbox
+    'sandbox.consoleEmpty': 'No console output. Try console.log()',
+    'sandbox.hint': 'Scripts run in an isolated sandbox',
+    'sandbox.run': 'Run',
+    'sandbox.reset': 'Reset',
+    'sandbox.runPreview': 'Click to run preview',
+    'sandbox.source': 'Source',
+    'sandbox.frameTitle': 'Code preview',
+    'sandbox.cssSampleText': 'A sample paragraph with ',
+    'sandbox.cssSampleLink': 'a link',
+    'sandbox.cssSampleBold': 'bold text',
+    'sandbox.cssSampleButton': 'Button',
+    'sandbox.cssSampleList': 'List item one',
+    'sandbox.cssSampleList2': 'List item two',
+
+    // Tags
+    'tags.panelTitle': 'Tags',
+    'tags.openTag': 'View documents with this tag',
+    'tags.pageTitle': 'Tag',
+    'tags.docCount': '{n} documents',
+    'tags.empty': 'No documents with this tag yet',
+
+    // Snapshot sharing
+    'snap.loadFailed': 'Failed to fetch document content',
+    'snap.noDoc': 'No document to share',
+    'snap.compressFailed': 'Failed to load the compressor',
+    'snap.badLinkTitle': 'Invalid snapshot link',
+    'snap.badLinkBody': 'The snapshot data in this link is missing or corrupted.',
+    'snap.name': 'Snapshot',
+    'snap.bannerTitle': 'This is a snapshot share',
+    'snap.bannerBody': 'Content lives only in the link and on your device — never uploaded or indexed',
+    'snap.saveSession': 'Save to local session',
+    'snap.working': 'Generating snapshot link…',
+    'snap.copied': 'Snapshot link copied — send it to anyone to open',
+    'snap.copiedOversize': 'Snapshot link copied (large content may fail to open in some browsers)',
+
+    // Command palette
+    'cmd.groupCommands': 'Commands',
+    'cmd.groupAction': 'Command',
+    'cmd.groupTheme': 'Theme',
+    'cmd.noMatch': 'No matching command',
+    'cmd.toggleSidebar': 'Toggle sidebar',
+    'cmd.openSettings': 'Open settings',
+    'cmd.focusMode': 'Focus mode',
+    'cmd.randomDoc': 'Random document',
+    'cmd.copyLink': 'Copy page link',
+    'cmd.exportPdf': 'Export PDF (print)',
+    'cmd.exportMd': 'Export Markdown',
+    'cmd.exportHtml': 'Export standalone HTML',
+    'cmd.cacheAll': 'Cache all documents (offline)',
+    'cmd.openEditor': 'Open editor',
+    'cmd.cacheDone': 'Cached {n} docs',
 
     // Section collapse
     'collapse.collapse': 'Collapse section',
@@ -693,6 +844,8 @@
     'settings.display.sectionCollapse': 'Enable section collapse',
     'settings.display.sectionCollapseDesc': 'Show a toggle on H2 headings to fold each section. Collapse state is remembered per document',
     'settings.display.splitSyncScroll': 'Split reading: sync scroll by default',
+    'settings.display.focusMode': 'Focus mode',
+    'settings.display.focusModeDesc': 'Keep the paragraph you are reading highlighted and dim the rest (also in the Ctrl/⌘+K palette)',
     'settings.display.splitSyncScrollDesc': 'Sync both panes proportionally when split reading opens (Ctrl/⌘+Alt+S toggles sync for the current session)',
     'settings.actions.exportEpub': 'Export EPUB',
     'settings.actions.exportEpubDesc': 'Export the current document as an EPUB e-book with local images embedded',
@@ -716,6 +869,11 @@
     'sel.cardTable': 'Table card',
     'sel.cardTableHint': 'Selection must be inside a table',
     'sel.cardTableMore': '… {n} more rows hidden',
+    'sel.issue': 'Report issue',
+    'sel.issueDoc': '**Document**: ',
+    'sel.issueWhere': '**Location**: ',
+    'sel.issueQuote': '**Quoted text**: ',
+    'sel.issueDesc': '**Problem description**: ',
 
     // EPUB / bundle export
     'export.epub.toc': 'Table of Contents',

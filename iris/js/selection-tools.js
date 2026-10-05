@@ -93,10 +93,15 @@
 
   function showToolbar(info) {
     const el = ensureToolbar();
+    // GitHub Issue 反馈仅对站点文档有意义（本地文件没有仓库路径）
+    const st = window.MarkdownPreview.state || {};
+    const canFeedback = !!(st.currentFilePath && window.MarkdownPreview.CONFIG &&
+      window.MarkdownPreview.CONFIG.owner && window.MarkdownPreview.CONFIG.repo);
     el.innerHTML = `
       <button type="button" data-action="copy" title="${esc(t('sel.copy', '复制'))}">${icon('i-copy')}<span>${esc(t('sel.copy', '复制'))}</span></button>
       <button type="button" data-action="search" title="${esc(t('sel.search', '站内搜索'))}">${icon('i-search')}<span>${esc(t('sel.search', '站内搜索'))}</span></button>
       <button type="button" data-action="card" title="${esc(t('sel.card', '生成分享卡片'))}">${icon('i-image')}<span>${esc(t('sel.card', '分享卡片'))}</span></button>
+      ${canFeedback ? `<button type="button" data-action="issue" title="${esc(t('sel.issue', '反馈到 GitHub Issue'))}">${icon('i-flag')}<span>${esc(t('sel.issue', '反馈问题'))}</span></button>` : ''}
     `;
     el.querySelector('[data-action="copy"]').addEventListener('click', () => {
       copyText(info.rawText).then(hideToolbar);
@@ -115,6 +120,10 @@
     });
     el.querySelector('[data-action="card"]').addEventListener('click', () => {
       showCardMenu(info);
+    });
+    el.querySelector('[data-action="issue"]')?.addEventListener('click', () => {
+      hideToolbar();
+      openIssueWithSelection(info);
     });
 
     // 先挂载拿到尺寸，再按视口边界定位在选区上方
@@ -136,6 +145,45 @@
   function docTitle() {
     const st = window.MarkdownPreview.state || {};
     return st.docTitle || document.title.split(' | ')[0] || '';
+  }
+
+  // ============== GitHub Issue 一键反馈 ==============
+  // 用预填标题/正文的 issue 表单收文档纠错：零后端，评论走 giscus、纠错走这里。
+  function nearestHeadingAnchor(rect) {
+    const headings = document.querySelectorAll('.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6');
+    let best = null;
+    headings.forEach(h => {
+      const r = h.getBoundingClientRect();
+      if (r.top <= rect.top + 2 && (!best || r.top > best._top)) {
+        best = h;
+        best._top = r.top;
+      }
+    });
+    return best && best.id ? best.id : '';
+  }
+
+  function openIssueWithSelection(info) {
+    const cfg = window.MarkdownPreview.CONFIG || {};
+    const st = window.MarkdownPreview.state || {};
+    if (!cfg.owner || !cfg.repo) return;
+    const path = st.currentFilePath || '';
+    const anchor = nearestHeadingAnchor(info.rect);
+    const pageUrl = `${location.origin}${location.pathname}#/${path}${anchor ? '#' + anchor : ''}`;
+    const quote = info.text.length > 300 ? info.text.slice(0, 300) + '…' : info.text;
+    const title = `[反馈] ${docTitle() || path}：${info.text.slice(0, 30)}${info.text.length > 30 ? '…' : ''}`;
+    const body = [
+      t('sel.issueDoc', '**文档**：') + path,
+      t('sel.issueWhere', '**位置**：') + pageUrl,
+      '',
+      t('sel.issueQuote', '**引文**：'),
+      '> ' + quote.replace(/\n/g, '\n> '),
+      '',
+      t('sel.issueDesc', '**问题描述**：'),
+      ''
+    ].join('\n');
+    const url = `https://github.com/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}/issues/new`
+      + `?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
+    window.open(url, '_blank', 'noopener');
   }
 
   // ============== 分享卡片模板菜单 ==============

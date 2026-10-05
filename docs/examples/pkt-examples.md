@@ -1,5 +1,6 @@
 ---
 title: Packet Tracer 拓扑渲染示例
+tags: [网络, 拓扑]
 ---
 
 # Packet Tracer 拓扑渲染

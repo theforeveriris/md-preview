@@ -25,7 +25,8 @@
     sansHeadingDigits: false,
     mobileGestures: true,
     sectionCollapse: true,
-    splitSyncScroll: true
+    splitSyncScroll: true,
+    focusMode: false
   };
 
   // 内容区宽度范围（与设置面板滑杆一致）
@@ -106,7 +107,8 @@
           sansHeadingDigits: parsed.sansHeadingDigits === true,
           mobileGestures: parsed.mobileGestures !== false,
           sectionCollapse: parsed.sectionCollapse !== false,
-          splitSyncScroll: parsed.splitSyncScroll !== false
+          splitSyncScroll: parsed.splitSyncScroll !== false,
+          focusMode: parsed.focusMode === true
         };
       }
     } catch (e) {
@@ -123,6 +125,10 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
     } catch (e) {
       console.error('Failed to save settings:', e);
+    }
+    // 多标签页同步：设置变化广播给其他标签页（sync-tabs.js）
+    if (window.MarkdownPreview.syncTabs) {
+      window.MarkdownPreview.syncTabs.post({ type: 'settings', settings });
     }
   }
 
@@ -373,6 +379,14 @@
       } else if (e.target.checked && window.MarkdownPreview.sectionCollapse) {
         window.MarkdownPreview.sectionCollapse.onDocRendered(loadSettings() && window.MarkdownPreview.state.currentFilePath);
       }
+    });
+
+    // 专注模式（focus-mode.js：当前段落高亮、其余淡化）
+    document.getElementById('focusModeToggle')?.addEventListener('change', (e) => {
+      const settings = loadSettings();
+      settings.focusMode = e.target.checked;
+      saveSettings(settings);
+      applyFocusMode(settings.focusMode);
     });
 
     // 对照阅读默认同步滚动（split-view.js 打开时读取；开着时即时生效）
@@ -1149,11 +1163,15 @@ body { margin: 0; }
     URL.revokeObjectURL(url);
   }
 
-  function init() {
-    const settings = loadSettings();
-    initFloatingMenu();
-    initSettingsPanel();
-    initDownloadButtons();
+  // 专注模式（focus-mode.js 提供开关与滚动跟踪）
+  function applyFocusMode(on) {
+    if (window.MarkdownPreview.focusMode) {
+      window.MarkdownPreview.focusMode.applyPersisted(on);
+    }
+  }
+
+  // 应用全部设置到界面（init 与远端标签页同步共用）
+  function applyAllSettings(settings) {
     toggleReadingProgress(settings.showReadingProgress);
     toggleWordCount(settings.showWordCount);
     toggleTruncateFileNames(settings.truncateFileNames);
@@ -1165,6 +1183,7 @@ body { margin: 0; }
     syncContentWidthControls(settings);
     applyTableBleed(settings.tableBleed);
     applySansHeadingDigits(settings.sansHeadingDigits);
+    applyFocusMode(settings.focusMode);
 
     const showReadingProgressToggle = document.getElementById('showReadingProgressToggle');
     const showWordCountToggle = document.getElementById('showWordCountToggle');
@@ -1173,6 +1192,7 @@ body { margin: 0; }
     const tableBleedToggle = document.getElementById('tableBleedToggle');
     const sansHeadingDigitsToggle = document.getElementById('sansHeadingDigitsToggle');
     const mobileGesturesToggle = document.getElementById('mobileGesturesToggle');
+    const focusModeToggle = document.getElementById('focusModeToggle');
 
     if (showReadingProgressToggle) showReadingProgressToggle.checked = settings.showReadingProgress;
     if (showWordCountToggle) showWordCountToggle.checked = settings.showWordCount;
@@ -1185,6 +1205,7 @@ body { margin: 0; }
     if (sectionCollapseToggle) sectionCollapseToggle.checked = settings.sectionCollapse !== false;
     const splitSyncScrollToggle = document.getElementById('splitSyncScrollToggle');
     if (splitSyncScrollToggle) splitSyncScrollToggle.checked = settings.splitSyncScroll !== false;
+    if (focusModeToggle) focusModeToggle.checked = settings.focusMode === true;
 
     // 取色器显示：有自定义值用自定义值，否则显示默认色
     document.querySelectorAll('input[type="color"][data-var]').forEach(input => {
@@ -1194,9 +1215,27 @@ body { margin: 0; }
     });
   }
 
+  // 远端标签页推送的设置：写入本地后整体应用（sync-tabs.js 调用）
+  function applyRemoteSettings(remote) {
+    if (!remote || typeof remote !== 'object') return;
+    // 远端为全量 settings 快照：直接采用并回写
+    saveSettings(remote);
+    applyAllSettings(remote);
+  }
+
+  function init() {
+    const settings = loadSettings();
+    initFloatingMenu();
+    initSettingsPanel();
+    initDownloadButtons();
+    applyAllSettings(settings);
+  }
+
   window.MarkdownPreview.settings = {
     load: loadSettings,
     save: saveSettings,
+    applyAll: applyAllSettings,
+    applyRemote: applyRemoteSettings,
     applyTempContentWidth,
     restoreContentWidth,
     open: openSettingsPanel,
@@ -1206,6 +1245,8 @@ body { margin: 0; }
     resetContentWidth: resetContentWidth,
     toggleContentFullWidth: toggleContentFullWidth,
     resetCustomColors: resetCustomColors,
+    downloadCurrentFile: () => downloadCurrentFile(),
+    exportStandaloneHtml: () => exportStandaloneHtml(),
     init: init
   };
 

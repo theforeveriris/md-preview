@@ -163,6 +163,8 @@
         const servers = getServerList();
         const container = document.createElement('div');
         container.className = 'plantuml-diagram';
+        // 源码标记：供悬浮工具条「复制源码」使用（interactions.js）
+        container.dataset.src = plantumlCode;
 
         const img = document.createElement('img');
         img.alt = 'PlantUML';

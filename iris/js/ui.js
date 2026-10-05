@@ -95,6 +95,8 @@
     window.MarkdownPreview.search.reset();
     if (dom.paletteClear) dom.paletteClear.hidden = true;
     dom.searchInput.focus();
+    // 空查询也触发一次搜索：命令面板空态列出全部动作（palette.js）
+    dom.searchInput.dispatchEvent(new Event('input'));
   }
 
   function closeSearchPalette() {
@@ -288,6 +290,9 @@
     // 本地文件面板归属 Files 区
     const localFilesPanel = document.getElementById('localFilesPanel');
     if (localFilesPanel) localFilesPanel.hidden = mode !== 'files' || state.localFiles.length === 0;
+    // 标签面板同属 Files 区（tags.js 在无标签数据时自行隐藏）
+    const tagPanel = document.getElementById('tagPanel');
+    if (tagPanel) tagPanel.hidden = mode !== 'files';
   }
   
   function copyCodeToClipboard(pre) {

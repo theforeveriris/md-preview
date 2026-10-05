@@ -17,7 +17,11 @@
   {
     "path": "docs/examples/apexcharts-examples.md",
     "title": "ApexCharts 交互式图表示例",
-    "preview": "ApexCharts 交互式图表示例 本页面展示 ApexCharts 的各种图表类型和配置方式。 --- 1. 折线图 基础折线图 源码： 渲染效果： --- 多系列折线图 源码： 渲染效果： --- 2. 面积图 基础面积图 源码： 渲染效果： --- 多系列面积图 源码： 渲染效果： --- 3. 柱状图 基础柱状图 源码： 渲染效果： --- 分组柱状图 源码： 渲染效果： --- 4. "
+    "preview": "ApexCharts 交互式图表示例 本页面展示 ApexCharts 的各种图表类型和配置方式。 --- 1. 折线图 基础折线图 源码： 渲染效果： --- 多系列折线图 源码： 渲染效果： --- 2. 面积图 基础面积图 源码： 渲染效果： --- 多系列面积图 源码： 渲染效果： --- 3. 柱状图 基础柱状图 源码： 渲染效果： --- 分组柱状图 源码： 渲染效果： --- 4. ",
+    "tags": [
+      "图表",
+      "数据"
+    ]
   },
   {
     "path": "docs/examples/basic-usage.md",
@@ -47,7 +51,11 @@
   {
     "path": "docs/examples/csv-examples.md",
     "title": "CSV / TSV 交互表格示例",
-    "preview": "CSV / TSV 交互表格示例 csv / tsv 代码块会渲染为可排序、可搜索、可按列筛选的交互表格，贴数据不用再截图。 基础 CSV - 点击表头排序：升 → 降 → 恢复原始顺序，数值列按数值比较 - 表头漏斗按钮：按该列的唯一值勾选筛选 - 工具栏搜索框：即时过滤任意单元格命中的行 - 右侧按钮：复制 CSV / 下载 CSV（保留原文） 数值排序 带引号转义的 CSV 逗号或换行出现在"
+    "preview": "CSV / TSV 交互表格示例 csv / tsv 代码块会渲染为可排序、可搜索、可按列筛选的交互表格，贴数据不用再截图。 基础 CSV - 点击表头排序：升 → 降 → 恢复原始顺序，数值列按数值比较 - 表头漏斗按钮：按该列的唯一值勾选筛选 - 工具栏搜索框：即时过滤任意单元格命中的行 - 右侧按钮：复制 CSV / 下载 CSV（保留原文） 数值排序 带引号转义的 CSV 逗号或换行出现在",
+    "tags": [
+      "数据",
+      "表格"
+    ]
   },
   {
     "path": "docs/examples/diff-examples.md",
@@ -62,7 +70,11 @@
   {
     "path": "docs/examples/ensp-examples.md",
     "title": "eNSP 拓扑渲染示例",
-    "preview": "华为 eNSP 拓扑渲染 本站点支持在 Markdown 文档中嵌入华为 eNSP 拓扑图。将 .topo 或 .zip 压缩包放入 iris/data/ensp/raw/ 目录，构建脚本会自动解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。 基本用法 使用 @ensp 嵌入语法引用预处理好的拓扑 JSON，需要用 ensp 代码块包裹（即三反引号 + ensp "
+    "preview": "华为 eNSP 拓扑渲染 本站点支持在 Markdown 文档中嵌入华为 eNSP 拓扑图。将 .topo 或 .zip 压缩包放入 iris/data/ensp/raw/ 目录，构建脚本会自动解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。 基本用法 使用 @ensp 嵌入语法引用预处理好的拓扑 JSON，需要用 ensp 代码块包裹（即三反引号 + ensp ",
+    "tags": [
+      "网络",
+      "拓扑"
+    ]
   },
   {
     "path": "docs/examples/gallery-layouts.md",
@@ -72,7 +84,11 @@
   {
     "path": "docs/examples/geojson-examples.md",
     "title": "GeoJSON / TopoJSON 示例",
-    "preview": "GeoJSON / TopoJSON 示例 本页面展示地理数据可视化功能，支持 GeoJSON 和 TopoJSON 格式的嵌入渲染。 --- 1. GeoJSON 点数据 单个点 源码： 渲染效果： --- 多个城市点 源码： 渲染效果： --- 2. GeoJSON 线数据 简单线段 源码： 渲染效果： --- 多段线路 源码： 渲染效果： --- 3. GeoJSON 多边形数据 简单多边形"
+    "preview": "GeoJSON / TopoJSON 示例 本页面展示地理数据可视化功能，支持 GeoJSON 和 TopoJSON 格式的嵌入渲染。 --- 1. GeoJSON 点数据 单个点 源码： 渲染效果： --- 多个城市点 源码： 渲染效果： --- 2. GeoJSON 线数据 简单线段 源码： 渲染效果： --- 多段线路 源码： 渲染效果： --- 3. GeoJSON 多边形数据 简单多边形",
+    "tags": [
+      "地图",
+      "数据"
+    ]
   },
   {
     "path": "docs/examples/github-alerts-examples.md",
@@ -87,12 +103,28 @@
   {
     "path": "docs/examples/ios-vrp-examples.md",
     "title": "Cisco IOS / 华为 VRP 配置高亮示例",
-    "preview": "Cisco IOS / 华为 VRP 配置高亮示例 内置两个网络设备配置语法包：ios（Cisco IOS / IOS-XE）与 vrp（华为 VRP）。命令关键字、注释、字符串与地址分级着色，与内置 10 套代码高亮主题自动兼容。 Cisco IOS（ios ! 接口配置 interface GigabitEthernet0/0/1 description TO-CORE-SW-01 ip ad"
+    "preview": "Cisco IOS / 华为 VRP 配置高亮示例 内置两个网络设备配置语法包：ios（Cisco IOS / IOS-XE）与 vrp（华为 VRP）。命令关键字、注释、字符串与地址分级着色，与内置 10 套代码高亮主题自动兼容。 Cisco IOS（ios ! 接口配置 interface GigabitEthernet0/0/1 description TO-CORE-SW-01 ip ad",
+    "tags": [
+      "网络",
+      "配置"
+    ]
   },
   {
     "path": "docs/examples/latex-examples.md",
     "title": "LaTeX 公式示例",
-    "preview": "LaTeX 公式示例 本文档展示了 KaTeX 支持的各类数学公式及其渲染效果。 --- 1. 行内公式 行内公式使用单个 \\$ 包裹，例如： - 勾股定理：$a^2 + b^2 = c^2$ - 欧拉公式：$e^{i\\pi} + 1 = 0$ - 二次方程根：$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$ - 积分：$\\int{a}^{b} f(x) dx$ -"
+    "preview": "LaTeX 公式示例 本文档展示了 KaTeX 支持的各类数学公式及其渲染效果。 --- 1. 行内公式 行内公式使用单个 \\$ 包裹，例如： - 勾股定理：$a^2 + b^2 = c^2$ - 欧拉公式：$e^{i\\pi} + 1 = 0$ - 二次方程根：$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$ - 积分：$\\int{a}^{b} f(x) dx$ -",
+    "tags": [
+      "数学"
+    ]
+  },
+  {
+    "path": "docs/examples/live-preview-examples.md",
+    "title": "Live 预览与 JSON 树示例",
+    "preview": "Live 预览与 JSON 树 fence 信息串追加 live 标记的 html / js / css 代码块会在文档内提供沙箱运行预览；json 代码块自动渲染为可折叠树（追加 raw 标记保留源码展示）。脚本运行在隔离 iframe（opaque origin）中，无法访问页面数据。 HTML live 预览 html live html live <div style=\"font-fami",
+    "tags": [
+      "图表",
+      "数据"
+    ]
   },
   {
     "path": "docs/examples/markdown-syntax.md",
@@ -102,7 +134,10 @@
   {
     "path": "docs/examples/mermaid-examples.md",
     "title": "Mermaid 图表示例",
-    "preview": "Mermaid 图表示例 本文档展示了 Mermaid 支持的各类图表及其渲染效果。 --- 1. 流程图 (Flowchart) 垂直流程图 (Top to Bottom) 渲染效果： 水平流程图 (Left to Right) 渲染效果： 复杂流程图 (包含子图) 渲染效果： --- 2. 时序图 (Sequence Diagram) 基础时序图 渲染效果： 循环与条件 渲染效果： --- 3"
+    "preview": "Mermaid 图表示例 本文档展示了 Mermaid 支持的各类图表及其渲染效果。 --- 1. 流程图 (Flowchart) 垂直流程图 (Top to Bottom) 渲染效果： 水平流程图 (Left to Right) 渲染效果： 复杂流程图 (包含子图) 渲染效果： --- 2. 时序图 (Sequence Diagram) 基础时序图 渲染效果： 循环与条件 渲染效果： --- 3",
+    "tags": [
+      "图表"
+    ]
   },
   {
     "path": "docs/examples/native-html-examples.md",
@@ -112,7 +147,11 @@
   {
     "path": "docs/examples/pkt-examples.md",
     "title": "Packet Tracer 拓扑渲染示例",
-    "preview": "Packet Tracer 拓扑渲染 本站点支持在 Markdown 文档中嵌入 Cisco Packet Tracer 拓扑图。将 .pkt 文件放入 iris/data/pkt/raw/ 目录，构建脚本会自动解密、解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。 基本用法 使用 @pkt 嵌入语法引用预处理好的拓扑 JSON，需要用 pkt 代码块包裹（即三反"
+    "preview": "Packet Tracer 拓扑渲染 本站点支持在 Markdown 文档中嵌入 Cisco Packet Tracer 拓扑图。将 .pkt 文件放入 iris/data/pkt/raw/ 目录，构建脚本会自动解密、解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。 基本用法 使用 @pkt 嵌入语法引用预处理好的拓扑 JSON，需要用 pkt 代码块包裹（即三反",
+    "tags": [
+      "网络",
+      "拓扑"
+    ]
   },
   {
     "path": "docs/examples/pkt-huawei-vrp-解析示例.md",

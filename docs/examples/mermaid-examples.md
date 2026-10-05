@@ -1,3 +1,8 @@
+---
+title: Mermaid 图表示例
+tags: [图表]
+---
+
 # Mermaid 图表示例
 
 本文档展示了 Mermaid 支持的各类图表及其渲染效果。

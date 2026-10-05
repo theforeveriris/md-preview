@@ -1,3 +1,8 @@
+---
+title: Cisco IOS / 华为 VRP 配置高亮示例
+tags: [网络, 配置]
+---
+
 # Cisco IOS / 华为 VRP 配置高亮示例
 
 内置两个网络设备配置语法包：`ios`（Cisco IOS / IOS-XE）与 `vrp`（华为 VRP）。命令关键字、注释、字符串与地址分级着色，与内置 10 套代码高亮主题自动兼容。

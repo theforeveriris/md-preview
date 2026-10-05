@@ -266,6 +266,27 @@
     renderPanel();
   }
 
+  // 将文本内容加入本地会话列表并打开（快照分享「存入本地会话」用）
+  function addTextDoc(name, content) {
+    const state = getState();
+    const fileName = /\.md$/i.test(name || '') ? name : `${name || 'snapshot'}.md`;
+    const existing = state.localFiles.find(f => f.name === fileName);
+    let id;
+    if (existing) {
+      existing.content = content;
+      existing.words = countWords(content);
+      id = existing.id;
+    } else {
+      id = makeId();
+      state.localFiles.push({ id, name: fileName, path: fileName, content, words: countWords(content) });
+    }
+    openLocalFile(id);
+    renderPanel();
+    if (state.currentMode !== 'files') {
+      window.MarkdownPreview.ui?.switchMode('files');
+    }
+  }
+
   function clearLocalFiles() {
     const state = getState();
     if (state.localFiles.length === 0) return;
@@ -670,6 +691,7 @@
     openLocalFolder,
     removeLocalFile,
     clearLocalFiles,
+    addTextDoc,
     clearActive,
     navigateLocal,
     getFileContent,

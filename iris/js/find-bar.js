@@ -140,6 +140,16 @@
     else updateCount();
   }
 
+  // 带预设关键词打开（搜索结果直达关键词）：不抢焦点，直接定位首个命中
+  function openWithQuery(query) {
+    ensure();
+    barEl.classList.add('open');
+    barEl.setAttribute('aria-hidden', 'false');
+    inputEl.value = query || '';
+    if (query) runSearch(query.trim());
+    else updateCount();
+  }
+
   function close() {
     if (!barEl) return;
     barEl.classList.remove('open');
@@ -200,5 +210,5 @@
     // 点击查找条外不关闭（区别于工具条：查找是持续态），仅 Esc / 关闭按钮收起
   }
 
-  window.MarkdownPreview.findBar = { open, close, toggle, isOpen, onDocRendered };
+  window.MarkdownPreview.findBar = { open, openWithQuery, close, toggle, isOpen, onDocRendered };
 })();

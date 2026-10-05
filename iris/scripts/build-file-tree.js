@@ -56,6 +56,27 @@ function extractTitle(content) {
   return title;
 }
 
+// 提取文档标签：frontmatter `tags:` 行，支持内联数组 [a, b] 与逗号分隔两种写法
+function extractTags(content) {
+  const fm = content.match(/^---\s*\n([\s\S]*?)\n---\s*/);
+  if (!fm) return [];
+  const tagsLine = fm[1].split('\n').find(l => l.trim().startsWith('tags:'));
+  if (!tagsLine) return [];
+  const raw = tagsLine.trim().replace(/^tags:\s*/, '').trim();
+
+  let list = [];
+  if (raw.startsWith('[')) {
+    const inner = raw.replace(/^\[/, '').replace(/\]$/, '');
+    list = inner.split(',');
+  } else {
+    list = raw.split(/[,，]/);
+  }
+  return list
+    .map(s => s.trim().replace(/^["']|["']$/g, ''))
+    .filter(Boolean)
+    .slice(0, 20);
+}
+
 function buildTreeFromDirectory(dir, basePath = '') {
   const result = [];
   const items = fs.readdirSync(dir, { withFileTypes: true });
@@ -100,6 +121,7 @@ function buildTreeFromDirectory(dir, basePath = '') {
     const content = fs.readFileSync(file.fullPath, 'utf-8');
     const wordCount = countWords(content);
     const title = extractTitle(content);
+    const tags = extractTags(content);
     const entry = {
       name: file.name,
       type: 'file',
@@ -107,6 +129,7 @@ function buildTreeFromDirectory(dir, basePath = '') {
       wordCount
     };
     if (title) entry.title = title;
+    if (tags.length > 0) entry.tags = tags;
     result.push(entry);
     totalWords += wordCount;
   });

@@ -448,11 +448,221 @@
     }, 'image/png');
   }
 
+  // ============== 图表悬浮工具条（Mermaid / PlantUML） ==============
+  // 悬停图表容器时右上角浮出：复制源码 / 导出 SVG / 导出 PNG。
+  // Mermaid 产出内联 SVG（直接序列化）；PlantUML 产出跨域 <img>，
+  // 走 fetch → Blob（同源 object URL）→ Image → Canvas，避开画布污染。
+  const TOOLBAR_ID = 'diagramHoverToolbar';
+  const DIAGRAM_SELECTOR = '.mermaid-diagram, .plantuml-diagram';
+  let diagramToolbar = null;
+  let diagramHideTimer = null;
+
+  function diagramToast(msg) {
+    const el = document.getElementById('diagramToast') || (() => {
+      const t = document.createElement('div');
+      t.id = 'diagramToast';
+      t.className = 'diagram-toast';
+      document.body.appendChild(t);
+      return t;
+    })();
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._timer);
+    el._timer = setTimeout(() => el.classList.remove('show'), 2200);
+  }
+
+  function ensureDiagramToolbar() {
+    if (diagramToolbar) return diagramToolbar;
+    diagramToolbar = document.createElement('div');
+    diagramToolbar.id = TOOLBAR_ID;
+    diagramToolbar.className = 'diagram-toolbar';
+    diagramToolbar.innerHTML = `
+      <button type="button" data-act="copy-src" title="${t('ctx.copySrc', '复制源码')}">${icon('i-copy', 14)}</button>
+      <button type="button" data-act="export-svg" title="${t('ctx.exportSvg', '导出 SVG')}">${icon('i-image', 14)}</button>
+      <button type="button" data-act="export-png" title="${t('ctx.exportPng', '导出 PNG')}">${icon('i-download', 14)}</button>
+    `;
+    diagramToolbar.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-act]');
+      if (!btn || !diagramToolbar._container) return;
+      const c = diagramToolbar._container;
+      const act = btn.dataset.act;
+      if (act === 'copy-src') {
+        copyText(c.dataset.src || '').then(
+          () => diagramToast(t('ctx.srcCopied', '源码已复制')),
+          () => diagramToast(t('ctx.copyFailed', '复制失败'))
+        );
+      } else if (act === 'export-svg') {
+        exportDiagramSvg(c);
+      } else if (act === 'export-png') {
+        exportDiagramPng(c);
+      }
+    });
+    document.body.appendChild(diagramToolbar);
+    return diagramToolbar;
+  }
+
+  function showDiagramToolbar(container) {
+    clearTimeout(diagramHideTimer);
+    const bar = ensureDiagramToolbar();
+    bar._container = container;
+    bar.classList.add('visible');
+    positionDiagramToolbar(container);
+  }
+
+  function positionDiagramToolbar(container) {
+    const bar = document.getElementById(TOOLBAR_ID);
+    if (!bar || !bar.classList.contains('visible') || !bar._container) return;
+    const rect = container.getBoundingClientRect();
+    bar.style.top = Math.max(8, rect.top + 8) + 'px';
+    bar.style.left = Math.max(8, rect.right - bar.offsetWidth - 10) + 'px';
+  }
+
+  function scheduleHideDiagramToolbar() {
+    clearTimeout(diagramHideTimer);
+    diagramHideTimer = setTimeout(() => {
+      const bar = document.getElementById(TOOLBAR_ID);
+      if (bar) bar.classList.remove('visible');
+    }, 500);
+  }
+
+  function initDiagramToolbar() {
+    document.addEventListener('mouseover', (e) => {
+      if (e.target.closest('.diagram-toolbar')) { clearTimeout(diagramHideTimer); return; }
+      const diagram = e.target.closest(DIAGRAM_SELECTOR);
+      if (diagram && document.body.contains(diagram)) showDiagramToolbar(diagram);
+      else scheduleHideDiagramToolbar();
+    });
+    window.addEventListener('scroll', () => {
+      const bar = document.getElementById(TOOLBAR_ID);
+      if (bar && bar.classList.contains('visible') && bar._container) {
+        if (document.body.contains(bar._container)) positionDiagramToolbar(bar._container);
+        else bar.classList.remove('visible');
+      }
+    }, true);
+    window.addEventListener('resize', () => {
+      const bar = document.getElementById(TOOLBAR_ID);
+      if (bar && bar.classList.contains('visible') && bar._container) positionDiagramToolbar(bar._container);
+    });
+  }
+
+  function diagramFileSlug() {
+    const st = window.MarkdownPreview.state;
+    const name = (st && (st.currentFilePath || (st.localDoc && st.localDoc.name))) || 'diagram';
+    return String(name).replace(/^.*\//, '').replace(/\.md$/i, '') || 'diagram';
+  }
+
+  function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  // 内联 SVG → 标准序列化文本（补齐命名空间与显式尺寸，供 Image 解码）
+  function serializeSvg(svgEl) {
+    const clone = svgEl.cloneNode(true);
+    clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    clone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+    const rect = svgEl.getBoundingClientRect();
+    if (!clone.getAttribute('width')) clone.setAttribute('width', Math.ceil(rect.width));
+    if (!clone.getAttribute('height')) clone.setAttribute('height', Math.ceil(rect.height));
+    if (!clone.getAttribute('viewBox')) {
+      clone.setAttribute('viewBox', `0 0 ${Math.ceil(rect.width)} ${Math.ceil(rect.height)}`);
+    }
+    return new XMLSerializer().serializeToString(clone);
+  }
+
+  // SVG 文本 → PNG Blob（Blob URL 同源，Canvas 不被污染）
+  function svgTextToPng(svgText, scale) {
+    return new Promise((resolve, reject) => {
+      const svgBlob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const w = img.naturalWidth || 800;
+          const h = img.naturalHeight || 600;
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.ceil(w * scale);
+          canvas.height = Math.ceil(h * scale);
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = effectiveBg(document.body);
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('toBlob failed')), 'image/png');
+        } catch (e) { reject(e); }
+        finally { URL.revokeObjectURL(url); }
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('svg image decode failed')); };
+      img.src = url;
+    });
+  }
+
+  function exportDiagramSvg(container) {
+    const svg = container.querySelector('svg');
+    if (svg) {
+      downloadBlob(new Blob([serializeSvg(svg)], { type: 'image/svg+xml;charset=utf-8' }),
+        diagramFileSlug() + '-diagram.svg');
+      return;
+    }
+    // PlantUML：img 指向 SVG 服务时直接下载该地址
+    const img = container.querySelector('img');
+    if (img && /\.svg(\?|$)/i.test(img.currentSrc || img.src || '')) {
+      window.open(img.currentSrc || img.src, '_blank');
+      return;
+    }
+    diagramToast(t('ctx.svgUnavailable', '该图表无 SVG 可导出，请用 PNG'));
+  }
+
+  async function exportDiagramPng(container) {
+    try {
+      const svg = container.querySelector('svg');
+      if (svg) {
+        const blob = await svgTextToPng(serializeSvg(svg), 2);
+        downloadBlob(blob, diagramFileSlug() + '-diagram.png');
+        return;
+      }
+      const img = container.querySelector('img');
+      const src = img ? (img.currentSrc || img.src) : '';
+      if (!src) throw new Error('no diagram image');
+      // fetch → Blob URL：同源对象 URL 解码，规避跨域画布污染
+      const resp = await fetch(src, { mode: 'cors' });
+      if (!resp.ok) throw new Error('fetch ' + resp.status);
+      const blob = await resp.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const png = await new Promise((resolve, reject) => {
+        const im = new Image();
+        im.onload = () => {
+          try {
+            const scale = 2;
+            const canvas = document.createElement('canvas');
+            canvas.width = im.naturalWidth * scale;
+            canvas.height = im.naturalHeight * scale;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(im, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob(b => b ? resolve(b) : reject(new Error('toBlob failed')), 'image/png');
+          } catch (e) { reject(e); }
+        };
+        im.onerror = () => reject(new Error('image decode failed'));
+        im.src = objectUrl;
+      });
+      URL.revokeObjectURL(objectUrl);
+      downloadBlob(png, diagramFileSlug() + '-diagram.png');
+    } catch (e) {
+      diagramToast(t('ctx.exportFailed', '导出失败：图片服务不允许跨域获取'));
+    }
+  }
+
   // ============== 初始化 ==============
   function init() {
     bindMenuDismiss();
     initLatexContextMenu();
     initTableHandle();
+    initDiagramToolbar();
   }
 
   window.MarkdownPreview.interactions = {

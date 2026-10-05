@@ -427,6 +427,8 @@
         window.MarkdownPreview.router.onFileTreeLoaded();
       }
     }, 100);
+    // 通知其他模块（标签面板等）：树数据已就绪
+    window.dispatchEvent(new CustomEvent('filetreeloaded'));
   }
   
   function getAllFilesInDFSOrder(files = state.fileTreeData) {
