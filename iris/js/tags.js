@@ -84,7 +84,10 @@
       .map(([name, docs]) => ({ name, count: docs.length }))
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 
-    panel.hidden = false;
+    // filetreeloaded 晚于首次渲染时当前可能处于 files/index 模式，
+    // 面板仅在「标签」选项卡激活时显示（选项卡本身始终恢复可见）
+    const state = window.MarkdownPreview.state;
+    panel.hidden = !(state && state.currentMode === 'tags');
     panel.innerHTML = `
       <div class="tag-panel-header">
         <span class="tag-panel-title">${icon('i-tag', 13)}<span>${esc(t('tags.panelTitle', '标签'))}</span></span>
