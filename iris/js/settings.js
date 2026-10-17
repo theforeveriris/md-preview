@@ -15,6 +15,7 @@
     showReadingProgress: true,
     showWordCount: false,
     truncateFileNames: true,
+    expandFolders: true,
     codeTheme: 'github',
     customColors: {},
     fontConfig: {},
@@ -97,6 +98,7 @@
           showReadingProgress: parsed.showReadingProgress ?? defaultSettings.showReadingProgress,
           showWordCount: parsed.showWordCount ?? defaultSettings.showWordCount,
           truncateFileNames: parsed.truncateFileNames ?? defaultSettings.truncateFileNames,
+          expandFolders: parsed.expandFolders ?? defaultSettings.expandFolders,
           codeTheme: parsed.codeTheme ?? defaultSettings.codeTheme,
           customColors: (parsed.customColors && typeof parsed.customColors === 'object') ? parsed.customColors : {},
           fontConfig: normalizeFontConfig(parsed.fontConfig),
@@ -316,6 +318,13 @@
       settings.truncateFileNames = e.target.checked;
       saveSettings(settings);
       toggleTruncateFileNames(settings.truncateFileNames);
+    });
+
+    expandFoldersToggle?.addEventListener('change', (e) => {
+      const settings = loadSettings();
+      settings.expandFolders = e.target.checked;
+      saveSettings(settings);
+      toggleExpandFolders(settings.expandFolders);
     });
 
     codeThemeSelect?.addEventListener('change', (e) => {
@@ -633,6 +642,13 @@
       window.MarkdownPreview.fileTree.setTruncateNames(truncate);
     }
     window.MarkdownPreview?.localDocs?.refresh();
+  }
+
+  // 侧边栏文件夹默认展开/折叠（重建文件树使设置生效）
+  function toggleExpandFolders(expand) {
+    if (window.MarkdownPreview?.fileTree?.setExpandFolders) {
+      window.MarkdownPreview.fileTree.setExpandFolders(expand);
+    }
   }
 
   // ---------- 侧边栏折叠状态（桌面端）----------
@@ -1188,6 +1204,7 @@ body { margin: 0; }
     const showReadingProgressToggle = document.getElementById('showReadingProgressToggle');
     const showWordCountToggle = document.getElementById('showWordCountToggle');
     const truncateFileNamesToggle = document.getElementById('truncateFileNamesToggle');
+    const expandFoldersToggle = document.getElementById('expandFoldersToggle');
     const codeThemeSelect = document.getElementById('codeThemeSelect');
     const tableBleedToggle = document.getElementById('tableBleedToggle');
     const sansHeadingDigitsToggle = document.getElementById('sansHeadingDigitsToggle');
@@ -1197,6 +1214,7 @@ body { margin: 0; }
     if (showReadingProgressToggle) showReadingProgressToggle.checked = settings.showReadingProgress;
     if (showWordCountToggle) showWordCountToggle.checked = settings.showWordCount;
     if (truncateFileNamesToggle) truncateFileNamesToggle.checked = settings.truncateFileNames !== false;
+    if (expandFoldersToggle) expandFoldersToggle.checked = settings.expandFolders !== false;
     if (codeThemeSelect) codeThemeSelect.value = settings.codeTheme;
     if (tableBleedToggle) tableBleedToggle.checked = settings.tableBleed === true;
     if (sansHeadingDigitsToggle) sansHeadingDigitsToggle.checked = settings.sansHeadingDigits === true;

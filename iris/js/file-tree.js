@@ -266,10 +266,13 @@
       var sh = tree.shadowRoot;
       if (!sh) return;
 
-      // 展开所有文件夹
-      sh.querySelectorAll('li.folder').forEach(folder => {
-        folder.classList.add('opened');
-      });
+      // 展开所有文件夹（受设置 expandFolders 控制，默认展开；关闭时保持全部折叠）
+      var expandSettings = window.MarkdownPreview.settings && window.MarkdownPreview.settings.load ? window.MarkdownPreview.settings.load() : {};
+      if (expandSettings.expandFolders !== false) {
+        sh.querySelectorAll('li.folder').forEach(folder => {
+          folder.classList.add('opened');
+        });
+      }
 
       // 建立路径 -> li 映射，并注入词数
       state.fileLiMap = new Map();
@@ -353,6 +356,11 @@
     if (tree) {
       tree.classList.toggle('truncate-names', truncate !== false);
     }
+  }
+
+  // 设置切换「文件夹默认展开」后重建文件树即时生效
+  function setExpandFolders(expand) {
+    loadFileTree();
   }
   
   function setActiveFile(path) {
@@ -469,6 +477,7 @@
     renderFileTree,
     setActiveFile,
     highlightFileInSidebar,
+    setExpandFolders,
     toggleSidebar,
     closeSidebar,
     closeSidebarOnMobile,
