@@ -14,7 +14,7 @@
   const defaultSettings = {
     showReadingProgress: true,
     showWordCount: false,
-    truncateFileNames: true,
+    truncateFileNames: false,
     expandFolders: true,
     codeTheme: 'github',
     customColors: {},
