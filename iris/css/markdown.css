@@ -459,7 +459,8 @@ body.table-bleed #markdownContent .table-wrapper {
 .reading-progress {
   position: fixed;
   bottom: 0;
-  left: var(--sidebar-width);
+  /* 与悬浮侧边栏占位对齐（宽度 + 两侧间隙） */
+  left: calc(var(--sidebar-width) + var(--sidebar-inset) * 2);
   right: 0;
   height: 2px;
   background: var(--color-border);

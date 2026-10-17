@@ -5,15 +5,19 @@
 
 .sidebar {
   position: fixed;
-  left: 0;
-  top: 0;
+  left: var(--sidebar-inset);
+  top: var(--sidebar-inset);
+  bottom: var(--sidebar-inset);
   width: var(--sidebar-width);
-  height: 100vh;
+  height: auto;
   background: var(--color-surface);
-  /* 无边框，靠柔和投影与内容区分界（深色主题为 none，靠底色差） */
+  /* 悬浮卡片：圆角 + 细边框 + 四周投影（深色主题靠 --shadow-sidebar 覆盖分界方案） */
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
   box-shadow: var(--shadow-sidebar);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   transition: var(--transition-smooth);
   z-index: 100;
 }
@@ -499,7 +503,8 @@
 
 .main-content {
   flex: 1;
-  margin-left: var(--sidebar-width);
+  /* 悬浮侧边栏占位 = 宽度 + 左侧间隙 + 右侧呼吸空隙 */
+  margin-left: calc(var(--sidebar-width) + var(--sidebar-inset) * 2);
   min-height: 100vh;
   position: relative;
   transition: var(--transition-smooth);
@@ -539,7 +544,7 @@
 /* 仅桌面端生效；移动端抽屉仍由 .open / .sidebar-overlay 控制 */
 @media (min-width: 769px) {
   body.sidebar-collapsed .sidebar {
-    transform: translateX(-100%);
+    transform: translateX(calc(-100% - var(--sidebar-inset)));
     box-shadow: none;
   }
 

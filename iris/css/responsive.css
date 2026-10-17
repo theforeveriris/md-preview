@@ -1,5 +1,12 @@
 @media (max-width: 768px) {
   .sidebar {
+    /* 移动端仍是贴边抽屉，撤销桌面端悬浮卡片化 */
+    left: 0;
+    top: 0;
+    bottom: 0;
+    height: 100vh;
+    border-radius: 0;
+    border: none;
     transform: translateX(-100%);
     box-shadow: none;
     z-index: 200;

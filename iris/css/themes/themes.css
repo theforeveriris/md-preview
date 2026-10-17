@@ -22,8 +22,8 @@
   --color-success: #4caf50;
   --color-error: #f44336;
   --color-warning: #ff9800;
-  /* 侧边栏与内容区的分界：浅色主题用向右扩散的柔和投影 */
-  --shadow-sidebar: 8px 0 24px rgba(0, 0, 0, 0.06), 2px 0 6px rgba(0, 0, 0, 0.04);
+  /* 悬浮侧边栏分界：浅色主题用四周扩散的悬浮投影 */
+  --shadow-sidebar: 0 8px 28px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 /* GitHub Light 主题 */
@@ -170,12 +170,12 @@
   --color-warning: #ebcb8b;
 }
 
-/* 深色主题：黑色投影在深底上不可见，侧边栏分界靠 surface 与 bg 的底色差 */
+/* 深色主题：黑色投影在深底上不可见，悬浮卡片分界靠细边框 + 轻微下坠投影 */
 [data-theme="github-dark"],
 [data-theme="arc"],
 [data-theme="dracula"],
 [data-theme="nord"] {
-  --shadow-sidebar: none;
+  --shadow-sidebar: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 8px 28px rgba(0, 0, 0, 0.35);
 }
 
 /* 更新组件样式以使用新变量 */
