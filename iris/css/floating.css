@@ -238,6 +238,7 @@ body[data-theme="nord"] .menu-trigger {
 }
 
 .settings-panel {
+  position: relative;
   background: var(--color-surface);
   border-radius: 16px;
   width: 90%;
@@ -255,15 +256,23 @@ body[data-theme="nord"] .menu-trigger {
   min-height: 0;
 }
 
+/* 导航栏：微色差底 + 微阴影，无边框无衬线——靠明度差与柔和投影分区 */
 .settings-nav {
   display: none;
   flex-direction: column;
   gap: 2px;
   flex-shrink: 0;
   width: 148px;
-  padding: 16px 8px;
-  border-right: 1px solid var(--color-border);
+  padding: 16px 10px;
+  background: color-mix(in srgb, var(--color-text) 3.5%, var(--color-surface));
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.03);
+  font-weight: var(--font-weight-body, 400);
   overflow-y: auto;
+}
+
+/* 右侧内容区与导航之间：淡灰虚线分隔（所有主题统一处理） */
+.settings-nav + .settings-content {
+  border-left: 1px dashed color-mix(in srgb, var(--color-border) 80%, transparent);
 }
 
 .settings-nav-item {
@@ -272,6 +281,7 @@ body[data-theme="nord"] .menu-trigger {
   border: none;
   text-align: left;
   font-family: inherit;
+  font-weight: inherit;
   font-size: 13px;
   color: var(--color-text-muted);
   padding: 8px 12px;
@@ -283,7 +293,7 @@ body[data-theme="nord"] .menu-trigger {
 
 .settings-nav-item:hover {
   color: var(--color-text);
-  background: var(--color-hover);
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
 }
 
 .settings-nav-item.active {
@@ -299,6 +309,7 @@ body[data-theme="nord"] .menu-trigger {
 @media (min-width: 769px) {
   .settings-panel {
     max-width: 640px;
+    position: relative;
     display: flex;
     flex-direction: column;
     overflow: hidden; /* 滚动交给 .settings-content */
@@ -330,44 +341,13 @@ body[data-theme="nord"] .menu-trigger {
   transform: scale(1);
 }
 
-.settings-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.settings-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--color-text);
-  margin: 0;
-}
-
-.settings-close {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 8px;
-  transition: var(--transition-smooth);
-}
-
-.settings-close:hover {
-  background: var(--color-background);
-}
-
-.settings-close svg {
-  stroke: var(--color-text);
-}
-
 .settings-section {
   padding: 24px;
 }
 
+/* 移动端（无侧栏导航）组间分隔：淡灰虚线 */
 .settings-section:not(:last-child) {
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px dashed color-mix(in srgb, var(--color-border) 70%, transparent);
 }
 
 .settings-section-title {
