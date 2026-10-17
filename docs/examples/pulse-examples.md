@@ -1,3 +1,8 @@
+---
+title: Pulse 波形示例
+tags: [图表]
+---
+
 # Pulse 波形示例
 
 本文档展示了 DG-LAB 郊狼波形文件（`.pulse`）的渲染效果。使用 `[pulse title="标题"]Dungeonlab+pulse:...[/pulse]` 语法即可渲染出逐帧动态波形演示。

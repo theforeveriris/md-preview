@@ -1,3 +1,8 @@
+---
+title: GitHub Alerts 示例
+tags: [排版]
+---
+
 # GitHub Alerts 示例
 
 本页面展示如何在 Markdown 中使用 GitHub 风格的 Alerts 语法。

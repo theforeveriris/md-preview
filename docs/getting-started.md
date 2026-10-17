@@ -1,3 +1,8 @@
+---
+title: 快速开始
+tags: [入门]
+---
+
 # 快速开始
 
 ## 部署到 GitHub Pages

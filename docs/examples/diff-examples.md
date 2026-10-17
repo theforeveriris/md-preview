@@ -1,3 +1,8 @@
+---
+title: Git Diff 可视化示例
+tags: [图表]
+---
+
 # Git Diff 可视化示例
 
 本页面展示如何使用 diff2html 可视化展示 Git Diff 内容。

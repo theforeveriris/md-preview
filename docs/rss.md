@@ -1,3 +1,8 @@
+---
+title: RSS 订阅
+tags: [配置, RSS]
+---
+
 # RSS 订阅
 
 Markdown Preview 自动为 `docs/` 目录下的所有 Markdown 文档生成 RSS 2.0 feed，方便他人通过 RSS 阅读器订阅你的文档更新。

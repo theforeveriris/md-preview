@@ -60,6 +60,7 @@
     readingProgressBar: document.querySelector('.reading-progress-bar'),
     modeFiles: document.getElementById('modeFiles'),
     modeIndex: document.getElementById('modeIndex'),
+    modeTags: document.getElementById('modeTags'),
     indexTree: document.getElementById('indexTree'),
     searchInput: document.getElementById('searchInput'),
     searchResults: document.getElementById('searchResults'),

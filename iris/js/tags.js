@@ -6,7 +6,7 @@
  * 运行时 GitHub API 回退路径没有标签数据，标签面板自动隐藏。
  *
  * 能力：
- *   - 侧边栏「标签」面板：全部标签按文档数排序，点击进入聚合页
+ *   - 侧边栏顶栏「标签」选项卡（Files / Index / 标签）：全部标签按文档数排序，点击进入聚合页
  *   - 标签聚合页：#/tag/<name> 虚拟路由，合成 Markdown 走既有渲染管线
  *   - 搜索过滤：查询里写 `tag:xxx` 只搜带该标签的文档（可多 token 叠加）
  */
@@ -64,12 +64,21 @@
     if (!panel) return;
     const index = buildIndex();
 
-    // 没有任何标签数据（未重跑构建 / 运行时回退）：整个面板不出现
+    // 没有任何标签数据（未重跑构建 / 运行时回退）：整个面板不出现，同时隐藏顶栏「标签」选项卡
     if (!index || index.size === 0) {
       panel.hidden = true;
       panel.innerHTML = '';
+      const tab = document.getElementById('modeTags');
+      const divider = tab && tab.previousElementSibling;
+      if (tab) tab.hidden = true;
+      if (divider && divider.classList.contains('mode-divider')) divider.hidden = true;
       return;
     }
+    // 有数据：确保选项卡可见（filetreeloaded 晚于首次 render 时恢复）
+    const tab = document.getElementById('modeTags');
+    const divider = tab && tab.previousElementSibling;
+    if (tab) tab.hidden = false;
+    if (divider && divider.classList.contains('mode-divider')) divider.hidden = false;
 
     const tags = [...index.entries()]
       .map(([name, docs]) => ({ name, count: docs.length }))

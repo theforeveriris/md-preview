@@ -1,5 +1,6 @@
 ---
 title: Countdown 插件示例
+tags: [插件]
 ---
 
 # Countdown 倒计时插件示例

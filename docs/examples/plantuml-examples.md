@@ -1,3 +1,8 @@
+---
+title: PlantUML 图表示例
+tags: [图表]
+---
+
 # PlantUML 图表示例
 
 本文档展示了 PlantUML 支持的各类图表及其渲染效果。

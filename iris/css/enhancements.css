@@ -1191,13 +1191,16 @@ body.focus-mode .markdown-body > .focus-current {
 
 /* ============== 标签系统（tags.js） ============== */
 
+/* 独占「标签」选项卡时占满侧边栏剩余高度，标签更大更舒展 */
 .tag-panel {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--color-border);
+  padding: 14px 14px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .tag-panel-header {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .tag-panel-title {
@@ -1213,19 +1216,19 @@ body.focus-mode .markdown-body > .focus-current {
 .tag-cloud {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .tag-chip {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 12px;
+  gap: 6px;
+  font-size: 13px;
   color: var(--color-text-muted);
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: 999px;
-  padding: 2px 9px;
+  padding: 4px 12px;
   cursor: pointer;
   transition: color .15s, border-color .15s, background .15s;
 }

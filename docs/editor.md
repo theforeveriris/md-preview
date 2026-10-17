@@ -1,3 +1,8 @@
+---
+title: Markdown 编辑器
+tags: [编辑器]
+---
+
 # Markdown 编辑器
 
 Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可在浏览器内即时编写、运行、预览 Markdown，并支持自动保存、搜索替换、导入导出等能力。

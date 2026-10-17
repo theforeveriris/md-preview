@@ -162,6 +162,7 @@
 
     dom.modeFiles.addEventListener('click', () => switchMode('files'));
     dom.modeIndex.addEventListener('click', () => switchMode('index'));
+    dom.modeTags?.addEventListener('click', () => switchMode('tags'));
 
     // 全局快捷键。完整清单见 docs/shortcuts.md。
     // 守卫优先级：Esc（关设置/侧边栏）→ 编辑器模式 / 输入态 → 各键位。
@@ -285,14 +286,15 @@
 
     dom.modeFiles.classList.toggle('active', mode === 'files');
     dom.modeIndex.classList.toggle('active', mode === 'index');
+    dom.modeTags?.classList.toggle('active', mode === 'tags');
     dom.fileTree.classList.toggle('hidden', mode !== 'files');
     dom.indexTree.classList.toggle('hidden', mode !== 'index');
     // 本地文件面板归属 Files 区
     const localFilesPanel = document.getElementById('localFilesPanel');
     if (localFilesPanel) localFilesPanel.hidden = mode !== 'files' || state.localFiles.length === 0;
-    // 标签面板同属 Files 区（tags.js 在无标签数据时自行隐藏）
+    // 标签面板独占「标签」选项卡（tags.js 在无标签数据时自行隐藏）
     const tagPanel = document.getElementById('tagPanel');
-    if (tagPanel) tagPanel.hidden = mode !== 'files';
+    if (tagPanel) tagPanel.hidden = mode !== 'tags';
   }
   
   function copyCodeToClipboard(pre) {

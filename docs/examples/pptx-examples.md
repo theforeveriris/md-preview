@@ -1,5 +1,6 @@
 ---
 title: PPTX 演示嵌入示例
+tags: [嵌入]
 ---
 
 # PPTX 演示嵌入

@@ -1,3 +1,8 @@
+---
+title: 快捷键
+tags: [入门, 快捷键]
+---
+
 # 快捷键
 
 Markdown Preview 支持一组全局键盘快捷键，覆盖侧边栏、设置、搜索、文档导航与内容区宽度调节。`⌘` 表示 macOS 的 Cmd 键，`Ctrl` 表示 Windows / Linux 的 Ctrl 键。

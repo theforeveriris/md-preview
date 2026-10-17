@@ -1,5 +1,6 @@
 ---
 title: ColorCard 插件示例
+tags: [插件, 排版]
 ---
 
 # ColorCard 颜色卡片插件示例

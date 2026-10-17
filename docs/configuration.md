@@ -1,3 +1,8 @@
+---
+title: 配置参考
+tags: [配置]
+---
+
 # 配置参考
 
 Markdown Preview 的配置分为两层：
