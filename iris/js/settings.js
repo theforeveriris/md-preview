@@ -201,6 +201,54 @@
     window.addEventListener('scroll', () => {
       if (menuItems.classList.contains('open') && dwelled) closeMenu();
     }, true);
+
+    // ---------- 闲置贴边收起悬浮球 ----------
+    // 打开页面后闲置 5s：小球向右滑出屏幕（像水滴被屏幕边缘吸附），只留一条细柄；
+    // 鼠标移到右缘附近（或球体原区域）时滑回原位。滚动不再触发隐藏。
+    const FAB_IDLE_DELAY = 5000;
+    const FAB_PEEK_WIDTH = 18;      // 贴边后露出的细柄宽度（px）
+    const FAB_PROXIMITY = 72;       // 鼠标靠近右缘多少 px 内召回（px）
+    let fabIdleTimer = null;
+    let fabParked = false;
+
+    const parkFab = () => {
+      if (fabParked) return;
+      // 展开的菜单一并收起，避免菜单悬空
+      if (menuItems.classList.contains('open')) closeMenu();
+      fabParked = true;
+      floatingMenu.classList.add('fab-parked');
+    };
+    const wakeFab = () => {
+      clearTimeout(fabIdleTimer);
+      if (!fabParked) {
+        scheduleFabIdle();
+        return;
+      }
+      fabParked = false;
+      floatingMenu.classList.remove('fab-parked');
+      scheduleFabIdle();
+    };
+    const scheduleFabIdle = () => {
+      clearTimeout(fabIdleTimer);
+      fabIdleTimer = setTimeout(parkFab, FAB_IDLE_DELAY);
+    };
+
+    // 鼠标接近右缘（含球体贴边后的细柄）→ 召回
+    document.addEventListener('mousemove', (e) => {
+      if (!fabParked) return;
+      const vw = document.documentElement.clientWidth;
+      if (vw - e.clientX <= FAB_PROXIMITY) wakeFab();
+    }, { passive: true });
+    // 触屏：贴边细柄仍可点按召回
+    menuTrigger.addEventListener('touchstart', wakeFab, { passive: true });
+    // 键盘可达性：focus 召回
+    menuTrigger.addEventListener('focus', wakeFab);
+
+    // 任何与悬浮球的交互都重置闲置计时
+    floatingMenu.addEventListener('mouseenter', wakeFab);
+    floatingMenu.addEventListener('click', wakeFab);
+    scheduleFabIdle();
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && menuItems.classList.contains('open')) closeMenu();
     });
