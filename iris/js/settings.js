@@ -640,7 +640,7 @@
     content.querySelectorAll('.settings-section').forEach(sec => {
       sec.classList.toggle('hidden-by-nav', sec.id !== targetId);
     });
-    const target = content.getElementById ? null : content.querySelector('#' + targetId);
+    const target = content.querySelector('#' + targetId);
     if (target) target.scrollIntoView({ block: 'start' });
     content.scrollTop = 0;
   }

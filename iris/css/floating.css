@@ -293,10 +293,7 @@ body[data-theme="nord"] .menu-trigger {
 }
 
 .settings-content {
-  flex: 1;
   min-width: 0;
-  overflow-y: auto;
-  max-height: calc(80vh - 73px); /* 面板高度 - header */
 }
 
 @media (min-width: 769px) {
@@ -309,6 +306,18 @@ body[data-theme="nord"] .menu-trigger {
 
   .settings-nav {
     display: flex;
+  }
+
+  /* 高度约束链：面板(max-height 80vh) → body(flex:1) → content(自身滚动) */
+  .settings-body {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .settings-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   /* 桌面端隐藏非当前分组的 section */
