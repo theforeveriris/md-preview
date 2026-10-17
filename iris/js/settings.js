@@ -600,8 +600,49 @@
       settingsOverlay.classList.add('open');
       document.body.style.overflow = 'hidden';
     }
+    setupSettingsNav();
     // 打开面板时刷新存储管理区块（用量 / 笔记本 / 浏览数据）
     window.MarkdownPreview.storageManager?.refresh?.();
+  }
+
+  // ===== Chrome 风格左侧分组导航（仅桌面端显示，CSS 控制）=====
+  let navBound = false;
+  function setupSettingsNav() {
+    const nav = document.getElementById('settingsNav');
+    const body = settingsOverlayBody();
+    if (!nav || !body) return;
+    body.classList.add('has-nav');
+
+    if (!navBound) {
+      navBound = true;
+      nav.addEventListener('click', (e) => {
+        const btn = e.target.closest('.settings-nav-item');
+        if (!btn) return;
+        activateSettingsSection(btn.dataset.target);
+      });
+    }
+    // 每次打开恢复到当前激活项（滚动内容区到对应分组顶部）
+    const active = nav.querySelector('.settings-nav-item.active');
+    if (active) activateSettingsSection(active.dataset.target, true);
+  }
+
+  function settingsOverlayBody() {
+    return document.querySelector('#settingsOverlay .settings-body');
+  }
+
+  function activateSettingsSection(targetId, scrollOnly) {
+    const nav = document.getElementById('settingsNav');
+    const content = document.querySelector('#settingsOverlay .settings-content');
+    if (!nav || !content) return;
+    nav.querySelectorAll('.settings-nav-item').forEach(item => {
+      item.classList.toggle('active', item.dataset.target === targetId);
+    });
+    content.querySelectorAll('.settings-section').forEach(sec => {
+      sec.classList.toggle('hidden-by-nav', sec.id !== targetId);
+    });
+    const target = content.getElementById ? null : content.querySelector('#' + targetId);
+    if (target) target.scrollIntoView({ block: 'start' });
+    content.scrollTop = 0;
   }
 
   function closeSettingsPanel() {

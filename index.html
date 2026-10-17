@@ -223,7 +223,19 @@
             </button>
           </div>
 
-          <div class="settings-section">
+          <div class="settings-body">
+          <nav class="settings-nav" id="settingsNav" aria-label="设置分组">
+            <button type="button" class="settings-nav-item active" data-target="sec-language" data-i18n="settings.section.language">语言</button>
+            <button type="button" class="settings-nav-item" data-target="sec-appearance" data-i18n="settings.section.appearance">外观</button>
+            <button type="button" class="settings-nav-item" data-target="sec-fonts" data-i18n="settings.section.fonts">字体</button>
+            <button type="button" class="settings-nav-item" data-target="sec-reading" data-i18n="settings.section.reading">阅读</button>
+            <button type="button" class="settings-nav-item" data-target="sec-layout" data-i18n="settings.section.layout">布局</button>
+            <button type="button" class="settings-nav-item" data-target="sec-tools" data-i18n="settings.section.toolsExport">工具与导出</button>
+            <button type="button" class="settings-nav-item" data-target="sec-storage" data-i18n="settings.section.storage">存储</button>
+          </nav>
+          <div class="settings-content">
+
+          <div class="settings-section" id="sec-language">
             <h3 class="settings-section-title" data-i18n="settings.section.language">语言</h3>
             <div class="setting-item">
               <div>
@@ -240,7 +252,7 @@
             </div>
           </div>
 
-          <div class="settings-section">
+          <div class="settings-section" id="sec-appearance">
             <h3 class="settings-section-title" data-i18n="settings.section.appearance">外观</h3>
 
             <div class="settings-subsection">
@@ -370,6 +382,11 @@
                 </div>
               </div>
             </div>
+
+          </div>
+
+          <div class="settings-section" id="sec-fonts">
+            <h3 class="settings-section-title" data-i18n="settings.section.fonts">字体</h3>
 
             <!-- 字体自定义 -->
             <div class="settings-subsection">
@@ -549,7 +566,7 @@
             </div>
           </div>
 
-          <div class="settings-section">
+          <div class="settings-section" id="sec-reading">
             <h3 class="settings-section-title" data-i18n="settings.section.reading">阅读</h3>
 
             <div class="settings-subsection">
@@ -659,6 +676,10 @@
               </div>
             </div>
 
+          </div>
+
+          <div class="settings-section" id="sec-layout">
+            <h3 class="settings-section-title" data-i18n="settings.section.layout">布局</h3>
             <div class="settings-subsection">
               <div class="settings-subsection-title" data-i18n="settings.sub.layout">布局</div>
               <div class="setting-item">
@@ -701,7 +722,7 @@
             </div>
           </div>
 
-          <div class="settings-section">
+          <div class="settings-section" id="sec-tools">
             <h3 class="settings-section-title" data-i18n="settings.section.toolsExport">工具与导出</h3>
 
             <div class="settings-subsection">
@@ -821,7 +842,7 @@
             </div>
           </div>
 
-          <div class="settings-section">
+          <div class="settings-section" id="sec-storage">
             <h3 class="settings-section-title" data-i18n="settings.section.storage">存储</h3>
 
             <div class="settings-subsection">
@@ -852,6 +873,8 @@
               <div class="settings-subsection-title" data-i18n="settings.sub.browsingData">浏览数据</div>
               <div id="storageDataList"></div>
             </div>
+          </div>
+          </div>
           </div>
         </div>
       </div>
