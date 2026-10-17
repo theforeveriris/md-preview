@@ -45,6 +45,10 @@
     if (window.MarkdownPreview.gestures && window.MarkdownPreview.gestures.init) {
       window.MarkdownPreview.gestures.init();
     }
+    // 悬浮侧边栏拖拽调宽/调高（右缘/下缘把手）
+    if (window.MarkdownPreview.sidebarResize && window.MarkdownPreview.sidebarResize.init) {
+      window.MarkdownPreview.sidebarResize.init();
+    }
     // 多标签页状态同步（主题 / 设置 / 界面语言）
     if (window.MarkdownPreview.syncTabs && window.MarkdownPreview.syncTabs.init) {
       window.MarkdownPreview.syncTabs.init();

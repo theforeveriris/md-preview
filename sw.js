@@ -1,4 +1,4 @@
-const CACHE_NAME = 'md-preview-v8.26';
+const CACHE_NAME = 'md-preview-v8.27';
 const RUNTIME_CACHE = 'md-preview-runtime-v8.19';
 const PRECACHE_MANIFEST_URL = './iris/data/precache-manifest.json';
 
@@ -26,7 +26,7 @@ const PRECACHE_FALLBACK_URLS = [
   './iris/vendor/highlight.js/highlight.min.js'
 ];
 
-// 拉取自动生成的 precache-manifest.json，失败时回退到最小清单
+// 拉取自动生成�?precache-manifest.json，失败时回退到最小清�?
 async function loadPrecacheUrls() {
   try {
     const resp = await fetch(PRECACHE_MANIFEST_URL, { cache: 'no-store' });
@@ -35,7 +35,7 @@ async function loadPrecacheUrls() {
     if (!data || !Array.isArray(data.urls) || data.urls.length === 0) {
       throw new Error('manifest empty or invalid');
     }
-    // manifest 自身也加入缓存，便于后续 activate 时校验
+    // manifest 自身也加入缓存，便于后续 activate 时校�?
     const urls = data.urls.slice();
     if (!urls.includes(PRECACHE_MANIFEST_URL)) urls.push(PRECACHE_MANIFEST_URL);
     console.log('[SW] Loaded precache manifest:', data.count, 'urls (v' + (data.version || '?') + ')');
@@ -56,9 +56,9 @@ async function precache() {
 
   await Promise.all(
     urls.map(async (url) => {
-      // 网络优先：install 时总是重新拉取，确保发布新版本后预缓存立即刷新，
-      // 而不是命中旧缓存直接跳过（旧逻辑导致预缓存从未更新）。
-      // 仅当网络失败时才回退旧缓存，避免更新失败导致离线不可用。
+      // 网络优先：install 时总是重新拉取，确保发布新版本后预缓存立即刷新�?
+      // 而不是命中旧缓存直接跳过（旧逻辑导致预缓存从未更新）�?
+      // 仅当网络失败时才回退旧缓存，避免更新失败导致离线不可用�?
       const cached = await cache.match(url);
       try {
         const response = await fetch(url);
@@ -122,7 +122,7 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (url.origin !== location.origin) return;
 
-  // 静态资源：stale-while-revalidate — 先返回缓存（快速），后台更新缓存
+  // 静态资源：stale-while-revalidate �?先返回缓存（快速），后台更新缓�?
   if (isStaticAsset(url)) {
     event.respondWith(
       caches.match(request).then(cached => {
@@ -133,7 +133,7 @@ self.addEventListener('fetch', event => {
           }
           return response;
         }).catch(() => cached);
-        // 有缓存就先返回缓存，同时后台更新；无缓存则等待网络
+        // 有缓存就先返回缓存，同时后台更新；无缓存则等待网�?
         return cached || fetchPromise;
       })
     );
@@ -163,7 +163,7 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // 其他请求：缓存优先
+  // 其他请求：缓存优�?
   event.respondWith(
     caches.match(request).then(cached => {
       return cached || fetch(request).then(response => {
@@ -181,7 +181,7 @@ self.addEventListener('message', event => {
   if (event.data?.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
-  // 清空文档缓存（设置面板「清除文档缓存」）：仅删 .md 条目，保留静态资源
+  // 清空文档缓存（设置面板「清除文档缓存」）：仅�?.md 条目，保留静态资�?
   if (event.data?.type === 'CLEAR_DOC_CACHE') {
     event.waitUntil(
       caches.open(RUNTIME_CACHE).then(cache =>

@@ -5,11 +5,17 @@
     top: 0;
     bottom: 0;
     height: 100vh;
+    max-height: none;
     border-radius: 0;
     border: none;
     transform: translateX(-100%);
     box-shadow: none;
     z-index: 200;
+  }
+
+  /* 移动端抽屉无拖拽把手 */
+  .sidebar-resize-handle {
+    display: none;
   }
 
   .sidebar.open {
