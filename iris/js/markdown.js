@@ -680,9 +680,49 @@
         crumb.textContent = part;
         crumb.style.color = 'var(--color-accent-purple-deep)';
         crumb.style.cursor = 'pointer';
+        // 点击中间路径：列出该目录下的全部文档（复用 tag 聚合页的虚拟文档渲染）
+        const dirPath = currentPath;
+        crumb.addEventListener('click', () => openDirectoryPage(dirPath));
       }
 
       dom.pageBreadcrumbs.appendChild(crumb);
+    }
+  }
+
+  // 目录聚合页：列出 fileTreeData 中位于 dirPath/ 下的全部文档（渲染方式同 tag 聚合页）
+  function openDirectoryPage(dirPath) {
+    const files = [];
+    const prefix = dirPath + '/';
+    (function walk(items) {
+      (items || []).forEach(item => {
+        if (item.type === 'folder' && item.children) {
+          walk(item.children);
+        } else if (item.type === 'file' && item.path && item.path.startsWith(prefix) && item.path.endsWith('.md')) {
+          files.push({
+            path: item.path,
+            title: item.title || item.name.replace(/\.md$/i, '')
+          });
+        }
+      });
+    })(window.MarkdownPreview.state?.fileTreeData);
+
+    const lines = [];
+    lines.push(`# ${dirPath}`);
+    lines.push('');
+    lines.push(`> ${t('dir.docCount', '共 {n} 篇文档').replace('{n}', files.length)}`);
+    lines.push('');
+    files.forEach(doc => {
+      lines.push(`- [${doc.title}](#/${encodeURI(doc.path)})`);
+      lines.push(`  \`${doc.path}\``);
+    });
+    if (files.length === 0) {
+      lines.push(`*${t('dir.empty', '该目录下暂无文档')}*`);
+    }
+
+    // 复用导出的 renderVirtualDoc（虚拟文档渲染管线，同 tag 聚合页）
+    const { markdown } = window.MarkdownPreview;
+    if (markdown && markdown.renderVirtualDoc) {
+      markdown.renderVirtualDoc(lines.join('\n'), `${dirPath}/`);
     }
   }
 

@@ -373,6 +373,8 @@
     'tags.openTag': '查看该标签下的文档',
     'tags.pageTitle': '标签',
     'tags.docCount': '共 {n} 篇文档',
+    'dir.docCount': '共 {n} 篇文档',
+    'dir.empty': '该目录下暂无文档',
     'tags.empty': '该标签下暂无文档',
 
     // 快照分享
@@ -795,6 +797,8 @@
     'tags.openTag': 'View documents with this tag',
     'tags.pageTitle': 'Tag',
     'tags.docCount': '{n} documents',
+    'dir.docCount': '{n} documents',
+    'dir.empty': 'No documents in this directory',
     'tags.empty': 'No documents with this tag yet',
 
     // Snapshot sharing
