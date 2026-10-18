@@ -92,6 +92,15 @@
     ]
   },
   {
+    "path": "docs/examples/devtools-examples.md",
+    "title": "开发者工具与交互组件示例",
+    "preview": "开发者工具与交互组件示例 本篇演示本轮新增的若干「文档即工具」能力：术语表、HTTP 请求块、OpenAPI 文档、 SQL DDL → ER 图、开发者小工具（正则 / cron / 时间 / 色板 / 哈希 / JWT）、拼音注音， 以及 CSV → 图表联动。 术语表悬浮 正文里首次出现 OSPF、BGP、VLAN 时会加下划线，悬停即可看到解释（本段即命中）。 HTTP 实时请求块 点击「",
+    "tags": [
+      "示例",
+      "工具"
+    ]
+  },
+  {
     "path": "docs/examples/diff-examples.md",
     "title": "Git Diff 可视化示例",
     "preview": "Git Diff 可视化示例 本页面展示如何使用 diff2html 可视化展示 Git Diff 内容。 --- 1. 基本用法 简单的文件修改 源码格式： 渲染效果： --- 2. 多文件修改 渲染效果： --- 3. 不同类型的变更 新增文件 删除文件 重命名文件 --- 4. 复杂示例 完整的功能变更 --- 5. 使用说明 语法规则 1. 使用 diff diff --git a/旧文件",

@@ -538,7 +538,26 @@
     'http.send': '发送',
     'http.sending': '请求中…',
     'http.failed': '请求失败',
-    'http.cors': '请求失败（可能是跨域限制或网络问题）'
+    'http.cors': '请求失败（可能是跨域限制或网络问题）',
+
+    // 竖排 / OpenAPI / Git 历史
+    'menu.history': '历史与变更',
+    'settings.cjk.vertical': '竖排阅读',
+    'settings.cjk.verticalDesc': '正文竖排（右起竖排），适合文言 / 诗词；代码块与表格保持横向',
+    'openapi.try': '试一下',
+    'openapi.responses': '响应',
+    'history.loading': '加载中…',
+    'history.empty': '暂无提交记录（或仓库不可访问）',
+    'history.watch': '关注此文档',
+    'history.unwatch': '取消关注',
+    'history.back': '返回列表',
+    'history.rateLimited': 'GitHub API 限流（未登录 60 次/时）。请稍后再试或配置 Token。',
+    'history.notFound': '未找到该文档的提交（可能是新文件或私有仓库）。',
+    'history.failed': '加载失败：',
+    'history.binary': '（无文本 diff）',
+    'history.updated': '此文档有更新',
+    'history.viewChanges': '查看变更',
+    'history.markRead': '标记已读'
   };
 
   const en = {
@@ -1028,7 +1047,25 @@
     'http.send': 'Send',
     'http.sending': 'Requesting…',
     'http.failed': 'Request failed',
-    'http.cors': 'Request failed (possibly CORS or network issue)'
+    'http.cors': 'Request failed (possibly CORS or network issue)',
+
+    'menu.history': 'History & Changes',
+    'settings.cjk.vertical': 'Vertical text',
+    'settings.cjk.verticalDesc': 'Render body vertically (right-to-left columns) for classical Chinese / poetry; code and tables stay horizontal',
+    'openapi.try': 'Try it',
+    'openapi.responses': 'Responses',
+    'history.loading': 'Loading…',
+    'history.empty': 'No commits found (or the repo is inaccessible)',
+    'history.watch': 'Watch this doc',
+    'history.unwatch': 'Unwatch',
+    'history.back': 'Back to list',
+    'history.rateLimited': 'GitHub API rate limited (60/hr unauthenticated). Try later or configure a token.',
+    'history.notFound': 'No commits found for this document (new file or private repo).',
+    'history.failed': 'Load failed: ',
+    'history.binary': '(no textual diff)',
+    'history.updated': 'This document has updates',
+    'history.viewChanges': 'View changes',
+    'history.markRead': 'Mark as read'
   };
 
   const dicts = { zh, en };

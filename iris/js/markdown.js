@@ -352,7 +352,7 @@
     });
 
     setupClickDelegate();
-    mdRender.highlightCodeBlocks(dom.markdownContent);
+    mdRender.highlightCodeBlocksProgressive(dom.markdownContent);
 
     interceptLinks(currentPath);
 
@@ -397,6 +397,7 @@
     // 中文正文繁简转换（CJK-1）与相邻文档预取（PERF-4）：模块可选，未加载时跳过
     window.MarkdownPreview.cjk?.afterRender?.();
     window.MarkdownPreview.prefetch?.afterRender?.(currentPath);
+    window.MarkdownPreview.gitHistory?.afterRender?.(currentPath);
   }
 
   function renderDocNavigation(currentPath) {

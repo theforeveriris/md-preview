@@ -31,7 +31,8 @@
     typographyHangingPunct: false,// 标点悬挂
     typographyTextSpacing: false, // 中西文间距 / 标点挤压
     perfContentVisibility: true,  // 屏外内容跳过布局
-    prefetchAdjacent: true        // 相邻文档预取
+    prefetchAdjacent: true,       // 相邻文档预取
+    verticalText: false           // 中文竖排阅读
   };
 
   // 内容区宽度范围（与设置面板滑杆一致）
@@ -121,7 +122,8 @@
           typographyHangingPunct: parsed.typographyHangingPunct === true,
           typographyTextSpacing: parsed.typographyTextSpacing === true,
           perfContentVisibility: parsed.perfContentVisibility !== false,
-          prefetchAdjacent: parsed.prefetchAdjacent !== false
+          prefetchAdjacent: parsed.prefetchAdjacent !== false,
+          verticalText: parsed.verticalText === true
         };
       }
     } catch (e) {
@@ -491,6 +493,14 @@
         saveSettings(settings);
         window.MarkdownPreview.cjk?.applyTypography(settings);
       });
+    });
+
+    // 中文竖排（CJK-3）
+    document.getElementById('verticalTextToggle')?.addEventListener('change', (e) => {
+      const settings = loadSettings();
+      settings.verticalText = e.target.checked;
+      saveSettings(settings);
+      applyVerticalText(settings.verticalText);
     });
 
     // 屏外内容跳过布局（PERF-2）
@@ -1389,6 +1399,11 @@ body { margin: 0; }
     document.body.classList.toggle('perf-cv', on !== false);
   }
 
+  // 中文竖排阅读（CJK-3）：body 加 cjk-vertical 类，样式见 markdown.css
+  function applyVerticalText(on) {
+    document.body.classList.toggle('cjk-vertical', on === true);
+  }
+
   function applyAllSettings(settings) {
     toggleReadingProgress(settings.showReadingProgress);
     toggleWordCount(settings.showWordCount);
@@ -1443,9 +1458,12 @@ body { margin: 0; }
     if (perfContentVisibilityToggle) perfContentVisibilityToggle.checked = settings.perfContentVisibility !== false;
     const prefetchAdjacentToggle = document.getElementById('prefetchAdjacentToggle');
     if (prefetchAdjacentToggle) prefetchAdjacentToggle.checked = settings.prefetchAdjacent !== false;
+    const verticalTextToggle = document.getElementById('verticalTextToggle');
+    if (verticalTextToggle) verticalTextToggle.checked = settings.verticalText === true;
 
     // 应用中文 / 排版 / 屏外布局（cjk.js 可能尚未加载，可选调用；其自身也会初始化）
     applyContentVisibility(settings.perfContentVisibility);
+    applyVerticalText(settings.verticalText);
     window.MarkdownPreview.cjk?.applyTypography(settings);
     window.MarkdownPreview.cjk?.setMode(settings.textConversion);
 

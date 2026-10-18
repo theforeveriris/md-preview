@@ -662,6 +662,33 @@
   }
 
   /**
+   * 渐进式代码高亮（PERF-3）：先高亮首屏前 immediate 个代码块，其余在空闲时
+   * 分批补齐，避免长文档一次性高亮成百上千个代码块阻塞主线程。
+   * @param {HTMLElement} container
+   * @param {number} [immediate]
+   */
+  function highlightCodeBlocksProgressive(container, immediate) {
+    if (typeof hljs === 'undefined' || !container) return;
+    immediate = immediate || 8;
+    const blocks = Array.from(container.querySelectorAll('pre code'));
+    if (!blocks.length) return;
+    const run = (el) => { try { hljs.highlightElement(el); } catch (e) { /* ignore */ } };
+    blocks.slice(0, immediate).forEach(run);
+    const rest = blocks.slice(immediate);
+    if (!rest.length) return;
+    let i = 0;
+    const schedule = (window.requestIdleCallback)
+      ? (fn) => window.requestIdleCallback(fn, { timeout: 1000 })
+      : (fn) => setTimeout(fn, 60);
+    const chunk = () => {
+      const end = Math.min(i + 6, rest.length);
+      for (; i < end; i++) run(rest[i]);
+      if (i < rest.length) schedule(chunk);
+    };
+    schedule(chunk);
+  }
+
+  /**
    * 初始化代码选项卡点击切换（事件委托方式）
    * @param {HTMLElement} container
    */
@@ -837,6 +864,7 @@
     groupGalleries,
     initSliders,
     highlightCodeBlocks,
+    highlightCodeBlocksProgressive,
     initCodeTabs,
     runRenderers,
     clearLazy,

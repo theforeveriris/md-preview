@@ -1507,3 +1507,16 @@ body.cjk-text-spacing .markdown-body {
   text-spacing-trim: normal;
   text-autospace: normal;
 }
+
+/* ===== 中文竖排阅读（CJK-3）：settings.verticalText 控制 body.cjk-vertical ===== */
+body.cjk-vertical .markdown-body { writing-mode: vertical-rl; text-orientation: mixed; max-height: 78vh; overflow-x: auto; padding: 20px 8px; }
+body.cjk-vertical .markdown-body pre,
+body.cjk-vertical .markdown-body table,
+body.cjk-vertical .markdown-body .mermaid-diagram,
+body.cjk-vertical .markdown-body .apex-chart,
+body.cjk-vertical .markdown-body .csv-table,
+body.cjk-vertical .markdown-body .http-request,
+body.cjk-vertical .markdown-body .openapi-doc,
+body.cjk-vertical .markdown-body .devtool,
+body.cjk-vertical .markdown-body .glossary-list,
+body.cjk-vertical .markdown-body img { writing-mode: horizontal-tb; }

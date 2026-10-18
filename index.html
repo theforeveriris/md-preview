@@ -194,6 +194,14 @@
             </svg>
             <span class="menu-item-label" data-i18n="menu.editPage">编辑此页</span>
           </a>
+          <button class="menu-item-btn" id="historyBtn" title="历史与变更" data-i18n-title="menu.history">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3v5h5"/>
+              <path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/>
+              <path d="M12 7v5l4 2"/>
+            </svg>
+            <span class="menu-item-label" data-i18n="menu.history">历史与变更</span>
+          </button>
           <button class="menu-item-btn settings-btn" id="openSettingsBtn" title="设置" data-i18n-title="menu.settings">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="3"/>
@@ -930,6 +938,18 @@
                 <div class="setting-control">
                   <label class="switch">
                     <input type="checkbox" id="typographyTextSpacingToggle">
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label" data-i18n="settings.cjk.vertical">竖排阅读</div>
+                  <div class="setting-description" data-i18n="settings.cjk.verticalDesc">正文竖排（右起竖排），适合文言 / 诗词；代码块与表格保持横向</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="verticalTextToggle">
                     <span class="switch-slider"></span>
                   </label>
                 </div>
@@ -2008,6 +2028,7 @@
   <script defer src="iris/js/markdown.js"></script>
   <script defer src="iris/js/cjk.js"></script>
   <script defer src="iris/js/prefetch.js"></script>
+  <script defer src="iris/js/git-history.js"></script>
   <script defer src="iris/js/router.js"></script>
   <script defer src="iris/js/zip.js"></script>
   <script defer src="iris/js/export-bundle.js"></script>
@@ -2044,6 +2065,7 @@
   <script defer src="iris/js/renderers/json-tree.js"></script>
   <script defer src="iris/js/renderers/sandbox.js"></script>
   <script defer src="iris/js/renderers/http-request.js"></script>
+  <script defer src="iris/js/renderers/openapi.js"></script>
   <script defer src="iris/js/renderers/glossary.js"></script>
   <script defer src="iris/js/pulse-generator.js"></script>
 

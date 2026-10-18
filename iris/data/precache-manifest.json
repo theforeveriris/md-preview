@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-18T20:45:05.142Z",
+  "generatedAt": "2026-10-18T20:50:08.705Z",
   "version": 1,
-  "count": 100,
+  "count": 102,
   "urls": [
     "./",
     "./index.html",
@@ -45,6 +45,7 @@
     "./iris/js/find-bar.js",
     "./iris/js/focus-mode.js",
     "./iris/js/gestures.js",
+    "./iris/js/git-history.js",
     "./iris/js/history.js",
     "./iris/js/hover-preview.js",
     "./iris/js/i18n.js",
@@ -71,6 +72,7 @@
     "./iris/js/renderers/json-tree.js",
     "./iris/js/renderers/katex.js",
     "./iris/js/renderers/mermaid.js",
+    "./iris/js/renderers/openapi.js",
     "./iris/js/renderers/plantuml.js",
     "./iris/js/renderers/pptx.js",
     "./iris/js/renderers/pulse.js",

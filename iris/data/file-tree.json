@@ -81,6 +81,17 @@
             ]
           },
           {
+            "name": "devtools-examples.md",
+            "type": "file",
+            "path": "docs/examples/devtools-examples.md",
+            "wordCount": 171,
+            "title": "开发者工具与交互组件示例",
+            "tags": [
+              "示例",
+              "工具"
+            ]
+          },
+          {
             "name": "diff-examples.md",
             "type": "file",
             "path": "docs/examples/diff-examples.md",
@@ -337,7 +348,7 @@
             ]
           }
         ],
-        "wordCount": 11727
+        "wordCount": 11898
       },
       {
         "name": "changelog.md",
@@ -464,7 +475,7 @@
         ]
       }
     ],
-    "wordCount": 22307
+    "wordCount": 22478
   },
   {
     "name": "iris",

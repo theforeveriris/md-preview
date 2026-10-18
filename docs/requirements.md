@@ -42,7 +42,7 @@ tags: [规划]
 
 - **批次 1（已完成）**：PERF-4 相邻文档预取、PERF-2 屏外内容跳过布局、DATA-1 CSV→图表联动、TOOL-3 SQL DDL→ER 图、CJK-1 繁简切换、CJK-4 中文排版渲染选项、GIT-2 自动变更日志页。
 - **批次 2（已完成）**：PERF-1 可见即渲染（重型渲染器延迟初始化）、CONTENT-1 术语表悬浮、TOOL-2 `::: http` 实时请求块、TOOL-4 开发者小工具家族（regex / cron / time / color / hash / jwt）、BUILD-1 中文排版 lint、CJK-2 拼音注音（`{汉字|hán zì}`）。
-- **批次 3（待办）**：PERF-3 长文档渐进渲染、TOOL-1 OpenAPI 交互文档、CJK-3 竖排模式、GIT-1 单篇历史 / blame、GIT-3 文档变更订阅。
+- **批次 3（已完成）**：PERF-3 长文档渐进渲染（渐进式代码高亮 + 屏外跳过布局）、TOOL-1 OpenAPI 交互文档、CJK-3 竖排模式、GIT-1 单篇历史 / blame、GIT-3 文档变更订阅。
 
 ## 一、性能与阅读体验
 
