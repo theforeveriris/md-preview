@@ -756,22 +756,12 @@
     setTimeout(() => {
       try {
         const renderers = window.MarkdownPreview?.renderers;
-        // 渲染器现在按需懒加载 vendor 库（返回 Promise），统一 catch 避免未捕获 rejection
-        const run = (fn) => {
-          if (!fn) return;
-          try {
-            const p = fn();
-            if (p && typeof p.catch === 'function') p.catch(e => console.warn('[Editor] renderer failed:', e));
-          } catch (e) { console.warn('[Editor] renderer sync error:', e); }
-        };
         if (renderers) {
-          run(renderers.mermaid?.render);
-          run(renderers.apexcharts?.render);
-          run(renderers.diff?.render);
-          run(renderers.katex?.render);
-          run(renderers.plantuml?.render);
+          // 统一调度器（md-render.js: runRenderers）：子集与既有行为一致——
+          // mermaid/apexcharts/diff/katex/plantuml/embedded，顺序按注册表插入序
+          const subset = ['mermaid', 'plantuml', 'apexcharts', 'diff', 'embedded'];
           // 传入 outputElement 让 embedded 渲染器在 cell 容器内处理 pkt/geo 等嵌入
-          run(() => renderers.embedded?.render && renderers.embedded.render(outputElement));
+          mdRender.runRenderers(outputElement, { only: subset });
         }
       } catch (e) { console.warn('[Editor] Plugin render error:', e); }
     }, 200);

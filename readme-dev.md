@@ -83,31 +83,46 @@ tags: [开发]
 
 ### 渲染器（Renderer）
 
-所有渲染器位于 `iris/js/renderers/`，统一被 `markdown.js` 在后处理阶段按 `tag` 匹配调用。
+所有渲染器位于 `iris/js/renderers/`，由统一调度器 `mdRender.runRenderers()`（`iris/js/md-render.js`）执行：遍历 `window.MarkdownPreview.renderers` 注册表，按 index.html 中渲染器脚本的加载顺序逐个调用 `render(root?)`，单个渲染器失败（同步抛错或 Promise 拒绝）被隔离，不影响其余渲染器。文档站主管线传 `null`（渲染器自行回退全局 `.markdown-body`）；编辑器 cell 与对照阅读栏传入自身容器，并可用 `opts.only` 只执行子集。
+
+**渲染器约定**：
+
+- `render(root?)`：root 为本次渲染的根容器；返回 Promise 或 undefined；
+- 各渲染器自行短路：查询 DOM 无命中直接 return，避免无谓加载 vendor 库；
+- 新增渲染器只需注册到 `window.MarkdownPreview.renderers.<id> = { render }` 并在 index.html 引入脚本（加载顺序即执行顺序），无需修改任何管线代码。
 
 | 渲染器 | 文件 | 触发条件 | 依赖（按需加载） |
 |--------|------|----------|-------------------|
 | Mermaid | `mermaid.js` | ` ```mermaid ` | mermaid.min.js |
 | PlantUML | `plantuml.js` | ` ```plantuml ` | pako（文本压缩为 deflate URL，请求 plantuml.com） |
 | ApexCharts | `apexcharts.js` | ` ```apexcharts ` | apexcharts.js + apexcharts.css |
-| LaTeX / KaTeX | `latex.js` | ` $$...$$ ` 或 ` ```latex ` | katex.min.js + katex.min.css |
+| LaTeX / KaTeX | `katex.js` | ` $$...$$ ` 或 ` ```latex ` | katex.min.js + katex.min.css |
 | Diff2Html | `diff.js` | ` ```diff ` | diff2html.min.js + diff2html.min.css |
-| GeoJSON | `geojson.js` | ` ```geojson ` | leaflet.js + leaflet.css + tile 服务 |
-| Packet Tracer | `pkt.js` | `@[pkt](slug)` 或 ` ```pkt ` | cytoscape + css |
-| 华为 eNSP | `ensp.js` | `@[ensp](slug)` 或 ` ```ensp ` | cytoscape + css（拓扑数据来自 XML 解析产物） |
+| GeoJSON / TopoJSON | `geo.js` | `@[geojson/topojson](...)`（由 `embedded.js` 分发）或 ` ```geojson ` / ` ```topojson ` 围栏（内联数据） | leaflet.js + leaflet.css + tile 服务 |
+| Packet Tracer | `../pkt/pkt-renderer.js` | `@[pkt](slug)` 或 ` ```pkt ` | cytoscape + css |
+| 华为 eNSP | `../pkt/pkt-renderer.js` | `@[ensp](slug)` 或 ` ```ensp ` | cytoscape + css（拓扑数据来自 XML 解析产物） |
 | PPTX | `pptx.js` | `@[pptx](slug)` 或```` ```pptx ```` | 无额外依赖，图片取自预构建产物 |
+| CSV / TSV 表格 | `csv-table.js` | ` ```csv ` / ` ```tsv ` | 零依赖，原生 DOM 排序 / 筛选 / 搜索 |
+| JSON 可折叠树 | `json-tree.js` | ` ```json `（追加 `raw` 标记保留源码展示） | 零依赖 |
+| live 预览沙箱 | `sandbox.js` | ` ```html live ` / ` ```js live ` / ` ```css live ` | 隔离 iframe，默认点击「运行」才执行 |
 | Pulse 波形 | `pulse.js` / `pulse-generator.js` | `[pulse ...]` / `[pulsemini ...]` BBcode，或 `?mode=pulse` 生成器 | 仅用 Canvas / SVG / 原生 JS 渲染波形播放头 |
-| QRCode | `qrcode.js` | ` ```qrcode ` | qrcode.min.js（inline 本地） |
-| Countdown | `countdown.js` | ` ```countdown ` | 零依赖，原生 Date |
-| Embed | `embed.js` | YouTube / Bilibili / Twitter / Figma / CodePen 链接或 `@[embed]` | 通过原生 iframe，不额外加载库 |
+| 嵌入分发 | `embedded.js` | YouTube / Bilibili / `@[pkt/ensp/pptx/geojson]` 等 | 按服务分发到对应渲染器 |
+| QRCode / Countdown / ColorCard | `../plugins/` | ` ```qrcode ` / ` ```countdown ` / 色卡语法 | 经插件系统（`plugins/loader.js`）注册，非 renderers 目录 |
 | GitHub Alerts | 内建于 `markdown.js` | `> [!NOTE]` 等 | 纯 CSS |
 | Gallery Layouts | `gallery.js` | `@grid / @cardstack / ...` 指令行 | 纯 CSS |
 
+**通用工具约定**（新增代码请直接使用，勿再手写本地副本）：
+
+- `mdRender.escapeHtml(s)` — HTML 转义（全站唯一实现，此前 7 份副本已收敛至此）
+- `mdRender.slugify(text)` — 标题锚点 slug 规则（markdown.js 标题 id、split-view.js 跟读高亮共用；`link-check.js` 的 Node 侧副本有注释指向此处，改动需同步）
+- `MarkdownPreview.t(key, fallback)` — i18n 文案（`i18n.js` 导出；带占位符时自写 `tf` 包装，参考 `pulse.js`）
+- `markdown.parseFrontmatter(md)` / `markdown.extractExcerpt(md)` — frontmatter / 摘要提取（hover-preview.js 等已复用）
+
 **扩展新 Renderer 最短路径**：
 
-1. 新建 `iris/js/renderers/xxx.js`，对外暴露 `detect($root)` + `render($node)` 方法。
-2. 在 `iris/js/markdown.js` 的 renderers 数组中注册。
-3. 若需要重型依赖，参考 `mermaid.js` 的 `loadScriptOnce` + `loadStyleOnce` 模式，首次命中才真正加载。
+1. 新建 `iris/js/renderers/xxx.js`，以 IIFE 注册 `window.MarkdownPreview.renderers.xxx = { render }`（渲染逻辑自查 DOM 或接收根容器）。
+2. 在 `index.html` 中按期望的执行顺序引入脚本。
+3. 若需要重型依赖，参考 `mermaid.js` 的模式：先查询 DOM 判断是否存在目标代码块，命中才 `loadScript` / `loadStyle` 按需加载，避免无谓加载。
 
 ### 插件系统
 
@@ -312,10 +327,12 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │   │   ├── floating.css          # 悬浮球、设置面板、工具栏、字体小网格
 │   │   ├── editor.css            # Markdown 编辑器模式样式
 │   │   ├── pulse-generator.css   # Pulse 波形生成器样式
-│   │   ├── galleries.css / components.css / responsive.css  # 画廊 / 组件 / 响应式
+│   │   ├── galleries.css / components.css / enhancements.css  # 画廊 / 组件 / 增强特效
+│   │   ├── find-bar.css / split-view.css  # 查找条 / 双栏对照阅读
+│   │   ├── responsive.css        # 响应式
 │   │   ├── pkt/pkt.css           # Packet Tracer 渲染样式
 │   │   ├── pptx.css              # PPTX 网格 + 放映样式
-│   │   └── themes/themes.css     # 7 种预设主题的 --color-* 覆盖
+│   │   └── themes/themes.css     # 6 种亮暗预设主题（default 为 base.css 默认值）的 --color-* 覆盖
 │   ├── js/
 │   │   ├── settings.js           # 设置面板 + customColors + fontConfig
 │   │   ├── themes/theme-manager.js
@@ -328,13 +345,15 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │   │   ├── gestures.js / storage-manager.js  # 移动端手势 / 设置面板存储管理区块
 │   │   ├── search.js / ui.js     # 搜索命令面板 / 全局事件与快捷键路由
 │   │   ├── find-bar.js / section-collapse.js / split-view.js  # 文章内查找条 / 章节折叠 / 双栏对照阅读
+│   │   ├── tags.js / palette.js / focus-mode.js  # 标签面板 / 命令面板 / 专注模式
+│   │   ├── snapshot.js / selection-tools.js  # 快照分享 / 选中文字工具栏与分享卡片
 │   │   ├── zip.js / export-bundle.js  # ZIP 写入器 / 整站打包与 EPUB 导出
 │   │   ├── i18n.js               # zh/en 界面语言包
 │   │   ├── dom.js                # 按需加载 DOM 工具
 │   │   ├── storage.js            # IndexedDB 笔记本
-│   │   ├── pulse.js              # DG-LAB .pulse 波形解析与 [pulse]/[pulsemini] 渲染
+│   │   ├── pulse.js              # DG-LAB .pulse 波形解析与 [pulse]/[pulsemini] 渲染（renderers/ 目录）
 │   │   ├── pulse-generator.js    # ?mode=pulsegen 可视化波形生成器
-│   │   └── renderers/            # 14+ 个代码块/嵌入渲染器
+│   │   └── renderers/            # 12+ 个代码块/嵌入渲染器（见上文渲染器表）
 │   ├── vendor/                   # 本地化的前端依赖
 │   ├── plugins/                  # 插件（qrcode / countdown / colorcard）
 │   ├── data/                     # 预构建数据

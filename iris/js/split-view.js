@@ -31,17 +31,11 @@
   let syncEnabled = true;
   let toastEl = null, toastTimer = 0;
 
-  function t(key, fallback) {
-    const i18n = window.MarkdownPreview.i18n;
-    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
-    return fallback;
-  }
+  // i18n 文案统一走 i18n.js 的权威实现（MarkdownPreview.t，全站唯一，避免多处包装漂移）
+  const t = window.MarkdownPreview.t;
 
-  function esc(s) {
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
+  // HTML 转义统一走 md-render.js 的权威实现（全站唯一，避免多处副本漂移）
+  const esc = window.MarkdownPreview.mdRender.escapeHtml;
 
   function isOpen() { return !!(overlay && overlay.classList.contains('open')); }
 
@@ -70,23 +64,22 @@
     return parts.join('/');
   }
 
-  // frontmatter / 首个 H1 提取标题（与 build-file-tree.js 规则一致）
+  // 标题提取复用 markdown.js 的 parseFrontmatter（与 build-file-tree.js 规则一致：
+  // frontmatter.title 优先，其次正文首个 H1）
   function extractTitle(md, fallback) {
-    const fm = md.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
-    if (fm) {
-      const line = fm[1].split('\n').find(l => l.trim().startsWith('title:'));
-      if (line) {
-        const v = line.trim().replace(/^title:\s*/, '').trim().replace(/^["']|["']$/g, '');
-        if (v) return v;
-      }
+    const mdApi = window.MarkdownPreview.markdown;
+    if (mdApi && typeof mdApi.parseFrontmatter === 'function') {
+      const { frontmatter, content } = mdApi.parseFrontmatter(md);
+      if (frontmatter.title) return String(frontmatter.title);
+      const h1 = content.match(/^#\s+(.+?)\s*$/m);
+      return h1 ? h1[1].trim() : fallback;
     }
-    const body = fm ? md.slice(fm[0].length) : md;
-    const h1 = body.match(/^#\s+(.+?)\s*$/m);
-    return h1 ? h1[1].trim() : fallback;
+    return fallback;
   }
 
+  // slug 规则复用 md-render.js 的权威实现（与 markdown.js 标题锚点同源）
   function slugify(text) {
-    return text.toLowerCase().replace(/[^\w\u4e00-\u9fa5]+/g, '-').replace(/^-|-$/g, '');
+    return window.MarkdownPreview.mdRender.slugify(text);
   }
 
   // 正文内图片相对路径 → 站点根路径（与主渲染管线 processImages 同语义）
@@ -131,20 +124,11 @@
   function runRenderers(container) {
     setTimeout(() => {
       const renderers = window.MarkdownPreview && window.MarkdownPreview.renderers;
-      const run = (fn) => {
-        if (!fn) return;
-        try {
-          const p = fn();
-          if (p && typeof p.catch === 'function') p.catch(() => { /* 渲染器自容错 */ });
-        } catch (e) { /* 同上 */ }
-      };
       if (renderers) {
-        run(renderers.mermaid && renderers.mermaid.render);
-        run(renderers.apexcharts && renderers.apexcharts.render);
-        run(renderers.diff && renderers.diff.render);
-        run(renderers.katex && renderers.katex.render);
-        run(renderers.plantuml && renderers.plantuml.render);
-        run(() => renderers.embedded && renderers.embedded.render(container));
+        // 统一调度器（md-render.js: runRenderers）：子集与既有行为一致——
+        // mermaid/apexcharts/diff/katex/plantuml/embedded，顺序按注册表插入序
+        const subset = ['mermaid', 'plantuml', 'apexcharts', 'diff', 'embedded'];
+        mdRender.runRenderers(container, { only: subset });
       }
     }, 150);
   }

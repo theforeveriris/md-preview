@@ -84,54 +84,57 @@
           if (embedMatch) {
             const { service, url, fullMatch } = embedMatch;
 
+            // 嵌入统一挂载工厂：@[service](url) → 占位 div（随 innerHTML 写回）→
+            // DOM 就绪后调用对应渲染器的 loadAndRender / renderGeoData。
+            // 四类嵌入（geojson/pkt/ensp/pptx）原本是四段几乎相同的复制粘贴代码。
+            const mountEmbed = (opts) => {
+              const id = opts.prefix + '-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+              const containerHtml = `<div id="${id}" class="${opts.className}"${opts.style ? ` style="${opts.style}"` : ''}></div>`;
+
+              setTimeout(() => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                try {
+                  const p = opts.mount(el, url, service);
+                  if (p && typeof p.catch === 'function') p.catch(e => console.error('[embedded] ' + service + ' render failed:', e));
+                } catch (e) {
+                  console.error('[embedded] ' + service + ' render failed:', e);
+                }
+              }, opts.delay || 50);
+
+              return containerHtml;
+            };
+
             if (service === 'geojson' || service === 'topojson') {
-              const mapId = 'map-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-              const mapContainer = `<div id="${mapId}" class="geo-map" style="height:400px;border-radius:8px;overflow:hidden"></div>`;
-
-              setTimeout(() => {
-                const p = window.MarkdownPreview.renderers.geo.renderGeoData(service, url, fullMatch, mapId);
-                if (p && typeof p.catch === 'function') p.catch(e => console.error('[embedded] geo render failed:', e));
-              }, 10);
-
-              processedContent = processedContent.replace(placeholder, mapContainer);
-            } else if (service === 'pkt') {
-              const pktId = 'pkt-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-              const pktContainer = `<div id="${pktId}" class="pkt-container"></div>`;
-
-              setTimeout(() => {
-                const el = document.getElementById(pktId);
-                if (el && window.MarkdownPreview.pkt) {
-                  window.MarkdownPreview.pkt.loadAndRender(el, url, 'pkt');
+              processedContent = processedContent.replace(placeholder, mountEmbed({
+                prefix: 'map',
+                className: 'geo-map',
+                style: 'height:400px;border-radius:8px;overflow:hidden',
+                delay: 10,
+                mount: (el, embedUrl) =>
+                  window.MarkdownPreview.renderers.geo.renderGeoData(service, embedUrl, fullMatch, el.id)
+              }));
+            } else if (service === 'pkt' || service === 'ensp') {
+              processedContent = processedContent.replace(placeholder, mountEmbed({
+                prefix: 'pkt',
+                className: 'pkt-container',
+                mount: (el, embedUrl) => {
+                  if (window.MarkdownPreview.pkt) {
+                    window.MarkdownPreview.pkt.loadAndRender(el, embedUrl, service);
+                  }
                 }
-              }, 50);
-
-              processedContent = processedContent.replace(placeholder, pktContainer);
-            } else if (service === 'ensp') {
-              const pktId = 'pkt-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-              const pktContainer = `<div id="${pktId}" class="pkt-container"></div>`;
-
-              setTimeout(() => {
-                const el = document.getElementById(pktId);
-                if (el && window.MarkdownPreview.pkt) {
-                  window.MarkdownPreview.pkt.loadAndRender(el, url, 'ensp');
-                }
-              }, 50);
-
-              processedContent = processedContent.replace(placeholder, pktContainer);
+              }));
             } else if (service === 'pptx') {
               // PPTX 嵌入：与 pkt 完全同风格：@[pptx](slug) → 占位 div → pptx.loadAndRender
-              const pptxId = 'pptx-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-              const pptxContainer = `<div id="${pptxId}" class="pptx-embed"></div>`;
-
-              setTimeout(() => {
-                const el = document.getElementById(pptxId);
-                if (el && window.MarkdownPreview.pptx) {
-                  const p = window.MarkdownPreview.pptx.loadAndRender(el, url, 'pptx');
-                  if (p && typeof p.catch === 'function') p.catch(e => console.error('[embedded] pptx render failed:', e));
+              processedContent = processedContent.replace(placeholder, mountEmbed({
+                prefix: 'pptx',
+                className: 'pptx-embed',
+                mount: (el, embedUrl) => {
+                  if (window.MarkdownPreview.pptx) {
+                    return window.MarkdownPreview.pptx.loadAndRender(el, embedUrl, 'pptx');
+                  }
                 }
-              }, 50);
-
-              processedContent = processedContent.replace(placeholder, pptxContainer);
+              }));
             } else if (service === 'twitter' || service === 'x') {
               const twitterCode = renderTwitterEmbed(service, url, fullMatch);
               processedContent = processedContent.replace(placeholder, twitterCode);

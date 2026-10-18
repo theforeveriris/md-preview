@@ -5,11 +5,8 @@
   const REMOTE_FONT_STYLE_ID = 'remote-font-stylesheet';
 
   // i18n 文案读取：i18n 模块未加载或语言包缺 key 时回退到内置中文
-  function t(key, fallback) {
-    const i18n = window.MarkdownPreview.i18n;
-    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
-    return fallback;
-  }
+  // i18n 文案统一走 i18n.js 的权威实现（MarkdownPreview.t，全站唯一，避免多处包装漂移）
+  const t = window.MarkdownPreview.t;
 
   const defaultSettings = {
     showReadingProgress: true,

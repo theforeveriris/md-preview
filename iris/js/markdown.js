@@ -346,9 +346,7 @@
     };
 
     document.querySelectorAll('.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6').forEach(heading => {
-      const text = heading.textContent;
-      const id = text.toLowerCase().replace(/[^\w\u4e00-\u9fa5]+/g, '-').replace(/^-|-$/g, '');
-      heading.id = id;
+      heading.id = mdRender.slugify(heading.textContent);
     });
 
     setupClickDelegate();
@@ -375,32 +373,19 @@
 
     setTimeout(async () => {
       console.log('[Markdown] Starting render cycle');
-      const plugins = window.MarkdownPreview.plugins;
-      if (plugins && typeof plugins.render === 'function') {
-        await plugins.render({ documentPath: currentPath });
-      } else {
-        await renderWithPluginsLegacy();
-      }
+      // 插件渲染（plugins.render 由 loader.js 始终注册，含跨文档插件资源清理；
+      // 旧版 renderWithPluginsLegacy 分发路径已删除——不可达且缺少资源清理）
+      await window.MarkdownPreview.plugins.render({ documentPath: currentPath });
       console.log('[Markdown] Plugins rendered, calling other renderers');
-      // 渲染器现在按需懒加载 vendor 库（async），逐个 await 并隔离错误，
-      // 避免某一个库加载/渲染失败导致后续渲染器不执行
-      const safeRun = async (label, fn) => {
-        try { await fn(); }
-        catch (e) { console.error('[Markdown] ' + label + ' renderer failed:', e); }
-      };
-      await safeRun('apexcharts', () => window.MarkdownPreview.renderers.apexcharts.render());
-      await safeRun('diff', () => window.MarkdownPreview.renderers.diff.render());
-      await safeRun('mermaid', () => window.MarkdownPreview.renderers.mermaid.render());
-      await safeRun('plantuml', () => window.MarkdownPreview.renderers.plantuml.render());
-      // 文档渲染边界：清理上一轮文档渲染遗留的、已脱离 DOM 的拓扑实例（cytoscape canvas/动画帧），
-      // 防止跨文档导航累积泄漏。编辑器 cell 的拓扑容器仍连接在 DOM 上，不受影响。
-      window.MarkdownPreview.pkt?.destroyOrphaned?.();
-      await safeRun('embedded', () => window.MarkdownPreview.renderers.embedded.render());
-      await safeRun('katex', () => window.MarkdownPreview.renderers.katex.render());
-      await safeRun('pulse', () => window.MarkdownPreview.renderers.pulse.render());
-      await safeRun('csvtable', () => window.MarkdownPreview.renderers.csvtable?.render(dom.markdownContent));
-      await safeRun('jsontree', () => window.MarkdownPreview.renderers.jsontree?.render(dom.markdownContent));
-      await safeRun('sandbox', () => window.MarkdownPreview.renderers.sandbox?.render(dom.markdownContent));
+      // 渲染器统一调度：遍历 renderers 注册表逐个执行（顺序 = index.html 脚本加载序），
+      // 单个渲染器失败被隔离，不影响后续。见 md-render.js: runRenderers。
+      await mdRender.runRenderers(null, {
+        before: () => {
+          // 渲染文档边界：清理上一轮文档渲染遗留的、已脱离 DOM 的拓扑实例（cytoscape canvas/动画帧），
+          // 防止跨文档导航累积泄漏。编辑器 cell 的拓扑容器仍连接在 DOM 上，不受影响。
+          window.MarkdownPreview.pkt?.destroyOrphaned?.();
+        }
+      });
       console.log('[Markdown] Render cycle complete');
     }, 100);
 
@@ -433,46 +418,6 @@
         window.MarkdownPreview.fileTree.highlightFileInSidebar(path);
       });
     });
-  }
-
-  async function renderWithPluginsLegacy() {
-    console.log('[Plugins] renderWithPlugins called');
-    const plugins = window.MarkdownPreview.plugins;
-    if (!plugins || typeof plugins.find !== 'function') {
-      console.log('[Plugins] Plugins not available');
-      return;
-    }
-
-    const allPres = document.querySelectorAll('.markdown-body pre');
-    console.log('[Plugins] Found pre elements:', allPres.length);
-
-    // 从后往前遍历，防止替换前面的元素后导致索引失效
-    for (let i = allPres.length - 1; i >= 0; i--) {
-      const pre = allPres[i];
-      const codeElement = pre.querySelector('code');
-      if (!codeElement) continue;
-
-      const classList = codeElement.className;
-      const languageMatch = classList ? classList.match(/language-(\S+)/) : null;
-      const language = languageMatch ? languageMatch[1] : '';
-      const code = codeElement.textContent.trim();
-
-      console.log('[Plugins] Checking code block, language:', language);
-
-      const plugin = plugins.find(code, language);
-      if (plugin) {
-        console.log('[Plugins] Found plugin for language:', language, 'plugin:', plugin.name);
-        try {
-          const container = document.createElement('div');
-          container.className = `plugin-rendered plugin-${plugin.name}`;
-          pre.parentNode.replaceChild(container, pre);
-          plugin.render(code, container);
-          console.log('[Plugins] Successfully rendered plugin:', plugin.name);
-        } catch (error) {
-          console.error(`Plugin ${plugin.name} render error:`, error);
-        }
-      }
-    }
   }
 
   function interceptLinks(currentPath) {

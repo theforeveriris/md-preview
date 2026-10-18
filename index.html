@@ -1906,6 +1906,9 @@
   <script defer src="iris/js/state.js"></script>
   <script defer src="iris/js/i18n.js"></script>
   <script defer src="iris/js/dom.js"></script>
+  <!-- md-render.js 为共享渲染工具层（escapeHtml/slugify/parseMarkdown/runRenderers），
+       必须先于所有在 IIFE 顶层引用 mdRender 的模块（search/tags/renderers 等）加载 -->
+  <script defer src="iris/js/md-render.js"></script>
   <script defer src="iris/js/ui.js"></script>
   <script defer src="iris/js/interactions.js"></script>
   <script defer src="iris/js/search.js"></script>
@@ -1915,7 +1918,6 @@
   <script defer src="iris/js/snapshot.js"></script>
   <script defer src="iris/vendor/file-tree/prod.js"></script>
   <script defer src="iris/js/file-tree.js"></script>
-  <script defer src="iris/js/md-render.js"></script>
   <script defer src="iris/js/markdown.js"></script>
   <script defer src="iris/js/router.js"></script>
   <script defer src="iris/js/zip.js"></script>

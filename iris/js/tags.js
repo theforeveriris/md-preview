@@ -14,17 +14,11 @@
   'use strict';
   window.MarkdownPreview = window.MarkdownPreview || {};
 
-  function t(key, fallback) {
-    const i18n = window.MarkdownPreview.i18n;
-    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
-    return fallback;
-  }
+  // i18n 文案统一走 i18n.js 的权威实现（MarkdownPreview.t，全站唯一，避免多处包装漂移）
+  const t = window.MarkdownPreview.t;
 
-  function esc(s) {
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
+  // HTML 转义统一走 md-render.js 的权威实现（全站唯一，避免多处副本漂移）
+  const esc = window.MarkdownPreview.mdRender.escapeHtml;
 
   // ============== 数据聚合 ==============
 

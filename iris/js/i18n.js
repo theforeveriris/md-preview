@@ -278,6 +278,31 @@
     'csv.empty': '没有匹配的行',
     'csv.untitled': '列',
 
+    // 动态文案：Pulse 波形渲染器
+    'pulse.titleFallback': 'Pulse 波形',
+    'pulse.rest': '休息',
+    'pulse.mode.global': '全局',
+    'pulse.mode.scroll': '滚动',
+    'pulse.line.vline': '竖线',
+    'pulse.line.curve': '曲线',
+    'pulse.download': '下载 .pulse',
+    'pulse.source': '源码',
+    'pulse.copySource': '复制源码',
+    'pulse.frameOf': '帧 {i}/{n}',
+    'pulse.sections': '{enabled}/{total} 段',
+    'pulse.speed': '{x}x 速度',
+    'pulse.restSec': '休息 {s}s',
+    'pulse.cycle': '周期 {s}s',
+    'pulse.freqMode': ['', '固定', '节内渐变', '元内渐变', '元间渐变'],
+    'pulse.freqModeFallback': '固定',
+    'pulse.tipFreqA': '频率A:{a}({ams}ms) · 频率B:{b}({bms}ms)',
+    'pulse.tipDuration': '时长滑块:{d} · 模式:{m}',
+    'pulse.tipPoints': '脉冲元:{n}点 ({s}s)',
+    'pulse.tipEnabled': '启用',
+    'pulse.tipDisabled': '禁用',
+    'pulse.parseFailed': 'Pulse 数据解析失败：格式不符合 Dungeonlab+pulse 规范',
+    'pulse.parseFailedShort': '解析失败',
+
     // 动态文案：设置面板 · 全量离线缓存
     'settings.offline.label': '全量离线缓存',
     'settings.offline.desc': '把文件树覆盖的所有文档拉进 PWA 缓存，离线也能整站阅读',
@@ -707,6 +732,31 @@
     'csv.empty': 'No matching rows',
     'csv.untitled': 'Column',
 
+    // Dynamic strings: Pulse renderer
+    'pulse.titleFallback': 'Pulse waveform',
+    'pulse.rest': 'Rest',
+    'pulse.mode.global': 'Global',
+    'pulse.mode.scroll': 'Scroll',
+    'pulse.line.vline': 'VLine',
+    'pulse.line.curve': 'Curve',
+    'pulse.download': 'Download .pulse',
+    'pulse.source': 'Source',
+    'pulse.copySource': 'Copy source',
+    'pulse.frameOf': 'Frame {i}/{n}',
+    'pulse.sections': '{enabled}/{total} sections',
+    'pulse.speed': '{x}x speed',
+    'pulse.restSec': 'Rest {s}s',
+    'pulse.cycle': 'Cycle {s}s',
+    'pulse.freqMode': ['', 'Fixed', 'In-section ramp', 'In-pulse ramp', 'Cross-pulse ramp'],
+    'pulse.freqModeFallback': 'Fixed',
+    'pulse.tipFreqA': 'FreqA:{a}({ams}ms) · FreqB:{b}({bms}ms)',
+    'pulse.tipDuration': 'Duration slider:{d} · Mode:{m}',
+    'pulse.tipPoints': 'Pulse points:{n} ({s}s)',
+    'pulse.tipEnabled': 'Enabled',
+    'pulse.tipDisabled': 'Disabled',
+    'pulse.parseFailed': 'Pulse data parse failed: does not conform to the Dungeonlab+pulse spec',
+    'pulse.parseFailedShort': 'Parse failed',
+
     'settings.offline.label': 'Full offline cache',
     'settings.offline.desc': 'Cache every document in the file tree for full offline reading',
     'settings.offline.btn': 'Cache all documents',
@@ -1000,6 +1050,10 @@
     getLang,
     getSetting
   };
+
+  // 全站通用的 t() 快捷引用：供各模块 `const t = window.MarkdownPreview.t` 替换
+  // 各自手写的 i18n 包装函数（i18n.js 在绝大多数模块之前加载）。
+  window.MarkdownPreview.t = t;
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

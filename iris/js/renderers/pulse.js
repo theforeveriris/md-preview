@@ -25,6 +25,22 @@
   var STYLE_ID = 'pulse-renderer-styles';
   var animations = [];
 
+  // i18n 文案统一走 i18n.js 的权威实现（MarkdownPreview.t，全站唯一）
+  function t(key, fallback) {
+    var i18n = window.MarkdownPreview.i18n;
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
+    return fallback;
+  }
+
+  // 带占位符替换的 t：t('pulse.speed', '{x}x 速度', { x: 2 }) → '2x 速度'
+  function tf(key, fallback, params) {
+    var s = t(key, fallback);
+    Object.keys(params || {}).forEach(function(k) {
+      s = s.split('{' + k + '}').join(params[k]);
+    });
+    return s;
+  }
+
   // ============== 映射表 ==============
 
   var FREQ_SLIDER_MAP = [
@@ -57,7 +73,13 @@
     return m;
   })();
 
-  var FREQ_MODE_NAMES = ['', '固定', '节内渐变', '元内渐变', '元间渐变'];
+  var FREQ_MODE_NAMES_ZH = ['', '固定', '节内渐变', '元内渐变', '元间渐变'];
+
+  // 频率模式名：优先 i18n 语言包（pulse.freqMode），语言包缺失时回退中文常量
+  function freqModeName(idx) {
+    var arr = t('pulse.freqMode', FREQ_MODE_NAMES_ZH);
+    return (arr && arr[idx]) || t('pulse.freqModeFallback', '固定');
+  }
 
   // ============== 注入样式 ==============
   function injectStyles() {
@@ -388,11 +410,8 @@
     return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
   }
 
-  function escapeHtml(str) {
-    var div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  }
+  // escapeHtml 统一走 md-render.js 的权威实现（全站唯一，避免多处副本漂移）
+  var escapeHtml = window.MarkdownPreview.mdRender.escapeHtml;
 
   function decodeEntities(str) {
     var txt = document.createElement('textarea');
@@ -803,7 +822,7 @@
       ctx.fillStyle = colors.textMuted;
       ctx.font = '10px system-ui, sans-serif';
       ctx.textAlign = 'right';
-      ctx.fillText('休息', padX + w - 4, padY + 12);
+      ctx.fillText(t('pulse.rest', '休息'), padX + w - 4, padY + 12);
     }
 
     var playheadIdx = progress * (n - 1);
@@ -1054,8 +1073,8 @@
         var currentSec = (progress * wave.totalSec).toFixed(1);
         var pct = Math.round(progress * 100);
         infoLeftEl.textContent =
-          pct + '% · ' + currentSec + 's / ' + wave.totalSec.toFixed(1) + 's · 帧 ' +
-          (currentIdx + 1) + '/' + wave.totalPoints;
+          pct + '% · ' + currentSec + 's / ' + wave.totalSec.toFixed(1) + 's · ' +
+          tf('pulse.frameOf', '帧 {i}/{n}', { i: currentIdx + 1, n: wave.totalPoints });
       }
 
       rafId = requestAnimationFrame(frame);
@@ -1100,7 +1119,7 @@
     if (!parsed) {
       var errDiv = document.createElement('div');
       errDiv.className = 'pulse-widget';
-      errDiv.innerHTML = '<div class="pulse-error">Pulse 数据解析失败：格式不符合 Dungeonlab+pulse 规范</div>';
+      errDiv.innerHTML = '<div class="pulse-error">' + t('pulse.parseFailed', 'Pulse 数据解析失败：格式不符合 Dungeonlab+pulse 规范') + '</div>';
       return errDiv;
     }
 
@@ -1116,7 +1135,7 @@
     titleEl.className = 'pulse-title';
     titleEl.innerHTML =
       '<span class="pulse-title-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>' +
-      '<span>' + escapeHtml(title || 'Pulse 波形') + '</span>';
+      '<span>' + escapeHtml(title || t('pulse.titleFallback', 'Pulse 波形')) + '</span>';
 
     var headerRight = document.createElement('div');
     headerRight.className = 'pulse-header-right';
@@ -1128,18 +1147,18 @@
     viewToggle.className = 'pulse-style-toggle';
     viewToggle.innerHTML =
       '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 12h18"/></svg>' +
-      '<span>全局</span>';
+      '<span>' + t('pulse.mode.global', '全局') + '</span>';
     viewToggle.addEventListener('click', function() {
       if (viewModeRef.view === 'full') {
         viewModeRef.view = 'scroll';
         viewToggle.innerHTML =
           '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18"/><path d="M10 5l-4 7 4 7"/><path d="M14 5l4 7-4 7"/></svg>' +
-          '<span>滚动</span>';
+          '<span>' + t('pulse.mode.scroll', '滚动') + '</span>';
       } else {
         viewModeRef.view = 'full';
         viewToggle.innerHTML =
           '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 12h18"/></svg>' +
-          '<span>全局</span>';
+          '<span>' + t('pulse.mode.global', '全局') + '</span>';
       }
     });
 
@@ -1147,18 +1166,18 @@
     styleToggle.className = 'pulse-style-toggle';
     styleToggle.innerHTML =
       '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="2" height="9"/><rect x="8" y="6" width="2" height="15"/><rect x="13" y="9" width="2" height="12"/><rect x="18" y="3" width="2" height="18"/></svg>' +
-      '<span>竖线</span>';
+      '<span>' + t('pulse.line.vline', '竖线') + '</span>';
     styleToggle.addEventListener('click', function() {
       if (styleRef.style === 'bars') {
         styleRef.style = 'curve';
         styleToggle.innerHTML =
           '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/></svg>' +
-          '<span>曲线</span>';
+          '<span>' + t('pulse.line.curve', '曲线') + '</span>';
       } else {
         styleRef.style = 'bars';
         styleToggle.innerHTML =
           '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="2" height="9"/><rect x="8" y="6" width="2" height="15"/><rect x="13" y="9" width="2" height="12"/><rect x="18" y="3" width="2" height="18"/></svg>' +
-          '<span>竖线</span>';
+          '<span>' + t('pulse.line.vline', '竖线') + '</span>';
       }
     });
 
@@ -1166,7 +1185,7 @@
     dlBtn.className = 'pulse-download-btn';
     dlBtn.innerHTML =
       '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>' +
-      '<span>下载 .pulse</span>';
+      '<span>' + t('pulse.download', '下载 .pulse') + '</span>';
     dlBtn.addEventListener('click', function() {
       downloadPulse(rawData, title);
     });
@@ -1175,7 +1194,7 @@
     sourceBtn.className = 'pulse-source-btn';
     sourceBtn.innerHTML =
       '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>' +
-      '<span>源码</span>';
+      '<span>' + t('pulse.source', '源码') + '</span>';
     var sourcePanel = document.createElement('div');
     sourcePanel.className = 'pulse-source-panel';
     var sourcePre = document.createElement('pre');
@@ -1215,17 +1234,17 @@
       var freqMsB = freqSliderToMs(sec.freqB);
       var freqHzA = (1000 / freqMsA).toFixed(1);
       var freqHzB = (1000 / freqMsB).toFixed(1);
-      var modeName = FREQ_MODE_NAMES[sec.freqMode] || '固定';
+      var modeName = freqModeName(sec.freqMode);
       var freqText = sec.freqMode === 1
         ? (freqHzA + 'Hz')
         : (freqHzA + '→' + freqHzB + 'Hz');
       tag.innerHTML = '<span class="dot"></span>S' + (si + 1) +
         ' ' + sec.durationSec.toFixed(1) + 's · ' + freqText +
         ' · ' + modeName;
-      tag.title = '频率A:' + sec.freqA + '(' + freqMsA + 'ms) · 频率B:' + sec.freqB + '(' + freqMsB + 'ms)\n' +
-        '时长滑块:' + sec.durationSlider + ' · 模式:' + modeName + '\n' +
-        '脉冲元:' + sec.points.length + '点 (' + sec.pulseMetaSec.toFixed(1) + 's) · ' +
-        (sec.enabled ? '启用' : '禁用');
+      tag.title = tf('pulse.tipFreqA', '频率A:{a}({ams}ms) · 频率B:{b}({bms}ms)', { a: sec.freqA, ams: freqMsA, b: sec.freqB, bms: freqMsB }) + '\n' +
+        tf('pulse.tipDuration', '时长滑块:{d} · 模式:{m}', { d: sec.durationSlider, m: modeName }) + '\n' +
+        tf('pulse.tipPoints', '脉冲元:{n}点 ({s}s)', { n: sec.points.length, s: sec.pulseMetaSec.toFixed(1) }) + ' · ' +
+        (sec.enabled ? t('pulse.tipEnabled', '启用') : t('pulse.tipDisabled', '禁用'));
       legend.appendChild(tag);
     }
 
@@ -1238,10 +1257,10 @@
 
     var cycleTime = parsed.totalCycleSec.toFixed(1);
     infoRight.innerHTML =
-      '<span>' + parsed.enabledCount + '/' + parsed.sections.length + ' 段</span>' +
-      '<span>' + parsed.speedMultiplier + 'x 速度</span>' +
-      '<span>休息 ' + parsed.restSec.toFixed(1) + 's</span>' +
-      '<span>周期 ' + cycleTime + 's</span>';
+      '<span>' + tf('pulse.sections', '{enabled}/{total} 段', { enabled: parsed.enabledCount, total: parsed.sections.length }) + '</span>' +
+      '<span>' + tf('pulse.speed', '{x}x 速度', { x: parsed.speedMultiplier }) + '</span>' +
+      '<span>' + tf('pulse.restSec', '休息 {s}s', { s: parsed.restSec.toFixed(1) }) + '</span>' +
+      '<span>' + tf('pulse.cycle', '周期 {s}s', { s: cycleTime }) + '</span>';
 
     info.appendChild(infoLeft);
     info.appendChild(infoRight);
@@ -1266,7 +1285,7 @@
     if (!parsed) {
       var errDiv = document.createElement('div');
       errDiv.className = 'pulse-mini-widget';
-      errDiv.innerHTML = '<div class="pulse-error">解析失败</div>';
+      errDiv.innerHTML = '<div class="pulse-error">' + t('pulse.parseFailedShort', '解析失败') + '</div>';
       return errDiv;
     }
 
@@ -1287,7 +1306,7 @@
 
     var copyBtn = document.createElement('button');
     copyBtn.className = 'pulse-mini-btn';
-    copyBtn.title = '复制源码';
+    copyBtn.title = t('pulse.copySource', '复制源码');
     copyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
     copyBtn.addEventListener('click', function(e) {
       e.stopPropagation();
@@ -1300,7 +1319,7 @@
 
     var dlBtn = document.createElement('button');
     dlBtn.className = 'pulse-mini-btn';
-    dlBtn.title = '下载 .pulse';
+    dlBtn.title = t('pulse.download', '下载 .pulse');
     dlBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>';
     dlBtn.addEventListener('click', function(e) {
       e.stopPropagation();

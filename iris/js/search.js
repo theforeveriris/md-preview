@@ -251,13 +251,10 @@
     hideSearchResults();
   }
 
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
   // 转义 HTML 后，将命中关键词片段用 <mark> 包裹（大小写不敏感）
+  // escapeHtml 统一走 md-render.js 的权威实现（全站唯一，避免多处副本漂移）
+  const escapeHtml = window.MarkdownPreview.mdRender.escapeHtml;
+
   function highlightMatch(text, query) {
     if (!text) return '';
     const escaped = escapeHtml(text);

@@ -659,10 +659,66 @@
     });
   }
 
+  /**
+   * 渲染器统一调度器
+   *
+   * 遍历 window.MarkdownPreview.renderers 注册表，逐个执行并隔离错误。
+   * 所有内置渲染器遵循同一约定：
+   *   - render(root?)：root 为本次渲染的根容器（文档站传 null 表示全局 .markdown-body）；
+   *   - render() 返回 Promise 或 undefined，调度器统一等待与捕获；
+   *   - 各渲染器自行短路（查询 DOM 无命中直接 return，避免无谓加载 vendor 库）。
+   *
+   * 调用顺序 = index.html 中渲染器脚本的加载顺序（Object.keys 按插入序枚举），
+   * 即 mermaid → plantuml → apexcharts → diff → geo → embedded → katex → pulse
+   * → csvtable → jsontree → sandbox。**逐个顺序 await**（非并行）——部分渲染器
+   * 会整体重写容器 innerHTML（如 embedded），并发会产生 DOM 竞态。
+   * 文档站原有的「embedded 之前清理 pkt 孤立画布实例」行为通过 opts.before
+   * 钩子保留（清理发生在全部渲染器之前，清的是上一文档渲染遗留的脱离 DOM
+   * 实例，语义等价且更靠前更安全）。
+   *
+   * @param {HTMLElement} [root] - 渲染根容器（编辑器 cell / 对照阅读栏传自身容器）
+   * @param {Object} [opts]
+   * @param {Function} [opts.before] - 全部渲染器执行前的钩子（文档站用于清理 pkt 画布）
+   * @param {string[]} [opts.only] - 仅执行指定渲染器（id 与注册表键一致，如 ['mermaid','katex']）
+   */
+  function runRenderers(root, opts) {
+    opts = opts || {};
+    const registry = window.MarkdownPreview && window.MarkdownPreview.renderers;
+    if (!registry) return Promise.resolve();
+
+    const filter = Array.isArray(opts.only) && opts.only.length ? new Set(opts.only) : null;
+
+    // 必须顺序 await：部分渲染器会整体重写容器 innerHTML（如 embedded），
+    // 并发执行会产生竞态（KaTeX 占位 span 被冲掉导致公式失效等问题）。
+    const ids = Object.keys(registry).filter(id => !filter || filter.has(id));
+
+    return ids.reduce((chain, id) => {
+      const renderer = registry[id];
+      if (!renderer || typeof renderer.render !== 'function') return chain;
+      return chain.then(() => Promise.resolve()
+        .then(() => renderer.render(root || undefined))
+        .catch(e => { console.error('[Renderers] ' + id + ' renderer failed:', e); }));
+    }, Promise.resolve(typeof opts.before === 'function' ? opts.before() : undefined));
+  }
+
+  /**
+   * 标题锚点 slug 规则（全站唯一权威实现）：
+   * textContent 小写化、非 \w/中文连续字符替换为 -，去首尾 -
+   * 消费方：markdown.js 标题锚点、split-view.js 跟读高亮；
+   * link-check.js（Node 侧）保留逐字一致的副本并有注释指向此处。
+   */
+  function slugify(text) {
+    return String(text == null ? '' : text)
+      .toLowerCase()
+      .replace(/[^\w\u4e00-\u9fa5]+/g, '-')
+      .replace(/^-|-$/g, '');
+  }
+
   window.MarkdownPreview.mdRender = {
     KNOWN_STYLES,
     DEFAULT_ALERT_TYPES,
     escapeHtml,
+    slugify,
     processGitHubAlerts,
     processSpoilers,
     processCodeTabs,
@@ -675,5 +731,6 @@
     initSliders,
     highlightCodeBlocks,
     initCodeTabs,
+    runRenderers,
   };
 })();

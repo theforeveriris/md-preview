@@ -22,11 +22,8 @@
   const CARD_MAX_CHARS = 600;
   const CARD_MAX_CHARS_VERTICAL = 1200;
 
-  function t(key, fallback) {
-    const i18n = window.MarkdownPreview.i18n;
-    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
-    return fallback;
-  }
+  // i18n 文案统一走 i18n.js 的权威实现（MarkdownPreview.t，全站唯一，避免多处包装漂移）
+  const t = window.MarkdownPreview.t;
 
   function icon(name, size) {
     return `<svg width="${size || 15}" height="${size || 15}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#${name}"/></svg>`;
@@ -136,11 +133,8 @@
     el.style.top = (y < 8 ? info.rect.bottom + 8 : y) + 'px';
   }
 
-  function esc(s) {
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
+  // HTML 转义统一走 md-render.js 的权威实现（全站唯一，避免多处副本漂移）
+  const esc = window.MarkdownPreview.mdRender.escapeHtml;
 
   function docTitle() {
     const st = window.MarkdownPreview.state || {};

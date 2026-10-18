@@ -73,7 +73,44 @@
       console.error('Geo data parsing error:', error);
     }
   }
-  
+
+  /**
+   * 标准渲染器入口：支持 ```geojson / ```topojson 围栏，围栏内直接写 GeoJSON/
+   * TopoJSON 数据（或与嵌入同款的 @[geojson](...) 语法）。无命中时直接返回，
+   * 不加载 Leaflet。
+   */
+  async function render() {
+    const blocks = document.querySelectorAll('.markdown-body pre code.language-geojson, .markdown-body pre code.language-topojson');
+    if (!blocks.length) return;
+
+    let idx = 0;
+    for (const code of blocks) {
+      const pre = code.closest('pre');
+      if (!pre || pre.dataset.geoDone) continue;
+      const type = code.className.includes('language-topojson') ? 'topojson' : 'geojson';
+      let data = code.textContent.trim();
+      if (!data) continue;
+
+      // 兼容嵌入语法：```geojson 围栏内写 @[geojson](...) 时提取数据部分
+      const embedMatch = data.match(/@\[geojson\]\(([\s\S]*)\)\s*$/);
+      if (embedMatch) data = embedMatch[1];
+
+      pre.dataset.geoDone = '1';
+      const mapId = 'map-' + Date.now() + '-' + (idx++);
+      const container = document.createElement('div');
+      container.id = mapId;
+      container.className = 'geo-map';
+      container.style.cssText = 'height:400px;border-radius:8px;overflow:hidden';
+      pre.parentNode.replaceChild(container, pre);
+
+      try {
+        await renderGeoData(type, data, '', mapId);
+      } catch (e) {
+        console.error('[geo] fence render failed:', e);
+      }
+    }
+  }
+
   function topojsonToGeoJson(topology) {
     const result = {
       type: 'FeatureCollection',
@@ -149,6 +186,7 @@
   }
   
   window.MarkdownPreview.renderers.geo = {
+    render,
     renderGeoData
   };
 })();

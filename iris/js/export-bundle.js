@@ -23,11 +23,8 @@
   const MAX_ASSET_TOTAL = 100 * 1024 * 1024; // 本地图片打包总量上限
   const MAX_ASSET_SINGLE = 20 * 1024 * 1024;
 
-  function t(key, fallback) {
-    const i18n = window.MarkdownPreview.i18n;
-    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
-    return fallback;
-  }
+  // i18n 文案统一走 i18n.js 的权威实现（MarkdownPreview.t，全站唯一，避免多处包装漂移）
+  const t = window.MarkdownPreview.t;
 
   // ============== 公共工具 ==============
 

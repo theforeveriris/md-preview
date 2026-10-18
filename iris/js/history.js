@@ -37,11 +37,8 @@
   let lastPointerType = '';
   let suppressClickUntil = 0; // 长按后拦截 vendor click 的时间窗
 
-  function t(key, fallback) {
-    const i18n = window.MarkdownPreview.i18n;
-    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
-    return fallback;
-  }
+  // i18n 文案统一走 i18n.js 的权威实现（MarkdownPreview.t，全站唯一，避免多处包装漂移）
+  const t = window.MarkdownPreview.t;
 
   function load(key) {
     try {
