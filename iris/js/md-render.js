@@ -762,9 +762,26 @@
       });
   }
 
+  // 去重的延迟渲染：每个块只渲染一次
+  function renderOnce(id, renderer, block) {
+    if (!block || !block.parentNode) return;
+    if (block.dataset.lazyDone) return;
+    block.dataset.lazyDone = '1';
+    renderScoped(id, renderer, block);
+  }
+
   function clearLazy() {
     lazyObservers.forEach(io => { try { io.disconnect(); } catch (e) { /* ignore */ } });
     lazyObservers.length = 0;
+  }
+
+  // 元素是否已进入（或接近）视口
+  function nearViewport(block, margin) {
+    if (typeof block.getBoundingClientRect !== 'function') return false;
+    const r = block.getBoundingClientRect();
+    const vh = window.innerHeight || document.documentElement.clientHeight || 800;
+    const vw = window.innerWidth || document.documentElement.clientWidth || 1200;
+    return r.bottom > -margin && r.top < vh + margin && r.right > -margin && r.left < vw + margin;
   }
 
   function scheduleLazy(id, renderer, root) {
@@ -772,20 +789,39 @@
     if (!scope) return;
     const blocks = findLazyBlocks(id, scope);
     if (!blocks.length) return;
+    const margin = 400;
+
+    // 1) 当前已在视口附近的块立即渲染（首屏不为空）
+    const pending = [];
+    blocks.forEach(b => {
+      if (nearViewport(b, margin)) renderOnce(id, renderer, b);
+      else pending.push(b);
+    });
+    if (!pending.length) return;
+
+    // 2) 无 IntersectionObserver 时直接全部渲染（降级）
     if (typeof IntersectionObserver !== 'function') {
-      Promise.resolve().then(() => renderer.render(root || undefined))
-        .catch(e => { console.error('[Renderers] ' + id + ' renderer failed:', e); });
+      pending.forEach(b => renderOnce(id, renderer, b));
       return;
     }
+
+    let ioFired = false;
     const io = new IntersectionObserver((entries, obs) => {
+      ioFired = true;
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
         obs.unobserve(entry.target);
-        renderScoped(id, renderer, entry.target);
+        renderOnce(id, renderer, entry.target);
       });
-    }, { rootMargin: '400px 0px' });
-    blocks.forEach(b => io.observe(b));
+    }, { rootMargin: margin + 'px 0px' });
+    pending.forEach(b => io.observe(b));
     lazyObservers.push(io);
+
+    // 3) 兜底：若观察器始终未回调（个别环境不派发 IO），统一补齐，保证内容不丢失
+    setTimeout(() => {
+      if (ioFired) return;
+      pending.forEach(b => renderOnce(id, renderer, b));
+    }, 1800);
   }
 
   // 延迟渲染白名单（仅当调用方传 opts.lazy 时启用；编辑器 / 对照阅读不传，保持即时渲染）

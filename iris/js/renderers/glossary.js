@@ -24,7 +24,7 @@
   const esc = window.MarkdownPreview.mdRender.escapeHtml;
 
   const SKIP_TAGS = { CODE: 1, PRE: 1, SCRIPT: 1, STYLE: 1, TEXTAREA: 1, KBD: 1, SAMP: 1, A: 1 };
-  const SKIP_CLASSES = ['katex', 'mermaid-diagram', 'glossary-term', 'no-cjk-convert'];
+  const SKIP_CLASSES = ['katex', 'mermaid-diagram', 'glossary-term', 'glossary-list', 'no-cjk-convert'];
   const MAX_MARKS = 300;
 
   let cardEl = null;
