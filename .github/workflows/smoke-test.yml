@@ -42,5 +42,9 @@ jobs:
     - name: Run smoke test
       run: node iris/scripts/smoke-test.js
 
+    - name: CJK typography lint (advisory)
+      continue-on-error: true
+      run: node iris/scripts/lint-cjk.js
+
     - name: Run link check (internal full + external daily sample)
       run: node iris/scripts/link-check.js

@@ -335,6 +335,8 @@
       finalHtml = readingTimeHtml + html;
     }
 
+    // 上一文档遗留的延迟渲染观察器全部断开（PERF-1），再注入新内容
+    if (typeof mdRender.clearLazy === 'function') mdRender.clearLazy();
     dom.markdownContent.innerHTML = finalHtml;
 
     // 调试面板用：记录当前文档渲染信息
@@ -380,6 +382,7 @@
       // 渲染器统一调度：遍历 renderers 注册表逐个执行（顺序 = index.html 脚本加载序），
       // 单个渲染器失败被隔离，不影响后续。见 md-render.js: runRenderers。
       await mdRender.runRenderers(null, {
+        lazy: true,
         before: () => {
           // 渲染文档边界：清理上一轮文档渲染遗留的、已脱离 DOM 的拓扑实例（cytoscape canvas/动画帧），
           // 防止跨文档导航累积泄漏。编辑器 cell 的拓扑容器仍连接在 DOM 上，不受影响。

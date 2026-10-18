@@ -1329,3 +1329,56 @@ body.focus-mode .markdown-body > .focus-current {
 .csv-chart-panel { margin-top: 12px; }
 .csv-chart-msg { padding: 12px 14px; font-size: 13px; color: var(--color-text-muted); border: 1px dashed var(--color-border); border-radius: 8px; }
 .csv-chart-panel .apexcharts-canvas { margin: 0 auto; }
+
+/* ===== 术语表悬浮（CONTENT-1）===== */
+.glossary-term { border-bottom: 1px dashed var(--color-accent-purple-deep); cursor: help; }
+.glossary-card { position: fixed; z-index: 3000; max-width: 320px; padding: 10px 14px; background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-border); border-radius: 10px; box-shadow: 0 8px 28px rgba(0,0,0,.16); opacity: 0; visibility: hidden; transition: opacity .15s ease; }
+.glossary-card.open { opacity: 1; visibility: visible; }
+.glossary-card-term { font-weight: 600; margin-bottom: 4px; }
+.glossary-card-desc { font-size: 13px; color: var(--color-text-muted); line-height: 1.5; }
+.glossary-list { margin: 1.2em 0; padding: 12px 16px; border: 1px solid var(--color-border); border-radius: 10px; background: var(--color-surface); }
+.glossary-list-title { font-weight: 600; margin-bottom: 8px; }
+.glossary-list dl { margin: 0; }
+.glossary-list-item { display: flex; gap: 10px; padding: 3px 0; }
+.glossary-list-item dt { flex: 0 0 auto; font-weight: 600; }
+.glossary-list-item dd { margin: 0; color: var(--color-text-muted); }
+
+/* ===== HTTP 实时请求块（TOOL-2）===== */
+.http-request { margin: 1.2em 0; border: 1px solid var(--color-border); border-radius: 10px; overflow: hidden; background: var(--color-surface); }
+.http-request-bar { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--color-border); flex-wrap: wrap; }
+.http-method { font-weight: 700; font-size: 12px; padding: 2px 8px; border-radius: 6px; background: var(--color-accent-purple); color: #fff; }
+.http-method-get { background: #3B82F6; } .http-method-post { background: #10B981; } .http-method-put { background: #F59E0B; } .http-method-delete { background: #EF4444; }
+.http-url { flex: 1 1 200px; font-family: var(--font-mono, monospace); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.http-status { font-size: 12px; color: var(--color-text-muted); }
+.http-status.is-ok { color: #10B981; } .http-status.is-bad { color: #EF4444; }
+.http-response { padding: 0 12px 12px; }
+.http-resp-headers { font-size: 12px; color: var(--color-text-muted); white-space: pre-wrap; padding: 8px 0; font-family: var(--font-mono, monospace); }
+.http-error { color: #EF4444; font-size: 13px; padding: 8px 0; }
+
+/* ===== 开发者小工具（TOOL-4 插件）===== */
+.devtool { margin: 1.2em 0; padding: 12px 14px; border: 1px solid var(--color-border); border-radius: 10px; background: var(--color-surface); font-size: 14px; }
+.devtool-row { display: flex; gap: 8px; margin-bottom: 8px; }
+.devtool-input { width: 100%; padding: 6px 10px; border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-bg); color: var(--color-text); font-family: var(--font-mono, monospace); font-size: 13px; }
+.devtool-sample { resize: vertical; }
+.devtool-meta { font-size: 12px; color: var(--color-text-muted); margin-bottom: 8px; }
+.devtool-error { color: #EF4444; }
+.devtool-hl { margin: 8px 0 0; padding: 10px; background: var(--color-bg); border-radius: 8px; white-space: pre-wrap; word-break: break-all; font-family: var(--font-mono, monospace); font-size: 13px; }
+.devtool-hl mark { background: var(--color-accent-pink); color: inherit; border-radius: 3px; }
+.devtool-cron-desc { margin-bottom: 8px; }
+.devtool-cron-label { font-size: 12px; color: var(--color-text-muted); }
+.devtool-cron-next { margin: 4px 0 0; padding-left: 20px; font-size: 13px; }
+.devtool-time-row { display: flex; justify-content: space-between; padding: 3px 0; font-size: 13px; }
+.devtool-time-zone { color: var(--color-text-muted); }
+.devtool-time-label { font-size: 12px; color: var(--color-text-muted); margin-bottom: 6px; }
+.devtool-color-grid { display: flex; flex-direction: column; gap: 8px; }
+.devtool-swatch { display: flex; align-items: center; gap: 10px; }
+.devtool-swatch-chip { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--color-border); flex: 0 0 auto; }
+.devtool-swatch-info { display: flex; flex-direction: column; }
+.devtool-swatch-rgb, .devtool-swatch-contrast { font-size: 12px; color: var(--color-text-muted); }
+.devtool-hash-row { display: flex; gap: 10px; padding: 3px 0; align-items: baseline; }
+.devtool-hash-alg { flex: 0 0 70px; font-size: 12px; color: var(--color-text-muted); }
+.devtool-hash-val { word-break: break-all; font-size: 12px; }
+.devtool-jwt-block { margin-top: 8px; }
+.devtool-jwt-label { font-size: 12px; color: var(--color-text-muted); margin-bottom: 4px; }
+.devtool-json { margin: 0; padding: 10px; background: var(--color-bg); border-radius: 8px; white-space: pre-wrap; word-break: break-all; font-family: var(--font-mono, monospace); font-size: 12px; }
+.devtool-jwt-expired { color: #EF4444; font-size: 13px; margin-bottom: 8px; }

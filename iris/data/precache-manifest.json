@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-18T20:37:56.979Z",
+  "generatedAt": "2026-10-18T20:45:05.142Z",
   "version": 1,
-  "count": 98,
+  "count": 100,
   "urls": [
     "./",
     "./index.html",
@@ -66,6 +66,8 @@
     "./iris/js/renderers/diff.js",
     "./iris/js/renderers/embedded.js",
     "./iris/js/renderers/geo.js",
+    "./iris/js/renderers/glossary.js",
+    "./iris/js/renderers/http-request.js",
     "./iris/js/renderers/json-tree.js",
     "./iris/js/renderers/katex.js",
     "./iris/js/renderers/mermaid.js",

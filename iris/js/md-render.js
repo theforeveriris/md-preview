@@ -501,6 +501,26 @@
   }
 
   /**
+   * 拼音注音（CJK-2）：作者语法 `{汉字|hàn zì}` → `<ruby>汉字<rt>hàn zì</rt></ruby>`
+   * 代码围栏与行内代码先占位，避免误伤；base / 注音均转义后拼入。
+   * @param {string} text
+   * @returns {string}
+   */
+  function processRuby(text) {
+    const codeSegments = [];
+    const protectedText = text.replace(/(```[\s\S]*?(?:```|$)|~~~[\s\S]*?(?:~~~|$)|`[^`\n]*`)/g, (m) => {
+      const idx = codeSegments.length;
+      codeSegments.push(m);
+      return `RUBYCODESEG_${idx}_HOLD`;
+    });
+    const replaced = protectedText.replace(/\\?\{([^{}|\n]{1,60})\|([^{}|\n]{1,120})\}/g, (match, base, rt) => {
+      if (match.charAt(0) === '\\') return match.slice(1); // \{ 转义为字面 {
+      return `<ruby>${escapeHtml(base)}<rt>${escapeHtml(rt)}</rt></ruby>`;
+    });
+    return replaced.replace(/RUBYCODESEG_(\d+)_HOLD/g, (m, idx) => codeSegments[parseInt(idx)] ?? m);
+  }
+
+  /**
    * 解析 Markdown 为 HTML（含 LaTeX 保护、Alert 处理、自定义 Renderer）
    * @param {string} content - Markdown 原文（已剥离 frontmatter）
    * @param {Object} [opts] - 透传给 processGitHubAlerts / createMdRenderer
@@ -510,8 +530,9 @@
     const { processed, blocks, inline } = protectLaTeXBlocks(content);
     const alertProcessed = processGitHubAlerts(processed, opts);
     const spoilerProcessed = processSpoilers(alertProcessed);
+    const rubyProcessed = processRuby(spoilerProcessed);
     const renderer = createMdRenderer(opts);
-    const { processed: codeTabProcessed, codeTabBlocks } = processCodeTabs(spoilerProcessed, { renderer });
+    const { processed: codeTabProcessed, codeTabBlocks } = processCodeTabs(rubyProcessed, { renderer });
     const columnProcessed = processColumns(codeTabProcessed, { renderer });
     let html = marked.parse(columnProcessed, { breaks: true, gfm: true, renderer });
     html = restoreCodeTabBlocks(html, codeTabBlocks);
@@ -681,6 +702,68 @@
       || document.querySelector('.markdown-body');
   }
 
+  // ---- 延迟渲染（PERF-1）：重型渲染器滚到附近才初始化 ----
+  const lazyObservers = [];
+
+  function findLazyBlocks(id, scope) {
+    const pres = Array.from(scope.querySelectorAll('pre'));
+    switch (id) {
+      case 'mermaid': return pres.filter(p => p.querySelector('code.language-mermaid'));
+      case 'plantuml': return pres.filter(p => p.querySelector('code.language-plantuml'));
+      case 'apexcharts': return pres.filter(p => p.querySelector('code.language-apexcharts'));
+      case 'diff': return pres.filter(p => p.querySelector('code.language-diff'));
+      case 'csvtable': return pres.filter(p => p.dataset.lang === 'csv' || p.dataset.lang === 'tsv');
+      case 'jsontree': return pres.filter(p => p.dataset.lang === 'json');
+      default: return [];
+    }
+  }
+
+  // 把单个块临时包进作用域容器，渲染器只处理这一块；随后还原层级
+  function renderScoped(id, renderer, block) {
+    const parent = block.parentNode;
+    if (!parent) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'lazy-render-scope';
+    parent.insertBefore(wrap, block);
+    wrap.appendChild(block);
+    Promise.resolve()
+      .then(() => renderer.render(wrap))
+      .catch(e => { console.error('[Renderers] ' + id + ' lazy render failed:', e); })
+      .then(() => {
+        while (wrap.firstChild) parent.insertBefore(wrap.firstChild, wrap);
+        parent.removeChild(wrap);
+      });
+  }
+
+  function clearLazy() {
+    lazyObservers.forEach(io => { try { io.disconnect(); } catch (e) { /* ignore */ } });
+    lazyObservers.length = 0;
+  }
+
+  function scheduleLazy(id, renderer, root) {
+    const scope = resolveRoot(root);
+    if (!scope) return;
+    const blocks = findLazyBlocks(id, scope);
+    if (!blocks.length) return;
+    if (typeof IntersectionObserver !== 'function') {
+      Promise.resolve().then(() => renderer.render(root || undefined))
+        .catch(e => { console.error('[Renderers] ' + id + ' renderer failed:', e); });
+      return;
+    }
+    const io = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        obs.unobserve(entry.target);
+        renderScoped(id, renderer, entry.target);
+      });
+    }, { rootMargin: '400px 0px' });
+    blocks.forEach(b => io.observe(b));
+    lazyObservers.push(io);
+  }
+
+  // 延迟渲染白名单（仅当调用方传 opts.lazy 时启用；编辑器 / 对照阅读不传，保持即时渲染）
+  const DEFAULT_LAZY = ['mermaid', 'plantuml', 'apexcharts', 'diff', 'csvtable', 'jsontree'];
+
   /**
    * 渲染器统一调度器
    *
@@ -690,18 +773,15 @@
    *   - render() 返回 Promise 或 undefined，调度器统一等待与捕获；
    *   - 各渲染器自行短路（查询 DOM 无命中直接 return，避免无谓加载 vendor 库）。
    *
-   * 调用顺序 = index.html 中渲染器脚本的加载顺序（Object.keys 按插入序枚举），
-   * 即 mermaid → plantuml → apexcharts → diff → geo → embedded → katex → pulse
-   * → csvtable → jsontree → sandbox。**逐个顺序 await**（非并行）——部分渲染器
-   * 会整体重写容器 innerHTML（如 embedded），并发会产生 DOM 竞态。
-   * 文档站原有的「embedded 之前清理 pkt 孤立画布实例」行为通过 opts.before
-   * 钩子保留（清理发生在全部渲染器之前，清的是上一文档渲染遗留的脱离 DOM
-   * 实例，语义等价且更靠前更安全）。
+   * 顺序：先顺序 await 全部「即时」渲染器（部分会整体重写容器 innerHTML，
+   * 如 embedded，必须串行）；待其完成后再为 opts.lazy 命中的重型渲染器
+   * 注册 IntersectionObserver，滚到附近才渲染（PERF-1）。
    *
    * @param {HTMLElement} [root] - 渲染根容器（编辑器 cell / 对照阅读栏传自身容器）
    * @param {Object} [opts]
    * @param {Function} [opts.before] - 全部渲染器执行前的钩子（文档站用于清理 pkt 画布）
-   * @param {string[]} [opts.only] - 仅执行指定渲染器（id 与注册表键一致，如 ['mermaid','katex']）
+   * @param {string[]} [opts.only] - 仅执行指定渲染器（id 与注册表键一致）
+   * @param {boolean|string[]} [opts.lazy] - true 用默认白名单 / 显式白名单（延迟渲染）
    */
   function runRenderers(root, opts) {
     opts = opts || {};
@@ -709,18 +789,22 @@
     if (!registry) return Promise.resolve();
 
     const filter = Array.isArray(opts.only) && opts.only.length ? new Set(opts.only) : null;
+    const lazySet = opts.lazy === true ? new Set(DEFAULT_LAZY)
+      : (Array.isArray(opts.lazy) ? new Set(opts.lazy) : null);
 
-    // 必须顺序 await：部分渲染器会整体重写容器 innerHTML（如 embedded），
-    // 并发执行会产生竞态（KaTeX 占位 span 被冲掉导致公式失效等问题）。
     const ids = Object.keys(registry).filter(id => !filter || filter.has(id));
+    const isRunnable = id => registry[id] && typeof registry[id].render === 'function';
+    const eagerIds = ids.filter(id => isRunnable(id) && !(lazySet && lazySet.has(id)));
+    const lazyIds = lazySet ? ids.filter(id => isRunnable(id) && lazySet.has(id)) : [];
 
-    return ids.reduce((chain, id) => {
-      const renderer = registry[id];
-      if (!renderer || typeof renderer.render !== 'function') return chain;
-      return chain.then(() => Promise.resolve()
-        .then(() => renderer.render(root || undefined))
-        .catch(e => { console.error('[Renderers] ' + id + ' renderer failed:', e); }));
-    }, Promise.resolve(typeof opts.before === 'function' ? opts.before() : undefined));
+    const chain = eagerIds.reduce((c, id) => c.then(() => Promise.resolve()
+      .then(() => registry[id].render(root || undefined))
+      .catch(e => { console.error('[Renderers] ' + id + ' renderer failed:', e); })),
+      Promise.resolve(typeof opts.before === 'function' ? opts.before() : undefined));
+
+    return chain.then(() => {
+      lazyIds.forEach(id => scheduleLazy(id, registry[id], root));
+    });
   }
 
   /**
@@ -743,6 +827,7 @@
     slugify,
     processGitHubAlerts,
     processSpoilers,
+    processRuby,
     processCodeTabs,
     processColumns,
     protectLaTeXBlocks,
@@ -754,6 +839,8 @@
     highlightCodeBlocks,
     initCodeTabs,
     runRenderers,
+    clearLazy,
+    DEFAULT_LAZY,
     resolveRoot,
   };
 })();

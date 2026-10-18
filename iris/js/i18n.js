@@ -531,7 +531,14 @@
     'csv.chart.loading': '正在加载图表库…',
     'csv.chart.loadFail': '图表库加载失败',
     'csv.chart.renderFail': '图表渲染失败',
-    'csv.column': '列'
+    'csv.column': '列',
+
+    // 术语表 / HTTP 请求块
+    'glossary.title': '术语表',
+    'http.send': '发送',
+    'http.sending': '请求中…',
+    'http.failed': '请求失败',
+    'http.cors': '请求失败（可能是跨域限制或网络问题）'
   };
 
   const en = {
@@ -1015,7 +1022,13 @@
     'csv.chart.loading': 'Loading chart library…',
     'csv.chart.loadFail': 'Failed to load chart library',
     'csv.chart.renderFail': 'Chart render failed',
-    'csv.column': 'Column'
+    'csv.column': 'Column',
+
+    'glossary.title': 'Glossary',
+    'http.send': 'Send',
+    'http.sending': 'Requesting…',
+    'http.failed': 'Request failed',
+    'http.cors': 'Request failed (possibly CORS or network issue)'
   };
 
   const dicts = { zh, en };
