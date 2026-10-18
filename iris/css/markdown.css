@@ -459,13 +459,17 @@ body.table-bleed #markdownContent .table-wrapper {
 .reading-progress {
   position: fixed;
   bottom: 0;
-  /* 与悬浮侧边栏占位对齐（宽度 + 两侧间隙） */
-  left: calc(var(--sidebar-width) + var(--sidebar-inset) * 2);
+  /* 经典贴边：从侧边栏宽度起；悬浮卡片：宽度 + 两侧间隙（layout.css 分流） */
+  left: var(--sidebar-width);
   right: 0;
   height: 2px;
   background: var(--color-border);
   z-index: 50;
   transition: var(--transition-smooth);
+}
+
+body[data-sidebar-style="floating"] .reading-progress {
+  left: calc(var(--sidebar-width) + var(--sidebar-inset) * 2);
 }
 
 .reading-progress-bar {

@@ -16,6 +16,7 @@
     showWordCount: false,
     truncateFileNames: false,
     expandFolders: true,
+    sidebarStyle: 'classic',   // classic = 贴边经典样式（默认）；floating = 悬浮卡片
     codeTheme: 'github',
     customColors: {},
     fontConfig: {},
@@ -99,6 +100,7 @@
           showWordCount: parsed.showWordCount ?? defaultSettings.showWordCount,
           truncateFileNames: parsed.truncateFileNames ?? defaultSettings.truncateFileNames,
           expandFolders: parsed.expandFolders ?? defaultSettings.expandFolders,
+          sidebarStyle: parsed.sidebarStyle === 'floating' ? 'floating' : 'classic',
           codeTheme: parsed.codeTheme ?? defaultSettings.codeTheme,
           customColors: (parsed.customColors && typeof parsed.customColors === 'object') ? parsed.customColors : {},
           fontConfig: normalizeFontConfig(parsed.fontConfig),
@@ -373,6 +375,13 @@
       settings.expandFolders = e.target.checked;
       saveSettings(settings);
       toggleExpandFolders(settings.expandFolders);
+    });
+
+    sidebarStyleSelect?.addEventListener('change', (e) => {
+      const settings = loadSettings();
+      settings.sidebarStyle = e.target.value === 'floating' ? 'floating' : 'classic';
+      saveSettings(settings);
+      applySidebarStyle(settings.sidebarStyle);
     });
 
     codeThemeSelect?.addEventListener('change', (e) => {
@@ -778,6 +787,15 @@
       window.MarkdownPreview.fileTree.setTruncateNames(truncate);
     }
     window.MarkdownPreview?.localDocs?.refresh();
+  }
+
+  // 侧边栏样式：classic 贴边（默认）/ floating 悬浮卡片；写入 body[data-sidebar-style] 由 CSS 分流
+  function applySidebarStyle(style) {
+    document.body.dataset.sidebarStyle = style === 'floating' ? 'floating' : 'classic';
+  }
+
+  function toggleSidebarStyle(style) {
+    applySidebarStyle(style);
   }
 
   // 侧边栏文件夹默认展开/折叠（重建文件树使设置生效）
@@ -1331,6 +1349,7 @@ body { margin: 0; }
     applyCustomColors(settings.customColors || {});
     applyFontConfig(settings.fontConfig || defaultFontConfig);
     applySidebarState(settings.sidebarOpen);
+    applySidebarStyle(settings.sidebarStyle);
     applyContentWidthSettings(settings);
     syncContentWidthControls(settings);
     applyTableBleed(settings.tableBleed);
@@ -1341,6 +1360,7 @@ body { margin: 0; }
     const showWordCountToggle = document.getElementById('showWordCountToggle');
     const truncateFileNamesToggle = document.getElementById('truncateFileNamesToggle');
     const expandFoldersToggle = document.getElementById('expandFoldersToggle');
+    const sidebarStyleSelect = document.getElementById('sidebarStyleSelect');
     const codeThemeSelect = document.getElementById('codeThemeSelect');
     const tableBleedToggle = document.getElementById('tableBleedToggle');
     const sansHeadingDigitsToggle = document.getElementById('sansHeadingDigitsToggle');
@@ -1351,6 +1371,7 @@ body { margin: 0; }
     if (showWordCountToggle) showWordCountToggle.checked = settings.showWordCount;
     if (truncateFileNamesToggle) truncateFileNamesToggle.checked = settings.truncateFileNames !== false;
     if (expandFoldersToggle) expandFoldersToggle.checked = settings.expandFolders !== false;
+    if (sidebarStyleSelect) sidebarStyleSelect.value = settings.sidebarStyle === 'floating' ? 'floating' : 'classic';
     if (codeThemeSelect) codeThemeSelect.value = settings.codeTheme;
     if (tableBleedToggle) tableBleedToggle.checked = settings.tableBleed === true;
     if (sansHeadingDigitsToggle) sansHeadingDigitsToggle.checked = settings.sansHeadingDigits === true;

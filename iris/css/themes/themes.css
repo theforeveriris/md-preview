@@ -22,8 +22,15 @@
   --color-success: #4caf50;
   --color-error: #f44336;
   --color-warning: #ff9800;
-  /* 悬浮侧边栏分界：浅色主题用四周扩散的悬浮投影 */
+  /* 侧边栏分界：悬浮卡片用四周扩散的悬浮投影；经典贴边由下方按模式覆盖为右向投影 */
   --shadow-sidebar: 0 8px 28px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-sidebar-floating: 0 8px 28px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-sidebar-classic: 6px 0 20px rgba(0, 0, 0, 0.05), 1px 0 4px rgba(0, 0, 0, 0.03);
+}
+
+/* 经典贴边模式下浅色主题改用右向扩散投影 */
+body[data-sidebar-style="classic"] {
+  --shadow-sidebar: var(--shadow-sidebar-classic);
 }
 
 /* GitHub Light 主题 */
@@ -170,12 +177,19 @@
   --color-warning: #ebcb8b;
 }
 
-/* 深色主题：黑色投影在深底上不可见，悬浮卡片分界靠细边框 + 轻微下坠投影 */
+/* 深色主题：黑色投影在深底上不可见，分界靠细边框 + 轻投影（两种模式各自适配） */
 [data-theme="github-dark"],
 [data-theme="arc"],
 [data-theme="dracula"],
 [data-theme="nord"] {
-  --shadow-sidebar: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 8px 28px rgba(0, 0, 0, 0.35);
+  --shadow-sidebar-floating: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 8px 28px rgba(0, 0, 0, 0.35);
+  --shadow-sidebar-classic: 6px 0 20px rgba(0, 0, 0, 0.3), 1px 0 4px rgba(0, 0, 0, 0.25);
+  --shadow-sidebar: var(--shadow-sidebar-classic);
+}
+
+/* 悬浮卡片模式下深浅主题都换用悬浮投影 */
+body[data-sidebar-style="floating"] {
+  --shadow-sidebar: var(--shadow-sidebar-floating);
 }
 
 /* 更新组件样式以使用新变量 */
