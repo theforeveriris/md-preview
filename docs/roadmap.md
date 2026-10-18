@@ -446,6 +446,32 @@ frontmatter 写 `password: xxx`，WebCrypto 客户端解密，目标是在公开
 
 ---
 
+## 八、本轮新增（已实现 ✅）
+
+以下为在既有规划之外、本轮新增并已落地的能力；说明见 [README 特性清单](../README.md#特性) 与 [开发者工具与交互组件示例](examples/devtools-examples.md)。
+
+| 分组 | 功能 | 说明 |
+|------|------|------|
+| 性能 | 可见即渲染 | 重型渲染器滚到附近才初始化；视口内立即渲染，`IntersectionObserver` 失效时自动兜底（`iris/js/md-render.js`） |
+| 性能 | 渐进式代码高亮 | 长文档先高亮首屏代码块，其余空闲时补齐（`iris/js/md-render.js`） |
+| 性能 | 屏外内容跳过布局 | 正文屏外区块 `content-visibility: auto`（`iris/css/markdown.css`） |
+| 性能 | 相邻文档预取 | 空闲 / 悬停预取上下一篇（`iris/js/prefetch.js`） |
+| 内容 | 术语表悬浮 | `glossary` 代码块 + 正文首次出现悬浮解释（`iris/js/renderers/glossary.js`） |
+| 内容 | CSV → 图表联动 | 表格工具栏「画成图」（`iris/js/renderers/csv-table.js`） |
+| 内容 | SQL DDL → ER 图 | `sql ddl` / `ddl` / `erd`（`iris/js/renderers/sql-erd.js`） |
+| 内容 | 拼音注音 | 作者语法 `{汉字|hàn zì}`（`iris/js/md-render.js` 的 `processRuby`） |
+| 工具 | HTTP 请求块 | `http` 代码块，点击发送实时请求（`iris/js/renderers/http-request.js`） |
+| 工具 | OpenAPI 交互文档 | `openapi` / `swagger` JSON / YAML + 试一下（`iris/js/renderers/openapi.js`） |
+| 工具 | 开发者小工具 | `iris/plugins/`：regex / cron / time / color / hash / jwt |
+| 中文 | 繁简转换 | 基于 opencc，代码块不转换（`iris/js/cjk.js` + `iris/vendor/opencc`） |
+| 中文 | 竖排阅读 / 排版选项 | 竖排、首行缩进、标点悬挂、中西文间距（设置面板「中文」） |
+| Git | 单篇历史 / blame | 悬浮球「历史与变更」，GitHub API + 内嵌 diff（`iris/js/git-history.js`） |
+| Git | 文档变更订阅 | 关注文档，有更新时正文顶部提示 |
+| 构建 | 中文排版 lint | `iris/scripts/lint-cjk.js`，`--fix` 自动修复，CI 告警 |
+| 构建 | 自动变更日志页 | `iris/scripts/build-changelog.js` → `docs/changelog.md` |
+
+---
+
 ## 建议落地顺序
 
 | 批次 | 功能 | 理由 |

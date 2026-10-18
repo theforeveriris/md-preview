@@ -7,6 +7,11 @@ tags: [规划]
 
 > 本页由 `iris/scripts/build-changelog.js` 从 git 历史自动生成，请勿手动编辑。
 
+## 2026-10-19
+
+- `fe6ec47` feat(batch3): OpenAPI 交互文档 + 竖排模式 + Git 历史/变更订阅 + 渐进式代码高亮（SW v8.43） — theforeveriris
+- `8ddc218` feat(batch2): 可见即渲染 + 术语表悬浮 + HTTP 请求块 + 开发者小工具 + 中文排版 lint + 拼音注音（SW v8.42） — theforeveriris
+- `ecabc54` feat(batch1): 相邻文档预取 + 屏外跳过布局 + CSV→图表 + SQL DDL→ER + 正文繁简转换 + 中文排版选项 + 自动变更日志页（SW v8.41） — theforeveriris
 ## 2026-10-18
 
 - `fdc726d` refactor(renderers): 统一渲染器调度器 runRenderers——注册表遍历顺序 await，消除三处硬编码清单；geo 转正支持围栏；embedded 四段挂载逻辑收敛为工厂；新增顺序/错误隔离测试（SW v8.38） — theforeveriris
@@ -156,4 +161,4 @@ tags: [规划]
 - `b1eecd4` Add multi-level documentation structure with test files — theforeveriris
 - `4a49e3b` Initial commit: Markdown previewer for GitHub Pages — agelaia521
 
-> 共 108 条（最多展示 200 条）。
+> 共 111 条（最多展示 200 条）。

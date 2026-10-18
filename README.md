@@ -72,6 +72,9 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 界面多语言：中文 / English 界面语言包，默认跟随浏览器语言，设置面板一键切换
 - 阅读时间估算：自动计算预计阅读时长
 - Frontmatter：支持 YAML 元数据解析
+- 中文阅读：正文简体 / 繁体一键转换（基于 opencc，代码块与公式不转换）、竖排阅读、中文排版选项（首行缩进 / 标点悬挂 / 中西文间距），设置面板「中文」区块
+- Git 历史与变更订阅：悬浮球「历史与变更」查看当前文档的提交历史与内嵌 diff（GitHub API），可「关注此文档」，有更新时正文顶部提示并一键查看变更
+- 相邻文档预取：空闲时 / 悬停时预取上一篇 / 下一篇，翻页更即时（设置面板「性能」可关闭）
 
 ### 渲染能力
 
@@ -79,7 +82,7 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 图片灯箱：点击放大、缩放、键盘左右键翻页
 - GitHub 风格 Alerts：支持 `[!NOTE]` `[!WARNING]` 等提示语法
 - 代码块增强：一键复制按钮、语言标签、横向滚动优化、代码 Tabs
-- CSV / TSV 交互表格：`csv` / `tsv` 代码块渲染为可排序、可按列筛选、可搜索的表格，支持复制 / 下载 CSV
+- CSV / TSV 交互表格：`csv` / `tsv` 代码块渲染为可排序、可按列筛选、可搜索的表格，支持复制 / 下载 CSV；表格工具栏「画成图」按列语义一键生成折线 / 柱状 / 面积 / 饼图（ApexCharts）
 - JSON 可折叠树：`json` 代码块渲染为可折叠树视图，节点可复制路径、全部展开 / 收起、复制与下载 JSON；追加 `raw` 标记（` ```json raw `）保留源码展示，解析失败自动回退普通代码块
 - 代码块 live 预览：` ```html live ` / ` ```js live ` / ` ```css live ` 在文档内提供沙箱运行预览（隔离 iframe，脚本无法访问页面数据；js 块带 console 输出面板，css 块作用于预置示例骨架），源码折叠保留，默认点击「运行」才执行
 - Cisco IOS / 华为 VRP 配置高亮：自定义语法包，`ios` / `vrp`（别名 `cisco` / `huawei`）渲染路由器配置
@@ -93,6 +96,12 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 倒计时组件：`countdown` 代码块渲染实时倒计时
 - Spoiler 折叠：内置剧透折叠块语法
 - Columns / ColorCard：页面分栏与彩色卡片布局
+- SQL DDL → ER 图：`sql ddl` / `ddl` / `erd` 代码块解析 `CREATE TABLE` 与外键，自动生成 Mermaid 实体关系图（解析失败回退普通 SQL 高亮）
+- 术语表悬浮：`glossary` 代码块定义术语（每行 `术语 | 解释`），正文首次出现加下划线、悬停 / 聚焦弹出解释卡片
+- HTTP 请求块：`http` 代码块写请求（方法 / URL / 头 / 体），点击「发送」实时请求并展示状态码、耗时、响应头与响应体
+- OpenAPI 交互文档：`openapi` / `swagger` 代码块（JSON / YAML）渲染接口列表与参数表，每个接口可「试一下」直接发请求
+- 开发者小工具：`regex`（正则测试器）/ `cron`（cron 解释 + 下次运行）/ `time`（时间戳时区对照）/ `color`（色板 + WCAG 对比度）/ `hash`（SHA 哈希）/ `jwt`（JWT 解码）
+- 拼音注音：作者语法 `{汉字|hàn zì}` 渲染为 `<ruby>` 注音
 
 ### 主题与外观
 
@@ -131,6 +140,11 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 按需懒加载：Mermaid / ApexCharts / Leaflet / KaTeX / Diff2Html / Cytoscape.js 等重型库只在命中对应代码块时加载，首屏体积从约 6.8MB 降至约 1MB
 - CI 冒烟测试：GitHub Actions 在 push / PR 时自动跑全部构建脚本 + 站点结构 / 语法 / i18n / 数据产物冒烟检查（`smoke-test.yml`）
 - CI 死链检查：内链全量校验（`.md#锚点` 按运行时 slug 规则匹配、`@[pkt/ensp/pptx]` 嵌入产物存在性）+ 外链按日确定性抽查，第三方失败仅告警（`smoke-test.yml`）
+- 可见即渲染：重型渲染器（Mermaid / PlantUML / ApexCharts / Diff / CSV / JSON）滚动到附近才初始化，首屏更轻；视口内立即渲染，`IntersectionObserver` 不可用时自动兜底（`md-render.js`）
+- 渐进式代码高亮：长文档先高亮首屏代码块，其余在空闲时分批补齐
+- 屏外内容跳过布局：正文屏外区块 `content-visibility: auto`，滚动更顺滑（设置面板「性能」可关）
+- 中文排版 lint：`iris/scripts/lint-cjk.js` 检查中英混排空格 / 全角半角标点 / 行首禁则 / 引号，支持 `--fix`，CI 以告警方式运行
+- 自动变更日志：构建期从 git 历史生成 `docs/changelog.md`（`iris/scripts/build-changelog.js`）
 
 ### 内置编辑器
 
@@ -152,6 +166,13 @@ Demo：https://theforeveriris.github.io/md-preview/
 以下功能已实现（标记 ✅，说明见 [功能路线图](docs/roadmap.md)）：
 
 - ✅ CSV / TSV 交互表格（排序 / 筛选 / 搜索）
+- ✅ CSV → 图表联动（表格「画成图」）
+- ✅ 中文繁简转换 / 竖排 / 中文排版选项
+- ✅ SQL DDL → ER 图、术语表悬浮、HTTP 请求块、OpenAPI 交互文档、开发者小工具（regex / cron / time / color / hash / jwt）
+- ✅ 拼音注音（`{汉字|hàn zì}`）
+- ✅ 可见即渲染 + 渐进式代码高亮、相邻文档预取、屏外内容跳过布局
+- ✅ Git 历史 / blame 与文档变更订阅
+- ✅ 中文排版 lint（构建期）、自动变更日志页
 - ✅ Cisco IOS / 华为 VRP 配置高亮
 - ✅ 链接悬浮预览
 - ✅ 浏览足迹与收藏（长按收藏 + 文件树内提示）
@@ -285,7 +306,7 @@ python3 iris/scripts/pptx/main.py
 | `code-tabs-examples.md` | 代码 Tabs 多语言并排 |
 | `countdown-examples.md` | Countdown 倒计时组件 |
 | `qrcode-examples.md` | 二维码生成 |
-| `csv-examples.md` | CSV / TSV 交互表格 |
+| `csv-examples.md` | CSV / TSV 交互表格（含「画成图」图表联动） |
 | `live-preview-examples.md` | 代码块 live 预览沙箱（html/js/css live）与 JSON 可折叠树 |
 | `ios-vrp-examples.md` | Cisco IOS / 华为 VRP 配置高亮 |
 | `mermaid-examples.md` | Mermaid 各类图表 |
@@ -303,6 +324,7 @@ python3 iris/scripts/pptx/main.py
 | `embed-examples.md` | YouTube / Bilibili / Figma / CodePen 嵌入 |
 | `twitter-embed-examples.md` | Twitter 推文嵌入 |
 | `plugin-demo.md` | 插件系统演示 |
+| `devtools-examples.md` | 开发者工具与交互组件（术语表 / HTTP 请求块 / OpenAPI / SQL DDL→ER / 小工具 / 拼音注音 / CSV→图表） |
 
 ## 项目结构
 
