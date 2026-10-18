@@ -107,6 +107,15 @@
         </div>
         <span class="csv-table-count" role="status"></span>
         <span class="csv-table-toolbar-space"></span>
+        <span class="csv-chart-ctrl">
+          <select class="csv-chart-type theme-select" aria-label="${esc(t('csv.chartType', '图表类型'))}">
+            <option value="line">${esc(t('csv.chart.line', '折线'))}</option>
+            <option value="bar">${esc(t('csv.chart.bar', '柱状'))}</option>
+            <option value="area">${esc(t('csv.chart.area', '面积'))}</option>
+            <option value="pie">${esc(t('csv.chart.pie', '饼图'))}</option>
+          </select>
+          <button type="button" class="csv-tool-btn csv-chart-btn" title="${esc(t('csv.chart.build', '画成图'))}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l3-4 3 3 4-6"/></svg><span>${esc(t('csv.chart.build', '画成图'))}</span></button>
+        </span>
         <button type="button" class="csv-tool-btn csv-copy" title="${esc(t('csv.copyCsv', '复制 CSV'))}">${icon('i-clipboard')}<span>${esc(t('csv.copyCsv', '复制 CSV'))}</span></button>
         <button type="button" class="csv-tool-btn csv-download" title="${esc(t('csv.downloadCsv', '下载 CSV'))}">${icon('i-download')}<span>${esc(t('csv.downloadCsv', '下载 CSV'))}</span></button>
       </div>
@@ -228,6 +237,100 @@
       a.click();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     });
+
+    // ============== CSV → 图表联动 ==============
+    const chartBtn = widget.querySelector('.csv-chart-btn');
+    const chartTypeSel = widget.querySelector('.csv-chart-type');
+    let chartPanel = null;
+    let chartInstance = null;
+
+    // 数值列：非空单元格中数值占比 ≥ 60%
+    function numericColumns() {
+      const cols = [];
+      for (let c = 0; c < colCount; c++) {
+        let nonEmpty = 0, numeric = 0;
+        dataRows.forEach(r => {
+          if (String(r[c]).trim() === '') return;
+          nonEmpty++;
+          if (toNumber(r[c]) !== null) numeric++;
+        });
+        if (nonEmpty > 0 && numeric / nonEmpty >= 0.6) cols.push(c);
+      }
+      return cols;
+    }
+
+    function buildChartConfig(type) {
+      const rows = visibleRows();
+      if (rows.length === 0) return null;
+      const numCols = numericColumns();
+      if (numCols.length === 0) return null;
+      const numSet = new Set(numCols);
+      let catCol = -1;
+      for (let c = 0; c < colCount; c++) { if (!numSet.has(c)) { catCol = c; break; } }
+      const cats = rows.map((r, i) => catCol >= 0 ? String(r[catCol]) : String(i + 1));
+      let seriesCols = numCols.filter(c => c !== catCol);
+      if (seriesCols.length === 0) seriesCols = numCols.slice(0, 1);
+      const series = seriesCols.map(c => ({
+        name: header[c] || (t('csv.column', '列') + (c + 1)),
+        data: rows.map(r => { const n = toNumber(r[c]); return n === null ? 0 : n; })
+      }));
+      if (type === 'pie') {
+        const c0 = seriesCols[0];
+        return {
+          chart: { type: 'pie' },
+          labels: cats,
+          series: rows.map(r => { const n = toNumber(r[c0]); return n === null ? 0 : n; })
+        };
+      }
+      return { chart: { type }, series, xaxis: { categories: cats } };
+    }
+
+    function ensureChartPanel() {
+      if (chartPanel) return chartPanel;
+      chartPanel = document.createElement('div');
+      chartPanel.className = 'csv-chart-panel';
+      const anchor = widget.querySelector('.csv-table-scroll') || table;
+      anchor.insertAdjacentElement('afterend', chartPanel);
+      return chartPanel;
+    }
+
+    async function renderChart() {
+      const panel = ensureChartPanel();
+      const type = chartTypeSel.value || 'line';
+      const baseCfg = buildChartConfig(type);
+      if (!baseCfg) {
+        panel.innerHTML = '<div class="csv-chart-msg">' + esc(t('csv.chart.noNumeric', '没有可用于绘图的数值列')) + '</div>';
+        return;
+      }
+      if (typeof ApexCharts === 'undefined') {
+        panel.innerHTML = '<div class="csv-chart-msg">' + esc(t('csv.chart.loading', '正在加载图表库…')) + '</div>';
+        try { await window.MarkdownPreview.loadScript('iris/vendor/apexcharts.min.js'); } catch (e) { /* ignore */ }
+      }
+      if (typeof ApexCharts === 'undefined') {
+        panel.innerHTML = '<div class="csv-chart-msg">' + esc(t('csv.chart.loadFail', '图表库加载失败')) + '</div>';
+        return;
+      }
+      if (chartInstance) { try { chartInstance.destroy(); } catch (e) { /* ignore */ } chartInstance = null; }
+      panel.innerHTML = '';
+      const mount = document.createElement('div');
+      panel.appendChild(mount);
+      const cfg = {
+        ...baseCfg,
+        colors: ['#8B5CF6', '#D946EF', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'],
+        chart: { ...baseCfg.chart, height: 320, toolbar: { show: false } },
+        dataLabels: { enabled: false },
+        legend: { position: 'bottom' }
+      };
+      try {
+        chartInstance = new ApexCharts(mount, cfg);
+        chartInstance.render();
+      } catch (e) {
+        mount.innerHTML = '<div class="csv-chart-msg">' + esc(t('csv.chart.renderFail', '图表渲染失败')) + ': ' + esc(e.message) + '</div>';
+      }
+    }
+
+    chartBtn.addEventListener('click', renderChart);
+    chartTypeSel.addEventListener('change', () => { if (chartPanel) renderChart(); });
 
     // ============== 列筛选面板 ==============
     let popover = null;

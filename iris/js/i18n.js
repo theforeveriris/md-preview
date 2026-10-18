@@ -498,7 +498,40 @@
     'export.epub.toc': '目录',
     'export.noDocs': '没有可打包的文档（文件树未加载或为空）',
     'export.needDoc': '请先打开一个文档',
-    'export.fetchFailed': '文档获取失败，请重试'
+    'export.fetchFailed': '文档获取失败，请重试',
+
+    // 设置面板：中文 / 性能
+    'settings.section.cjk': '中文',
+    'settings.section.perf': '性能',
+    'settings.sub.typography': '中文排版',
+    'settings.cjk.convert': '正文繁简转换',
+    'settings.cjk.convertDesc': '阅读时转换正文的简体 / 繁体，不改动源文件（代码块、公式不转换）',
+    'settings.cjk.off': '原文',
+    'settings.cjk.toTw': '转为繁体',
+    'settings.cjk.toCn': '转为简体',
+    'settings.cjk.indent': '首行缩进',
+    'settings.cjk.indentDesc': '正文段落首行缩进两字符',
+    'settings.cjk.hanging': '标点悬挂',
+    'settings.cjk.hangingDesc': '行尾标点悬挂到边距外（支持的浏览器生效）',
+    'settings.cjk.spacing': '中西文间距 / 标点挤压',
+    'settings.cjk.spacingDesc': '中英文之间自动加间距、压缩标点周围空白（支持的浏览器生效）',
+    'settings.perf.cv': '屏外内容跳过布局',
+    'settings.perf.cvDesc': '长文档屏外区块跳过布局与绘制，滚动更顺滑（可能影响阅读位置百分比）',
+    'settings.perf.prefetch': '相邻文档预取',
+    'settings.perf.prefetchDesc': '空闲时预取上一篇 / 下一篇，翻页更即时；移动端流量敏感时可关闭',
+
+    // CSV → 图表联动
+    'csv.chart.build': '画成图',
+    'csv.chartType': '图表类型',
+    'csv.chart.line': '折线',
+    'csv.chart.bar': '柱状',
+    'csv.chart.area': '面积',
+    'csv.chart.pie': '饼图',
+    'csv.chart.noNumeric': '没有可用于绘图的数值列',
+    'csv.chart.loading': '正在加载图表库…',
+    'csv.chart.loadFail': '图表库加载失败',
+    'csv.chart.renderFail': '图表渲染失败',
+    'csv.column': '列'
   };
 
   const en = {
@@ -951,7 +984,38 @@
     'export.epub.toc': 'Table of Contents',
     'export.noDocs': 'No documents to export (file tree not loaded or empty)',
     'export.needDoc': 'Open a document first',
-    'export.fetchFailed': 'Failed to fetch the document, please retry'
+    'export.fetchFailed': 'Failed to fetch the document, please retry',
+
+    'settings.section.cjk': 'Chinese',
+    'settings.section.perf': 'Performance',
+    'settings.sub.typography': 'CJK typography',
+    'settings.cjk.convert': 'Convert text (Simplified/Traditional)',
+    'settings.cjk.convertDesc': 'Convert the body between Simplified and Traditional Chinese while reading; source files are untouched (code and math are not converted)',
+    'settings.cjk.off': 'Original',
+    'settings.cjk.toTw': 'To Traditional',
+    'settings.cjk.toCn': 'To Simplified',
+    'settings.cjk.indent': 'First-line indent',
+    'settings.cjk.indentDesc': 'Indent the first line of paragraphs by two characters',
+    'settings.cjk.hanging': 'Hanging punctuation',
+    'settings.cjk.hangingDesc': 'Hang line-end punctuation into the margin (where supported)',
+    'settings.cjk.spacing': 'CJK/Latin spacing & punctuation trim',
+    'settings.cjk.spacingDesc': 'Auto space between CJK and Latin, trim punctuation spacing (where supported)',
+    'settings.perf.cv': 'Skip off-screen layout',
+    'settings.perf.cvDesc': 'Skip layout and paint for off-screen blocks in long documents; may affect reading-position percentage',
+    'settings.perf.prefetch': 'Prefetch adjacent docs',
+    'settings.perf.prefetchDesc': 'Prefetch the previous/next document when idle so paging feels instant; disable on metered mobile connections',
+
+    'csv.chart.build': 'Chart',
+    'csv.chartType': 'Chart type',
+    'csv.chart.line': 'Line',
+    'csv.chart.bar': 'Bar',
+    'csv.chart.area': 'Area',
+    'csv.chart.pie': 'Pie',
+    'csv.chart.noNumeric': 'No numeric columns to plot',
+    'csv.chart.loading': 'Loading chart library…',
+    'csv.chart.loadFail': 'Failed to load chart library',
+    'csv.chart.renderFail': 'Chart render failed',
+    'csv.column': 'Column'
   };
 
   const dicts = { zh, en };

@@ -340,6 +340,16 @@
         "wordCount": 11727
       },
       {
+        "name": "changelog.md",
+        "type": "file",
+        "path": "docs/changelog.md",
+        "wordCount": 8,
+        "title": "变更日志",
+        "tags": [
+          "规划"
+        ]
+      },
+      {
         "name": "code-highlight-theme.md",
         "type": "file",
         "path": "docs/code-highlight-theme.md",
@@ -354,7 +364,7 @@
         "name": "configuration.md",
         "type": "file",
         "path": "docs/configuration.md",
-        "wordCount": 1514,
+        "wordCount": 1830,
         "title": "配置参考",
         "tags": [
           "配置"
@@ -388,6 +398,16 @@
         "title": "插件开发指南",
         "tags": [
           "插件"
+        ]
+      },
+      {
+        "name": "requirements.md",
+        "type": "file",
+        "path": "docs/requirements.md",
+        "wordCount": 1393,
+        "title": "需求整理（候选功能）",
+        "tags": [
+          "规划"
         ]
       },
       {
@@ -426,7 +446,7 @@
         "name": "show.md",
         "type": "file",
         "path": "docs/show.md",
-        "wordCount": 2729,
+        "wordCount": 2825,
         "title": "系统运行时截图",
         "tags": [
           "截图"
@@ -444,7 +464,7 @@
         ]
       }
     ],
-    "wordCount": 20494
+    "wordCount": 22307
   },
   {
     "name": "iris",
@@ -478,7 +498,7 @@
     "name": "readme-dev.md",
     "type": "file",
     "path": "readme-dev.md",
-    "wordCount": 1579,
+    "wordCount": 1116,
     "title": "Markdown Preview — 开发者文档",
     "tags": [
       "开发"

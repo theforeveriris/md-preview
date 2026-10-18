@@ -1,5 +1,13 @@
 [
   {
+    "path": "docs/changelog.md",
+    "title": "变更日志",
+    "preview": "变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-18 - fdc726d refactor(renderers): 统一渲染器调度器 runRenderers——注册表遍历顺序 await，消除三处硬编码清单；geo 转正支持围栏；embedded 四段挂载逻辑收敛为工厂；新增顺序/错误隔离测试（SW ",
+    "tags": [
+      "规划"
+    ]
+  },
+  {
     "path": "docs/code-highlight-theme.md",
     "title": "代码高亮主题开发指南",
     "preview": "代码高亮主题开发指南 概述 Markdown Preview 使用 highlight.js 进行代码语法高亮。内置了 10 种常用主题，并支持自定义主题。 内置主题 | 主题 ID | 名称 | 类型 | |---------|------|------| | github | GitHub Light | 亮色 | | github-dark | GitHub Dark | 暗色 | | at",
@@ -303,6 +311,14 @@
     "preview": "插件开发指南 插件机制概述 Markdown Preview 的插件系统允许你扩展 Markdown 渲染能力，自定义处理特定的代码块。插件放入 iris/plugins/ 目录后，加载器会自动发现并注册。 插件接口（v2） 每个插件是一个导出对象的 JavaScript 模块（ES Module），支持以下接口： API 说明 | 字段/方法 | 类型 | 必填 | 说明 | |--------",
     "tags": [
       "插件"
+    ]
+  },
+  {
+    "path": "docs/requirements.md",
+    "title": "需求整理（候选功能）",
+    "preview": "需求整理（候选功能） 本文整理自一轮功能头脑风暴中筛选出的候选需求，作为排期参考。 与 功能路线图 的分工：roadmap 是维护者已确认的正式规划，本文是待评估的候选池；某项落地后，请移入 roadmap / README 特性清单，并从本表移除。 约定：优先级 P0（低风险快赢）→ P1（体感/内容增强）→ P2（攻坚）；工作量 小（≤ 半天）→ 中（13 天）→ 大（多日）。 --- 总览 ",
+    "tags": [
+      "规划"
     ]
   },
   {

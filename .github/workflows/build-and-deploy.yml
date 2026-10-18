@@ -39,6 +39,9 @@ jobs:
       - name: Build Sitemap
         run: node iris/scripts/build-sitemap.js
 
+      - name: Build Changelog
+        run: node iris/scripts/build-changelog.js
+
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:

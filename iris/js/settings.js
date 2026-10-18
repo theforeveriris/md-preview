@@ -25,7 +25,13 @@
     mobileGestures: true,
     sectionCollapse: true,
     splitSyncScroll: true,
-    focusMode: false
+    focusMode: false,
+    textConversion: 'off',        // 'off' | 'tw' 转繁体 | 'cn' 转简体
+    typographyIndent: false,      // 中文首行缩进
+    typographyHangingPunct: false,// 标点悬挂
+    typographyTextSpacing: false, // 中西文间距 / 标点挤压
+    perfContentVisibility: true,  // 屏外内容跳过布局
+    prefetchAdjacent: true        // 相邻文档预取
   };
 
   // 内容区宽度范围（与设置面板滑杆一致）
@@ -109,7 +115,13 @@
           mobileGestures: parsed.mobileGestures !== false,
           sectionCollapse: parsed.sectionCollapse !== false,
           splitSyncScroll: parsed.splitSyncScroll !== false,
-          focusMode: parsed.focusMode === true
+          focusMode: parsed.focusMode === true,
+          textConversion: (parsed.textConversion === 'tw' || parsed.textConversion === 'cn') ? parsed.textConversion : 'off',
+          typographyIndent: parsed.typographyIndent === true,
+          typographyHangingPunct: parsed.typographyHangingPunct === true,
+          typographyTextSpacing: parsed.typographyTextSpacing === true,
+          perfContentVisibility: parsed.perfContentVisibility !== false,
+          prefetchAdjacent: parsed.prefetchAdjacent !== false
         };
       }
     } catch (e) {
@@ -460,6 +472,40 @@
       if (window.MarkdownPreview.splitView && window.MarkdownPreview.splitView.isOpen()) {
         window.MarkdownPreview.splitView.setSyncEnabled(e.target.checked);
       }
+    });
+
+    // 正文繁简转换（cjk.js：仅转换正文文本节点，代码块 / 公式不转换）
+    document.getElementById('textConversionSelect')?.addEventListener('change', (e) => {
+      const settings = loadSettings();
+      settings.textConversion = e.target.value;
+      saveSettings(settings);
+      window.MarkdownPreview.cjk?.setMode(settings.textConversion);
+    });
+
+    // 中文排版渲染选项（cjk.js 切换 body 上的 CSS 类）
+    ['typographyIndent', 'typographyHangingPunct', 'typographyTextSpacing'].forEach((key) => {
+      const id = key + 'Toggle';
+      document.getElementById(id)?.addEventListener('change', (e) => {
+        const settings = loadSettings();
+        settings[key] = e.target.checked;
+        saveSettings(settings);
+        window.MarkdownPreview.cjk?.applyTypography(settings);
+      });
+    });
+
+    // 屏外内容跳过布局（PERF-2）
+    document.getElementById('perfContentVisibilityToggle')?.addEventListener('change', (e) => {
+      const settings = loadSettings();
+      settings.perfContentVisibility = e.target.checked;
+      saveSettings(settings);
+      applyContentVisibility(settings.perfContentVisibility);
+    });
+
+    // 相邻文档预取（PERF-4；预取自身读取设置，无需即时动作）
+    document.getElementById('prefetchAdjacentToggle')?.addEventListener('change', (e) => {
+      const settings = loadSettings();
+      settings.prefetchAdjacent = e.target.checked;
+      saveSettings(settings);
     });
 
     resetContentWidthBtn?.addEventListener('click', () => {
@@ -1338,6 +1384,11 @@ body { margin: 0; }
   }
 
   // 应用全部设置到界面（init 与远端标签页同步共用）
+  // 屏外内容跳过布局（PERF-2）：body 加 perf-cv 类，具体样式见 markdown.css
+  function applyContentVisibility(on) {
+    document.body.classList.toggle('perf-cv', on !== false);
+  }
+
   function applyAllSettings(settings) {
     toggleReadingProgress(settings.showReadingProgress);
     toggleWordCount(settings.showWordCount);
@@ -1378,6 +1429,25 @@ body { margin: 0; }
     const splitSyncScrollToggle = document.getElementById('splitSyncScrollToggle');
     if (splitSyncScrollToggle) splitSyncScrollToggle.checked = settings.splitSyncScroll !== false;
     if (focusModeToggle) focusModeToggle.checked = settings.focusMode === true;
+
+    // 中文 / 排版 / 性能
+    const textConversionSelect = document.getElementById('textConversionSelect');
+    if (textConversionSelect) textConversionSelect.value = settings.textConversion || 'off';
+    const typographyIndentToggle = document.getElementById('typographyIndentToggle');
+    if (typographyIndentToggle) typographyIndentToggle.checked = settings.typographyIndent === true;
+    const typographyHangingPunctToggle = document.getElementById('typographyHangingPunctToggle');
+    if (typographyHangingPunctToggle) typographyHangingPunctToggle.checked = settings.typographyHangingPunct === true;
+    const typographyTextSpacingToggle = document.getElementById('typographyTextSpacingToggle');
+    if (typographyTextSpacingToggle) typographyTextSpacingToggle.checked = settings.typographyTextSpacing === true;
+    const perfContentVisibilityToggle = document.getElementById('perfContentVisibilityToggle');
+    if (perfContentVisibilityToggle) perfContentVisibilityToggle.checked = settings.perfContentVisibility !== false;
+    const prefetchAdjacentToggle = document.getElementById('prefetchAdjacentToggle');
+    if (prefetchAdjacentToggle) prefetchAdjacentToggle.checked = settings.prefetchAdjacent !== false;
+
+    // 应用中文 / 排版 / 屏外布局（cjk.js 可能尚未加载，可选调用；其自身也会初始化）
+    applyContentVisibility(settings.perfContentVisibility);
+    window.MarkdownPreview.cjk?.applyTypography(settings);
+    window.MarkdownPreview.cjk?.setMode(settings.textConversion);
 
     // 取色器显示：有自定义值用自定义值，否则显示默认色
     document.querySelectorAll('input[type="color"][data-var]').forEach(input => {

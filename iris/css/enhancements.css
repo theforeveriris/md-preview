@@ -1322,3 +1322,10 @@ body.focus-mode .markdown-body > .focus-current {
 }
 
 .snapshot-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ===== CSV → 图表联动（DATA-1）===== */
+.csv-chart-ctrl { display: inline-flex; align-items: center; gap: 6px; }
+.csv-chart-type { height: 28px; padding: 0 6px; font-size: 12px; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text); }
+.csv-chart-panel { margin-top: 12px; }
+.csv-chart-msg { padding: 12px 14px; font-size: 13px; color: var(--color-text-muted); border: 1px dashed var(--color-border); border-radius: 8px; }
+.csv-chart-panel .apexcharts-canvas { margin: 0 auto; }

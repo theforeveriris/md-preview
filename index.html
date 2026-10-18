@@ -222,6 +222,8 @@
             <button type="button" class="settings-nav-item" data-target="sec-layout" data-i18n="settings.section.layout">布局</button>
             <button type="button" class="settings-nav-item" data-target="sec-tools" data-i18n="settings.section.toolsExport">工具与导出</button>
             <button type="button" class="settings-nav-item" data-target="sec-storage" data-i18n="settings.section.storage">存储</button>
+            <button type="button" class="settings-nav-item" data-target="sec-cjk" data-i18n="settings.section.cjk">中文</button>
+            <button type="button" class="settings-nav-item" data-target="sec-perf" data-i18n="settings.section.perf">性能</button>
           </nav>
           <div class="settings-content">
 
@@ -875,6 +877,91 @@
             <div class="settings-subsection">
               <div class="settings-subsection-title" data-i18n="settings.sub.browsingData">浏览数据</div>
               <div id="storageDataList"></div>
+            </div>
+          </div>
+
+          <div class="settings-section" id="sec-cjk">
+            <h3 class="settings-section-title" data-i18n="settings.section.cjk">中文</h3>
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="settings.cjk.convert">正文繁简转换</div>
+                <div class="setting-description" data-i18n="settings.cjk.convertDesc">阅读时转换正文的简体 / 繁体，不改动源文件（代码块、公式不转换）</div>
+              </div>
+              <div class="setting-control">
+                <select id="textConversionSelect" class="theme-select">
+                  <option value="off" data-i18n="settings.cjk.off">原文</option>
+                  <option value="tw" data-i18n="settings.cjk.toTw">转为繁体</option>
+                  <option value="cn" data-i18n="settings.cjk.toCn">转为简体</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="settings-subsection">
+              <div class="settings-subsection-title" data-i18n="settings.sub.typography">中文排版</div>
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label" data-i18n="settings.cjk.indent">首行缩进</div>
+                  <div class="setting-description" data-i18n="settings.cjk.indentDesc">正文段落首行缩进两字符</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="typographyIndentToggle">
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label" data-i18n="settings.cjk.hanging">标点悬挂</div>
+                  <div class="setting-description" data-i18n="settings.cjk.hangingDesc">行尾标点悬挂到边距外（支持的浏览器生效）</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="typographyHangingPunctToggle">
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label" data-i18n="settings.cjk.spacing">中西文间距 / 标点挤压</div>
+                  <div class="setting-description" data-i18n="settings.cjk.spacingDesc">中英文之间自动加间距、压缩标点周围空白（支持的浏览器生效）</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="typographyTextSpacingToggle">
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-section" id="sec-perf">
+            <h3 class="settings-section-title" data-i18n="settings.section.perf">性能</h3>
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="settings.perf.cv">屏外内容跳过布局</div>
+                <div class="setting-description" data-i18n="settings.perf.cvDesc">长文档屏外区块跳过布局与绘制，滚动更顺滑（可能影响阅读位置百分比）</div>
+              </div>
+              <div class="setting-control">
+                <label class="switch">
+                  <input type="checkbox" id="perfContentVisibilityToggle" checked>
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div>
+                <div class="setting-label" data-i18n="settings.perf.prefetch">相邻文档预取</div>
+                <div class="setting-description" data-i18n="settings.perf.prefetchDesc">空闲时预取上一篇 / 下一篇，翻页更即时；移动端流量敏感时可关闭</div>
+              </div>
+              <div class="setting-control">
+                <label class="switch">
+                  <input type="checkbox" id="prefetchAdjacentToggle" checked>
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
             </div>
           </div>
           </div>
@@ -1919,6 +2006,8 @@
   <script defer src="iris/vendor/file-tree/prod.js"></script>
   <script defer src="iris/js/file-tree.js"></script>
   <script defer src="iris/js/markdown.js"></script>
+  <script defer src="iris/js/cjk.js"></script>
+  <script defer src="iris/js/prefetch.js"></script>
   <script defer src="iris/js/router.js"></script>
   <script defer src="iris/js/zip.js"></script>
   <script defer src="iris/js/export-bundle.js"></script>
@@ -1942,6 +2031,7 @@
   <!-- Built-in Plugins (loaded dynamically via loader.js) -->
 
   <!-- Renderers -->
+  <script defer src="iris/js/renderers/sql-erd.js"></script>
   <script defer src="iris/js/renderers/mermaid.js"></script>
   <script defer src="iris/js/renderers/plantuml.js"></script>
   <script defer src="iris/js/renderers/apexcharts.js"></script>

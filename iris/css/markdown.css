@@ -1487,3 +1487,23 @@ body[data-sidebar-style="floating"] .reading-progress {
 }
 .markdown-body h2 .section-collapse-btn.is-collapsed { transform: rotate(-90deg); }
 .markdown-body .section-collapsed { display: none !important; }
+
+/* ===== 屏外内容跳过布局（PERF-2）：settings.perfContentVisibility 控制 body.perf-cv ===== */
+body.perf-cv .markdown-body > *:not(.doc-navigation) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+}
+
+/* ===== 中文排版渲染选项（CJK-4）：settings 控制 body 类开关 ===== */
+body.cjk-indent .markdown-body > p,
+body.cjk-indent .markdown-body > ul > li > p,
+body.cjk-indent .markdown-body > ol > li > p {
+  text-indent: 2em;
+}
+body.cjk-hanging-punct .markdown-body {
+  hanging-punctuation: allow-end force-end;
+}
+body.cjk-text-spacing .markdown-body {
+  text-spacing-trim: normal;
+  text-autospace: normal;
+}
