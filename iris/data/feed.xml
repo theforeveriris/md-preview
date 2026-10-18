@@ -5,8 +5,863 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 17 Oct 2026 15:22:05 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 18 Oct 2026 08:20:18 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>配置参考</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
+      <pubDate>Sun, 18 Oct 2026 08:19:55 GMT</pubDate>
+      <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
+      <content:encoded><![CDATA[<h1>配置参考</h1>
+<p>Markdown Preview 的配置分为两层：</p>
+<ol>
+<li><strong>构建/部署配置</strong> — <code>iris/config.json</code>（仓库级，所有访客共享）</li>
+<li><strong>运行时设置</strong> — 浏览器 localStorage（用户级，仅当前浏览器生效）</li>
+</ol>
+<hr>
+<h2>一、<code>iris/config.json</code>（仓库级配置）</h2>
+<p>修改此文件后需推送代码触发重新部署。</p>
+<h3>基础配置</h3>
+<pre><code class="language-json">{
+  &quot;owner&quot;: &quot;your-username&quot;,
+  &quot;repo&quot;: &quot;your-repo-name&quot;
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>owner</code></td>
+<td>string</td>
+<td>-</td>
+<td>GitHub 用户名或组织名</td>
+</tr>
+<tr>
+<td><code>repo</code></td>
+<td>string</td>
+<td>-</td>
+<td>仓库名</td>
+</tr>
+</tbody></table>
+<h3>完整配置项</h3>
+<pre><code class="language-json">{
+  &quot;owner&quot;: &quot;&quot;,
+  &quot;repo&quot;: &quot;&quot;,
+  &quot;branch&quot;: &quot;main&quot;,
+  &quot;title&quot;: &quot;Markdown Preview&quot;,
+  &quot;defaultTheme&quot;: &quot;default&quot;,
+  &quot;showEditButton&quot;: true,
+  &quot;showReadingTime&quot;: true,
+  &quot;showBreadcrumbs&quot;: true
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>branch</code></td>
+<td>string</td>
+<td><code>main</code></td>
+<td>文档所在的 Git 分支</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>string</td>
+<td><code>Markdown Preview</code></td>
+<td>站点标题</td>
+</tr>
+<tr>
+<td><code>defaultTheme</code></td>
+<td>string</td>
+<td><code>default</code></td>
+<td>默认主题 ID</td>
+</tr>
+<tr>
+<td><code>showEditButton</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>是否显示&quot;编辑此页&quot;按钮</td>
+</tr>
+<tr>
+<td><code>showReadingTime</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>是否显示阅读时间估算</td>
+</tr>
+<tr>
+<td><code>showBreadcrumbs</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>是否显示面包屑导航</td>
+</tr>
+<tr>
+<td><code>plantumlServers</code></td>
+<td>array</td>
+<td>内置列表</td>
+<td>PlantUML 渲染服务列表，按顺序尝试</td>
+</tr>
+</tbody></table>
+<h4>PlantUML 渲染服务（plantumlServers）</h4>
+<p>PlantUML 图表默认依次尝试官方服务器与 Kroki 公共服务，全部失败时自动降级为源码展示并提供在线编辑器链接。若你自建了 PlantUML 服务或想使用其他镜像，可在 <code>iris/config.json</code> 中覆盖：</p>
+<pre><code class="language-json">{
+  &quot;plantumlServers&quot;: [
+    { &quot;type&quot;: &quot;plantuml&quot;, &quot;base&quot;: &quot;https://your-self-hosted/plantuml&quot; },
+    { &quot;type&quot;: &quot;kroki&quot;, &quot;base&quot;: &quot;https://kroki.io/plantuml&quot; }
+  ]
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>type</code></td>
+<td><code>plantuml</code>（PlantUML 自定义编码）或 <code>kroki</code>（标准 base64url 编码）</td>
+</tr>
+<tr>
+<td><code>base</code></td>
+<td>服务基础地址，渲染时自动拼接 <code>/svg/&lt;编码&gt;</code></td>
+</tr>
+</tbody></table>
+<h3>配置加载顺序</h3>
+<ol>
+<li>内置默认配置</li>
+<li><code>iris/config.json</code> 中的配置（覆盖默认值）</li>
+<li>用户本地存储的设置（如主题选择，会覆盖前两者）</li>
+</ol>
+<hr>
+<h2>二、运行时设置（用户级）</h2>
+<p>通过悬浮球菜单 → <strong>设置</strong> 打开设置面板，所有改动保存在浏览器 localStorage，仅对当前浏览器生效。</p>
+<p>设置面板分七个区块：<strong>语言 / 外观 / 字体 / 阅读 / 布局 / 工具与导出 / 存储</strong>（左侧分组导航，点击平滑滚动、滚动时自动同步高亮）。</p>
+<h3>语言</h3>
+<p>设置面板最顶部为「语言」选择：<strong>自动（跟随浏览器）/ 中文 / English</strong>。选择「自动」时按浏览器语言自动判定；切换立即生效并记忆，无需刷新。</p>
+<h3>外观</h3>
+<h4>预设主题</h4>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>auto</code></td>
+<td>自动（跟随系统亮暗）</td>
+</tr>
+<tr>
+<td><code>default</code></td>
+<td>默认（紫粉渐变）</td>
+</tr>
+<tr>
+<td><code>github-light</code></td>
+<td>GitHub Light</td>
+</tr>
+<tr>
+<td><code>github-dark</code></td>
+<td>GitHub Dark</td>
+</tr>
+<tr>
+<td><code>notion</code></td>
+<td>Notion</td>
+</tr>
+<tr>
+<td><code>arc-dark</code></td>
+<td>Arc Dark</td>
+</tr>
+<tr>
+<td><code>dracula</code></td>
+<td>Dracula</td>
+</tr>
+<tr>
+<td><code>nord</code></td>
+<td>Nord</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>选择预设主题会清空自定义配色。</p>
+</blockquote>
+<p><strong>自动主题（auto）</strong>：跟随系统 <code>prefers-color-scheme</code> 实时切换——系统亮色时使用「自动主题配对」中的亮色主题（默认紫粉渐变），暗色时使用暗色主题（默认 GitHub Dark）。配对可在设置面板中自由组合，系统亮暗变化时即时生效（含 PWA 桌面模式）。</p>
+<h4>自定义配色（取色器）</h4>
+<p>无需写 CSS，直接通过取色器调整：</p>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>可调变量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>强调色</strong></td>
+<td><code>--color-accent-purple</code> / <code>--color-accent-pink</code> / <code>--color-accent-purple-deep</code></td>
+<td>主色及派生色</td>
+</tr>
+<tr>
+<td><strong>中性色</strong></td>
+<td><code>--color-bg</code> / <code>--color-surface</code> / <code>--color-border</code> / <code>--color-text</code> / <code>--color-text-muted</code></td>
+<td>背景、表面、文字与边框</td>
+</tr>
+</tbody></table>
+<p>通过中性色调整即可做出亮色或暗色主题。点击「重置」恢复默认值。</p>
+<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/theme-customization.md">主题定制</a>。</p>
+<h4>字体自定义</h4>
+<p>设置面板 → <strong>外观 → 字体</strong>，无需写 CSS 即可精细控制排版：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>远程字体 URL</td>
+<td>填写 Google Fonts 等 CSS URL 即可加载远程字体</td>
+</tr>
+<tr>
+<td>展示字体族</td>
+<td>标题衬线体，独立于正文</td>
+</tr>
+<tr>
+<td>正文字体族</td>
+<td>UI / 正文无衬线体</td>
+</tr>
+<tr>
+<td>字号细调</td>
+<td>UI / 正文 / H1 / H2 / H3 独立设置</td>
+</tr>
+<tr>
+<td>字重细调</td>
+<td>UI / 正文 / 展示体 / H1 / H2 / H3 独立选择（300 ~ 800）</td>
+</tr>
+<tr>
+<td>字色</td>
+<td>正文与次要文字颜色独立取色</td>
+</tr>
+<tr>
+<td>标题数字无衬线</td>
+<td>默认标题数字随标题字体（衬线）；开启后仅数字改用无衬线字形</td>
+</tr>
+<tr>
+<td>重置字体</td>
+<td>一键恢复全部字体默认值</td>
+</tr>
+</tbody></table>
+<h4>代码高亮主题</h4>
+<table>
+<thead>
+<tr>
+<th>主题 ID</th>
+<th>名称</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>github</code></td>
+<td>GitHub Light</td>
+<td>亮色</td>
+</tr>
+<tr>
+<td><code>github-dark</code></td>
+<td>GitHub Dark</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>atom-one-light</code></td>
+<td>Atom One Light</td>
+<td>亮色</td>
+</tr>
+<tr>
+<td><code>atom-one-dark</code></td>
+<td>Atom One Dark</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>monokai</code></td>
+<td>Monokai</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>dracula</code></td>
+<td>Dracula</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>nord</code></td>
+<td>Nord</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>vs2015</code></td>
+<td>VS 2015</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>solarized-light</code></td>
+<td>Solarized Light</td>
+<td>亮色</td>
+</tr>
+<tr>
+<td><code>solarized-dark</code></td>
+<td>Solarized Dark</td>
+<td>暗色</td>
+</tr>
+</tbody></table>
+<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md">代码高亮主题</a>。</p>
+<p>在「外观 → 代码高亮」中还可填写<strong>自定义高亮主题</strong>：加载外部 highlight.js 主题 CSS URL，回车应用（覆盖内置代码主题）。</p>
+<h4>自定义 CSS</h4>
+<p>在「外观 → 自定义 CSS」中填写<strong>外部样式表 URL</strong>，加载外部 CSS 文件进一步定制页面，回车应用。</p>
+<h3>阅读</h3>
+<h4>显示选项</h4>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>显示阅读进度</td>
+<td>控制顶部进度条</td>
+</tr>
+<tr>
+<td>显示字数统计</td>
+<td>控制文件树中每个文件旁的字数显示</td>
+</tr>
+<tr>
+<td>折叠过长文件名</td>
+<td>开启时文件名过长省略号显示，关闭时完整展开（区域可横向滚动，隐藏滚动条）；默认关闭</td>
+</tr>
+<tr>
+<td>侧边栏文件夹默认展开</td>
+<td>开启时文件树中的文件夹全部展开显示；关闭时默认折叠，点击文件夹手动展开</td>
+</tr>
+<tr>
+<td>启用移动端手势</td>
+<td>触屏设备左右滑动正文切换上一篇 / 下一篇，自屏幕左缘右滑呼出侧边栏抽屉</td>
+</tr>
+<tr>
+<td>启用章节折叠</td>
+<td>H2 标题栏右侧出现折叠按钮，折叠状态按文档记忆、重开自动恢复</td>
+</tr>
+<tr>
+<td>对照阅读默认同步滚动</td>
+<td>打开双栏对照阅读时两栏按比例同步滚动（<code>Ctrl/⌘+Alt+S</code> 可随时开关本次会话）</td>
+</tr>
+<tr>
+<td>专注模式</td>
+<td>当前阅读段落保持高亮、其余内容淡化（也可在 <code>Ctrl/⌘+K</code> 命令面板开关）</td>
+</tr>
+</tbody></table>
+<h4>布局</h4>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>侧边栏样式</td>
+<td>经典：贴边通栏、微色差微阴影无边框（默认）；悬浮卡片：四周留缝的圆角卡片（桌面端）</td>
+</tr>
+<tr>
+<td>内容区宽度</td>
+<td>滑杆调整 Markdown 正文最大宽度（600–1400px，默认 720px），拖动即时生效，可一键重置</td>
+</tr>
+<tr>
+<td>正文占满可用宽度</td>
+<td>开启后正文铺满窗口可用宽度，忽略上方宽度设置，适合宽屏显示器</td>
+</tr>
+<tr>
+<td>长表格延伸到右侧空白</td>
+<td>内容宽度设置保持不变，宽表格向右适度越过正文边界、利用右侧空白显示更多列</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>侧边栏折叠：桌面端可通过侧边栏标题栏的汉堡按钮或快捷键 <code>Ctrl/⌘ + B</code> 折叠/展开侧边栏，折叠后左上角浮现展开按钮，状态自动记忆（与移动端抽屉行为一致）。</p>
+<p>以上宽度与侧边栏操作均有键盘快捷键（<code>Ctrl/⌘ + Alt + =/-/0/F</code>、<code>Ctrl/⌘ + B</code>、<code>[</code> / <code>]</code> 等），完整清单见 <a href="https://theforeveriris.github.io/md-preview/docs/shortcuts.md">快捷键</a>。</p>
+</blockquote>
+<h3>工具与导出</h3>
+<h4>工具</h4>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Markdown 编辑器</td>
+<td>在新标签页打开交互式编辑器（<code>?mode=editor</code>），支持语法快速输入和实时渲染</td>
+</tr>
+<tr>
+<td>波形生成器</td>
+<td>可视化生成 DG-LAB 郊狼 <code>.pulse</code> 波形文件（<code>?mode=pulsegen</code>），最多 20 个</td>
+</tr>
+</tbody></table>
+<h4>导出</h4>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>下载 Markdown</td>
+<td>下载当前打开的 <code>.md</code> 源文件</td>
+</tr>
+<tr>
+<td>导出 PDF</td>
+<td>通过浏览器打印对话框导出为 PDF（自动隐藏侧边栏、悬浮球等 UI）</td>
+</tr>
+<tr>
+<td>导出 HTML</td>
+<td>保存为内联当前主题样式与全部本地 CSS 的单文件 HTML，双击即可离线查看</td>
+</tr>
+</tbody></table>
+<h4>离线缓存</h4>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>全量离线缓存</td>
+<td>把文件树覆盖的所有文档拉进 PWA 缓存（带进度反馈），离线也能整站阅读；支持一键清除文档缓存。需 HTTPS 部署访问后可用</td>
+</tr>
+</tbody></table>
+<h3>存储</h3>
+<p>设置面板「存储」区块：<code>navigator.storage.estimate()</code> 用量条（已用 / 配额）、编辑器笔记本列表（逐条删除 / 全部清空，二次确认）、阅读历史与收藏 / 阅读位置的占用与一键清理（<code>iris/js/storage-manager.js</code>，打开面板时自动刷新）。</p>
+<h4>导航增强</h4>
+<ul>
+<li><strong>面包屑目录聚合页</strong>：面包屑与正文同宽对齐；点击中间路径进入该目录的聚合页，集中浏览目录下全部文档</li>
+<li><strong>标签聚合页</strong>：<code>#/tag/&lt;标签&gt;</code> 按标签聚合文档（见「标签系统」）</li>
+</ul>
+<hr>
+<h2>三、悬浮球菜单</h2>
+<p>悬浮球展开后提供 6 个快捷入口：</p>
+<table>
+<thead>
+<tr>
+<th>入口</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>回到顶部</td>
+<td>平滑滚动到文档顶部</td>
+</tr>
+<tr>
+<td>打开本地文件</td>
+<td>点击弹出选择面板：「选择文件…」可一次选中一个或多个本地 <code>.md</code> 文件预览（不写入 URL，刷新后丢失），未打开的文件进入侧边栏「本地文件」会话列表，可切换、移除或清空；「选择文件夹…」整体导入一个目录（File System Access API，旧浏览器回退 <code>webkitdirectory</code>），按目录树展示、文件夹可折叠、内容懒加载；最多收集 500 个文件，单文件 ≤ 10MB。受浏览器限制，文件与文件夹需在面板中二选一进入</td>
+</tr>
+<tr>
+<td>扫码续读</td>
+<td>生成当前文档 + 阅读位置的二维码，手机扫码接着看</td>
+</tr>
+<tr>
+<td>安装到桌面</td>
+<td>PWA 安装（仅浏览器支持时显示）</td>
+</tr>
+<tr>
+<td>编辑此页</td>
+<td>在新标签页打开 GitHub 编辑界面</td>
+</tr>
+<tr>
+<td>设置</td>
+<td>打开设置面板</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>四、RSS 订阅</h2>
+<p>站点自动生成 RSS feed，订阅地址：</p>
+<pre><code>https://&lt;owner&gt;.github.io/&lt;repo&gt;/iris/data/feed.xml
+</code></pre>
+<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/rss.md">RSS 订阅</a>。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>系统运行时截图</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/show.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/show.md</guid>
+      <pubDate>Sun, 18 Oct 2026 08:19:55 GMT</pubDate>
+      <description>本文档按功能模块整理了 Markdown Preview 站点的完整运行时界面截图，每个截图附有功能介绍，并指向 中对应的详细示例文档。特殊页面会额外标注访问 URL。 --- 站点默认以左侧文档目录树 + 右侧正文阅读区的两栏布局呈现。侧边栏自动扫描仓库中所有 文件，构建嵌套目录结构并显示字数统计；顶部显示面包屑路径与搜索框；右上角悬浮球提供回到顶部、上一篇/下一篇、打开本地 MD、安装 PWA</description>
+      <content:encoded><![CDATA[<h1>系统运行时截图</h1>
+<p>本文档按功能模块整理了 Markdown Preview 站点的完整运行时界面截图，每个截图附有功能介绍，并指向 <code>docs/examples/</code> 中对应的详细示例文档。特殊页面会额外标注访问 URL。</p>
+<hr>
+<h2>一、整体界面</h2>
+<h3>首页整体展示</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E9%A6%96%E9%A1%B5%E6%95%B4%E4%BD%93%E5%B1%95%E7%A4%BA.png" alt="首页整体展示"></p>
+<p>站点默认以左侧文档目录树 + 右侧正文阅读区的两栏布局呈现。侧边栏自动扫描仓库中所有 <code>.md</code> 文件，构建嵌套目录结构并显示字数统计；顶部显示面包屑路径与搜索框；右上角悬浮球提供回到顶部、上一篇/下一篇、打开本地 MD、安装 PWA、编辑此页、设置等快捷入口。</p>
+<p>相关文档：</p>
+<ul>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/getting-started.md">快速开始</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/basic-usage.md">基础使用示例</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/markdown-syntax.md">Markdown 语法总览</a></li>
+</ul>
+<hr>
+<h2>二、Markdown 渲染能力</h2>
+<h3>LaTeX 数学公式</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-latex%E5%85%AC%E5%BC%8F.png" alt="渲染-latex公式"></p>
+<p>基于 KaTeX 引擎的数学公式渲染，支持行内公式 <code>$...$</code> 与独立公式块 <code>$$...$$</code>，涵盖矩阵、方程组、求和与极限、希腊字母等完整 LaTeX 语法。公式块支持主题配色自适应，暗色模式下自动切换对比度合适的颜色。</p>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/latex-examples.md">LaTeX 示例</a></p>
+<hr>
+<h3>Mermaid 图表</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-mermaid%E5%9B%BE%E8%A1%A8.png" alt="渲染-mermaid图表"></p>
+<p>Mermaid 渲染器支持 18+ 种图表类型：流程图、时序图、类图、状态图、ER 实体关系图、甘特图、饼图、用户旅程图、思维导图、时间线、象限图、Git 提交图、区块图、C4 架构图、xychart-beta 等。图表颜色随文档站主题自动联动。</p>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/mermaid-examples.md">Mermaid 示例</a></p>
+<hr>
+<h3>PlantUML 图表</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-plantuml%E5%9B%BE%E8%A1%A8.png" alt="渲染-plantuml图表"></p>
+<p>通过公共 PlantUML 服务器渲染 UML 系列图表：时序图、类图、用例图、活动图、状态图、组件图、部署图、思维导图、WBS 工作分解图、JSON 数据图、ER 图、线框图 salt 等 12 大类。渲染服务依序尝试（官方服务器 → Kroki，可经 <code>plantumlServers</code> 配置覆盖），全部失败时自动降级为源码展示并提供在线编辑器链接。</p>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/plantuml-examples.md">PlantUML 示例</a></p>
+<hr>
+<h3>ApexCharts 动态图表</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E5%8A%A8%E6%80%81%E5%9B%BE%E8%A1%A8.png" alt="渲染-动态图表"></p>
+<p>ApexCharts 交互式图表渲染器，涵盖 13 种常见类型：折线、面积、分组柱状、堆叠柱状、水平条形、饼图、环形 donut、雷达、散点、气泡、极坐标 polarArea、范围区域 rangeArea、烛台 candlestick。支持鼠标悬停数值提示、图例筛选、缩放平移等交互。</p>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/apexcharts-examples.md">ApexCharts 示例</a></p>
+<hr>
+<h3>Git Diff 代码对比</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E4%BB%A3%E7%A0%81%E5%AF%B9%E6%AF%94.png" alt="渲染-代码对比"></p>
+<p>基于 Diff2Html 的 Git Diff 语法高亮对比，支持 Side-by-Side 并排视图与 Line-by-Line 逐行视图两种模式，新增/删除/修改行以不同颜色标记，变更字符级别高亮。</p>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/diff-examples.md">Diff 差异可视化</a></p>
+<hr>
+<h3>GitHub 风格特殊引用块（Alerts）</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E7%89%B9%E6%AE%8A%E5%BC%95%E7%94%A8%E5%9D%97.png" alt="渲染-特殊引用块"></p>
+<p>兼容 GitHub 官方的 <code>[!NOTE]</code> / <code>[!TIP]</code> / <code>[!WARNING]</code> / <code>[!IMPORTANT]</code> / <code>[!CAUTION]</code> 五种提示块语法，每种类型拥有独立配色与语义化图标，视觉层级清晰。</p>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/github-alerts-examples.md">GitHub Alerts 示例</a></p>
+<hr>
+<h3>Columns 多栏文本布局</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E5%A4%9A%E6%A0%8F%E6%96%87%E6%9C%AC.png" alt="渲染-多栏文本"></p>
+<p>页面分栏布局语法，支持 2 栏 / 3 栏 / 多栏自定义宽度，栏间自动均分或按比例分配，用于左右对照、多列内容并排等场景，移动端自动折叠为单列。</p>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/columns-examples.md">Columns 分栏布局</a></p>
+<hr>
+<h3>Code Tabs 多栏代码块（并排对比）</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E5%A4%9A%E6%A0%8F%E4%BB%A3%E7%A0%81%E5%9D%97-1.png" alt="渲染-多栏代码块-1"></p>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E5%A4%9A%E6%A0%8F%E4%BB%A3%E7%A0%81%E5%9D%97-2.png" alt="渲染-多栏代码块-2"></p>
+<p>多语言代码并排标签页，适合同一逻辑的多种语言实现对比。支持点击 Tab 切换语言，每张 Tab 独立拥有复制按钮与语言标签。</p>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/code-tabs-examples.md">代码 Tabs 示例</a></p>
+<hr>
+<h3>长表格横向滚动优化</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E8%BF%87%E9%95%BF%E7%9A%84%E8%A1%A8%E6%A0%BC%E5%90%AF%E7%94%A8%E6%BB%9A%E5%8A%A8.png" alt="渲染-过长的表格启用滚动"></p>
+<p>当表格列数过多、超出正文宽度时，自动包裹 <code>.table-wrapper</code> 并启用横向滚动条，表格行保持斑马纹与悬浮高亮，表头可固定视口顶部。另有两个增强：</p>
+<ul>
+<li><strong>延伸到右侧空白</strong>（设置面板可选）：宽表格越过正文边界，利用右侧留白显示更多列；</li>
+<li><strong>表格悬浮手柄</strong>：表格第一行左侧浮现手柄，提供「下载主题化 PNG / 复制 Markdown 源码 / 复制 CSV」三项操作，全部使用内联 SVG 图标。</li>
+</ul>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/table-examples.md">表格展示与优化</a></p>
+<hr>
+<h3>Spoiler 遮罩 / 剧透折叠块</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E9%81%AE%E7%BD%A9-1.png" alt="渲染-遮罩-1"></p>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E9%81%AE%E7%BD%A9-2.png" alt="渲染-遮罩-2"></p>
+<p>内置剧透折叠块语法（Spoiler），支持两种展示模式：</p>
+<ol>
+<li>覆盖式遮罩：内容被色块覆盖，点击/悬停后渐变揭示文字</li>
+<li><code>&lt;details&gt;</code> 原生折叠：标题可点击展开/收起详细内容</li>
+</ol>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/spoiler-examples.md">Spoiler 折叠语法</a></p>
+<hr>
+<h3>图片画廊布局（多种 CSS 排布）</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E7%94%BB%E5%BB%8A-1.png" alt="渲染-画廊-1"></p>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E7%94%BB%E5%BB%8A-2.png" alt="渲染-画廊-2"></p>
+<p>内置 17 种图片画廊 CSS 布局：<code>@grid</code> 网格、<code>@cardstack</code> 卡片堆叠、<code>@filmstrip</code> 胶片条、<code>@polaroid</code> 宝丽来、<code>@stack</code> 倾斜堆叠、<code>@mosaic</code> 马赛克、<code>@scattered</code> 散落、<code>@hexagon</code> 六边形、<code>@coverflow</code> 封面流、<code>@tape</code> 胶带、<code>@duotone</code> 双色、<code>@frame</code> 画框、<code>@arch</code> 拱廊、<code>@masonry</code> 瀑布流、<code>@slider</code> 轮播、<code>@ticket</code> 票根、<code>@panorama</code> 全景。</p>
+<p>详细示例：</p>
+<ul>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/gallery-layouts.md">画廊布局说明</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/image-gallery-examples.md">图片画廊功能示例</a></li>
+</ul>
+<hr>
+<h3>二维码生成（插件）</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E4%BA%8C%E7%BB%B4%E7%A0%81-%E6%AD%A4%E4%B8%BA%E6%8F%92%E4%BB%B6%E4%BB%85%E4%B8%BA%E6%A3%80%E6%9F%A5%E6%8F%92%E4%BB%B6%E6%8E%A5%E5%8F%A3%E6%98%AF%E5%90%A6%E6%AD%A3%E5%B8%B8.png" alt="渲染-二维码-此为插件仅为检查插件接口是否正常"></p>
+<p>插件系统的演示插件之一，使用 <code>qrcode</code> 代码块生成任意内容的二维码，尺寸、颜色、容错率均可配置。该插件主要用于验证自定义渲染器插件接口的正确性与兼容性。</p>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/qrcode-examples.md">二维码示例</a>
+插件开发：<a href="https://theforeveriris.github.io/md-preview/docs/plugin-development.md">插件开发指南</a></p>
+<hr>
+<h3>倒计时器（插件）</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E5%80%92%E8%AE%A1%E6%97%B6%E5%99%A8-%E6%AD%A4%E4%B8%BA%E6%8F%92%E4%BB%B6%E4%BB%85%E4%B8%BA%E6%A3%80%E6%9F%A5%E6%8F%92%E4%BB%B6%E6%8E%A5%E5%8F%A3%E6%98%AF%E5%90%A6%E6%AD%A3%E5%B8%B8.png" alt="渲染-倒计时器-此为插件仅为检查插件接口是否正常"></p>
+<p>插件系统演示插件之二，<code>countdown</code> 代码块渲染实时倒计时组件，支持设定目标日期时间，显示剩余天/时/分/秒，自动每秒刷新。到期后显示自定义完成文案。</p>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/countdown-examples.md">倒计时组件示例</a>
+插件开发：<a href="https://theforeveriris.github.io/md-preview/docs/plugin-development.md">插件开发指南</a></p>
+<hr>
+<h3>ColorCard 彩色卡片（插件）</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E8%89%B2%E5%8D%A1-%E6%AD%A4%E4%B8%BA%E6%8F%92%E4%BB%B6%E4%BB%85%E4%B8%BA%E6%A3%80%E6%9F%A5%E6%8F%92%E4%BB%B6%E6%8E%A5%E5%8F%A3%E6%98%AF%E5%90%A6%E6%AD%A3%E5%B8%B8.png" alt="渲染-色卡-此为插件仅为检查插件接口是否正常"></p>
+<p>插件系统演示插件之三，ColorCard 以预设配色渲染彩色信息卡片，支持标题/正文/标签/按钮等结构化内容，用于产品特性总览、色板展示、亮点汇总等场景。</p>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/colorcard-examples.md">ColorCard 彩色卡片</a>
+插件开发：<a href="https://theforeveriris.github.io/md-preview/docs/plugin-development.md">插件开发指南</a></p>
+<hr>
+<h3>视频嵌入（YouTube / Bilibili / Vimeo 等）</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E8%A7%86%E9%A2%91%E5%B5%8C%E5%85%A5.png" alt="渲染-视频嵌入"></p>
+<p><code>@[youtube](id)</code> / <code>@[bilibili](bv-id)</code> / <code>@[vimeo](id)</code> 等嵌入语法，支持响应式 16:9 容器；同类服务还包括 Twitter 推文、GitHub Gist、CodePen / JSFiddle / StackBlitz / Replit 在线演示、Figma 设计稿、Google Maps / OpenStreetMap 地图、Google Docs 文档等 13 种外部嵌入服务。</p>
+<p>详细示例：</p>
+<ul>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/embed-examples.md">外部嵌入综合示例</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/twitter-embed-examples.md">Twitter 推文嵌入示例</a></li>
+</ul>
+<hr>
+<h3>X（Twitter）帖子嵌入（实验中 / 暂废弃）</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-x%E5%B8%96%E5%AD%90-%E5%AE%9E%E9%AA%8C%E4%B8%AD%E6%88%96%E6%9A%82%E5%BA%9F%E5%BC%83.png" alt="渲染-x帖子-实验中或暂废弃"></p>
+<p>早期针对 X（原 Twitter）官方帖子的嵌入方案。因官方 API 与前端 SDK 变动频繁，目前主要推荐使用通用外部嵌入语法 <code>@[twitter]</code>。该截图保留作历史记录与 UI 参考。</p>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/twitter-embed-examples.md">Twitter 推文嵌入示例</a></p>
+<hr>
+<h3>PPTX 演示文稿嵌入</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-ppt%E6%BC%94%E7%A4%BA%E6%96%87%E7%A8%BF.png" alt="渲染-ppt演示文稿"></p>
+<p>通过 CI 构建流程（<code>iris/scripts/pptx/main.py</code>，基于 LibreOffice + Poppler/pdftoppm）将 <code>.pptx</code> 预处理为逐页图片。文档端以缩略图网格呈现，点击任意页面进入全屏放映模式，支持左右键/方向键翻页、回到网格等交互。</p>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/pptx-examples.md">PPTX 嵌入与放映示例</a></p>
+<hr>
+<h3>郊狼 Pulse 波形渲染（完整模式）</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E9%83%8A%E7%8B%BC%E6%B3%A2%E5%BD%A2%E5%9B%BE-%E5%A4%A7.png" alt="渲染-郊狼波形图-大"></p>
+<p>DG-LAB 郊狼设备 <code>.pulse</code> 波形文件的完整渲染器。基于 <code>Dungeonlab+pulse:</code> 官方格式解析，支持：</p>
+<ul>
+<li><strong>竖线 / 曲线</strong> 两种显示模式切换</li>
+<li><strong>全局平铺 / 滚动播放头</strong> 两种视图</li>
+<li>小节边界粉色虚线（S1/S2...）、休息段灰色虚线</li>
+<li>锚点脉冲粉色标记、普通脉冲锚点间自动线性插值</li>
+<li>图例悬停显示小节参数（频率范围 / 时长 / 模式）</li>
+<li>一键下载 <code>.pulse</code> 原始文件、展开查看完整标签代码</li>
+</ul>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md">Pulse 波形示例（10+ 种波形）</a></p>
+<hr>
+<h3>郊狼 Pulse 迷你波形（内联样式）</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E9%83%8A%E7%8B%BC%E6%B3%A2%E5%BD%A2%E5%9B%BE-%E5%B0%8F.png" alt="渲染-郊狼波形图-小"></p>
+<p>迷你波形 <code>[pulsemini]</code> 内联版本，尺寸约 220px 宽，固定为竖线 + 滚动模式，播放头位于中央。适合在段落文字中嵌入或批量展示多个波形。标题栏提供复制源码与下载 <code>.pulse</code> 图标按钮。</p>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md#11-%E8%BF%B7%E4%BD%A0%E6%B3%A2%E5%BD%A2-%E5%86%85%E8%81%94%E6%A0%B7%E5%BC%8F">Pulse 波形示例 → 迷你波形章节</a></p>
+<hr>
+<h3>Cisco Packet Tracer 拓扑图（.pkt 解析）</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-pkt%E6%8B%93%E6%89%91%E5%9B%BE.png" alt="渲染-pkt拓扑图"></p>
+<p>完整的 <code>.pkt</code> 文件解密解析管线 + Cytoscape.js 交互式渲染：5 个 Python 脚本零依赖实现 XOR/Twofish EAX 解密、zlib 多策略解压、XML + Cisco IOS 配置提取、分区化 JSON schema 输出。渲染端支持 13 种设备 SVG 图标、线缆颜色映射、搜索高亮、PT 坐标↔力导向布局切换、网格背景、导出 PNG/JSON/Markdown。</p>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-pkt%E6%8B%93%E6%89%91%E5%9B%BE%E8%AF%A6%E6%83%85.png" alt="渲染-pkt拓扑图详情"></p>
+<p>点击节点弹出右侧抽屉（移动端改为底部弹出），包含 5 个标签页：接口表、完整配置、VLAN 划分、ACL 访问控制列表、静态/动态路由表。代码实现自定义 IOS 语法高亮。</p>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/pkt-examples.md">Packet Tracer 拓扑渲染示例</a></p>
+<hr>
+<h3>华为 eNSP 拓扑图（.topo / .zip 解析）</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-ensp%E6%8B%93%E6%89%91%E5%9B%BE%E8%A7%A3%E6%9E%90.png" alt="渲染-ensp拓扑图解析"></p>
+<p>针对华为 eNSP 模拟器工程文件的解析管线。支持 <code>.topo</code> XML 与 <code>.zip</code> 压缩包两种格式，提取路由器、交换机、防火墙等网络设备及线缆连接关系，生成与 PKT 渲染器一致风格的 Cytoscape 交互式拓扑图。</p>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-ensp%E6%8B%93%E6%89%91%E5%9B%BE%E8%AF%A6%E6%83%85.png" alt="渲染-ensp拓扑图详情"></p>
+<p>节点详情抽屉展示：设备接口表、VRP 配置文件、VLAN / ACL / 路由 等标签页，与 Cisco 版本体验保持一致。</p>
+<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/ensp-examples.md">华为 eNSP 拓扑示例</a></p>
+<hr>
+<h2>三、设置面板</h2>
+<h3>预设主题 + 自定义配色（取色器）</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E8%AE%BE%E7%BD%AE-%E5%85%81%E8%AE%B8%E8%87%AA%E5%AE%9A%E4%B9%89%E9%A2%84%E8%AE%BE%E4%B8%BB%E9%A2%98%E6%88%96%E8%87%AA%E8%A1%8C%E9%85%8D%E8%89%B2.png" alt="设置-允许自定义预设主题或自行配色"></p>
+<p>7 种内置主题（default / github-light / github-dark / notion / arc-dark / dracula / nord）一键切换；在此基础上提供：</p>
+<ul>
+<li><strong>自动主题（auto）</strong>：跟随系统亮暗实时切换，亮 / 暗配对可自由组合（默认紫粉渐变 + GitHub Dark）</li>
+<li><strong>界面语言</strong>：中文 / English，默认跟随浏览器语言，设置面板顶部一键切换</li>
+<li><strong>强调色取色器</strong>：主色 / 粉色 / 深色 独立调整</li>
+<li><strong>中性色取色器</strong>：背景 / 表面 / 边框 / 文字 / 次要文字 五个维度，可自由组合亮色或暗色主题</li>
+<li>所有配色持久化到 localStorage</li>
+</ul>
+<p>详细文档：<a href="https://theforeveriris.github.io/md-preview/docs/theme-customization.md">主题定制</a></p>
+<hr>
+<h3>字体/字号/字重/字色 精细控制</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E8%AE%BE%E7%BD%AE-%E5%85%81%E8%AE%B8%E6%8E%A7%E5%88%B6%E5%AD%97%E8%89%B2%E5%AD%97%E5%8F%B7%E5%AD%97%E9%87%8D.png" alt="设置-允许控制字色字号字重"></p>
+<p>字体体系提供全方位细粒度控制：</p>
+<ul>
+<li><strong>远程字体 URL</strong>：粘贴任意 Google Fonts / 自建 CSS URL 即可加载</li>
+<li><strong>字体族</strong>：展示字体（标题衬线体）与正文字体（UI/正文无衬线体）自由填写</li>
+<li><strong>字号细调</strong>：UI / 正文 / H1 / H2 / H3 五档独立设置</li>
+<li><strong>字重细调</strong>：UI / 正文 / 展示体 / H1 / H2 / H3 六档独立选择（300~800）</li>
+<li><strong>字色</strong>：正文与次要文字颜色独立取色</li>
+<li><strong>标题数字无衬线</strong>：默认标题数字随标题字体（衬线），开启后仅数字改用无衬线字形</li>
+<li>一键「重置字体」恢复默认</li>
+</ul>
+<hr>
+<h3>远程字体加载</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E8%AE%BE%E7%BD%AE-%E5%85%81%E8%AE%B8%E8%AE%BE%E7%BD%AE%E8%BF%9C%E7%A8%8B%E5%AD%97%E4%BD%93.png" alt="设置-允许设置远程字体"></p>
+<p>设置 → 字体 → 远程字体 URL 输入框，粘贴任意远程字体服务的 CSS 地址（例如 Google Fonts 的 <code>@import</code> URL），回车后立即应用并持久化。适合使用私有字体 CDN 或公司标准字体的场景。</p>
+<hr>
+<h3>自定义页面 CSS / 代码高亮 CSS</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E8%AE%BE%E7%BD%AE-%E5%85%81%E8%AE%B8%E8%87%AA%E5%AE%9A%E4%B9%89%E9%A1%B5%E9%9D%A2%E6%88%96%E4%BB%A3%E7%A0%81%E9%AB%98%E4%BA%AEcss.png" alt="设置-允许自定义页面或代码高亮css"></p>
+<p>进阶用户的样式扩展能力：</p>
+<ul>
+<li><strong>自定义页面 CSS</strong>：加载外部 CSS 文件，完全定制 Markdown 正文、侧栏、组件等样式</li>
+<li><strong>自定义代码高亮 CSS</strong>：粘贴任意 highlight.js 主题 CSS URL，回车后即时替换代码块配色</li>
+</ul>
+<hr>
+<h3>预设代码高亮方案选择</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E8%AE%BE%E7%BD%AE-%E5%85%81%E8%AE%B8%E9%80%89%E6%8B%A9%E9%A2%84%E8%AE%BE%E4%BB%A3%E7%A0%81%E9%AB%98%E4%BA%AE%E6%96%B9%E6%A1%88.png" alt="设置-允许选择预设代码高亮方案"></p>
+<p>内置 10 套经典代码高亮主题，涵盖亮色与暗色：
+atom-one-dark、atom-one-light、dracula、github-dark、github、monokai、nord、solarized-dark、solarized-light、vs2015</p>
+<p>详细文档：<a href="https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md">代码高亮主题</a></p>
+<hr>
+<h3>侧边栏显示选项微调</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E8%AE%BE%E7%BD%AE-%E5%85%81%E8%AE%B8%E8%B0%83%E6%95%B4%E9%83%A8%E5%88%86%E4%BE%A7%E8%BE%B9%E6%A0%8F%E9%80%89%E9%A1%B9.png" alt="设置-允许调整部分侧边栏选项"></p>
+<p>侧边栏相关的显示偏好：字数统计显示/隐藏、长文件名截断/展开切换、侧边栏文件夹默认展开、侧边栏样式（经典贴边 / 悬浮卡片）等。</p>
+<hr>
+<h2>四、输出与订阅功能</h2>
+<h3>导出文章为 Markdown / PDF / 单文件 HTML</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E5%85%81%E8%AE%B8%E5%AF%BC%E5%87%BA%E6%96%87%E7%AB%A0%E4%B8%BAmd%E6%88%96pdf.png" alt="允许导出文章为md或pdf"></p>
+<p>设置面板 → 操作 → 导出能力：</p>
+<ul>
+<li><strong>下载 Markdown</strong>：下载当前打开的 <code>.md</code> 源文件</li>
+<li><strong>导出 PDF</strong>：通过 <code>window.print()</code> + <code>@media print</code> 专用样式自动隐藏侧边栏/悬浮球等 UI，调用浏览器打印对话框，选择「另存为 PDF」即可</li>
+<li><strong>导出 HTML</strong>：保存为内联当前主题样式与全部本地 CSS（递归展开 <code>@import</code> 子模块）的单文件 HTML，双击即可离线查看</li>
+</ul>
+<hr>
+<h3>PWA 可安装到本地</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E5%8A%9F%E8%83%BD-%E5%85%81%E8%AE%B8pwa%E5%AE%89%E8%A3%85%E5%88%B0%E6%9C%AC%E5%9C%B0.png" alt="功能-允许pwa安装到本地"></p>
+<p>基于 Service Worker 的 PWA 能力：</p>
+<ul>
+<li><strong>可安装</strong>：支持的浏览器中，悬浮球菜单出现「安装到桌面」按钮，一键安装为桌面应用或手机主屏幕</li>
+<li><strong>离线访问</strong>：首屏静态资源预缓存；文档采用「网络优先 + 离线降级缓存」策略</li>
+<li><strong>更新提示</strong>：检测到新版本资源时 toast 提示用户刷新页面</li>
+<li>清单文件：根目录 <code>manifest.json</code>，Service Worker：<code>sw.js</code></li>
+</ul>
+<hr>
+<h3>生成 RSS 订阅源</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E5%8A%9F%E8%83%BD-%E7%94%9F%E6%88%90RSS%E8%AE%A2%E9%98%85.png" alt="功能-生成RSS订阅"></p>
+<p><code>docs/**</code> 目录变更时，GitHub Actions 自动运行 <code>iris/scripts/build-feed.js</code> 生成 RSS 2.0 规范的 <code>feed.xml</code>，并在 <code>index.html</code> 中通过 <code>&lt;link rel=&quot;alternate&quot;&gt;</code> 自动发现。用户可使用任何 RSS 阅读器订阅站点文档更新。</p>
+<p>详细文档：<a href="https://theforeveriris.github.io/md-preview/docs/rss.md">RSS 订阅</a></p>
+<hr>
+<h2>五、特殊页面</h2>
+<h3>类 Jupyter Notebook 的内置 Markdown 编辑器</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E7%89%B9%E6%AE%8A%E9%A1%B5%E9%9D%A2-%E4%BB%BFJupyternotebook%E7%9A%84%E6%9C%AC%E7%AB%99%E8%AF%AD%E6%B3%95%E7%B3%96%E9%AA%8C%E8%AF%81%E9%A1%B5.png" alt="特殊页面-仿Jupyternotebook的本站语法糖验证页"></p>
+<p><strong>访问 URL</strong>：站点任意页面追加 <code>?mode=editor</code>，例如 <code>https://theforeveriris.github.io/md-preview/?mode=editor</code></p>
+<p>内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，以全屏覆盖层叠加在文档站之上，特点包括：</p>
+<ul>
+<li>Cell 模型（markdown / plaintext 两种类型），每 Cell 独立编辑 + 渲染输出</li>
+<li>运行当前（<code>Ctrl+Enter</code>）/ 全部（<code>Ctrl+Shift+Enter</code>）/ 此 Cell 及下方</li>
+<li>双屏编辑模式：Cell 头部一键进入全屏双屏，左侧编辑右侧实时预览，分隔条可拖宽、同步滚动</li>
+<li>IndexedDB 自动保存（1.5s 防抖，多笔记本多标签，刷新不丢内容）</li>
+<li>14 类触发字符自动补全，120+ 条目</li>
+<li>8 大工具栏下拉菜单：Markdown / HTML / 私有语法 / 工具渲染 / 插入 / 嵌入 / 下载 / 导入</li>
+<li>2 列右键菜单（17 项操作）、视口边界自适应定位</li>
+<li>跨 Cell 搜索替换（F3 / Shift+F3 导航）</li>
+<li>导入导出：.md / .html / 内联 CSS HTML / .pdf / .mdnb 笔记本 / 合并 .md</li>
+<li>4 档字号（12/14/16/18）、亮/暗主题独立切换</li>
+</ul>
+<p>该页面同时承担「本站私有语法糖验证页」角色：编辑器内置的工具栏与自动补全覆盖了所有私有语法（画廊、Alerts、Pulse、PKT、PPTX 等嵌入），打开即可即时验证渲染结果。</p>
+<p>详细文档：<a href="https://theforeveriris.github.io/md-preview/docs/editor.md">Markdown 编辑器说明</a></p>
+<hr>
+<h3>郊狼波形批量生成页</h3>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E7%89%B9%E6%AE%8A%E9%A1%B5%E9%9D%A2-%E9%83%8A%E7%8B%BC%E6%B3%A2%E5%BD%A2%E6%89%B9%E9%87%8F%E7%94%9F%E6%88%90%E9%A1%B5.png" alt="特殊页面-郊狼波形批量生成页"></p>
+<p><strong>访问 URL</strong>：站点任意页面追加 <code>?mode=pulsegen</code>，例如 <code>https://theforeveriris.github.io/md-preview/?mode=pulsegen</code></p>
+<p>面向 DG-LAB 郊狼 <code>.pulse</code> 波形创作者的可视化批量生成工具：</p>
+<ul>
+<li><strong>9 大类 · 50+ 种波形模板</strong>：脉冲类 / 基础波 / 自然类 / 衰减上升 / 噪声类 / 阶梯折线 / 组合类 / 特殊形状 / 氛围类</li>
+<li><strong>核心参数</strong>：激烈程度 1~10 档、强度范围预设或自定义、小节数（固定/区间）、数据点数（自动/固定/区间）、插值类型（线性/缓入/缓出/缓入缓出）</li>
+<li><strong>叠加混合与随机种子</strong>：可选波形叠加混合、支持任意种子字符串保证可复现</li>
+<li><strong>批量生成 1~20 个</strong>：以 3 列网格展示迷你波形实时预览，每个提供复制源码与下载 <code>.pulse</code> 按钮</li>
+</ul>
+<p>详细文档：<a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-generator-page.md">郊狼波形批量生成页说明</a>
+Pulse 格式与示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md">Pulse 波形示例</a></p>
+<hr>
+<h2>六、界面与导航增强（截图待补）</h2>
+<p>以下功能已上线但尚未补充运行时截图，功能说明与详细文档先行收录：</p>
+<h3>搜索命令面板（<code>Ctrl/⌘ + K</code>）</h3>
+<p>搜索改造为居中弹出的命令面板（Claude/ZCode 风格）：基于 FlexSearch 的中文分词全文检索、结果关键词高亮；侧边栏仅保留一行轻量搜索入口唤起面板。</p>
+<p>相关文档：<a href="https://theforeveriris.github.io/md-preview/docs/shortcuts.md">快捷键</a></p>
+<h3>侧边栏折叠 + 内容区宽度可调</h3>
+<p>桌面端可用汉堡按钮或 <code>Ctrl/⌘ + B</code> 折叠/展开侧边栏（状态自动记忆）；正文最大宽度可在设置面板滑杆调整（600–1400px），或一键占满可用宽度，快捷键 <code>Ctrl/⌘ + Alt + =/-/0/F</code>。</p>
+<p>相关文档：<a href="https://theforeveriris.github.io/md-preview/docs/shortcuts.md">快捷键</a> / <a href="https://theforeveriris.github.io/md-preview/docs/configuration.md">配置参考</a></p>
+<h3>本地文件会话列表 + 打开本地文件夹</h3>
+<p>「打开本地 MD」支持一次多选（最多 20 个），未打开的文件进入侧边栏「本地文件」面板，可点击切换、单个移除、一键清空；「打开本地文件夹」整体导入目录（File System Access API，旧浏览器自动回退），按目录树展示、可折叠、内容懒加载，上一篇/下一篇在全部文件间循环。</p>
+<p>相关文档：<a href="https://theforeveriris.github.io/md-preview/docs/configuration.md">配置参考</a></p>
+<h3>自动主题 / 界面多语言 / 单文件 HTML 导出</h3>
+<p>详见「设置面板」一节与 README 特性清单：自动主题跟随系统亮暗实时切换；界面语言中文 / English 一键切换；导出 HTML 生成内联全部样式的单文件离线页面。</p>
+<p>相关文档：<a href="https://theforeveriris.github.io/md-preview/docs/theme-customization.md">主题定制</a> / <a href="https://theforeveriris.github.io/md-preview/docs/configuration.md">配置参考</a></p>
+<h3>设置面板分组导航 / 侧边栏样式</h3>
+<p>设置面板 Chrome 风格改造：左侧分组导航（语言 / 外观 / 字体 / 阅读 / 布局 / 工具与导出 / 存储），点击平滑滚动、滚动时自动同步高亮；侧边栏样式新增「经典贴边 / 悬浮卡片」切换；面包屑点击中间路径可进入目录聚合页。</p>
+<p>相关文档：<a href="https://theforeveriris.github.io/md-preview/docs/configuration.md">配置参考</a></p>
+<hr>
+<h2>索引：示例文档速查表</h2>
+<table>
+<thead>
+<tr>
+<th>功能分类</th>
+<th>对应详细文档</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Markdown 基础语法与排版</td>
+<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/basic-usage.md">basic-usage.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/markdown-syntax.md">markdown-syntax.md</a></td>
+</tr>
+<tr>
+<td>表格展示与长表格滚动优化</td>
+<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/table-examples.md">table-examples.md</a></td>
+</tr>
+<tr>
+<td>7 种内置主题视觉对比</td>
+<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/theme-demo.md">theme-demo.md</a></td>
+</tr>
+<tr>
+<td>图片灯箱与画廊布局</td>
+<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/image-gallery-examples.md">image-gallery-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/gallery-layouts.md">gallery-layouts.md</a></td>
+</tr>
+<tr>
+<td>GitHub Alerts 提示块</td>
+<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/github-alerts-examples.md">github-alerts-examples.md</a></td>
+</tr>
+<tr>
+<td>HTML 原生标签排版技巧</td>
+<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/native-html-examples.md">native-html-examples.md</a></td>
+</tr>
+<tr>
+<td>Columns 分栏 / ColorCard / Spoiler / Code Tabs</td>
+<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/columns-examples.md">columns-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/colorcard-examples.md">colorcard-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/spoiler-examples.md">spoiler-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/code-tabs-examples.md">code-tabs-examples.md</a></td>
+</tr>
+<tr>
+<td>Countdown 倒计时 / QRCode 二维码</td>
+<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/countdown-examples.md">countdown-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/qrcode-examples.md">qrcode-examples.md</a></td>
+</tr>
+<tr>
+<td>Mermaid / PlantUML / ApexCharts 图表</td>
+<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/mermaid-examples.md">mermaid-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/plantuml-examples.md">plantuml-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/apexcharts-examples.md">apexcharts-examples.md</a></td>
+</tr>
+<tr>
+<td>LaTeX 公式 / Diff 差异 / GeoJSON 地图</td>
+<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/latex-examples.md">latex-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/diff-examples.md">diff-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/geojson-examples.md">geojson-examples.md</a></td>
+</tr>
+<tr>
+<td>Packet Tracer / eNSP 拓扑</td>
+<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/pkt-examples.md">pkt-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/ensp-examples.md">ensp-examples.md</a></td>
+</tr>
+<tr>
+<td>华为 VRP 配置步骤推算</td>
+<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/pkt-huawei-vrp-%E8%A7%A3%E6%9E%90%E7%A4%BA%E4%BE%8B.md">pkt-huawei-vrp-解析示例.md</a></td>
+</tr>
+<tr>
+<td>PPTX 嵌入与放映</td>
+<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/pptx-examples.md">pptx-examples.md</a></td>
+</tr>
+<tr>
+<td>Pulse 波形渲染与迷你波形</td>
+<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md">pulse-examples.md</a></td>
+</tr>
+<tr>
+<td>Pulse 批量生成器（特殊页面）</td>
+<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-generator-page.md">pulse-generator-page.md</a></td>
+</tr>
+<tr>
+<td>外部嵌入 / Twitter 推文</td>
+<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/embed-examples.md">embed-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/twitter-embed-examples.md">twitter-embed-examples.md</a></td>
+</tr>
+<tr>
+<td>插件系统演示</td>
+<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/plugin-demo.md">plugin-demo.md</a></td>
+</tr>
+</tbody></table>
+]]></content:encoded>
+    </item>
     <item>
       <title>代码高亮主题开发指南</title>
       <link>https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md</link>
@@ -319,467 +1174,6 @@
   color: #b58900;
 }
 </code></pre>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>配置参考</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
-      <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
-      <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
-      <content:encoded><![CDATA[<h1>配置参考</h1>
-<p>Markdown Preview 的配置分为两层：</p>
-<ol>
-<li><strong>构建/部署配置</strong> — <code>iris/config.json</code>（仓库级，所有访客共享）</li>
-<li><strong>运行时设置</strong> — 浏览器 localStorage（用户级，仅当前浏览器生效）</li>
-</ol>
-<hr>
-<h2>一、<code>iris/config.json</code>（仓库级配置）</h2>
-<p>修改此文件后需推送代码触发重新部署。</p>
-<h3>基础配置</h3>
-<pre><code class="language-json">{
-  &quot;owner&quot;: &quot;your-username&quot;,
-  &quot;repo&quot;: &quot;your-repo-name&quot;
-}
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>默认值</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>owner</code></td>
-<td>string</td>
-<td>-</td>
-<td>GitHub 用户名或组织名</td>
-</tr>
-<tr>
-<td><code>repo</code></td>
-<td>string</td>
-<td>-</td>
-<td>仓库名</td>
-</tr>
-</tbody></table>
-<h3>完整配置项</h3>
-<pre><code class="language-json">{
-  &quot;owner&quot;: &quot;&quot;,
-  &quot;repo&quot;: &quot;&quot;,
-  &quot;branch&quot;: &quot;main&quot;,
-  &quot;title&quot;: &quot;Markdown Preview&quot;,
-  &quot;defaultTheme&quot;: &quot;default&quot;,
-  &quot;showEditButton&quot;: true,
-  &quot;showReadingTime&quot;: true,
-  &quot;showBreadcrumbs&quot;: true
-}
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>默认值</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>branch</code></td>
-<td>string</td>
-<td><code>main</code></td>
-<td>文档所在的 Git 分支</td>
-</tr>
-<tr>
-<td><code>title</code></td>
-<td>string</td>
-<td><code>Markdown Preview</code></td>
-<td>站点标题</td>
-</tr>
-<tr>
-<td><code>defaultTheme</code></td>
-<td>string</td>
-<td><code>default</code></td>
-<td>默认主题 ID</td>
-</tr>
-<tr>
-<td><code>showEditButton</code></td>
-<td>boolean</td>
-<td><code>true</code></td>
-<td>是否显示&quot;编辑此页&quot;按钮</td>
-</tr>
-<tr>
-<td><code>showReadingTime</code></td>
-<td>boolean</td>
-<td><code>true</code></td>
-<td>是否显示阅读时间估算</td>
-</tr>
-<tr>
-<td><code>showBreadcrumbs</code></td>
-<td>boolean</td>
-<td><code>true</code></td>
-<td>是否显示面包屑导航</td>
-</tr>
-<tr>
-<td><code>plantumlServers</code></td>
-<td>array</td>
-<td>内置列表</td>
-<td>PlantUML 渲染服务列表，按顺序尝试</td>
-</tr>
-</tbody></table>
-<h4>PlantUML 渲染服务（plantumlServers）</h4>
-<p>PlantUML 图表默认依次尝试官方服务器与 Kroki 公共服务，全部失败时自动降级为源码展示并提供在线编辑器链接。若你自建了 PlantUML 服务或想使用其他镜像，可在 <code>iris/config.json</code> 中覆盖：</p>
-<pre><code class="language-json">{
-  &quot;plantumlServers&quot;: [
-    { &quot;type&quot;: &quot;plantuml&quot;, &quot;base&quot;: &quot;https://your-self-hosted/plantuml&quot; },
-    { &quot;type&quot;: &quot;kroki&quot;, &quot;base&quot;: &quot;https://kroki.io/plantuml&quot; }
-  ]
-}
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>type</code></td>
-<td><code>plantuml</code>（PlantUML 自定义编码）或 <code>kroki</code>（标准 base64url 编码）</td>
-</tr>
-<tr>
-<td><code>base</code></td>
-<td>服务基础地址，渲染时自动拼接 <code>/svg/&lt;编码&gt;</code></td>
-</tr>
-</tbody></table>
-<h3>配置加载顺序</h3>
-<ol>
-<li>内置默认配置</li>
-<li><code>iris/config.json</code> 中的配置（覆盖默认值）</li>
-<li>用户本地存储的设置（如主题选择，会覆盖前两者）</li>
-</ol>
-<hr>
-<h2>二、运行时设置（用户级）</h2>
-<p>通过悬浮球菜单 → <strong>设置</strong> 打开设置面板，所有改动保存在浏览器 localStorage，仅对当前浏览器生效。</p>
-<p>设置面板分四个区块：<strong>语言 / 外观 / 阅读 / 工具与导出</strong>。</p>
-<h3>语言</h3>
-<p>设置面板最顶部为「语言」选择：<strong>自动（跟随浏览器）/ 中文 / English</strong>。选择「自动」时按浏览器语言自动判定；切换立即生效并记忆，无需刷新。</p>
-<h3>外观</h3>
-<h4>预设主题</h4>
-<table>
-<thead>
-<tr>
-<th>ID</th>
-<th>名称</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>auto</code></td>
-<td>自动（跟随系统亮暗）</td>
-</tr>
-<tr>
-<td><code>default</code></td>
-<td>默认（紫粉渐变）</td>
-</tr>
-<tr>
-<td><code>github-light</code></td>
-<td>GitHub Light</td>
-</tr>
-<tr>
-<td><code>github-dark</code></td>
-<td>GitHub Dark</td>
-</tr>
-<tr>
-<td><code>notion</code></td>
-<td>Notion</td>
-</tr>
-<tr>
-<td><code>arc-dark</code></td>
-<td>Arc Dark</td>
-</tr>
-<tr>
-<td><code>dracula</code></td>
-<td>Dracula</td>
-</tr>
-<tr>
-<td><code>nord</code></td>
-<td>Nord</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>选择预设主题会清空自定义配色。</p>
-</blockquote>
-<p><strong>自动主题（auto）</strong>：跟随系统 <code>prefers-color-scheme</code> 实时切换——系统亮色时使用「自动主题配对」中的亮色主题（默认紫粉渐变），暗色时使用暗色主题（默认 GitHub Dark）。配对可在设置面板中自由组合，系统亮暗变化时即时生效（含 PWA 桌面模式）。</p>
-<h4>自定义配色（取色器）</h4>
-<p>无需写 CSS，直接通过取色器调整：</p>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>可调变量</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>强调色</strong></td>
-<td><code>--color-accent-purple</code> / <code>--color-accent-pink</code> / <code>--color-accent-purple-deep</code></td>
-<td>主色及派生色</td>
-</tr>
-<tr>
-<td><strong>中性色</strong></td>
-<td><code>--color-bg</code> / <code>--color-surface</code> / <code>--color-border</code> / <code>--color-text</code> / <code>--color-text-muted</code></td>
-<td>背景、表面、文字与边框</td>
-</tr>
-</tbody></table>
-<p>通过中性色调整即可做出亮色或暗色主题。点击「重置」恢复默认值。</p>
-<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/theme-customization.md">主题定制</a>。</p>
-<h4>字体自定义</h4>
-<p>设置面板 → <strong>外观 → 字体</strong>，无需写 CSS 即可精细控制排版：</p>
-<table>
-<thead>
-<tr>
-<th>选项</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>远程字体 URL</td>
-<td>填写 Google Fonts 等 CSS URL 即可加载远程字体</td>
-</tr>
-<tr>
-<td>展示字体族</td>
-<td>标题衬线体，独立于正文</td>
-</tr>
-<tr>
-<td>正文字体族</td>
-<td>UI / 正文无衬线体</td>
-</tr>
-<tr>
-<td>字号细调</td>
-<td>UI / 正文 / H1 / H2 / H3 独立设置</td>
-</tr>
-<tr>
-<td>字重细调</td>
-<td>UI / 正文 / 展示体 / H1 / H2 / H3 独立选择（300 ~ 800）</td>
-</tr>
-<tr>
-<td>字色</td>
-<td>正文与次要文字颜色独立取色</td>
-</tr>
-<tr>
-<td>标题数字无衬线</td>
-<td>默认标题数字随标题字体（衬线）；开启后仅数字改用无衬线字形</td>
-</tr>
-<tr>
-<td>重置字体</td>
-<td>一键恢复全部字体默认值</td>
-</tr>
-</tbody></table>
-<h4>代码高亮主题</h4>
-<table>
-<thead>
-<tr>
-<th>主题 ID</th>
-<th>名称</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>github</code></td>
-<td>GitHub Light</td>
-<td>亮色</td>
-</tr>
-<tr>
-<td><code>github-dark</code></td>
-<td>GitHub Dark</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>atom-one-light</code></td>
-<td>Atom One Light</td>
-<td>亮色</td>
-</tr>
-<tr>
-<td><code>atom-one-dark</code></td>
-<td>Atom One Dark</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>monokai</code></td>
-<td>Monokai</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>dracula</code></td>
-<td>Dracula</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>nord</code></td>
-<td>Nord</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>vs2015</code></td>
-<td>VS 2015</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>solarized-light</code></td>
-<td>Solarized Light</td>
-<td>亮色</td>
-</tr>
-<tr>
-<td><code>solarized-dark</code></td>
-<td>Solarized Dark</td>
-<td>暗色</td>
-</tr>
-</tbody></table>
-<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md">代码高亮主题</a>。</p>
-<p>在「外观 → 代码高亮」中还可填写<strong>自定义高亮主题</strong>：加载外部 highlight.js 主题 CSS URL，回车应用（覆盖内置代码主题）。</p>
-<h4>自定义 CSS</h4>
-<p>在「外观 → 自定义 CSS」中填写<strong>外部样式表 URL</strong>，加载外部 CSS 文件进一步定制页面，回车应用。</p>
-<h3>阅读</h3>
-<h4>显示选项</h4>
-<table>
-<thead>
-<tr>
-<th>选项</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>显示阅读进度</td>
-<td>控制顶部进度条</td>
-</tr>
-<tr>
-<td>显示字数统计</td>
-<td>控制文件树中每个文件旁的字数显示</td>
-</tr>
-<tr>
-<td>截断长文件名</td>
-<td>开启时文件名过长省略号显示，关闭时展开（区域可横向滚动，隐藏滚动条）</td>
-</tr>
-</tbody></table>
-<h4>布局</h4>
-<table>
-<thead>
-<tr>
-<th>选项</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>内容区宽度</td>
-<td>滑杆调整 Markdown 正文最大宽度（600–1400px，默认 720px），拖动即时生效，可一键重置</td>
-</tr>
-<tr>
-<td>正文占满可用宽度</td>
-<td>开启后正文铺满窗口可用宽度，忽略上方宽度设置，适合宽屏显示器</td>
-</tr>
-<tr>
-<td>长表格延伸到右侧空白</td>
-<td>内容宽度设置保持不变，宽表格向右适度越过正文边界、利用右侧空白显示更多列</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>侧边栏折叠：桌面端可通过侧边栏标题栏的汉堡按钮或快捷键 <code>Ctrl/⌘ + B</code> 折叠/展开侧边栏，折叠后左上角浮现展开按钮，状态自动记忆（与移动端抽屉行为一致）。</p>
-<p>以上宽度与侧边栏操作均有键盘快捷键（<code>Ctrl/⌘ + Alt + =/-/0/F</code>、<code>Ctrl/⌘ + B</code>、<code>[</code> / <code>]</code> 等），完整清单见 <a href="https://theforeveriris.github.io/md-preview/docs/shortcuts.md">快捷键</a>。</p>
-</blockquote>
-<h3>工具与导出</h3>
-<h4>工具</h4>
-<table>
-<thead>
-<tr>
-<th>工具</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Markdown 编辑器</td>
-<td>在新标签页打开交互式编辑器（<code>?mode=editor</code>），支持语法快速输入和实时渲染</td>
-</tr>
-<tr>
-<td>波形生成器</td>
-<td>可视化生成 DG-LAB 郊狼 <code>.pulse</code> 波形文件（<code>?mode=pulsegen</code>），最多 20 个</td>
-</tr>
-</tbody></table>
-<h4>导出</h4>
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>下载 Markdown</td>
-<td>下载当前打开的 <code>.md</code> 源文件</td>
-</tr>
-<tr>
-<td>导出 PDF</td>
-<td>通过浏览器打印对话框导出为 PDF（自动隐藏侧边栏、悬浮球等 UI）</td>
-</tr>
-<tr>
-<td>导出 HTML</td>
-<td>保存为内联当前主题样式与全部本地 CSS 的单文件 HTML，双击即可离线查看</td>
-</tr>
-</tbody></table>
-<h4>离线缓存</h4>
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>全量离线缓存</td>
-<td>把文件树覆盖的所有文档拉进 PWA 缓存（带进度反馈），离线也能整站阅读；支持一键清除文档缓存。需 HTTPS 部署访问后可用</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>三、悬浮球菜单</h2>
-<p>悬浮球展开后提供 6 个快捷入口：</p>
-<table>
-<thead>
-<tr>
-<th>入口</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>回到顶部</td>
-<td>平滑滚动到文档顶部</td>
-</tr>
-<tr>
-<td>打开本地文件</td>
-<td>点击弹出选择面板：「选择文件…」可一次选中一个或多个本地 <code>.md</code> 文件预览（不写入 URL，刷新后丢失），未打开的文件进入侧边栏「本地文件」会话列表，可切换、移除或清空；「选择文件夹…」整体导入一个目录（File System Access API，旧浏览器回退 <code>webkitdirectory</code>），按目录树展示、文件夹可折叠、内容懒加载；最多收集 500 个文件，单文件 ≤ 10MB。受浏览器限制，文件与文件夹需在面板中二选一进入</td>
-</tr>
-<tr>
-<td>扫码续读</td>
-<td>生成当前文档 + 阅读位置的二维码，手机扫码接着看</td>
-</tr>
-<tr>
-<td>安装到桌面</td>
-<td>PWA 安装（仅浏览器支持时显示）</td>
-</tr>
-<tr>
-<td>编辑此页</td>
-<td>在新标签页打开 GitHub 编辑界面</td>
-</tr>
-<tr>
-<td>设置</td>
-<td>打开设置面板</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>四、RSS 订阅</h2>
-<p>站点自动生成 RSS feed，订阅地址：</p>
-<pre><code>https://&lt;owner&gt;.github.io/&lt;repo&gt;/iris/data/feed.xml
-</code></pre>
-<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/rss.md">RSS 订阅</a>。</p>
 ]]></content:encoded>
     </item>
     <item>
@@ -9342,366 +9736,6 @@ date: 2026-01-15
 <li>宽度调整 / 设置开关 API：<a href="https://theforeveriris.github.io/md-preview/iris/js/settings.js">iris/js/settings.js</a>（<code>nudgeContentWidth</code> / <code>resetContentWidth</code> / <code>toggleContentFullWidth</code> / <code>toggleSettingsPanel</code>）</li>
 <li>侧边栏折叠：<a href="https://theforeveriris.github.io/md-preview/iris/js/file-tree.js">iris/js/file-tree.js</a>（<code>toggleSidebar</code> / <code>setSidebarCollapsed</code>）</li>
 </ul>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>系统运行时截图</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/show.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/show.md</guid>
-      <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
-      <description>本文档按功能模块整理了 Markdown Preview 站点的完整运行时界面截图，每个截图附有功能介绍，并指向 中对应的详细示例文档。特殊页面会额外标注访问 URL。 --- 站点默认以左侧文档目录树 + 右侧正文阅读区的两栏布局呈现。侧边栏自动扫描仓库中所有 文件，构建嵌套目录结构并显示字数统计；顶部显示面包屑路径与搜索框；右上角悬浮球提供回到顶部、上一篇/下一篇、打开本地 MD、安装 PWA</description>
-      <content:encoded><![CDATA[<h1>系统运行时截图</h1>
-<p>本文档按功能模块整理了 Markdown Preview 站点的完整运行时界面截图，每个截图附有功能介绍，并指向 <code>docs/examples/</code> 中对应的详细示例文档。特殊页面会额外标注访问 URL。</p>
-<hr>
-<h2>一、整体界面</h2>
-<h3>首页整体展示</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E9%A6%96%E9%A1%B5%E6%95%B4%E4%BD%93%E5%B1%95%E7%A4%BA.png" alt="首页整体展示"></p>
-<p>站点默认以左侧文档目录树 + 右侧正文阅读区的两栏布局呈现。侧边栏自动扫描仓库中所有 <code>.md</code> 文件，构建嵌套目录结构并显示字数统计；顶部显示面包屑路径与搜索框；右上角悬浮球提供回到顶部、上一篇/下一篇、打开本地 MD、安装 PWA、编辑此页、设置等快捷入口。</p>
-<p>相关文档：</p>
-<ul>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/getting-started.md">快速开始</a></li>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/basic-usage.md">基础使用示例</a></li>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/markdown-syntax.md">Markdown 语法总览</a></li>
-</ul>
-<hr>
-<h2>二、Markdown 渲染能力</h2>
-<h3>LaTeX 数学公式</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-latex%E5%85%AC%E5%BC%8F.png" alt="渲染-latex公式"></p>
-<p>基于 KaTeX 引擎的数学公式渲染，支持行内公式 <code>$...$</code> 与独立公式块 <code>$$...$$</code>，涵盖矩阵、方程组、求和与极限、希腊字母等完整 LaTeX 语法。公式块支持主题配色自适应，暗色模式下自动切换对比度合适的颜色。</p>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/latex-examples.md">LaTeX 示例</a></p>
-<hr>
-<h3>Mermaid 图表</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-mermaid%E5%9B%BE%E8%A1%A8.png" alt="渲染-mermaid图表"></p>
-<p>Mermaid 渲染器支持 18+ 种图表类型：流程图、时序图、类图、状态图、ER 实体关系图、甘特图、饼图、用户旅程图、思维导图、时间线、象限图、Git 提交图、区块图、C4 架构图、xychart-beta 等。图表颜色随文档站主题自动联动。</p>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/mermaid-examples.md">Mermaid 示例</a></p>
-<hr>
-<h3>PlantUML 图表</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-plantuml%E5%9B%BE%E8%A1%A8.png" alt="渲染-plantuml图表"></p>
-<p>通过公共 PlantUML 服务器渲染 UML 系列图表：时序图、类图、用例图、活动图、状态图、组件图、部署图、思维导图、WBS 工作分解图、JSON 数据图、ER 图、线框图 salt 等 12 大类。渲染服务依序尝试（官方服务器 → Kroki，可经 <code>plantumlServers</code> 配置覆盖），全部失败时自动降级为源码展示并提供在线编辑器链接。</p>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/plantuml-examples.md">PlantUML 示例</a></p>
-<hr>
-<h3>ApexCharts 动态图表</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E5%8A%A8%E6%80%81%E5%9B%BE%E8%A1%A8.png" alt="渲染-动态图表"></p>
-<p>ApexCharts 交互式图表渲染器，涵盖 13 种常见类型：折线、面积、分组柱状、堆叠柱状、水平条形、饼图、环形 donut、雷达、散点、气泡、极坐标 polarArea、范围区域 rangeArea、烛台 candlestick。支持鼠标悬停数值提示、图例筛选、缩放平移等交互。</p>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/apexcharts-examples.md">ApexCharts 示例</a></p>
-<hr>
-<h3>Git Diff 代码对比</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E4%BB%A3%E7%A0%81%E5%AF%B9%E6%AF%94.png" alt="渲染-代码对比"></p>
-<p>基于 Diff2Html 的 Git Diff 语法高亮对比，支持 Side-by-Side 并排视图与 Line-by-Line 逐行视图两种模式，新增/删除/修改行以不同颜色标记，变更字符级别高亮。</p>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/diff-examples.md">Diff 差异可视化</a></p>
-<hr>
-<h3>GitHub 风格特殊引用块（Alerts）</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E7%89%B9%E6%AE%8A%E5%BC%95%E7%94%A8%E5%9D%97.png" alt="渲染-特殊引用块"></p>
-<p>兼容 GitHub 官方的 <code>[!NOTE]</code> / <code>[!TIP]</code> / <code>[!WARNING]</code> / <code>[!IMPORTANT]</code> / <code>[!CAUTION]</code> 五种提示块语法，每种类型拥有独立配色与语义化图标，视觉层级清晰。</p>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/github-alerts-examples.md">GitHub Alerts 示例</a></p>
-<hr>
-<h3>Columns 多栏文本布局</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E5%A4%9A%E6%A0%8F%E6%96%87%E6%9C%AC.png" alt="渲染-多栏文本"></p>
-<p>页面分栏布局语法，支持 2 栏 / 3 栏 / 多栏自定义宽度，栏间自动均分或按比例分配，用于左右对照、多列内容并排等场景，移动端自动折叠为单列。</p>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/columns-examples.md">Columns 分栏布局</a></p>
-<hr>
-<h3>Code Tabs 多栏代码块（并排对比）</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E5%A4%9A%E6%A0%8F%E4%BB%A3%E7%A0%81%E5%9D%97-1.png" alt="渲染-多栏代码块-1"></p>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E5%A4%9A%E6%A0%8F%E4%BB%A3%E7%A0%81%E5%9D%97-2.png" alt="渲染-多栏代码块-2"></p>
-<p>多语言代码并排标签页，适合同一逻辑的多种语言实现对比。支持点击 Tab 切换语言，每张 Tab 独立拥有复制按钮与语言标签。</p>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/code-tabs-examples.md">代码 Tabs 示例</a></p>
-<hr>
-<h3>长表格横向滚动优化</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E8%BF%87%E9%95%BF%E7%9A%84%E8%A1%A8%E6%A0%BC%E5%90%AF%E7%94%A8%E6%BB%9A%E5%8A%A8.png" alt="渲染-过长的表格启用滚动"></p>
-<p>当表格列数过多、超出正文宽度时，自动包裹 <code>.table-wrapper</code> 并启用横向滚动条，表格行保持斑马纹与悬浮高亮，表头可固定视口顶部。另有两个增强：</p>
-<ul>
-<li><strong>延伸到右侧空白</strong>（设置面板可选）：宽表格越过正文边界，利用右侧留白显示更多列；</li>
-<li><strong>表格悬浮手柄</strong>：表格第一行左侧浮现手柄，提供「下载主题化 PNG / 复制 Markdown 源码 / 复制 CSV」三项操作，全部使用内联 SVG 图标。</li>
-</ul>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/table-examples.md">表格展示与优化</a></p>
-<hr>
-<h3>Spoiler 遮罩 / 剧透折叠块</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E9%81%AE%E7%BD%A9-1.png" alt="渲染-遮罩-1"></p>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E9%81%AE%E7%BD%A9-2.png" alt="渲染-遮罩-2"></p>
-<p>内置剧透折叠块语法（Spoiler），支持两种展示模式：</p>
-<ol>
-<li>覆盖式遮罩：内容被色块覆盖，点击/悬停后渐变揭示文字</li>
-<li><code>&lt;details&gt;</code> 原生折叠：标题可点击展开/收起详细内容</li>
-</ol>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/spoiler-examples.md">Spoiler 折叠语法</a></p>
-<hr>
-<h3>图片画廊布局（多种 CSS 排布）</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E7%94%BB%E5%BB%8A-1.png" alt="渲染-画廊-1"></p>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E7%94%BB%E5%BB%8A-2.png" alt="渲染-画廊-2"></p>
-<p>内置 17 种图片画廊 CSS 布局：<code>@grid</code> 网格、<code>@cardstack</code> 卡片堆叠、<code>@filmstrip</code> 胶片条、<code>@polaroid</code> 宝丽来、<code>@stack</code> 倾斜堆叠、<code>@mosaic</code> 马赛克、<code>@scattered</code> 散落、<code>@hexagon</code> 六边形、<code>@coverflow</code> 封面流、<code>@tape</code> 胶带、<code>@duotone</code> 双色、<code>@frame</code> 画框、<code>@arch</code> 拱廊、<code>@masonry</code> 瀑布流、<code>@slider</code> 轮播、<code>@ticket</code> 票根、<code>@panorama</code> 全景。</p>
-<p>详细示例：</p>
-<ul>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/gallery-layouts.md">画廊布局说明</a></li>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/image-gallery-examples.md">图片画廊功能示例</a></li>
-</ul>
-<hr>
-<h3>二维码生成（插件）</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E4%BA%8C%E7%BB%B4%E7%A0%81-%E6%AD%A4%E4%B8%BA%E6%8F%92%E4%BB%B6%E4%BB%85%E4%B8%BA%E6%A3%80%E6%9F%A5%E6%8F%92%E4%BB%B6%E6%8E%A5%E5%8F%A3%E6%98%AF%E5%90%A6%E6%AD%A3%E5%B8%B8.png" alt="渲染-二维码-此为插件仅为检查插件接口是否正常"></p>
-<p>插件系统的演示插件之一，使用 <code>qrcode</code> 代码块生成任意内容的二维码，尺寸、颜色、容错率均可配置。该插件主要用于验证自定义渲染器插件接口的正确性与兼容性。</p>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/qrcode-examples.md">二维码示例</a>
-插件开发：<a href="https://theforeveriris.github.io/md-preview/docs/plugin-development.md">插件开发指南</a></p>
-<hr>
-<h3>倒计时器（插件）</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E5%80%92%E8%AE%A1%E6%97%B6%E5%99%A8-%E6%AD%A4%E4%B8%BA%E6%8F%92%E4%BB%B6%E4%BB%85%E4%B8%BA%E6%A3%80%E6%9F%A5%E6%8F%92%E4%BB%B6%E6%8E%A5%E5%8F%A3%E6%98%AF%E5%90%A6%E6%AD%A3%E5%B8%B8.png" alt="渲染-倒计时器-此为插件仅为检查插件接口是否正常"></p>
-<p>插件系统演示插件之二，<code>countdown</code> 代码块渲染实时倒计时组件，支持设定目标日期时间，显示剩余天/时/分/秒，自动每秒刷新。到期后显示自定义完成文案。</p>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/countdown-examples.md">倒计时组件示例</a>
-插件开发：<a href="https://theforeveriris.github.io/md-preview/docs/plugin-development.md">插件开发指南</a></p>
-<hr>
-<h3>ColorCard 彩色卡片（插件）</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E8%89%B2%E5%8D%A1-%E6%AD%A4%E4%B8%BA%E6%8F%92%E4%BB%B6%E4%BB%85%E4%B8%BA%E6%A3%80%E6%9F%A5%E6%8F%92%E4%BB%B6%E6%8E%A5%E5%8F%A3%E6%98%AF%E5%90%A6%E6%AD%A3%E5%B8%B8.png" alt="渲染-色卡-此为插件仅为检查插件接口是否正常"></p>
-<p>插件系统演示插件之三，ColorCard 以预设配色渲染彩色信息卡片，支持标题/正文/标签/按钮等结构化内容，用于产品特性总览、色板展示、亮点汇总等场景。</p>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/colorcard-examples.md">ColorCard 彩色卡片</a>
-插件开发：<a href="https://theforeveriris.github.io/md-preview/docs/plugin-development.md">插件开发指南</a></p>
-<hr>
-<h3>视频嵌入（YouTube / Bilibili / Vimeo 等）</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E8%A7%86%E9%A2%91%E5%B5%8C%E5%85%A5.png" alt="渲染-视频嵌入"></p>
-<p><code>@[youtube](id)</code> / <code>@[bilibili](bv-id)</code> / <code>@[vimeo](id)</code> 等嵌入语法，支持响应式 16:9 容器；同类服务还包括 Twitter 推文、GitHub Gist、CodePen / JSFiddle / StackBlitz / Replit 在线演示、Figma 设计稿、Google Maps / OpenStreetMap 地图、Google Docs 文档等 13 种外部嵌入服务。</p>
-<p>详细示例：</p>
-<ul>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/embed-examples.md">外部嵌入综合示例</a></li>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/twitter-embed-examples.md">Twitter 推文嵌入示例</a></li>
-</ul>
-<hr>
-<h3>X（Twitter）帖子嵌入（实验中 / 暂废弃）</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-x%E5%B8%96%E5%AD%90-%E5%AE%9E%E9%AA%8C%E4%B8%AD%E6%88%96%E6%9A%82%E5%BA%9F%E5%BC%83.png" alt="渲染-x帖子-实验中或暂废弃"></p>
-<p>早期针对 X（原 Twitter）官方帖子的嵌入方案。因官方 API 与前端 SDK 变动频繁，目前主要推荐使用通用外部嵌入语法 <code>@[twitter]</code>。该截图保留作历史记录与 UI 参考。</p>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/twitter-embed-examples.md">Twitter 推文嵌入示例</a></p>
-<hr>
-<h3>PPTX 演示文稿嵌入</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-ppt%E6%BC%94%E7%A4%BA%E6%96%87%E7%A8%BF.png" alt="渲染-ppt演示文稿"></p>
-<p>通过 CI 构建流程（<code>iris/scripts/pptx/main.py</code>，基于 LibreOffice + Poppler/pdftoppm）将 <code>.pptx</code> 预处理为逐页图片。文档端以缩略图网格呈现，点击任意页面进入全屏放映模式，支持左右键/方向键翻页、回到网格等交互。</p>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/pptx-examples.md">PPTX 嵌入与放映示例</a></p>
-<hr>
-<h3>郊狼 Pulse 波形渲染（完整模式）</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E9%83%8A%E7%8B%BC%E6%B3%A2%E5%BD%A2%E5%9B%BE-%E5%A4%A7.png" alt="渲染-郊狼波形图-大"></p>
-<p>DG-LAB 郊狼设备 <code>.pulse</code> 波形文件的完整渲染器。基于 <code>Dungeonlab+pulse:</code> 官方格式解析，支持：</p>
-<ul>
-<li><strong>竖线 / 曲线</strong> 两种显示模式切换</li>
-<li><strong>全局平铺 / 滚动播放头</strong> 两种视图</li>
-<li>小节边界粉色虚线（S1/S2...）、休息段灰色虚线</li>
-<li>锚点脉冲粉色标记、普通脉冲锚点间自动线性插值</li>
-<li>图例悬停显示小节参数（频率范围 / 时长 / 模式）</li>
-<li>一键下载 <code>.pulse</code> 原始文件、展开查看完整标签代码</li>
-</ul>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md">Pulse 波形示例（10+ 种波形）</a></p>
-<hr>
-<h3>郊狼 Pulse 迷你波形（内联样式）</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E9%83%8A%E7%8B%BC%E6%B3%A2%E5%BD%A2%E5%9B%BE-%E5%B0%8F.png" alt="渲染-郊狼波形图-小"></p>
-<p>迷你波形 <code>[pulsemini]</code> 内联版本，尺寸约 220px 宽，固定为竖线 + 滚动模式，播放头位于中央。适合在段落文字中嵌入或批量展示多个波形。标题栏提供复制源码与下载 <code>.pulse</code> 图标按钮。</p>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md#11-%E8%BF%B7%E4%BD%A0%E6%B3%A2%E5%BD%A2-%E5%86%85%E8%81%94%E6%A0%B7%E5%BC%8F">Pulse 波形示例 → 迷你波形章节</a></p>
-<hr>
-<h3>Cisco Packet Tracer 拓扑图（.pkt 解析）</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-pkt%E6%8B%93%E6%89%91%E5%9B%BE.png" alt="渲染-pkt拓扑图"></p>
-<p>完整的 <code>.pkt</code> 文件解密解析管线 + Cytoscape.js 交互式渲染：5 个 Python 脚本零依赖实现 XOR/Twofish EAX 解密、zlib 多策略解压、XML + Cisco IOS 配置提取、分区化 JSON schema 输出。渲染端支持 13 种设备 SVG 图标、线缆颜色映射、搜索高亮、PT 坐标↔力导向布局切换、网格背景、导出 PNG/JSON/Markdown。</p>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-pkt%E6%8B%93%E6%89%91%E5%9B%BE%E8%AF%A6%E6%83%85.png" alt="渲染-pkt拓扑图详情"></p>
-<p>点击节点弹出右侧抽屉（移动端改为底部弹出），包含 5 个标签页：接口表、完整配置、VLAN 划分、ACL 访问控制列表、静态/动态路由表。代码实现自定义 IOS 语法高亮。</p>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/pkt-examples.md">Packet Tracer 拓扑渲染示例</a></p>
-<hr>
-<h3>华为 eNSP 拓扑图（.topo / .zip 解析）</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-ensp%E6%8B%93%E6%89%91%E5%9B%BE%E8%A7%A3%E6%9E%90.png" alt="渲染-ensp拓扑图解析"></p>
-<p>针对华为 eNSP 模拟器工程文件的解析管线。支持 <code>.topo</code> XML 与 <code>.zip</code> 压缩包两种格式，提取路由器、交换机、防火墙等网络设备及线缆连接关系，生成与 PKT 渲染器一致风格的 Cytoscape 交互式拓扑图。</p>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-ensp%E6%8B%93%E6%89%91%E5%9B%BE%E8%AF%A6%E6%83%85.png" alt="渲染-ensp拓扑图详情"></p>
-<p>节点详情抽屉展示：设备接口表、VRP 配置文件、VLAN / ACL / 路由 等标签页，与 Cisco 版本体验保持一致。</p>
-<p>详细示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/ensp-examples.md">华为 eNSP 拓扑示例</a></p>
-<hr>
-<h2>三、设置面板</h2>
-<h3>预设主题 + 自定义配色（取色器）</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E8%AE%BE%E7%BD%AE-%E5%85%81%E8%AE%B8%E8%87%AA%E5%AE%9A%E4%B9%89%E9%A2%84%E8%AE%BE%E4%B8%BB%E9%A2%98%E6%88%96%E8%87%AA%E8%A1%8C%E9%85%8D%E8%89%B2.png" alt="设置-允许自定义预设主题或自行配色"></p>
-<p>7 种内置主题（default / github-light / github-dark / notion / arc-dark / dracula / nord）一键切换；在此基础上提供：</p>
-<ul>
-<li><strong>自动主题（auto）</strong>：跟随系统亮暗实时切换，亮 / 暗配对可自由组合（默认紫粉渐变 + GitHub Dark）</li>
-<li><strong>界面语言</strong>：中文 / English，默认跟随浏览器语言，设置面板顶部一键切换</li>
-<li><strong>强调色取色器</strong>：主色 / 粉色 / 深色 独立调整</li>
-<li><strong>中性色取色器</strong>：背景 / 表面 / 边框 / 文字 / 次要文字 五个维度，可自由组合亮色或暗色主题</li>
-<li>所有配色持久化到 localStorage</li>
-</ul>
-<p>详细文档：<a href="https://theforeveriris.github.io/md-preview/docs/theme-customization.md">主题定制</a></p>
-<hr>
-<h3>字体/字号/字重/字色 精细控制</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E8%AE%BE%E7%BD%AE-%E5%85%81%E8%AE%B8%E6%8E%A7%E5%88%B6%E5%AD%97%E8%89%B2%E5%AD%97%E5%8F%B7%E5%AD%97%E9%87%8D.png" alt="设置-允许控制字色字号字重"></p>
-<p>字体体系提供全方位细粒度控制：</p>
-<ul>
-<li><strong>远程字体 URL</strong>：粘贴任意 Google Fonts / 自建 CSS URL 即可加载</li>
-<li><strong>字体族</strong>：展示字体（标题衬线体）与正文字体（UI/正文无衬线体）自由填写</li>
-<li><strong>字号细调</strong>：UI / 正文 / H1 / H2 / H3 五档独立设置</li>
-<li><strong>字重细调</strong>：UI / 正文 / 展示体 / H1 / H2 / H3 六档独立选择（300~800）</li>
-<li><strong>字色</strong>：正文与次要文字颜色独立取色</li>
-<li><strong>标题数字无衬线</strong>：默认标题数字随标题字体（衬线），开启后仅数字改用无衬线字形</li>
-<li>一键「重置字体」恢复默认</li>
-</ul>
-<hr>
-<h3>远程字体加载</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E8%AE%BE%E7%BD%AE-%E5%85%81%E8%AE%B8%E8%AE%BE%E7%BD%AE%E8%BF%9C%E7%A8%8B%E5%AD%97%E4%BD%93.png" alt="设置-允许设置远程字体"></p>
-<p>设置 → 字体 → 远程字体 URL 输入框，粘贴任意远程字体服务的 CSS 地址（例如 Google Fonts 的 <code>@import</code> URL），回车后立即应用并持久化。适合使用私有字体 CDN 或公司标准字体的场景。</p>
-<hr>
-<h3>自定义页面 CSS / 代码高亮 CSS</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E8%AE%BE%E7%BD%AE-%E5%85%81%E8%AE%B8%E8%87%AA%E5%AE%9A%E4%B9%89%E9%A1%B5%E9%9D%A2%E6%88%96%E4%BB%A3%E7%A0%81%E9%AB%98%E4%BA%AEcss.png" alt="设置-允许自定义页面或代码高亮css"></p>
-<p>进阶用户的样式扩展能力：</p>
-<ul>
-<li><strong>自定义页面 CSS</strong>：加载外部 CSS 文件，完全定制 Markdown 正文、侧栏、组件等样式</li>
-<li><strong>自定义代码高亮 CSS</strong>：粘贴任意 highlight.js 主题 CSS URL，回车后即时替换代码块配色</li>
-</ul>
-<hr>
-<h3>预设代码高亮方案选择</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E8%AE%BE%E7%BD%AE-%E5%85%81%E8%AE%B8%E9%80%89%E6%8B%A9%E9%A2%84%E8%AE%BE%E4%BB%A3%E7%A0%81%E9%AB%98%E4%BA%AE%E6%96%B9%E6%A1%88.png" alt="设置-允许选择预设代码高亮方案"></p>
-<p>内置 10 套经典代码高亮主题，涵盖亮色与暗色：
-atom-one-dark、atom-one-light、dracula、github-dark、github、monokai、nord、solarized-dark、solarized-light、vs2015</p>
-<p>详细文档：<a href="https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md">代码高亮主题</a></p>
-<hr>
-<h3>侧边栏显示选项微调</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E8%AE%BE%E7%BD%AE-%E5%85%81%E8%AE%B8%E8%B0%83%E6%95%B4%E9%83%A8%E5%88%86%E4%BE%A7%E8%BE%B9%E6%A0%8F%E9%80%89%E9%A1%B9.png" alt="设置-允许调整部分侧边栏选项"></p>
-<p>侧边栏相关的显示偏好：字数统计显示/隐藏、长文件名截断/展开切换、展开模式下横向滚动条隐藏（Shadow DOM 实现）等。</p>
-<hr>
-<h2>四、输出与订阅功能</h2>
-<h3>导出文章为 Markdown / PDF / 单文件 HTML</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E5%85%81%E8%AE%B8%E5%AF%BC%E5%87%BA%E6%96%87%E7%AB%A0%E4%B8%BAmd%E6%88%96pdf.png" alt="允许导出文章为md或pdf"></p>
-<p>设置面板 → 操作 → 导出能力：</p>
-<ul>
-<li><strong>下载 Markdown</strong>：下载当前打开的 <code>.md</code> 源文件</li>
-<li><strong>导出 PDF</strong>：通过 <code>window.print()</code> + <code>@media print</code> 专用样式自动隐藏侧边栏/悬浮球等 UI，调用浏览器打印对话框，选择「另存为 PDF」即可</li>
-<li><strong>导出 HTML</strong>：保存为内联当前主题样式与全部本地 CSS（递归展开 <code>@import</code> 子模块）的单文件 HTML，双击即可离线查看</li>
-</ul>
-<hr>
-<h3>PWA 可安装到本地</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E5%8A%9F%E8%83%BD-%E5%85%81%E8%AE%B8pwa%E5%AE%89%E8%A3%85%E5%88%B0%E6%9C%AC%E5%9C%B0.png" alt="功能-允许pwa安装到本地"></p>
-<p>基于 Service Worker 的 PWA 能力：</p>
-<ul>
-<li><strong>可安装</strong>：支持的浏览器中，悬浮球菜单出现「安装到桌面」按钮，一键安装为桌面应用或手机主屏幕</li>
-<li><strong>离线访问</strong>：首屏静态资源预缓存；文档采用「网络优先 + 离线降级缓存」策略</li>
-<li><strong>更新提示</strong>：检测到新版本资源时 toast 提示用户刷新页面</li>
-<li>清单文件：根目录 <code>manifest.json</code>，Service Worker：<code>sw.js</code></li>
-</ul>
-<hr>
-<h3>生成 RSS 订阅源</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E5%8A%9F%E8%83%BD-%E7%94%9F%E6%88%90RSS%E8%AE%A2%E9%98%85.png" alt="功能-生成RSS订阅"></p>
-<p><code>docs/**</code> 目录变更时，GitHub Actions 自动运行 <code>iris/scripts/build-feed.js</code> 生成 RSS 2.0 规范的 <code>feed.xml</code>，并在 <code>index.html</code> 中通过 <code>&lt;link rel=&quot;alternate&quot;&gt;</code> 自动发现。用户可使用任何 RSS 阅读器订阅站点文档更新。</p>
-<p>详细文档：<a href="https://theforeveriris.github.io/md-preview/docs/rss.md">RSS 订阅</a></p>
-<hr>
-<h2>五、特殊页面</h2>
-<h3>类 Jupyter Notebook 的内置 Markdown 编辑器</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E7%89%B9%E6%AE%8A%E9%A1%B5%E9%9D%A2-%E4%BB%BFJupyternotebook%E7%9A%84%E6%9C%AC%E7%AB%99%E8%AF%AD%E6%B3%95%E7%B3%96%E9%AA%8C%E8%AF%81%E9%A1%B5.png" alt="特殊页面-仿Jupyternotebook的本站语法糖验证页"></p>
-<p><strong>访问 URL</strong>：站点任意页面追加 <code>?mode=editor</code>，例如 <code>https://theforeveriris.github.io/md-preview/?mode=editor</code></p>
-<p>内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，以全屏覆盖层叠加在文档站之上，特点包括：</p>
-<ul>
-<li>Cell 模型（markdown / plaintext 两种类型），每 Cell 独立编辑 + 渲染输出</li>
-<li>运行当前（<code>Ctrl+Enter</code>）/ 全部（<code>Ctrl+Shift+Enter</code>）/ 此 Cell 及下方</li>
-<li>双屏编辑模式：Cell 头部一键进入全屏双屏，左侧编辑右侧实时预览，分隔条可拖宽、同步滚动</li>
-<li>IndexedDB 自动保存（1.5s 防抖，多笔记本多标签，刷新不丢内容）</li>
-<li>14 类触发字符自动补全，120+ 条目</li>
-<li>8 大工具栏下拉菜单：Markdown / HTML / 私有语法 / 工具渲染 / 插入 / 嵌入 / 下载 / 导入</li>
-<li>2 列右键菜单（17 项操作）、视口边界自适应定位</li>
-<li>跨 Cell 搜索替换（F3 / Shift+F3 导航）</li>
-<li>导入导出：.md / .html / 内联 CSS HTML / .pdf / .mdnb 笔记本 / 合并 .md</li>
-<li>4 档字号（12/14/16/18）、亮/暗主题独立切换</li>
-</ul>
-<p>该页面同时承担「本站私有语法糖验证页」角色：编辑器内置的工具栏与自动补全覆盖了所有私有语法（画廊、Alerts、Pulse、PKT、PPTX 等嵌入），打开即可即时验证渲染结果。</p>
-<p>详细文档：<a href="https://theforeveriris.github.io/md-preview/docs/editor.md">Markdown 编辑器说明</a></p>
-<hr>
-<h3>郊狼波形批量生成页</h3>
-<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E7%89%B9%E6%AE%8A%E9%A1%B5%E9%9D%A2-%E9%83%8A%E7%8B%BC%E6%B3%A2%E5%BD%A2%E6%89%B9%E9%87%8F%E7%94%9F%E6%88%90%E9%A1%B5.png" alt="特殊页面-郊狼波形批量生成页"></p>
-<p><strong>访问 URL</strong>：站点任意页面追加 <code>?mode=pulsegen</code>，例如 <code>https://theforeveriris.github.io/md-preview/?mode=pulsegen</code></p>
-<p>面向 DG-LAB 郊狼 <code>.pulse</code> 波形创作者的可视化批量生成工具：</p>
-<ul>
-<li><strong>9 大类 · 50+ 种波形模板</strong>：脉冲类 / 基础波 / 自然类 / 衰减上升 / 噪声类 / 阶梯折线 / 组合类 / 特殊形状 / 氛围类</li>
-<li><strong>核心参数</strong>：激烈程度 1~10 档、强度范围预设或自定义、小节数（固定/区间）、数据点数（自动/固定/区间）、插值类型（线性/缓入/缓出/缓入缓出）</li>
-<li><strong>叠加混合与随机种子</strong>：可选波形叠加混合、支持任意种子字符串保证可复现</li>
-<li><strong>批量生成 1~20 个</strong>：以 3 列网格展示迷你波形实时预览，每个提供复制源码与下载 <code>.pulse</code> 按钮</li>
-</ul>
-<p>详细文档：<a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-generator-page.md">郊狼波形批量生成页说明</a>
-Pulse 格式与示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md">Pulse 波形示例</a></p>
-<hr>
-<h2>六、界面与导航增强（截图待补）</h2>
-<p>以下功能已上线但尚未补充运行时截图，功能说明与详细文档先行收录：</p>
-<h3>搜索命令面板（<code>Ctrl/⌘ + K</code>）</h3>
-<p>搜索改造为居中弹出的命令面板（Claude/ZCode 风格）：基于 FlexSearch 的中文分词全文检索、结果关键词高亮；侧边栏仅保留一行轻量搜索入口唤起面板。</p>
-<p>相关文档：<a href="https://theforeveriris.github.io/md-preview/docs/shortcuts.md">快捷键</a></p>
-<h3>侧边栏折叠 + 内容区宽度可调</h3>
-<p>桌面端可用汉堡按钮或 <code>Ctrl/⌘ + B</code> 折叠/展开侧边栏（状态自动记忆）；正文最大宽度可在设置面板滑杆调整（600–1400px），或一键占满可用宽度，快捷键 <code>Ctrl/⌘ + Alt + =/-/0/F</code>。</p>
-<p>相关文档：<a href="https://theforeveriris.github.io/md-preview/docs/shortcuts.md">快捷键</a> / <a href="https://theforeveriris.github.io/md-preview/docs/configuration.md">配置参考</a></p>
-<h3>本地文件会话列表 + 打开本地文件夹</h3>
-<p>「打开本地 MD」支持一次多选（最多 20 个），未打开的文件进入侧边栏「本地文件」面板，可点击切换、单个移除、一键清空；「打开本地文件夹」整体导入目录（File System Access API，旧浏览器自动回退），按目录树展示、可折叠、内容懒加载，上一篇/下一篇在全部文件间循环。</p>
-<p>相关文档：<a href="https://theforeveriris.github.io/md-preview/docs/configuration.md">配置参考</a></p>
-<h3>自动主题 / 界面多语言 / 单文件 HTML 导出</h3>
-<p>详见「设置面板」一节与 README 特性清单：自动主题跟随系统亮暗实时切换；界面语言中文 / English 一键切换；导出 HTML 生成内联全部样式的单文件离线页面。</p>
-<p>相关文档：<a href="https://theforeveriris.github.io/md-preview/docs/theme-customization.md">主题定制</a> / <a href="https://theforeveriris.github.io/md-preview/docs/configuration.md">配置参考</a></p>
-<hr>
-<h2>索引：示例文档速查表</h2>
-<table>
-<thead>
-<tr>
-<th>功能分类</th>
-<th>对应详细文档</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Markdown 基础语法与排版</td>
-<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/basic-usage.md">basic-usage.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/markdown-syntax.md">markdown-syntax.md</a></td>
-</tr>
-<tr>
-<td>表格展示与长表格滚动优化</td>
-<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/table-examples.md">table-examples.md</a></td>
-</tr>
-<tr>
-<td>7 种内置主题视觉对比</td>
-<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/theme-demo.md">theme-demo.md</a></td>
-</tr>
-<tr>
-<td>图片灯箱与画廊布局</td>
-<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/image-gallery-examples.md">image-gallery-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/gallery-layouts.md">gallery-layouts.md</a></td>
-</tr>
-<tr>
-<td>GitHub Alerts 提示块</td>
-<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/github-alerts-examples.md">github-alerts-examples.md</a></td>
-</tr>
-<tr>
-<td>HTML 原生标签排版技巧</td>
-<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/native-html-examples.md">native-html-examples.md</a></td>
-</tr>
-<tr>
-<td>Columns 分栏 / ColorCard / Spoiler / Code Tabs</td>
-<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/columns-examples.md">columns-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/colorcard-examples.md">colorcard-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/spoiler-examples.md">spoiler-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/code-tabs-examples.md">code-tabs-examples.md</a></td>
-</tr>
-<tr>
-<td>Countdown 倒计时 / QRCode 二维码</td>
-<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/countdown-examples.md">countdown-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/qrcode-examples.md">qrcode-examples.md</a></td>
-</tr>
-<tr>
-<td>Mermaid / PlantUML / ApexCharts 图表</td>
-<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/mermaid-examples.md">mermaid-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/plantuml-examples.md">plantuml-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/apexcharts-examples.md">apexcharts-examples.md</a></td>
-</tr>
-<tr>
-<td>LaTeX 公式 / Diff 差异 / GeoJSON 地图</td>
-<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/latex-examples.md">latex-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/diff-examples.md">diff-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/geojson-examples.md">geojson-examples.md</a></td>
-</tr>
-<tr>
-<td>Packet Tracer / eNSP 拓扑</td>
-<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/pkt-examples.md">pkt-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/ensp-examples.md">ensp-examples.md</a></td>
-</tr>
-<tr>
-<td>华为 VRP 配置步骤推算</td>
-<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/pkt-huawei-vrp-%E8%A7%A3%E6%9E%90%E7%A4%BA%E4%BE%8B.md">pkt-huawei-vrp-解析示例.md</a></td>
-</tr>
-<tr>
-<td>PPTX 嵌入与放映</td>
-<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/pptx-examples.md">pptx-examples.md</a></td>
-</tr>
-<tr>
-<td>Pulse 波形渲染与迷你波形</td>
-<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md">pulse-examples.md</a></td>
-</tr>
-<tr>
-<td>Pulse 批量生成器（特殊页面）</td>
-<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-generator-page.md">pulse-generator-page.md</a></td>
-</tr>
-<tr>
-<td>外部嵌入 / Twitter 推文</td>
-<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/embed-examples.md">embed-examples.md</a> / <a href="https://theforeveriris.github.io/md-preview/docs/examples/twitter-embed-examples.md">twitter-embed-examples.md</a></td>
-</tr>
-<tr>
-<td>插件系统演示</td>
-<td><a href="https://theforeveriris.github.io/md-preview/docs/examples/plugin-demo.md">plugin-demo.md</a></td>
-</tr>
-</tbody></table>
 ]]></content:encoded>
     </item>
     <item>
