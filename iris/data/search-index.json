@@ -2,7 +2,7 @@
   {
     "path": "docs/changelog.md",
     "title": "变更日志",
-    "preview": "变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-18 - fdc726d refactor(renderers): 统一渲染器调度器 runRenderers——注册表遍历顺序 await，消除三处硬编码清单；geo 转正支持围栏；embedded 四段挂载逻辑收敛为工厂；新增顺序/错误隔离测试（SW ",
+    "preview": "变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-19 - fe6ec47 feat(batch3): OpenAPI 交互文档 + 竖排模式 + Git 历史/变更订阅 + 渐进式代码高亮（SW v8.43） — theforeveriris - 8ddc218 feat(batch2): 可见即渲染 ",
     "tags": [
       "规划"
     ]
