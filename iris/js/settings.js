@@ -649,12 +649,27 @@
       document.body.style.overflow = 'hidden';
     }
     setupSettingsNav();
+    // 每次打开回到顶部，左侧索引同步到第一项
+    const content = document.querySelector('#settingsOverlay .settings-content');
+    if (content) {
+      suppressScrollSync = true;
+      content.scrollTop = 0;
+      clearTimeout(suppressTimer);
+      suppressTimer = setTimeout(() => { suppressScrollSync = false; }, 300);
+    }
+    const nav = document.getElementById('settingsNav');
+    const firstItem = nav?.querySelector('.settings-nav-item');
+    if (firstItem) setActiveNav(firstItem.dataset.target);
     // 打开面板时刷新存储管理区块（用量 / 笔记本 / 浏览数据）
     window.MarkdownPreview.storageManager?.refresh?.();
   }
 
   // ===== Chrome 风格左侧分组导航（仅桌面端显示，CSS 控制）=====
+  // 模式：所有分组连续渲染在右侧长页，面板固定高度、内容区滚动；
+  //   点击导航 → 平滑滚动到对应分组；滚动内容 → IntersectionObserver 同步左侧高亮
   let navBound = false;
+  let sectionObserver = null;
+
   function setupSettingsNav() {
     const nav = document.getElementById('settingsNav');
     const body = settingsOverlayBody();
@@ -668,29 +683,61 @@
         if (!btn) return;
         activateSettingsSection(btn.dataset.target);
       });
+
+      // 滚动同步：取视口内最靠上的可见分组作为当前项
+      const content = document.querySelector('#settingsOverlay .settings-content');
+      const sections = Array.from(content?.querySelectorAll('.settings-section') || []);
+      sectionObserver = new IntersectionObserver((entries) => {
+        // 只在用户滚动时同步（点击滚动由 activateSettingsSection 直接置高亮）
+        if (suppressScrollSync) return;
+        // 取视口内最靠上的可见分组作为当前项；若已滚动到底，则取最后一个分组
+        const content2 = document.querySelector('#settingsOverlay .settings-content');
+        const atBottom = content2 && (content2.scrollTop + content2.clientHeight >= content2.scrollHeight - 4);
+        if (atBottom) {
+          const all = Array.from(content2.querySelectorAll('.settings-section'));
+          const last = all[all.length - 1];
+          if (last) setActiveNav(last.id);
+          return;
+        }
+        const firstVisible = entries
+          .filter(en => en.isIntersecting)
+          .sort((a, b) => a.target.offsetTop - b.target.offsetTop)[0];
+        if (firstVisible) setActiveNav(firstVisible.target.id);
+      }, {
+        root: content,
+        rootMargin: '-10% 0px -70% 0px', // 视口顶部 10%~30% 区域判定当前分组
+        threshold: 0
+      });
+      sections.forEach(sec => sectionObserver.observe(sec));
     }
-    // 每次打开恢复到当前激活项（滚动内容区到对应分组顶部）
-    const active = nav.querySelector('.settings-nav-item.active');
-    if (active) activateSettingsSection(active.dataset.target, true);
   }
+
+  let suppressScrollSync = false;
+  let suppressTimer = null;
 
   function settingsOverlayBody() {
     return document.querySelector('#settingsOverlay .settings-body');
   }
 
-  function activateSettingsSection(targetId, scrollOnly) {
+  function setActiveNav(targetId) {
     const nav = document.getElementById('settingsNav');
-    const content = document.querySelector('#settingsOverlay .settings-content');
-    if (!nav || !content) return;
+    if (!nav) return;
     nav.querySelectorAll('.settings-nav-item').forEach(item => {
       item.classList.toggle('active', item.dataset.target === targetId);
     });
-    content.querySelectorAll('.settings-section').forEach(sec => {
-      sec.classList.toggle('hidden-by-nav', sec.id !== targetId);
-    });
+  }
+
+  function activateSettingsSection(targetId) {
+    const content = document.querySelector('#settingsOverlay .settings-content');
+    if (!content) return;
+    setActiveNav(targetId);
     const target = content.querySelector('#' + targetId);
-    if (target) target.scrollIntoView({ block: 'start' });
-    content.scrollTop = 0;
+    if (!target) return;
+    // 点击导航 → 平滑滚动到分组顶部；滚动期间抑制 observer 同步，避免中途高亮跳变
+    suppressScrollSync = true;
+    clearTimeout(suppressTimer);
+    target.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    suppressTimer = setTimeout(() => { suppressScrollSync = false; }, 700);
   }
 
   function closeSettingsPanel() {

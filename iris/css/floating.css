@@ -309,17 +309,18 @@ body[data-theme="nord"] .menu-trigger {
 @media (min-width: 769px) {
   .settings-panel {
     max-width: 640px;
+    height: 80vh;            /* 固定高度：所有分组下面板一致 */
     position: relative;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* 滚动交给 .settings-content */
+    overflow: hidden;        /* 滚动交给 .settings-content */
   }
 
   .settings-nav {
     display: flex;
   }
 
-  /* 高度约束链：面板(max-height 80vh) → body(flex:1) → content(自身滚动) */
+  /* 高度约束链：面板(固定 80vh) → body(flex:1) → content(自身滚动，所有分组连续排列) */
   .settings-body {
     flex: 1;
     min-height: 0;
@@ -329,11 +330,7 @@ body[data-theme="nord"] .menu-trigger {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-  }
-
-  /* 桌面端隐藏非当前分组的 section */
-  .settings-body.has-nav .settings-section.hidden-by-nav {
-    display: none;
+    scroll-behavior: smooth; /* 点击导航平滑滚动 */
   }
 }
 
