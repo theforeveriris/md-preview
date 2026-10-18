@@ -5,13 +5,104 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 18 Oct 2026 20:46:23 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 18 Oct 2026 20:51:00 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>开发者工具与交互组件示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/devtools-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/devtools-examples.md</guid>
+      <pubDate>Sun, 18 Oct 2026 20:50:26 GMT</pubDate>
+      <description>本篇演示本轮新增的若干「文档即工具」能力：术语表、HTTP 请求块、OpenAPI 文档、 SQL DDL → ER 图、开发者小工具（正则 / cron / 时间 / 色板 / 哈希 / JWT）、拼音注音， 以及 CSV → 图表联动。 正文里首次出现 OSPF、BGP、VLAN 时会加下划线，悬停即可看到解释（本段即命中）。 点击「发送」后才会真正发起请求（JSON 响应会自动格式化）： &gt;</description>
+      <content:encoded><![CDATA[<h1>开发者工具与交互组件示例</h1>
+<p>本篇演示本轮新增的若干「文档即工具」能力：术语表、HTTP 请求块、OpenAPI 文档、
+SQL DDL → ER 图、开发者小工具（正则 / cron / 时间 / 色板 / 哈希 / JWT）、拼音注音，
+以及 CSV → 图表联动。</p>
+<h2>术语表悬浮</h2>
+<pre><code class="language-glossary">OSPF | 开放最短路径优先，一种链路状态路由协议
+BGP | 边界网关协议，用于自治系统之间的路由
+VLAN | 虚拟局域网，把一个物理交换机划分为多个逻辑网络
+</code></pre>
+<p>正文里首次出现 OSPF、BGP、VLAN 时会加下划线，悬停即可看到解释（本段即命中）。</p>
+<h2>HTTP 实时请求块</h2>
+<p>点击「发送」后才会真正发起请求（JSON 响应会自动格式化）：</p>
+<pre><code class="language-http">GET https://httpbin.org/json
+Accept: application/json
+</code></pre>
+<blockquote>
+<p>跨域（CORS）由目标服务决定；部分接口需在其服务端允许浏览器直接访问。</p>
+</blockquote>
+<h2>SQL DDL → ER 图</h2>
+<p>贴建表语句即自动生成 ER 图：</p>
+<pre><code class="language-sql">CREATE TABLE users (
+  id INT PRIMARY KEY,
+  name VARCHAR(50) NOT NULL,
+  email VARCHAR(120)
+);
+
+CREATE TABLE orders (
+  id INT PRIMARY KEY,
+  user_id INT,
+  total DECIMAL(10,2),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+</code></pre>
+<h2>OpenAPI 交互文档</h2>
+<pre><code class="language-openapi">{
+  &quot;openapi&quot;: &quot;3.0.0&quot;,
+  &quot;info&quot;: { &quot;title&quot;: &quot;演示 API&quot;, &quot;version&quot;: &quot;1.0.0&quot; },
+  &quot;servers&quot;: [{ &quot;url&quot;: &quot;https://httpbin.org&quot; }],
+  &quot;paths&quot;: {
+    &quot;/get&quot;: {
+      &quot;get&quot;: {
+        &quot;summary&quot;: &quot;测试 GET 请求&quot;,
+        &quot;parameters&quot;: [
+          { &quot;name&quot;: &quot;foo&quot;, &quot;in&quot;: &quot;query&quot;, &quot;schema&quot;: { &quot;type&quot;: &quot;string&quot; }, &quot;description&quot;: &quot;示例查询参数&quot; }
+        ],
+        &quot;responses&quot;: { &quot;200&quot;: { &quot;description&quot;: &quot;成功&quot; } }
+      }
+    }
+  }
+}
+</code></pre>
+<h2>开发者小工具</h2>
+<h3>正则测试器</h3>
+<pre><code class="language-regex">/(\w+)@(\w+)\.(\w+)/g
+联系人：alice@example.com，备用 bob@example.org
+</code></pre>
+<h3>Cron 解释</h3>
+<pre><code class="language-cron">*/15 9-18 * * 1-5
+</code></pre>
+<h3>时间戳 / 时区</h3>
+<pre><code class="language-time">1700000000
+</code></pre>
+<h3>色板与对比度</h3>
+<pre><code class="language-color">#d4a5c9
+#1f2937
+rgb(139, 92, 246)
+</code></pre>
+<h3>文本哈希</h3>
+<pre><code class="language-hash">Markdown Preview
+</code></pre>
+<h3>JWT 解码</h3>
+<pre><code class="language-jwt">eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0In0.abc123
+</code></pre>
+<h2>拼音注音</h2>
+<p>语法 <code>{汉字|hán zì}</code>：{漢字|hàn zì}、{網絡|wǎng luò}。</p>
+<h2>CSV → 图表联动</h2>
+<pre><code class="language-csv">月份,访问量,转化
+1月,1200,80
+2月,1800,120
+3月,1500,95
+4月,2200,160
+</code></pre>
+<p>点击表格工具栏的「画成图」即可生成折线 / 柱状 / 面积 / 饼图。</p>
+]]></content:encoded>
+    </item>
     <item>
       <title>需求整理（候选功能）</title>
       <link>https://theforeveriris.github.io/md-preview/docs/requirements.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/requirements.md</guid>
-      <pubDate>Sun, 18 Oct 2026 20:45:34 GMT</pubDate>
+      <pubDate>Sun, 18 Oct 2026 20:50:26 GMT</pubDate>
       <description>本文整理自一轮功能头脑风暴中筛选出的候选需求，作为排期参考。 与 功能路线图 的分工：roadmap 是维护者已确认的正式规划，本文是待评估的候选池；某项落地后，请移入 roadmap / README 特性清单，并从本表移除。 约定：优先级 P0（低风险快赢）→ P1（体感/内容增强）→ P2（攻坚）；工作量 小（≤ 半天）→ 中（13 天）→ 大（多日）。 --- | ID | 名称 | 分组</description>
       <content:encoded><![CDATA[<h1>需求整理（候选功能）</h1>
 <p>本文整理自一轮功能头脑风暴中筛选出的候选需求，作为<strong>排期参考</strong>。</p>
@@ -180,7 +271,7 @@
 <ul>
 <li><strong>批次 1（已完成）</strong>：PERF-4 相邻文档预取、PERF-2 屏外内容跳过布局、DATA-1 CSV→图表联动、TOOL-3 SQL DDL→ER 图、CJK-1 繁简切换、CJK-4 中文排版渲染选项、GIT-2 自动变更日志页。</li>
 <li><strong>批次 2（已完成）</strong>：PERF-1 可见即渲染（重型渲染器延迟初始化）、CONTENT-1 术语表悬浮、TOOL-2 <code>::: http</code> 实时请求块、TOOL-4 开发者小工具家族（regex / cron / time / color / hash / jwt）、BUILD-1 中文排版 lint、CJK-2 拼音注音（<code>{汉字|hán zì}</code>）。</li>
-<li><strong>批次 3（待办）</strong>：PERF-3 长文档渐进渲染、TOOL-1 OpenAPI 交互文档、CJK-3 竖排模式、GIT-1 单篇历史 / blame、GIT-3 文档变更订阅。</li>
+<li><strong>批次 3（已完成）</strong>：PERF-3 长文档渐进渲染（渐进式代码高亮 + 屏外跳过布局）、TOOL-1 OpenAPI 交互文档、CJK-3 竖排模式、GIT-1 单篇历史 / blame、GIT-3 文档变更订阅。</li>
 </ul>
 <h2>一、性能与阅读体验</h2>
 <h3>PERF-1 可见即渲染（图表延迟初始化）</h3>
