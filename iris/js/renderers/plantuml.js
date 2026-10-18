@@ -131,9 +131,12 @@
     anchor.replaceWith(box);
   }
 
-  async function render() {
+  async function render(root) {
+    const markdownBody = window.MarkdownPreview.mdRender.resolveRoot(root);
+    if (!markdownBody) return;
+
     // 没有 plantuml 代码块时直接跳过，避免无谓加载 pako
-    if (!document.querySelector('.markdown-body pre code.language-plantuml')) {
+    if (!markdownBody.querySelector('pre code.language-plantuml')) {
       return;
     }
 
@@ -145,7 +148,7 @@
       return;
     }
 
-    const allPres = document.querySelectorAll('.markdown-body pre');
+    const allPres = markdownBody.querySelectorAll('pre');
 
     for (let i = 0; i < allPres.length; i++) {
       const pre = allPres[i];

@@ -2146,7 +2146,19 @@
 
       const updateRefreshBtn = document.getElementById('updateRefreshBtn');
       if (updateRefreshBtn) {
-        updateRefreshBtn.addEventListener('click', () => window.location.reload());
+        // 单次刷新生效：等 waiting SW 接管（controllerchange）后再 reload，
+        // 否则 reload 时页面仍由旧 SW 控制、静态资源命中旧缓存（要刷两次）
+        updateRefreshBtn.addEventListener('click', () => {
+          let reloaded = false;
+          const doReload = () => { if (!reloaded) { reloaded = true; window.location.reload(); } };
+          if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.addEventListener('controllerchange', doReload, { once: true });
+            // 兜底：600ms 内没触发 controllerchange（如无 waiting SW）也照常刷新
+            setTimeout(doReload, 600);
+          } else {
+            doReload();
+          }
+        });
       }
       const updateDismissBtn = document.getElementById('updateDismissBtn');
       if (updateDismissBtn) {

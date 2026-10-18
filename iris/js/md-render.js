@@ -112,9 +112,12 @@
       .replace(/\$\$[\s\S]*?\$\$/g, (match) => {
         const idx = blocks.length;
         const cleaned = match.split('\n').map((l, i, a) => {
-          if (i === 0) return l.replace(/^\$\$\s*/, '');
-          if (i === a.length - 1) return l.replace(/\s*\$\$$/, '');
-          return l.replace(/^    /, '');
+          // 单行 $$..$$ 时首行即末行，两个替换都要执行（用顺序链而非互斥分支，
+          // 否则首行 return 会跳过尾部剥离，块级公式带残留 $$
+          let out = l;
+          if (i === 0) out = out.replace(/^\$\$\s*/, '');
+          if (i === a.length - 1) out = out.replace(/\s*\$\$$/, '');
+          return out.replace(/^    /, '');
         }).join('\n').trim();
         blocks.push(cleaned);
         return `LATEXPROTECT_${idx}_`;
@@ -660,6 +663,25 @@
   }
 
   /**
+   * 渲染根容器权威解析。
+   *
+   * 历史教训：split-view 的隐藏面板也带 .markdown-body class，且在 DOM 中排在
+   * 主文档之前——渲染器里直接 document.querySelector('.markdown-body') 会命中
+   * 空面板导致整体短路跳过（KaTeX 公式失效即此因）。因此：
+   *   1. 调用方显式传入的 root 最优先（编辑器 cell / 对照阅读栏）；
+   *   2. 默认回退到 #markdownContent（ID 选择器，不受 DOM 顺序影响）；
+   *   3. 兜底第一个 .markdown-body（测试环境等无 #markdownContent 场景）。
+   *
+   * @param {HTMLElement} [root]
+   * @returns {HTMLElement|null}
+   */
+  function resolveRoot(root) {
+    if (root) return root;
+    return document.getElementById('markdownContent')
+      || document.querySelector('.markdown-body');
+  }
+
+  /**
    * 渲染器统一调度器
    *
    * 遍历 window.MarkdownPreview.renderers 注册表，逐个执行并隔离错误。
@@ -732,5 +754,6 @@
     highlightCodeBlocks,
     initCodeTabs,
     runRenderers,
+    resolveRoot,
   };
 })();

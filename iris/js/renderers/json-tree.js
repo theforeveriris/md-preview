@@ -204,8 +204,11 @@
   // ============== 入口：替换文档内的 json 代码块 ==============
   // fence 信息串追加 raw 标记（```json raw）可强制保留代码块展示
   function render(root) {
-    const scope = root || document;
-    const blocks = scope.querySelectorAll('.markdown-body pre.code-block[data-lang]');
+    // 容器解析走 mdRender.resolveRoot（split-view 隐藏面板同样带 .markdown-body，
+    // 全局查询会命中空面板——见 md-render.js resolveRoot 注释）
+    const scope = window.MarkdownPreview.mdRender.resolveRoot(root);
+    if (!scope) return;
+    const blocks = scope.querySelectorAll('pre.code-block[data-lang]');
     blocks.forEach(pre => {
       if (pre.dataset.jsonDone) return;
       const parts = String(pre.dataset.lang || '').toLowerCase().trim().split(/\s+/);

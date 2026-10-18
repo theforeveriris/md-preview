@@ -8,7 +8,8 @@
 
   // DOM 中是否存在 mermaid 代码块（用于决定是否值得加载 3.5MB 的 mermaid.min.js）
   function hasMermaidBlocks() {
-    return !!document.querySelector('.markdown-body pre code.language-mermaid');
+    const root = window.MarkdownPreview.mdRender.resolveRoot();
+    return !!(root && root.querySelector('pre code.language-mermaid'));
   }
 
   // 按需加载 mermaid 并初始化配置
@@ -57,7 +58,7 @@
     return true;
   }
 
-  async function render() {
+  async function render(root) {
     console.log('[Mermaid] render() called');
 
     // 没有任何 mermaid 代码块时直接跳过，避免无谓加载
@@ -69,6 +70,11 @@
     const ok = await ensureMermaid();
     if (!ok) return;
 
+    // 容器解析走 mdRender.resolveRoot（split-view 隐藏面板同样带 .markdown-body，
+    // 全局查询会命中空面板——见 md-render.js resolveRoot 注释）
+    const markdownBody = window.MarkdownPreview.mdRender.resolveRoot(root);
+    if (!markdownBody) return;
+
     let foundMermaid = true;
     let iteration = 0;
 
@@ -77,7 +83,7 @@
       foundMermaid = false;
       iteration++;
 
-      const pres = document.querySelectorAll('.markdown-body pre');
+      const pres = markdownBody.querySelectorAll('pre');
 
       for (const pre of pres) {
         const codeElement = pre.querySelector('code');

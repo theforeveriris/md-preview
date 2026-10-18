@@ -2,9 +2,12 @@
   window.MarkdownPreview = window.MarkdownPreview || {};
   window.MarkdownPreview.renderers = window.MarkdownPreview.renderers || {};
   
-  async function render() {
+  async function render(root) {
+    const markdownBody = window.MarkdownPreview.mdRender.resolveRoot(root);
+    if (!markdownBody) return;
+
     // 没有 diff 代码块时直接跳过，避免无谓加载 diff2html（~1MB）
-    if (!document.querySelector('.markdown-body pre code.language-diff')) {
+    if (!markdownBody.querySelector('pre code.language-diff')) {
       return;
     }
 
@@ -19,7 +22,7 @@
       window.MarkdownPreview.loadScript('iris/vendor/diff2html/js/diff2html-ui.min.js'),
     ]);
 
-    const allPres = Array.from(document.querySelectorAll('.markdown-body pre'));
+    const allPres = Array.from(markdownBody.querySelectorAll('pre'));
 
     // 反向遍历，避免 DOM 修改影响索引
     for (let i = allPres.length - 1; i >= 0; i--) {

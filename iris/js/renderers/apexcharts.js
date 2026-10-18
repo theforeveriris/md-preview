@@ -2,9 +2,12 @@
   window.MarkdownPreview = window.MarkdownPreview || {};
   window.MarkdownPreview.renderers = window.MarkdownPreview.renderers || {};
   
-  async function render() {
+  async function render(root) {
+    const markdownBody = window.MarkdownPreview.mdRender.resolveRoot(root);
+    if (!markdownBody) return;
+
     // 没有 apexcharts 代码块时直接跳过，避免无谓加载 ApexCharts（621KB）
-    if (!document.querySelector('.markdown-body pre code.language-apexcharts')) {
+    if (!markdownBody.querySelector('pre code.language-apexcharts')) {
       return;
     }
 
@@ -16,7 +19,7 @@
       return;
     }
 
-    const allPres = Array.from(document.querySelectorAll('.markdown-body pre'));
+    const allPres = Array.from(markdownBody.querySelectorAll('pre'));
     
     for (let i = 0; i < allPres.length; i++) {
       const pre = allPres[i];

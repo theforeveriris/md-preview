@@ -79,8 +79,12 @@
    * TopoJSON 数据（或与嵌入同款的 @[geojson](...) 语法）。无命中时直接返回，
    * 不加载 Leaflet。
    */
-  async function render() {
-    const blocks = document.querySelectorAll('.markdown-body pre code.language-geojson, .markdown-body pre code.language-topojson');
+  async function render(root) {
+    // 容器解析走 mdRender.resolveRoot（split-view 隐藏面板同样带 .markdown-body，
+    // 全局查询会命中空面板——见 md-render.js resolveRoot 注释）
+    const markdownBody = window.MarkdownPreview.mdRender.resolveRoot(root);
+    if (!markdownBody) return;
+    const blocks = markdownBody.querySelectorAll('pre code.language-geojson, pre code.language-topojson');
     if (!blocks.length) return;
 
     let idx = 0;

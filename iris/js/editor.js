@@ -758,9 +758,10 @@
         const renderers = window.MarkdownPreview?.renderers;
         if (renderers) {
           // 统一调度器（md-render.js: runRenderers）：子集与既有行为一致——
-          // mermaid/apexcharts/diff/katex/plantuml/embedded，顺序按注册表插入序
-          const subset = ['mermaid', 'plantuml', 'apexcharts', 'diff', 'embedded'];
-          // 传入 outputElement 让 embedded 渲染器在 cell 容器内处理 pkt/geo 等嵌入
+          // mermaid/apexcharts/diff/katex/plantuml/embedded，顺序按注册表插入序。
+          // katex 自 461a8e5（行内 LaTeX 修复）起就应在 cell 内渲染，此前遗漏。
+          const subset = ['mermaid', 'plantuml', 'apexcharts', 'diff', 'katex', 'embedded'];
+          // 传入 outputElement 让渲染器在 cell 容器内处理（resolveRoot 会优先用 root）
           mdRender.runRenderers(outputElement, { only: subset });
         }
       } catch (e) { console.warn('[Editor] Plugin render error:', e); }

@@ -218,8 +218,11 @@ ${userHtml}
 
   // ============== 入口：替换带 live 标记的 html/js/css 代码块 ==============
   function render(root) {
-    const scope = root || document;
-    const blocks = scope.querySelectorAll('.markdown-body pre.code-block[data-lang]');
+    // 容器解析走 mdRender.resolveRoot（split-view 隐藏面板同样带 .markdown-body，
+    // 全局查询会命中空面板——见 md-render.js resolveRoot 注释）
+    const scope = window.MarkdownPreview.mdRender.resolveRoot(root);
+    if (!scope) return;
+    const blocks = scope.querySelectorAll('pre.code-block[data-lang]');
     blocks.forEach(pre => {
       if (pre.dataset.sandboxDone) return;
       const info = parseInfo(pre.dataset.lang);

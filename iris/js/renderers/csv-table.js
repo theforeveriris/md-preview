@@ -334,8 +334,11 @@
 
   // ============== 入口：替换文档内的 csv/tsv 代码块 ==============
   function render(root) {
-    const scope = root || document;
-    const blocks = scope.querySelectorAll('.markdown-body pre.code-block[data-lang="csv"], .markdown-body pre.code-block[data-lang="tsv"]');
+    // 容器解析走 mdRender.resolveRoot（split-view 隐藏面板同样带 .markdown-body，
+    // 全局查询会命中空面板——见 md-render.js resolveRoot 注释）
+    const scope = window.MarkdownPreview.mdRender.resolveRoot(root);
+    if (!scope) return;
+    const blocks = scope.querySelectorAll('pre.code-block[data-lang="csv"], pre.code-block[data-lang="tsv"]');
     blocks.forEach(pre => {
       if (pre.dataset.csvDone) return;
       pre.dataset.csvDone = '1';

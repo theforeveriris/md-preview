@@ -127,7 +127,7 @@
       if (renderers) {
         // 统一调度器（md-render.js: runRenderers）：子集与既有行为一致——
         // mermaid/apexcharts/diff/katex/plantuml/embedded，顺序按注册表插入序
-        const subset = ['mermaid', 'plantuml', 'apexcharts', 'diff', 'embedded'];
+        const subset = ['mermaid', 'plantuml', 'apexcharts', 'diff', 'katex', 'embedded'];
         mdRender.runRenderers(container, { only: subset });
       }
     }, 150);

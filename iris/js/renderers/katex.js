@@ -13,8 +13,10 @@
     return clone.textContent.includes('$');
   }
 
-  async function render() {
-    const markdownBody = document.querySelector('.markdown-body');
+  async function render(root) {
+    // 容器解析走 mdRender.resolveRoot：显式 root > #markdownContent > 第一个 .markdown-body
+    // （split-view 的隐藏面板同样带 .markdown-body 且排在主文档之前，直接全局查询会命中空面板）
+    const markdownBody = window.MarkdownPreview.mdRender.resolveRoot(root);
     if (!markdownBody) return;
 
     // 文档不含任何数学公式时直接跳过，避免无谓加载
