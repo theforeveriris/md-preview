@@ -5,8 +5,581 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 18 Oct 2026 08:20:18 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 18 Oct 2026 20:39:01 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>变更日志</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/changelog.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/changelog.md</guid>
+      <pubDate>Sun, 18 Oct 2026 20:38:37 GMT</pubDate>
+      <description>&gt; 本页由 从 git 历史自动生成，请勿手动编辑。 - refactor(renderers): 统一渲染器调度器 runRenderers——注册表遍历顺序 await，消除三处硬编码清单；geo 转正支持围栏；embedded 四段挂载逻辑收敛为工厂；新增顺序/错误隔离测试（SW v8.38） — theforeveriris - feat(tags): 全部文档补写 frontmatter</description>
+      <content:encoded><![CDATA[<h1>变更日志</h1>
+<blockquote>
+<p>本页由 <code>iris/scripts/build-changelog.js</code> 从 git 历史自动生成，请勿手动编辑。</p>
+</blockquote>
+<h2>2026-10-18</h2>
+<ul>
+<li><code>fdc726d</code> refactor(renderers): 统一渲染器调度器 runRenderers——注册表遍历顺序 await，消除三处硬编码清单；geo 转正支持围栏；embedded 四段挂载逻辑收敛为工厂；新增顺序/错误隔离测试（SW v8.38） — theforeveriris</li>
+</ul>
+<h2>2026-10-17</h2>
+<ul>
+<li><code>3f5cdf6</code> feat(tags): 全部文档补写 frontmatter tags（44 篇）+ 标签面板改为顶栏 Files/Index/标签 第三选项卡 — theforeveriris</li>
+</ul>
+<h2>2026-10-05</h2>
+<ul>
+<li><code>2f7b78c</code> feat: 标签系统 + 万能命令面板 + 搜索直达关键词 + live 预览沙箱 + JSON 可折叠树 + 图表悬浮工具条 + 快照分享 + 专注模式 + 多标签页同步 + Issue 一键反馈 + 讲义打印样式 — theforeveriris</li>
+</ul>
+<h2>2026-10-02</h2>
+<ul>
+<li><code>002f399</code> fix: 打包导出失效（settings.js 初始化早于 export-bundle.js 注册）+ 对照阅读沉浸化 — theforeveriris</li>
+<li><code>35595da</code> feat: 文章内查找条 + 章节折叠 + 双栏对照阅读 + EPUB/整站打包导出 + 分享卡片多模板 + PWA shortcuts — theforeveriris</li>
+<li><code>aa666a0</code> feat(ci): 死链检查——内链全量校验 + 外链按日确定性抽查 — theforeveriris</li>
+</ul>
+<h2>2026-10-01</h2>
+<ul>
+<li><code>208ce22</code> feat: 移动端手势 + 存储管理页 + 拖拽打开 + 设置导出/导入 + 全文 RSS + sitemap + CI 冒烟测试 — theforeveriris</li>
+<li><code>17fdfe1</code> refactor(settings): 设置面板分组整理——语言/外观/阅读/工具与导出四大区块 — theforeveriris</li>
+<li><code>aabc435</code> feat(ui): 「打开本地文件」改为单一入口 + 弹出式选择面板 — theforeveriris</li>
+<li><code>0cd3dc6</code> feat(ui): 悬浮球菜单精简——去上下篇、合并本地文件入口、扫码弹窗去说明文字 — theforeveriris</li>
+<li><code>04961df</code> feat: 长按收藏/树内足迹 + 链接悬浮预览 + 扫码续读；移除演示模式与页头图标 — theforeveriris</li>
+<li><code>1e86d8b</code> feat: 文档演示模式 + CSV/TSV 表格 + IOS/VRP 高亮 + 历史收藏 + 阅读续读 + 全量离线 + 选区工具栏 + 分享卡片 — theforeveriris</li>
+<li><code>9be029e</code> feat: 自动主题 + 本地文件夹 + 界面多语言 + 单文件 HTML 导出 + PlantUML 降级 — theforeveriris</li>
+</ul>
+<h2>2026-09-29</h2>
+<ul>
+<li><code>46e79b3</code> feat(ui): 搜索改造为居中命令面板（Ctrl/⌘+K） — theforeveriris</li>
+<li><code>43003bf</code> feat(ui): 侧边栏标题显示 + 中文文件名解码 + 导航阅读进度重置 — theforeveriris</li>
+<li><code>7ff069e</code> feat(ui): 全局快捷键扩展 + 快捷键文档 — theforeveriris</li>
+<li><code>52e1578</code> feat(ui): 桌面端侧边栏折叠 + 内容区宽度可调 — theforeveriris</li>
+<li><code>c576253</code> feat: 修复编辑器、XSS 与解析器共 22 处缺陷 — theforeveriris</li>
+</ul>
+<h2>2026-07-31</h2>
+<ul>
+<li><code>bb3ff1a</code> feat: 更新文档并创建系统演示 — theforeveriris</li>
+<li><code>4ad2c06</code> feat: 更新文档并创建系统演示 — theforeveriris</li>
+<li><code>b18a2da</code> Add files via upload — Iris</li>
+<li><code>1ef2171</code> Create zhanweifu.png — Iris</li>
+<li><code>4879ef3</code> chore(pptx): 移除示例文档中 example 演示及对应 data 产物 — theforeveriris</li>
+<li><code>b99caed</code> feat: 分析打卡项目卡顿原因 — theforeveriris</li>
+<li><code>075cc6d</code> feat(pptx): 新建 raw/pptx CI/CD 构建工作流，集成真实 PPTX 演示 — theforeveriris</li>
+<li><code>3fce366</code> feat: 新增 PPTX 嵌入，参考 pkt 语法，支持缩略图网格+全屏放映 — theforeveriris</li>
+</ul>
+<h2>2026-07-22</h2>
+<ul>
+<li><code>7129817</code> fix: 语法说明代码块改用4反引号包裹避免内部反引号提前结束代码块 — theforeveriris</li>
+<li><code>3f0c825</code> fix: 修复代码选项卡点击和代码块内语法误解析问题，重写示例文档 — theforeveriris</li>
+<li><code>6747434</code> feat: 增加代码选项卡和分栏布局语法糖 — theforeveriris</li>
+<li><code>655a9db</code> feat(spoiler): 添加 ||内容|| 遮罩/剧透语法支持 — theforeveriris</li>
+<li><code>ebb9a5d</code> docs(pulse): 补充 pulsmini 迷你波形和波形生成器说明 — theforeveriris</li>
+<li><code>1c610d1</code> feat(pulse): 添加竖线扫描线样式切换，修复代码块内标签渲染，更新示例文档 — theforeveriris</li>
+<li><code>5cbe59d</code> feat(pulse): 更新为 DG-LAB 官方波形文件格式 — theforeveriris</li>
+<li><code>8716213</code> feat: 文档站集成郊狼波形文件解析 — theforeveriris</li>
+</ul>
+<h2>2026-07-18</h2>
+<ul>
+<li><code>0b1b4b2</code> feat: Iris Plugin Development and Docs — omajili-manbu</li>
+</ul>
+<h2>2026-07-16</h2>
+<ul>
+<li><code>a5bd246</code> refactor(plugins): 重构插件系统 API，增强扩展能力与生命周期管理- 插件 loader 支持生命周期钩子（init/beforeRender/afterRender/destroy）- render 支持 async/await，内置错误边界与友好回退 UI- 新增 priority 优先级机制，解决多插件竞争冲突- 新增 context 上下文传递（documentPath、config、registerResource）- 简化 loadPlugin（直接使用 import(url)，移除 Blob 中间层）- autoLoad 新增 manifest/directory.json 策略，摆脱对目录列表的依赖- 重写 qrcode.js 作为 v2 API 参考实现- 更新 plugin-development.md 与 readme-dev.md 文档Co-authored-by: Kimi <a href="mailto:kimi@moonshot.cn">kimi@moonshot.cn</a> — theforeveriris</li>
+<li><code>c767dab</code> feat(ensp): 修复 eNSP XML 解析器并添加示例文档 — theforeveriris</li>
+</ul>
+<h2>2026-07-14</h2>
+<ul>
+<li><code>84d672d</code> license: 采用 AGPL-3.0 + CC-BY-SA-4.0 多许可证方案 — theforeveriris</li>
+<li><code>db81c3f</code> fix(pkt): 修复 @[pkt] 嵌入语法不渲染的问题 — theforeveriris</li>
+<li><code>5fbb165</code> fix(pkt): 修复 Twofish 解密 + XML 解析，添加真实拓扑示例 — trae</li>
+</ul>
+<h2>2026-07-13</h2>
+<ul>
+<li><code>01034be</code> docs(pkt): 更新文档，补充 Packet Tracer 拓扑渲染功能说明 — theforeveriris</li>
+<li><code>a2247cf</code> feat(pkt): 新增 Packet Tracer .pkt 拓扑渲染功能 — theforeveriris</li>
+<li><code>c5e67a6</code> feat(editor): 对照 examples 全面优化工具栏菜单覆盖度 — theforeveriris</li>
+<li><code>ff4ce4e</code> docs: 新增编辑器说明文档，更新 README/readme-dev/features/feat — theforeveriris</li>
+<li><code>1981224</code> fix(gallery): 修复移动端渲染问题，移除三种样式 — theforeveriris</li>
+<li><code>032a9f6</code> feat(gallery): 删除 stamp，slider 改自动轮播，新增 4 种样式 — theforeveriris</li>
+<li><code>8973da5</code> feat(gallery): editorial 改瀑布流，tape 改软木板，新增 3 种样式 — theforeveriris</li>
+<li><code>8707338</code> feat(gallery): 删除 carousel，新增 4 种克制艺术风格 — theforeveriris</li>
+<li><code>e1465b3</code> feat(gallery): 新增 5 种画廊布局样式 — theforeveriris</li>
+<li><code>805452b</code> docs: 更新图片画廊示例文档 — theforeveriris</li>
+<li><code>f74036d</code> feat(gallery): 支持通过 @style 标记指定画廊布局样式 — theforeveriris</li>
+<li><code>d9fa764</code> feat(debug): 调试面板扩展为 6 分组实时监控 — theforeveriris</li>
+<li><code>bb091b7</code> docs: 全面更新文档体系，反映近期所有功能更新 — theforeveriris</li>
+</ul>
+<h2>2026-07-11</h2>
+<ul>
+<li><code>a9635c8</code> chore: 清理根目录，移动 feat.md 到 docs/ — theforeveriris</li>
+</ul>
+<h2>2026-07-10</h2>
+<ul>
+<li><code>9e72bd6</code> feat: 添加代码高亮和代码块复制功能 — theforeveriris</li>
+<li><code>2429e19</code> docs: 添加插件开发指南 — theforeveriris</li>
+</ul>
+<h2>2026-07-09</h2>
+<ul>
+<li><code>5906c31</code> docs: 重写项目文档，更新为当前实际代码结构 — github-actions[bot]</li>
+<li><code>f121401</code> docs: 更新表格示例文档，添加使用提示 — theforeveriris</li>
+<li><code>61ac951</code> docs: 添加表格使用示例文档 — theforeveriris</li>
+</ul>
+<h2>2026-05-24</h2>
+<ul>
+<li><code>5b54ffa</code> chore: remove giscus comments system — theforeveriris</li>
+<li><code>d8e6ff3</code> Remove music notation rendering feature — theforeveriris</li>
+<li><code>2382f27</code> Fix: use specific language types for embed rendering — theforeveriris</li>
+<li><code>257b786</code> 调整示例文档格式：源码在代码块中，渲染效果直接显示 — theforeveriris</li>
+<li><code>8fd67e9</code> 互换示例文档中的源码和渲染效果位置 — theforeveriris</li>
+<li><code>2612ded</code> 完善项目文档系统 — theforeveriris</li>
+<li><code>5fab43b</code> Add theme market system with 7 built-in themes and custom CSS support — theforeveriris</li>
+<li><code>6d20886</code> 实现插件系统和二维码生成插件 — theforeveriris</li>
+</ul>
+<h2>2026-05-22</h2>
+<ul>
+<li><code>24b683f</code> 更新 latex-examples.md — 鸢尾</li>
+<li><code>8f28f92</code> 更新 latex-examples.md — 鸢尾</li>
+<li><code>0a28b8a</code> fix: 修复 katex.js 渲染器，直接处理 katex-block div — theforeveriris</li>
+<li><code>5f4b91c</code> feat: 添加 LaTeX 公式支持 (KaTeX) — theforeveriris</li>
+<li><code>2a3dd2f</code> Add image lazy loading, gallery mode, and error fallback — theforeveriris</li>
+<li><code>8b07160</code> Add GitHub-style Alerts feature — theforeveriris</li>
+<li><code>efb80a2</code> Refactor: Update geojson and twitter examples to match embed examples format — theforeveriris</li>
+<li><code>7faffcb</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>983f78f</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>edce270</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>e70ab11</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>7b5258e</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>d9b4484</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>912867c</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>de9ab65</code> 更新 embed-examples.md — 鸢尾</li>
+</ul>
+<h2>2026-05-21</h2>
+<ul>
+<li><code>825e378</code> docs: 从markdown语法说明中删除重复的Mermaid图表内容 — theforeveriris</li>
+</ul>
+<h2>2026-05-20</h2>
+<ul>
+<li><code>ba8fa4f</code> 添加 Twitter/X 嵌入功能 — theforeveriris</li>
+<li><code>670479e</code> 添加 Git Diff 可视化功能 (diff2html) — theforeveriris</li>
+<li><code>00dfa72</code> 添加 OSMD 乐谱渲染功能 — theforeveriris</li>
+<li><code>4fcd83d</code> feat: 添加乐谱渲染支持 (ABC记谱法、MusicXML) — theforeveriris</li>
+<li><code>4358df1</code> fix: 修正 ApexCharts 示例文档的代码块类型，源码改为txt — theforeveriris</li>
+<li><code>7e3ecd6</code> feat: 添加 ApexCharts 交互式图表支持 — theforeveriris</li>
+<li><code>dd07edc</code> feat: 添加浏览器原生 HTML 元素与 Web API 支持 — theforeveriris</li>
+<li><code>5f66906</code> feat: 添加 GeoJSON/TopoJSON 地理数据可视化功能 — theforeveriris</li>
+<li><code>0fcc181</code> feat: 添加外部服务嵌入功能 — theforeveriris</li>
+<li><code>f1a3caf</code> fix: 修复多个 PlantUML 图表语法问题 — theforeveriris</li>
+<li><code>71c8ca3</code> fix: 修复多个 PlantUML 图表渲染问题 — theforeveriris</li>
+<li><code>b7abb03</code> feat: 添加 PlantUML 图表渲染支持 — theforeveriris</li>
+<li><code>fcd3d01</code> 更新 mermaid-examples.md — 鸢尾</li>
+<li><code>97bc72a</code> 更新 mermaid-examples.md — 鸢尾</li>
+<li><code>98fdf21</code> 更新 mermaid-examples.md — 鸢尾</li>
+<li><code>abb130f</code> fix: 严格修复四象限图、块图、XY图表的Mermaid语法 — theforeveriris</li>
+<li><code>0165e88</code> Fix all mermaid source code blocks using txt format — theforeveriris</li>
+<li><code>ad631e1</code> 更新 mermaid-examples.md — 鸢尾</li>
+<li><code>f8c8f63</code> 添加完整的 Mermaid 图表示例文档 — theforeveriris</li>
+<li><code>7738f7f</code> 添加 Mermaid 图表支持 — agelaia521</li>
+</ul>
+<h2>2026-05-19</h2>
+<ul>
+<li><code>e41fb66</code> 更新 Markdown 语法参考页面，添加每种语法的渲染效果预览 — agelaia521</li>
+<li><code>2a992d1</code> 修复文档中的相对链接 — theforeveriris</li>
+<li><code>f1be494</code> 更新所有文档 - 反映自动发现功能 — theforeveriris</li>
+<li><code>b1eecd4</code> Add multi-level documentation structure with test files — theforeveriris</li>
+<li><code>4a49e3b</code> Initial commit: Markdown previewer for GitHub Pages — agelaia521</li>
+</ul>
+<blockquote>
+<p>共 108 条（最多展示 200 条）。</p>
+</blockquote>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>需求整理（候选功能）</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/requirements.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/requirements.md</guid>
+      <pubDate>Sun, 18 Oct 2026 20:38:37 GMT</pubDate>
+      <description>本文整理自一轮功能头脑风暴中筛选出的候选需求，作为排期参考。 与 功能路线图 的分工：roadmap 是维护者已确认的正式规划，本文是待评估的候选池；某项落地后，请移入 roadmap / README 特性清单，并从本表移除。 约定：优先级 P0（低风险快赢）→ P1（体感/内容增强）→ P2（攻坚）；工作量 小（≤ 半天）→ 中（13 天）→ 大（多日）。 --- | ID | 名称 | 分组</description>
+      <content:encoded><![CDATA[<h1>需求整理（候选功能）</h1>
+<p>本文整理自一轮功能头脑风暴中筛选出的候选需求，作为<strong>排期参考</strong>。</p>
+<p>与 <a href="https://theforeveriris.github.io/md-preview/docs/roadmap.md">功能路线图</a> 的分工：roadmap 是维护者已确认的正式规划，本文是<strong>待评估的候选池</strong>；某项落地后，请移入 roadmap / README 特性清单，并从本表移除。</p>
+<p>约定：<strong>优先级</strong> P0（低风险快赢）→ P1（体感/内容增强）→ P2（攻坚）；<strong>工作量</strong> 小（≤ 半天）→ 中（1~3 天）→ 大（多日）。</p>
+<hr>
+<h2>总览</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>名称</th>
+<th>分组</th>
+<th>优先级</th>
+<th>工作量</th>
+<th>主要复用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PERF-1</td>
+<td>可见即渲染（图表延迟初始化）</td>
+<td>性能与阅读体验</td>
+<td>P1</td>
+<td>中</td>
+<td><code>md-render.js</code> 调度器、<code>dom.js</code> 懒加载</td>
+</tr>
+<tr>
+<td>PERF-2</td>
+<td>屏外内容跳过布局（<code>content-visibility</code>）</td>
+<td>性能与阅读体验</td>
+<td>P1</td>
+<td>小</td>
+<td><code>markdown.css</code></td>
+</tr>
+<tr>
+<td>PERF-3</td>
+<td>长文档渐进渲染</td>
+<td>性能与阅读体验</td>
+<td>P2</td>
+<td>中</td>
+<td><code>markdown.js</code> 渲染管线</td>
+</tr>
+<tr>
+<td>PERF-4</td>
+<td>相邻文档预取</td>
+<td>性能与阅读体验</td>
+<td>P0</td>
+<td>小</td>
+<td><code>hover-preview.js</code>、<code>file-tree.js</code></td>
+</tr>
+<tr>
+<td>DATA-1</td>
+<td>CSV / TSV → 图表联动</td>
+<td>内容增强</td>
+<td>P0</td>
+<td>中</td>
+<td><code>csv-table.js</code>、<code>apexcharts.js</code></td>
+</tr>
+<tr>
+<td>CONTENT-1</td>
+<td>术语表悬浮解释</td>
+<td>内容增强</td>
+<td>P1</td>
+<td>中</td>
+<td><code>hover-preview.js</code>、frontmatter</td>
+</tr>
+<tr>
+<td>TOOL-1</td>
+<td>OpenAPI 交互文档</td>
+<td>API / 开发者工具</td>
+<td>P2</td>
+<td>中</td>
+<td>渲染器注册、<code>sandbox.js</code></td>
+</tr>
+<tr>
+<td>TOOL-2</td>
+<td><code>::: http</code> 实时请求块</td>
+<td>API / 开发者工具</td>
+<td>P1</td>
+<td>小</td>
+<td><code>json-tree.js</code>、highlight</td>
+</tr>
+<tr>
+<td>TOOL-3</td>
+<td>SQL DDL → ER 图</td>
+<td>API / 开发者工具</td>
+<td>P0</td>
+<td>小</td>
+<td><code>mermaid.js</code></td>
+</tr>
+<tr>
+<td>TOOL-4</td>
+<td>开发者小工具家族</td>
+<td>API / 开发者工具</td>
+<td>P0</td>
+<td>小</td>
+<td><code>plugins/loader.js</code></td>
+</tr>
+<tr>
+<td>CJK-1</td>
+<td>繁简一键切换</td>
+<td>中文与东亚特化</td>
+<td>P0</td>
+<td>小</td>
+<td><code>settings.js</code>、i18n</td>
+</tr>
+<tr>
+<td>CJK-2</td>
+<td>拼音注音（ruby）</td>
+<td>中文与东亚特化</td>
+<td>P1</td>
+<td>小</td>
+<td>渲染管线、<code>settings.js</code></td>
+</tr>
+<tr>
+<td>CJK-3</td>
+<td>竖排模式</td>
+<td>中文与东亚特化</td>
+<td>P2</td>
+<td>中</td>
+<td><code>markdown.css</code>、<code>theme-manager.js</code></td>
+</tr>
+<tr>
+<td>CJK-4</td>
+<td>CJK 排版渲染选项</td>
+<td>中文与东亚特化</td>
+<td>P1</td>
+<td>小</td>
+<td><code>settings.js</code>、<code>markdown.css</code></td>
+</tr>
+<tr>
+<td>BUILD-1</td>
+<td>中文排版 lint（构建期）</td>
+<td>构建与工程</td>
+<td>P0</td>
+<td>中</td>
+<td><code>build-*.js</code>、<code>smoke-test.yml</code></td>
+</tr>
+<tr>
+<td>GIT-1</td>
+<td>单篇文档历史 / blame</td>
+<td>Git 与协作</td>
+<td>P1</td>
+<td>中</td>
+<td>GitHub API、<code>diff.js</code></td>
+</tr>
+<tr>
+<td>GIT-2</td>
+<td>自动变更日志页</td>
+<td>Git 与协作</td>
+<td>P0</td>
+<td>小</td>
+<td><code>build-sitemap.js</code> 的 git 用法</td>
+</tr>
+<tr>
+<td>GIT-3</td>
+<td>文档变更订阅</td>
+<td>Git 与协作</td>
+<td>P2</td>
+<td>中</td>
+<td>GIT-1、<code>feed.xml</code> <code>lastmod</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>一、性能与阅读体验</h2>
+<h3>PERF-1 可见即渲染（图表延迟初始化）</h3>
+<p><strong>目标</strong>：打开文档时不再一次性初始化全部重型渲染器；含 30 个 Mermaid 的文档首屏不再卡顿。</p>
+<p><strong>现状</strong>：<code>iris/js/md-render.js</code> 的 <code>runRenderers()</code> 会在文档注入后<strong>顺序 await 全部渲染器</strong>，每个渲染器自行查询 DOM、命中即加载 vendor 并初始化。</p>
+<p><strong>交互 / 验收</strong>：滚动到图表附近（预留 <code>rootMargin</code> 约 300px）才初始化；未初始化区显示轻量占位骨架（高度稳定，避免抖动）；滚动到含图区域时肉眼无可感延迟；一篇 30 图文档的 DOM 注入耗时显著下降。</p>
+<p><strong>实现要点</strong>：</p>
+<ul>
+<li>引入「可延迟渲染器」清单（mermaid / plantuml / apexcharts / katex / diff / geo / pkt / pptx / csv / json）。</li>
+<li>需要小改 <code>runRenderers</code>：支持<strong>按块调度</strong>（对每个命中的代码块容器注册 IntersectionObserver，进入视野后再调用对应渲染器并限定作用域），而非仅按渲染器整体执行。</li>
+<li>保持现有「单渲染器失败隔离」「顺序 await（避免 innerHTML 竞态）」语义。</li>
+</ul>
+<p><strong>依赖与风险</strong>：部分渲染器会整体重写容器 innerHTML（<code>embedded.js</code>），需确认延迟执行不影响其清理时序；打印（<code>Ctrl/⌘+P</code>）与「导出 PDF」前需强制初始化全部未渲染块。</p>
+<h3>PERF-2 屏外内容跳过布局（<code>content-visibility</code>）</h3>
+<p><strong>目标</strong>：长文档屏外区块跳过布局与绘制，滚动更顺滑。</p>
+<p><strong>实现要点</strong>：正文顶层区块加 <code>content-visibility: auto</code> + <code>contain-intrinsic-size</code>（给估算高度，减少滚动条跳动）。仅作用于 <code>.markdown-body</code> 下的块级子节点。</p>
+<p><strong>依赖与风险</strong>：会改变滚动高度估算，需回归「阅读位置续读」百分比、章节折叠、查找条（<code>find-bar.js</code>，TreeWalker 不依赖布局，影响小）与锚点跳转定位；<code>contain-intrinsic-size</code> 需实测调参。</p>
+<h3>PERF-3 长文档渐进渲染</h3>
+<p><strong>目标</strong>：超长文档先渲染首屏前 N 块，其余在空闲时补齐，首屏更快可见。</p>
+<p><strong>实现要点</strong>：<code>marked.parse</code> 产出整段 HTML 后，按顶层块切片：首屏块立即插入，剩余块用 <code>requestIdleCallback</code>（降级 <code>setTimeout</code>）分批插入，或先插入但依赖 PERF-2 的 <code>content-visibility</code> 推迟布局。</p>
+<p><strong>依赖与风险</strong>：与 PERF-1 / PERF-2 方案有重叠，<strong>建议三者合并为一个「渲染调度」改造</strong>统一设计，避免三套机制互相打架；需保证文档切换时取消上一轮未完成的空闲任务。</p>
+<h3>PERF-4 相邻文档预取</h3>
+<p><strong>目标</strong>：<code>[</code> / <code>]</code>、悬浮球上/下一篇、侧边栏点击时切换「瞬时」。</p>
+<p><strong>交互 / 验收</strong>：悬停文件树条目、空闲、或当前文档渲染完成后，预取上一/下一篇的 <code>.md</code>；切换时命中缓存直达。</p>
+<p><strong>实现要点</strong>：复用 <code>hover-preview.js</code> 的 fetch + 内存缓存思路；预取由 Service Worker 拦截入库，顺带提升离线命中。见上/下一篇顺序来源 <code>file-tree.js</code>（DFS）。</p>
+<p><strong>依赖与风险</strong>：注意并发上限与移动端流量；仅预取相邻 1~2 篇，不做全量。</p>
+<hr>
+<h2>二、内容增强</h2>
+<h3>DATA-1 CSV / TSV → 图表联动</h3>
+<p><strong>目标</strong>：交互表格上加「画成图」，一键生成 ApexCharts，免手写图表配置。</p>
+<p><strong>交互 / 验收</strong>：<code>```csv</code> 表格右上角新增「画成图」按钮 → 弹出图表类型选择（折线/柱状/饼/散点）→ 按列语义自动推断 X 轴与系列 → 内联渲染图表；另提供「复制为 <code>```apexcharts</code> 配置」，便于回写文档源码。</p>
+<p><strong>实现要点</strong>：<code>iris/js/renderers/csv-table.js</code> 已将数据解析到内存，直接构造 ApexCharts options；按需 <code>loadScriptOnce</code> 加载 apexcharts（复用 <code>renderers/apexcharts.js</code> 的加载方式）；类型推断：数值列 → 系列，首个非数值或时间列 → 类别轴。</p>
+<p><strong>复用</strong>：<code>csv-table.js</code>、<code>apexcharts.js</code>、<code>dom.js</code>。</p>
+<p><strong>依赖与风险</strong>：列类型误判需允许用户手动改；大数据表限制系列/点数。</p>
+<h3>CONTENT-1 术语表悬浮解释</h3>
+<p><strong>目标</strong>：frontmatter 声明术语，正文首次出现自动高亮并可悬浮查看解释。</p>
+<p><strong>交互 / 验收</strong>：frontmatter 写 <code>glossary: { OSPF: 开放最短路径优先… }</code>（或以独立术语文件提供）；正文命中术语加细下划线样式，鼠标悬浮弹出解释卡片（触屏长按）。</p>
+<p><strong>实现要点</strong>：渲染后对正文做一趟 TreeWalker 文本扫描（<strong>跳过</strong> <code>code</code> / <code>pre</code> / 链接 / 标题锚点 / 已处理节点），仅高亮<strong>首次</strong>出现，控制每篇命中上限以保证性能；卡片定位复用 <code>hover-preview.js</code> 的边界规避逻辑。</p>
+<p><strong>依赖与风险</strong>：文本节点切分会干扰其它后处理（锚点、查找条高亮），需确定执行顺序；术语过多时性能与视觉噪音需设置开关。</p>
+<hr>
+<h2>三、API / 开发者工具块</h2>
+<blockquote>
+<p>说明：本站定位为文档站，迟早要写 API / 开发者文档，目前<strong>完全没有工具类组件</strong>。本组为「文档语法糖 + 交互组件」，均为渲染器或插件形态。</p>
+</blockquote>
+<h3>TOOL-1 OpenAPI 交互文档</h3>
+<p><strong>目标</strong>：贴 <code>swagger.json</code> / <code>openapi.yaml</code> → 渲染接口文档 + 在线「Try it」发请求看响应。</p>
+<p><strong>交互 / 验收</strong>：<code>```openapi</code> 块解析为按 tag 分组的接口列表（路径、方法、参数、请求体、响应码/示例），每接口带「试一下」按钮，填参后显示状态码、响应头与响应体。</p>
+<p><strong>实现要点</strong>：新增渲染器 <code>renderers/openapi.js</code>；YAML 解析按需加载 <code>js-yaml</code>（mermaid vendor 内已含，但不对外暴露，需独立引入并按需加载）；请求体与响应体复用 <code>json-tree.js</code> 展示；「Try it」用 <code>fetch</code>。</p>
+<p><strong>依赖与风险</strong>：跨域（CORS）会导致部分接口无法直连，需明示「仅支持允许跨域的端点」；鉴权参数如何传递（header/query）需设计；不做自动执行，默认点击才发请求。</p>
+<h3>TOOL-2 <code>::: http</code> 实时请求块</h3>
+<p><strong>目标</strong>：文档内贴一个请求，读者点一下看真实返回。</p>
+<p><strong>交互 / 验收</strong>：<code>::: http GET https://… :::</code> 渲染为请求卡片（方法 + URL + 「发送」按钮）→ 展示状态码、耗时、响应头、响应体（JSON 走折叠树，其它走高亮）。</p>
+<p><strong>实现要点</strong>：新块语法 + 渲染器；默认方法 GET；响应展示复用 <code>json-tree.js</code> 与 highlight；与 TOOL-1 共用请求/展示组件。</p>
+<p><strong>依赖与风险</strong>：CORS 同上；默认仅 GET，避免危险方法误触发。</p>
+<h3>TOOL-3 SQL DDL → ER 图</h3>
+<p><strong>目标</strong>：贴建表语句自动生成 ER 图。</p>
+<p><strong>交互 / 验收</strong>：<code>```sql ddl</code>（或 <code>```erd</code>）解析 <code>CREATE TABLE</code> + 外键 → 生成 Mermaid <code>erDiagram</code> 源码 → 复用 mermaid 渲染器出图；解析失败回退普通 SQL 高亮。</p>
+<p><strong>实现要点</strong>：正则解析表名、字段（类型/主键/非空）、<code>FOREIGN KEY</code> / <code>REFERENCES</code> 关系 → 拼 <code>erDiagram</code> 文本 → 交给 <code>renderers/mermaid.js</code>；提供「复制 Mermaid 源码」。</p>
+<p><strong>复用</strong>：<code>mermaid.js</code>（按需加载已有）。</p>
+<p><strong>依赖与风险</strong>：复杂 DDL（复合键、约束、方言）解析有限，需明确回退。</p>
+<h3>TOOL-4 开发者小工具家族</h3>
+<p><strong>目标</strong>：攒一批零依赖、即插即用的文档内小工具。</p>
+<p><strong>清单</strong>（可分批落地）：</p>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>语法</th>
+<th>说明</th>
+<th>实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>正则测试</td>
+<td><code>::: regex</code></td>
+<td>输入正则 + 样本，实时高亮匹配、捕获组</td>
+<td>原生 RegExp</td>
+</tr>
+<tr>
+<td>Cron 解释</td>
+<td><code>::: cron</code></td>
+<td><code>*/5 * * * *</code> → 人类可读描述</td>
+<td>轻量解析表</td>
+</tr>
+<tr>
+<td>时间戳/时区</td>
+<td><code>::: time</code></td>
+<td>时间戳 ↔ 各时区对照，实时刷新</td>
+<td><code>Intl.DateTimeFormat</code></td>
+</tr>
+<tr>
+<td>JWT 解析</td>
+<td><code>::: jwt</code></td>
+<td>解码 header/payload，标注过期</td>
+<td>base64 + JSON</td>
+</tr>
+<tr>
+<td>哈希</td>
+<td><code>::: hash</code></td>
+<td>文本 → MD5/SHA-1/SHA-256</td>
+<td><code>crypto.subtle</code></td>
+</tr>
+<tr>
+<td>色板/对比度</td>
+<td><code>::: color</code></td>
+<td>色值 → 色板 + WCAG 对比度检查</td>
+<td>原生计算</td>
+</tr>
+</tbody></table>
+<p><strong>实现要点</strong>：走<strong>插件系统</strong>（<code>iris/plugins/loader.js</code>，参考 qrcode / countdown / colorcard 插件），每个工具一个插件文件，零新依赖优先。</p>
+<p><strong>依赖与风险</strong>：MD5 需自实现或引入（<code>crypto.subtle</code> 不含 MD5）；工具语义都应可在文档静态阅读（不可用时降级为普通代码块）。</p>
+<hr>
+<h2>四、中文与东亚特化</h2>
+<blockquote>
+<p>说明：本项目为<strong>中文优先</strong>文档站，但缺少中文/东亚特有的阅读与排版能力。本组是相对其他文档站最具辨识度的方向。</p>
+</blockquote>
+<h3>CJK-1 繁简一键切换</h3>
+<p><strong>目标</strong>：正文繁体 ↔ 简体切换（阅读向，不改源文件）。</p>
+<p><strong>交互 / 验收</strong>：设置面板「阅读」区块加开关；切换后正文即时转换并记忆偏好；代码块、URL、<code>code</code> 内容<strong>不转换</strong>。</p>
+<p><strong>实现要点</strong>：引入 <code>opencc-js</code>（按需加载、可 vendor），对渲染后正文文本节点做转换，跳过 <code>code</code> / <code>pre</code> / <code>script</code> / 链接 URL；随主题同款持久化（<code>localStorage</code>）。</p>
+<p><strong>依赖与风险</strong>：字典体积需评估（懒加载）；是否同时转换 UI 文案需决策（建议仅正文）。</p>
+<h3>CJK-2 拼音注音（ruby）</h3>
+<p><strong>目标</strong>：为生僻字 / 学习类内容提供注音。</p>
+<p><strong>交互 / 验收</strong>：支持作者手写注音语法（如 <code>{漢字|hàn zì}</code> 或复用既有语法约定）渲染为 <code>&lt;ruby&gt;</code>；可选「自动注音」对正文汉字加拼音。</p>
+<p><strong>实现要点</strong>：作者语法零依赖，优先实现；自动注音需拼音数据（如 pinyin-pro），体量大，按需加载并仅对指定区块启用。</p>
+<p><strong>依赖与风险</strong>：自动注音体积与多音字准确度；默认关闭，避免全站注音噪音。</p>
+<h3>CJK-3 竖排模式</h3>
+<p><strong>目标</strong>：正文竖排阅读，服务于文言/诗词/排版展示场景。</p>
+<p><strong>交互 / 验收</strong>：设置面板或悬浮球提供「竖排」开关；正文 <code>writing-mode: vertical-rl</code>，滚动方向随之变化；代码块、表格、图表保持横向容器。</p>
+<p><strong>实现要点</strong>：作用于 <code>.markdown-body</code> 的 CSS；<code>theme-manager.js</code> / <code>settings.js</code> 记忆状态；处理滚动进度、锚点定位、灯箱与图表在竖排下的布局。</p>
+<p><strong>依赖与风险</strong>：滚动方向改变会影响「阅读位置续读」「上/下一篇手势」；<code>vertical</code> 与部分组件兼容性需逐一回归。观感独特，属高辨识度彩蛋级功能。</p>
+<h3>CJK-4 CJK 排版渲染选项</h3>
+<p><strong>目标</strong>：把「中文排版讲究」做成可开关的渲染选项。</p>
+<p><strong>清单</strong>：中西文自动间距、标点悬挂（<code>hanging-punctuation</code>）、行首/行尾禁则（避免行首出现 <code>，。」</code> 等）、首行缩进、标点挤压。</p>
+<p><strong>实现要点</strong>：多数为 <code>.markdown-body</code> 上的 CSS 变量/类；<code>text-spacing</code> 等新属性支持度有限时，用轻量 JS 在标点后插入零宽间距降级；统一挂到设置面板新增的「排版」区块，状态持久化。</p>
+<p><strong>复用</strong>：<code>settings.js</code>、<code>markdown.css</code>、i18n。</p>
+<hr>
+<h2>五、构建与工程</h2>
+<h3>BUILD-1 中文排版 lint（构建期）</h3>
+<p><strong>目标</strong>：中文文档的排版规范检查与自动修复，CI 可卡门禁；后续可复用于编辑器实时提示。</p>
+<p><strong>检查规则</strong>：</p>
+<ul>
+<li>中英文 / 中文与数字之间缺少空格；</li>
+<li>全角 / 半角标点混用、中文用 <code>“”</code> 而非 <code>&quot;&quot;</code>、单引号 <code>‘’</code>；</li>
+<li>行首禁则（行首不出现 <code>，。！？、）」』</code> 等）；</li>
+<li>中英混排括号配对与嵌套。</li>
+</ul>
+<p><strong>交互 / 验收</strong>：新增 <code>iris/scripts/lint-cjk.js</code>，默认<strong>只报告不修改</strong>；<code>--fix</code> 显式自动修复；接入 <code>smoke-test.yml</code>（建议先只告警，稳定后再升为致命）。</p>
+<p><strong>实现要点</strong>：扫描 <code>docs/**/*.md</code>（<code>git ls-files</code> 为准，与 <code>link-check.js</code> 同构）；<strong>必须跳过</strong>代码围栏、行内代码、URL、frontmatter、HTML 注释（复用 <code>link-check.js</code> 的围栏/转义处理思路）；修复逐条可定位（文件:行:列）。</p>
+<p><strong>依赖与风险</strong>：自动修复会产生大范围 diff，故默认关闭 <code>--fix</code>；规则需可配置白名单豁免（如刻意保留的半角括号）。</p>
+<hr>
+<h2>六、Git 与协作</h2>
+<blockquote>
+<p>说明：<code>lastmod</code> 已从 git 提取（<code>build-sitemap.js</code>），但界面上完全不可见。</p>
+</blockquote>
+<h3>GIT-1 单篇文档历史 / blame</h3>
+<p><strong>目标</strong>：文档页可查看「谁最后改的、改了什么」，内嵌 diff。</p>
+<p><strong>交互 / 验收</strong>：文档标题区或悬浮球加「历史」入口 → 列出该文件的提交时间线（作者、时间、信息）→ 点条目显示该次提交的 diff 视图。</p>
+<p><strong>实现要点</strong>：GitHub API <code>GET /repos/{owner}/{repo}/commits?path=&lt;path&gt;</code> 与 <code>/commits/{sha}</code>；<code>owner</code>/<code>repo</code> 来自 <code>iris/config.js</code>；diff 展示复用 <code>renderers/diff.js</code>（diff2html）；结果内存缓存。</p>
+<p><strong>依赖与风险</strong>：未鉴权 API 限流（60 次/时）→ 需缓存 + 可选填 GitHub Token；私有仓库必须带 Token；离线 / API 不可用时静默降级隐藏入口。</p>
+<h3>GIT-2 自动变更日志页</h3>
+<p><strong>目标</strong>：从 git log 生成站点变更日志页。</p>
+<p><strong>交互 / 验收</strong>：构建后生成变更日志（如 <code>docs/changelog.md</code> 或 <code>iris/data/changelog.json</code> + <code>#/changelog</code> 路由），按时间倒序列出变更。</p>
+<p><strong>实现要点</strong>：新增 <code>iris/scripts/build-changelog.js</code>，取 git log（复用 <code>build-sitemap.js</code> 的 git 调用）；可只收录 <code>docs/**</code> 变更；接入 CI（参考 <code>build-feed.yml</code>：产物有变化才提交回仓库）。</p>
+<p><strong>复用</strong>：<code>build-sitemap.js</code>、<code>build-feed.yml</code> 工作流模式。</p>
+<h3>GIT-3 文档变更订阅</h3>
+<p><strong>目标</strong>：关注某篇文档，它有更新时在界面提示并可看新旧 diff（「watch this doc」）。</p>
+<p><strong>交互 / 验收</strong>：文档页「关注」按钮；关注列表存本地；打开站点时检查关注文档的最新提交/更新时间，有更新则显示标记，点击查看变更。</p>
+<p><strong>实现要点</strong>：本地存 <code>{ path: lastSeenCommit }</code>；检查优先用 <code>file-tree.json</code> / <code>sitemap</code> 的 <code>lastmod</code>（离线可用），需要 diff 时再走 GIT-1 的 API。</p>
+<p><strong>依赖与风险</strong>：依赖 GIT-1；限流与离线降级同 GIT-1。</p>
+<hr>
+<h2>建议落地批次</h2>
+<table>
+<thead>
+<tr>
+<th>批次</th>
+<th>目标</th>
+<th>需求</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>批次 1</td>
+<td>低风险快赢</td>
+<td>PERF-4、PERF-2、DATA-1、TOOL-3、CJK-1、CJK-4、GIT-2</td>
+<td>改动面小、几乎零新依赖，受众感知强</td>
+</tr>
+<tr>
+<td>批次 2</td>
+<td>体感与内容</td>
+<td>PERF-1、CONTENT-1、TOOL-2、TOOL-4、BUILD-1、CJK-2</td>
+<td>体感提升最大的性能项 + 内容增强</td>
+</tr>
+<tr>
+<td>批次 3</td>
+<td>攻坚</td>
+<td>PERF-3、TOOL-1、CJK-3、GIT-1、GIT-3</td>
+<td>需重构 / 外部依赖 / 更多边界回归</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>横切要求（每条需求都要满足）</h2>
+<ul>
+<li><strong>i18n</strong>：新增 UI 文案一律进 <code>iris/js/i18n.js</code>（zh/en 双份），静态文案用 <code>data-i18n*</code>，动态走 <code>t(key, fallback)</code>。</li>
+<li><strong>无障碍</strong>：新组件需可键盘操作、选区/焦点合理、必要处加 <code>aria-*</code>。</li>
+<li><strong>冒烟测试</strong>：新增渲染器 / 插件 / 构建脚本 / i18n key 需同步更新 <code>iris/scripts/smoke-test.js</code> 与 <code>index.html</code>，避免 CI 失败。</li>
+<li><strong>懒加载与 PWA</strong>：新增 vendor 库必须走 <code>dom.js</code> 的 <code>loadScriptOnce</code> / <code>loadStyleOnce</code>，并纳入 <code>precache-manifest</code> 与 SW 策略，不得拖累首屏。</li>
+<li><strong>渲染器 / 插件约定</strong>：渲染器注册到 <code>window.MarkdownPreview.renderers.&lt;id&gt;</code> 并在 <code>index.html</code> 按序引入；文档级工具优先走插件系统。</li>
+<li><strong>性能预算</strong>：首屏体积与主线程占用不得劣化（现为约 1MB / 按需加载），改渲染管线时以 Debug Panel（<code>?debug=1</code>）实测为准。</li>
+</ul>
+<hr>
+<h2>待确认 / 决策点</h2>
+<ol>
+<li><strong>渲染调度合并</strong>：PERF-1 / PERF-2 / PERF-3 是否合并为一次「渲染调度」重构统一实现？（建议是）</li>
+<li><strong>跨域请求类组件</strong>（TOOL-1、TOOL-2）：CORS 限制如何向读者解释？是否内置一个可选的代理说明？</li>
+<li><strong>GitHub API 鉴权</strong>：GIT-1 / GIT-3 是否需要引导用户填 Token？私有仓库如何支持？</li>
+<li><strong>繁简范围</strong>（CJK-1）：仅正文，还是含 UI 文案与侧边栏？</li>
+<li><strong>CJK lint 门禁</strong>（BUILD-1）：默认告警还是致命？<code>--fix</code> 是否加入某条工作流？</li>
+<li><strong>术语表来源</strong>（CONTENT-1）：frontmatter 内联，还是独立的术语文件 / 构建期汇总？</li>
+</ol>
+]]></content:encoded>
+    </item>
     <item>
       <title>配置参考</title>
       <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
