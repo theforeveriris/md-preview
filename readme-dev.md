@@ -391,7 +391,23 @@ npm run desktop:build  # 编译 + 打包（会先跑 desktop:dist）
 
 - **构建脚本扫到 `dist/`**：`build-file-tree` / `build-links` / `gen-pinyin-table` / `link-check`
   的目录排除表都已加入 `dist` 与 `src-tauri`，否则会把站点副本当成源文档。
-- **NSIS 首次打包要联网**：Tauri 会下载 NSIS，装过之后走缓存。
+- **NSIS 首次打包要联网**：Tauri 会把 `nsis-3.13.zip` 与 `nsis_tauri_utils.dll` 下到
+  `%LOCALAPPDATA%\tauri\NSIS`，之后走缓存。若下载超时（报
+  `failed to bundle project: 'timeout: global'`），**手动装好即可跳过下载**：
+
+  1. 把 `https://github.com/tauri-apps/binary-releases/releases/download/nsis-3.13/nsis-3.13.zip`
+     解压到 `%LOCALAPPDATA%\tauri\NSIS`，**去掉顶层 `nsis-3.13/` 目录**（`makensis.exe` 要在根）；
+  2. 从 `tauri-apps/nsis-tauri-utils` 的 `nsis_tauri_utils-v0.5.3` release 取 `nsis_tauri_utils.dll`，
+     放到 `Plugins\x86-unicode\additional\`；
+  3. 校验：`NSIS.exe` 的 SHA1 应为 `6D45D4E8CCF18FE1FDAC9164058F356102A2ECF2`，
+     dll 应为 `75197FEE3C6A814FE035788D1C34EAD39349B860`。
+
+  命令行下载这个仓库的 release 会偶发断连，`curl --retry` 多试几次即可。
+  Tauri 会逐项比对内置的 `NSIS_REQUIRED_FILES`，**缺任何一项它会把整个目录删掉重下**——
+  最容易漏的就是第 2 步那个 dll。
+- **`__TAURI_BUNDLE_TYPE` 警告**：`tauri` crate（2.12.4）与 `@tauri-apps/cli`（2.12.3）
+  的小版本差会打印一条 `Failed to add bundler type to the binary` 警告，只影响自动更新插件
+  （本项目未用），可忽略。
 
 ## 本地调试与常见坑
 
