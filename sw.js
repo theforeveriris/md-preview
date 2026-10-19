@@ -1,4 +1,4 @@
-const CACHE_NAME = 'md-preview-v8.47';
+const CACHE_NAME = 'md-preview-v8.48';
 const RUNTIME_CACHE = 'md-preview-runtime-v8.19';
 const PRECACHE_MANIFEST_URL = './iris/data/precache-manifest.json';
 
@@ -23,6 +23,7 @@ const PRECACHE_FALLBACK_URLS = [
   './iris/js/prefetch.js',
   './iris/js/git-history.js',
   './iris/js/backlinks.js',
+  './iris/js/figures.js',
   './iris/js/renderers/graph.js',
   './iris/js/renderers/sql-erd.js',
   './iris/js/renderers/http-request.js',

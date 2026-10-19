@@ -569,6 +569,11 @@
     'backlinks.expand': '显示全部（{n}）',
     'backlinks.collapse': '收起',
 
+    // 图 / 表编号（FIGURES-1）
+    'figure.figure': '图',
+    'figure.table': '表',
+    'figure.copyAnchor': '复制图表锚点链接',
+
     // 竖排 / OpenAPI / Git 历史
     'menu.history': '历史与变更',
     'settings.cjk.vertical': '竖排阅读',
@@ -1106,6 +1111,11 @@
     'backlinks.empty': 'No other document links here yet',
     'backlinks.expand': 'Show all ({n})',
     'backlinks.collapse': 'Collapse',
+
+    // 图 / 表编号（FIGURES-1）
+    'figure.figure': 'Figure',
+    'figure.table': 'Table',
+    'figure.copyAnchor': 'Copy figure link',
 
     'menu.history': 'History & Changes',
     'settings.cjk.vertical': 'Vertical text',

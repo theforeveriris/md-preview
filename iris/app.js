@@ -65,6 +65,10 @@
     if (window.MarkdownPreview.graph && window.MarkdownPreview.graph.init) {
       window.MarkdownPreview.graph.init();
     }
+    // 图 / 表编号（语言切换后刷新题注）
+    if (window.MarkdownPreview.figures && window.MarkdownPreview.figures.init) {
+      window.MarkdownPreview.figures.init();
+    }
     // 无部署快照分享（悬浮球入口 + #/s?z= 接收）
     if (window.MarkdownPreview.snapshot && window.MarkdownPreview.snapshot.init) {
       window.MarkdownPreview.snapshot.init();

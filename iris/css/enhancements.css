@@ -1746,3 +1746,91 @@ body.focus-mode .markdown-body > .focus-current {
   color: var(--color-text);
   border-color: var(--color-accent-purple);
 }
+
+/* ===== 图 / 表编号与交叉引用（FIGURES-1）===== */
+.markdown-body .doc-figure {
+  position: relative;
+  margin: 1.4em 0;
+  text-align: center;
+}
+
+/* 图表渲染器自带外边距，包进 figure 后归零，避免与题注之间出现双倍间距 */
+.markdown-body .doc-figure > .mermaid-diagram,
+.markdown-body .doc-figure > .plantuml-diagram,
+.markdown-body .doc-figure > .apex-chart,
+.markdown-body .doc-figure > .table-wrapper,
+.markdown-body .doc-figure > img {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* 图题在下、表题在上（由 JS 决定题注顺序） */
+.markdown-body .doc-figure-caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 8px 0 0;
+  font-family: var(--font-body, sans-serif);
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+.markdown-body .doc-figure-table .doc-figure-caption {
+  margin: 0 0 8px;
+}
+
+.markdown-body .doc-figure-text {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 锚点按钮：悬停题注才出现，与标题锚点交互一致 */
+.markdown-body .doc-figure-anchor {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  font-family: var(--font-body, sans-serif);
+  color: var(--color-text-muted);
+  background: none;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .15s, color .15s, background .15s;
+}
+
+.markdown-body .doc-figure:hover .doc-figure-anchor,
+.markdown-body .doc-figure-anchor:focus-visible {
+  opacity: 1;
+}
+
+.markdown-body .doc-figure-anchor:hover {
+  color: var(--color-accent-purple);
+  background: color-mix(in srgb, var(--color-accent-purple) 12%, transparent);
+}
+
+.markdown-body .doc-figure-anchor.copied { color: #10B981; opacity: 1; }
+.markdown-body .doc-figure-anchor.failed { color: #EF4444; opacity: 1; }
+
+/* 交叉引用点击后的目标高亮 */
+.markdown-body .doc-figure.fig-flash {
+  animation: fig-flash 1.2s ease-out;
+}
+
+@keyframes fig-flash {
+  0% { background: color-mix(in srgb, var(--color-accent-purple) 18%, transparent); }
+  100% { background: transparent; }
+}
+
+/* 打印：题注与图表不跨页，锚点按钮不打印 */
+@media print {
+  .markdown-body .doc-figure { break-inside: avoid; }
+  .markdown-body .doc-figure-anchor { display: none; }
+}
+
+/* 打印：反向链接随正文导出，但避免跨页断裂 */
+@media print {
+  .doc-backlinks,
+  .doc-graph { break-inside: avoid; }
+}

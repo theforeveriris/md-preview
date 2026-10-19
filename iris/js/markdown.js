@@ -400,6 +400,8 @@
     window.MarkdownPreview.gitHistory?.afterRender?.(currentPath);
     // 反向链接与相关文档（LINK-1）：文末区块，数据来自 links.json
     window.MarkdownPreview.backlinks?.afterRender?.(currentPath);
+    // 图 / 表自动编号与交叉引用（FIGURES-1）：在 wrapTables / 画廊分组之后执行
+    window.MarkdownPreview.figures?.afterRender?.();
   }
 
   function renderDocNavigation(currentPath) {
