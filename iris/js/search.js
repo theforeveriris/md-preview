@@ -53,7 +53,9 @@
         minlength: 1
       });
       documents.forEach((doc, i) => {
-        const combined = (doc.title || '') + ' ' + (doc.preview || '') + ' ' + (doc.path || '');
+        // searchText 为构建期成型（含繁体形态与拼音首字母）；旧索引缺该字段时回退原拼接
+        const combined = doc.searchText ||
+          ((doc.title || '') + ' ' + (doc.preview || '') + ' ' + (doc.path || ''));
         flexIndex.add(i, combined);
       });
       console.log('FlexSearch index built with', documents.length, 'documents');

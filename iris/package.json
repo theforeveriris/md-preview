@@ -1,7 +1,8 @@
 {
   "devDependencies": {
     "jsdom": "^29.1.1",
-    "marked": "^18.0.5"
+    "marked": "^18.0.5",
+    "pinyin-pro": "^3.26.0"
   },
   "dependencies": {
     "apexcharts": "^5.16.0",
