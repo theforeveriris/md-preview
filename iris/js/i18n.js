@@ -549,7 +549,6 @@
 
     // 文档图谱（GRAPH-1）
     'graph.pageTitle': '文档图谱',
-    'graph.pageDesc': '节点为文档、连线为站内链接，节点越大被引用越多。',
     'graph.search.placeholder': '搜索文档…',
     'graph.legend': '标签',
     'graph.hint': '拖拽平移 · 滚轮缩放 · 点击节点跳转',
@@ -557,6 +556,12 @@
     'graph.degree': '被引用 {n} 篇',
     'graph.empty': '没有可绘制的文档',
     'graph.loadFail': '图谱组件加载失败',
+    'graph.zoomIn': '放大',
+    'graph.zoomOut': '缩小',
+    'graph.fit': '适配画布',
+    'graph.reset': '重置视图',
+    'graph.fullscreen': '全屏',
+    'graph.exitFullscreen': '退出全屏',
     'cmd.openGraph': '文档图谱',
 
     // 反向链接与相关文档（LINK-1）
@@ -1091,7 +1096,6 @@
 
     // 文档图谱（GRAPH-1）
     'graph.pageTitle': 'Document graph',
-    'graph.pageDesc': 'Nodes are documents, edges are in-site links; bigger nodes are cited more.',
     'graph.search.placeholder': 'Search documents…',
     'graph.legend': 'Tags',
     'graph.hint': 'Drag to pan · scroll to zoom · click a node to open',
@@ -1099,6 +1103,12 @@
     'graph.degree': 'Cited by {n}',
     'graph.empty': 'No documents to draw',
     'graph.loadFail': 'Failed to load the graph component',
+    'graph.zoomIn': 'Zoom in',
+    'graph.zoomOut': 'Zoom out',
+    'graph.fit': 'Fit to canvas',
+    'graph.reset': 'Reset view',
+    'graph.fullscreen': 'Fullscreen',
+    'graph.exitFullscreen': 'Exit fullscreen',
     'cmd.openGraph': 'Document graph',
 
     // 反向链接与相关文档（LINK-1）

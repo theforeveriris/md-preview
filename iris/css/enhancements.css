@@ -1540,6 +1540,7 @@ body.focus-mode .markdown-body > .focus-current {
 
 /* ===== 文档图谱（GRAPH-1）===== */
 .doc-graph {
+  position: relative;
   margin: 1.2em 0;
   border: 1px solid var(--color-border);
   border-radius: 12px;
@@ -1547,43 +1548,169 @@ body.focus-mode .markdown-body > .focus-current {
   overflow: hidden;
 }
 
-.doc-graph-bar {
+/* 沉浸式页面（#/graph）：正文不再输出 H1 与描述，画布撑满可用视口。
+   高度由 graph.js 按视口实测写入 host.style.height（见 applyHeight），
+   面包屑高度随语言 / 字号变化，CSS 推算不稳 */
+body.graph-page .markdown-body {
+  max-width: 100%;
+  padding: 0;
+}
+
+/* 图谱页没有正文可读：阅读时长无意义，且必须关掉屏外跳过布局 ——
+   contain-intrinsic-size 的占位高度（500px）会挤掉按视口实测的画布高度 */
+body.graph-page .reading-time { display: none; }
+
+body.graph-page .markdown-body > * {
+  content-visibility: visible;
+  contain-intrinsic-size: none;
+}
+
+body.graph-page #markdownContent > .doc-graph {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.doc-graph-canvas {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--color-border) 55%, transparent) 1px, transparent 0)
+    0 0 / 22px 22px;
+  cursor: grab;
+}
+
+.doc-graph-canvas:active { cursor: grabbing; }
+
+/* 全屏：UA 样式已经把元素铺满视口，这里只清掉卡片外观 */
+.doc-graph:fullscreen {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+/* --- 浮层：画布上的全部 UI 都在这里 --- */
+.doc-graph-panel,
+.doc-graph-actions,
+.doc-graph-foot {
+  position: absolute;
+  z-index: 3;
+}
+
+/* 左上：搜索 + 标签图例 */
+.doc-graph-panel {
+  top: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: min(560px, calc(100% - 24px));
+  pointer-events: none; /* 浮层空白处让位给画布拖拽 */
+}
+
+.doc-graph-panel > * {
+  pointer-events: auto;
+  max-width: 100%;
+}
+
+.doc-graph-searchwrap {
   display: flex;
   align-items: center;
-  gap: 8px 10px;
-  flex-wrap: wrap;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--color-border);
+  gap: 7px;
+  padding: 0 11px;
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .07);
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.doc-graph-searchwrap:focus-within {
+  border-color: var(--color-accent-purple);
+  box-shadow: 0 4px 18px color-mix(in srgb, var(--color-accent-purple) 26%, transparent);
+}
+
+.doc-graph-searchicon {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  color: var(--color-text-muted);
 }
 
 .markdown-body .doc-graph-search {
-  width: 180px;
-  padding: 6px 10px;
+  width: 200px;
+  padding: 7px 0;
   font-family: inherit;
   font-size: 13px;
   color: var(--color-text);
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
+  background: none;
+  border: 0;
+  border-radius: 0;
   outline: none;
 }
 
-.markdown-body .doc-graph-search:focus {
+.markdown-body .doc-graph-search::-webkit-search-cancel-button { cursor: pointer; }
+
+.doc-graph-tags {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* 标签多时由 graph.js 折叠成这个按钮，展开后才显示图例 */
+.doc-graph-legend-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.doc-graph-legend-toggle[hidden] { display: none; }
+
+.doc-graph-legend-toggle[aria-expanded="true"] {
+  color: var(--color-accent-purple-deep);
   border-color: var(--color-accent-purple);
 }
 
-/* 图例单独占一行横向排布：正文宽度有限（默认 720px），标签多时横向滚动，
-   而不是换行后被挤成一条竖列 */
+.doc-graph-legend-count {
+  padding: 0 6px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  background: var(--color-bg);
+  border-radius: 999px;
+}
+
 .markdown-body .doc-graph-legend {
-  display: flex;
+  display: none;
+  flex-wrap: wrap;
   align-items: center;
   gap: 6px;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  width: 100%;
-  padding-bottom: 2px;
+  max-width: 100%;
+  max-height: 152px;
+  overflow-y: auto;
+  padding: 8px 10px;
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .07);
   scrollbar-width: thin;
 }
+
+.markdown-body .doc-graph-legend.open { display: flex; }
 
 .markdown-body .doc-graph-chip {
   display: inline-flex;
@@ -1617,33 +1744,79 @@ body.focus-mode .markdown-body > .focus-current {
   flex: 0 0 auto;
 }
 
-.doc-graph-hint {
-  font-size: 12px;
-  color: var(--color-text-muted);
+/* 右下：画布控件（缩放 / 适配 / 重置 / 全屏） */
+.doc-graph-actions {
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
+.doc-graph-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: var(--color-text-muted);
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .06);
+  transition: color .15s, border-color .15s, transform .12s;
+}
+
+.doc-graph-action svg { width: 16px; height: 16px; }
+
+.doc-graph-action:hover {
+  color: var(--color-text);
+  border-color: var(--color-accent-purple);
+}
+
+.doc-graph-action:active { transform: scale(.94); }
+
+/* 左下：操作提示 + 孤立文档数量 */
+.doc-graph-foot {
+  left: 12px;
+  bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  max-width: calc(100% - 76px);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.doc-graph-hint,
 .doc-graph-note {
-  margin-left: auto;
-  font-size: 12px;
-  color: var(--color-text-muted);
+  padding: 3px 9px;
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-radius: 999px;
 }
-
-.doc-graph-canvas {
-  height: min(70vh, 680px);
-  min-height: 320px;
-  background:
-    radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--color-border) 55%, transparent) 1px, transparent 0)
-    0 0 / 22px 22px;
-  cursor: grab;
-}
-
-.doc-graph-canvas:active { cursor: grabbing; }
 
 .doc-graph-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
   padding: 48px 16px;
   text-align: center;
   font-size: 13px;
   color: var(--color-text-muted);
+}
+
+/* 窄屏：浮层收窄，提示让位给图 */
+@media (max-width: 640px) {
+  .doc-graph-panel { max-width: calc(100% - 24px); }
+  .markdown-body .doc-graph-search { width: 100%; }
+  .doc-graph-hint { display: none; }
 }
 
 .doc-graph-tip {

@@ -293,6 +293,10 @@
 
   function renderMarkdown(markdown, currentPath = '') {
     const renderStartTime = performance.now();
+    // 图谱页是沉浸式布局（body.graph-page）。任何一次新文档渲染都先摘掉这个标记，
+    // #/graph 会在渲染完成后由 graph.openPage() 重新打上 —— 这样「离开图谱页」
+    // 不需要在每个导航入口单独清理。
+    document.body.classList.remove('graph-page');
     const { frontmatter, content } = parseFrontmatter(markdown);
 
     if (frontmatter.title) {
