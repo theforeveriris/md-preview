@@ -47,3 +47,6 @@ desktop.ini
 __pycache__/
 *.py[cod]
 *.pyo
+
+# 工具运行目录（OpenChamber 截图等），非项目内容
+.openchamber/
