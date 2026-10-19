@@ -274,6 +274,18 @@ node iris/scripts/build-links.js
 - 解析原语来自 `iris/scripts/lib/md-links.js`（`link-check.js` 也用它，两边口径不会漂移）
 - 消费方：`#/graph` 图谱（`iris/js/renderers/graph.js`）与文末反向链接（`iris/js/backlinks.js`）
 
+`#/graph` 是**沉浸式页面**（`body.graph-page`，由 `graph.openPage` 打上、`renderMarkdown` 开头统一摘掉）：
+
+- 正文只留图谱挂载点，不输出 H1 与描述；标题交给面包屑，`document.title` 单独设
+- 画布高度由 `graph.js: applyHeight` 按视口实测写入（面包屑高度随语言 / 字号变化，CSS 推算不稳），
+  视口或可见性变化时重算并 `cy.resize()`
+- 该页必须关掉屏外跳过布局：`content-visibility` 配 `contain-intrinsic-size: auto 500px` 会把
+  区块按 500px 占位，画布被挤下去；同时隐藏阅读时长区块
+- 节点文字默认不显示：悬停显示该节点与一跳邻居，搜索命中显示命中节点（`refreshLabels` 统一推导，
+  避免「搜索标签」与「悬停标签」互相覆盖）
+- 配色不用 CSS `color-mix`：它的计算值会被序列化成 `color(srgb …)` / `oklab()`，cytoscape 解析不了
+  会退回黑色；`graph.js` 自己把主题强调色解析成 RGB 后按主题底色方向混合出明度阶梯
+
 `link-check.js` 已额外识别两类运行时生成的锚点，交叉引用不会误报死链：
 图表别名（`#fig:topology` / `#tbl:qos`，来自 `<!-- #fig:x -->` 注释）与数字锚点（`#fig-3` / `#tbl-2`，按文档顺序编号）。
 `lib/md-links.js#extractFigureAnchors` 是 `iris/js/figures.js` 的源码级镜像，改动编号规则时两处需同步。

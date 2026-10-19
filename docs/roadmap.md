@@ -469,7 +469,7 @@ frontmatter 写 `password: xxx`，WebCrypto 客户端解密，目标是在公开
 | Git | 文档变更订阅 | 关注文档，有更新时正文顶部提示 |
 | 构建 | 中文排版 lint | `iris/scripts/lint-cjk.js`，`--fix` 自动修复，CI 告警 |
 | 构建 | 自动变更日志页 | `iris/scripts/build-changelog.js` → `docs/changelog.md` |
-| 导航 | 文档图谱 | `#/graph` 可交互文档图谱，节点=文档、边=站内链接、颜色=标签、大小=入度；Cytoscape.js 懒加载（`iris/js/renderers/graph.js`） |
+| 导航 | 文档图谱 | `#/graph` 沉浸式可交互图谱（入口=Ctrl/⌘+K 命令面板），节点=文档、边=站内链接、颜色=主题强调色深浅、大小=入度；悬停出邻居标签，浮层控件含缩放 / 适配 / 重置 / 全屏；Cytoscape.js 懒加载（`iris/js/renderers/graph.js`） |
 | 导航 | 反向链接与相关文档 | 文末「被 N 篇引用」+「相关文档」，数据来自 `links.json`（`iris/js/backlinks.js`） |
 | 构建 | 链接关系数据 | `iris/scripts/build-links.js` → `iris/data/links.json`，解析原语与死链检查共用 `iris/scripts/lib/md-links.js` |
 | 搜索 | 繁简互通 + 拼音首字母 | 构建期写入 `searchText`；拼音表由 `gen-pinyin-table.js` 一次性生成并入库 |
