@@ -197,7 +197,7 @@
     if (m) {
       const parts = m[1].split(/[\s/]+/).filter(Boolean).map(Number);
       if (parts.length >= 3 && parts.slice(0, 3).every(n => Number.isFinite(n))) {
-        return parts.slice(0, 3).map(v => v * 255);
+        return parts.slice(0, 3).map(v => Math.round(v * 255));
       }
       return null;
     }
@@ -756,6 +756,8 @@
     document.body.classList.add('graph-page');
   }
 
-  window.MarkdownPreview.renderers.graph = { render };
-  window.MarkdownPreview.graph = { openPage };
+  // graphStyle / buildColorLadder 一并导出：两者都被回归测试直接调用
+  // （标签规则与配色解析在浏览器 DOM 里查不到，只能靠 headless cytoscape 与纯函数断言）
+  window.MarkdownPreview.renderers.graph = { render, graphStyle };
+  window.MarkdownPreview.graph = { openPage, buildColorLadder, parseColor };
 })();
