@@ -28,7 +28,7 @@ const ROOT = path.resolve(__dirname, '..', '..');
 const OUTPUT_FILE = path.join(__dirname, '..', 'data', 'links.json');
 
 // 与 build-file-tree.js 的 EXCLUDED_DIRS 保持一致（节点集合必须对齐）
-const EXCLUDED_DIRS = new Set(['.git', 'node_modules', 'vendor', '.github']);
+const EXCLUDED_DIRS = new Set(['.git', 'node_modules', 'vendor', '.github', 'dist', 'src-tauri']);
 
 function collectDocs(dir, base = '', out = []) {
   for (const item of fs.readdirSync(dir, { withFileTypes: true })) {

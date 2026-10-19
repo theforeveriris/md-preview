@@ -25,7 +25,7 @@ const ROOT = path.resolve(__dirname, '..', '..');
 const OUT_FILE = path.join(__dirname, 'data', 'pinyin-initials.json');
 const OPENCC_FILE = path.join(ROOT, 'iris', 'vendor', 'opencc', 'opencc.min.js');
 const CJK_RE = /[\u4e00-\u9fff]/g;
-const EXCLUDED_DIRS = new Set(['.git', 'node_modules', 'vendor', '.github']);
+const EXCLUDED_DIRS = new Set(['.git', 'node_modules', 'vendor', '.github', 'dist', 'src-tauri']);
 
 let pinyin;
 try {

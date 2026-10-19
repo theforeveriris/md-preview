@@ -9,6 +9,10 @@ node_modules/
 dist/
 build/
 
+# 桌面端（Tauri）：Rust 编译产物与自动生成的 android/ios 工程
+src-tauri/target/
+src-tauri/gen/
+
 # eNSP/PT 解析器的解压产物（*.zip 解出的 *_extracted/ 目录，仅构建期临时文件）
 *_extracted/
 

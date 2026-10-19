@@ -1,0 +1,24 @@
+[package]
+name = "md-preview"
+version = "0.1.0"
+description = "md-preview 桌面端（Tauri 外壳）"
+authors = ["theforeveriris"]
+license = "MIT"
+edition = "2021"
+rust-version = "1.77.2"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+# 外链交给系统默认程序打开；不引插件，避免依赖插件的 JS 绑定与权限作用域
+open = "5"
+
+# Tauri 官方模板的发布配置：体积优先
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

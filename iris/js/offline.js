@@ -28,6 +28,9 @@
   }
 
   function swSupported() {
+    // 桌面端（Tauri）不注册 SW：navigator.serviceWorker.ready 会永远挂着，
+    // 「缓存全部文档」之类的入口必须提前判掉。
+    if (window.__TAURI_INTERNALS__) return false;
     return 'serviceWorker' in navigator && location.protocol !== 'file:';
   }
 

@@ -2127,6 +2127,9 @@
     }
 
     function registerServiceWorker() {
+      // 桌面端（Tauri）里所有资源都已在本地包内，SW 的缓存拦截没有意义，
+      // 自定义协议下注册也容易出问题 —— 直接跳过。网页版行为不变。
+      if (window.__TAURI_INTERNALS__) return;
       if ('serviceWorker' in navigator) {
         // 每次都以 no-cache 拉取 sw.js，保证部署后新版本能被浏览器发现
         fetch('sw.js', { cache: 'no-store' })

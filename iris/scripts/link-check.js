@@ -94,7 +94,8 @@ function walkFs(dir, relBase, out) {
   let entries;
     try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
   for (const entry of entries) {
-    if (entry.name === '.git' || entry.name === 'node_modules') continue;
+    if (entry.name === '.git' || entry.name === 'node_modules' ||
+        entry.name === 'dist' || entry.name === 'src-tauri') continue;
     const rel = relBase ? `${relBase}/${entry.name}` : entry.name;
     if (entry.isDirectory()) {
       DIRS.add(rel);
