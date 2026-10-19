@@ -5,8 +5,1067 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 18 Oct 2026 20:51:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 19 Oct 2026 09:01:20 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>图表编号与交叉引用示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/figure-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/figure-examples.md</guid>
+      <pubDate>Mon, 19 Oct 2026 09:00:49 GMT</pubDate>
+      <description>--- title: 图表编号与交叉引用示例 tags: [内容增强] --- 正文里的图与表会自动编号（图 1、图 2、表 1…），无需手写序号。编号跟随界面语言，切到 English 会变成 Figure 1 / Table 1。 先看一张 Mermaid 图： 再看一张表： | 设备 | 型号 | 角色 | |------|------|------| | SW1 | S5735 | 接入 </description>
+      <content:encoded><![CDATA[<h2>---
+title: 图表编号与交叉引用示例
+tags: [内容增强]</h2>
+<h1>图表编号与交叉引用示例</h1>
+<p>正文里的图与表会自动编号（图 1、图 2、表 1…），无需手写序号。编号跟随界面语言，切到 English 会变成 Figure 1 / Table 1。</p>
+<h2>自动编号</h2>
+<p>先看一张 Mermaid 图：</p>
+<pre><code class="language-mermaid">flowchart LR
+  A[客户端] --&gt; B[接入交换机]
+  B --&gt; C[核心交换机]
+  C --&gt; D[出口路由器]
+</code></pre>
+<p>再看一张表：</p>
+<table>
+<thead>
+<tr>
+<th>设备</th>
+<th>型号</th>
+<th>角色</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SW1</td>
+<td>S5735</td>
+<td>接入</td>
+</tr>
+<tr>
+<td>SW2</td>
+<td>S6730</td>
+<td>核心</td>
+</tr>
+<tr>
+<td>R1</td>
+<td>AR6121</td>
+<td>出口</td>
+</tr>
+</tbody></table>
+<p>独立成段的图片也会编号：</p>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E6%B8%B2%E6%9F%93-%E7%94%BB%E5%BB%8A-1.png" alt="站点结构示意"></p>
+<h2>别名与交叉引用</h2>
+<p>给图/表起别名：在它<strong>紧邻上一行</strong>写一个 HTML 注释 <code>&lt;!-- #fig:别名 自定义标题 --&gt;</code>（表用 <code>#tbl:</code>）。</p>
+<!-- #fig:topology 网络拓扑示意 -->
+<pre><code class="language-mermaid">flowchart LR
+  R1 --- R2
+  R2 --- R3
+</code></pre>
+<!-- #tbl:qos 队列与业务对照 -->
+<table>
+<thead>
+<tr>
+<th>队列</th>
+<th>业务</th>
+<th>优先级</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>EF</td>
+<td>语音</td>
+<td>最高</td>
+</tr>
+<tr>
+<td>AF41</td>
+<td>视频会议</td>
+<td>高</td>
+</tr>
+<tr>
+<td>BE</td>
+<td>普通上网</td>
+<td>默认</td>
+</tr>
+</tbody></table>
+<p>引用它们：用<strong>标准 Markdown 链接</strong>指向自动生成的锚点，链接文字留空即可自动填成「图 N」：</p>
+<ul>
+<li>拓扑见 <a href="#fig:topology"></a></li>
+<li>队列对照见 <a href="#tbl:qos"></a></li>
+<li>也可以用数字锚点直接引用第一张图：<a href="#fig-1"></a></li>
+</ul>
+<p>点击引用会滚动到目标并短暂高亮，不会跳转离开当前文档。</p>
+<h2>复制锚点链接</h2>
+<p>鼠标悬停题注右侧会出现链接图标，点击复制直达地址（形如 <code>#/docs/examples/figure-examples.md#fig:topology</code>），可直接粘到聊天或工单里。</p>
+<h2>排除编号</h2>
+<p>不想被编号时，给元素外层加 <code>class=&quot;no-figure&quot;</code>。画廊、徽章行等本来就不会被编号（只编号「独立成段且无其它文字」的图片）。</p>
+<h2>说明</h2>
+<ul>
+<li>编号对象：Mermaid / PlantUML / ApexCharts 图表、独立成段的图片、正文表格</li>
+<li>公式不参与编号，避免技术文档编号过密</li>
+<li>图题在下、表题在上，符合排版惯例</li>
+<li>打印时图表与题注不会被分页截断</li>
+</ul>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Timeline 时间线示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/timeline-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/timeline-examples.md</guid>
+      <pubDate>Mon, 19 Oct 2026 08:58:11 GMT</pubDate>
+      <description>插件把代码块渲染为单列时间线，适合： - 网络割接 / 变更窗口计划与执行记录 - 故障复盘（事故时间线） - 项目里程碑与发布计划 每行一条：。 timeline 2026-10-10 22:00 | 变更评审通过 | 方案与回退计划归档 | done 2026-10-18 01:00 | 割接窗口开启 | 接入层堆叠升级 | doing 2026-10-22 01:00 | 核心链路切换 | </description>
+      <content:encoded><![CDATA[<h1>Timeline 时间线组件示例</h1>
+<p><code>timeline</code> 插件把代码块渲染为单列时间线，适合：</p>
+<ul>
+<li>网络割接 / 变更窗口计划与执行记录</li>
+<li>故障复盘（事故时间线）</li>
+<li>项目里程碑与发布计划</li>
+</ul>
+<h2>基础用法</h2>
+<p>每行一条：<code>时间 | 事件 | 备注（可选） | 状态（可选）</code>。</p>
+<pre><code class="language-markdown">```timeline
+2026-10-10 22:00 | 变更评审通过 | 方案与回退计划归档 | done
+2026-10-18 01:00 | 割接窗口开启 | 接入层堆叠升级 | doing
+2026-10-22 01:00 | 核心链路切换 | 双上联改为单臂，注意环路 | risk
+2026-10-25 06:00 | 观察期结束 | 回退窗口关闭 | done
+```
+</code></pre>
+<pre><code class="language-timeline">2026-10-10 22:00 | 变更评审通过 | 方案与回退计划归档 | done
+2026-10-18 01:00 | 割接窗口开启 | 接入层堆叠升级 | doing
+2026-10-22 01:00 | 核心链路切换 | 双上联改为单臂，注意环路 | risk
+2026-10-25 06:00 | 观察期结束 | 回退窗口关闭 | done
+</code></pre>
+<blockquote>
+<p>若时间线区间<strong>涵盖今天</strong>，会自动在对应位置插入一条「今天」标记线（上例的计划期覆盖了当前日期，所以能看到它）。</p>
+</blockquote>
+<h2>状态色</h2>
+<p>状态写在最后一个字段，不写则为中性色。</p>
+<table>
+<thead>
+<tr>
+<th>状态写法</th>
+<th>颜色</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>done</code> / <code>完成</code> / <code>已完成</code></td>
+<td>绿色</td>
+<td>已完成</td>
+</tr>
+<tr>
+<td><code>doing</code> / <code>进行中</code> / <code>进行</code></td>
+<td>主题强调色（实心）</td>
+<td>进行中</td>
+</tr>
+<tr>
+<td><code>risk</code> / <code>风险</code> / <code>阻塞</code> / <code>延期</code></td>
+<td>红色</td>
+<td>风险 / 受阻</td>
+</tr>
+</tbody></table>
+<pre><code class="language-timeline">2026-10-01 | 需求确认 | 完成 | 完成
+2026-10-02 | 方案设计 | 进行中 | 进行中
+2026-10-03 | 硬件到货 | 供应商延期一周 | 风险
+</code></pre>
+<h2>分隔符</h2>
+<p>分隔符宽容解析，按优先级：</p>
+<ol>
+<li><code>|</code> 竖线（推荐）</li>
+<li>全角 <code>：</code></li>
+<li>半角 <code>:</code>（自动避开时间里的 <code>HH:MM</code> 冒号）</li>
+</ol>
+<pre><code class="language-timeline">2026-10-01 | 冒号也行：全角分隔
+2026-10-02：全角分隔 : 备注也支持半角冒号
+</code></pre>
+<p>时间字段可省略（此时整行作为事件标题）：</p>
+<pre><code class="language-timeline">无日期的普通事件，适合不关心时间的清单
+</code></pre>
+<h2>注释</h2>
+<p>以 <code>#</code> 开头的行会被跳过，可用于在代码块里写说明：</p>
+<pre><code class="language-markdown">```timeline
+# 下面是回退预案
+2026-10-22 03:00 | 回退决策点 | 若核心不通则回退 | risk
+```
+</code></pre>
+<h2>时间格式</h2>
+<table>
+<thead>
+<tr>
+<th>写法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>2026-10-22</code></td>
+<td>完整日期（用于「今天」标记线判定）</td>
+</tr>
+<tr>
+<td><code>2026-10-22 01:00</code></td>
+<td>日期 + 时间，时间原样显示</td>
+</tr>
+<tr>
+<td><code>10-22</code></td>
+<td>省略年份，按当年补全</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>时间线里的「今天」标记线依赖浏览器本地时区<a href="https://theforeveriris.github.io/md-preview/docs/examples/%E6%97%B6%E9%97%B4%E7%BA%BF%E5%8F%AA%E5%81%9A%E6%9C%AC%E5%9C%B0%E6%97%A5%E6%9C%9F%E6%AF%94%E8%BE%83%EF%BC%8C%E4%B8%8D%E8%AE%BF%E9%97%AE%E4%BB%BB%E4%BD%95%E6%97%B6%E9%97%B4%E6%9C%8D%E5%8A%A1%EF%BC%9B%E8%B7%A8%E6%97%B6%E5%8C%BA%E5%8D%8F%E4%BD%9C%E6%97%B6%E8%AF%B7%E6%8A%8A%E8%AE%A1%E5%88%92%E6%97%B6%E9%97%B4%E5%86%99%E6%88%90%E5%B8%A6%E6%97%B6%E5%8C%BA%E7%9A%84%E7%BB%9D%E5%AF%B9%E6%97%B6%E9%97%B4%EF%BC%8C%E6%88%96%E7%BB%9F%E4%B8%80%E6%8C%89%E5%90%8C%E4%B8%80%E4%B8%AA%E6%97%B6%E5%8C%BA%E6%8D%A2%E7%AE%97%E5%90%8E%E5%86%8D%E5%86%99%E5%85%A5%E6%96%87%E6%A1%A3%E3%80%82">^tz</a>。</p>
+</blockquote>
+<h2>实现要点</h2>
+<p>本插件演示了插件系统的最小形态（参见 <a href="https://theforeveriris.github.io/md-preview/iris/plugins/timeline.js">iris/plugins/timeline.js</a>）：</p>
+<ul>
+<li><strong>省略 <code>test</code></strong>：默认精确匹配 <code>language === &#39;timeline&#39;</code></li>
+<li><strong>同步 <code>render</code></strong>：纯 DOM 生成，无网络、无定时器、无资源注册</li>
+<li>渲染结果全部经 <code>escapeHtml</code> 转义，不引入注入面</li>
+</ul>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>变更日志</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/changelog.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/changelog.md</guid>
+      <pubDate>Sun, 18 Oct 2026 21:16:17 GMT</pubDate>
+      <description>&gt; 本页由 从 git 历史自动生成，请勿手动编辑。 - docs: 同步本轮新增功能到 README 特性清单与功能路线图 — theforeveriris - feat(batch3): OpenAPI 交互文档 + 竖排模式 + Git 历史/变更订阅 + 渐进式代码高亮（SW v8.43） — theforeveriris - feat(batch2): 可见即渲染 + 术语表悬浮 + H</description>
+      <content:encoded><![CDATA[<h1>变更日志</h1>
+<blockquote>
+<p>本页由 <code>iris/scripts/build-changelog.js</code> 从 git 历史自动生成，请勿手动编辑。</p>
+</blockquote>
+<h2>2026-10-19</h2>
+<ul>
+<li><code>a761039</code> docs: 同步本轮新增功能到 README 特性清单与功能路线图 — theforeveriris</li>
+<li><code>fe6ec47</code> feat(batch3): OpenAPI 交互文档 + 竖排模式 + Git 历史/变更订阅 + 渐进式代码高亮（SW v8.43） — theforeveriris</li>
+<li><code>8ddc218</code> feat(batch2): 可见即渲染 + 术语表悬浮 + HTTP 请求块 + 开发者小工具 + 中文排版 lint + 拼音注音（SW v8.42） — theforeveriris</li>
+<li><code>ecabc54</code> feat(batch1): 相邻文档预取 + 屏外跳过布局 + CSV→图表 + SQL DDL→ER + 正文繁简转换 + 中文排版选项 + 自动变更日志页（SW v8.41） — theforeveriris</li>
+</ul>
+<h2>2026-10-18</h2>
+<ul>
+<li><code>fdc726d</code> refactor(renderers): 统一渲染器调度器 runRenderers——注册表遍历顺序 await，消除三处硬编码清单；geo 转正支持围栏；embedded 四段挂载逻辑收敛为工厂；新增顺序/错误隔离测试（SW v8.38） — theforeveriris</li>
+</ul>
+<h2>2026-10-17</h2>
+<ul>
+<li><code>3f5cdf6</code> feat(tags): 全部文档补写 frontmatter tags（44 篇）+ 标签面板改为顶栏 Files/Index/标签 第三选项卡 — theforeveriris</li>
+</ul>
+<h2>2026-10-05</h2>
+<ul>
+<li><code>2f7b78c</code> feat: 标签系统 + 万能命令面板 + 搜索直达关键词 + live 预览沙箱 + JSON 可折叠树 + 图表悬浮工具条 + 快照分享 + 专注模式 + 多标签页同步 + Issue 一键反馈 + 讲义打印样式 — theforeveriris</li>
+</ul>
+<h2>2026-10-02</h2>
+<ul>
+<li><code>002f399</code> fix: 打包导出失效（settings.js 初始化早于 export-bundle.js 注册）+ 对照阅读沉浸化 — theforeveriris</li>
+<li><code>35595da</code> feat: 文章内查找条 + 章节折叠 + 双栏对照阅读 + EPUB/整站打包导出 + 分享卡片多模板 + PWA shortcuts — theforeveriris</li>
+<li><code>aa666a0</code> feat(ci): 死链检查——内链全量校验 + 外链按日确定性抽查 — theforeveriris</li>
+</ul>
+<h2>2026-10-01</h2>
+<ul>
+<li><code>208ce22</code> feat: 移动端手势 + 存储管理页 + 拖拽打开 + 设置导出/导入 + 全文 RSS + sitemap + CI 冒烟测试 — theforeveriris</li>
+<li><code>17fdfe1</code> refactor(settings): 设置面板分组整理——语言/外观/阅读/工具与导出四大区块 — theforeveriris</li>
+<li><code>aabc435</code> feat(ui): 「打开本地文件」改为单一入口 + 弹出式选择面板 — theforeveriris</li>
+<li><code>0cd3dc6</code> feat(ui): 悬浮球菜单精简——去上下篇、合并本地文件入口、扫码弹窗去说明文字 — theforeveriris</li>
+<li><code>04961df</code> feat: 长按收藏/树内足迹 + 链接悬浮预览 + 扫码续读；移除演示模式与页头图标 — theforeveriris</li>
+<li><code>1e86d8b</code> feat: 文档演示模式 + CSV/TSV 表格 + IOS/VRP 高亮 + 历史收藏 + 阅读续读 + 全量离线 + 选区工具栏 + 分享卡片 — theforeveriris</li>
+<li><code>9be029e</code> feat: 自动主题 + 本地文件夹 + 界面多语言 + 单文件 HTML 导出 + PlantUML 降级 — theforeveriris</li>
+</ul>
+<h2>2026-09-29</h2>
+<ul>
+<li><code>46e79b3</code> feat(ui): 搜索改造为居中命令面板（Ctrl/⌘+K） — theforeveriris</li>
+<li><code>43003bf</code> feat(ui): 侧边栏标题显示 + 中文文件名解码 + 导航阅读进度重置 — theforeveriris</li>
+<li><code>7ff069e</code> feat(ui): 全局快捷键扩展 + 快捷键文档 — theforeveriris</li>
+<li><code>52e1578</code> feat(ui): 桌面端侧边栏折叠 + 内容区宽度可调 — theforeveriris</li>
+<li><code>c576253</code> feat: 修复编辑器、XSS 与解析器共 22 处缺陷 — theforeveriris</li>
+</ul>
+<h2>2026-07-31</h2>
+<ul>
+<li><code>bb3ff1a</code> feat: 更新文档并创建系统演示 — theforeveriris</li>
+<li><code>4ad2c06</code> feat: 更新文档并创建系统演示 — theforeveriris</li>
+<li><code>b18a2da</code> Add files via upload — Iris</li>
+<li><code>1ef2171</code> Create zhanweifu.png — Iris</li>
+<li><code>4879ef3</code> chore(pptx): 移除示例文档中 example 演示及对应 data 产物 — theforeveriris</li>
+<li><code>b99caed</code> feat: 分析打卡项目卡顿原因 — theforeveriris</li>
+<li><code>075cc6d</code> feat(pptx): 新建 raw/pptx CI/CD 构建工作流，集成真实 PPTX 演示 — theforeveriris</li>
+<li><code>3fce366</code> feat: 新增 PPTX 嵌入，参考 pkt 语法，支持缩略图网格+全屏放映 — theforeveriris</li>
+</ul>
+<h2>2026-07-22</h2>
+<ul>
+<li><code>7129817</code> fix: 语法说明代码块改用4反引号包裹避免内部反引号提前结束代码块 — theforeveriris</li>
+<li><code>3f0c825</code> fix: 修复代码选项卡点击和代码块内语法误解析问题，重写示例文档 — theforeveriris</li>
+<li><code>6747434</code> feat: 增加代码选项卡和分栏布局语法糖 — theforeveriris</li>
+<li><code>655a9db</code> feat(spoiler): 添加 ||内容|| 遮罩/剧透语法支持 — theforeveriris</li>
+<li><code>ebb9a5d</code> docs(pulse): 补充 pulsmini 迷你波形和波形生成器说明 — theforeveriris</li>
+<li><code>1c610d1</code> feat(pulse): 添加竖线扫描线样式切换，修复代码块内标签渲染，更新示例文档 — theforeveriris</li>
+<li><code>5cbe59d</code> feat(pulse): 更新为 DG-LAB 官方波形文件格式 — theforeveriris</li>
+<li><code>8716213</code> feat: 文档站集成郊狼波形文件解析 — theforeveriris</li>
+</ul>
+<h2>2026-07-18</h2>
+<ul>
+<li><code>0b1b4b2</code> feat: Iris Plugin Development and Docs — omajili-manbu</li>
+</ul>
+<h2>2026-07-16</h2>
+<ul>
+<li><code>a5bd246</code> refactor(plugins): 重构插件系统 API，增强扩展能力与生命周期管理- 插件 loader 支持生命周期钩子（init/beforeRender/afterRender/destroy）- render 支持 async/await，内置错误边界与友好回退 UI- 新增 priority 优先级机制，解决多插件竞争冲突- 新增 context 上下文传递（documentPath、config、registerResource）- 简化 loadPlugin（直接使用 import(url)，移除 Blob 中间层）- autoLoad 新增 manifest/directory.json 策略，摆脱对目录列表的依赖- 重写 qrcode.js 作为 v2 API 参考实现- 更新 plugin-development.md 与 readme-dev.md 文档Co-authored-by: Kimi <a href="mailto:kimi@moonshot.cn">kimi@moonshot.cn</a> — theforeveriris</li>
+<li><code>c767dab</code> feat(ensp): 修复 eNSP XML 解析器并添加示例文档 — theforeveriris</li>
+</ul>
+<h2>2026-07-14</h2>
+<ul>
+<li><code>84d672d</code> license: 采用 AGPL-3.0 + CC-BY-SA-4.0 多许可证方案 — theforeveriris</li>
+<li><code>db81c3f</code> fix(pkt): 修复 @[pkt] 嵌入语法不渲染的问题 — theforeveriris</li>
+<li><code>5fbb165</code> fix(pkt): 修复 Twofish 解密 + XML 解析，添加真实拓扑示例 — trae</li>
+</ul>
+<h2>2026-07-13</h2>
+<ul>
+<li><code>01034be</code> docs(pkt): 更新文档，补充 Packet Tracer 拓扑渲染功能说明 — theforeveriris</li>
+<li><code>a2247cf</code> feat(pkt): 新增 Packet Tracer .pkt 拓扑渲染功能 — theforeveriris</li>
+<li><code>c5e67a6</code> feat(editor): 对照 examples 全面优化工具栏菜单覆盖度 — theforeveriris</li>
+<li><code>ff4ce4e</code> docs: 新增编辑器说明文档，更新 README/readme-dev/features/feat — theforeveriris</li>
+<li><code>1981224</code> fix(gallery): 修复移动端渲染问题，移除三种样式 — theforeveriris</li>
+<li><code>032a9f6</code> feat(gallery): 删除 stamp，slider 改自动轮播，新增 4 种样式 — theforeveriris</li>
+<li><code>8973da5</code> feat(gallery): editorial 改瀑布流，tape 改软木板，新增 3 种样式 — theforeveriris</li>
+<li><code>8707338</code> feat(gallery): 删除 carousel，新增 4 种克制艺术风格 — theforeveriris</li>
+<li><code>e1465b3</code> feat(gallery): 新增 5 种画廊布局样式 — theforeveriris</li>
+<li><code>805452b</code> docs: 更新图片画廊示例文档 — theforeveriris</li>
+<li><code>f74036d</code> feat(gallery): 支持通过 @style 标记指定画廊布局样式 — theforeveriris</li>
+<li><code>d9fa764</code> feat(debug): 调试面板扩展为 6 分组实时监控 — theforeveriris</li>
+<li><code>bb091b7</code> docs: 全面更新文档体系，反映近期所有功能更新 — theforeveriris</li>
+</ul>
+<h2>2026-07-11</h2>
+<ul>
+<li><code>a9635c8</code> chore: 清理根目录，移动 feat.md 到 docs/ — theforeveriris</li>
+</ul>
+<h2>2026-07-10</h2>
+<ul>
+<li><code>9e72bd6</code> feat: 添加代码高亮和代码块复制功能 — theforeveriris</li>
+<li><code>2429e19</code> docs: 添加插件开发指南 — theforeveriris</li>
+</ul>
+<h2>2026-07-09</h2>
+<ul>
+<li><code>5906c31</code> docs: 重写项目文档，更新为当前实际代码结构 — github-actions[bot]</li>
+<li><code>f121401</code> docs: 更新表格示例文档，添加使用提示 — theforeveriris</li>
+<li><code>61ac951</code> docs: 添加表格使用示例文档 — theforeveriris</li>
+</ul>
+<h2>2026-05-24</h2>
+<ul>
+<li><code>5b54ffa</code> chore: remove giscus comments system — theforeveriris</li>
+<li><code>d8e6ff3</code> Remove music notation rendering feature — theforeveriris</li>
+<li><code>2382f27</code> Fix: use specific language types for embed rendering — theforeveriris</li>
+<li><code>257b786</code> 调整示例文档格式：源码在代码块中，渲染效果直接显示 — theforeveriris</li>
+<li><code>8fd67e9</code> 互换示例文档中的源码和渲染效果位置 — theforeveriris</li>
+<li><code>2612ded</code> 完善项目文档系统 — theforeveriris</li>
+<li><code>5fab43b</code> Add theme market system with 7 built-in themes and custom CSS support — theforeveriris</li>
+<li><code>6d20886</code> 实现插件系统和二维码生成插件 — theforeveriris</li>
+</ul>
+<h2>2026-05-22</h2>
+<ul>
+<li><code>24b683f</code> 更新 latex-examples.md — 鸢尾</li>
+<li><code>8f28f92</code> 更新 latex-examples.md — 鸢尾</li>
+<li><code>0a28b8a</code> fix: 修复 katex.js 渲染器，直接处理 katex-block div — theforeveriris</li>
+<li><code>5f4b91c</code> feat: 添加 LaTeX 公式支持 (KaTeX) — theforeveriris</li>
+<li><code>2a3dd2f</code> Add image lazy loading, gallery mode, and error fallback — theforeveriris</li>
+<li><code>8b07160</code> Add GitHub-style Alerts feature — theforeveriris</li>
+<li><code>efb80a2</code> Refactor: Update geojson and twitter examples to match embed examples format — theforeveriris</li>
+<li><code>7faffcb</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>983f78f</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>edce270</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>e70ab11</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>7b5258e</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>d9b4484</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>912867c</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>de9ab65</code> 更新 embed-examples.md — 鸢尾</li>
+</ul>
+<h2>2026-05-21</h2>
+<ul>
+<li><code>825e378</code> docs: 从markdown语法说明中删除重复的Mermaid图表内容 — theforeveriris</li>
+</ul>
+<h2>2026-05-20</h2>
+<ul>
+<li><code>ba8fa4f</code> 添加 Twitter/X 嵌入功能 — theforeveriris</li>
+<li><code>670479e</code> 添加 Git Diff 可视化功能 (diff2html) — theforeveriris</li>
+<li><code>00dfa72</code> 添加 OSMD 乐谱渲染功能 — theforeveriris</li>
+<li><code>4fcd83d</code> feat: 添加乐谱渲染支持 (ABC记谱法、MusicXML) — theforeveriris</li>
+<li><code>4358df1</code> fix: 修正 ApexCharts 示例文档的代码块类型，源码改为txt — theforeveriris</li>
+<li><code>7e3ecd6</code> feat: 添加 ApexCharts 交互式图表支持 — theforeveriris</li>
+<li><code>dd07edc</code> feat: 添加浏览器原生 HTML 元素与 Web API 支持 — theforeveriris</li>
+<li><code>5f66906</code> feat: 添加 GeoJSON/TopoJSON 地理数据可视化功能 — theforeveriris</li>
+<li><code>0fcc181</code> feat: 添加外部服务嵌入功能 — theforeveriris</li>
+<li><code>f1a3caf</code> fix: 修复多个 PlantUML 图表语法问题 — theforeveriris</li>
+<li><code>71c8ca3</code> fix: 修复多个 PlantUML 图表渲染问题 — theforeveriris</li>
+<li><code>b7abb03</code> feat: 添加 PlantUML 图表渲染支持 — theforeveriris</li>
+<li><code>fcd3d01</code> 更新 mermaid-examples.md — 鸢尾</li>
+<li><code>97bc72a</code> 更新 mermaid-examples.md — 鸢尾</li>
+<li><code>98fdf21</code> 更新 mermaid-examples.md — 鸢尾</li>
+<li><code>abb130f</code> fix: 严格修复四象限图、块图、XY图表的Mermaid语法 — theforeveriris</li>
+<li><code>0165e88</code> Fix all mermaid source code blocks using txt format — theforeveriris</li>
+<li><code>ad631e1</code> 更新 mermaid-examples.md — 鸢尾</li>
+<li><code>f8c8f63</code> 添加完整的 Mermaid 图表示例文档 — theforeveriris</li>
+<li><code>7738f7f</code> 添加 Mermaid 图表支持 — agelaia521</li>
+</ul>
+<h2>2026-05-19</h2>
+<ul>
+<li><code>e41fb66</code> 更新 Markdown 语法参考页面，添加每种语法的渲染效果预览 — agelaia521</li>
+<li><code>2a992d1</code> 修复文档中的相对链接 — theforeveriris</li>
+<li><code>f1be494</code> 更新所有文档 - 反映自动发现功能 — theforeveriris</li>
+<li><code>b1eecd4</code> Add multi-level documentation structure with test files — theforeveriris</li>
+<li><code>4a49e3b</code> Initial commit: Markdown previewer for GitHub Pages — agelaia521</li>
+</ul>
+<blockquote>
+<p>共 112 条（最多展示 200 条）。</p>
+</blockquote>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>功能路线图</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/roadmap.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/roadmap.md</guid>
+      <pubDate>Sun, 18 Oct 2026 21:16:17 GMT</pubDate>
+      <description>本文档收录项目的功能规划。标注「已实现」的功能已落地可用（正式说明见 README 特性清单与相关专题文档），其余仍为规划，描述目标交互、可以复用的现有基建、实现要点与边界。功能落地后，对应章节会更新为正式文档并标注版本。 &gt; 状态速记：已完成功能见 README 特性清单 与各专题文档；未标注「已实现」的章节均为「规划中（未实现）」。 --- | 分组 | 功能 | 一句话说明 | 主要复用基建</description>
+      <content:encoded><![CDATA[<h1>功能路线图</h1>
+<p>本文档收录项目的功能规划。<strong>标注「已实现」的功能已落地可用</strong>（正式说明见 README 特性清单与相关专题文档），其余仍为规划，描述目标交互、可以复用的现有基建、实现要点与边界。功能落地后，对应章节会更新为正式文档并标注版本。</p>
+<blockquote>
+<p>状态速记：已完成功能见 <a href="https://theforeveriris.github.io/md-preview/README.md#%E7%89%B9%E6%80%A7">README 特性清单</a> 与各专题文档；未标注「已实现」的章节均为「规划中（未实现）」。</p>
+</blockquote>
+<hr>
+<h2>总览</h2>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>功能</th>
+<th>一句话说明</th>
+<th>主要复用基建</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>内容与渲染</td>
+<td>文档演示模式</td>
+<td><code>?mode=slides</code> 按 H2 分页全屏放映，写完文档直接拿去讲</td>
+<td><code>#pptx-slideshow-overlay</code> 放映层</td>
+</tr>
+<tr>
+<td>内容与渲染</td>
+<td>CSV / TSV 交互表格 ✅</td>
+<td><code>```csv</code> 代码块渲染为可排序、可筛选、可搜索的表格</td>
+<td>渲染器注册机制、长表格横向滚动</td>
+</tr>
+<tr>
+<td>内容与渲染</td>
+<td>IOS / VRP 配置高亮 ✅</td>
+<td><code>```ios</code> / <code>```vrp</code> 渲染路由器配置高亮</td>
+<td>highlight.js 本地化依赖</td>
+</tr>
+<tr>
+<td>阅读与导航</td>
+<td>浏览历史与收藏夹 ✅</td>
+<td>侧边栏「最近阅读」「收藏」分组</td>
+<td>侧边栏面板结构、localStorage</td>
+</tr>
+<tr>
+<td>阅读与导航</td>
+<td>链接悬浮预览 ✅</td>
+<td>悬停站内链接弹出目标文档摘要卡片</td>
+<td>hash 路由、frontmatter 摘要</td>
+</tr>
+<tr>
+<td>阅读与导航</td>
+<td>阅读位置续读 ✅</td>
+<td>记住每篇文档滚动位置，重开可一键跳回</td>
+<td>顶部阅读进度条</td>
+</tr>
+<tr>
+<td>分享与输出</td>
+<td>选中文字浮动工具栏 ✅</td>
+<td>划选文字浮出：复制 / 站内搜索 / 生成分享图</td>
+<td>编辑器选区工具栏、命令面板</td>
+</tr>
+<tr>
+<td>分享与输出</td>
+<td>主题化分享卡片 ✅</td>
+<td>按当前主题配色生成引言排版 PNG 卡片</td>
+<td>表格主题化 PNG 导出（Canvas）</td>
+</tr>
+<tr>
+<td>离线与 PWA</td>
+<td>全量离线开关 ✅</td>
+<td>一键把全部 <code>.md</code> 拉进 SW 缓存，整站离线</td>
+<td><code>search-index.json</code>、RUNTIME_CACHE</td>
+</tr>
+<tr>
+<td>离线与 PWA</td>
+<td>OS 级文件关联</td>
+<td>装 PWA 后双击 <code>.md</code> 直接用本站打开</td>
+<td><code>file_handlers</code>、local-docs</td>
+</tr>
+<tr>
+<td>离线与 PWA</td>
+<td>系统分享目标</td>
+<td>其他 App 分享文本/MD 时选「用本站打开」</td>
+<td><code>share_target</code>、local-docs</td>
+</tr>
+<tr>
+<td>离线与 PWA</td>
+<td>扫码续读 ✅</td>
+<td>桌面生成文档+阅读位置的二维码，手机接着看</td>
+<td>qrcode 插件渲染器</td>
+</tr>
+<tr>
+<td>写作流程</td>
+<td>草稿系统</td>
+<td><code>draft: true</code> 不进树/搜索/RSS，仅调试模式可见</td>
+<td>构建脚本 frontmatter 过滤</td>
+</tr>
+<tr>
+<td>写作流程</td>
+<td>文档密码保护</td>
+<td>frontmatter 声明密码，客户端解密后渲染</td>
+<td>WebCrypto、构建脚本</td>
+</tr>
+<tr>
+<td>移动端</td>
+<td>移动端手势 ✅</td>
+<td>左右滑翻上/下一篇，边缘右滑呼出侧边栏</td>
+<td>上一篇/下一篇路由、移动端抽屉</td>
+</tr>
+<tr>
+<td>运维</td>
+<td>存储管理页 ✅</td>
+<td>IndexedDB 用量可视、按会话/笔记本清理</td>
+<td>storage.js、设置面板</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>一、内容与渲染</h2>
+<h3>1. 文档演示模式（<code>?mode=slides</code>）</h3>
+<blockquote>
+<p><strong>状态：已否决 ✋</strong>——经评估不提供此功能（入口与整体阅读流冲突），以下保留原方案说明备查。</p>
+</blockquote>
+<p>给任意文档加 <code>?mode=slides</code>，按 H2 分页、方向键翻页、全屏放映——写完文档直接拿去讲，让每篇文档一键变幻灯片。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>URL 参数进入 / 退出，与 <code>?mode=editor</code>、<code>?mode=pulsegen</code> 的既有惯例一致；</li>
+<li>以 H2 为分页边界，H3 及以下内容归入所属 H2 的页；文档开头（第一个 H2 之前）单独成页；</li>
+<li>页脚显示页码与当前章节标题；<code>←</code> / <code>→</code> / <code>Space</code> / <code>Shift+Space</code> / <code>Home</code> / <code>End</code> 翻页，<code>Esc</code> 退出并恢复滚动位置。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>PPTX 全屏放映层 <code>#pptx-slideshow-overlay</code>（<code>iris/js/renderers/pptx.js</code>）：backdrop + 单页容器 + 键盘事件已在捕获阶段监听并 <code>stopPropagation()</code>，优先级高于通用灯箱（见 <a href="https://theforeveriris.github.io/md-preview/readme-dev.md">开发者文档</a> 相关小节）；</li>
+<li><code>?mode=</code> 特殊页面路由（编辑器、波形生成器均已使用）；</li>
+<li>i18n 语言包（<code>iris/js/i18n.js</code>）承接新界面文案。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>分页应基于渲染完成后的 DOM（<code>.markdown-body</code> 的 H2 切片），图片 / Mermaid / 表格已经渲染好，无需重跑渲染管线；</li>
+<li>退出时恢复进入前的滚动位置与 URL；</li>
+<li>可顺带提供「导出讲义」打印样式。</li>
+</ul>
+<hr>
+<h3>2. CSV / TSV 交互表格</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> <code>csv / </code>tsv 代码块直接渲染为交互表格，示例见 <a href="https://theforeveriris.github.io/md-preview/docs/examples/csv-examples.md">CSV/TSV 交互表格示例</a>。</p>
+</blockquote>
+<p><code>```csv</code> / <code>```tsv</code> 代码块渲染为可排序、可筛选、可搜索的交互表格，贴数据的人会常用。这是长表格横向滚动优化的自然延伸。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>表头点击排序（升 / 降序切换，箭头指示）；</li>
+<li>右上角搜索框即时过滤行；每列下拉勾选筛选；</li>
+<li>行数多时保留横向滚动与「延伸到右侧空白」能力；</li>
+<li>工具栏提供「复制 CSV」「下载 CSV」。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>渲染器注册机制（<code>iris/js/renderers/</code>，<code>detect</code> + <code>render</code> 两段式）；</li>
+<li>长表格横向滚动与「延伸到右侧空白」设置（<code>iris/css/markdown.css</code> + 显示设置）；</li>
+<li>表格手柄已有的「复制 CSV」逻辑（<code>iris/js/interactions.js</code>）。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>数据量在内存中，纯 DOM 排序即可，无需引库；</li>
+<li>建议超过约 5000 行时退化为普通代码块高亮，避免卡顿；</li>
+<li>TSV 按制表符分列，注意引号转义与空行跳过。</li>
+</ul>
+<hr>
+<h3>3. Cisco IOS / 华为 VRP 配置高亮</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> <code>ios / </code>vrp（别名 <code>cisco / </code>huawei），示例见 <a href="https://theforeveriris.github.io/md-preview/docs/examples/ios-vrp-examples.md">IOS/VRP 配置高亮示例</a>。</p>
+</blockquote>
+<p>自定义两个 highlight.js 语言包，<code>```ios</code> / <code>```vrp</code> 渲染路由器配置。本站受众本就是网络工程师（PKT / eNSP 拓扑渲染已内置），配置高亮比任何图都戳中痛点。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>命令关键字（<code>interface</code> / <code>router ospf</code> / <code>acl</code> / <code>display current-configuration</code> 等）、注释（IOS 的 <code>!</code>）、字符串与数字分级着色；</li>
+<li>与内置 10 套代码高亮主题自动兼容（仅依赖 hljs class 体系）。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>highlight.js 已本地化（<code>iris/vendor/</code>），无新增运行时依赖；</li>
+<li>代码块语言标签与一键复制按钮已内建。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>通过 <code>hljs.registerLanguage(&#39;ios&#39;, grammar)</code> 注册，语法写法参考 hljs 官方「路由器配置」类 grammar；</li>
+<li>IOS 与 VRP 大量同构，可共享一套基础规则、分别维护关键字表；</li>
+<li>语言包体积应控制在数 KB 内，避免拖累首屏（可并入现有按需加载机制）。</li>
+</ul>
+<hr>
+<h2>二、阅读与导航</h2>
+<h3>4. 浏览历史与收藏夹</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> 长按文件树文档一键收藏（图标变强调色），最近打开的 5 篇在文件树中淡化显示；未设独立侧边栏分组。</p>
+</blockquote>
+<p>localStorage 记录阅读轨迹，侧边栏新增「最近阅读」「收藏」两个分组。配合已有的本地文件会话列表，整体导航体验就完整了。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>每篇文档阅读超过阈值时间（如 5 秒）记入历史：标题 + 路径 + 时间，去重、上限约 50 条；</li>
+<li>收藏入口（悬浮球菜单或标题旁星标），一键收藏 / 取消；</li>
+<li>两个分组渲染在侧边栏，与「本地文件」面板同级、可折叠，点击条目走既有 hash 路由；</li>
+<li>分组标题栏提供清空入口。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>侧边栏面板结构（本地文件面板：<code>iris/js/local-docs.js</code> + <code>iris/css/layout.css</code>）；</li>
+<li>文件树条目渲染与点击路由（<code>iris/js/file-tree.js</code>）；</li>
+<li>i18n 语言包。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>数据结构建议 <code>md-preview-history</code> / <code>md-preview-favorites</code> 两个 localStorage 键；</li>
+<li>隐私模式下 localStorage 可能抛异常，读写需 try/catch；</li>
+<li>历史去重以文档路径为键，本地文件与会话文档可不入历史（刷新即失效）。</li>
+</ul>
+<hr>
+<h3>5. 链接悬浮预览</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> 悬停站内链接弹出目标文档摘要卡片（标题 + 摘要 + 阅读时长），点击卡片跳转。</p>
+</blockquote>
+<p>鼠标悬停站内链接时，弹出目标文档的摘要卡片（Obsidian / 维基百科同款），不用离开当前页就能确认要不要跳。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>悬停约 300ms 后浮出卡片：目标标题 + 首段摘要 + 字数，跟随链接定位；</li>
+<li>点击卡片跳转，<code>Esc</code> 或鼠标移出关闭；触屏设备暂不支持（或长按触发）。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>hash 路由解析（<code>iris/app.js</code>）确定目标文档路径；</li>
+<li>按路径拉取单篇 <code>.md</code> 的运行时请求逻辑；</li>
+<li>frontmatter 解析（<code>iris/js/markdown.js</code> 的 <code>parseFrontmatter</code>），<code>description</code> 字段已用于 OGP meta。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>摘要取 <code>frontmatter.description</code> &gt; 正文首段（可复用 OGP 的摘要提炼逻辑，剥代码块 / 图片 / 标记语法）；</li>
+<li>卡片内<strong>不渲染完整 Markdown</strong>（XSS 攻击面收敛），仅纯文本 + 少量受控格式；</li>
+<li>对已打开过的文档可做内存级缓存，避免悬停风暴重复 fetch。</li>
+</ul>
+<hr>
+<h3>6. 阅读位置续读</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> 重新打开读过的文档时底部提示「上次读到 N%，继续？」。</p>
+</blockquote>
+<p>每篇文档记住滚动位置，下次打开时提示「上次读到 62%，继续？」。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>滚动节流记录阅读百分比（低于约 10% 不记录）；</li>
+<li>重新打开同一篇时，底部浮出提示条，点击平滑滚动到记录位置；</li>
+<li>「本次忽略」「不再提醒」两级记忆。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>顶部阅读进度条（已有，滚动百分比同源）；</li>
+<li>hash 路由与 localStorage。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>记录 <code>{ 路径: { pct, 时间 } }</code>，文档更新后百分比仍近似有效；</li>
+<li>仅在「重新打开」时提示，首次阅读不打扰。</li>
+</ul>
+<hr>
+<h2>三、分享与输出</h2>
+<h3>7. 选中文字浮动工具栏</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> 划选正文文字即浮出：复制 / 站内搜索 / 分享卡片。</p>
+</blockquote>
+<p>划选正文一段文字后浮出小工具条：复制 / 站内搜索 / 生成分享图。表格悬浮手柄与 LaTeX 右键复制的交互模式是现成的。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>在正文区 <code>mouseup</code> 且选区非空时，于选区上方定位工具条；点击外部或 <code>Esc</code> 消失；</li>
+<li>按钮：复制纯文本、复制 Markdown 源码、以此文字唤起 <code>Ctrl/⌘ + K</code> 命令面板搜索、生成分享卡片。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>编辑器内已有「选中文字浮动工具栏」（<code>iris/css/editor.css</code>），定位与视口边界规避逻辑可移植；</li>
+<li>居中搜索命令面板（<code>iris/js/search.js</code> + <code>ui.js</code>，<code>Ctrl/⌘ + K</code>）；</li>
+<li>表格手柄的 SVG 图标按钮风格（无 emoji）。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>仅对 <code>.markdown-body</code> 正文选区生效，避开编辑器、代码块自身工具栏与表格手柄；</li>
+<li>「复制 Markdown 源码」需要 DOM→MD 回溯，工程量大时可先退化为复制纯文本；</li>
+<li>需要与标题锚点复制、LaTeX 右键复制互不抢占事件。</li>
+</ul>
+<hr>
+<h3>8. 主题化分享卡片</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> 选中文字工具条「分享卡片」，下载 1200×630 PNG。</p>
+</blockquote>
+<p>选中段落或整篇文档生成一张带当前主题配色的 PNG 卡片（引言排版），适合发社交媒体。表格导出 PNG 的能力可以直接复用。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>卡片构成：文档标题 + 摘录正文 + 站点名 / 二维码角标；</li>
+<li>配色取当前 <code>data-theme</code> 的 CSS 变量，与站点视觉一致；</li>
+<li>尺寸可选 1200×630（与 OGP 分享图同尺寸）或 3:4 竖版；</li>
+<li>出口：下载 PNG / 复制到剪贴板。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>表格手柄的主题化 PNG 导出（<code>iris/js/interactions.js</code>，Canvas 手绘 + <code>toBlob</code>，不依赖 html2canvas）；</li>
+<li>OGP 站点分享图的 Canvas 品牌排版流程（<code>iris/icons/og-image.png</code> 的生成思路）；</li>
+<li>qrcode 插件渲染器（<code>iris/plugins/qrcode.js</code>）做角标二维码。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>沿用 Canvas 手绘方案：页面字体已加载，<code>measureText</code> 逐行排版，长文自动截断并补「阅读全文」尾行；</li>
+<li>深浅主题下分别校验对比度；</li>
+<li>剪贴板写入图片需 <code>ClipboardItem</code>，做降级（仅下载）。</li>
+</ul>
+<hr>
+<h2>四、离线与 PWA</h2>
+<h3>9. 全量离线开关</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> 设置面板 → 操作 → 「缓存全部文档」，支持一键清除文档缓存。</p>
+</blockquote>
+<p>PWA 目前只缓存访问过的页面。设置里加一个「缓存全部文档」按钮，一键把 <code>search-index</code> 覆盖的所有 <code>.md</code> 拉进 SW 缓存，飞机上也能整站阅读。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>设置面板新增按钮与进度显示（n / total，可取消）；</li>
+<li>完成后提示「已可整站离线」，并显示当前缓存文档数与「清除缓存」入口。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li><code>sw.js</code> 的 RUNTIME_CACHE 已按 <code>.md</code> 路径后缀拦截并缓存访问过的文档；</li>
+<li><code>iris/data/search-index.json</code> 覆盖全部文档路径，可作清单来源；</li>
+<li><code>precache-manifest.json</code> 的预缓存机制与版本管理。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>逐个 fetch <code>.md</code>（并发 3~5）触发 SW 拦截入库，避免一次性全量拉爆移动端流量；</li>
+<li><code>CACHE_NAME</code> 版本升级后旧缓存会被清除，需提示用户重跑「缓存全部」；</li>
+<li>渲染一篇文档还依赖 vendor 库，可顺带把常用 JS/CSS 一并纳入（或依赖 precache 已覆盖）。</li>
+</ul>
+<hr>
+<h3>10. OS 级文件关联</h3>
+<p>manifest 加 <code>file_handlers</code>，安装 PWA 后双击 <code>.md</code> 文件直接用本站打开，配合 File System Access API 就是桌面 MD 阅读器。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>系统层面把 <code>.md</code> / <code>.markdown</code> 关联到已安装的 PWA；</li>
+<li>启动后通过 <code>launchQueue</code> 拿到文件句柄，转入本地文件会话打开。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li><code>manifest.json</code>；</li>
+<li>本地文件管线（<code>iris/js/local-docs.js</code>：会话列表、懒加载、大小限制）。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li><code>window.launchQueue.setConsumer()</code> 接收 <code>FileHandle</code> → 读 File 后走「打开本地 MD」同一入口；</li>
+<li>仅 HTTPS + 已安装 PWA 的 Chromium 系浏览器生效，其余环境静默降级；</li>
+<li>与手动打开共用限制（单文件 ≤ 10MB 等）。</li>
+</ul>
+<hr>
+<h3>11. 系统分享目标</h3>
+<p><code>share_target</code> 注册后，其他 App 分享文本 / MD 时可选「用 Markdown Preview 打开」。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>移动端系统分享面板出现本站入口；</li>
+<li>分享的文本 / 文件进入站点后，转入本地文件会话或直接渲染预览。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li><code>manifest.json</code>；</li>
+<li><code>iris/js/local-docs.js</code> 的内存会话（刷新即清空，天然适合一次性分享内容）。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>最简方案：<code>method: &quot;GET&quot;</code> + query 参数承接分享文本（SW 不参与）；</li>
+<li>接收文件（POST 到 Service Worker）方案复杂度高，建议二期；</li>
+<li>进入后应立即渲染并把分享内容带入本地文件会话，避免用户困惑。</li>
+</ul>
+<hr>
+<h3>12. 扫码续读</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> 悬浮球「扫码续读」生成当前文档 + 阅读位置的二维码（<code>?pos=N</code> 参数），扫码后自动定位；二维码沿用 qrcode 插件的外部服务方案。</p>
+</blockquote>
+<p>桌面端生成当前文档 + 阅读位置的二维码，手机扫码接着看。qrcode 渲染器是现成的。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>悬浮球或分享工具条入口 → 弹窗展示二维码（URL 含文档路径与可选滚动位置参数），附当前阅读百分比；</li>
+<li>手机打开后自动滚动到记录位置（配合「阅读位置续读」）。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>qrcode 插件渲染器（<code>iris/plugins/qrcode.js</code>）；</li>
+<li>悬浮球菜单与 i18n。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>阅读位置用 query 参数（如 <code>?pos=0.62</code>）而非 hash 附加，避免与文档路由冲突；</li>
+<li>本地 / 局域网地址生成的二维码跨设备无效，需提示「需部署后的公网地址」。</li>
+</ul>
+<hr>
+<h2>五、写作流程</h2>
+<h3>13. 草稿系统</h3>
+<p>frontmatter 写 <code>draft: true</code> 的文档不出现在目录树 / 搜索 / RSS，只在调试模式（<code>?debug=1</code>）可见，写作流程就完整了。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>三个构建脚本（file-tree / search-index / feed）解析 frontmatter 并过滤草稿；</li>
+<li>运行时 GitHub API 回退路径同样过滤；</li>
+<li><code>?debug=1</code> 打开时，草稿在侧边栏以「草稿」徽标显示，方便自查。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>构建脚本（<code>iris/scripts/build-*.js</code>）已解析文档元信息，增加字段成本低；</li>
+<li><code>iris/js/markdown.js</code> 的 frontmatter 解析；</li>
+<li><code>?debug=1</code> Debug Panel（已有，见 <a href="https://theforeveriris.github.io/md-preview/readme-dev.md">开发者文档</a>）。</li>
+</ul>
+<p><strong>实现要点与边界</strong></p>
+<ul>
+<li>⚠️ <strong>内容仍是公开的静态文件</strong>：草稿只是「不展示、不被索引」，任何知道 URL 的人仍可直接访问 <code>.md</code>。需要保密的内容请配合「文档密码保护（构建期加密）」；</li>
+<li>RSS 过滤在构建期完成，已生成的 <code>feed.xml</code> 需要重跑构建才会剔除。</li>
+</ul>
+<hr>
+<h3>14. 文档密码保护</h3>
+<p>frontmatter 写 <code>password: xxx</code>，WebCrypto 客户端解密，目标是在公开仓库里放私人笔记、零后端做到真加密。</p>
+<p><strong>关键边界（必须先想清楚）</strong></p>
+<p>当前管线中 <code>.md</code> 以明文静态文件被服务，<strong>纯前端的「密码门」只是遮罩</strong>——内容可以被直接 fetch。要做到真加密，必须构建期加密：由构建脚本把正文用 AES-GCM 加密写入产物（或以 <code>```encrypted</code> 块替换正文），运行时用密码派生密钥（PBKDF2）解密后再走既有渲染管线。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>进入受保护文档显示密码输入卡片；</li>
+<li>解密成功后按「路径 + 密码哈希」在 sessionStorage 记忆，站内跳转不重复输入；</li>
+<li>密码错误时抖动提示，不暴露任何明文片段。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>构建脚本体系（可新增 <code>build-encrypt.js</code> 或在现有脚本内处理）；</li>
+<li><code>markdown.js</code> 渲染管线（解密后的明文直接进管线）；</li>
+<li>WebCrypto 为浏览器原生能力，零依赖。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>密钥派生参数（迭代次数）在安全与移动端耗时间取舍；</li>
+<li>解密结果按文档缓存，避免滚动 / 重新渲染时重复解密；</li>
+<li>仓库里只存密文与盐，密码永不入库；密码丢失无法找回，需在文档中明示。</li>
+</ul>
+<hr>
+<h2>六、移动端</h2>
+<h3>15. 移动端手势</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> 触屏设备上左右滑动正文切换上一篇 / 下一篇（本地文件会话优先），自屏幕左缘约 24px 右滑呼出侧边栏；设置面板「显示选项」提供「启用移动端手势」开关（默认开启）。</p>
+</blockquote>
+<p>左右滑翻上 / 下一篇（悬浮球的上一篇 / 下一篇逻辑复用），边缘右滑呼出侧边栏。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>正文区横向位移超过阈值（约 60px）且纵向位移小于阈值时判定为翻页手势；</li>
+<li>仅屏幕左缘约 24px 起始的右滑触发侧边栏，避免与系统返回手势互相干扰；</li>
+<li>提供「启用移动端手势」设置开关。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>上一篇 / 下一篇路由（与悬浮球、<code>[</code> / <code>]</code> 快捷键同源，<code>iris/js/file-tree.js</code>）;</li>
+<li>移动端抽屉侧边栏（<code>iris/css/responsive.css</code>）。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>图片灯箱、PPTX 放映打开时触摸事件让位浮层；</li>
+<li>iOS Safari 边缘滑动优先让位系统返回，手势判定需避开系统保留区；</li>
+<li>与「长按选中文字」「横向滚动的长表格」冲突，需按手势起点元素排除。</li>
+</ul>
+<hr>
+<h2>七、运维</h2>
+<h3>16. 存储管理页</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> 设置面板新增「存储」区块：<code>navigator.storage.estimate()</code> 用量条、编辑器笔记本列表（逐条删除 / 全部清空，二次确认）、阅读历史与收藏 / 阅读位置的占用与一键清理（<code>iris/js/storage-manager.js</code>）。</p>
+</blockquote>
+<p>显示 IndexedDB 用量、按会话清理。本地文件会话、编辑器笔记本多了之后，现在是个黑盒。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>设置面板新增「存储」区块：<code>navigator.storage.estimate()</code> 的用量条（已用 / 配额）；</li>
+<li>编辑器笔记本列表（逐条 / 全部删除，带二次确认）；</li>
+<li>本地文件会话、阅读历史 / 收藏的占用与一键清理入口。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li><code>iris/js/storage.js</code>（IndexedDB 笔记本存储，含 notebooks / meta 两个对象存储）；</li>
+<li><code>iris/js/local-docs.js</code> 会话模型；</li>
+<li>设置面板（<code>iris/js/settings.js</code>）。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li><code>estimate()</code> 的精度因浏览器而异，展示为「约」即可；</li>
+<li>删除操作必须二次确认；清理后即时刷新用量显示。</li>
+</ul>
+<hr>
+<h2>八、本轮新增（已实现 ✅）</h2>
+<p>以下为在既有规划之外、本轮新增并已落地的能力；说明见 <a href="https://theforeveriris.github.io/md-preview/README.md#%E7%89%B9%E6%80%A7">README 特性清单</a> 与 <a href="https://theforeveriris.github.io/md-preview/docs/examples/devtools-examples.md">开发者工具与交互组件示例</a>。</p>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>功能</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>性能</td>
+<td>可见即渲染</td>
+<td>重型渲染器滚到附近才初始化；视口内立即渲染，<code>IntersectionObserver</code> 失效时自动兜底（<code>iris/js/md-render.js</code>）</td>
+</tr>
+<tr>
+<td>性能</td>
+<td>渐进式代码高亮</td>
+<td>长文档先高亮首屏代码块，其余空闲时补齐（<code>iris/js/md-render.js</code>）</td>
+</tr>
+<tr>
+<td>性能</td>
+<td>屏外内容跳过布局</td>
+<td>正文屏外区块 <code>content-visibility: auto</code>（<code>iris/css/markdown.css</code>）</td>
+</tr>
+<tr>
+<td>性能</td>
+<td>相邻文档预取</td>
+<td>空闲 / 悬停预取上下一篇（<code>iris/js/prefetch.js</code>）</td>
+</tr>
+<tr>
+<td>内容</td>
+<td>术语表悬浮</td>
+<td><code>glossary</code> 代码块 + 正文首次出现悬浮解释（<code>iris/js/renderers/glossary.js</code>）</td>
+</tr>
+<tr>
+<td>内容</td>
+<td>CSV → 图表联动</td>
+<td>表格工具栏「画成图」（<code>iris/js/renderers/csv-table.js</code>）</td>
+</tr>
+<tr>
+<td>内容</td>
+<td>SQL DDL → ER 图</td>
+<td><code>sql ddl</code> / <code>ddl</code> / <code>erd</code>（<code>iris/js/renderers/sql-erd.js</code>）</td>
+</tr>
+<tr>
+<td>内容</td>
+<td>拼音注音</td>
+<td>作者语法 `{汉字</td>
+</tr>
+<tr>
+<td>工具</td>
+<td>HTTP 请求块</td>
+<td><code>http</code> 代码块，点击发送实时请求（<code>iris/js/renderers/http-request.js</code>）</td>
+</tr>
+<tr>
+<td>工具</td>
+<td>OpenAPI 交互文档</td>
+<td><code>openapi</code> / <code>swagger</code> JSON / YAML + 试一下（<code>iris/js/renderers/openapi.js</code>）</td>
+</tr>
+<tr>
+<td>工具</td>
+<td>开发者小工具</td>
+<td><code>iris/plugins/</code>：regex / cron / time / color / hash / jwt</td>
+</tr>
+<tr>
+<td>中文</td>
+<td>繁简转换</td>
+<td>基于 opencc，代码块不转换（<code>iris/js/cjk.js</code> + <code>iris/vendor/opencc</code>）</td>
+</tr>
+<tr>
+<td>中文</td>
+<td>竖排阅读 / 排版选项</td>
+<td>竖排、首行缩进、标点悬挂、中西文间距（设置面板「中文」）</td>
+</tr>
+<tr>
+<td>Git</td>
+<td>单篇历史 / blame</td>
+<td>悬浮球「历史与变更」，GitHub API + 内嵌 diff（<code>iris/js/git-history.js</code>）</td>
+</tr>
+<tr>
+<td>Git</td>
+<td>文档变更订阅</td>
+<td>关注文档，有更新时正文顶部提示</td>
+</tr>
+<tr>
+<td>构建</td>
+<td>中文排版 lint</td>
+<td><code>iris/scripts/lint-cjk.js</code>，<code>--fix</code> 自动修复，CI 告警</td>
+</tr>
+<tr>
+<td>构建</td>
+<td>自动变更日志页</td>
+<td><code>iris/scripts/build-changelog.js</code> → <code>docs/changelog.md</code></td>
+</tr>
+<tr>
+<td>导航</td>
+<td>文档图谱</td>
+<td><code>#/graph</code> 可交互文档图谱，节点=文档、边=站内链接、颜色=标签、大小=入度；Cytoscape.js 懒加载（<code>iris/js/renderers/graph.js</code>）</td>
+</tr>
+<tr>
+<td>导航</td>
+<td>反向链接与相关文档</td>
+<td>文末「被 N 篇引用」+「相关文档」，数据来自 <code>links.json</code>（<code>iris/js/backlinks.js</code>）</td>
+</tr>
+<tr>
+<td>构建</td>
+<td>链接关系数据</td>
+<td><code>iris/scripts/build-links.js</code> → <code>iris/data/links.json</code>，解析原语与死链检查共用 <code>iris/scripts/lib/md-links.js</code></td>
+</tr>
+<tr>
+<td>搜索</td>
+<td>繁简互通 + 拼音首字母</td>
+<td>构建期写入 <code>searchText</code>；拼音表由 <code>gen-pinyin-table.js</code> 一次性生成并入库</td>
+</tr>
+<tr>
+<td>排版</td>
+<td>图 / 表自动编号与交叉引用</td>
+<td>连续编号、别名注释、空链接自动填充（<code>iris/js/figures.js</code>）</td>
+</tr>
+<tr>
+<td>内容</td>
+<td>时间线组件</td>
+<td><code>timeline</code> 代码块，状态色 + 今日标记线（<code>iris/plugins/timeline.js</code>）</td>
+</tr>
+<tr>
+<td>交互</td>
+<td>脚注悬浮预览</td>
+<td>悬停 / 聚焦脚注角标浮出脚注原文（<code>iris/js/hover-preview.js</code>）</td>
+</tr>
+<tr>
+<td>交互</td>
+<td>设置项搜索</td>
+<td>设置面板左栏搜索，行级过滤 + 隐藏空分组 + 唯一命中自动跳转</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>建议落地顺序</h2>
+<table>
+<thead>
+<tr>
+<th>批次</th>
+<th>功能</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P0 快赢</td>
+<td>IOS / VRP 高亮、阅读位置续读、全量离线开关、CSV / TSV 表格</td>
+<td>改动面小、依赖少、受众感知强（已全部落地）</td>
+</tr>
+<tr>
+<td>P1 体验</td>
+<td>文档演示模式（已否决）、浏览历史与收藏夹、主题化分享卡片、选中文字工具栏</td>
+<td>除演示模式外均已落地</td>
+</tr>
+<tr>
+<td>P2 打磨</td>
+<td>链接悬浮预览、移动端手势、存储管理页、扫码续读、草稿系统</td>
+<td>交互细节多，需逐个调校（移动端手势、存储管理页、扫码续读已落地）</td>
+</tr>
+<tr>
+<td>P3 攻坚</td>
+<td>OS 文件关联、系统分享目标、文档密码保护</td>
+<td>依赖 PWA 安装态 / 构建期加密设计</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>以上顺序仅为建议，实际取舍以维护者的版本规划为准。功能实现后请同步更新：本文件对应章节、<a href="https://theforeveriris.github.io/md-preview/README.md">README</a> 特性清单、相关专题文档与 <a href="https://theforeveriris.github.io/md-preview/docs/show.md">show.md</a> 截图页。</p>
+</blockquote>
+]]></content:encoded>
+    </item>
     <item>
       <title>开发者工具与交互组件示例</title>
       <link>https://theforeveriris.github.io/md-preview/docs/examples/devtools-examples.md</link>
@@ -265,6 +1324,62 @@ rgb(139, 92, 246)
 <td>中</td>
 <td>GIT-1、<code>feed.xml</code> <code>lastmod</code></td>
 </tr>
+<tr>
+<td>NAV-1</td>
+<td>文档图谱 <code>#/graph</code></td>
+<td>导航与关系</td>
+<td>P1</td>
+<td>中</td>
+<td><code>build-links.js</code>、Cytoscape.js（已 vendor）</td>
+</tr>
+<tr>
+<td>NAV-2</td>
+<td>反向链接 + 相关文档</td>
+<td>导航与关系</td>
+<td>P1</td>
+<td>中</td>
+<td><code>links.json</code>、<code>hover-preview.js</code></td>
+</tr>
+<tr>
+<td>SEARCH-1</td>
+<td>繁简互通 + 拼音首字母</td>
+<td>搜索</td>
+<td>P1</td>
+<td>中</td>
+<td><code>build-search-index.js</code>、opencc、静态拼音表</td>
+</tr>
+<tr>
+<td>TYPE-1</td>
+<td>图 / 表自动编号 + 交叉引用</td>
+<td>排版</td>
+<td>P1</td>
+<td>中</td>
+<td>渲染管线、<code>section-collapse.js</code> 的锚点交互</td>
+</tr>
+<tr>
+<td>CONTENT-2</td>
+<td>时间线组件</td>
+<td>内容增强</td>
+<td>P0</td>
+<td>小</td>
+<td>插件系统</td>
+</tr>
+<tr>
+<td>UI-1</td>
+<td>脚注悬浮预览</td>
+<td>阅读体验</td>
+<td>P0</td>
+<td>小</td>
+<td><code>hover-preview.js</code>、<code>marked-footnote</code></td>
+</tr>
+<tr>
+<td>UI-2</td>
+<td>设置项搜索</td>
+<td>设置面板</td>
+<td>P0</td>
+<td>小</td>
+<td><code>settings.js</code>、<code>floating.css</code></td>
+</tr>
 </tbody></table>
 <hr>
 <h2>落地进度</h2>
@@ -273,6 +1388,52 @@ rgb(139, 92, 246)
 <li><strong>批次 2（已完成）</strong>：PERF-1 可见即渲染（重型渲染器延迟初始化）、CONTENT-1 术语表悬浮、TOOL-2 <code>::: http</code> 实时请求块、TOOL-4 开发者小工具家族（regex / cron / time / color / hash / jwt）、BUILD-1 中文排版 lint、CJK-2 拼音注音（<code>{汉字|hán zì}</code>）。</li>
 <li><strong>批次 3（已完成）</strong>：PERF-3 长文档渐进渲染（渐进式代码高亮 + 屏外跳过布局）、TOOL-1 OpenAPI 交互文档、CJK-3 竖排模式、GIT-1 单篇历史 / blame、GIT-3 文档变更订阅。</li>
 </ul>
+<h2>候选池：本轮已落地</h2>
+<p>以下候选需求已实现，说明见 <a href="https://theforeveriris.github.io/md-preview/README.md#%E7%89%B9%E6%80%A7">README 特性清单</a> 与对应示例文档：</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NAV-1</td>
+<td>文档图谱 <code>#/graph</code></td>
+<td>节点=文档、边=站内链接、颜色=标签、大小=被引用数；搜索定位 / 标签筛选 / 点击直达 / 孤立节点灰显</td>
+</tr>
+<tr>
+<td>NAV-2</td>
+<td>反向链接与相关文档</td>
+<td>文末「被 N 篇引用」+「相关文档」（共享标签 × 互链加权，5 条可展开）</td>
+</tr>
+<tr>
+<td>SEARCH-1</td>
+<td>繁简互通 + 拼音首字母</td>
+<td>构建期写入 <code>searchText</code>，运行时零新增体积</td>
+</tr>
+<tr>
+<td>TYPE-1</td>
+<td>图 / 表自动编号与交叉引用</td>
+<td>连续编号、<code>&lt;!-- #fig:别名 --&gt;</code>、空链接自动填充、题注可复制锚点</td>
+</tr>
+<tr>
+<td>CONTENT-2</td>
+<td>时间线组件</td>
+<td><code>timeline</code> 代码块，状态色 + 今日标记线</td>
+</tr>
+<tr>
+<td>UI-1</td>
+<td>脚注悬浮预览</td>
+<td>悬停 / 聚焦角标浮出脚注原文</td>
+</tr>
+<tr>
+<td>UI-2</td>
+<td>设置项搜索</td>
+<td>行级过滤 + 隐藏空分组 + 唯一命中自动跳转</td>
+</tr>
+</tbody></table>
 <h2>一、性能与阅读体验</h2>
 <h3>PERF-1 可见即渲染（图表延迟初始化）</h3>
 <p><strong>目标</strong>：打开文档时不再一次性初始化全部重型渲染器；含 30 个 Mermaid 的文档首屏不再卡顿。</p>
@@ -492,189 +1653,6 @@ rgb(139, 92, 246)
 <li><strong>CJK lint 门禁</strong>（BUILD-1）：默认告警还是致命？<code>--fix</code> 是否加入某条工作流？</li>
 <li><strong>术语表来源</strong>（CONTENT-1）：frontmatter 内联，还是独立的术语文件 / 构建期汇总？</li>
 </ol>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>变更日志</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/changelog.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/changelog.md</guid>
-      <pubDate>Sun, 18 Oct 2026 20:38:37 GMT</pubDate>
-      <description>&gt; 本页由 从 git 历史自动生成，请勿手动编辑。 - refactor(renderers): 统一渲染器调度器 runRenderers——注册表遍历顺序 await，消除三处硬编码清单；geo 转正支持围栏；embedded 四段挂载逻辑收敛为工厂；新增顺序/错误隔离测试（SW v8.38） — theforeveriris - feat(tags): 全部文档补写 frontmatter</description>
-      <content:encoded><![CDATA[<h1>变更日志</h1>
-<blockquote>
-<p>本页由 <code>iris/scripts/build-changelog.js</code> 从 git 历史自动生成，请勿手动编辑。</p>
-</blockquote>
-<h2>2026-10-18</h2>
-<ul>
-<li><code>fdc726d</code> refactor(renderers): 统一渲染器调度器 runRenderers——注册表遍历顺序 await，消除三处硬编码清单；geo 转正支持围栏；embedded 四段挂载逻辑收敛为工厂；新增顺序/错误隔离测试（SW v8.38） — theforeveriris</li>
-</ul>
-<h2>2026-10-17</h2>
-<ul>
-<li><code>3f5cdf6</code> feat(tags): 全部文档补写 frontmatter tags（44 篇）+ 标签面板改为顶栏 Files/Index/标签 第三选项卡 — theforeveriris</li>
-</ul>
-<h2>2026-10-05</h2>
-<ul>
-<li><code>2f7b78c</code> feat: 标签系统 + 万能命令面板 + 搜索直达关键词 + live 预览沙箱 + JSON 可折叠树 + 图表悬浮工具条 + 快照分享 + 专注模式 + 多标签页同步 + Issue 一键反馈 + 讲义打印样式 — theforeveriris</li>
-</ul>
-<h2>2026-10-02</h2>
-<ul>
-<li><code>002f399</code> fix: 打包导出失效（settings.js 初始化早于 export-bundle.js 注册）+ 对照阅读沉浸化 — theforeveriris</li>
-<li><code>35595da</code> feat: 文章内查找条 + 章节折叠 + 双栏对照阅读 + EPUB/整站打包导出 + 分享卡片多模板 + PWA shortcuts — theforeveriris</li>
-<li><code>aa666a0</code> feat(ci): 死链检查——内链全量校验 + 外链按日确定性抽查 — theforeveriris</li>
-</ul>
-<h2>2026-10-01</h2>
-<ul>
-<li><code>208ce22</code> feat: 移动端手势 + 存储管理页 + 拖拽打开 + 设置导出/导入 + 全文 RSS + sitemap + CI 冒烟测试 — theforeveriris</li>
-<li><code>17fdfe1</code> refactor(settings): 设置面板分组整理——语言/外观/阅读/工具与导出四大区块 — theforeveriris</li>
-<li><code>aabc435</code> feat(ui): 「打开本地文件」改为单一入口 + 弹出式选择面板 — theforeveriris</li>
-<li><code>0cd3dc6</code> feat(ui): 悬浮球菜单精简——去上下篇、合并本地文件入口、扫码弹窗去说明文字 — theforeveriris</li>
-<li><code>04961df</code> feat: 长按收藏/树内足迹 + 链接悬浮预览 + 扫码续读；移除演示模式与页头图标 — theforeveriris</li>
-<li><code>1e86d8b</code> feat: 文档演示模式 + CSV/TSV 表格 + IOS/VRP 高亮 + 历史收藏 + 阅读续读 + 全量离线 + 选区工具栏 + 分享卡片 — theforeveriris</li>
-<li><code>9be029e</code> feat: 自动主题 + 本地文件夹 + 界面多语言 + 单文件 HTML 导出 + PlantUML 降级 — theforeveriris</li>
-</ul>
-<h2>2026-09-29</h2>
-<ul>
-<li><code>46e79b3</code> feat(ui): 搜索改造为居中命令面板（Ctrl/⌘+K） — theforeveriris</li>
-<li><code>43003bf</code> feat(ui): 侧边栏标题显示 + 中文文件名解码 + 导航阅读进度重置 — theforeveriris</li>
-<li><code>7ff069e</code> feat(ui): 全局快捷键扩展 + 快捷键文档 — theforeveriris</li>
-<li><code>52e1578</code> feat(ui): 桌面端侧边栏折叠 + 内容区宽度可调 — theforeveriris</li>
-<li><code>c576253</code> feat: 修复编辑器、XSS 与解析器共 22 处缺陷 — theforeveriris</li>
-</ul>
-<h2>2026-07-31</h2>
-<ul>
-<li><code>bb3ff1a</code> feat: 更新文档并创建系统演示 — theforeveriris</li>
-<li><code>4ad2c06</code> feat: 更新文档并创建系统演示 — theforeveriris</li>
-<li><code>b18a2da</code> Add files via upload — Iris</li>
-<li><code>1ef2171</code> Create zhanweifu.png — Iris</li>
-<li><code>4879ef3</code> chore(pptx): 移除示例文档中 example 演示及对应 data 产物 — theforeveriris</li>
-<li><code>b99caed</code> feat: 分析打卡项目卡顿原因 — theforeveriris</li>
-<li><code>075cc6d</code> feat(pptx): 新建 raw/pptx CI/CD 构建工作流，集成真实 PPTX 演示 — theforeveriris</li>
-<li><code>3fce366</code> feat: 新增 PPTX 嵌入，参考 pkt 语法，支持缩略图网格+全屏放映 — theforeveriris</li>
-</ul>
-<h2>2026-07-22</h2>
-<ul>
-<li><code>7129817</code> fix: 语法说明代码块改用4反引号包裹避免内部反引号提前结束代码块 — theforeveriris</li>
-<li><code>3f0c825</code> fix: 修复代码选项卡点击和代码块内语法误解析问题，重写示例文档 — theforeveriris</li>
-<li><code>6747434</code> feat: 增加代码选项卡和分栏布局语法糖 — theforeveriris</li>
-<li><code>655a9db</code> feat(spoiler): 添加 ||内容|| 遮罩/剧透语法支持 — theforeveriris</li>
-<li><code>ebb9a5d</code> docs(pulse): 补充 pulsmini 迷你波形和波形生成器说明 — theforeveriris</li>
-<li><code>1c610d1</code> feat(pulse): 添加竖线扫描线样式切换，修复代码块内标签渲染，更新示例文档 — theforeveriris</li>
-<li><code>5cbe59d</code> feat(pulse): 更新为 DG-LAB 官方波形文件格式 — theforeveriris</li>
-<li><code>8716213</code> feat: 文档站集成郊狼波形文件解析 — theforeveriris</li>
-</ul>
-<h2>2026-07-18</h2>
-<ul>
-<li><code>0b1b4b2</code> feat: Iris Plugin Development and Docs — omajili-manbu</li>
-</ul>
-<h2>2026-07-16</h2>
-<ul>
-<li><code>a5bd246</code> refactor(plugins): 重构插件系统 API，增强扩展能力与生命周期管理- 插件 loader 支持生命周期钩子（init/beforeRender/afterRender/destroy）- render 支持 async/await，内置错误边界与友好回退 UI- 新增 priority 优先级机制，解决多插件竞争冲突- 新增 context 上下文传递（documentPath、config、registerResource）- 简化 loadPlugin（直接使用 import(url)，移除 Blob 中间层）- autoLoad 新增 manifest/directory.json 策略，摆脱对目录列表的依赖- 重写 qrcode.js 作为 v2 API 参考实现- 更新 plugin-development.md 与 readme-dev.md 文档Co-authored-by: Kimi <a href="mailto:kimi@moonshot.cn">kimi@moonshot.cn</a> — theforeveriris</li>
-<li><code>c767dab</code> feat(ensp): 修复 eNSP XML 解析器并添加示例文档 — theforeveriris</li>
-</ul>
-<h2>2026-07-14</h2>
-<ul>
-<li><code>84d672d</code> license: 采用 AGPL-3.0 + CC-BY-SA-4.0 多许可证方案 — theforeveriris</li>
-<li><code>db81c3f</code> fix(pkt): 修复 @[pkt] 嵌入语法不渲染的问题 — theforeveriris</li>
-<li><code>5fbb165</code> fix(pkt): 修复 Twofish 解密 + XML 解析，添加真实拓扑示例 — trae</li>
-</ul>
-<h2>2026-07-13</h2>
-<ul>
-<li><code>01034be</code> docs(pkt): 更新文档，补充 Packet Tracer 拓扑渲染功能说明 — theforeveriris</li>
-<li><code>a2247cf</code> feat(pkt): 新增 Packet Tracer .pkt 拓扑渲染功能 — theforeveriris</li>
-<li><code>c5e67a6</code> feat(editor): 对照 examples 全面优化工具栏菜单覆盖度 — theforeveriris</li>
-<li><code>ff4ce4e</code> docs: 新增编辑器说明文档，更新 README/readme-dev/features/feat — theforeveriris</li>
-<li><code>1981224</code> fix(gallery): 修复移动端渲染问题，移除三种样式 — theforeveriris</li>
-<li><code>032a9f6</code> feat(gallery): 删除 stamp，slider 改自动轮播，新增 4 种样式 — theforeveriris</li>
-<li><code>8973da5</code> feat(gallery): editorial 改瀑布流，tape 改软木板，新增 3 种样式 — theforeveriris</li>
-<li><code>8707338</code> feat(gallery): 删除 carousel，新增 4 种克制艺术风格 — theforeveriris</li>
-<li><code>e1465b3</code> feat(gallery): 新增 5 种画廊布局样式 — theforeveriris</li>
-<li><code>805452b</code> docs: 更新图片画廊示例文档 — theforeveriris</li>
-<li><code>f74036d</code> feat(gallery): 支持通过 @style 标记指定画廊布局样式 — theforeveriris</li>
-<li><code>d9fa764</code> feat(debug): 调试面板扩展为 6 分组实时监控 — theforeveriris</li>
-<li><code>bb091b7</code> docs: 全面更新文档体系，反映近期所有功能更新 — theforeveriris</li>
-</ul>
-<h2>2026-07-11</h2>
-<ul>
-<li><code>a9635c8</code> chore: 清理根目录，移动 feat.md 到 docs/ — theforeveriris</li>
-</ul>
-<h2>2026-07-10</h2>
-<ul>
-<li><code>9e72bd6</code> feat: 添加代码高亮和代码块复制功能 — theforeveriris</li>
-<li><code>2429e19</code> docs: 添加插件开发指南 — theforeveriris</li>
-</ul>
-<h2>2026-07-09</h2>
-<ul>
-<li><code>5906c31</code> docs: 重写项目文档，更新为当前实际代码结构 — github-actions[bot]</li>
-<li><code>f121401</code> docs: 更新表格示例文档，添加使用提示 — theforeveriris</li>
-<li><code>61ac951</code> docs: 添加表格使用示例文档 — theforeveriris</li>
-</ul>
-<h2>2026-05-24</h2>
-<ul>
-<li><code>5b54ffa</code> chore: remove giscus comments system — theforeveriris</li>
-<li><code>d8e6ff3</code> Remove music notation rendering feature — theforeveriris</li>
-<li><code>2382f27</code> Fix: use specific language types for embed rendering — theforeveriris</li>
-<li><code>257b786</code> 调整示例文档格式：源码在代码块中，渲染效果直接显示 — theforeveriris</li>
-<li><code>8fd67e9</code> 互换示例文档中的源码和渲染效果位置 — theforeveriris</li>
-<li><code>2612ded</code> 完善项目文档系统 — theforeveriris</li>
-<li><code>5fab43b</code> Add theme market system with 7 built-in themes and custom CSS support — theforeveriris</li>
-<li><code>6d20886</code> 实现插件系统和二维码生成插件 — theforeveriris</li>
-</ul>
-<h2>2026-05-22</h2>
-<ul>
-<li><code>24b683f</code> 更新 latex-examples.md — 鸢尾</li>
-<li><code>8f28f92</code> 更新 latex-examples.md — 鸢尾</li>
-<li><code>0a28b8a</code> fix: 修复 katex.js 渲染器，直接处理 katex-block div — theforeveriris</li>
-<li><code>5f4b91c</code> feat: 添加 LaTeX 公式支持 (KaTeX) — theforeveriris</li>
-<li><code>2a3dd2f</code> Add image lazy loading, gallery mode, and error fallback — theforeveriris</li>
-<li><code>8b07160</code> Add GitHub-style Alerts feature — theforeveriris</li>
-<li><code>efb80a2</code> Refactor: Update geojson and twitter examples to match embed examples format — theforeveriris</li>
-<li><code>7faffcb</code> 更新 embed-examples.md — 鸢尾</li>
-<li><code>983f78f</code> 更新 embed-examples.md — 鸢尾</li>
-<li><code>edce270</code> 更新 embed-examples.md — 鸢尾</li>
-<li><code>e70ab11</code> 更新 embed-examples.md — 鸢尾</li>
-<li><code>7b5258e</code> 更新 embed-examples.md — 鸢尾</li>
-<li><code>d9b4484</code> 更新 embed-examples.md — 鸢尾</li>
-<li><code>912867c</code> 更新 embed-examples.md — 鸢尾</li>
-<li><code>de9ab65</code> 更新 embed-examples.md — 鸢尾</li>
-</ul>
-<h2>2026-05-21</h2>
-<ul>
-<li><code>825e378</code> docs: 从markdown语法说明中删除重复的Mermaid图表内容 — theforeveriris</li>
-</ul>
-<h2>2026-05-20</h2>
-<ul>
-<li><code>ba8fa4f</code> 添加 Twitter/X 嵌入功能 — theforeveriris</li>
-<li><code>670479e</code> 添加 Git Diff 可视化功能 (diff2html) — theforeveriris</li>
-<li><code>00dfa72</code> 添加 OSMD 乐谱渲染功能 — theforeveriris</li>
-<li><code>4fcd83d</code> feat: 添加乐谱渲染支持 (ABC记谱法、MusicXML) — theforeveriris</li>
-<li><code>4358df1</code> fix: 修正 ApexCharts 示例文档的代码块类型，源码改为txt — theforeveriris</li>
-<li><code>7e3ecd6</code> feat: 添加 ApexCharts 交互式图表支持 — theforeveriris</li>
-<li><code>dd07edc</code> feat: 添加浏览器原生 HTML 元素与 Web API 支持 — theforeveriris</li>
-<li><code>5f66906</code> feat: 添加 GeoJSON/TopoJSON 地理数据可视化功能 — theforeveriris</li>
-<li><code>0fcc181</code> feat: 添加外部服务嵌入功能 — theforeveriris</li>
-<li><code>f1a3caf</code> fix: 修复多个 PlantUML 图表语法问题 — theforeveriris</li>
-<li><code>71c8ca3</code> fix: 修复多个 PlantUML 图表渲染问题 — theforeveriris</li>
-<li><code>b7abb03</code> feat: 添加 PlantUML 图表渲染支持 — theforeveriris</li>
-<li><code>fcd3d01</code> 更新 mermaid-examples.md — 鸢尾</li>
-<li><code>97bc72a</code> 更新 mermaid-examples.md — 鸢尾</li>
-<li><code>98fdf21</code> 更新 mermaid-examples.md — 鸢尾</li>
-<li><code>abb130f</code> fix: 严格修复四象限图、块图、XY图表的Mermaid语法 — theforeveriris</li>
-<li><code>0165e88</code> Fix all mermaid source code blocks using txt format — theforeveriris</li>
-<li><code>ad631e1</code> 更新 mermaid-examples.md — 鸢尾</li>
-<li><code>f8c8f63</code> 添加完整的 Mermaid 图表示例文档 — theforeveriris</li>
-<li><code>7738f7f</code> 添加 Mermaid 图表支持 — agelaia521</li>
-</ul>
-<h2>2026-05-19</h2>
-<ul>
-<li><code>e41fb66</code> 更新 Markdown 语法参考页面，添加每种语法的渲染效果预览 — agelaia521</li>
-<li><code>2a992d1</code> 修复文档中的相对链接 — theforeveriris</li>
-<li><code>f1be494</code> 更新所有文档 - 反映自动发现功能 — theforeveriris</li>
-<li><code>b1eecd4</code> Add multi-level documentation structure with test files — theforeveriris</li>
-<li><code>4a49e3b</code> Initial commit: Markdown previewer for GitHub Pages — agelaia521</li>
-</ul>
-<blockquote>
-<p>共 108 条（最多展示 200 条）。</p>
-</blockquote>
 ]]></content:encoded>
     </item>
     <item>
@@ -9516,528 +10494,6 @@ open index.html
 <li>使用 <code>priority</code> 控制插件匹配顺序，避免不同插件竞争同一语言</li>
 <li>需要清理资源（定时器、图表实例、事件监听）时，实现 <code>destroy()</code> 钩子并在其中释放，或使用 <code>context.registerResource()</code></li>
 </ul>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>功能路线图</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/roadmap.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/roadmap.md</guid>
-      <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
-      <description>本文档收录项目的功能规划。标注「已实现」的功能已落地可用（正式说明见 README 特性清单与相关专题文档），其余仍为规划，描述目标交互、可以复用的现有基建、实现要点与边界。功能落地后，对应章节会更新为正式文档并标注版本。 &gt; 状态速记：已完成功能见 README 特性清单 与各专题文档；未标注「已实现」的章节均为「规划中（未实现）」。 --- | 分组 | 功能 | 一句话说明 | 主要复用基建</description>
-      <content:encoded><![CDATA[<h1>功能路线图</h1>
-<p>本文档收录项目的功能规划。<strong>标注「已实现」的功能已落地可用</strong>（正式说明见 README 特性清单与相关专题文档），其余仍为规划，描述目标交互、可以复用的现有基建、实现要点与边界。功能落地后，对应章节会更新为正式文档并标注版本。</p>
-<blockquote>
-<p>状态速记：已完成功能见 <a href="https://theforeveriris.github.io/md-preview/README.md#%E7%89%B9%E6%80%A7">README 特性清单</a> 与各专题文档；未标注「已实现」的章节均为「规划中（未实现）」。</p>
-</blockquote>
-<hr>
-<h2>总览</h2>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>功能</th>
-<th>一句话说明</th>
-<th>主要复用基建</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>内容与渲染</td>
-<td>文档演示模式</td>
-<td><code>?mode=slides</code> 按 H2 分页全屏放映，写完文档直接拿去讲</td>
-<td><code>#pptx-slideshow-overlay</code> 放映层</td>
-</tr>
-<tr>
-<td>内容与渲染</td>
-<td>CSV / TSV 交互表格 ✅</td>
-<td><code>```csv</code> 代码块渲染为可排序、可筛选、可搜索的表格</td>
-<td>渲染器注册机制、长表格横向滚动</td>
-</tr>
-<tr>
-<td>内容与渲染</td>
-<td>IOS / VRP 配置高亮 ✅</td>
-<td><code>```ios</code> / <code>```vrp</code> 渲染路由器配置高亮</td>
-<td>highlight.js 本地化依赖</td>
-</tr>
-<tr>
-<td>阅读与导航</td>
-<td>浏览历史与收藏夹 ✅</td>
-<td>侧边栏「最近阅读」「收藏」分组</td>
-<td>侧边栏面板结构、localStorage</td>
-</tr>
-<tr>
-<td>阅读与导航</td>
-<td>链接悬浮预览 ✅</td>
-<td>悬停站内链接弹出目标文档摘要卡片</td>
-<td>hash 路由、frontmatter 摘要</td>
-</tr>
-<tr>
-<td>阅读与导航</td>
-<td>阅读位置续读 ✅</td>
-<td>记住每篇文档滚动位置，重开可一键跳回</td>
-<td>顶部阅读进度条</td>
-</tr>
-<tr>
-<td>分享与输出</td>
-<td>选中文字浮动工具栏 ✅</td>
-<td>划选文字浮出：复制 / 站内搜索 / 生成分享图</td>
-<td>编辑器选区工具栏、命令面板</td>
-</tr>
-<tr>
-<td>分享与输出</td>
-<td>主题化分享卡片 ✅</td>
-<td>按当前主题配色生成引言排版 PNG 卡片</td>
-<td>表格主题化 PNG 导出（Canvas）</td>
-</tr>
-<tr>
-<td>离线与 PWA</td>
-<td>全量离线开关 ✅</td>
-<td>一键把全部 <code>.md</code> 拉进 SW 缓存，整站离线</td>
-<td><code>search-index.json</code>、RUNTIME_CACHE</td>
-</tr>
-<tr>
-<td>离线与 PWA</td>
-<td>OS 级文件关联</td>
-<td>装 PWA 后双击 <code>.md</code> 直接用本站打开</td>
-<td><code>file_handlers</code>、local-docs</td>
-</tr>
-<tr>
-<td>离线与 PWA</td>
-<td>系统分享目标</td>
-<td>其他 App 分享文本/MD 时选「用本站打开」</td>
-<td><code>share_target</code>、local-docs</td>
-</tr>
-<tr>
-<td>离线与 PWA</td>
-<td>扫码续读 ✅</td>
-<td>桌面生成文档+阅读位置的二维码，手机接着看</td>
-<td>qrcode 插件渲染器</td>
-</tr>
-<tr>
-<td>写作流程</td>
-<td>草稿系统</td>
-<td><code>draft: true</code> 不进树/搜索/RSS，仅调试模式可见</td>
-<td>构建脚本 frontmatter 过滤</td>
-</tr>
-<tr>
-<td>写作流程</td>
-<td>文档密码保护</td>
-<td>frontmatter 声明密码，客户端解密后渲染</td>
-<td>WebCrypto、构建脚本</td>
-</tr>
-<tr>
-<td>移动端</td>
-<td>移动端手势 ✅</td>
-<td>左右滑翻上/下一篇，边缘右滑呼出侧边栏</td>
-<td>上一篇/下一篇路由、移动端抽屉</td>
-</tr>
-<tr>
-<td>运维</td>
-<td>存储管理页 ✅</td>
-<td>IndexedDB 用量可视、按会话/笔记本清理</td>
-<td>storage.js、设置面板</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>一、内容与渲染</h2>
-<h3>1. 文档演示模式（<code>?mode=slides</code>）</h3>
-<blockquote>
-<p><strong>状态：已否决 ✋</strong>——经评估不提供此功能（入口与整体阅读流冲突），以下保留原方案说明备查。</p>
-</blockquote>
-<p>给任意文档加 <code>?mode=slides</code>，按 H2 分页、方向键翻页、全屏放映——写完文档直接拿去讲，让每篇文档一键变幻灯片。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>URL 参数进入 / 退出，与 <code>?mode=editor</code>、<code>?mode=pulsegen</code> 的既有惯例一致；</li>
-<li>以 H2 为分页边界，H3 及以下内容归入所属 H2 的页；文档开头（第一个 H2 之前）单独成页；</li>
-<li>页脚显示页码与当前章节标题；<code>←</code> / <code>→</code> / <code>Space</code> / <code>Shift+Space</code> / <code>Home</code> / <code>End</code> 翻页，<code>Esc</code> 退出并恢复滚动位置。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>PPTX 全屏放映层 <code>#pptx-slideshow-overlay</code>（<code>iris/js/renderers/pptx.js</code>）：backdrop + 单页容器 + 键盘事件已在捕获阶段监听并 <code>stopPropagation()</code>，优先级高于通用灯箱（见 <a href="https://theforeveriris.github.io/md-preview/readme-dev.md">开发者文档</a> 相关小节）；</li>
-<li><code>?mode=</code> 特殊页面路由（编辑器、波形生成器均已使用）；</li>
-<li>i18n 语言包（<code>iris/js/i18n.js</code>）承接新界面文案。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>分页应基于渲染完成后的 DOM（<code>.markdown-body</code> 的 H2 切片），图片 / Mermaid / 表格已经渲染好，无需重跑渲染管线；</li>
-<li>退出时恢复进入前的滚动位置与 URL；</li>
-<li>可顺带提供「导出讲义」打印样式。</li>
-</ul>
-<hr>
-<h3>2. CSV / TSV 交互表格</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> <code>csv / </code>tsv 代码块直接渲染为交互表格，示例见 <a href="https://theforeveriris.github.io/md-preview/docs/examples/csv-examples.md">CSV/TSV 交互表格示例</a>。</p>
-</blockquote>
-<p><code>```csv</code> / <code>```tsv</code> 代码块渲染为可排序、可筛选、可搜索的交互表格，贴数据的人会常用。这是长表格横向滚动优化的自然延伸。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>表头点击排序（升 / 降序切换，箭头指示）；</li>
-<li>右上角搜索框即时过滤行；每列下拉勾选筛选；</li>
-<li>行数多时保留横向滚动与「延伸到右侧空白」能力；</li>
-<li>工具栏提供「复制 CSV」「下载 CSV」。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>渲染器注册机制（<code>iris/js/renderers/</code>，<code>detect</code> + <code>render</code> 两段式）；</li>
-<li>长表格横向滚动与「延伸到右侧空白」设置（<code>iris/css/markdown.css</code> + 显示设置）；</li>
-<li>表格手柄已有的「复制 CSV」逻辑（<code>iris/js/interactions.js</code>）。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>数据量在内存中，纯 DOM 排序即可，无需引库；</li>
-<li>建议超过约 5000 行时退化为普通代码块高亮，避免卡顿；</li>
-<li>TSV 按制表符分列，注意引号转义与空行跳过。</li>
-</ul>
-<hr>
-<h3>3. Cisco IOS / 华为 VRP 配置高亮</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> <code>ios / </code>vrp（别名 <code>cisco / </code>huawei），示例见 <a href="https://theforeveriris.github.io/md-preview/docs/examples/ios-vrp-examples.md">IOS/VRP 配置高亮示例</a>。</p>
-</blockquote>
-<p>自定义两个 highlight.js 语言包，<code>```ios</code> / <code>```vrp</code> 渲染路由器配置。本站受众本就是网络工程师（PKT / eNSP 拓扑渲染已内置），配置高亮比任何图都戳中痛点。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>命令关键字（<code>interface</code> / <code>router ospf</code> / <code>acl</code> / <code>display current-configuration</code> 等）、注释（IOS 的 <code>!</code>）、字符串与数字分级着色；</li>
-<li>与内置 10 套代码高亮主题自动兼容（仅依赖 hljs class 体系）。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>highlight.js 已本地化（<code>iris/vendor/</code>），无新增运行时依赖；</li>
-<li>代码块语言标签与一键复制按钮已内建。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>通过 <code>hljs.registerLanguage(&#39;ios&#39;, grammar)</code> 注册，语法写法参考 hljs 官方「路由器配置」类 grammar；</li>
-<li>IOS 与 VRP 大量同构，可共享一套基础规则、分别维护关键字表；</li>
-<li>语言包体积应控制在数 KB 内，避免拖累首屏（可并入现有按需加载机制）。</li>
-</ul>
-<hr>
-<h2>二、阅读与导航</h2>
-<h3>4. 浏览历史与收藏夹</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> 长按文件树文档一键收藏（图标变强调色），最近打开的 5 篇在文件树中淡化显示；未设独立侧边栏分组。</p>
-</blockquote>
-<p>localStorage 记录阅读轨迹，侧边栏新增「最近阅读」「收藏」两个分组。配合已有的本地文件会话列表，整体导航体验就完整了。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>每篇文档阅读超过阈值时间（如 5 秒）记入历史：标题 + 路径 + 时间，去重、上限约 50 条；</li>
-<li>收藏入口（悬浮球菜单或标题旁星标），一键收藏 / 取消；</li>
-<li>两个分组渲染在侧边栏，与「本地文件」面板同级、可折叠，点击条目走既有 hash 路由；</li>
-<li>分组标题栏提供清空入口。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>侧边栏面板结构（本地文件面板：<code>iris/js/local-docs.js</code> + <code>iris/css/layout.css</code>）；</li>
-<li>文件树条目渲染与点击路由（<code>iris/js/file-tree.js</code>）；</li>
-<li>i18n 语言包。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>数据结构建议 <code>md-preview-history</code> / <code>md-preview-favorites</code> 两个 localStorage 键；</li>
-<li>隐私模式下 localStorage 可能抛异常，读写需 try/catch；</li>
-<li>历史去重以文档路径为键，本地文件与会话文档可不入历史（刷新即失效）。</li>
-</ul>
-<hr>
-<h3>5. 链接悬浮预览</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> 悬停站内链接弹出目标文档摘要卡片（标题 + 摘要 + 阅读时长），点击卡片跳转。</p>
-</blockquote>
-<p>鼠标悬停站内链接时，弹出目标文档的摘要卡片（Obsidian / 维基百科同款），不用离开当前页就能确认要不要跳。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>悬停约 300ms 后浮出卡片：目标标题 + 首段摘要 + 字数，跟随链接定位；</li>
-<li>点击卡片跳转，<code>Esc</code> 或鼠标移出关闭；触屏设备暂不支持（或长按触发）。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>hash 路由解析（<code>iris/app.js</code>）确定目标文档路径；</li>
-<li>按路径拉取单篇 <code>.md</code> 的运行时请求逻辑；</li>
-<li>frontmatter 解析（<code>iris/js/markdown.js</code> 的 <code>parseFrontmatter</code>），<code>description</code> 字段已用于 OGP meta。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>摘要取 <code>frontmatter.description</code> &gt; 正文首段（可复用 OGP 的摘要提炼逻辑，剥代码块 / 图片 / 标记语法）；</li>
-<li>卡片内<strong>不渲染完整 Markdown</strong>（XSS 攻击面收敛），仅纯文本 + 少量受控格式；</li>
-<li>对已打开过的文档可做内存级缓存，避免悬停风暴重复 fetch。</li>
-</ul>
-<hr>
-<h3>6. 阅读位置续读</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> 重新打开读过的文档时底部提示「上次读到 N%，继续？」。</p>
-</blockquote>
-<p>每篇文档记住滚动位置，下次打开时提示「上次读到 62%，继续？」。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>滚动节流记录阅读百分比（低于约 10% 不记录）；</li>
-<li>重新打开同一篇时，底部浮出提示条，点击平滑滚动到记录位置；</li>
-<li>「本次忽略」「不再提醒」两级记忆。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>顶部阅读进度条（已有，滚动百分比同源）；</li>
-<li>hash 路由与 localStorage。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>记录 <code>{ 路径: { pct, 时间 } }</code>，文档更新后百分比仍近似有效；</li>
-<li>仅在「重新打开」时提示，首次阅读不打扰。</li>
-</ul>
-<hr>
-<h2>三、分享与输出</h2>
-<h3>7. 选中文字浮动工具栏</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> 划选正文文字即浮出：复制 / 站内搜索 / 分享卡片。</p>
-</blockquote>
-<p>划选正文一段文字后浮出小工具条：复制 / 站内搜索 / 生成分享图。表格悬浮手柄与 LaTeX 右键复制的交互模式是现成的。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>在正文区 <code>mouseup</code> 且选区非空时，于选区上方定位工具条；点击外部或 <code>Esc</code> 消失；</li>
-<li>按钮：复制纯文本、复制 Markdown 源码、以此文字唤起 <code>Ctrl/⌘ + K</code> 命令面板搜索、生成分享卡片。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>编辑器内已有「选中文字浮动工具栏」（<code>iris/css/editor.css</code>），定位与视口边界规避逻辑可移植；</li>
-<li>居中搜索命令面板（<code>iris/js/search.js</code> + <code>ui.js</code>，<code>Ctrl/⌘ + K</code>）；</li>
-<li>表格手柄的 SVG 图标按钮风格（无 emoji）。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>仅对 <code>.markdown-body</code> 正文选区生效，避开编辑器、代码块自身工具栏与表格手柄；</li>
-<li>「复制 Markdown 源码」需要 DOM→MD 回溯，工程量大时可先退化为复制纯文本；</li>
-<li>需要与标题锚点复制、LaTeX 右键复制互不抢占事件。</li>
-</ul>
-<hr>
-<h3>8. 主题化分享卡片</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> 选中文字工具条「分享卡片」，下载 1200×630 PNG。</p>
-</blockquote>
-<p>选中段落或整篇文档生成一张带当前主题配色的 PNG 卡片（引言排版），适合发社交媒体。表格导出 PNG 的能力可以直接复用。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>卡片构成：文档标题 + 摘录正文 + 站点名 / 二维码角标；</li>
-<li>配色取当前 <code>data-theme</code> 的 CSS 变量，与站点视觉一致；</li>
-<li>尺寸可选 1200×630（与 OGP 分享图同尺寸）或 3:4 竖版；</li>
-<li>出口：下载 PNG / 复制到剪贴板。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>表格手柄的主题化 PNG 导出（<code>iris/js/interactions.js</code>，Canvas 手绘 + <code>toBlob</code>，不依赖 html2canvas）；</li>
-<li>OGP 站点分享图的 Canvas 品牌排版流程（<code>iris/icons/og-image.png</code> 的生成思路）；</li>
-<li>qrcode 插件渲染器（<code>iris/plugins/qrcode.js</code>）做角标二维码。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>沿用 Canvas 手绘方案：页面字体已加载，<code>measureText</code> 逐行排版，长文自动截断并补「阅读全文」尾行；</li>
-<li>深浅主题下分别校验对比度；</li>
-<li>剪贴板写入图片需 <code>ClipboardItem</code>，做降级（仅下载）。</li>
-</ul>
-<hr>
-<h2>四、离线与 PWA</h2>
-<h3>9. 全量离线开关</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> 设置面板 → 操作 → 「缓存全部文档」，支持一键清除文档缓存。</p>
-</blockquote>
-<p>PWA 目前只缓存访问过的页面。设置里加一个「缓存全部文档」按钮，一键把 <code>search-index</code> 覆盖的所有 <code>.md</code> 拉进 SW 缓存，飞机上也能整站阅读。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>设置面板新增按钮与进度显示（n / total，可取消）；</li>
-<li>完成后提示「已可整站离线」，并显示当前缓存文档数与「清除缓存」入口。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li><code>sw.js</code> 的 RUNTIME_CACHE 已按 <code>.md</code> 路径后缀拦截并缓存访问过的文档；</li>
-<li><code>iris/data/search-index.json</code> 覆盖全部文档路径，可作清单来源；</li>
-<li><code>precache-manifest.json</code> 的预缓存机制与版本管理。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>逐个 fetch <code>.md</code>（并发 3~5）触发 SW 拦截入库，避免一次性全量拉爆移动端流量；</li>
-<li><code>CACHE_NAME</code> 版本升级后旧缓存会被清除，需提示用户重跑「缓存全部」；</li>
-<li>渲染一篇文档还依赖 vendor 库，可顺带把常用 JS/CSS 一并纳入（或依赖 precache 已覆盖）。</li>
-</ul>
-<hr>
-<h3>10. OS 级文件关联</h3>
-<p>manifest 加 <code>file_handlers</code>，安装 PWA 后双击 <code>.md</code> 文件直接用本站打开，配合 File System Access API 就是桌面 MD 阅读器。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>系统层面把 <code>.md</code> / <code>.markdown</code> 关联到已安装的 PWA；</li>
-<li>启动后通过 <code>launchQueue</code> 拿到文件句柄，转入本地文件会话打开。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li><code>manifest.json</code>；</li>
-<li>本地文件管线（<code>iris/js/local-docs.js</code>：会话列表、懒加载、大小限制）。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li><code>window.launchQueue.setConsumer()</code> 接收 <code>FileHandle</code> → 读 File 后走「打开本地 MD」同一入口；</li>
-<li>仅 HTTPS + 已安装 PWA 的 Chromium 系浏览器生效，其余环境静默降级；</li>
-<li>与手动打开共用限制（单文件 ≤ 10MB 等）。</li>
-</ul>
-<hr>
-<h3>11. 系统分享目标</h3>
-<p><code>share_target</code> 注册后，其他 App 分享文本 / MD 时可选「用 Markdown Preview 打开」。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>移动端系统分享面板出现本站入口；</li>
-<li>分享的文本 / 文件进入站点后，转入本地文件会话或直接渲染预览。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li><code>manifest.json</code>；</li>
-<li><code>iris/js/local-docs.js</code> 的内存会话（刷新即清空，天然适合一次性分享内容）。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>最简方案：<code>method: &quot;GET&quot;</code> + query 参数承接分享文本（SW 不参与）；</li>
-<li>接收文件（POST 到 Service Worker）方案复杂度高，建议二期；</li>
-<li>进入后应立即渲染并把分享内容带入本地文件会话，避免用户困惑。</li>
-</ul>
-<hr>
-<h3>12. 扫码续读</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> 悬浮球「扫码续读」生成当前文档 + 阅读位置的二维码（<code>?pos=N</code> 参数），扫码后自动定位；二维码沿用 qrcode 插件的外部服务方案。</p>
-</blockquote>
-<p>桌面端生成当前文档 + 阅读位置的二维码，手机扫码接着看。qrcode 渲染器是现成的。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>悬浮球或分享工具条入口 → 弹窗展示二维码（URL 含文档路径与可选滚动位置参数），附当前阅读百分比；</li>
-<li>手机打开后自动滚动到记录位置（配合「阅读位置续读」）。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>qrcode 插件渲染器（<code>iris/plugins/qrcode.js</code>）；</li>
-<li>悬浮球菜单与 i18n。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>阅读位置用 query 参数（如 <code>?pos=0.62</code>）而非 hash 附加，避免与文档路由冲突；</li>
-<li>本地 / 局域网地址生成的二维码跨设备无效，需提示「需部署后的公网地址」。</li>
-</ul>
-<hr>
-<h2>五、写作流程</h2>
-<h3>13. 草稿系统</h3>
-<p>frontmatter 写 <code>draft: true</code> 的文档不出现在目录树 / 搜索 / RSS，只在调试模式（<code>?debug=1</code>）可见，写作流程就完整了。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>三个构建脚本（file-tree / search-index / feed）解析 frontmatter 并过滤草稿；</li>
-<li>运行时 GitHub API 回退路径同样过滤；</li>
-<li><code>?debug=1</code> 打开时，草稿在侧边栏以「草稿」徽标显示，方便自查。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>构建脚本（<code>iris/scripts/build-*.js</code>）已解析文档元信息，增加字段成本低；</li>
-<li><code>iris/js/markdown.js</code> 的 frontmatter 解析；</li>
-<li><code>?debug=1</code> Debug Panel（已有，见 <a href="https://theforeveriris.github.io/md-preview/readme-dev.md">开发者文档</a>）。</li>
-</ul>
-<p><strong>实现要点与边界</strong></p>
-<ul>
-<li>⚠️ <strong>内容仍是公开的静态文件</strong>：草稿只是「不展示、不被索引」，任何知道 URL 的人仍可直接访问 <code>.md</code>。需要保密的内容请配合「文档密码保护（构建期加密）」；</li>
-<li>RSS 过滤在构建期完成，已生成的 <code>feed.xml</code> 需要重跑构建才会剔除。</li>
-</ul>
-<hr>
-<h3>14. 文档密码保护</h3>
-<p>frontmatter 写 <code>password: xxx</code>，WebCrypto 客户端解密，目标是在公开仓库里放私人笔记、零后端做到真加密。</p>
-<p><strong>关键边界（必须先想清楚）</strong></p>
-<p>当前管线中 <code>.md</code> 以明文静态文件被服务，<strong>纯前端的「密码门」只是遮罩</strong>——内容可以被直接 fetch。要做到真加密，必须构建期加密：由构建脚本把正文用 AES-GCM 加密写入产物（或以 <code>```encrypted</code> 块替换正文），运行时用密码派生密钥（PBKDF2）解密后再走既有渲染管线。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>进入受保护文档显示密码输入卡片；</li>
-<li>解密成功后按「路径 + 密码哈希」在 sessionStorage 记忆，站内跳转不重复输入；</li>
-<li>密码错误时抖动提示，不暴露任何明文片段。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>构建脚本体系（可新增 <code>build-encrypt.js</code> 或在现有脚本内处理）；</li>
-<li><code>markdown.js</code> 渲染管线（解密后的明文直接进管线）；</li>
-<li>WebCrypto 为浏览器原生能力，零依赖。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>密钥派生参数（迭代次数）在安全与移动端耗时间取舍；</li>
-<li>解密结果按文档缓存，避免滚动 / 重新渲染时重复解密；</li>
-<li>仓库里只存密文与盐，密码永不入库；密码丢失无法找回，需在文档中明示。</li>
-</ul>
-<hr>
-<h2>六、移动端</h2>
-<h3>15. 移动端手势</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> 触屏设备上左右滑动正文切换上一篇 / 下一篇（本地文件会话优先），自屏幕左缘约 24px 右滑呼出侧边栏；设置面板「显示选项」提供「启用移动端手势」开关（默认开启）。</p>
-</blockquote>
-<p>左右滑翻上 / 下一篇（悬浮球的上一篇 / 下一篇逻辑复用），边缘右滑呼出侧边栏。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>正文区横向位移超过阈值（约 60px）且纵向位移小于阈值时判定为翻页手势；</li>
-<li>仅屏幕左缘约 24px 起始的右滑触发侧边栏，避免与系统返回手势互相干扰；</li>
-<li>提供「启用移动端手势」设置开关。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>上一篇 / 下一篇路由（与悬浮球、<code>[</code> / <code>]</code> 快捷键同源，<code>iris/js/file-tree.js</code>）;</li>
-<li>移动端抽屉侧边栏（<code>iris/css/responsive.css</code>）。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>图片灯箱、PPTX 放映打开时触摸事件让位浮层；</li>
-<li>iOS Safari 边缘滑动优先让位系统返回，手势判定需避开系统保留区；</li>
-<li>与「长按选中文字」「横向滚动的长表格」冲突，需按手势起点元素排除。</li>
-</ul>
-<hr>
-<h2>七、运维</h2>
-<h3>16. 存储管理页</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> 设置面板新增「存储」区块：<code>navigator.storage.estimate()</code> 用量条、编辑器笔记本列表（逐条删除 / 全部清空，二次确认）、阅读历史与收藏 / 阅读位置的占用与一键清理（<code>iris/js/storage-manager.js</code>）。</p>
-</blockquote>
-<p>显示 IndexedDB 用量、按会话清理。本地文件会话、编辑器笔记本多了之后，现在是个黑盒。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>设置面板新增「存储」区块：<code>navigator.storage.estimate()</code> 的用量条（已用 / 配额）；</li>
-<li>编辑器笔记本列表（逐条 / 全部删除，带二次确认）；</li>
-<li>本地文件会话、阅读历史 / 收藏的占用与一键清理入口。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li><code>iris/js/storage.js</code>（IndexedDB 笔记本存储，含 notebooks / meta 两个对象存储）；</li>
-<li><code>iris/js/local-docs.js</code> 会话模型；</li>
-<li>设置面板（<code>iris/js/settings.js</code>）。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li><code>estimate()</code> 的精度因浏览器而异，展示为「约」即可；</li>
-<li>删除操作必须二次确认；清理后即时刷新用量显示。</li>
-</ul>
-<hr>
-<h2>建议落地顺序</h2>
-<table>
-<thead>
-<tr>
-<th>批次</th>
-<th>功能</th>
-<th>理由</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>P0 快赢</td>
-<td>IOS / VRP 高亮、阅读位置续读、全量离线开关、CSV / TSV 表格</td>
-<td>改动面小、依赖少、受众感知强（已全部落地）</td>
-</tr>
-<tr>
-<td>P1 体验</td>
-<td>文档演示模式（已否决）、浏览历史与收藏夹、主题化分享卡片、选中文字工具栏</td>
-<td>除演示模式外均已落地</td>
-</tr>
-<tr>
-<td>P2 打磨</td>
-<td>链接悬浮预览、移动端手势、存储管理页、扫码续读、草稿系统</td>
-<td>交互细节多，需逐个调校（移动端手势、存储管理页、扫码续读已落地）</td>
-</tr>
-<tr>
-<td>P3 攻坚</td>
-<td>OS 文件关联、系统分享目标、文档密码保护</td>
-<td>依赖 PWA 安装态 / 构建期加密设计</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>以上顺序仅为建议，实际取舍以维护者的版本规划为准。功能实现后请同步更新：本文件对应章节、<a href="https://theforeveriris.github.io/md-preview/README.md">README</a> 特性清单、相关专题文档与 <a href="https://theforeveriris.github.io/md-preview/docs/show.md">show.md</a> 截图页。</p>
-</blockquote>
 ]]></content:encoded>
     </item>
     <item>

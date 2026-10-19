@@ -469,7 +469,14 @@ frontmatter 写 `password: xxx`，WebCrypto 客户端解密，目标是在公开
 | Git | 文档变更订阅 | 关注文档，有更新时正文顶部提示 |
 | 构建 | 中文排版 lint | `iris/scripts/lint-cjk.js`，`--fix` 自动修复，CI 告警 |
 | 构建 | 自动变更日志页 | `iris/scripts/build-changelog.js` → `docs/changelog.md` |
-
+| 导航 | 文档图谱 | `#/graph` 可交互文档图谱，节点=文档、边=站内链接、颜色=标签、大小=入度；Cytoscape.js 懒加载（`iris/js/renderers/graph.js`） |
+| 导航 | 反向链接与相关文档 | 文末「被 N 篇引用」+「相关文档」，数据来自 `links.json`（`iris/js/backlinks.js`） |
+| 构建 | 链接关系数据 | `iris/scripts/build-links.js` → `iris/data/links.json`，解析原语与死链检查共用 `iris/scripts/lib/md-links.js` |
+| 搜索 | 繁简互通 + 拼音首字母 | 构建期写入 `searchText`；拼音表由 `gen-pinyin-table.js` 一次性生成并入库 |
+| 排版 | 图 / 表自动编号与交叉引用 | 连续编号、别名注释、空链接自动填充（`iris/js/figures.js`） |
+| 内容 | 时间线组件 | `timeline` 代码块，状态色 + 今日标记线（`iris/plugins/timeline.js`） |
+| 交互 | 脚注悬浮预览 | 悬停 / 聚焦脚注角标浮出脚注原文（`iris/js/hover-preview.js`） |
+| 交互 | 设置项搜索 | 设置面板左栏搜索，行级过滤 + 隐藏空分组 + 唯一命中自动跳转 |
 ---
 
 ## 建议落地顺序

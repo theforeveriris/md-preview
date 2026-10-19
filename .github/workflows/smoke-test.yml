@@ -27,10 +27,11 @@ jobs:
       with:
         node-version: '20'
 
-    - name: Build data files (file-tree / search-index / precache / feed / sitemap)
+    - name: Build data files (file-tree / search-index / links / precache / feed / sitemap)
       run: |
         node iris/scripts/build-file-tree.js
         node iris/scripts/build-search-index.js
+        node iris/scripts/build-links.js
         node iris/scripts/build-precache.js
         node iris/scripts/build-feed.js
         node iris/scripts/build-sitemap.js

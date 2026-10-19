@@ -67,7 +67,9 @@ tags: [开发]
 | Local Docs | `iris/js/local-docs.js` | 本地 MD 多选会话（侧边栏「本地文件」面板）+ 本地文件夹导入（懒加载目录树）+ 拖拽打开文件 / 文件夹（全屏遮罩 + webkitGetAsEntry 递归展开） |
 | Gestures | `iris/js/gestures.js` | 移动端手势：左右滑翻上/下一篇（本地会话优先）、左缘右滑呼出侧边栏；编辑器/浮层/横向滚动容器内让位，设置开关 `mobileGestures` |
 | History | `iris/js/history.js` | 浏览历史/收藏数据；长按文件树收藏（pointer + composedPath 穿透 Shadow DOM），最近 5 篇/收藏项的树内提示类切换 |
-| Hover Preview | `iris/js/hover-preview.js` | 站内链接悬浮摘要卡片（fetch + parseFrontmatter + extractExcerpt，内存缓存） |
+| Hover Preview | `iris/js/hover-preview.js` | 站内链接悬浮摘要卡片（fetch + parseFrontmatter + extractExcerpt，内存缓存）；同一张卡片复用于脚注悬浮预览（FOOTNOTE-1，按「href 指向 `.footnotes` 内的 `<li>`」判定，不硬编码 `fn-` 前缀） |
+| Backlinks | `iris/js/backlinks.js` | 文末「被 N 篇引用」+「相关文档」（读 `links.json`，共享标签 × 互链加权，5 条可展开）；虚拟文档不显示 |
+| Figures | `iris/js/figures.js` | 图 / 表自动编号（连续制、跟随界面语言）、`<!-- #fig:x -->` 别名、空链接 `[](#fig:x)` 自动填「图 N」、题注复制锚点 |
 | QR Share | `iris/js/qr-share.js` | 悬浮球「扫码续读」二维码弹窗（外部 API 生成，`?pos=` 参数由 reading-pos.js 消费） |
 | Search | `iris/js/search.js` | FlexSearch 全文索引加载与搜索命令面板 |
 | UI | `iris/js/ui.js` | 全局事件与快捷键路由、搜索命令面板交互 |
@@ -222,6 +224,43 @@ node iris/scripts/build-file-tree.js
 node iris/scripts/build-search-index.js
 ```
 读取 file-tree 中每篇文档正文 → FlexSearch 文档索引 + 正文字段 → `iris/data/search-index.json`。
+
+索引条目除 `path` / `title` / `preview` 外还有一个 `searchText` 字段，由构建期一次性拼好：
+
+- 原文标题 / 标签 / 摘要 / 路径
+- 标题与标签的**繁体形态**（用 `iris/vendor/opencc` 在 Node 下直接转换，查「網絡」能命中「网络」）
+- 标题与标签的**拼音首字母**（查 `wx` 能命中「微信」），每个字段一个独立 token
+
+运行时只把 `searchText` 整串喂给 FlexSearch，不加载任何拼音库或 OpenCC。
+
+### 拼音首字母表
+```
+cd iris && npm install --no-save pinyin-pro   # 仅生成时需要
+node iris/scripts/gen-pinyin-table.js
+```
+产物 `iris/scripts/data/pinyin-initials.json`（约 93KB，9490 字）提交入库，CI 只读不生成。
+字表 = 仓库全部 `.md` 出现过的汉字 ∪ opencc 字典中的汉字；新增生僻字后重跑一次即可。
+
+### links 构建（图谱 / 反向链接）
+```
+node iris/scripts/build-links.js
+```
+扫描仓库根下全部 `.md`（与 file-tree 同一节点集合），抽取站内链接 → `iris/data/links.json`：
+
+```json
+{ "count": { "nodes": 50, "edges": 87 },
+  "nodes": ["README.md", "docs/..."],
+  "links": { "README.md": { "docs/shortcuts.md": 2, "docs/roadmap.md": 3 } } }
+```
+
+- 只保留指向文档集合内的链接；图片、`@[pkt/ensp/pptx]` 嵌入、外链、同文档锚点、自链接都排除
+- 同一目标多次链接合并为权重
+- 解析原语来自 `iris/scripts/lib/md-links.js`（`link-check.js` 也用它，两边口径不会漂移）
+- 消费方：`#/graph` 图谱（`iris/js/renderers/graph.js`）与文末反向链接（`iris/js/backlinks.js`）
+
+`link-check.js` 已额外识别两类运行时生成的锚点，交叉引用不会误报死链：
+图表别名（`#fig:topology` / `#tbl:qos`，来自 `<!-- #fig:x -->` 注释）与数字锚点（`#fig-3` / `#tbl-2`，按文档顺序编号）。
+`lib/md-links.js#extractFigureAnchors` 是 `iris/js/figures.js` 的源码级镜像，改动编号规则时两处需同步。
 
 ### feed 构建
 ```

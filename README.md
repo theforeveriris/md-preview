@@ -75,6 +75,9 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 中文阅读：正文简体 / 繁体一键转换（基于 opencc，代码块与公式不转换）、竖排阅读、中文排版选项（首行缩进 / 标点悬挂 / 中西文间距），设置面板「中文」区块
 - Git 历史与变更订阅：悬浮球「历史与变更」查看当前文档的提交历史与内嵌 diff（GitHub API），可「关注此文档」，有更新时正文顶部提示并一键查看变更
 - 相邻文档预取：空闲时 / 悬停时预取上一篇 / 下一篇，翻页更即时（设置面板「性能」可关闭）
+- 文档图谱：`#/graph` 把全部文档画成可交互图谱（节点=文档、连线=站内链接、颜色=标签、大小=被引用数），支持搜索定位、按标签筛选子图、点击节点直达；孤立文档灰显保留
+- 反向链接与相关文档：文末展示「被 N 篇引用」（无引用时给出空态提示）与「相关文档」（按共享标签 × 互链加权，默认 5 条可展开）
+- 搜索增强：繁简互通（查「網絡」命中「网络」）与拼音首字母匹配（查 `wx` 命中「微信」），均在构建期完成，运行时零新增体积
 
 ### 渲染能力
 
@@ -102,6 +105,8 @@ Demo：https://theforeveriris.github.io/md-preview/
 - OpenAPI 交互文档：`openapi` / `swagger` 代码块（JSON / YAML）渲染接口列表与参数表，每个接口可「试一下」直接发请求
 - 开发者小工具：`regex`（正则测试器）/ `cron`（cron 解释 + 下次运行）/ `time`（时间戳时区对照）/ `color`（色板 + WCAG 对比度）/ `hash`（SHA 哈希）/ `jwt`（JWT 解码）
 - 拼音注音：作者语法 `{汉字|hàn zì}` 渲染为 `<ruby>` 注音
+- 时间线：`timeline` 代码块渲染单列时间线（时间 | 事件 | 备注 | 状态），状态色区分完成 / 进行中 / 风险，计划区间涵盖今天时自动插入「今天」标记线，适合割接计划与故障复盘
+- 图表自动编号与交叉引用：图（Mermaid / PlantUML / ApexCharts / 独立成段图片）与表自动连续编号，题注跟随界面语言；`<!-- #fig:别名 标题 -->` 声明别名，用标准链接 `[](#fig:别名)` 交叉引用（空链接自动填「图 N」），题注可复制锚点
 
 ### 主题与外观
 
@@ -173,6 +178,10 @@ Demo：https://theforeveriris.github.io/md-preview/
 - ✅ 可见即渲染 + 渐进式代码高亮、相邻文档预取、屏外内容跳过布局
 - ✅ Git 历史 / blame 与文档变更订阅
 - ✅ 中文排版 lint（构建期）、自动变更日志页
+- ✅ 文档图谱（`#/graph`）与反向链接 / 相关文档
+- ✅ 搜索增强：繁简互通 + 拼音首字母（构建期）
+- ✅ 图 / 表自动编号与交叉引用
+- ✅ 时间线组件
 - ✅ Cisco IOS / 华为 VRP 配置高亮
 - ✅ 链接悬浮预览
 - ✅ 浏览足迹与收藏（长按收藏 + 文件树内提示）
@@ -217,6 +226,9 @@ node iris/scripts/build-file-tree.js
 
 # 构建搜索索引
 node iris/scripts/build-search-index.js
+
+# 构建文档链接关系（图谱 / 反向链接数据）
+node iris/scripts/build-links.js
 
 # 构建 RSS feed
 node iris/scripts/build-feed.js
@@ -325,6 +337,8 @@ python3 iris/scripts/pptx/main.py
 | `twitter-embed-examples.md` | Twitter 推文嵌入 |
 | `plugin-demo.md` | 插件系统演示 |
 | `devtools-examples.md` | 开发者工具与交互组件（术语表 / HTTP 请求块 / OpenAPI / SQL DDL→ER / 小工具 / 拼音注音 / CSV→图表） |
+| `timeline-examples.md` | 时间线组件（状态色 / 分隔符 / 今日标记线） |
+| `figure-examples.md` | 图 / 表自动编号、别名与交叉引用 |
 
 ## 项目结构
 
@@ -353,7 +367,9 @@ python3 iris/scripts/pptx/main.py
 │   │   ├── settings.js     # 设置面板、配色、字体自定义
 │   │   ├── themes/theme-manager.js  # 主题切换（含 auto 自动主题）
 │   │   ├── markdown.js     # Markdown 渲染 + 图片灯箱
-│   │   ├── renderers/      # 各代码块渲染器（mermaid/pkt/pptx 等）
+│   │   ├── renderers/      # 各代码块渲染器（mermaid/pkt/pptx/graph 等）
+│   │   ├── backlinks.js    # 文末反向链接 + 相关文档（读 links.json）
+│   │   ├── figures.js      # 图 / 表自动编号与交叉引用
 │   │   ├── local-docs.js   # 本地文件/文件夹会话 + 拖拽打开
 │   │   ├── gestures.js     # 移动端手势（滑动翻页 / 边缘呼出侧边栏）
 │   │   ├── storage-manager.js  # 设置面板存储管理区块
@@ -366,6 +382,7 @@ python3 iris/scripts/pptx/main.py
 │   ├── data/               # 预构建数据
 │   │   ├── file-tree.json
 │   │   ├── search-index.json
+│   │   ├── links.json       # 站内链接关系（图谱 / 反向链接共用）
 │   │   ├── feed.xml
 │   │   ├── pkt/ json + images
 │   │   ├── ensp/ json + xml
@@ -373,7 +390,10 @@ python3 iris/scripts/pptx/main.py
 │   └── scripts/            # 构建脚本
 │       ├── build-file-tree.js
 │       ├── build-search-index.js
+│       ├── build-links.js    # 站内链接关系 → links.json
 │       ├── build-feed.js
+│       ├── gen-pinyin-table.js  # 拼音首字母表（一次性生成，产物入库）
+│       ├── lib/md-links.js   # 链接解析原语（与死链检查共用）
 │       ├── pkt/main.py       # PKT 产物生成
 │       ├── ensp/main.py      # eNSP 拓扑 XML → JSON 解析
 │       └── pptx/main.py      # PPTX → PDF → PNG/SVG 转换

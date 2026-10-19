@@ -9,6 +9,9 @@ tags: [规划]
 
 ## 2026-10-19
 
+- `d74e080` feat(batch4): 图 / 表自动编号与交叉引用（SW v8.48） — theforeveriris
+- `94d8f3f` feat(batch1): 设置项搜索 + 脚注悬浮预览 + 时间线组件（SW v8.45） — theforeveriris
+- `a761039` docs: 同步本轮新增功能到 README 特性清单与功能路线图 — theforeveriris
 - `fe6ec47` feat(batch3): OpenAPI 交互文档 + 竖排模式 + Git 历史/变更订阅 + 渐进式代码高亮（SW v8.43） — theforeveriris
 - `8ddc218` feat(batch2): 可见即渲染 + 术语表悬浮 + HTTP 请求块 + 开发者小工具 + 中文排版 lint + 拼音注音（SW v8.42） — theforeveriris
 - `ecabc54` feat(batch1): 相邻文档预取 + 屏外跳过布局 + CSV→图表 + SQL DDL→ER + 正文繁简转换 + 中文排版选项 + 自动变更日志页（SW v8.41） — theforeveriris
@@ -161,4 +164,4 @@ tags: [规划]
 - `b1eecd4` Add multi-level documentation structure with test files — theforeveriris
 - `4a49e3b` Initial commit: Markdown previewer for GitHub Pages — agelaia521
 
-> 共 111 条（最多展示 200 条）。
+> 共 114 条（最多展示 200 条）。

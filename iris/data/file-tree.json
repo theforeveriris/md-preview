@@ -123,6 +123,13 @@
             ]
           },
           {
+            "name": "figure-examples.md",
+            "type": "file",
+            "path": "docs/examples/figure-examples.md",
+            "wordCount": 291,
+            "title": "图表编号与交叉引用示例"
+          },
+          {
             "name": "gallery-layouts.md",
             "type": "file",
             "path": "docs/examples/gallery-layouts.md",
@@ -338,6 +345,17 @@
             ]
           },
           {
+            "name": "timeline-examples.md",
+            "type": "file",
+            "path": "docs/examples/timeline-examples.md",
+            "wordCount": 229,
+            "title": "Timeline 时间线示例",
+            "tags": [
+              "插件",
+              "内容增强"
+            ]
+          },
+          {
             "name": "twitter-embed-examples.md",
             "type": "file",
             "path": "docs/examples/twitter-embed-examples.md",
@@ -348,7 +366,7 @@
             ]
           }
         ],
-        "wordCount": 11898
+        "wordCount": 12418
       },
       {
         "name": "changelog.md",
@@ -415,7 +433,7 @@
         "name": "requirements.md",
         "type": "file",
         "path": "docs/requirements.md",
-        "wordCount": 1393,
+        "wordCount": 1725,
         "title": "需求整理（候选功能）",
         "tags": [
           "规划"
@@ -425,7 +443,7 @@
         "name": "roadmap.md",
         "type": "file",
         "path": "docs/roadmap.md",
-        "wordCount": 808,
+        "wordCount": 1015,
         "title": "功能路线图",
         "tags": [
           "规划"
@@ -475,7 +493,7 @@
         ]
       }
     ],
-    "wordCount": 22825
+    "wordCount": 23884
   },
   {
     "name": "iris",
@@ -509,7 +527,7 @@
     "name": "readme-dev.md",
     "type": "file",
     "path": "readme-dev.md",
-    "wordCount": 1116,
+    "wordCount": 1211,
     "title": "Markdown Preview — 开发者文档",
     "tags": [
       "开发"
@@ -519,7 +537,7 @@
     "name": "README.md",
     "type": "file",
     "path": "README.md",
-    "wordCount": 1084,
+    "wordCount": 1164,
     "title": "Markdown Preview",
     "tags": [
       "入门"

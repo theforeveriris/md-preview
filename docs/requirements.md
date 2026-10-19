@@ -35,6 +35,13 @@ tags: [规划]
 | GIT-1 | 单篇文档历史 / blame | Git 与协作 | P1 | 中 | GitHub API、`diff.js` |
 | GIT-2 | 自动变更日志页 | Git 与协作 | P0 | 小 | `build-sitemap.js` 的 git 用法 |
 | GIT-3 | 文档变更订阅 | Git 与协作 | P2 | 中 | GIT-1、`feed.xml` `lastmod` |
+| NAV-1 | 文档图谱 `#/graph` | 导航与关系 | P1 | 中 | `build-links.js`、Cytoscape.js（已 vendor） |
+| NAV-2 | 反向链接 + 相关文档 | 导航与关系 | P1 | 中 | `links.json`、`hover-preview.js` |
+| SEARCH-1 | 繁简互通 + 拼音首字母 | 搜索 | P1 | 中 | `build-search-index.js`、opencc、静态拼音表 |
+| TYPE-1 | 图 / 表自动编号 + 交叉引用 | 排版 | P1 | 中 | 渲染管线、`section-collapse.js` 的锚点交互 |
+| CONTENT-2 | 时间线组件 | 内容增强 | P0 | 小 | 插件系统 |
+| UI-1 | 脚注悬浮预览 | 阅读体验 | P0 | 小 | `hover-preview.js`、`marked-footnote` |
+| UI-2 | 设置项搜索 | 设置面板 | P0 | 小 | `settings.js`、`floating.css` |
 
 ---
 
@@ -43,6 +50,20 @@ tags: [规划]
 - **批次 1（已完成）**：PERF-4 相邻文档预取、PERF-2 屏外内容跳过布局、DATA-1 CSV→图表联动、TOOL-3 SQL DDL→ER 图、CJK-1 繁简切换、CJK-4 中文排版渲染选项、GIT-2 自动变更日志页。
 - **批次 2（已完成）**：PERF-1 可见即渲染（重型渲染器延迟初始化）、CONTENT-1 术语表悬浮、TOOL-2 `::: http` 实时请求块、TOOL-4 开发者小工具家族（regex / cron / time / color / hash / jwt）、BUILD-1 中文排版 lint、CJK-2 拼音注音（`{汉字|hán zì}`）。
 - **批次 3（已完成）**：PERF-3 长文档渐进渲染（渐进式代码高亮 + 屏外跳过布局）、TOOL-1 OpenAPI 交互文档、CJK-3 竖排模式、GIT-1 单篇历史 / blame、GIT-3 文档变更订阅。
+
+## 候选池：本轮已落地
+
+以下候选需求已实现，说明见 [README 特性清单](../README.md#特性) 与对应示例文档：
+
+| ID | 名称 | 说明 |
+|----|------|------|
+| NAV-1 | 文档图谱 `#/graph` | 节点=文档、边=站内链接、颜色=标签、大小=被引用数；搜索定位 / 标签筛选 / 点击直达 / 孤立节点灰显 |
+| NAV-2 | 反向链接与相关文档 | 文末「被 N 篇引用」+「相关文档」（共享标签 × 互链加权，5 条可展开） |
+| SEARCH-1 | 繁简互通 + 拼音首字母 | 构建期写入 `searchText`，运行时零新增体积 |
+| TYPE-1 | 图 / 表自动编号与交叉引用 | 连续编号、`<!-- #fig:别名 -->`、空链接自动填充、题注可复制锚点 |
+| CONTENT-2 | 时间线组件 | `timeline` 代码块，状态色 + 今日标记线 |
+| UI-1 | 脚注悬浮预览 | 悬停 / 聚焦角标浮出脚注原文 |
+| UI-2 | 设置项搜索 | 行级过滤 + 隐藏空分组 + 唯一命中自动跳转 |
 
 ## 一、性能与阅读体验
 
