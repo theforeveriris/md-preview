@@ -26,6 +26,7 @@ tags: [开发]
 - 按需懒加载机制
 - 笔记本存储（IndexedDB）
 - 构建脚本参考
+- 桌面端（Tauri）
 - 本地调试与常见坑
 - 目录结构速查
 
@@ -337,6 +338,60 @@ python3 iris/scripts/pptx/main.py
 1. raw 目录下发现 ppt/pptx → 导出 PDF → `pdftoppm` 每页导出 PNG/SVG。
 2. 生成 `json/<slug>.json`：`{ title, pages: N, width, height, thumbType }`。
 3. 产物推入仓库，前端渲染器直接读图片 + 元数据。
+
+## 桌面端（Tauri）
+
+站点本身是纯静态的，桌面端只加了一层 Tauri 外壳：同一份 HTML/JS 跑在系统 WebView2 里，离线可用，不需要任何后端。
+
+### 产物
+
+| 产物 | 路径 |
+|------|------|
+| 绿色可执行文件 | `src-tauri/target/release/md-preview.exe` |
+| NSIS 安装包 | `src-tauri/target/release/bundle/nsis/md-preview_<版本>_x64-setup.exe` |
+
+### 构建
+
+```bash
+npm install            # 只装 @tauri-apps/cli
+npm run desktop:dist   # 生成 dist/
+npm run desktop:build  # 编译 + 打包（会先跑 desktop:dist）
+```
+
+前置条件：Rust（MSVC 工具链）与 WebView2（Win10/11 自带）。`npx tauri info` 可一次性体检。
+
+### `desktop:dist` 做了什么（`iris/scripts/build-desktop-dist.js`）
+
+站点没有打包步骤，Tauri 需要的是一个「能直接当站点根」的目录，所以脚本把运行时文件挑进 `dist/`：
+
+- 仓库根文件（跳过隐藏文件与 `package.json` / `package-lock.json`）
+- `docs/` 整目录
+- `iris/` 整目录，剔除 `node_modules`（jsdom 测试依赖）与 `scripts`（构建期工具）
+
+产物约 34 MB。`dist/` 已在 `.gitignore` 里，不提交。
+
+> 不能直接 `fs.cpSync(仓库根, dist)`：Node 会以「不能拷进自己的子目录」报 `ERR_FS_CP_EINVAL`，
+> 所以脚本按「根文件 + 各目录」分组拷贝。
+
+### 桌面端专属的两处改动
+
+1. **禁用 Service Worker**：`index.html` 的 `registerServiceWorker()` 与 `iris/js/offline.js` 的
+   `swSupported()` 都先判 `window.__TAURI_INTERNALS__`。桌面端资源都在包内，SW 的缓存拦截没有意义，
+   而 `navigator.serviceWorker.ready` 在没有注册时会永远挂着。网页版行为不变。
+2. **外链交给系统浏览器**：站点的 `interceptLinks` 明确跳过 `http(s)` 外链，直接点会把整个应用导航走。
+   `src-tauri/bridge/desktop-bridge.js` 在捕获阶段拦下外链、转交 `tauri-plugin-opener`（同时接管
+   `window.open`）；该脚本由 `desktop:dist` 注入到 `dist/index.html`，不参与网页版。
+
+### 图标
+
+`src-tauri/icons/` 由 `npm run desktop:icon` 从 `iris/icons/icon-512.png` 生成，只保留桌面需要的格式
+（android/ios 子目录已删）。换 logo 后重跑一次即可。
+
+### 常见坑
+
+- **构建脚本扫到 `dist/`**：`build-file-tree` / `build-links` / `gen-pinyin-table` / `link-check`
+  的目录排除表都已加入 `dist` 与 `src-tauri`，否则会把站点副本当成源文档。
+- **NSIS 首次打包要联网**：Tauri 会下载 NSIS，装过之后走缓存。
 
 ## 本地调试与常见坑
 

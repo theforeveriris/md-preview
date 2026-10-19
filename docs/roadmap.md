@@ -472,6 +472,7 @@ frontmatter 写 `password: xxx`，WebCrypto 客户端解密，目标是在公开
 | 导航 | 文档图谱 | `#/graph` 沉浸式可交互图谱（入口=Ctrl/⌘+K 命令面板），节点=文档、边=站内链接、颜色=主题强调色深浅、大小=入度；悬停出邻居标签，浮层控件含缩放 / 适配 / 重置 / 全屏；Cytoscape.js 懒加载（`iris/js/renderers/graph.js`） |
 | 导航 | 反向链接与相关文档 | 文末「被 N 篇引用」+「相关文档」，数据来自 `links.json`（`iris/js/backlinks.js`） |
 | 构建 | 链接关系数据 | `iris/scripts/build-links.js` → `iris/data/links.json`，解析原语与死链检查共用 `iris/scripts/lib/md-links.js` |
+| 分发 | 桌面端（Tauri） | 同一份静态站点打包为 Windows exe / NSIS 安装包；桌面端禁用 SW，外链交给系统浏览器（`src-tauri/`） |
 | 搜索 | 繁简互通 + 拼音首字母 | 构建期写入 `searchText`；拼音表由 `gen-pinyin-table.js` 一次性生成并入库 |
 | 排版 | 图 / 表自动编号与交叉引用 | 连续编号、别名注释、空链接自动填充（`iris/js/figures.js`） |
 | 内容 | 时间线组件 | `timeline` 代码块，状态色 + 今日标记线（`iris/plugins/timeline.js`） |

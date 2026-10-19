@@ -433,7 +433,7 @@
         "name": "requirements.md",
         "type": "file",
         "path": "docs/requirements.md",
-        "wordCount": 1725,
+        "wordCount": 1766,
         "title": "需求整理（候选功能）",
         "tags": [
           "规划"
@@ -443,7 +443,7 @@
         "name": "roadmap.md",
         "type": "file",
         "path": "docs/roadmap.md",
-        "wordCount": 1015,
+        "wordCount": 1085,
         "title": "功能路线图",
         "tags": [
           "规划"
@@ -493,7 +493,7 @@
         ]
       }
     ],
-    "wordCount": 23884
+    "wordCount": 23995
   },
   {
     "name": "iris",
@@ -527,7 +527,7 @@
     "name": "readme-dev.md",
     "type": "file",
     "path": "readme-dev.md",
-    "wordCount": 1211,
+    "wordCount": 1232,
     "title": "Markdown Preview — 开发者文档",
     "tags": [
       "开发"
