@@ -1,5 +1,8 @@
-const CACHE_NAME = 'md-preview-v8.48';
-const RUNTIME_CACHE = 'md-preview-runtime-v8.19';
+const CACHE_NAME = 'md-preview-v8.49';
+// 运行时缓存版本必须随发布递增：旧版曾长期停留在 v8.19，导致
+// index.html / JS / CSS 这类静态资源被「缓存优先」永久钉在旧版本
+// （用户看到的是上一版脚本，后台更新完也不会生效）。
+const RUNTIME_CACHE = 'md-preview-runtime-v8.20';
 const PRECACHE_MANIFEST_URL = './iris/data/precache-manifest.json';
 
 // 最小化兜底清单：当 manifest 拉取失败时使用，仅保证核心骨架可离线
@@ -115,10 +118,17 @@ self.addEventListener('activate', event => {
 });
 
 // 资源类型分流策略
-function isStaticAsset(url) {
-  return /\.(css|js|json|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)(\?|$)/.test(url) ||
+// 代码与入口类资源：必须「网络优先」，否则会把用户钉在旧版本上。
+// 覆盖首页、JS、CSS、JSON 数据（file-tree / search-index / links 等）。
+function isCodeAsset(url) {
+  return /\.(js|css|json)(\?|$)/.test(url.pathname) ||
          url.pathname.endsWith('/') ||
          url.pathname.endsWith('index.html');
+}
+
+// 变化不频繁的媒体资源（图片 / 字体 / 图标）：沿用缓存优先，换一点速度
+function isMediaAsset(url) {
+  return /\.(png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)(\?|$)/.test(url.pathname);
 }
 
 function isMarkdownDoc(url) {
@@ -132,8 +142,30 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (url.origin !== location.origin) return;
 
-  // 静态资源：stale-while-revalidate �?先返回缓存（快速），后台更新缓�?
-  if (isStaticAsset(url)) {
+  // 代码 / 入口 / 数据：网络优先（强制绕过 HTTP 缓存校验），失败回退缓存。
+  // 这是防止「用户长期停留在旧版脚本」的关键：stale-while-revalidate 会让
+  // 每次访问都先执行上一版 JS，而后台更新要到下一次访问才生效。
+  if (isCodeAsset(url)) {
+    event.respondWith(
+      fetch(request, { cache: 'no-cache' })
+        .then(response => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(RUNTIME_CACHE).then(cache => cache.put(request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request).then(cached => cached || new Response(
+          '离线模式下无法加载该资源', {
+            status: 503,
+            headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+          })))
+    );
+    return;
+  }
+
+  // 媒体资源：缓存优先 + 后台更新
+  if (isMediaAsset(url)) {
     event.respondWith(
       caches.match(request).then(cached => {
         const fetchPromise = fetch(request).then(response => {
@@ -143,7 +175,6 @@ self.addEventListener('fetch', event => {
           }
           return response;
         }).catch(() => cached);
-        // 有缓存就先返回缓存，同时后台更新；无缓存则等待网�?
         return cached || fetchPromise;
       })
     );

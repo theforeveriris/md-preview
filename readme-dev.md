@@ -200,6 +200,22 @@ tags: [开发]
 - 每个 `loadScriptOnce` 有 Promise 单例缓存，同一脚本不会并发加载两次。
 - 实测首屏 JS 从约 6.8MB → 约 1MB。
 
+### 可见即渲染的三层兜底（`iris/js/md-render.js: scheduleLazy`）
+
+重型渲染器（mermaid / plantuml / apexcharts / diff / csv / json）滚到附近才初始化。
+为避免「内容丢失」，调度器有三层保障，**改动这段逻辑时三层都要保留**：
+
+1. **立即渲染**：观察前先用 `getBoundingClientRect()` 判断，已在视口附近的块同步渲染，首屏不会空；
+2. **IntersectionObserver**：其余块注册观察器，进入 `rootMargin: 400px` 范围即渲染；
+3. **滚动兜底 + 无 IO 兜底**：
+   - `content-visibility: auto` 子树内的元素可能**永远拿不到 intersecting 回调**（Chrome 已知行为），
+     因此滚动 / 缩放时还会按位置补渲染一次；
+   - 若环境完全不派发 IO 回调（1.8s 后 `ioFired` 仍为 false），统一补齐全部待渲染块。
+
+> 注意：不能用「IO 是否回调过」判断是否需要兜底。IO 的**首次回调会带上全部 observe 目标**
+> （未进入视口的 `isIntersecting` 为 `false`），用布尔量会导致兜底永不触发，
+> 表现为图表永久停在源码状态（症状：「mermaid 不渲染」）。要按**逐块**是否已完成来判断。
+
 ## 笔记本存储（IndexedDB）
 
 对应 `iris/js/storage.js`。
@@ -338,6 +354,23 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 
 `sw.js` 顶部 `CACHE_NAME` 手动升级版本号（例如 `v7.1 → v7.2`）会让下次 install 阶段跳过旧缓存，激活时把旧缓存清掉。
 `index.html` 中 SW 注册用 `fetch('sw.js', { cache: 'no-store' })` + `updateViaCache: 'none'` 双保险，确保拿到最新脚本。
+
+**`RUNTIME_CACHE` 也必须随发布一起递增**（不能长期不变）。它保存运行时缓存的
+`index.html` / JS / CSS / `.md`，而 `activate` 只清理「不等于这两个名字」的缓存。
+版本号长期不升会让旧运行时缓存永远存活，配合下面的分流策略就会把用户钉在旧版本上。
+
+#### 资源分流策略（`sw.js: isCodeAsset / isMediaAsset`）
+
+| 类型 | 范围 | 策略 | 原因 |
+|------|------|------|------|
+| 代码 / 入口 / 数据 | `.js` `.css` `.json` `/` `index.html` | **网络优先**（`cache: 'no-cache'`），失败回退缓存 | 保证每次访问都拿到最新脚本；304 协商成本极低 |
+| 媒体 | `.png` `.jpg` `.svg` `.ico` `.woff*` `.ttf` | 缓存优先 + 后台更新 | 体积大、内容稳定，速度优先 |
+| 文档 | `.md` | 网络优先，离线回退缓存 | 保证内容最新 |
+
+> 历史坑：早期所有静态资源统一走 stale-while-revalidate（缓存优先）。结果是
+> 用户每次访问执行的都是**上一版** JS，后台更新即便成功也要「再访问一次」才生效；
+> 叠加 `RUNTIME_CACHE` 版本号不变，问题会长期存在，表现为「代码已修复但线上仍是旧行为」
+> （例如 mermaid 图一直显示源码）。
 
 ### PPT 缩略图点击触发"通用灯箱"
 

@@ -806,21 +806,54 @@
     }
 
     let ioFired = false;
+    // 逐块记录待渲染集合：IO 的首次回调会带上全部 observe 目标（未进入视口时
+    // isIntersecting 为 false），所以不能用「是否回调过」判断是否需要兜底。
+    const remaining = new Set(pending);
+    const flush = (b) => {
+      if (!remaining.has(b)) return;
+      remaining.delete(b);
+      renderOnce(id, renderer, b);
+    };
+
     const io = new IntersectionObserver((entries, obs) => {
       ioFired = true;
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
         obs.unobserve(entry.target);
-        renderOnce(id, renderer, entry.target);
+        flush(entry.target);
       });
     }, { rootMargin: margin + 'px 0px' });
     pending.forEach(b => io.observe(b));
     lazyObservers.push(io);
 
-    // 3) 兜底：若观察器始终未回调（个别环境不派发 IO），统一补齐，保证内容不丢失
+    // 3) 兜底 A：滚动 / 尺寸变化时按位置补渲染。
+    //    content-visibility: auto 子树内的元素可能始终拿不到 intersecting 回调，
+    //    只依赖 IO 会让图表永久停在源码状态（表现为「mermaid 没渲染」）。
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking || !remaining.size) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        remaining.forEach(b => {
+          if (!document.body.contains(b)) { remaining.delete(b); return; }
+          if (nearViewport(b, margin)) { io.unobserve(b); flush(b); }
+        });
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    lazyObservers.push({
+      disconnect() {
+        window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('resize', onScroll);
+      }
+    });
+
+    // 4) 兜底 B：IO 完全未派发回调时（个别环境），统一补齐，保证内容不丢失
     setTimeout(() => {
       if (ioFired) return;
-      pending.forEach(b => renderOnce(id, renderer, b));
+      pending.forEach(b => { io.unobserve(b); flush(b); });
     }, 1800);
   }
 

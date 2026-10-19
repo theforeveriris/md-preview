@@ -14,10 +14,21 @@
 
   // 按需加载 mermaid 并初始化配置
   async function ensureMermaid() {
-    if (typeof mermaid !== 'undefined' && mermaidInitialized) return;
+    if (typeof mermaid !== 'undefined' && mermaidInitialized) return true;
     if (typeof mermaid === 'undefined') {
       console.log('[Mermaid] Library not loaded yet, lazy-loading mermaid.min.js');
-      await window.MarkdownPreview.loadScript('iris/vendor/mermaid.min.js');
+      try {
+        await window.MarkdownPreview.loadScript('iris/vendor/mermaid.min.js');
+      } catch (err) {
+        // 3.5MB 的大文件在弱网 / 缓存损坏时可能首次加载失败。
+        // 换一个带参数 URL 重试一次，绕过可能损坏的缓存条目。
+        console.warn('[Mermaid] 首次加载失败，重试一次:', err && err.message);
+        try {
+          await window.MarkdownPreview.loadScript('iris/vendor/mermaid.min.js?retry=1');
+        } catch (err2) {
+          console.error('[Mermaid] Library load failed after retry:', err2);
+        }
+      }
     }
     if (typeof mermaid === 'undefined') {
       console.error('[Mermaid] Library load failed');
