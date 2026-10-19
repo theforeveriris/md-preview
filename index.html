@@ -90,6 +90,7 @@
     <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
     <symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
     <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></symbol>
+    <symbol id="i-graph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><line x1="10.6" y1="7.2" x2="6.4" y2="15.6"/><line x1="13.4" y1="7.2" x2="17.6" y2="15.6"/></symbol>
   </svg>
   <div class="progress-bar" id="progressBar"></div>
   
@@ -171,6 +172,13 @@
               <path d="M12 4v16"/>
             </svg>
             <span class="menu-item-label" data-i18n="menu.splitView">对照阅读</span>
+          </button>
+          <button class="menu-item-btn" id="openGraphBtn" title="文档图谱" data-i18n-title="graph.menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/>
+              <path d="M10.6 7.2 6.4 15.6M13.4 7.2l4.2 8.4"/>
+            </svg>
+            <span class="menu-item-label" data-i18n="graph.menu">文档图谱</span>
           </button>
           <button class="menu-item-btn" id="snapshotShareBtn" title="快照分享" data-i18n-title="menu.snapshotShare">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -2035,6 +2043,7 @@
   <script defer src="iris/js/cjk.js"></script>
   <script defer src="iris/js/prefetch.js"></script>
   <script defer src="iris/js/git-history.js"></script>
+  <script defer src="iris/js/backlinks.js"></script>
   <script defer src="iris/js/router.js"></script>
   <script defer src="iris/js/zip.js"></script>
   <script defer src="iris/js/export-bundle.js"></script>
@@ -2072,6 +2081,7 @@
   <script defer src="iris/js/renderers/sandbox.js"></script>
   <script defer src="iris/js/renderers/http-request.js"></script>
   <script defer src="iris/js/renderers/openapi.js"></script>
+  <script defer src="iris/js/renderers/graph.js"></script>
   <script defer src="iris/js/renderers/glossary.js"></script>
   <script defer src="iris/js/pulse-generator.js"></script>
 

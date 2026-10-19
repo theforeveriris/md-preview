@@ -398,6 +398,8 @@
     window.MarkdownPreview.cjk?.afterRender?.();
     window.MarkdownPreview.prefetch?.afterRender?.(currentPath);
     window.MarkdownPreview.gitHistory?.afterRender?.(currentPath);
+    // 反向链接与相关文档（LINK-1）：文末区块，数据来自 links.json
+    window.MarkdownPreview.backlinks?.afterRender?.(currentPath);
   }
 
   function renderDocNavigation(currentPath) {

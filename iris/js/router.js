@@ -50,6 +50,14 @@
       return;
     }
 
+    // 虚拟路由：文档图谱 #/graph
+    if (path === 'graph') {
+      if (window.MarkdownPreview.graph && window.MarkdownPreview.graph.openPage) {
+        window.MarkdownPreview.graph.openPage();
+      }
+      return;
+    }
+
     // 虚拟路由：无部署快照分享 #/s?z=<deflate-base64>
     if (path === 's' || path.startsWith('s?')) {
       if (window.MarkdownPreview.snapshot) {

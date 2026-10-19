@@ -57,6 +57,14 @@
     if (window.MarkdownPreview.tags && window.MarkdownPreview.tags.init) {
       window.MarkdownPreview.tags.init();
     }
+    // 反向链接与相关文档（文末区块；语言切换后重渲染）
+    if (window.MarkdownPreview.backlinks && window.MarkdownPreview.backlinks.init) {
+      window.MarkdownPreview.backlinks.init();
+    }
+    // 文档图谱入口（悬浮球菜单「文档图谱」→ #/graph）
+    if (window.MarkdownPreview.graph && window.MarkdownPreview.graph.init) {
+      window.MarkdownPreview.graph.init();
+    }
     // 无部署快照分享（悬浮球入口 + #/s?z= 接收）
     if (window.MarkdownPreview.snapshot && window.MarkdownPreview.snapshot.init) {
       window.MarkdownPreview.snapshot.init();

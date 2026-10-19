@@ -86,6 +86,7 @@ const VENDOR_ALLOWED = [
 const DATA_ALLOWED = [
   'file-tree.json',
   'search-index.json',
+  'links.json',
   'feed.xml',
   'pkt/icons.svg',
 ];

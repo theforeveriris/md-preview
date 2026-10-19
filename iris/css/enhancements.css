@@ -1537,3 +1537,212 @@ body.focus-mode .markdown-body > .focus-current {
   color: var(--color-accent-purple);
   background: var(--color-surface);
 }
+
+/* ===== 文档图谱（GRAPH-1）===== */
+.doc-graph {
+  margin: 1.2em 0;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.doc-graph-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px 10px;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.markdown-body .doc-graph-search {
+  width: 180px;
+  padding: 6px 10px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  outline: none;
+}
+
+.markdown-body .doc-graph-search:focus {
+  border-color: var(--color-accent-purple);
+}
+
+/* 图例单独占一行横向排布：正文宽度有限（默认 720px），标签多时横向滚动，
+   而不是换行后被挤成一条竖列 */
+.markdown-body .doc-graph-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  width: 100%;
+  padding-bottom: 2px;
+  scrollbar-width: thin;
+}
+
+.markdown-body .doc-graph-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: 0 0 auto;
+  padding: 3px 9px;
+  font-family: inherit;
+  font-size: 12px;
+  white-space: nowrap;
+  color: var(--color-text-muted);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+}
+
+.markdown-body .doc-graph-chip:hover { color: var(--color-text); }
+
+.markdown-body .doc-graph-chip.active {
+  color: var(--color-accent-purple-deep);
+  border-color: var(--color-accent-purple);
+  background: color-mix(in srgb, var(--color-accent-purple) 12%, transparent);
+}
+
+.doc-graph-chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.doc-graph-hint {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.doc-graph-note {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.doc-graph-canvas {
+  height: min(70vh, 680px);
+  min-height: 320px;
+  background:
+    radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--color-border) 55%, transparent) 1px, transparent 0)
+    0 0 / 22px 22px;
+  cursor: grab;
+}
+
+.doc-graph-canvas:active { cursor: grabbing; }
+
+.doc-graph-empty {
+  padding: 48px 16px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.doc-graph-tip {
+  position: fixed;
+  z-index: 900;
+  max-width: 280px;
+  padding: 8px 11px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .16);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity .12s, transform .12s;
+}
+
+.doc-graph-tip.open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.doc-graph-tip-title { font-size: 13px; font-weight: 600; }
+.doc-graph-tip-path { font-size: 11.5px; color: var(--color-text-muted); word-break: break-all; }
+.doc-graph-tip-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+.doc-graph-tip-tag {
+  padding: 1px 7px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+}
+.doc-graph-tip-meta { margin-top: 5px; font-size: 11.5px; color: var(--color-accent-purple-deep); }
+
+/* ===== 反向链接与相关文档（LINK-1）===== */
+.doc-backlinks {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px dashed color-mix(in srgb, var(--color-border) 80%, transparent);
+}
+
+.doc-backlinks-block + .doc-backlinks-block {
+  margin-top: 22px;
+}
+
+/* 题注使用 h2 保留无障碍语义，但必须盖过 .markdown-body h2 的正文标题样式 */
+.markdown-body .doc-backlinks-title {
+  margin: 0 0 10px;
+  padding: 0;
+  border: 0;
+  font-family: var(--font-body, sans-serif);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* 正文里的列表/按钮样式优先级高于单类选择器，故统一加 .markdown-body 前缀 */
+.markdown-body .doc-backlinks-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.markdown-body .doc-backlinks-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.doc-related-why {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.doc-backlinks-empty {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.markdown-body .doc-related-more {
+  margin-top: 10px;
+  padding: 5px 12px;
+  font-family: inherit;
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.markdown-body .doc-related-more:hover {
+  color: var(--color-text);
+  border-color: var(--color-accent-purple);
+}

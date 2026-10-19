@@ -547,6 +547,28 @@
     'timeline.today': '今天',
     'timeline.empty': '时间线为空：每行写「时间 | 事件 | 备注 | 状态」',
 
+    // 文档图谱（GRAPH-1）
+    'graph.pageTitle': '文档图谱',
+    'graph.pageDesc': '节点为文档、连线为站内链接，节点越大被引用越多。',
+    'graph.menu': '文档图谱',
+    'graph.search.placeholder': '搜索文档…',
+    'graph.legend': '标签',
+    'graph.hint': '拖拽平移 · 滚轮缩放 · 点击节点跳转',
+    'graph.isolated': '{n} 篇无链接文档已灰显',
+    'graph.degree': '被引用 {n} 篇',
+    'graph.empty': '没有可绘制的文档',
+    'graph.loadFail': '图谱组件加载失败',
+    'cmd.openGraph': '文档图谱',
+
+    // 反向链接与相关文档（LINK-1）
+    'backlinks.title': '反向链接',
+    'backlinks.count': '被 {n} 篇引用',
+    'backlinks.related': '相关文档',
+    'backlinks.sharedTags': '共同标签 {n}',
+    'backlinks.empty': '暂无其他文档引用本文',
+    'backlinks.expand': '显示全部（{n}）',
+    'backlinks.collapse': '收起',
+
     // 竖排 / OpenAPI / Git 历史
     'menu.history': '历史与变更',
     'settings.cjk.vertical': '竖排阅读',
@@ -1062,6 +1084,28 @@
     'http.cors': 'Request failed (possibly CORS or network issue)',
     'timeline.today': 'Today',
     'timeline.empty': 'Empty timeline: write one line per item as "time | event | note | status"',
+
+    // 文档图谱（GRAPH-1）
+    'graph.pageTitle': 'Document graph',
+    'graph.pageDesc': 'Nodes are documents, edges are in-site links; bigger nodes are cited more.',
+    'graph.menu': 'Document graph',
+    'graph.search.placeholder': 'Search documents…',
+    'graph.legend': 'Tags',
+    'graph.hint': 'Drag to pan · scroll to zoom · click a node to open',
+    'graph.isolated': '{n} documents without links are dimmed',
+    'graph.degree': 'Cited by {n}',
+    'graph.empty': 'No documents to draw',
+    'graph.loadFail': 'Failed to load the graph component',
+    'cmd.openGraph': 'Document graph',
+
+    // 反向链接与相关文档（LINK-1）
+    'backlinks.title': 'Backlinks',
+    'backlinks.count': 'Cited by {n}',
+    'backlinks.related': 'Related documents',
+    'backlinks.sharedTags': '{n} shared tags',
+    'backlinks.empty': 'No other document links here yet',
+    'backlinks.expand': 'Show all ({n})',
+    'backlinks.collapse': 'Collapse',
 
     'menu.history': 'History & Changes',
     'settings.cjk.vertical': 'Vertical text',

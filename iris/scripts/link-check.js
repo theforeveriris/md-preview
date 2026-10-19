@@ -127,167 +127,36 @@ function targetExists(rel) {
   return FILES.has(rel) || DIRS.has(rel);
 }
 
-// ============== Markdown 预处理 ==============
-const FRONTMATTER_RE = /^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/;
-const HTML_COMMENT_RE = /<!--[\s\S]*?-->/g;
-const MD_FILE_RE = /\.markdown$|\.md$/i;
-
-// 顶层围栏：闭合符与开启符同字符同长度（反向引用），```` 围栏内的 ``` 文本属于其
-// 正文而非独立围栏（与 marked 分词一致）。标记、info 串、正文分别捕获。
-const TOP_FENCE_RE = /^ {0,3}(`{3,}|~{3,})[ \t]*([^\n]*)\r?\n([\s\S]*?)^ {0,3}\1[ \t\r]*$/gm;
-// 围栏开启前最近一行为本指令时，该围栏内的嵌入校验豁免（用于演示性死链）
-const IGNORE_DIRECTIVE_AT_END_RE = /(?:^|\n)[ \t]*<!--\s*link-check-ignore\s*-->\s*$/;
-
-// 链接提取准备：frontmatter / 顶层围栏 / 行内代码 / HTML 注释全部掩成等长空格
-// （提取索引与原文一一对应，行号才准确），同时收集顶层围栏的语言与正文供嵌入校验
-function prepareScan(md) {
-  const fences = [];
-  const mask = (m) => m.replace(/[^\n]/g, ' ');
-  let out = md.replace(FRONTMATTER_RE, mask);
-  let prevEnd = 0;
-  out = out.replace(TOP_FENCE_RE, (m, marker, info, body, offset) => {
-    fences.push({
-      lang: info.trim().split(/\s+/)[0] || '',
-      body,
-      offset,
-      offsetInMatch: m.indexOf(body),
-      ignored: IGNORE_DIRECTIVE_AT_END_RE.test(md.slice(prevEnd, offset)),
-    });
-    prevEnd = offset + m.length;
-    return mask(m);
-  });
-  out = out.replace(/`[^`\n]+`/g, mask).replace(HTML_COMMENT_RE, mask);
-  return { masked: out, fences };
-}
-
-// 标题提取用：行内代码保留其内容（运行时 heading.textContent 含代码文字）
-function stripForHeadings(md) {
-  let out = md.replace(FRONTMATTER_RE, '');
-  out = out.replace(TOP_FENCE_RE, '');
-  return out.replace(/`([^`\n]+)`/g, '$1').replace(HTML_COMMENT_RE, '');
-}
-
-// 标题行 → 运行时 heading.textContent 的近似（markdown.js:352 以渲染后 DOM 文本生成 id）
-function headingSourceToText(s) {
-  return s
-    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&nbsp;/g, ' ')
-    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')                   // 图片 → alt
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')                    // 链接 → 链接文字
-    .replace(/<[^>]+>/g, '')                                    // 原生 HTML 标签
-    .replace(/\*\*(?=\S)([\s\S]*?\S)\*\*/g, '$1')               // **strong**
-    .replace(/(?<![\w\\])_(?=\S)([^_]*\S)_(?!\w)/g, '$1')       // _em_（词内下划线不是强调）
-    .replace(/\*(?=\S)([^*]*\S)\*/g, '$1')                      // *em*
-    .replace(/~~(?=\S)([\s\S]*?\S)~~/g, '$1')                   // ~~del~~
-    .replace(/`([^`]*)`/g, '$1');                               // `code`
-}
-
-// 与 markdown.js 的 slug 规则逐字一致（markdown.js:354）
-function slugify(text) {
-  return text.toLowerCase().replace(/[^\w\u4e00-\u9fa5]+/g, '-').replace(/^-|-$/g, '');
-}
+// ============== Markdown 预处理与链接提取（公共库） ==============
+// 解析原语统一抽到 iris/scripts/lib/md-links.js，与 build-links.js 共用，避免副本漂移。
+// slugify / headingSourceToText 与运行时 iris/js/markdown.js 的标题 id 规则逐字一致。
+const {
+  MD_FILE_RE, extractHeadingIds, extractRefs, resolveInternal, externalUrlOf,
+  extractFigureAnchors, isFigureAnchor, EMBED_TYPES,
+} = require('./lib/md-links');
 
 const headingIdCache = new Map();
+const figureAnchorCache = new Map();
+
+// 图表锚点集合（源码镜像，见 lib/md-links.js#extractFigureAnchors）
+function getFigureAnchors(relPath) {
+  if (figureAnchorCache.has(relPath)) return figureAnchorCache.get(relPath);
+  let anchors = new Set();
+  try {
+    anchors = extractFigureAnchors(fs.readFileSync(path.join(ROOT, relPath), 'utf-8'));
+  } catch { /* 读不到则视为无图表锚点 */ }
+  figureAnchorCache.set(relPath, anchors);
+  return anchors;
+}
+
 function getHeadingIds(relPath) {
   if (headingIdCache.has(relPath)) return headingIdCache.get(relPath);
-  const ids = new Set();
+  let ids = new Set();
   try {
-    const md = fs.readFileSync(path.join(ROOT, relPath), 'utf-8');
-    const re = /^(#{1,6})[ \t]+(.+?)[ \t]*$/gm;
-    let m;
-    while ((m = re.exec(stripForHeadings(md))) !== null) {
-      ids.add(slugify(headingSourceToText(m[2])));
-    }
+    ids = extractHeadingIds(fs.readFileSync(path.join(ROOT, relPath), 'utf-8'));
   } catch { /* 读不到就当作无锚点，文件缺失已另行上报 */ }
   headingIdCache.set(relPath, ids);
   return ids;
-}
-
-// ============== 链接提取 ==============
-const INLINE_LINK_RE = /(!?)\[([^\]]*)\]\(\s*(?:<([^<>]*)>|([^)\s]*)(?:\s+"[^"]*")?)\s*\)/g;
-const REF_DEF_RE = /^[ \t]{0,3}\[([^\]]+)\]:[ \t]*(?:<([^<>]*)>|(\S+))(?:[ \t]+"[^"]*")?[ \t]*$/gm;
-const AUTOLINK_RE = /<(https?:\/\/[^<>\s]+)>/g;
-
-// type → 产物 json 路径（见 readme-dev「产物存放约定」）
-const EMBED_TYPES = { pkt: 'pkt', ensp: 'ensp', pptx: 'pptx' };
-const EMBED_RE = /@\[(\w+)\]\(([^)\s]+)\)/g;
-
-function extractRefs(md) {
-  const refs = []; // { kind, target, line }
-  const lineAt = (idx) => md.slice(0, idx).split('\n').length;
-  const { masked, fences } = prepareScan(md);
-  const pushEmbed = (embedType, target, line) => {
-    if (EMBED_TYPES[embedType]) refs.push({ kind: '嵌入', embedType, target, line });
-  };
-
-  for (const m of masked.matchAll(INLINE_LINK_RE)) {
-    const target = m[3] != null ? m[3] : m[4];
-    // @[pkt](slug) 嵌入指令不是链接（由嵌入校验单独处理）
-    if (m.index > 0 && masked[m.index - 1] === '@' && m[1] !== '!') continue;
-    refs.push({ kind: m[1] === '!' ? '图片' : '链接', target, line: lineAt(m.index) });
-  }
-  for (const m of masked.matchAll(REF_DEF_RE)) {
-    const target = m[2] != null ? m[2] : m[3];
-    refs.push({ kind: '引用定义', target, line: lineAt(m.index) });
-  }
-  for (const m of masked.matchAll(/<a\b[^>]*?\bhref\s*=\s*(?:"([^"]*)"|'([^']*)')/gi)) {
-    refs.push({ kind: 'HTML 链接', target: m[1] ?? m[2], line: lineAt(m.index) });
-  }
-  for (const m of masked.matchAll(/<img\b[^>]*?\bsrc\s*=\s*(?:"([^"]*)"|'([^']*)')/gi)) {
-    refs.push({ kind: 'HTML 图片', target: m[1] ?? m[2], line: lineAt(m.index) });
-  }
-  for (const m of masked.matchAll(AUTOLINK_RE)) {
-    refs.push({ kind: '自动链接', target: m[1], line: lineAt(m.index) });
-  }
-  // 嵌入指令两种用法都渲染：正文裸写，或顶层 pptx/pkt/ensp 围栏内。
-  // ````markdown 示例围栏里的语法演示不是顶层渲染围栏，不校验。
-  for (const m of masked.matchAll(EMBED_RE)) {
-    pushEmbed(m[1], m[2], lineAt(m.index));
-  }
-  for (const f of fences) {
-    if (f.ignored || !EMBED_TYPES[f.lang]) continue;
-    const bodyStart = f.offset + f.offsetInMatch;
-    for (const m of f.body.matchAll(EMBED_RE)) {
-      pushEmbed(m[1], m[2], lineAt(bodyStart + m.index));
-    }
-  }
-  return refs;
-}
-
-// ============== 内链解析 ==============
-function simplifyPath(p) {
-  const result = [];
-  for (const part of p.split('/')) {
-    if (part === '..') result.pop();
-    else if (part !== '.' && part !== '') result.push(part);
-  }
-  return result.join('/');
-}
-
-// 与运行时 interceptLinks 同语义：相对当前文档目录解析，`/` 开头为站点根
-function resolveInternal(fromMd, raw) {
-  let target = raw.trim();
-  let anchor = '';
-  const hashIdx = target.indexOf('#');
-  if (hashIdx >= 0) { anchor = target.slice(hashIdx + 1); target = target.slice(0, hashIdx); }
-  const qIdx = target.indexOf('?');
-  if (qIdx >= 0) target = target.slice(0, qIdx);
-  if (!target) return { file: '', anchor };
-
-  const dir = path.posix.dirname(fromMd);
-  const resolveOne = (t) => simplifyPath(
-    t.startsWith('/') ? t.replace(/^\/+/, '') : (dir === '.' ? t : `${dir}/${t}`)
-  );
-
-  const resolved = resolveOne(target);
-  // 解码前后任一变体命中即视为存在（仓库内中文文件名在链接里有编码与不编码两种写法）
-  const variants = new Set([target]);
-  try { variants.add(decodeURIComponent(target)); } catch { /* 非法转义序列则保留原样 */ }
-  for (const v of variants) {
-    const f = resolveOne(v);
-    if (targetExists(f)) return { file: f, anchor, exists: true };
-  }
-  return { file: resolved, anchor, exists: false };
 }
 
 // ============== 外链 ==============
@@ -319,12 +188,7 @@ function isOwnSite(url) {
 const EXTERNAL_SKIP_RE = /^https?:\/\/([^/]*\.)?(localhost[:/]|127\.0\.0\.1[:/]|\[::1\]|example\.(com|org|net)|invalid\b)/i;
 
 function isExternal(target) {
-  const t = target.trim();
-  if (/^(https?:)?\/\//.test(t)) {
-    if (/^\/\//.test(t)) return 'https:' + t; // 协议相对，按 https 处理
-    return t;
-  }
-  return null;
+  return externalUrlOf(target);
 }
 
 function hashStr(s) {
@@ -461,8 +325,12 @@ async function main() {
       if (raw.startsWith('#')) { // 同文件锚点
         if (!raw.slice(1)) continue; // `#` 空锚点：回到顶部
         anchorRefs++;
+        const anchor = raw.slice(1);
         const ids = getHeadingIds(file);
-        if (ids.has(raw.slice(1))) { internalOk++; continue; }
+        if (ids.has(anchor)) { internalOk++; continue; }
+        // 图表锚点（#fig:x / #fig-3 / #tbl-2）由运行时 figures.js 生成，源码里没有对应标题：
+        // 交给 extractFigureAnchors 的源码镜像判定，镜像证明存在才算有效
+        if (isFigureAnchor(anchor, getFigureAnchors(file))) { internalOk++; continue; }
         broken.set(`${file}#${raw}`, { file, line: ref.line, kind: ref.kind, target: raw, reason: '同文件锚点未命中任何标题' });
         continue;
       }
@@ -479,13 +347,15 @@ async function main() {
         continue;
       }
 
-      const r = resolveInternal(file, raw);
+      const r = resolveInternal(file, raw, targetExists);
       if (r.exists) {
         internalOk++;
         if (r.anchor && MD_FILE_RE.test(r.file)) {
           anchorRefs++;
           const ids = getHeadingIds(r.file);
-          if (!ids.has(r.anchor)) {
+          // 图表锚点（#fig:x / #fig-3 / #tbl-2）由运行时 figures.js 生成，源码里没有对应标题：
+          // 交给 extractFigureAnchors 的源码镜像判定，镜像证明存在才算有效
+          if (!ids.has(r.anchor) && !isFigureAnchor(r.anchor, getFigureAnchors(r.file))) {
             broken.set(`${file}:${raw}`, { file, line: ref.line, kind: ref.kind, target: raw, reason: `锚点 #${r.anchor} 在 ${r.file} 中未命中任何标题` });
           }
         }

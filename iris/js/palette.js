@@ -149,6 +149,12 @@
         run: cacheAllRun
       },
       {
+        id: 'open-graph',
+        icon: 'i-graph',
+        label: t('cmd.openGraph', '文档图谱'),
+        run: () => { window.location.hash = '#/graph'; }
+      },
+      {
         id: 'open-editor',
         icon: 'i-code',
         label: t('cmd.openEditor', '打开编辑器'),
