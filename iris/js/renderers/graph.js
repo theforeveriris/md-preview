@@ -401,19 +401,9 @@
     md.renderVirtualDoc(`# ${title}\n\n${hint}\n\n\`\`\`graph\n\n\`\`\`\n`, title);
   }
 
-  // 悬浮球菜单入口（与 backToTopBtn / splitViewBtn 同款收回方式：直接移除展开类）
-  function init() {
-    const btn = document.getElementById('openGraphBtn');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-      const menuItems = document.querySelector('.menu-items');
-      const menuTrigger = document.getElementById('menuTrigger');
-      menuItems && menuItems.classList.remove('open');
-      menuTrigger && menuTrigger.classList.remove('active');
-      window.location.hash = '#/graph';
-    });
-  }
+  // 悬浮球菜单入口已移除：图谱只保留命令面板（Ctrl+K）里的「文档图谱」。
+  // #/graph 路由与 ```graph 代码块走 renderer，不依赖这里的初始化。
 
   window.MarkdownPreview.renderers.graph = { render };
-  window.MarkdownPreview.graph = { openPage: openPage, init: init };
+  window.MarkdownPreview.graph = { openPage: openPage };
 })();

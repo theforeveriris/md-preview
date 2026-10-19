@@ -95,7 +95,8 @@ const REQUIRED_IDS = [
   'sidebar', 'fileTree', 'markdownContent', 'readingProgress',
   // 设置面板 + 本次新增区块
   'settingsOverlay', 'mobileGesturesToggle', 'sectionCollapseToggle',
-  'settingsSearch', 'openGraphBtn',
+  'settingsSearch',
+  // 图谱入口已收敛到命令面板，DOM 里不再有 #openGraphBtn
   'settingsExportBtn', 'settingsImportBtn', 'settingsImportInput',
   'storageUsageFill', 'storageUsageText',
   'storageNotebookList', 'storageNotebooksDesc', 'storageNotebooksClearBtn',

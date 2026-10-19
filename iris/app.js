@@ -61,10 +61,6 @@
     if (window.MarkdownPreview.backlinks && window.MarkdownPreview.backlinks.init) {
       window.MarkdownPreview.backlinks.init();
     }
-    // 文档图谱入口（悬浮球菜单「文档图谱」→ #/graph）
-    if (window.MarkdownPreview.graph && window.MarkdownPreview.graph.init) {
-      window.MarkdownPreview.graph.init();
-    }
     // 图 / 表编号（语言切换后刷新题注）
     if (window.MarkdownPreview.figures && window.MarkdownPreview.figures.init) {
       window.MarkdownPreview.figures.init();

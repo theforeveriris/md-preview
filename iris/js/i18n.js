@@ -550,7 +550,6 @@
     // 文档图谱（GRAPH-1）
     'graph.pageTitle': '文档图谱',
     'graph.pageDesc': '节点为文档、连线为站内链接，节点越大被引用越多。',
-    'graph.menu': '文档图谱',
     'graph.search.placeholder': '搜索文档…',
     'graph.legend': '标签',
     'graph.hint': '拖拽平移 · 滚轮缩放 · 点击节点跳转',
@@ -1093,7 +1092,6 @@
     // 文档图谱（GRAPH-1）
     'graph.pageTitle': 'Document graph',
     'graph.pageDesc': 'Nodes are documents, edges are in-site links; bigger nodes are cited more.',
-    'graph.menu': 'Document graph',
     'graph.search.placeholder': 'Search documents…',
     'graph.legend': 'Tags',
     'graph.hint': 'Drag to pan · scroll to zoom · click a node to open',
