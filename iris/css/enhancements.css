@@ -380,6 +380,12 @@
   color: var(--color-accent-purple-deep);
 }
 
+/* 脚注预览卡片：正文已由 .hover-preview-excerpt 截断到 4 行，meta 作为可点击的跳转提示 */
+.hover-preview-card.is-footnote .hover-preview-meta {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .hover-preview-loading {
   font-size: 12.5px;
   color: var(--color-text-muted);
@@ -1427,3 +1433,107 @@ body.focus-mode .markdown-body > .focus-current {
 .git-file-note { padding: 8px 10px; color: var(--color-text-muted); font-size: 12px; }
 .doc-update-banner { display: flex; align-items: center; gap: 10px; margin: 0 0 16px; padding: 8px 14px; border: 1px solid var(--color-accent-purple); border-radius: 10px; background: var(--color-surface); font-size: 13px; }
 .doc-update-banner .doc-update-dismiss { margin-left: auto; background: none; border: 0; cursor: pointer; color: var(--color-text-muted); }
+
+/* ===== 时间线组件（TIMELINE-1）===== */
+.devtool-timeline { padding: 14px 16px 14px 18px; }
+
+.timeline-list {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 2px 0 0 20px;
+}
+
+/* 主轴：淡色竖线 */
+.timeline-list::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: color-mix(in srgb, var(--color-border) 90%, transparent);
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 14px;
+}
+
+.timeline-item:last-child { padding-bottom: 0; }
+
+/* 节点圆点：默认中性，按状态着色 */
+.timeline-dot {
+  position: absolute;
+  left: -19px;
+  top: 5px;
+  box-sizing: border-box;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 2px solid var(--color-text-muted);
+}
+
+.timeline-item.is-done .timeline-dot { border-color: #10B981; }
+.timeline-item.is-doing .timeline-dot {
+  border-color: var(--color-accent-purple);
+  background: color-mix(in srgb, var(--color-accent-purple) 45%, var(--color-surface));
+}
+.timeline-item.is-risk .timeline-dot { border-color: #EF4444; }
+
+.timeline-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.timeline-date {
+  flex: 0 0 auto;
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.timeline-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.timeline-item.is-risk .timeline-title { color: #EF4444; }
+
+.timeline-note {
+  margin-top: 2px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+/* 「今天」标记线：跨过主轴的虚线 + 文字标签 */
+.timeline-today {
+  position: relative;
+  padding: 6px 0 16px;
+}
+
+.timeline-today::after {
+  content: '';
+  position: absolute;
+  left: -20px;
+  right: 0;
+  top: 50%;
+  border-top: 1px dashed var(--color-accent-purple);
+}
+
+.timeline-today-label {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  padding: 0 8px;
+  margin-left: -8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-accent-purple);
+  background: var(--color-surface);
+}

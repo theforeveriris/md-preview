@@ -223,6 +223,12 @@
         <div class="settings-panel">
           <div class="settings-body">
           <nav class="settings-nav" id="settingsNav" aria-label="设置分组">
+            <div class="settings-nav-search">
+              <input type="search" id="settingsSearch" class="settings-search-input"
+                     placeholder="搜索设置…" data-i18n-placeholder="settings.search.placeholder"
+                     aria-label="搜索设置" data-i18n-aria="settings.search.aria">
+              <div class="settings-search-empty" data-i18n="settings.search.empty" hidden>没有匹配的设置项</div>
+            </div>
             <button type="button" class="settings-nav-item active" data-target="sec-language" data-i18n="settings.section.language">语言</button>
             <button type="button" class="settings-nav-item" data-target="sec-appearance" data-i18n="settings.section.appearance">外观</button>
             <button type="button" class="settings-nav-item" data-target="sec-fonts" data-i18n="settings.section.fonts">字体</button>

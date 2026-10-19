@@ -48,6 +48,9 @@
 
     // 设置面板：骨架
     'settings.title': '设置',
+    'settings.search.placeholder': '搜索设置…',
+    'settings.search.aria': '搜索设置',
+    'settings.search.empty': '没有匹配的设置项',
     'settings.section.language': '语言',
     'settings.section.appearance': '外观',
     'settings.section.fonts': '字体',
@@ -199,6 +202,8 @@
     'md.defaultDescription': '一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能',
     'footnote.description': '脚注',
     'footnote.backRef': '返回引用 {0}',
+    'footnote.cardTitle': '脚注',
+    'footnote.jump': '跳转到脚注',
 
     // 动态文案：搜索 / 文件树
     'search.noResults': '没有找到相关文档',
@@ -539,6 +544,8 @@
     'http.sending': '请求中…',
     'http.failed': '请求失败',
     'http.cors': '请求失败（可能是跨域限制或网络问题）',
+    'timeline.today': '今天',
+    'timeline.empty': '时间线为空：每行写「时间 | 事件 | 备注 | 状态」',
 
     // 竖排 / OpenAPI / Git 历史
     'menu.history': '历史与变更',
@@ -581,6 +588,9 @@
     'local.pickFolderDesc': 'Import a whole folder as a tree',
 
     'settings.title': 'Settings',
+    'settings.search.placeholder': 'Search settings…',
+    'settings.search.aria': 'Search settings',
+    'settings.search.empty': 'No matching settings',
     'settings.section.language': 'Language',
     'settings.section.appearance': 'Appearance',
     'settings.section.fonts': 'Fonts',
@@ -722,6 +732,8 @@
     'md.defaultDescription': 'A clean, elegant Markdown preview site with rich rendering support',
     'footnote.description': 'Footnotes',
     'footnote.backRef': 'Back to reference {0}',
+    'footnote.cardTitle': 'Footnote',
+    'footnote.jump': 'Jump to footnote',
 
     'search.noResults': 'No matching documents found',
     'tree.loadFailed': 'Failed to load the file list. Check your network or configure manually',
@@ -1048,6 +1060,8 @@
     'http.sending': 'Requesting…',
     'http.failed': 'Request failed',
     'http.cors': 'Request failed (possibly CORS or network issue)',
+    'timeline.today': 'Today',
+    'timeline.empty': 'Empty timeline: write one line per item as "time | event | note | status"',
 
     'menu.history': 'History & Changes',
     'settings.cjk.vertical': 'Vertical text',

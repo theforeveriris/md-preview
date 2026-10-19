@@ -711,6 +711,9 @@
       document.body.style.overflow = 'hidden';
     }
     setupSettingsNav();
+    // 设置搜索：绑定一次，每次打开重置过滤状态（避免上次筛选残留）
+    bindSettingsSearch();
+    resetSettingsSearch();
     // 每次打开回到顶部，左侧索引同步到第一项
     const content = document.querySelector('#settingsOverlay .settings-content');
     if (content) {
@@ -800,6 +803,93 @@
     clearTimeout(suppressTimer);
     target.scrollIntoView({ block: 'start', behavior: 'smooth' });
     suppressTimer = setTimeout(() => { suppressScrollSync = false; }, 700);
+  }
+
+  // ===== 设置搜索（左栏导航顶部）=====
+  // 过滤粒度：行级（.setting-item）→ 收起整段不命中的 .settings-subsection → 隐藏变空的 .settings-section
+  // 匹配文本：取 .setting-item 的 textContent（已含 label / description / select 选项文本）
+  // 无标准设置行的分区（如「存储」由 storage-manager 动态渲染）退化为整段文本匹配
+  let searchBound = false;
+
+  function bindSettingsSearch() {
+    const input = document.getElementById('settingsSearch');
+    if (!input || searchBound) return;
+    searchBound = true;
+    input.addEventListener('input', () => applySettingsFilter(input.value));
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        input.value = '';
+        applySettingsFilter('');
+      }
+    });
+  }
+
+  function applySettingsFilter(rawQuery) {
+    const body = settingsOverlayBody();
+    const nav = document.getElementById('settingsNav');
+    const emptyHint = nav?.querySelector('.settings-search-empty');
+    if (!body) return;
+
+    const q = String(rawQuery || '').trim().toLowerCase();
+    const sections = Array.from(body.querySelectorAll('.settings-section'));
+
+    sections.forEach(sec => {
+      if (!q) {
+        sec.classList.remove('settings-filtered-out');
+        sec.querySelectorAll('.settings-filtered-out').forEach(el => el.classList.remove('settings-filtered-out'));
+        return;
+      }
+      const items = Array.from(sec.querySelectorAll('.setting-item'));
+      let hit = false;
+      if (items.length) {
+        items.forEach(item => {
+          const isHit = item.textContent.toLowerCase().includes(q);
+          item.classList.toggle('settings-filtered-out', !isHit);
+          if (isHit) hit = true;
+        });
+      } else {
+        hit = sec.textContent.toLowerCase().includes(q);
+      }
+      sec.classList.toggle('settings-filtered-out', !hit);
+
+      // 收起整段均不命中的子分组（主题 / 配色 / 字体 等）
+      sec.querySelectorAll('.settings-subsection').forEach(sub => {
+        const subItems = Array.from(sub.querySelectorAll('.setting-item'));
+        if (!subItems.length) return;
+        const anyHit = subItems.some(i => !i.classList.contains('settings-filtered-out'));
+        sub.classList.toggle('settings-filtered-out', !anyHit);
+      });
+    });
+
+    const visibleIds = sections
+      .filter(sec => !sec.classList.contains('settings-filtered-out'))
+      .map(sec => sec.id);
+
+    // 导航项跟随分区可见性
+    nav?.querySelectorAll('.settings-nav-item').forEach(btn => {
+      btn.classList.toggle('settings-filtered-out', visibleIds.indexOf(btn.dataset.target) === -1);
+    });
+    if (emptyHint) emptyHint.hidden = !(q && visibleIds.length === 0);
+
+    if (!q) return;
+
+    // 唯一命中 → 自动滚动并激活；多命中 → 当前高亮项若被过滤掉则切到第一个可见项
+    if (visibleIds.length === 1) {
+      activateSettingsSection(visibleIds[0]);
+    } else if (visibleIds.length > 1) {
+      const activeBtn = nav?.querySelector('.settings-nav-item.active');
+      if (activeBtn && activeBtn.classList.contains('settings-filtered-out')) {
+        setActiveNav(visibleIds[0]);
+      }
+    }
+  }
+
+  function resetSettingsSearch() {
+    const input = document.getElementById('settingsSearch');
+    if (!input) return;
+    input.value = '';
+    applySettingsFilter('');
   }
 
   function closeSettingsPanel() {

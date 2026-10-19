@@ -95,6 +95,7 @@ const REQUIRED_IDS = [
   'sidebar', 'fileTree', 'markdownContent', 'readingProgress',
   // 设置面板 + 本次新增区块
   'settingsOverlay', 'mobileGesturesToggle', 'sectionCollapseToggle',
+  
   'settingsExportBtn', 'settingsImportBtn', 'settingsImportInput',
   'storageUsageFill', 'storageUsageText',
   'storageNotebookList', 'storageNotebooksDesc', 'storageNotebooksClearBtn',

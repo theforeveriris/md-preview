@@ -302,6 +302,50 @@ body[data-theme="nord"] .menu-trigger {
   font-weight: 600;
 }
 
+/* 设置搜索：导航顶部，滚动时吸附 */
+.settings-nav-search {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  background: color-mix(in srgb, var(--color-text) 3.5%, var(--color-surface));
+  border-bottom: 1px dashed color-mix(in srgb, var(--color-border) 70%, transparent);
+}
+
+.settings-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 7px 10px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-text) 6%, var(--color-surface));
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  transition: box-shadow .15s;
+}
+
+.settings-search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.settings-search-input:focus {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent-purple) 25%, transparent);
+}
+
+.settings-search-empty {
+  padding: 8px 4px 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* 设置搜索过滤：行 / 子分组 / 分区 / 导航项 */
+.settings-filtered-out {
+  display: none !important;
+}
+
 .settings-content {
   min-width: 0;
 }
