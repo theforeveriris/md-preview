@@ -29,6 +29,8 @@ const BRIDGE_REL = 'iris/desktop-bridge.js';
 
 // 仓库根文件里不进包的两项：桌面端自身的 npm 元数据
 const ROOT_FILE_SKIP = new Set(['package.json', 'package-lock.json']);
+// 开发者向文档，不进安装包
+const ROOT_FILE_SKIP_EXTRA = ['ARTWORK.md'];
 // 要整目录收录的顶层目录
 const COPY_DIRS = ['docs', 'iris'];
 // iris/ 下不进包的两项
@@ -61,7 +63,8 @@ function main() {
 
   // 1) 仓库根文件（跳过隐藏文件与桌面端 npm 元数据）
   const rootFiles = fs.readdirSync(ROOT, { withFileTypes: true })
-    .filter((e) => e.isFile() && !e.name.startsWith('.') && !ROOT_FILE_SKIP.has(e.name))
+    .filter((e) => e.isFile() && !e.name.startsWith('.') &&
+      !ROOT_FILE_SKIP.has(e.name) && !ROOT_FILE_SKIP_EXTRA.includes(e.name))
     .map((e) => e.name);
   for (const name of rootFiles) {
     fs.copyFileSync(path.join(ROOT, name), path.join(DIST, name));

@@ -7,6 +7,8 @@ tags: [开发]
 
 面向想贡献代码、扩展功能或进行深度定制的开发者。用户手册请见 [README.md](README.md)。
 
+图像资产（图标 / 分享卡片 / README 横幅）的设计规范见 [ARTWORK.md](ARTWORK.md)。
+
 ## 目录
 
 - 架构概览
@@ -384,8 +386,11 @@ npm run desktop:build  # 编译 + 打包（会先跑 desktop:dist）
 
 ### 图标
 
-`src-tauri/icons/` 由 `npm run desktop:icon` 从 `iris/icons/icon-512.png` 生成，只保留桌面需要的格式
+`src-tauri/icons/` 由 `npm run desktop:icon` 从 `iris/icons/icon.svg`（矢量源）生成，只保留桌面需要的格式
 （android/ios 子目录已删）。换 logo 后重跑一次即可。
+
+站点与 PWA 侧的图标（favicon / PWA / maskable / 分享卡片 / README 横幅）不在这里，
+其设计规范、尺寸清单与生成流程见仓库根目录的 [ARTWORK.md](ARTWORK.md)。
 
 ### 常见坑
 

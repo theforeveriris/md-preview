@@ -5,6 +5,10 @@ tags: [入门]
 
 # Markdown Preview
 
+<div align="center">
+  <img src="./iris/icons/hero.png" alt="Markdown Preview — 简洁优雅的 Markdown 文档预览站点" width="100%">
+</div>
+
 <div class="badge-row">
   <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript"><img src="https://img.shields.io/badge/Made%20with-JavaScript-F7DF1E?logo=javascript&logoColor=black" alt="made-with-javascript"></a>
   <a href="https://developer.mozilla.org/en-US/docs/Web/HTML"><img src="https://img.shields.io/badge/Made%20with-HTML5-E34F26?logo=html5&logoColor=white" alt="made-with-html5"></a>
@@ -426,6 +430,7 @@ python3 iris/scripts/pptx/main.py
 - [插件开发指南](docs/plugin-development.md)
 - [RSS 订阅](docs/rss.md)
 - [开发者文档](readme-dev.md)
+- [美术设计规范](ARTWORK.md)
 
 ## 致谢
 
