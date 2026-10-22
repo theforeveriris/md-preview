@@ -20,12 +20,12 @@ tags: [开发, 设计]
 | 令牌 | 色值 | 用途 |
 |------|------|------|
 | `iris` | `#8B5CF6` | **品牌主色**。图标主体填充色、强调色、描边色 |
-| `iris-deep` | `#6D28D9` | 深色变体。文字强调、图标渐变末端、图表折线 |
-| `iris-light` | `#A78BFA` | 浅色变体。图表柱状图次级填充 |
-| `iris-pale` | `#C4B5FD` | 极浅变体。图表最浅填充、装饰线条 |
+| `iris-deep` | `#6D28D9` | 深色变体。文字强调、图标渐变末端 |
+| `iris-light` | `#A78BFA` | 浅色变体。图标渐变起点 |
+| `iris-pale` | `#C4B5FD` | 极浅变体。装饰线条、辅助图形 |
 | `iris-wash` | `#EDE7FE` | 浅紫底。标签胶囊背景、卡片描边 |
-| `iris-mist` | `#DDD6FE` | 分隔线、坐标轴 |
-| `iris-tint` | `#F3EEFE` | 页面浅紫底（Hero 渐变中段） |
+| `iris-mist` | `#DDD6FE` | 分隔线 |
+| `iris-tint` | `#F3EEFE` | 页面浅紫底（Hero 渐变中段、文档预览底板） |
 | `iris-fade` | `#FAF8FF` | 页面近白底（Hero 渐变起点） |
 | `ink` | `#2B1E4A` | 深紫黑。标题文字 |
 | `ink-soft` | `#3B2E63` | 次级标题 |
@@ -150,9 +150,99 @@ maskable 版采用「紫底 + 白鸢尾」反色方案，避免系统在裁切�
 
 ---
 
-## 四、生成脚本与工作流
+## 四、原图预览
 
-### 4.1 脚本清单
+以下为全部图像资产的原图。浅色背景下透明底图标会显得"消失"，
+因此站点内展示时统一垫一层浅紫底；实际使用场景的底色见 §2.4。
+
+### 4.1 主图标与矢量源
+
+<div align="center" style="background:#F3EEFE;border-radius:12px;padding:18px;margin:1em 0;">
+  <img src="iris/icons/icon.png" alt="鸢尾主图标 1024×1024" width="256">
+</div>
+
+`iris/icons/icon.png`（1024×1024 PNG RGBA，透明底）——高清母版。
+
+<div align="center" style="background:#F3EEFE;border-radius:12px;padding:18px;margin:1em 0;">
+  <img src="iris/icons/icon.svg" alt="鸢尾主图标矢量版" width="180">
+</div>
+
+`iris/icons/icon.svg`（512×512 viewBox）——主矢量源，其余尺寸均由它描摹或裁切而来。
+
+<div align="center" style="background:#F3EEFE;border-radius:12px;padding:18px;margin:1em 0;">
+  <img src="iris/icons/icon-512.png" alt="PWA 512 图标" width="160">
+  <img src="iris/icons/icon-192.png" alt="PWA 192 图标" width="120">
+  <img src="iris/icons/favicon-32.png" alt="favicon 32 图标" width="48">
+</div>
+
+上排依次为 `icon-512.png`（PWA 主图标）、`icon-192.png`（PWA 小图标）、
+`favicon-32.png`（浏览器标签页）。三者同为透明底纯紫鸢尾。
+
+### 4.2 PWA maskable 与 iOS 图标
+
+<div align="center" style="background:#F3EEFE;border-radius:12px;padding:18px;margin:1em 0;">
+  <img src="iris/icons/icon-maskable-512.png" alt="PWA maskable 图标" width="200">
+  <img src="iris/icons/apple-touch-icon.png" alt="apple-touch-icon" width="150">
+</div>
+
+左：`icon-maskable-512.png`（紫底白鸢尾，图形收进中心 62% 安全区）。
+右：`apple-touch-icon.png`（白底紫鸢尾，iOS 不支持透明故铺白底）。
+
+<div align="center" style="background:#F3EEFE;border-radius:12px;padding:18px;margin:1em 0;">
+  <img src="iris/icons/icon-maskable.svg" alt="PWA maskable 矢量版" width="180">
+</div>
+
+`iris/icons/icon-maskable.svg`——maskable 版的矢量源。
+
+### 4.3 素材源图
+
+<div align="center" style="background:#F3EEFE;border-radius:12px;padding:18px;margin:1em 0;">
+  <img src="iris/icons/iris-icon-src2.png" alt="鸢尾图标素材源图（洋红底）" width="256">
+</div>
+
+`iris/icons/iris-icon-src2.png`（1024×1024，洋红底）——图标生成脚本的输入。
+洋红底是刻意选的颜色：`|R−B|` 与紫色主体差异显著，便于一键抠像。
+**该图不参与 PWA 离线缓存**，也不直接对外展示。
+
+### 4.4 README 横幅
+
+<div align="center" style="border-radius:12px;overflow:hidden;margin:1em 0;">
+  <img src="iris/icons/hero.png" alt="README 横幅介绍图" width="100%">
+</div>
+
+`iris/icons/hero.png`（1280×440 PNG RGB）——README 顶部的横幅成品。
+矢量源为 `iris/icons/hero.svg`（同尺寸 viewBox）。左侧是鸢尾图标 + 标题 + 四个能力标签，
+右侧是一张放大的 `.md` 文档插画（鸢尾图形 + `.md` 字样 + 正文占位行 + 能力标签胶囊）。
+
+### 4.5 社交分享卡片
+
+<div align="center" style="border-radius:12px;overflow:hidden;margin:1em 0;">
+  <img src="iris/icons/og-image.png" alt="社交分享卡片" width="100%">
+</div>
+
+`iris/icons/og-image.png`（1200×630 PNG RGB）——Open Graph / Twitter Card 分享图。
+左上角为鸢尾标记，右上角为放大淡紫水印。
+
+### 4.6 桌面端图标
+
+<div align="center" style="background:#F3EEFE;border-radius:12px;padding:18px;margin:1em 0;">
+  <img src="src-tauri/icons/128x128.png" alt="桌面端 128 图标" width="120">
+  <img src="src-tauri/icons/64x64.png" alt="桌面端 64 图标" width="90">
+  <img src="src-tauri/icons/32x32.png" alt="桌面端 32 图标" width="64">
+  <img src="src-tauri/icons/icon.png" alt="桌面端主图标" width="120">
+</div>
+
+依次为 `128x128.png`、`64x64.png`、`32x32.png`、`icon.png`（512×512）。
+均为透明底纯紫鸢尾，由 `tauri icon` 从 `iris/icons/icon.svg` 生成。
+
+`icon.ico` 与 `icon.icns` 为多尺寸容器格式，无法直接以图片预览，
+其内容与上面同源（ICO 内含 16 / 24 / 32 / 48 / 64 / 256 六档）。
+
+---
+
+## 五、生成脚本与工作流
+
+### 5.1 脚本清单
 
 | 脚本 | 语言 | 作用 |
 |------|------|------|
@@ -162,7 +252,7 @@ maskable 版采用「紫底 + 白鸢尾」反色方案，避免系统在裁切�
 
 依赖：`pip install pillow cairosvg`。`cairosvg` 需要系统有 Cairo 库（Windows 可用 `pip install cairosvg` 自带的二进制轮子）。
 
-### 4.2 重新生成
+### 5.2 重新生成
 
 ```bash
 # 1) 全套站点图标（含 SVG 描摹）
@@ -180,7 +270,7 @@ npm run desktop:icon
 
 `npm run desktop:icon` 会额外产出 `android/` 与 `ios/` 目录，本项目只发布 Windows，**可安全删除**。
 
-### 4.3 重新绘制鸢尾图形
+### 5.3 重新绘制鸢尾图形
 
 鸢尾剪影的 6 条 path 位于 `iris/icons/icon.svg` 与 `iris/icons/hero.svg` 中，两处需保持一致。
 
@@ -191,7 +281,7 @@ npm run desktop:icon
 3. 重新执行上述四条命令
 4. 同步 `dist/`：`npm run desktop:dist`
 
-### 4.4 SVG 描摹原理
+### 5.4 SVG 描摹原理
 
 `make-iris-icon.py` 生成矢量图标时：
 
@@ -202,7 +292,7 @@ npm run desktop:icon
 
 早期版本用「绕质心极角排序」提取边界，会在花瓣间的凹角产生锯齿伪影；Moore 跟踪可正确保持轮廓顺序。
 
-### 4.5 抠像阈值说明
+### 5.5 抠像阈值说明
 
 素材源底色为洋红 `R≈220, G≈80, B≈233`，主体为紫 `R≈135, G≈45, B≈233`。两者 `|R-B|` 差异显著：
 
@@ -214,7 +304,7 @@ npm run desktop:icon
 
 ---
 
-## 五、接入点清单
+## 六、接入点清单
 
 改动图标时需同步检查以下位置：
 
@@ -228,7 +318,7 @@ npm run desktop:icon
 
 ---
 
-## 六、命名约定
+## 七、命名约定
 
 | 前缀 / 后缀 | 含义 |
 |-------------|------|
@@ -244,7 +334,7 @@ npm run desktop:icon
 
 ---
 
-## 七、待办与已知问题
+## 八、待办与已知问题
 
 - [ ] 站点主题强调色仍是旧的粉紫 `#d4a5c9`（`iris/css/base.css` 的 `--color-accent-purple`），与鸢尾紫 `#8B5CF6` 未统一。该变量被 Mermaid、郊狼波形、分享卡片、文档图谱等渲染器引用，改动需回归测试
 - [ ] `hero.svg` 与 `icon.svg` 中的鸢尾 path 目前是两处独立副本，未做单一来源同步

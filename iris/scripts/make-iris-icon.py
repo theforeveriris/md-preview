@@ -207,14 +207,17 @@ def main() -> None:
     save_svg(os.path.join(ICON_DIR, "icon.svg"), build_svg(mask))
 
     # 4) maskable：紫底 + 白鸢尾，图形缩进安全区
-    maskable_alpha = mask.resize((512, 512), Image.LANCZOS)
+    #    注意：putalpha 会替换整张图的 alpha 通道，不能用它来"挖"出白鸢尾——
+    #    那样会把紫底一并变透明。正确做法是铺不透明紫底，再用白色鸢尾按遮罩合成。
     inner = int(512 * MASKABLE_SCALE)
     scaled = mask.resize((inner, inner), Image.LANCZOS)
     white_mask = Image.new("L", (512, 512), 0)
     white_mask.paste(scaled, ((512 - inner) // 2, (512 - inner) // 2))
 
     maskable = Image.new("RGBA", (512, 512), PURPLE + (255,))
-    maskable.putalpha(white_mask)
+    white_iris = Image.new("RGBA", (512, 512), (255, 255, 255, 0))
+    white_iris.putalpha(white_mask)
+    maskable.alpha_composite(white_iris)
     save_png(maskable, os.path.join(ICON_DIR, "icon-maskable-512.png"))
 
     # maskable 矢量：紫底矩形 + 白色鸢尾（带安全区内缩）
