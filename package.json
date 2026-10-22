@@ -5,7 +5,7 @@
   "description": "md-preview 的桌面端外壳（Tauri）：把纯静态站点打包成 Windows 可执行文件",
   "scripts": {
     "desktop:dist": "node iris/scripts/build-desktop-dist.js",
-    "desktop:icon": "tauri icon iris/icons/icon-512.png",
+    "desktop:icon": "tauri icon iris/icons/icon.svg",
     "desktop:dev": "npm run desktop:dist && tauri dev",
     "desktop:build": "npm run desktop:dist && tauri build"
   },

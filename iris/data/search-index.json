@@ -2,8 +2,8 @@
   {
     "path": "docs/changelog.md",
     "title": "变更日志",
-    "preview": "变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-19 - fe6ec47 feat(batch3): OpenAPI 交互文档 + 竖排模式 + Git 历史/变更订阅 + 渐进式代码高亮（SW v8.43） — theforeveriris - 8ddc218 feat(batch2): 可见即渲染 ",
-    "searchText": "变更日志 规划 变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-19 - fe6ec47 feat(batch3): OpenAPI 交互文档 + 竖排模式 + Git 历史/变更订阅 + 渐进式代码高亮（SW v8.43） — theforeveriris - 8ddc218 feat(batch2): 可见即渲染  docs/changelog.md 變更日誌 規劃 bgrz gh",
+    "preview": "变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-19 - d74e080 feat(batch4): 图 / 表自动编号与交叉引用（SW v8.48） — theforeveriris - 94d8f3f feat(batch1): 设置项搜索 + 脚注悬浮预览 + 时间线组件（SW v8.45） — ",
+    "searchText": "变更日志 规划 变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-19 - d74e080 feat(batch4): 图 / 表自动编号与交叉引用（SW v8.48） — theforeveriris - 94d8f3f feat(batch1): 设置项搜索 + 脚注悬浮预览 + 时间线组件（SW v8.45） —  docs/changelog.md 變更日誌 規劃 bgrz gh",
     "tags": [
       "规划"
     ]
@@ -139,6 +139,12 @@
       "网络",
       "拓扑"
     ]
+  },
+  {
+    "path": "docs/examples/figure-examples.md",
+    "title": "图表编号与交叉引用示例",
+    "preview": "--- title: 图表编号与交叉引用示例 tags: [内容增强] --- 图表编号与交叉引用示例 正文里的图与表会自动编号（图 1、图 2、表 1…），无需手写序号。编号跟随界面语言，切到 English 会变成 Figure 1 / Table 1。 自动编号 先看一张 Mermaid 图： 再看一张表： | 设备 | 型号 | 角色 | |------|------|------| | ",
+    "searchText": "图表编号与交叉引用示例 --- title: 图表编号与交叉引用示例 tags: [内容增强] --- 图表编号与交叉引用示例 正文里的图与表会自动编号（图 1、图 2、表 1…），无需手写序号。编号跟随界面语言，切到 English 会变成 Figure 1 / Table 1。 自动编号 先看一张 Mermaid 图： 再看一张表： | 设备 | 型号 | 角色 | |------|------|------| |  docs/examples/figure-examples.md 圖表編號與交叉引用示例 tbbhyjcyysl"
   },
   {
     "path": "docs/examples/gallery-layouts.md",

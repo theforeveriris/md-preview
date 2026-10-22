@@ -7,7 +7,7 @@
   "display": "standalone",
   "display_override": ["standalone", "fullscreen", "minimal-ui"],
   "background_color": "#ffffff",
-  "theme_color": "#d4a5c9",
+  "theme_color": "#8B5CF6",
   "orientation": "any",
   "categories": ["productivity", "utilities"],
   "shortcuts": [
@@ -34,6 +34,12 @@
     }
   ],
   "icons": [
+    {
+      "src": "iris/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
     {
       "src": "iris/icons/icon-192.png",
       "sizes": "192x192",

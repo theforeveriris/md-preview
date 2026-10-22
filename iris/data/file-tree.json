@@ -524,10 +524,21 @@
     "wordCount": 166
   },
   {
+    "name": "ARTWORK.md",
+    "type": "file",
+    "path": "ARTWORK.md",
+    "wordCount": 1204,
+    "title": "美术设计规范",
+    "tags": [
+      "开发",
+      "设计"
+    ]
+  },
+  {
     "name": "readme-dev.md",
     "type": "file",
     "path": "readme-dev.md",
-    "wordCount": 1245,
+    "wordCount": 1265,
     "title": "Markdown Preview — 开发者文档",
     "tags": [
       "开发"
@@ -537,7 +548,7 @@
     "name": "README.md",
     "type": "file",
     "path": "README.md",
-    "wordCount": 1164,
+    "wordCount": 1184,
     "title": "Markdown Preview",
     "tags": [
       "入门"
