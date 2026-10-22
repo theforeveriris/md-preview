@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-19T09:01:06.407Z",
+  "generatedAt": "2026-10-22T15:48:32.502Z",
   "version": 1,
-  "count": 106,
+  "count": 109,
   "urls": [
     "./",
     "./index.html",
@@ -29,10 +29,13 @@
     "./iris/data/search-index.json",
     "./iris/icons/apple-touch-icon.png",
     "./iris/icons/favicon-32.png",
+    "./iris/icons/hero.png",
+    "./iris/icons/hero.svg",
     "./iris/icons/icon-192.png",
     "./iris/icons/icon-512.png",
     "./iris/icons/icon-maskable-512.png",
     "./iris/icons/icon-maskable.svg",
+    "./iris/icons/icon.png",
     "./iris/icons/icon.svg",
     "./iris/icons/og-image.png",
     "./iris/js/backlinks.js",

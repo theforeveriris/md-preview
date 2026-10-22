@@ -67,6 +67,8 @@ const EXCLUDE_FILES = new Set([
   'mermaid.min.js',
   'apexcharts.min.js',
   'pako.min.js',
+  // 图标生成脚本的素材源图（736KB），仅供本地重新生成图标用，不进离线缓存
+  'iris-icon-src2.png',
 ]);
 
 // vendor 下只允许以下子目录/文件
