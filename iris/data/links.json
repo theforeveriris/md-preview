@@ -1,0 +1,185 @@
+{
+  "generatedAt": "2026-10-22T16:22:46.328Z",
+  "count": {
+    "nodes": 51,
+    "edges": 91
+  },
+  "nodes": [
+    "ARTWORK.md",
+    "README.md",
+    "docs/changelog.md",
+    "docs/code-highlight-theme.md",
+    "docs/configuration.md",
+    "docs/editor.md",
+    "docs/examples/apexcharts-examples.md",
+    "docs/examples/basic-usage.md",
+    "docs/examples/code-tabs-examples.md",
+    "docs/examples/colorcard-examples.md",
+    "docs/examples/columns-examples.md",
+    "docs/examples/countdown-examples.md",
+    "docs/examples/csv-examples.md",
+    "docs/examples/devtools-examples.md",
+    "docs/examples/diff-examples.md",
+    "docs/examples/embed-examples.md",
+    "docs/examples/ensp-examples.md",
+    "docs/examples/figure-examples.md",
+    "docs/examples/gallery-layouts.md",
+    "docs/examples/geojson-examples.md",
+    "docs/examples/github-alerts-examples.md",
+    "docs/examples/image-gallery-examples.md",
+    "docs/examples/ios-vrp-examples.md",
+    "docs/examples/latex-examples.md",
+    "docs/examples/live-preview-examples.md",
+    "docs/examples/markdown-syntax.md",
+    "docs/examples/mermaid-examples.md",
+    "docs/examples/native-html-examples.md",
+    "docs/examples/pkt-examples.md",
+    "docs/examples/pkt-huawei-vrp-解析示例.md",
+    "docs/examples/plantuml-examples.md",
+    "docs/examples/plugin-demo.md",
+    "docs/examples/pptx-examples.md",
+    "docs/examples/pulse-examples.md",
+    "docs/examples/pulse-generator-page.md",
+    "docs/examples/qrcode-examples.md",
+    "docs/examples/spoiler-examples.md",
+    "docs/examples/table-examples.md",
+    "docs/examples/theme-demo.md",
+    "docs/examples/timeline-examples.md",
+    "docs/examples/twitter-embed-examples.md",
+    "docs/getting-started.md",
+    "docs/plugin-development.md",
+    "docs/requirements.md",
+    "docs/roadmap.md",
+    "docs/rss.md",
+    "docs/shortcuts.md",
+    "docs/show.md",
+    "docs/theme-customization.md",
+    "iris/scripts/pkt/README.md",
+    "readme-dev.md"
+  ],
+  "links": {
+    "ARTWORK.md": {
+      "docs/theme-customization.md": 1,
+      "docs/show.md": 1
+    },
+    "README.md": {
+      "docs/shortcuts.md": 2,
+      "docs/roadmap.md": 3,
+      "docs/configuration.md": 2,
+      "docs/getting-started.md": 1,
+      "docs/show.md": 1,
+      "docs/editor.md": 1,
+      "docs/theme-customization.md": 1,
+      "docs/code-highlight-theme.md": 1,
+      "docs/plugin-development.md": 1,
+      "docs/rss.md": 1,
+      "readme-dev.md": 1,
+      "ARTWORK.md": 1
+    },
+    "docs/configuration.md": {
+      "docs/theme-customization.md": 1,
+      "docs/code-highlight-theme.md": 1,
+      "docs/shortcuts.md": 1,
+      "docs/rss.md": 1
+    },
+    "docs/editor.md": {
+      "docs/examples/gallery-layouts.md": 2,
+      "docs/examples/image-gallery-examples.md": 1,
+      "readme-dev.md": 2,
+      "docs/getting-started.md": 1,
+      "docs/show.md": 1,
+      "docs/examples/mermaid-examples.md": 1,
+      "docs/examples/latex-examples.md": 1
+    },
+    "docs/examples/gallery-layouts.md": {
+      "docs/examples/image-gallery-examples.md": 1
+    },
+    "docs/examples/markdown-syntax.md": {
+      "docs/getting-started.md": 1
+    },
+    "docs/examples/pkt-examples.md": {
+      "docs/examples/pkt-huawei-vrp-解析示例.md": 1
+    },
+    "docs/examples/pulse-examples.md": {
+      "docs/examples/pulse-generator-page.md": 1
+    },
+    "docs/examples/pulse-generator-page.md": {
+      "docs/examples/pulse-examples.md": 4,
+      "docs/editor.md": 1,
+      "docs/plugin-development.md": 1
+    },
+    "docs/getting-started.md": {
+      "docs/configuration.md": 1,
+      "docs/theme-customization.md": 1,
+      "docs/code-highlight-theme.md": 1,
+      "docs/shortcuts.md": 1,
+      "docs/editor.md": 1,
+      "docs/rss.md": 1,
+      "docs/roadmap.md": 1,
+      "docs/plugin-development.md": 1,
+      "docs/show.md": 1
+    },
+    "docs/requirements.md": {
+      "docs/roadmap.md": 1,
+      "README.md": 1
+    },
+    "docs/roadmap.md": {
+      "README.md": 3,
+      "readme-dev.md": 2,
+      "docs/examples/csv-examples.md": 1,
+      "docs/examples/ios-vrp-examples.md": 1,
+      "docs/examples/devtools-examples.md": 1,
+      "docs/show.md": 1
+    },
+    "docs/shortcuts.md": {
+      "docs/editor.md": 1
+    },
+    "docs/show.md": {
+      "docs/getting-started.md": 1,
+      "docs/examples/basic-usage.md": 2,
+      "docs/examples/markdown-syntax.md": 2,
+      "docs/examples/latex-examples.md": 2,
+      "docs/examples/mermaid-examples.md": 2,
+      "docs/examples/plantuml-examples.md": 2,
+      "docs/examples/apexcharts-examples.md": 2,
+      "docs/examples/diff-examples.md": 2,
+      "docs/examples/github-alerts-examples.md": 2,
+      "docs/examples/columns-examples.md": 2,
+      "docs/examples/code-tabs-examples.md": 2,
+      "docs/examples/table-examples.md": 2,
+      "docs/examples/spoiler-examples.md": 2,
+      "docs/examples/gallery-layouts.md": 2,
+      "docs/examples/image-gallery-examples.md": 2,
+      "docs/examples/qrcode-examples.md": 2,
+      "docs/plugin-development.md": 3,
+      "docs/examples/countdown-examples.md": 2,
+      "docs/examples/colorcard-examples.md": 2,
+      "docs/examples/embed-examples.md": 2,
+      "docs/examples/twitter-embed-examples.md": 3,
+      "docs/examples/pptx-examples.md": 2,
+      "docs/examples/pulse-examples.md": 4,
+      "docs/examples/pkt-examples.md": 2,
+      "docs/examples/ensp-examples.md": 2,
+      "docs/theme-customization.md": 2,
+      "docs/code-highlight-theme.md": 1,
+      "docs/rss.md": 1,
+      "docs/editor.md": 1,
+      "docs/examples/pulse-generator-page.md": 2,
+      "docs/shortcuts.md": 2,
+      "docs/configuration.md": 4,
+      "docs/examples/theme-demo.md": 1,
+      "docs/examples/native-html-examples.md": 1,
+      "docs/examples/geojson-examples.md": 1,
+      "docs/examples/pkt-huawei-vrp-解析示例.md": 1,
+      "docs/examples/plugin-demo.md": 1
+    },
+    "docs/theme-customization.md": {
+      "docs/code-highlight-theme.md": 1
+    },
+    "readme-dev.md": {
+      "README.md": 1,
+      "ARTWORK.md": 2,
+      "docs/plugin-development.md": 1
+    }
+  }
+}

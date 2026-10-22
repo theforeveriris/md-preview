@@ -1,0 +1,120 @@
+# 第三方许可证声明 (THIRD-PARTY LICENSES)
+
+本项目使用了以下开源项目。各项目保留其原始版权和许可证，此处仅作声明。
+
+## 核心引擎
+
+### marked
+- **版本**: 18.0.5
+- **许可证**: MIT
+- **版权**: Copyright (c) 2018-2026, MarkedJS. Copyright (c) 2011-2018, Christopher Jeffrey.
+- **来源**: https://github.com/markedjs/marked
+
+### highlight.js
+- **版本**: 11.9.0
+- **许可证**: BSD-3-Clause
+- **版权**: Copyright (c) 2006-2023, Ivan Sagalaev and other contributors
+- **来源**: https://github.com/highlightjs/highlight.js
+
+### FlexSearch
+- **版本**: 0.7.31
+- **许可证**: Apache-2.0
+- **版权**: Copyright 2018-2022 Nextapps GmbH
+- **来源**: https://github.com/nextapps-de/flexsearch
+
+## 图表与可视化
+
+### Mermaid
+- **版本**: 11.16.0
+- **许可证**: MIT
+- **版权**: Copyright (c) 2014-2026 Knut Sveidqvist
+- **来源**: https://github.com/mermaid-js/mermaid
+- **注意**: Mermaid 打包了 DOMPurify (Apache-2.0 OR MPL-2.0)、lodash-es (MIT)、js-yaml (MIT)
+
+### ApexCharts
+- **版本**: 5.16.0
+- **许可证**: MIT
+- **版权**: Copyright (c) 2018-2026 ApexCharts
+- **来源**: https://github.com/apexcharts/apexcharts.js
+
+### KaTeX
+- **版本**: 0.16.10
+- **许可证**: MIT (代码) / OFL-1.1 (字体)
+- **版权**: Copyright (c) 2014-2026 Khan Academy
+- **来源**: https://github.com/KaTeX/KaTeX
+- **注意**: KaTeX 字体文件 (60个 .ttf/.woff/.woff2) 采用 SIL Open Font License 1.1
+
+### Diff2Html
+- **版本**: 3.4.47
+- **许可证**: MIT
+- **版权**: Copyright (c) 2014-2026 Rodrigo Fernandes
+- **来源**: https://github.com/rtfpessoa/diff2html
+
+### Cytoscape.js
+- **版本**: 3.x
+- **许可证**: MIT
+- **版权**: Copyright (c) 2016-2023, The Cytoscape Consortium
+- **来源**: https://github.com/cytoscape/cytoscape.js
+
+## 地图
+
+### Leaflet
+- **版本**: 1.9.4
+- **许可证**: BSD-2-Clause
+- **版权**: Copyright (c) 2010-2023, Vladimir Agafonkin. Copyright (c) 2010-2011, CloudMade.
+- **来源**: https://github.com/Leaflet/Leaflet
+
+### OpenStreetMap
+- **数据许可**: Open Data Commons Open Database License (ODbL)
+- **来源**: https://www.openstreetmap.org
+
+## 工具库
+
+### pako
+- **版本**: 2.1.0
+- **许可证**: MIT AND Zlib
+- **版权**: Copyright (c) 2014-2026, Vitaly Puzrin and Andrei Tuputcyn
+- **来源**: https://github.com/nodeca/pako
+
+### sharp (构建工具)
+- **许可证**: Apache-2.0
+- **版权**: Copyright (c) 2014-2026, Lovell Fuller
+- **来源**: https://github.com/lovell/sharp
+- **注意**: 仅在构建时使用，不包含在运行时产物中
+
+## 图标资源
+
+### VMware Clarity Icons
+- **许可证**: MIT
+- **版权**: Copyright (c) VMware, Inc.
+- **来源**: https://github.com/vmware-archive/clarity-assets
+
+### Tabler Icons
+- **许可证**: MIT
+- **版权**: Copyright (c) 2020-2026 Pawel Kuna
+- **来源**: https://github.com/tabler/tabler-icons
+
+### Geist UI Icons
+- **许可证**: MIT
+- **版权**: Copyright (c) 2020-2026 Vercel, Inc.
+- **来源**: https://github.com/vercel/geist-ui
+
+## 字体
+
+### Cormorant Garamond
+- **许可证**: SIL Open Font License 1.1
+- **设计**: Christian Thalmann
+- **来源**: https://fonts.google.com/specimen/Cormorant+Garamond
+
+### IBM Plex Sans
+- **许可证**: SIL Open Font License 1.1
+- **设计**: IBM
+- **来源**: https://fonts.google.com/specimen/IBM+Plex+Sans
+
+---
+
+## 许可证说明
+
+本项目源代码采用 [GNU AGPL-3.0](./LICENSE) 许可证。
+文档内容采用 [CC-BY-SA-4.0](https://creativecommons.org/licenses/by-sa/4.0/) 许可证。
+上述第三方项目保留各自原始许可证。

@@ -1,0 +1,70 @@
+/* find-bar - 文章内查找条（find-bar.js） */
+.find-bar {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-56px);
+  z-index: 1400;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .16);
+  transition: transform .18s ease, opacity .18s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+.find-bar.open {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.find-bar-icon { color: var(--color-text-muted); flex: none; }
+#findBarInput {
+  width: 260px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 14px;
+}
+.find-bar-count {
+  min-width: 60px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+.find-bar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.find-bar-btn:hover { background: rgba(128, 128, 128, .12); color: var(--color-text); }
+
+/* 正文内命中高亮 */
+.markdown-body mark.find-hit {
+  background: rgba(255, 208, 0, .42);
+  color: inherit;
+  padding: 0;
+}
+.markdown-body mark.find-hit.current {
+  background: rgba(255, 145, 0, .6);
+  outline: 2px solid rgba(255, 145, 0, .85);
+}
+
+@media (max-width: 768px) {
+  .find-bar { top: 8px; width: calc(100% - 24px); justify-content: center; }
+  #findBarInput { width: 150px; }
+}

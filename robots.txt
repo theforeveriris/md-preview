@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://theforeveriris.github.io/md-preview/iris/data/sitemap.xml
