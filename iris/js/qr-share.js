@@ -50,6 +50,7 @@
         <button type="button" class="qr-share-close" aria-label="${t('common.close', '关闭')}">✕</button>
         <div class="qr-share-title">${t('qr.title', '扫码续读')}</div>
         <div class="qr-share-img-wrap"><img class="qr-share-img" alt="QR Code"></div>
+        <div class="qr-share-hint" style="padding:8px 16px 0;font-size:12px;color:var(--color-text-muted);text-align:center">${t('qr.lanHint', '提示：本地 / 局域网地址生成的二维码仅本机可扫，跨设备请使用部署后的公网地址')}</div>
       </div>
     `;
     document.body.appendChild(dialogEl);

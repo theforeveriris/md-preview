@@ -602,6 +602,7 @@
     'history.notFound': '未找到该文档的提交（可能是新文件或私有仓库）。',
     'history.failed': '加载失败：',
     'history.binary': '（无文本 diff）',
+    'qr.lanHint': '提示：本地 / 局域网地址生成的二维码仅本机可扫，跨设备请使用部署后的公网地址',
     // 编辑器（editor.js 分批迁移：toast/confirm 文案）
     'editor.needRunThisCell': '请先运行此 Cell',
     'editor.needRunCurrentCell': '请先运行当前 Cell',

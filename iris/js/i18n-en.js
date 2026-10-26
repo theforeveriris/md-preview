@@ -559,6 +559,7 @@
     'history.notFound': 'No commits found for this document (new file or private repo).',
     'history.failed': 'Load failed: ',
     'history.binary': '(no textual diff)',
+    'qr.lanHint': 'Note: QR codes generated for localhost / LAN URLs only scan on this machine; use the deployed public URL across devices',
     // Editor (editor.js batch migration: toast/confirm copy)
     'editor.needRunThisCell': 'Run this cell first',
     'editor.needRunCurrentCell': 'Run the current cell first',
