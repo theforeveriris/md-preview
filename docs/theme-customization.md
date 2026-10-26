@@ -111,7 +111,7 @@ Markdown Preview 提供三种层级的外观定制方式，由易到难：
   --color-text-muted: #999999;
   
   /* 主题色 */
-  --color-accent-purple: #d4a5c9;
+  --color-accent-purple: #8B5CF6;
   --color-accent-pink: #f2c4ce;
   --color-accent-purple-deep: #b88aad;
   

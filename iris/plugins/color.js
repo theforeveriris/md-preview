@@ -1,6 +1,6 @@
 // 色板 / 对比度检查插件（TOOL-4）
 // ```color
-// #d4a5c9
+// #8B5CF6
 // #1f2937
 // rgb(139, 92, 246)
 // ```
@@ -16,7 +16,7 @@ export default {
 
     const items = lines.map(parseColor).filter(Boolean);
     if (!items.length) {
-      container.innerHTML = '<div class="devtool-error">请提供颜色：十六进制（#d4a5c9）或 rgb(139, 92, 246)</div>';
+      container.innerHTML = '<div class="devtool-error">请提供颜色：十六进制（#8B5CF6）或 rgb(139, 92, 246)</div>';
       return;
     }
 

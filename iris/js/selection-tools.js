@@ -251,7 +251,7 @@
     const bg = cssVar('--color-bg', '#fafafa');
     const surface = cssVar('--color-surface', '#ffffff');
     const border = cssVar('--color-border', '#f0f0f0');
-    const accent1 = cssVar('--color-accent-purple', '#d4a5c9');
+    const accent1 = cssVar('--color-accent-purple', '#8B5CF6');
     const accent2 = cssVar('--color-accent-pink', '#f2c4ce');
 
     ctx.fillStyle = opts.dark ? '#1e1e28' : bg;
@@ -274,7 +274,7 @@
 
   function drawFooter(ctx, W, H, dark) {
     const muted = dark ? 'rgba(235,235,245,.55)' : cssVar('--color-text-muted', '#999999');
-    const accent1 = cssVar('--color-accent-purple', '#d4a5c9');
+    const accent1 = cssVar('--color-accent-purple', '#8B5CF6');
     const accent2 = cssVar('--color-accent-pink', '#f2c4ce');
     const bodyFont = cardFont(false);
     const repo = (window.MarkdownPreview.CONFIG && window.MarkdownPreview.CONFIG.repo) ||
@@ -300,7 +300,7 @@
   // 引言模板（横版 1200×630 / 竖版 1200×1600 共用一套排版）
   function drawQuoteCard(ctx, W, H, content) {
     const text = cssVar('--color-text', '#2d2d2d');
-    const accent1 = cssVar('--color-accent-purple', '#d4a5c9');
+    const accent1 = cssVar('--color-accent-purple', '#8B5CF6');
     const vertical = H > W;
     const bodyFont = cardFont(true);
     const titleSize = vertical ? 56 : 46;
@@ -392,7 +392,7 @@
     drawCardFrame(ctx, W, H, {});
     const text = cssVar('--color-text', '#2d2d2d');
     const muted = cssVar('--color-text-muted', '#999999');
-    const accent1 = cssVar('--color-accent-purple', '#d4a5c9');
+    const accent1 = cssVar('--color-accent-purple', '#8B5CF6');
     const bodyFont = cardFont(false);
 
     const rows = [...tableEl.rows].map(tr => [...tr.cells].map(td => td.textContent.replace(/\s+/g, ' ').trim()));

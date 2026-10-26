@@ -1,3 +1,7 @@
+<!--
+  icon.svg — 鸢尾图形与 icon.svg 中的同名 path 为逐字副本（历史双源）。
+  修改任一侧的 path 必须同步另一侧，否则冒烟测试（check-icon-sync）失败。
+-->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 440" width="1280" height="440">
   <defs>
     <linearGradient id="heroBg" x1="0" y1="0" x2="1" y2="1">

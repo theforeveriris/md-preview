@@ -38,10 +38,10 @@ console.log({ name: 'md-preview', stars: 42 });
 
 ```css live
 main { max-width: 320px; margin: 0 auto; }
-h1 { color: #b88aad; border-bottom: 2px dashed #d4a5c9; }
-button { background: #d4a5c9; color: #fff; border: none; border-radius: 999px; padding: 6px 18px; }
+h1 { color: #b88aad; border-bottom: 2px dashed #8B5CF6; }
+button { background: #8B5CF6; color: #fff; border: none; border-radius: 999px; padding: 6px 18px; }
 li:hover { color: #b88aad; }
-.__box { background: linear-gradient(135deg, #d4a5c9, #f2c4ce); }
+.__box { background: linear-gradient(135deg, #8B5CF6, #f2c4ce); }
 ```
 
 ## JSON 可折叠树

@@ -388,7 +388,7 @@
       return window.MarkdownPreview.ColorUtils.getThemeVar(name, fallback);
     };
     return {
-      accent: var_('--color-accent-purple', '#d4a5c9'),
+      accent: var_('--color-accent-purple', '#8B5CF6'),
       accentDeep: var_('--color-accent-purple-deep', '#b88aad'),
       accentPink: var_('--color-accent-pink', '#f2c4ce'),
       surface: var_('--color-surface', '#ffffff'),
@@ -1367,14 +1367,14 @@
     // 主题色帧外缓存一次（RAF 内每帧 4 次 getComputedStyle 会强制重算样式），
     // themechange 时刷新
     var themeColors = {
-      accent: getComputedStyle(document.documentElement).getPropertyValue('--color-accent-purple').trim() || '#d4a5c9',
+      accent: getComputedStyle(document.documentElement).getPropertyValue('--color-accent-purple').trim() || '#8B5CF6',
       accentPink: getComputedStyle(document.documentElement).getPropertyValue('--color-accent-pink').trim() || '#f2c4ce',
       border: getComputedStyle(document.documentElement).getPropertyValue('--color-border').trim() || '#f0f0f0',
       bg: getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim() || '#ffffff'
     };
     var onMiniThemeChange = function() {
       var cs = getComputedStyle(document.documentElement);
-      themeColors.accent = cs.getPropertyValue('--color-accent-purple').trim() || '#d4a5c9';
+      themeColors.accent = cs.getPropertyValue('--color-accent-purple').trim() || '#8B5CF6';
       themeColors.accentPink = cs.getPropertyValue('--color-accent-pink').trim() || '#f2c4ce';
       themeColors.border = cs.getPropertyValue('--color-border').trim() || '#f0f0f0';
       themeColors.bg = cs.getPropertyValue('--color-surface').trim() || '#ffffff';

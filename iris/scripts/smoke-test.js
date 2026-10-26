@@ -373,6 +373,7 @@ function main() {
   }
   checkDataFiles();
   checkFileTreeSort();
+  checkIconSync();
 
   console.log('');
   if (failures > 0) {
@@ -380,6 +381,21 @@ function main() {
     process.exit(1);
   }
   console.log('✓ 冒烟测试全部通过');
+}
+
+// [6] 图标源一致性：icon.svg 的鸢尾 path 必须与 hero.svg 逐字一致（历史双源漂移门禁）
+function checkIconSync() {
+  console.log('\n[6/6] 图标源一致性');
+  try {
+    const { execFileSync } = require('child_process');
+    const out = execFileSync(process.execPath, [path.join(__dirname, 'check-icon-sync.js')], {
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'pipe']
+    });
+    pass(out.trim().split('\n').pop().replace('[check-icon-sync] OK: ', ''));
+  } catch (e) {
+    fail('icon.svg 与 hero.svg 的鸢尾图形副本已漂移：' + String(e.stderr || e.message).trim().split('\n')[0]);
+  }
 }
 
 main();

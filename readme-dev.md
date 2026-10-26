@@ -426,7 +426,7 @@ node iris/scripts/build-sitemap.js
 node iris/scripts/smoke-test.js        # 需先在 iris/ 下安装 jsdom
 npm install --no-save jsdom@^29.1.1 --prefix iris   # 只装冒烟测试依赖
 ```
-`iris/scripts/smoke-test.js` 做 5 组快速校验：① 全部第一方 JS 用 `vm.Script` 语法解析；② jsdom 解析 index.html，校验关键骨架节点与脚本/样式引用真实存在；③ 隔离沙箱加载 i18n.js，校验 `data-i18n*` key 在 zh/en 语言包齐全（含双语键集一致）；④ 数据产物完好（file-tree / search-index / precache 清单引用 / feed 全文标记 / sitemap / robots.txt），并断言 search-index 的拼音/繁体 token 覆盖；⑤ 文件树自然排序回归。CI 中先跑全部构建脚本再跑冒烟（见 `smoke-test.yml`）。
+`iris/scripts/smoke-test.js` 做 6 组快速校验：① 全部第一方 JS 用 `vm.Script` 语法解析；② jsdom 解析 index.html，校验关键骨架节点与脚本/样式引用真实存在；③ 隔离沙箱加载 i18n.js，校验 `data-i18n*` key 在 zh/en 语言包齐全（含双语键集一致）；④ 数据产物完好（file-tree / search-index / precache 清单引用 / feed 全文标记 / sitemap / robots.txt），并断言 search-index 的拼音/繁体 token 覆盖；⑤ 文件树自然排序回归；⑥ 图标源一致性（icon.svg 与 hero.svg 的鸢尾 path 逐字一致，check-icon-sync.js 门禁）。CI 中先跑全部构建脚本再跑冒烟（见 `smoke-test.yml`）。
 
 ### 死链检查
 

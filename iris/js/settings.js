@@ -50,7 +50,7 @@
 
   // 主题色默认值（与 base.css :root 保持一致）
   const defaultColors = {
-    '--color-accent-purple': '#d4a5c9',
+    '--color-accent-purple': '#8B5CF6',
     '--color-accent-pink': '#f2c4ce',
     '--color-accent-purple-deep': '#b88aad',
     '--color-glow': 'rgba(255, 255, 255, 0.8)',

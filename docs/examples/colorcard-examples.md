@@ -44,12 +44,12 @@ tags: [插件, 排版]
 
 ````markdown
 ```colorcard
-#d4a5c9, #f2c4ce, #b88aad, #6b5b73
+#8B5CF6, #f2c4ce, #b88aad, #6b5b73
 ```
 ````
 
 ```colorcard
-#d4a5c9, #f2c4ce, #b88aad, #6b5b73
+#8B5CF6, #f2c4ce, #b88aad, #6b5b73
 ```
 
 ### 3. 带色名
@@ -58,7 +58,7 @@ tags: [插件, 排版]
 
 ````markdown
 ```colorcard
-主色: #d4a5c9
+主色: #8B5CF6
 粉色: #f2c4ce
 深色: #b88aad
 中性: #6b5b73
@@ -66,7 +66,7 @@ tags: [插件, 排版]
 ````
 
 ```colorcard
-主色: #d4a5c9
+主色: #8B5CF6
 粉色: #f2c4ce
 深色: #b88aad
 中性: #6b5b73
@@ -117,7 +117,7 @@ hsl(35, 90%, 55%)
 ````markdown
 ```colorcard
 [
-  { "name": "Brand",     "color": "#d4a5c9" },
+  { "name": "Brand",     "color": "#8B5CF6" },
   { "name": "Accent",    "color": "#f2c4ce" },
   { "name": "Deep",      "color": "#b88aad" },
   { "name": "Neutral",   "color": "#6b5b73" }
@@ -127,7 +127,7 @@ hsl(35, 90%, 55%)
 
 ```colorcard
 [
-  { "name": "Brand",     "color": "#d4a5c9" },
+  { "name": "Brand",     "color": "#8B5CF6" },
   { "name": "Accent",    "color": "#f2c4ce" },
   { "name": "Deep",      "color": "#b88aad" },
   { "name": "Neutral",   "color": "#6b5b73" }
@@ -158,7 +158,7 @@ hsl(35, 90%, 55%)
 
 每张色卡都可以点击复制：
 
-- 默认复制 **十六进制** 值（如 `#D4A5C9`）
+- 默认复制 **十六进制** 值（如 `#8B5CF6`）
 - 鼠标悬停时右上角显示「点击复制」提示
 - 复制成功时卡片上覆盖短暂 Toast，显示复制的值
 - 在不安全的上下文（HTTP / 拒绝权限）下，自动回退到 `execCommand('copy')`

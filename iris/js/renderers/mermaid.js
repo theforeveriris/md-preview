@@ -41,15 +41,15 @@
         securityLevel: 'strict',
         theme: 'base',
         themeVariables: {
-          primaryColor: '#d4a5c9',
+          primaryColor: '#8B5CF6',
           primaryTextColor: '#333333',
-          primaryBorderColor: '#d4a5c9',
+          primaryBorderColor: '#8B5CF6',
           lineColor: '#888888',
           secondaryColor: '#f2c4ce',
           tertiaryColor: '#f8f8f8',
           background: '#ffffff',
           mainBkg: '#ffffff',
-          nodeBorder: '#d4a5c9',
+          nodeBorder: '#8B5CF6',
           clusterBkg: '#f8f8f8',
           titleColor: '#333333',
           edgeLabelBackground: '#ffffff'
