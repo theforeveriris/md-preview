@@ -150,6 +150,8 @@
     } catch (e) {
       console.error('Failed to save settings:', e);
     }
+    // 本页内的设置快照缓存（prefetch/gestures 等高频路径）失效
+    document.dispatchEvent(new CustomEvent('mdpreview:settingschanged'));
     // 多标签页同步：设置变化广播给其他标签页（sync-tabs.js）
     if (window.MarkdownPreview.syncTabs) {
       window.MarkdownPreview.syncTabs.post({ type: 'settings', settings });
@@ -428,12 +430,21 @@
     const contentFullWidthToggle = document.getElementById('contentFullWidthToggle');
     const resetContentWidthBtn = document.getElementById('resetContentWidthBtn');
 
+    // input 只改 CSS 变量保证跟手；saveSettings（JSON 序列化 + localStorage
+    // 写入 + BroadcastChannel 广播）合并到 change/停顿
+    let contentWidthSaveTimer = null;
     contentWidthRange?.addEventListener('input', (e) => {
-      const settings = loadSettings();
-      settings.contentWidth = normalizeContentWidth(e.target.value);
-      saveSettings(settings);
-      applyContentWidthSettings(settings);
-      syncContentWidthControls(settings);
+      const width = normalizeContentWidth(e.target.value);
+      document.documentElement.style.setProperty('--content-width', width + 'px');
+      document.body.classList.remove('content-full-width');
+      if (contentWidthSaveTimer) clearTimeout(contentWidthSaveTimer);
+      contentWidthSaveTimer = setTimeout(() => {
+        contentWidthSaveTimer = null;
+        const settings = loadSettings();
+        settings.contentWidth = width;
+        saveSettings(settings);
+        syncContentWidthControls(settings);
+      }, 300);
     });
 
     contentFullWidthToggle?.addEventListener('change', (e) => {
@@ -716,11 +727,23 @@
       el.addEventListener('blur', commit);
     });
 
-    // 字号 / 字重：变化即实时保存
+    // 字号滑杆：input 实时改 CSS 变量（跟手），持久化合并到停顿/change
+    //（updateFont 每 input 事件都做 JSON 序列化 + localStorage 写 + 广播）
+    let fontSaveTimer = null;
     ['fontSizeBody', 'fontSizeMd', 'fontSizeH1', 'fontSizeH2', 'fontSizeH3'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
-      el.addEventListener('input', () => updateFont({ [id]: el.value }));
+      el.addEventListener('input', () => {
+        const pxMap = { fontSizeBody: '--font-size-body', fontSizeMd: '--font-size-md',
+          fontSizeH1: '--font-size-h1', fontSizeH2: '--font-size-h2', fontSizeH3: '--font-size-h3' };
+        const prop = pxMap[id];
+        if (prop) document.documentElement.style.setProperty(prop, el.value + 'px');
+        if (fontSaveTimer) clearTimeout(fontSaveTimer);
+        fontSaveTimer = setTimeout(() => {
+          fontSaveTimer = null;
+          updateFont({ [id]: el.value });
+        }, 300);
+      });
     });
     ['fontWeightBody', 'fontWeightMd', 'fontWeightDisplay',
      'fontWeightH1', 'fontWeightH2', 'fontWeightH3'].forEach(id => {

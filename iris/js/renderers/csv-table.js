@@ -34,6 +34,10 @@
   }
 
   // ============== 解析（RFC 4180 引号规则；tsv 按制表符） ==============
+  // 行数上限：万行级 CSV 全量建 DOM 会卡死渲染线程（json-tree 已有
+  // 256KB/5000 节点封顶可参照），超限截断并在计数条提示
+  const MAX_ROWS = 5000;
+
   function parseDelimited(text, delim) {
     const rows = [];
     let row = [];
@@ -63,8 +67,10 @@
     }
     // 末行（无换行结尾）
     if (field !== '' || row.length > 0) { row.push(field); rows.push(row); }
-    // 去掉完全为空的行
-    return rows.filter(r => r.some(cell => String(cell).trim() !== ''));
+    // 去掉完全为空的行，并截断到上限
+    return rows
+      .filter(r => r.some(cell => String(cell).trim() !== ''))
+      .slice(0, MAX_ROWS);
   }
 
   function parseCsv(text) { return parseDelimited(text, ','); }
@@ -212,10 +218,12 @@
       renderBody();
     });
 
-    // 搜索
+    // 搜索：100ms 防抖（find-bar.js 同款），避免每键全量重建 tbody
+    let searchDebounce = null;
     widget.querySelector('.csv-search-input').addEventListener('input', (e) => {
       state.q = e.target.value;
-      renderBody();
+      if (searchDebounce) clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(renderBody, 100);
     });
 
     // 复制 / 下载 CSV（保留原文）

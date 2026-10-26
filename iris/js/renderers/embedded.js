@@ -176,8 +176,15 @@
       }
       
       if (embedCode) {
+        // widgets.js 按需注入：只有文档真的含 twitter 嵌入才加载第三方脚本
         setTimeout(() => {
-          if (typeof twttr !== 'undefined' && twttr.widgets) {
+          if (typeof twttr === 'undefined') {
+            window.MarkdownPreview.loadScript('https://platform.twitter.com/widgets.js')
+              .then(() => { if (typeof twttr !== 'undefined' && twttr.widgets) twttr.widgets.load(); })
+              .catch(e => console.error('[embedded] twitter widgets.js load failed:', e));
+            return;
+          }
+          if (twttr.widgets) {
             twttr.widgets.load();
           } else {
             const checkTwitter = setInterval(() => {

@@ -18,14 +18,25 @@
   const warmed = new Set();
   let idleHandle = null;
 
+  // mouseover 每秒可触发数十次：读缓存快照而非每次 getItem+JSON.parse；
+  // 设置变化（含跨标签页同步）时由 mdpreview:settingschanged 失效
+  let cachedEnabled = null;
+  function invalidateEnabledCache() { cachedEnabled = null; }
+  document.addEventListener('mdpreview:settingschanged', invalidateEnabledCache);
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'md-preview-settings') invalidateEnabledCache();
+  });
+
   function enabled() {
+    if (cachedEnabled !== null) return cachedEnabled;
     const s = window.MarkdownPreview.settings;
     try {
       const cfg = s && typeof s.load === 'function' ? s.load() : null;
-      return !cfg || cfg.prefetchAdjacent !== false;
+      cachedEnabled = !cfg || cfg.prefetchAdjacent !== false;
     } catch (e) {
-      return true;
+      cachedEnabled = true;
     }
+    return cachedEnabled;
   }
 
   function currentPath() {

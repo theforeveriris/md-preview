@@ -750,6 +750,7 @@
     cellData.statusDot.classList.remove('modified');
     cellData.statusDot.classList.add('run');
     cellData.lastRunContent = cellData.textarea.value;
+    cellData._outputHtmlCache = undefined; // 输出已变化，序列化缓存失效
   }
 
   // ============== Markdown 渲染（共享渲染逻辑） ==============
@@ -765,21 +766,36 @@
     mdRender.initSliders(outputElement);
     mdRender.highlightCodeBlocks(outputElement);
 
-    setTimeout(() => {
-      try {
-        const renderers = window.MarkdownPreview?.renderers;
-        if (renderers) {
-          // 统一调度器（md-render.js: runRenderers）：子集与既有行为一致——
-          // mermaid/apexcharts/diff/katex/plantuml/embedded，顺序按注册表插入序。
-          // katex 自 461a8e5（行内 LaTeX 修复）起就应在 cell 内渲染，此前遗漏。
-          const subset = ['mermaid', 'plantuml', 'apexcharts', 'diff', 'katex', 'embedded'];
-          // 传入 outputElement 让渲染器在 cell 容器内处理（resolveRoot 会优先用 root）
-          mdRender.runRenderers(outputElement, { only: subset });
-        }
-      } catch (e) { console.warn('[Editor] Plugin render error:', e); }
-    }, 200);
+    // 渲染器批量调度：runAllCells 时 N 个 cell 各自 setTimeout 会叠 N 批，
+    // 收集 roots 合并为一次 200ms 调度
+    scheduleCellRenderers(outputElement);
 
     outputElement.classList.add('visible');
+  }
+
+  // cell 渲染器批量调度器（子集常量来自 mdRender.CELL_RENDERER_SUBSET，
+  // 与 split-view.js 共用，消除两处硬编码漂移）
+  let pendingRendererRoots = [];
+  let rendererScheduleTimer = null;
+  function scheduleCellRenderers(outputElement) {
+    if (outputElement) pendingRendererRoots.push(outputElement);
+    if (rendererScheduleTimer) return;
+    rendererScheduleTimer = setTimeout(() => {
+      rendererScheduleTimer = null;
+      const roots = pendingRendererRoots;
+      pendingRendererRoots = [];
+      const subset = mdRender.CELL_RENDERER_SUBSET;
+      roots.forEach(root => {
+        try {
+          Promise.resolve(mdRender.runRenderers(root, { only: subset })).then(() => {
+            root._outputHtmlCache = undefined; // 渲染器改动过输出，缓存失效
+          });
+        } catch (e) {
+          root._outputHtmlCache = undefined;
+          console.warn('[Editor] Plugin render error:', e);
+        }
+      });
+    }, 200);
   }
 
   // ============== 运行 Cell ==============
@@ -1411,6 +1427,25 @@
     const runCount = cells.filter(c => c.output.classList.contains('visible')).length;
     if (statusRunStats) statusRunStats.textContent = `运行 ${runCount}/${cells.length}`;
 
+    // 光标位置（CM6 原生行列 API，开销小，立即更新保证跟手）
+    const cell = getActiveCell();
+    if (cell) {
+      const cursor = cell.editor.getCursorPos();
+      statusCursor.textContent = `行 ${cursor.line}, 列 ${cursor.col}`;
+    }
+
+    // 字数与行数（两个正则全文扫描 × 全部 Cell）：300ms 防抖。
+    // 此函数在每个按键的 input/keyup/click 里都会触发，长文档同步算必卡
+    if (!statusStatsTimer) {
+      statusStatsTimer = setTimeout(() => {
+        statusStatsTimer = null;
+        computeStatusStats();
+      }, 300);
+    }
+  }
+
+  let statusStatsTimer = null;
+  function computeStatusStats() {
     // 字数与行数（全部 Cell 汇总）
     let totalWords = 0;
     let totalLines = 0;
@@ -1428,13 +1463,6 @@
       statusCurCellWords.textContent = `当前 ${countWords(activeCell.textarea.value)} 字`;
     } else if (statusCurCellWords) {
       statusCurCellWords.textContent = '当前 0 字';
-    }
-
-    // 光标位置（使用 CM6 原生行列 API）
-    const cell = getActiveCell();
-    if (cell) {
-      const cursor = cell.editor.getCursorPos();
-      statusCursor.textContent = `行 ${cursor.line}, 列 ${cursor.col}`;
     }
   }
 
@@ -2242,7 +2270,12 @@
         id: c.id,
         type: c.type || 'markdown',
         content: c.textarea.value,
-        output_html: c.output.classList.contains('visible') ? c.output.innerHTML : ''
+        // output_html 序列化缓存：打字触发的 1.5s 自动保存不再全量重读
+        // 每个 cell 的 output DOM（含 base64 图/mermaid SVG 的 innerHTML
+        // 序列化是最大头）；markRun / 渲染器跑完时失效重建
+        output_html: c.output.classList.contains('visible')
+          ? (c._outputHtmlCache !== undefined ? c._outputHtmlCache : (c._outputHtmlCache = c.output.innerHTML))
+          : ''
       }))
     };
   }
@@ -2579,7 +2612,12 @@
     else openSearchPanel();
   });
   if (searchInput) {
-    searchInput.addEventListener('input', doSearch);
+    // 150ms 防抖（与文档站查找条 find-bar.js 对齐）：每次按键全量扫所有 cell
+    let searchDebounce = null;
+    searchInput.addEventListener('input', () => {
+      if (searchDebounce) clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(doSearch, 150);
+    });
     searchInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.preventDefault(); e.shiftKey ? searchNavigate(-1) : searchNavigate(1); }
     });

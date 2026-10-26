@@ -44,6 +44,7 @@
       if (rect.top > line) break;
       current = block;
     }
+    if (!current) return; // 中线在首个块之前：无需改高亮
     for (const block of blocks) {
       block.classList.toggle('focus-current', block === current);
     }

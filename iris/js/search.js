@@ -64,10 +64,23 @@
     }
   }
 
+  let buildPromise = null;
+
   async function buildIndex() {
-    const indexData = await loadSearchIndex();
-    initSearchIndex(indexData);
-    return indexData.length;
+    // 幂等 + 并发去重：file-tree 加载/首搜/命令面板同时触发只 fetch+建一次
+    //（此前 init 无守卫 + file-tree 500ms 后再建，56KB 索引至少拉两次）
+    if (isIndexLoaded) return documents.length;
+    if (!buildPromise) {
+      buildPromise = loadSearchIndex().then(indexData => {
+        initSearchIndex(indexData);
+        buildPromise = null;
+        return indexData.length;
+      }).catch(e => {
+        buildPromise = null;
+        throw e;
+      });
+    }
+    return buildPromise;
   }
 
   async function ensureIndexLoaded() {
@@ -311,7 +324,12 @@
 
   function init() {
     setupSearchEvents();
-    buildIndex();
+    // 首建延迟到真正使用（搜索框聚焦/输入、命令面板打开）：
+    // 56KB search-index.json + FlexSearch 全量重建不再占用首屏主线程
+    if (dom.searchInput) {
+      // 命令面板与搜索共用此输入框：聚焦即触发首建
+      dom.searchInput.addEventListener('focus', ensureIndexLoaded, { once: true });
+    }
   }
 
   window.MarkdownPreview.search = {

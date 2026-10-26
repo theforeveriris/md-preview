@@ -44,6 +44,8 @@
   function notifyDocRendered(path) {
     const st = window.MarkdownPreview.state;
     if (!st) return;
+    // 滚动高亮用的标题列表缓存（ui.js），文档更新时重建
+    window.MarkdownPreview.uiRefreshHeadings?.();
     let h1Title = '';
     const h1 = dom.markdownContent.querySelector('h1');
     if (h1) h1Title = h1.textContent.trim();
@@ -746,18 +748,8 @@
         heading.appendChild(anchorBtn);
       }
 
-      heading.addEventListener('mouseenter', () => {
-        heading.style.borderLeft = '3px solid var(--color-accent-purple)';
-        heading.style.paddingLeft = '8px';
-        heading.style.marginLeft = '-11px';
-      });
-
-      heading.addEventListener('mouseleave', () => {
-        heading.style.borderLeft = '';
-        heading.style.paddingLeft = '';
-        heading.style.marginLeft = '';
-      });
-
+      // hover 效果（左侧强调条）已改纯 CSS :hover（markdown.css
+      // .heading-clickable），不再用 JS 每标题双监听+内联样式全量重绑
       heading.addEventListener('click', (e) => {
         // 点击锚点按钮时不触发的标题滚动逻辑
         if (e.target.closest('.heading-anchor')) return;

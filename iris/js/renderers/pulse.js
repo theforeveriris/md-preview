@@ -1061,7 +1061,7 @@
     var running = true;
 
     function frame(timestamp) {
-      if (!running) return;
+      if (!running || paused) { rafId = null; return; }
       if (startTime === null) startTime = timestamp;
       var elapsed = timestamp - startTime;
       var progress = (elapsed % duration) / duration;
@@ -1087,7 +1087,15 @@
     }
     window.addEventListener('themechange', onThemeChange);
 
+    // pause/resume：离屏暂停（IO 驱动），回视口续播
     return {
+      el: canvas.closest('.pulse-widget') || null,
+      pause: function() { paused = true; if (rafId) cancelAnimationFrame(rafId); rafId = null; },
+      resume: function() {
+        if (!running || paused === false) { paused = false; if (!rafId) rafId = requestAnimationFrame(frame); return; }
+        paused = false;
+        if (!rafId) rafId = requestAnimationFrame(frame);
+      },
       stop: function() {
         running = false;
         if (rafId) cancelAnimationFrame(rafId);
@@ -1357,12 +1365,32 @@
       points.push({ value: wave.values[i], isKey: wave.anchors[i] });
     }
 
+    // 主题色帧外缓存一次（RAF 内每帧 4 次 getComputedStyle 会强制重算样式），
+    // themechange 时刷新
+    var themeColors = {
+      accent: getComputedStyle(document.documentElement).getPropertyValue('--color-accent-purple').trim() || '#d4a5c9',
+      accentPink: getComputedStyle(document.documentElement).getPropertyValue('--color-accent-pink').trim() || '#f2c4ce',
+      border: getComputedStyle(document.documentElement).getPropertyValue('--color-border').trim() || '#f0f0f0',
+      bg: getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim() || '#ffffff'
+    };
+    var onMiniThemeChange = function() {
+      var cs = getComputedStyle(document.documentElement);
+      themeColors.accent = cs.getPropertyValue('--color-accent-purple').trim() || '#d4a5c9';
+      themeColors.accentPink = cs.getPropertyValue('--color-accent-pink').trim() || '#f2c4ce';
+      themeColors.border = cs.getPropertyValue('--color-border').trim() || '#f0f0f0';
+      themeColors.bg = cs.getPropertyValue('--color-surface').trim() || '#ffffff';
+    };
+    window.addEventListener('themechange', onMiniThemeChange);
+
+    var paused = false;
+    var rafId = 0;
     function draw(time) {
       if (stopped) return;
+      if (paused) { rafId = 0; return; }
 
       var cssW = canvas.clientWidth || canvasWrap.clientWidth;
       if (cssW < 10) {
-        requestAnimationFrame(draw);
+        rafId = requestAnimationFrame(draw);
         return;
       }
       if (canvas.width !== Math.round(cssW * dpr) || canvas.height !== Math.round(canvasH * dpr)) {
@@ -1383,18 +1411,17 @@
       var graphH = h - padY * 2;
 
       if (graphW < 10 || points.length === 0) {
-        requestAnimationFrame(draw);
+        rafId = requestAnimationFrame(draw);
         return;
       }
 
       playheadIdx += delta * 0.025;
       if (playheadIdx >= points.length) playheadIdx = 0;
 
-      var computedStyle = getComputedStyle(document.documentElement);
-      var accentColor = computedStyle.getPropertyValue('--color-accent-purple').trim() || '#d4a5c9';
-      var accentPink = computedStyle.getPropertyValue('--color-accent-pink').trim() || '#f2c4ce';
-      var borderColor = computedStyle.getPropertyValue('--color-border').trim() || '#f0f0f0';
-      var bgColor = computedStyle.getPropertyValue('--color-surface').trim() || '#ffffff';
+      var accentColor = themeColors.accent;
+      var accentPink = themeColors.accentPink;
+      var borderColor = themeColors.border;
+      var bgColor = themeColors.bg;
 
       ctx.clearRect(0, 0, w, h);
 
@@ -1441,10 +1468,10 @@
       ctx.lineTo(playheadFixedX, h - padY);
       ctx.stroke();
 
-      requestAnimationFrame(draw);
+      rafId = requestAnimationFrame(draw);
     }
 
-    requestAnimationFrame(draw);
+    rafId = requestAnimationFrame(draw);
 
     var onResize = function() {
       lastTime = null;
@@ -1452,9 +1479,14 @@
     window.addEventListener('resize', onResize);
 
     animations.push({
+      el: canvasWrap.closest('.pulse-mini-widget') || null,
+      pause: function() { paused = true; if (rafId) cancelAnimationFrame(rafId); rafId = 0; },
+      resume: function() { paused = false; if (!rafId) rafId = requestAnimationFrame(draw); },
       stop: function() {
         stopped = true;
+        if (rafId) cancelAnimationFrame(rafId);
         window.removeEventListener('resize', onResize);
+        window.removeEventListener('themechange', onMiniThemeChange);
       }
     });
 
@@ -1462,6 +1494,8 @@
   }
 
   // ============== 主渲染入口 ==============
+
+  var animIORef = null; // 离屏暂停观察器（跨 render 存活）
 
   function render(container) {
     animations.forEach(function(a) { a.stop(); });
@@ -1543,6 +1577,26 @@
         item.ph.parentNode.replaceChild(widget, item.ph);
       });
     });
+
+    // IO 离屏暂停：动画帧只在部件可见时跑（离屏 RAF 纯耗电）
+    if (typeof IntersectionObserver === 'function') {
+      if (animIORef) { try { animIORef.disconnect(); } catch (e) {} }
+      var animIO = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          var handle = entry.target._pulseAnim;
+          if (!handle) return;
+          if (entry.isIntersecting) handle.resume();
+          else handle.pause();
+        });
+      }, { rootMargin: '100px 0px' });
+      animations.forEach(function(handle) {
+        if (handle.el) {
+          handle.el._pulseAnim = handle;
+          animIO.observe(handle.el);
+        }
+      });
+      animIORef = animIO; // 持引用防 GC，下一轮 render 会先 disconnect
+    }
 
     miniParents.forEach(function(p) {
       var hasOnlyMini = true;

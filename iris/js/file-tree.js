@@ -443,9 +443,14 @@
     }
   }
 
-  // 设置切换「文件夹默认展开」后重建文件树即时生效
+  // 设置切换「文件夹默认展开」后即时生效：在已渲染的 Shadow DOM 内就地
+  // toggle（重建整树会重新 fetch + 丢滚动位置，setSortMode 已示范就地改）
   function setExpandFolders(expand) {
-    loadFileTree();
+    var tree = dom.fileTree.querySelector('file-tree');
+    if (!tree || !tree.shadowRoot) return;
+    tree.shadowRoot.querySelectorAll('li.folder').forEach(folder => {
+      folder.classList.toggle('opened', expand !== false);
+    });
   }
 
   /**
@@ -532,9 +537,8 @@
   }
   
   function onFilesLoaded() {
-    setTimeout(() => {
-      if (search && search.buildIndex) search.buildIndex();
-    }, 500);
+    // 搜索索引首建已延迟到首次使用（search.js init 挂 focus/paletteopen），
+    // 此处不再 500ms 后重复 buildIndex（会把已建好的索引推倒重建）
     setTimeout(() => {
       if (window.MarkdownPreview.router && window.MarkdownPreview.router.onFileTreeLoaded) {
         window.MarkdownPreview.router.onFileTreeLoaded();

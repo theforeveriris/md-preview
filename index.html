@@ -32,7 +32,10 @@
   <link rel="alternate" type="application/rss+xml" title="Markdown Preview" href="iris/data/feed.xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- 字体 CSS 非阻塞加载：media="print" + onload 切回 all（display=swap 保证
+       字体就绪前用回退字体渲染，不白屏）；noscript 兜底直接加载 -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
   <link rel="preload" href="iris/styles.css" as="style">
   <link rel="preload" href="iris/vendor/marked.js" as="script">
   <link rel="preload" href="iris/js/config.js" as="script">
@@ -1210,7 +1213,9 @@
     </div>
   </div>
 
-  <!-- ============== 编辑器模式（默认隐藏，?mode=editor 激活） ============== -->
+  <!-- ============== 编辑器模式（模板化：进入编辑模式时由 lazy-modules.js
+       注入 DOM 并按需加载 editor.js，约 800 行隐藏 HTML 不再参与首屏解析） ============== -->
+  <template id="tplEditorHtml">
   <div class="editor-overlay" id="editorOverlay" style="display:none;">
     <!-- 顶部工具栏 -->
     <header class="editor-toolbar">
@@ -1765,7 +1770,10 @@
     <div class="autocomplete-list" id="autocompleteList"></div>
   </div>
 
-  <!-- ============== 波形生成器 ============== -->
+  </template>
+
+  <!-- ============== 波形生成器（同上模板化） ============== -->
+  <template id="tplPulseGenHtml">
   <div class="pulse-gen-overlay" id="pulseGenOverlay" style="display:none;">
     <header class="pulse-gen-toolbar">
       <div class="pulse-gen-toolbar-left">
@@ -2019,6 +2027,7 @@
       </main>
     </div>
   </div>
+  </template>
 
   <script defer src="iris/vendor/marked.js"></script>
   <script defer src="iris/vendor/marked-footnote.min.js"></script>
@@ -2028,9 +2037,10 @@
   <!-- 以下重型 vendor 库改为按需懒加载（由各 renderer 在 DOM 出现对应内容时调用 dom.js#loadScript/loadStyle）：
        mermaid.min.js / pako.min.js / leaflet.js / apexcharts.min.js
        diff2html.min.js / diff2html-ui.min.js / katex.min.js / auto-render.min.js / cytoscape.min.js
-       仅保留 codemirror.min.js 仍 defer（编辑器适配层强耦合 CM6，后续单独优化） -->
+       codemirror.min.js / cm-editor.js / editor.js 由 lazy-modules.js 在进入编辑模式时按需加载 -->
 
-  <script async src="https://platform.twitter.com/widgets.js"></script>
+  <!-- twitter widgets.js 改为按需注入：embedded.js 检测到 twitter 嵌入块时
+       才加载（第三方脚本，无推文的页面不再加载/暴露访问记录） -->
 
   <!-- App Modules -->
   <script defer src="iris/js/config.js"></script>
@@ -2098,7 +2108,6 @@
   <script defer src="iris/js/renderers/openapi.js"></script>
   <script defer src="iris/js/renderers/graph.js"></script>
   <script defer src="iris/js/renderers/glossary.js"></script>
-  <script defer src="iris/js/pulse-generator.js"></script>
 
   <!-- Packet Tracer 拓扑渲染器（cytoscape.min.js 已改为按需懒加载，见 pkt-renderer.js#loadAndRender） -->
   <script defer src="iris/js/pkt/pkt-renderer.js"></script>
@@ -2109,10 +2118,13 @@
   <!-- Main Entry -->
   <script defer src="iris/js/themes/theme-manager.js"></script>
   <script defer src="iris/js/sync-tabs.js"></script>
-  <script defer src="iris/vendor/codemirror/codemirror.min.js"></script>
-  <script defer src="iris/js/cm-editor.js"></script>
+  <!-- codemirror.min.js + cm-editor.js 仅编辑器使用：与 editor.js 同批按需加载
+       （lazy-modules.js 保证 codemirror → cm-editor → editor 顺序） -->
   <script defer src="iris/js/storage.js"></script>
-  <script defer src="iris/js/editor.js"></script>
+  <!-- editor.js（107KB）与 pulse-generator.js（40KB）按需加载：
+       lazy-modules.js 在进入对应模式（?mode=editor/pulsegen 或点击入口）时
+       经 loadScript 拉取，纯阅读模式不再下载执行 -->
+  <script defer src="iris/js/lazy-modules.js"></script>
   <script defer src="iris/js/sidebar-resize.js"></script>
   <script defer src="iris/app.js"></script>
   

@@ -13,23 +13,38 @@
   }
   
   function setupScrollProgress() {
+    // passive + rAF 节流：滚动事件每秒可触发数十次，同步做全标题
+    // getBoundingClientRect 会强制布局（抖动）。标题列表在文档渲染时缓存
+    let ticking = false;
     window.addEventListener('scroll', () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-      dom.readingProgressBar.style.width = scrollPercent + '%';
-      dom.progressBar.style.width = scrollPercent + '%';
-      
-      updateActiveHeading();
-    });
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        dom.readingProgressBar.style.width = scrollPercent + '%';
+        dom.progressBar.style.width = scrollPercent + '%';
+
+        updateActiveHeading();
+      });
+    }, { passive: true });
   }
-  
+
+  // 当前文档的标题缓存：renderMarkdown 后由 notifyDocRendered 刷新，
+  // 避免每次滚动都全文档 querySelectorAll
+  let cachedHeadings = [];
+  window.MarkdownPreview.uiRefreshHeadings = function() {
+    cachedHeadings = Array.from(document.querySelectorAll('.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6'));
+  };
+
   function updateActiveHeading() {
-    const headings = document.querySelectorAll('.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6');
+    const headings = cachedHeadings;
     const indexItems = dom.indexTree.querySelectorAll('.index-item');
-    
+
     let activeIndex = -1;
-    
+
     for (let i = headings.length - 1; i >= 0; i--) {
       const heading = headings[i];
       const rect = heading.getBoundingClientRect();
