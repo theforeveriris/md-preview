@@ -16,7 +16,7 @@
   function t(key, fallback) {
     const i18n = window.MarkdownPreview.i18n;
     if (i18n && typeof i18n.t === 'function') {
-      return i18n.t(key);
+      return i18n.t(key, fallback);
     }
     return fallback;
   }

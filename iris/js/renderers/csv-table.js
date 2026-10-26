@@ -400,10 +400,22 @@
       popover.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - pw - 8)) + 'px';
       popover.style.top = Math.min(rect.bottom + 6, window.innerHeight - ph - 8) + 'px';
     });
-    document.addEventListener('click', (e) => {
+    // document/window 级监听在 widget 脱离 DOM 后自动摘除：
+    // 否则 N 个表格 = N 份监听永不释放
+    const detachGlobalListeners = () => {
+      document.removeEventListener('click', onDocClick, true);
+      window.removeEventListener('resize', onWinResize);
+    };
+    const onDocClick = (e) => {
+      if (!widget.isConnected) { detachGlobalListeners(); return; }
       if (popover && !popover.contains(e.target)) closePopover();
-    }, true);
-    window.addEventListener('resize', closePopover);
+    };
+    const onWinResize = () => {
+      if (!widget.isConnected) { detachGlobalListeners(); return; }
+      closePopover();
+    };
+    document.addEventListener('click', onDocClick, true);
+    window.addEventListener('resize', onWinResize);
 
     renderBody();
     return widget;

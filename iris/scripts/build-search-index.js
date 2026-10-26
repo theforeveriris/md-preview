@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+// 只扫 docs/：与 build-file-tree.js 扫仓库根是有意差异——侧边栏展示仓库全部
+// .md（含 README/示例），公开搜索索引只收录 docs/ 站内文档
 const docsDir = path.join(__dirname, '../../docs');
 const outputFile = path.join(__dirname, '../data/search-index.json');
 
@@ -38,12 +40,24 @@ function pinyinInitials(text) {
 }
 
 function extractTitle(content) {
-  const frontmatterMatch = content.match(/^---[\s\S]*?title:\s*['"]?(.+?)['"]?\s*(?:\n|---)/i);
-  if (frontmatterMatch) return frontmatterMatch[1].trim();
-  
-  const headingMatch = content.match(/^#\s+(.+)$/m);
+  // 与 build-file-tree.js#extractTitle 同口径：先剥出 frontmatter 块，只在块内
+  // 找 title:（旧正则在块内无 title: 时会匹配到正文/代码块里的 title:），
+  // 再从正文找第一个 # 标题
+  const fm = content.match(/^---\s*\n([\s\S]*?)\n---\s*/);
+  let meta = '';
+  let body = content;
+  if (fm) {
+    meta = fm[1];
+    body = content.slice(fm[0].length);
+  }
+  const titleLine = meta.split('\n').find(l => l.trim().startsWith('title:'));
+  if (titleLine) {
+    return titleLine.trim().replace(/^title:\s*/, '').trim().replace(/^["']|["']$/g, '');
+  }
+
+  const headingMatch = body.match(/^#\s+(.+?)\s*$/m);
   if (headingMatch) return headingMatch[1].trim();
-  
+
   return null;
 }
 

@@ -640,14 +640,16 @@
    * 幻灯片自动轮播：为 .image-gallery--slider 创建 track + 指示点
    * @param {HTMLElement} container
    */
-  // 追踪所有轮播定时器：每次新的渲染周期都会先清掉上一轮遗留的 interval，
-  // 防止文档切换后旧轮播（DOM 已脱离）继续空转累积。
-  const sliderTimers = new Set();
+  // 轮播定时器按容器归属（WeakMap）：initSliders 只清本容器上一轮的定时器，
+  // 不会误停其它容器（主文档/分栏对照/编辑器 cell）正在运行的轮播；
+  // 脱离文档的旧轮播在 interval 下一次 tick 自行停止（isConnected 检查）
+  const containerSliderTimers = new WeakMap();
 
   function initSliders(container) {
-    // 上一渲染周期的轮播元素已脱离 DOM，先统一停止其定时器
-    sliderTimers.forEach(id => clearInterval(id));
-    sliderTimers.clear();
+    const prevTimers = containerSliderTimers.get(container);
+    if (prevTimers) prevTimers.forEach(id => clearInterval(id));
+    const sliderTimers = new Set();
+    containerSliderTimers.set(container, sliderTimers);
 
     container.querySelectorAll('.image-gallery--slider').forEach(slider => {
       const imgs = Array.from(slider.querySelectorAll('img'));
@@ -672,7 +674,11 @@
         track.style.transform = `translateX(-${index * 100}%)`;
         dots.querySelectorAll('span').forEach((d, di) => d.classList.toggle('active', di === index));
       }
-      function start() { stop(); timer = setInterval(() => go(index + 1), 4000); sliderTimers.add(timer); }
+      function tick() {
+        if (!slider.isConnected) { stop(); return; } // 脱离文档自动停止
+        go(index + 1);
+      }
+      function start() { stop(); timer = setInterval(tick, 4000); sliderTimers.add(timer); }
       function stop() { if (timer) { clearInterval(timer); sliderTimers.delete(timer); timer = null; } }
       slider.addEventListener('mouseenter', stop);
       slider.addEventListener('mouseleave', start);

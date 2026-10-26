@@ -46,7 +46,14 @@
         resolve(_db);
       };
       req.onerror = (e) => {
+        // 释放缓存的 Promise：瞬时失败（如隐私模式短暂拒绝）下次调用可重试，
+        // 否则整个会话永久禁用 IndexedDB 且每 1.5s 失败一次重复弹 toast
+        _initPromise = null;
         reject(e.target.error || new Error('IndexedDB 打开失败'));
+      };
+      req.onblocked = () => {
+        _initPromise = null;
+        reject(new Error('IndexedDB 被其他标签页占用'));
       };
     });
     return _initPromise;

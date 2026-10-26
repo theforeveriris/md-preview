@@ -28,7 +28,7 @@
   // i18n 文案统一走 i18n.js 的权威实现（MarkdownPreview.t，全站唯一）
   function t(key, fallback) {
     var i18n = window.MarkdownPreview.i18n;
-    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key, fallback);
     return fallback;
   }
 
@@ -1310,11 +1310,17 @@
     copyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
     copyBtn.addEventListener('click', function(e) {
       e.stopPropagation();
-      navigator.clipboard.writeText('[pulsemini' + (title ? ' title="' + title + '"' : '') + ']' + rawData + '[/pulsemini]');
-      copyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-      setTimeout(function() {
-        copyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-      }, 1500);
+      // 统一复制工具：非 HTTPS / 权限拒绝时降级 execCommand，不再产生未处理 rejection
+      var src = '[pulsemini' + (title ? ' title="' + title + '"' : '') + ']' + rawData + '[/pulsemini]';
+      var copy = window.MarkdownPreview.interactions && window.MarkdownPreview.interactions.copyText;
+      var done = function() {
+        copyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+        setTimeout(function() {
+          copyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+        }, 1500);
+      };
+      if (copy) copy(src).then(done, done);
+      else done();
     });
 
     var dlBtn = document.createElement('button');
@@ -1466,73 +1472,76 @@
     var targetEl = container || (window.MarkdownPreview.dom && window.MarkdownPreview.dom.markdownContent);
     if (!targetEl) return;
 
-    var pulseRegex = /\[pulse(?:\s+title\s*=\s*(?:"([^"]*)"|'([^']*)'))?\]([\s\S]*?)\[\/pulse\]/gi;
-    var pulseminiRegex = /\[pulsemini(?:\s+title\s*=\s*(?:"([^"]*)"|'([^']*)'))?\]([\s\S]*?)\[\/pulsemini\]/gi;
+    var pulseRegex = /\[pulse(?:\s+title\s*=\s*(?:"([^"]*)"|'([^']*)'))?\]([\s\S]*?)\[\/pulse\]/i;
+    var pulseminiRegex = /\[pulsemini(?:\s+title\s*=\s*(?:"([^"]*)"|'([^']*)'))?\]([\s\S]*?)\[\/pulsemini\]/i;
 
-    var html = targetEl.innerHTML;
-    var match;
-    var replacements = [];
-
-    function isInsideCode(htmlStr, index) {
-      var before = htmlStr.substring(0, index);
-      var codeOpen = before.match(/<code[^>]*>/gi);
-      var codeClose = before.match(/<\/code>/gi);
-      var openCount = codeOpen ? codeOpen.length : 0;
-      var closeCount = codeClose ? codeClose.length : 0;
-      if (openCount > closeCount) return true;
-      var preOpen = before.match(/<pre[^>]*>/gi);
-      var preClose = before.match(/<\/pre>/gi);
-      var preOpenCount = preOpen ? preOpen.length : 0;
-      var preCloseCount = preClose ? preClose.length : 0;
-      if (preOpenCount > preCloseCount) return true;
-      return false;
-    }
-
-    while ((match = pulseRegex.exec(html)) !== null) {
-      if (isInsideCode(html, match.index)) continue;
-      var title = match[1] !== undefined ? match[1] : (match[2] !== undefined ? match[2] : '');
-      var rawData = decodeEntities(match[3].trim());
-      replacements.push({ matchStr: match[0], title: title, rawData: rawData, index: match.index, type: 'full' });
-    }
-
-    while ((match = pulseminiRegex.exec(html)) !== null) {
-      if (isInsideCode(html, match.index)) continue;
-      var miniTitle = match[1] !== undefined ? match[1] : (match[2] !== undefined ? match[2] : '');
-      var miniRawData = decodeEntities(match[3].trim());
-      replacements.push({ matchStr: match[0], title: miniTitle, rawData: miniRawData, index: match.index, type: 'mini' });
-    }
-
-    if (replacements.length === 0) return;
-
-    var sorted = replacements.slice().sort(function(a, b) { return b.index - a.index; });
-    for (var i = 0; i < sorted.length; i++) {
-      var rep = sorted[i];
-      var repIdx = replacements.indexOf(rep);
-      var placeholder = '<div data-pulse-placeholder="' + repIdx + '"></div>';
-      html = html.substring(0, rep.index) + placeholder + html.substring(rep.index + rep.matchStr.length);
-    }
-
-    targetEl.innerHTML = html;
-
-    var placeholders = targetEl.querySelectorAll('[data-pulse-placeholder]');
-    var miniParents = new Set();
-    placeholders.forEach(function(ph) {
-      var repIdx = parseInt(ph.getAttribute('data-pulse-placeholder'), 10);
-      var rep = replacements[repIdx];
-      if (rep) {
-        var widget = rep.type === 'mini'
-          ? createPulseMiniWidget(rep.title, rep.rawData)
-          : createPulseWidget(rep.title, rep.rawData);
-        var parentP = ph.closest('p');
-        if (parentP && parentP.textContent.trim() === '') {
-          parentP.parentNode.replaceChild(widget, parentP);
-        } else {
-          if (rep.type === 'mini' && parentP) {
-            miniParents.add(parentP);
+    // 按 DOM 文本节点扫描（跳过 pre/code/script/style）：
+    //  1) 旧实现在 innerHTML 字符串上跑正则，属性值里的 [pulse] 标记也会
+    //     命中并破坏 HTML 结构；
+    //  2) 旧实现整容器 innerHTML 读写会摧毁其它渲染器挂载的活性 DOM
+    var walker = document.createTreeWalker(targetEl, NodeFilter.SHOW_TEXT, {
+      acceptNode: function(node) {
+        var v = node.nodeValue;
+        if (!v || v.indexOf('[pulse') === -1) return NodeFilter.FILTER_REJECT;
+        var p = node.parentElement;
+        while (p && p !== targetEl) {
+          var tag = p.tagName;
+          if (tag === 'CODE' || tag === 'PRE' || tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TEXTAREA') {
+            return NodeFilter.FILTER_REJECT;
           }
-          ph.parentNode.replaceChild(widget, ph);
+          p = p.parentElement;
         }
+        return NodeFilter.FILTER_ACCEPT;
       }
+    });
+
+    var textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+    if (!textNodes.length) return;
+
+    var miniParents = new Set();
+
+    textNodes.forEach(function(textNode) {
+      var rest = textNode.nodeValue;
+      var segments = []; // { text } 或 { type, title, rawData }
+      while (rest.length) {
+        var pm = pulseRegex.exec(rest);
+        var mm = pulseminiRegex.exec(rest);
+        if (!pm && !mm) break;
+        var useMini = mm && (!pm || mm.index < pm.index);
+        var m = useMini ? mm : pm;
+        segments.push({ text: rest.slice(0, m.index) });
+        segments.push({
+          type: useMini ? 'mini' : 'full',
+          title: m[1] !== undefined ? m[1] : (m[2] !== undefined ? m[2] : ''),
+          rawData: decodeEntities(m[3].trim())
+        });
+        rest = rest.slice(m.index + m[0].length);
+      }
+      if (!segments.length) return;
+      segments.push({ text: rest });
+
+      var frag = document.createDocumentFragment();
+      var mounts = [];
+      segments.forEach(function(seg) {
+        if (seg.text !== undefined) {
+          if (seg.text) frag.appendChild(document.createTextNode(seg.text));
+          return;
+        }
+        var ph = document.createElement('span');
+        frag.appendChild(ph);
+        mounts.push({ ph: ph, seg: seg });
+      });
+      textNode.parentNode.replaceChild(frag, textNode);
+
+      mounts.forEach(function(item) {
+        var widget = item.seg.type === 'mini'
+          ? createPulseMiniWidget(item.seg.title, item.seg.rawData)
+          : createPulseWidget(item.seg.title, item.seg.rawData);
+        var parentP = item.ph.closest('p');
+        if (item.seg.type === 'mini' && parentP) miniParents.add(parentP);
+        item.ph.parentNode.replaceChild(widget, item.ph);
+      });
     });
 
     miniParents.forEach(function(p) {

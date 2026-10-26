@@ -509,7 +509,6 @@
     // EPUB / 打包导出
     'export.epub.toc': '目录',
     'export.noDocs': '没有可打包的文档（文件树未加载或为空）',
-    'export.needDoc': '请先打开一个文档',
     'export.fetchFailed': '文档获取失败，请重试',
 
     // 设置面板：中文 / 性能
@@ -1069,7 +1068,6 @@
     // EPUB / bundle export
     'export.epub.toc': 'Table of Contents',
     'export.noDocs': 'No documents to export (file tree not loaded or empty)',
-    'export.needDoc': 'Open a document first',
     'export.fetchFailed': 'Failed to fetch the document, please retry',
 
     'settings.section.cjk': 'Chinese',

@@ -18,7 +18,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execFileSync, execSync } = require('child_process');
 
 const SITE_URL = 'https://theforeveriris.github.io/md-preview/';
 const DOCS_DIR = path.join(__dirname, '../../docs');
@@ -29,8 +29,9 @@ const OUTPUT_FILE = path.join(__dirname, '../data/sitemap.xml');
  */
 function getLastmod(fullPath) {
   try {
-    const out = execSync(
-      `git log -1 --format=%cI -- "${fullPath}"`,
+    // execFileSync 数组形式：路径含引号/$/反引号不会破坏命令（同仓其余脚本惯例）
+    const out = execFileSync(
+      'git', ['log', '-1', '--format=%cI', '--', fullPath],
       { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] }
     ).trim();
     if (out) {

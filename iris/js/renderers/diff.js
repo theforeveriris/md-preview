@@ -57,18 +57,14 @@
             synchronisedScroll: true,
             highlight: true
           };
-          
-          // 先解析 diff
+
+          // 只 parse 一次：parse + html 各一次就够（旧实现 Diff2HtmlUI 内部
+          // 会对同一段 diff 再 parse 一遍，大 diff 纯浪费）
           const diffJson = Diff2Html.parse(diffCode);
-          // 生成 HTML
           const diffHtml = Diff2Html.html(diffJson, configuration);
           // 插入 HTML。diff 内容的转义完全依赖 diff2html 自身（该库历史上
           // 出过 XSS），升级此依赖时留意其安全公告
           diffTarget.innerHTML = diffHtml;
-          
-          // 初始化 UI
-          const diff2htmlUi = new Diff2HtmlUI(diffTarget, diffCode, configuration);
-          diff2htmlUi.highlightCode();
         } else {
           console.error('Diff2Html or Diff2HtmlUI library is not loaded');
           const errorDiv = document.createElement('div');
@@ -79,11 +75,13 @@
         }
       } catch (error) {
         console.error('Diff rendering error:', error);
+        // 错误框写进本次渲染的 container（旧实现 append 到 pre.parentNode，
+        // 而 pre 已被替换，错误框会落到文档末尾）
         const errorDiv = document.createElement('div');
         errorDiv.style.color = '#ff6b6b';
         errorDiv.style.padding = '10px';
         errorDiv.textContent = 'Diff 渲染错误: ' + error.message;
-        pre.parentNode.appendChild(errorDiv);
+        container.appendChild(errorDiv);
       }
     }
   }

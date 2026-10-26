@@ -266,14 +266,16 @@
     // 初始渲染一次
     renderDualPanePreview(cell.textarea.value);
 
-    // 输入时实时预览（防抖 250ms，避免渲染器频繁重入）
-    let debounceTimer = null;
+    // 输入时实时预览（防抖 250ms，避免渲染器频繁重入）。
+    // 计时器存到 dualPaneState 上：闭包局部变量外部清不到，closeDualPane
+    // 的 clearTimeout 会永远扑空（旧 Bug）
+    const paneState = { cell, cmHost, originalHostParent, inputHandler: null, escHandler: null, debounceTimer: null };
     const inputHandler = () => {
       updateCellMeta(cell);
       markUnsaved();
       updateStatusbar();
-      if (debounceTimer) clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
+      if (paneState.debounceTimer) clearTimeout(paneState.debounceTimer);
+      paneState.debounceTimer = setTimeout(() => {
         renderDualPanePreview(cell.textarea.value);
       }, 250);
     };
@@ -288,7 +290,9 @@
     };
     document.addEventListener('keydown', escHandler);
 
-    dualPaneState = { cell, cmHost, originalHostParent, inputHandler, escHandler, debounceTimer: null };
+    paneState.inputHandler = inputHandler;
+    paneState.escHandler = escHandler;
+    dualPaneState = paneState;
 
     dualPaneOverlay.classList.add('visible');
     document.body.classList.add('dual-pane-active');
@@ -481,6 +485,12 @@
       markModified(cellData);
       markUnsaved();
       updateStatusbar();
+      // 内容已变，旧偏移的查找匹配失效
+      if (searchMatches.length) {
+        searchMatches = [];
+        searchIdx = -1;
+        if (searchInfo) searchInfo.textContent = '内容已修改，重新输入以查找';
+      }
     });
 
     textarea.addEventListener('keydown', onTextareaKeydown);
@@ -671,6 +681,8 @@
     }
     cell.div.remove();
     cells.splice(idx, 1);
+    // pkt 等渲染器持有全局注册表：清理已脱离 DOM 的孤儿实例（对照 split-view.js）
+    window.MarkdownPreview.pkt?.destroyOrphaned?.();
     if (activeCellId === id) {
       const newIdx = Math.min(idx, cells.length - 1);
       activeCellId = cells[newIdx].id;
@@ -1575,11 +1587,14 @@
     downloadBlob(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' }), 'notebook.mdnb');
   }
 
+  // 显式 cell 边界标记：正文里的独立水平线（---）不会再被导入误拆
+  const CELL_BOUNDARY = '<!-- mdp2:cell -->';
+
   function downloadAllMd() {
     const content = cells.map(c => {
       const typeTag = c.type === 'plaintext' ? '<!-- cell: plaintext -->\n' : '';
       return typeTag + c.textarea.value;
-    }).join('\n\n---\n\n');
+    }).join('\n\n' + CELL_BOUNDARY + '\n\n');
     downloadBlob(new Blob([content], { type: 'text/markdown;charset=utf-8' }), 'all-cells.md');
   }
 
@@ -1646,8 +1661,11 @@
   }
 
   function importMdCells(text) {
-    // 按 --- 分隔符切分为多个 Cell
-    const parts = text.split(/\n\s*---\s*\n/);
+    // 优先按显式 cell 边界切分（downloadAllMd 导出格式，正文含 --- 也安全）；
+    // 无标记的旧文件/手写文件回退按 --- 切分
+    const parts = text.includes(CELL_BOUNDARY)
+      ? text.split(/\n?\s*<!-- mdp2:cell -->\s*\n?/)
+      : text.split(/\n\s*---\s*\n/);
     if (cells.some(c => c.textarea.value.trim())) {
       if (!confirm('导入将替换当前所有 Cell，是否继续？')) return;
     }
@@ -2063,11 +2081,12 @@
     try { await storage.saveNotebook(data); } catch (e) {}
   }
 
+  let pendingTabId = null;
   async function activateTab(id, opts) {
     opts = opts || {};
     const tab = getTabById(id);
     if (!tab) return;
-    if (isSwitching) return;
+    if (isSwitching) { pendingTabId = id; return; } // 排队而非静默丢弃
     isSwitching = true;
     try {
       // 1) 保存当前 notebook 数据（先序列化，不动 DOM）
@@ -2098,6 +2117,14 @@
       persistTabMeta();
     } finally {
       isSwitching = false;
+      // 处理切换期间排队的请求（跳过中间态，直达最后点击的 tab）
+      if (pendingTabId && pendingTabId !== activeTabId) {
+        const next = pendingTabId;
+        pendingTabId = null;
+        activateTab(next);
+      } else {
+        pendingTabId = null;
+      }
     }
   }
 
@@ -2267,6 +2294,9 @@
 
   async function restoreFromData(data) {
     const cellList = (data && Array.isArray(data.cells)) ? data.cells : [];
+    // 旧 cell 即将被销毁：先关双屏，否则 cmHost 残留在双屏 overlay 里
+    // 形成死编辑器 + escHandler 泄漏
+    closeDualPane();
     // 清空现有
     cells.slice().forEach(c => {
       if (c.textarea && typeof c.textarea.destroy === 'function') c.textarea.destroy();
@@ -2291,6 +2321,9 @@
     if (cells.length === 0) createCell();
     renumberCells();
     updateStatusbar();
+    // 旧 cellId 已全部失效：清掉查找匹配，F3 不再按陈旧偏移选中
+    searchMatches = [];
+    searchIdx = -1;
     return cellList.length > 0;
   }
 
@@ -2305,6 +2338,12 @@
           let legacyData = await storage.loadNotebook('autosave');
           if (!legacyData) {
             legacyData = await storage.migrateFromLocalStorage(STORAGE_KEY, 'autosave');
+          }
+          // 兜底快照可能比 IDB 最后一次成功保存更新（卸载时 IDB 异步写未完成）：
+          // 按 saved 时间戳取新者，别让同步写完的 localStorage 数据被忽略
+          const backup0 = readLocalStorageBackup();
+          if (backup0 && (!legacyData || (backup0.saved || '') > (legacyData.saved || ''))) {
+            legacyData = backup0;
           }
           // 创建单个 tab 承载旧数据
           const legacyId = (legacyData && legacyData.id) || 'autosave';
@@ -2337,6 +2376,18 @@
         tabs = validTabs;
         // 选择激活 tab
         let target = savedActive && tabs.find(t => t.id === savedActive) ? savedActive : tabs[0].id;
+        // 同 id 的 localStorage 兜底快照更新时，直接以快照初始化该 tab
+        const backup = readLocalStorageBackup();
+        if (backup && backup.id === target) {
+          try {
+            const idbData = await storage.loadNotebook(target);
+            if (!idbData || (backup.saved || '') >= (idbData.saved || '')) {
+              activeTabId = null;
+              await activateTab(target, { initData: backup });
+              return true;
+            }
+          } catch (e) { /* IDB 读取失败：用快照兜底 */ }
+        }
         activeTabId = null; // 强制 activateTab 走完整加载流程
         await activateTab(target);
         return true;
@@ -2388,6 +2439,16 @@
     return null;
   }
 
+  // 读取 beforeunload 写入 localStorage 的兜底快照
+  function readLocalStorageBackup() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      return (data && Array.isArray(data.cells)) ? data : null;
+    } catch (e) { return null; }
+  }
+
   // 页面卸载前尽力保存（IndexedDB 异步，无法保证完成，但 1.5s 防抖通常已保存）
   window.addEventListener('beforeunload', () => {
     if (isUnsaved) {
@@ -2425,7 +2486,8 @@
     if (cell) cell.textarea.blur();
   }
 
-  function doSearch() {
+  function doSearch(opts) {
+    opts = opts || {};
     const query = searchInput.value;
     searchMatches = [];
     searchIdx = -1;
@@ -2436,7 +2498,8 @@
     const lowerQuery = query.toLowerCase();
     cells.forEach(c => {
       const val = c.textarea.value.toLowerCase();
-      let pos = 0;
+      // replaceOne 用：该 cell 从替换点之后开始收集
+      let pos = (opts.skipCellId === c.id) ? Math.min(opts.skipPos || 0, val.length) : 0;
       while (true) {
         const idx = val.indexOf(lowerQuery, pos);
         if (idx === -1) break;
@@ -2479,7 +2542,9 @@
     updateCellMeta(cell);
     markModified(cell);
     markUnsaved();
-    doSearch();
+    // 替换词包含查询词时（a→aa），重查若从原偏移开始会反复命中自身：
+    // 跳过刚替换完的区间
+    doSearch({ skipCellId: m.cellId, skipPos: m.start + replaceText.length });
   }
 
   function replaceAll() {
@@ -2604,7 +2669,14 @@
   // 尝试恢复自动保存（IndexedDB 异步读取）
   createCell(); // 先创建默认 Cell，避免界面空白
   markSaved();
+  const bootCells = cells.slice(); // 启动时的初始 cell 引用
   loadAutosave().then(restored => {
+    // IDB 读取窗口内用户已在初始 cell 输入：跳过自动恢复，避免无提示覆盖
+    const userTypedFirst = bootCells.some(c => cells.includes(c) && c.textarea.value.trim());
+    if (restored && userTypedFirst) {
+      showToast('检测到上次会话，但已有输入，未自动恢复');
+      return;
+    }
     if (restored) {
       showToast('已恢复上次会话');
     } else if (tabs.length === 0) {

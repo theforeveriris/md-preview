@@ -170,6 +170,8 @@
     if (!cachedActions) cachedActions = buildActions();
     return cachedActions;
   }
+  // label 在构建时经 t() 固化：语言切换后失效重建（其他模块同款监听）
+  window.addEventListener('langchange', () => { cachedActions = null; });
 
   // ============== 渲染 ==============
 

@@ -24,7 +24,7 @@
 import ipaddress
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 def build_topology_json(
@@ -106,7 +106,7 @@ def build_topology_json(
         'meta': {
             'source': source_filename,
             'ptVersion': ensp_version,
-            'generatedAt': datetime.utcnow().isoformat() + 'Z',
+            'generatedAt': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
             'deviceCount': len(enriched_devices),
             'linkCount': len(enriched_links),
             'configCount': len(configs),
@@ -136,7 +136,7 @@ def build_error_json(source_filename: str, error_code: str, error_message: str, 
         'meta': {
             'source': source_filename,
             'ptVersion': 'unknown',
-            'generatedAt': datetime.utcnow().isoformat() + 'Z',
+            'generatedAt': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
             'deviceCount': 0,
             'linkCount': 0,
             'configCount': 0,

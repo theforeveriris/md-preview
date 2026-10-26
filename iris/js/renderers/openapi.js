@@ -19,6 +19,7 @@
  * 填参后点击发送，展示状态码、耗时与响应体。YAML 解析依赖按需加载的 js-yaml。
  * 跨域（CORS）由目标服务决定，失败时给出可读提示。
  */
+
 (function() {
   'use strict';
   window.MarkdownPreview = window.MarkdownPreview || {};
@@ -147,7 +148,9 @@
           if (!val) return;
           const where = inp.dataset.in;
           const name = inp.dataset.name;
-          if (where === 'path') url = url.replace('{' + name + '}', encodeURIComponent(val));
+          // 同名参数可能出现多次（如 /files/{id}/versions/{id}），全局替换
+          const pattern = '\\' + '{' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\' + '}';
+          if (where === 'path') url = url.replace(new RegExp(pattern, 'g'), encodeURIComponent(val));
           else if (where === 'query') url += (url.indexOf('?') >= 0 ? '&' : '?') + encodeURIComponent(name) + '=' + encodeURIComponent(val);
           else if (where === 'header') headers[name] = val;
         });

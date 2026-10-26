@@ -1,7 +1,6 @@
 (function() {
   window.MarkdownPreview = window.MarkdownPreview || {};
   
-  let isUpdating = false;
   let pendingHash = null;
   
   function initRouter() {
@@ -81,7 +80,6 @@
 
     if (path && path.endsWith('.md')) {
       const { markdown, fileTree } = window.MarkdownPreview;
-      isUpdating = true;
       markdown.loadMarkdownFile(path).then(() => {
         if (anchor) {
           // 文档加载完成后滚动到对应标题
@@ -99,22 +97,21 @@
         console.warn('Failed to load document from URL');
       });
       fileTree.highlightFileInSidebar(path);
-      setTimeout(() => isUpdating = false, 100);
     }
   }
   
   function handleHashChange() {
-    if (isUpdating) return;
+    // 无守卫：loadMarkdownFile 自带请求序号令牌防旧结果写回（见 markdown.js）；
+    // 旧实现靠 setTimeout(100ms) 复位 isUpdating，会吞掉 100ms 内的真实导航
     loadFromHash();
   }
   
   function updateHash(path) {
-    if (!path || isUpdating) return;
+    if (!path) return;
     const hash = '#/' + path;
     if (window.location.hash !== hash) {
-      isUpdating = true;
+      // replaceState 不触发 hashchange，无需防抖守卫
       window.history.replaceState(null, '', hash);
-      setTimeout(() => isUpdating = false, 100);
     }
   }
   

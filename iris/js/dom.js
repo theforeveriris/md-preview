@@ -17,15 +17,30 @@
     }
     cache[src] = new Promise((resolve, reject) => {
       if (existing) {
+        // 旧标签已失败（error 标记）：替换新标签重试，而不是挂已死节点导致 Promise 永远悬挂
+        if (existing.dataset.failed === '1') {
+          existing.remove();
+          delete cache[src];
+          return loadScript(src).then(resolve, reject);
+        }
         existing.addEventListener('load', () => { existing.dataset.loaded = '1'; resolve(); });
-        existing.addEventListener('error', () => { delete cache[src]; reject(new Error('Failed to load ' + src)); });
+        existing.addEventListener('error', () => {
+          existing.dataset.failed = '1';
+          delete cache[src];
+          reject(new Error('Failed to load ' + src));
+        });
         return;
       }
       const s = document.createElement('script');
       s.src = src;
       s.async = true;
       s.onload = () => { s.dataset.loaded = '1'; resolve(); };
-      s.onerror = () => { delete cache[src]; s.remove(); reject(new Error('Failed to load ' + src)); };
+      s.onerror = () => {
+        // 不 remove：保留 failed 标记，重复调用走上面的替换重试路径
+        s.dataset.failed = '1';
+        delete cache[src];
+        reject(new Error('Failed to load ' + src));
+      };
       document.head.appendChild(s);
     });
     return cache[src];

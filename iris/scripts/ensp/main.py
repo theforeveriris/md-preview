@@ -121,12 +121,12 @@ def process_topo(topo_path: Path, verbose: bool = False) -> dict:
                 raw_data = f.read()
 
             # 同时把 topo 文件复制到 xml 目录方便查看
-            write_xml(raw_data.decode('utf-8', errors='ignore'), str(xml_path))
+            write_xml(decode_topo_bytes(raw_data), str(xml_path))
         else:
             with open(topo_path, 'rb') as f:
                 raw_data = f.read()
             topo_dir = str(topo_path.parent)
-            write_xml(raw_data.decode('utf-8', errors='ignore'), str(xml_path))
+            write_xml(decode_topo_bytes(raw_data), str(xml_path))
 
         if verbose:
             print(f'  [{filename}] 大小: {len(raw_data)} bytes')
@@ -171,6 +171,15 @@ def process_topo(topo_path: Path, verbose: bool = False) -> dict:
 
 
 # ============== 主流程 ==============
+
+
+def decode_topo_bytes(raw: bytes) -> str:
+    # 与解析路径同款解码（utf-8 优先，gbk 回退）：errors='ignore' 会在
+    # xml/ 目录留下丢字节的副本
+    try:
+        return raw.decode('utf-8')
+    except UnicodeDecodeError:
+        return raw.decode('gbk')
 
 def main():
     parser = argparse.ArgumentParser(description='Huawei eNSP .topo → JSON 预处理脚本')

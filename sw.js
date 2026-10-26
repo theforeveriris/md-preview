@@ -39,7 +39,7 @@ const PRECACHE_FALLBACK_URLS = [
   './iris/vendor/highlight.js/highlight.min.js'
 ];
 
-// 拉取自动生成�?precache-manifest.json，失败时回退到最小清�?
+// 拉取构建期生成的 precache-manifest.json，失败时回退到最小预缓存清单
 async function loadPrecacheUrls() {
   try {
     const resp = await fetch(PRECACHE_MANIFEST_URL, { cache: 'no-store' });
@@ -48,7 +48,7 @@ async function loadPrecacheUrls() {
     if (!data || !Array.isArray(data.urls) || data.urls.length === 0) {
       throw new Error('manifest empty or invalid');
     }
-    // manifest 自身也加入缓存，便于后续 activate 时校�?
+    // manifest 自身也加入缓存，便于后续 activate 时校验
     const urls = data.urls.slice();
     if (!urls.includes(PRECACHE_MANIFEST_URL)) urls.push(PRECACHE_MANIFEST_URL);
     console.log('[SW] Loaded precache manifest:', data.count, 'urls (v' + (data.version || '?') + ')');
@@ -69,12 +69,13 @@ async function precache() {
 
   await Promise.all(
     urls.map(async (url) => {
-      // 网络优先：install 时总是重新拉取，确保发布新版本后预缓存立即刷新�?
-      // 而不是命中旧缓存直接跳过（旧逻辑导致预缓存从未更新）�?
-      // 仅当网络失败时才回退旧缓存，避免更新失败导致离线不可用�?
+      // 网络优先：install 时总是重新拉取（cache: 'reload' 绕过 HTTP 缓存），
+      // 确保发布新版本后预缓存立即刷新，而不是命中旧缓存直接跳过；
+      // 仅当网络失败时才回退旧缓存
       const cached = await cache.match(url);
       try {
-        const response = await fetch(url);
+        // cache: 'reload' 绕过 HTTP 缓存，避免把旧资源写进新版本缓存
+        const response = await fetch(url, { cache: 'reload' });
         if (response.ok) {
           await cache.put(url, response);
           successCount++;
@@ -88,22 +89,27 @@ async function precache() {
   );
 
   console.log('[SW] Precache done:', successCount, 'success,', failCount, 'failed');
+  // 弱网下全部/大多数下载失败时抛错：install 保持 pending，留在旧版本，
+  // 避免激活一个近乎空缓存的新 SW 导致离线用户直接不可用
+  if (successCount === 0 || failCount > successCount) {
+    throw new Error(`Precache majority failed (${failCount}/${successCount + failCount})`);
+  }
 }
 
 self.addEventListener('install', event => {
-  console.log('[SW] Installing v7.3...');
+  console.log('[SW] Installing', CACHE_NAME, '...');
   event.waitUntil(
     precache()
       .then(() => self.skipWaiting())
       .catch(err => {
-        console.error('[SW] Precache error:', err);
-        return self.skipWaiting();
+        // 预缓存失败：留在旧版本（不 skipWaiting），旧 SW 继续服务
+        console.error('[SW] Precache failed, staying on old version:', err);
       })
   );
 });
 
 self.addEventListener('activate', event => {
-  console.log('[SW] Activating v7.3...');
+  console.log('[SW] Activating', CACHE_NAME, '...');
   event.waitUntil(
     caches.keys().then(keys => {
       return Promise.all(
@@ -204,7 +210,7 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // 其他请求：缓存优�?
+  // 其他请求：缓存优先
   event.respondWith(
     caches.match(request).then(cached => {
       return cached || fetch(request).then(response => {
@@ -222,7 +228,7 @@ self.addEventListener('message', event => {
   if (event.data?.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
-  // 清空文档缓存（设置面板「清除文档缓存」）：仅�?.md 条目，保留静态资�?
+  // 清空文档缓存（设置面板「清除文档缓存」）：仅删 .md 条目，保留静态资源
   if (event.data?.type === 'CLEAR_DOC_CACHE') {
     event.waitUntil(
       caches.open(RUNTIME_CACHE).then(cache =>

@@ -17,7 +17,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execFileSync } = require('child_process');
 const marked = require('../vendor/marked.js');
 
 // 站点信息（与 index.html / config.json 保持一致）
@@ -92,8 +92,9 @@ function extractDescription(content) {
  */
 function getPublishDate(fullPath) {
   try {
-    const out = execSync(
-      `git log -1 --format=%aI -- "${fullPath}"`,
+    // execFileSync 数组形式：路径含引号/$/反引号不会破坏命令（同仓其余脚本惯例）
+    const out = execFileSync(
+      'git', ['log', '-1', '--format=%aI', '--', fullPath],
       { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] }
     ).trim();
     if (out) {

@@ -69,9 +69,13 @@ function headingSourceToText(s) {
     .replace(/`([^`]*)`/g, '$1');                               // `code`
 }
 
-// 与 markdown.js 的 slug 规则逐字一致
+// 与 iris/js/md-render.js 的 slug 规则逐字一致（有 test-slug-consistency.js
+// 回归测试锁死，改动任一侧必须同步另一侧）
 function slugify(text) {
-  return text.toLowerCase().replace(/[^\w\u4e00-\u9fa5]+/g, '-').replace(/^-|-$/g, '');
+  return String(text == null ? '' : text)
+    .toLowerCase()
+    .replace(/[^\w\u4e00-\u9fa5]+/g, '-')
+    .replace(/^-|-$/g, '');
 }
 
 // 给定 Markdown 文本，返回全部标题 id（供锚点校验 / 图谱按标题建边）

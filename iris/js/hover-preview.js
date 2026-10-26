@@ -271,5 +271,10 @@
     }, true);
   }
 
-  window.MarkdownPreview.hoverPreview = { init };
+  window.MarkdownPreview.hoverPreview = {
+    init,
+    // 文档重新渲染后内存缓存可能已 stale（内存命中短路了 fetch 层的
+    // no-cache 重验证）：文档边界清空重建
+    onDocRendered: function() { dataCache.clear(); }
+  };
 })();

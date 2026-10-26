@@ -45,9 +45,10 @@
   // 首行注释里的 height: N（允许分号 / 空格；N 限制在 120~2000）
   function parseHeight(src, lang) {
     const first = src.split('\n', 1)[0] || '';
-    const m = first.match(/height\s*[:=]\s*(\d{3,4})/i);
+    // 2-4 位数字（旧正则 \d{3,4} 会把 height: 80 静默丢弃）；clamp 到合法区间
+    const m = first.match(/height\s*[:=]\s*(\d{2,4})/i);
     if (!m) return DEFAULT_HEIGHT[lang];
-    return Math.min(2000, Math.max(120, parseInt(m[1], 10)));
+    return Math.min(2000, Math.max(80, parseInt(m[1], 10)));
   }
 
   function stripHeightComment(src, lang) {

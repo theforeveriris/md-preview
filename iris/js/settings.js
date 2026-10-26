@@ -391,6 +391,10 @@
       toggleTruncateFileNames(settings.truncateFileNames);
     });
 
+    // 显式 getElementById：不依赖「有 id 的元素自动成为 window 属性」这一
+    // 非标准隐式行为
+    const expandFoldersToggle = document.getElementById('expandFoldersToggle');
+    const sidebarStyleSelect = document.getElementById('sidebarStyleSelect');
     expandFoldersToggle?.addEventListener('change', (e) => {
       const settings = loadSettings();
       settings.expandFolders = e.target.checked;
@@ -1602,9 +1606,11 @@ body { margin: 0; }
   // 远端标签页推送的设置：写入本地后整体应用（sync-tabs.js 调用）
   function applyRemoteSettings(remote) {
     if (!remote || typeof remote !== 'object') return;
-    // 远端为全量 settings 快照：直接采用并回写
-    saveSettings(remote);
-    applyAllSettings(remote);
+    // 先归一化：旧版本标签页广播的快照可能缺字段，直接 apply 会因
+    // 「!== false」与「?? false」口径差造成界面态与存储态背离
+    const merged = { ...loadSettings(), ...remote };
+    saveSettings(merged);
+    applyAllSettings(merged);
   }
 
   function init() {

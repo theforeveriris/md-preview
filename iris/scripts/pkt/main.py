@@ -18,6 +18,7 @@ import argparse
 import os
 import sys
 import time
+import re
 from pathlib import Path
 
 # 将当前目录加入 path 以便导入同目录模块
@@ -44,20 +45,26 @@ JSON_DIR = PROJECT_ROOT / 'iris' / 'data' / 'pkt' / 'json'
 
 def detect_pt_version(decrypted_data: bytes) -> str:
     """从解密后的数据检测 PT 版本"""
-    # 尝试在 XML 中查找版本信息
+    # 尝试在 XML 中查找版本信息。只认 <VERSION> / <VERSIONNUMBER> 一类
+    # 专用节点（旧实现任意子串匹配 '6.'，坐标含 "6." 的 XML 全部误判）
     try:
         text = decrypted_data.decode('utf-8', errors='ignore')
-        # 常见版本标记
-        if '8.0' in text or '8.1' in text or '8.2' in text:
-            return 'PT 8.x'
-        if '7.3' in text or '7.4' in text:
-            return 'PT 7.3+'
-        if '7.0' in text or '7.1' in text or '7.2' in text:
-            return 'PT 7.x'
-        if '6.' in text:
-            return 'PT 6.x'
-        if '5.' in text:
-            return 'PT 5.x'
+        version_values = re.findall(
+            r'<(?:VERSION|VERSIONNUMBER|APP_VERSION|VERSIONSTR)[^>]*>([^<]+)<',
+            text, flags=re.IGNORECASE)
+        for value in version_values:
+            m = re.search(r'(\d+)\.(\d+)', value)
+            if not m:
+                continue
+            major, minor = int(m.group(1)), int(m.group(2))
+            if major >= 8:
+                return 'PT 8.x'
+            if major == 7:
+                return 'PT 7.3+' if minor >= 3 else 'PT 7.x'
+            if major == 6:
+                return 'PT 6.x'
+            if major == 5:
+                return 'PT 5.x'
     except Exception:
         pass
     return 'unknown'

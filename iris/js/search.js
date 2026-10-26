@@ -77,7 +77,7 @@
   }
 
   // 降级方案：纯 includes 子串匹配
-  function simpleSearch(query) {
+  function simpleSearch(query, limit) {
     const results = [];
     const queryLower = query.toLowerCase();
 
@@ -100,14 +100,14 @@
     });
 
     results.sort((a, b) => b.score - a.score);
-    return results.slice(0, 20).map(r => r.index);
+    return results.slice(0, limit || 20).map(r => r.index);
   }
 
   // FlexSearch 主搜索 + 后排序加权
-  function flexSearch(query) {
-    if (!flexIndex) return simpleSearch(query);
+  function flexSearch(query, limit) {
+    if (!flexIndex) return simpleSearch(query, limit);
 
-    const ids = flexIndex.search(query, 20);
+    const ids = flexIndex.search(query, limit || 20);
     const queryLower = query.toLowerCase();
 
     const ranked = ids.map(id => {
@@ -157,7 +157,10 @@
     const searchText = tagFilter.text;
 
     try {
-      let results = flexIndex ? flexSearch(searchText) : simpleSearch(searchText);
+      // tag: 过滤时先取 100 条候补：只看 FlexSearch 截断的 top-20 会让
+      // 文本排名 20 名外但标签命中的文档永远搜不到
+      const limit = tagFilter.tags.length > 0 ? 100 : 20;
+      let results = flexIndex ? flexSearch(searchText, limit) : simpleSearch(searchText, limit);
       if (tagFilter.tags.length > 0) {
         results = results.filter(id => tagsMod.docHasTags(documents[id], tagFilter.tags));
       }
@@ -259,15 +262,30 @@
 
   function highlightMatch(text, query) {
     if (!text) return '';
-    const escaped = escapeHtml(text);
-    if (!query) return escaped;
+    if (!query) return escapeHtml(text);
     const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    let regex;
     try {
-      const regex = new RegExp(safeQuery, 'gi');
-      return escaped.replace(regex, m => '<mark>' + m + '</mark>');
+      regex = new RegExp(safeQuery, 'gi');
     } catch (e) {
-      return escaped;
+      return escapeHtml(text);
     }
+    // 先在原文上计算命中区间再转义：在已转义文本上跑正则会命中
+    // &amp; 这类实体的内部（查 "amp" 会产出 &<mark>amp</mark>;）
+    const ranges = [];
+    let m;
+    while ((m = regex.exec(text)) !== null) {
+      if (m[0].length === 0) { regex.lastIndex++; continue; }
+      ranges.push([m.index, m.index + m[0].length]);
+    }
+    let out = '';
+    let pos = 0;
+    for (const [s0, e0] of ranges) {
+      out += escapeHtml(text.slice(pos, s0)) + '<mark>' + escapeHtml(text.slice(s0, e0)) + '</mark>';
+      pos = e0;
+    }
+    out += escapeHtml(text.slice(pos));
+    return out;
   }
 
   function setupSearchEvents() {

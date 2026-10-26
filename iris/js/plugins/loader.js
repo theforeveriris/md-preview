@@ -18,6 +18,8 @@
 
   // ===== 配置与工具 =====
 
+  const resolveRoot = () => window.MarkdownPreview.mdRender.resolveRoot();
+
   function getPluginConfig(name) {
     try {
       const config = window.MarkdownPreview.CONFIG || {};
@@ -276,8 +278,6 @@
   // ===== 渲染（支持异步） =====
 
   async function renderWithPlugins(context) {
-    console.log('[Plugins] renderWithPlugins called');
-
     // 文档渲染边界：清理上一轮文档渲染遗留的插件资源（倒计时定时器、监听器等），
     // 防止跨文档导航时这些资源持续累积泄漏。渲染器只在本函数内注册资源，
     // 编辑器 cell 路径不经过这里，不受影响。
@@ -296,8 +296,10 @@
       return;
     }
 
-    const allPres = document.querySelectorAll('.markdown-body pre');
-    console.log('[Plugins] Found pre elements:', allPres.length);
+    // 容器解析走 mdRender.resolveRoot：split-view 隐藏面板同样带 .markdown-body，
+    // 全局查询会重复处理隐藏面板里的块
+    const rootEl = resolveRoot();
+    const allPres = rootEl.querySelectorAll('pre');
 
     // 收集需要渲染的任务
     const renderTasks = [];
@@ -307,9 +309,11 @@
       const codeElement = pre.querySelector('code');
       if (!codeElement) continue;
 
-      const classList = codeElement.className;
-      const languageMatch = classList ? classList.match(/language-(\S+)/) : null;
-      const language = languageMatch ? languageMatch[1] : '';
+      // 语言统一从渲染器约定的 data-lang 解析（pre.code-block 体系），
+      // 多 token fence（如 "sql ddl"）取首 token，等价于 language-* 类首段
+      const language = (pre.dataset && pre.dataset.lang)
+        ? String(pre.dataset.lang).trim().split(/\s+/)[0]
+        : '';
       const code = codeElement.textContent.trim();
 
       const plugin = plugins.find(code, language);

@@ -31,7 +31,12 @@
       linksPromise = fetch(LINKS_URL, { cache: 'no-cache' })
         .then(r => (r.ok ? r.json() : null))
         .then(d => { linksCache = d; return d; })
-        .catch(() => null);
+        .catch(() => null)
+        .finally(() => {
+          // 失败结果（null）不缓存：瞬时网络故障后下次导航重试，
+          // 否则反向链接区被永久禁用
+          if (!linksCache) linksPromise = null;
+        });
     }
     return linksPromise;
   }

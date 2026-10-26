@@ -8,7 +8,8 @@
   // i18n 文案读取：i18n 模块未加载或语言包缺 key 时回退到内置中文
   function t(key, fallback) {
     const i18n = window.MarkdownPreview.i18n;
-    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
+    // fallback 透传：键缺失时回退内置文案，而不是裸键名上屏
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key, fallback);
     return fallback;
   }
 
@@ -55,6 +56,9 @@
     }
     if (window.MarkdownPreview.history?.onDocRendered) {
       window.MarkdownPreview.history.onDocRendered(path, st.docTitle);
+    }
+    if (window.MarkdownPreview.hoverPreview?.onDocRendered) {
+      window.MarkdownPreview.hoverPreview.onDocRendered();
     }
   }
 
@@ -370,7 +374,9 @@
       renderMs: Math.round(performance.now() - renderStartTime)
     };
 
-    document.querySelectorAll('.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6').forEach(heading => {
+    // 以主文档容器为查询根：分栏对照窗格与编辑器预览也用 .markdown-body
+    // 类名，全局查询会给它们赋重复 id（目录/锚点错乱）
+    dom.markdownContent.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(heading => {
       heading.id = mdRender.slugify(heading.textContent);
     });
 
@@ -397,6 +403,9 @@
     }
 
     setTimeout(async () => {
+      // 100ms 延迟窗口内可能已切到新文档：旧调度不得在新内容上运行
+      //（currentPath 为 '' 的虚拟/本地文档无竞态面，照常执行）
+      if (currentPath && state.currentFilePath !== currentPath) return;
       console.log('[Markdown] Starting render cycle');
       // 插件渲染（plugins.render 由 loader.js 始终注册，含跨文档插件资源清理；
       // 旧版 renderWithPluginsLegacy 分发路径已删除——不可达且缺少资源清理）
@@ -456,7 +465,9 @@
   }
 
   function interceptLinks(currentPath) {
-    document.querySelectorAll('.markdown-body a').forEach(link => {
+    // 只接管主文档内的链接：分栏窗格里的相对链接有自己的根路径语义，
+    // 用主文档路径改写会指错文件
+    dom.markdownContent.querySelectorAll('a').forEach(link => {
       const href = link.getAttribute('href');
       if (!href) return;
 
