@@ -1538,10 +1538,26 @@
     const html = cell.output.innerHTML;
     if (!html.trim()) { showToast('请先运行当前 Cell'); return; }
     const idx = cells.findIndex(c => c.id === activeCellId) + 1;
-    const win = window.open('', '_blank');
-    win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Cell ${idx}</title><link rel="stylesheet" href="iris/styles.css"><link rel="stylesheet" href="iris/css/galleries.css"><link rel="stylesheet" href="iris/vendor/highlight.js/styles/github.css"><link rel="stylesheet" href="iris/vendor/katex/katex.min.css"><style>@media print{body{margin:0;}}</style></head><body><article class="markdown-body" style="max-width:800px;margin:20px auto;padding:0 20px;">${html}</article></body></html>`);
-    win.document.close();
-    setTimeout(() => { win.print(); }, 500);
+    // 沙箱 iframe 替代 document.write：不含 allow-scripts，活动内容不执行
+    //（旧实现把 cell 原始 innerHTML 写进同源 about:blank 窗口，活动内容以
+    // 完整源权限运行）；打印由父页面调用 contentWindow.print()
+    const doc = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Cell ${idx}</title><link rel="stylesheet" href="iris/styles.css"><link rel="stylesheet" href="iris/css/galleries.css"><link rel="stylesheet" href="iris/vendor/highlight.js/styles/github.css"><link rel="stylesheet" href="iris/vendor/katex/katex.min.css"><style>@media print{body{margin:0;}}</style></head><body><article class="markdown-body" style="max-width:800px;margin:20px auto;padding:0 20px;">${html}</article></body></html>`;
+    const frame = document.createElement('iframe');
+    frame.style.cssText = 'position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0';
+    frame.setAttribute('sandbox', 'allow-same-origin allow-modals');
+    frame.srcdoc = doc;
+    frame.addEventListener('load', () => {
+      setTimeout(() => {
+        try {
+          frame.contentWindow.focus();
+          frame.contentWindow.print();
+        } catch (e) {
+          showToast('打印窗口打开失败');
+        }
+        setTimeout(() => frame.remove(), 1000);
+      }, 500);
+    });
+    document.body.appendChild(frame);
   }
 
   function downloadNotebook() {
@@ -1787,6 +1803,10 @@
   // 这样同一次粘贴/拖拽多张图片可以并发插入，而不会被 cellData 粒度拦截）
   const _imageProcessing = new WeakSet();
 
+  // base64 图片体积上限：超大图会撑爆自动保存序列化并必然超 localStorage
+  // 配额（自动保存失败 = 数据丢失面）。图床上传路径不受此限。
+  const MAX_BASE64_IMAGE_BYTES = 2 * 1024 * 1024;
+
   async function insertImageToCell(cellData, file) {
     if (!cellData || !file) return;
     if (_imageProcessing.has(file)) return;
@@ -1805,7 +1825,11 @@
         showToast('图片上传成功');
         markUnsaved();
       } catch (e) {
-        // 上传失败时回退到 base64
+        // 上传失败时回退到 base64（超大图无法回退，直接失败）
+        if (file.size > MAX_BASE64_IMAGE_BYTES) {
+          showToast('图床上传失败：' + e.message + '；图片超过 2MB，无法回退 base64');
+          return;
+        }
         showToast('图床上传失败：' + e.message + '，回退到 base64');
         try {
           const dataUrl = await fileToBase64(file);
@@ -1820,6 +1844,10 @@
       }
     } else {
       // base64 模式
+      if (file.size > MAX_BASE64_IMAGE_BYTES) {
+        showToast('图片 ' + (file.size / 1024 / 1024).toFixed(1) + 'MB 超过 base64 模式 2MB 上限，已拒绝；可配置图床后重试');
+        return;
+      }
       _imageProcessing.add(file);
       try {
         const dataUrl = await fileToBase64(file);

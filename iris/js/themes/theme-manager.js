@@ -114,6 +114,17 @@
     return currentSetting;
   }
 
+  // 外链 CSS 仅接受 https: 与站内相对路径：恶意备份文件可借此注入远程
+  // 样式做追踪/改写，http:/javascript:/data: 等协议一律拒绝
+  function safeCssUrl(url) {
+    const trimmed = (url || '').trim();
+    if (!trimmed) return '';
+    if (!/^[a-z][a-z0-9+.-]*:/i.test(trimmed)) return trimmed; // 相对路径
+    if (/^https:/i.test(trimmed)) return trimmed;
+    console.warn('[theme] 外链样式仅支持 https: 或相对路径，已忽略：', trimmed);
+    return '';
+  }
+
   // 加载自定义 CSS
   function loadCustomCSS(url) {
     // 移除旧的 custom CSS
@@ -127,6 +138,7 @@
       url = localStorage.getItem(CUSTOM_CSS_KEY);
     }
 
+    url = safeCssUrl(url);
     if (url) {
       customCSSLink = document.createElement('link');
       customCSSLink.rel = 'stylesheet';
@@ -163,6 +175,7 @@
       url = localStorage.getItem(CUSTOM_HLJS_KEY);
     }
 
+    url = safeCssUrl(url);
     if (url) {
       customHljsLink = document.createElement('link');
       customHljsLink.rel = 'stylesheet';

@@ -1,9 +1,13 @@
 // QR Code Generator Plugin
 // 演示新插件 API：生命周期钩子、异步渲染、上下文配置、资源追踪
+//
+// 隐私说明：二维码内容完全本地生成（iris/js/qr-encoder.js 按需懒加载），
+// 不再把用户内容明文发给第三方二维码 API；旧版「哈希画的伪二维码」
+// fallback 已移除——生成失败时给出明确错误而不是不可扫描的误导图。
 
 export default {
   name: 'qrcode',
-  description: 'QR Code generator with external API fallback',
+  description: 'QR Code generator (local generation, no third-party API)',
   priority: 10, // 优先级：数值越大越优先匹配
 
   // test 现在可选：如果不声明，默认匹配 language === plugin.name
@@ -13,21 +17,16 @@ export default {
 
   // 生命周期：初始化 — 接收来自 config.json 的插件配置
   init(config) {
-    console.log('[QRCode] init called, config:', config);
     // 合并默认配置与用户配置
     this._config = {
       defaultSize: 256,
-      apiEndpoints: [
-        (d, s) => `https://api.qrserver.com/v1/create-qr-code/?size=${s}x${s}&data=${encodeURIComponent(d)}`,
-        (d, s) => `https://chart.googleapis.com/chart?chs=${s}x${s}&cht=qr&chl=${encodeURIComponent(d)}`
-      ],
+      ecl: 'M', // 纠错等级 L/M/Q/H
       ...config
     };
   },
 
   // 生命周期：渲染前
   beforeRender(code, container, context) {
-    console.log('[QRCode] beforeRender, document:', context.documentPath);
     container.style.opacity = '0.6';
     container.style.transition = 'opacity 0.3s ease';
   },
@@ -51,6 +50,7 @@ export default {
       const parsed = JSON.parse(code);
       if (parsed.data) data = parsed.data;
       if (parsed.size) size = parsed.size;
+      if (parsed.ecl) this._config.ecl = parsed.ecl;
     } catch (e) {
       // Not JSON, use as raw text
     }
@@ -63,9 +63,6 @@ export default {
     qrContainer.style.display = 'inline-block';
     container.appendChild(qrContainer);
 
-    // 先显示 fallback
-    const fallbackCanvas = drawFallbackQR(qrContainer, data, size);
-
     // 注册资源以便后续清理
     if (context.registerResource) {
       context.registerResource({
@@ -75,21 +72,29 @@ export default {
       });
     }
 
-    // 尝试外部 API（异步加载）
-    const endpoints = this._config.apiEndpoints;
-    for (let i = 0; i < endpoints.length; i++) {
-      try {
-        const img = await loadImage(endpoints[i](data, size));
-        img.style.width = size + 'px';
-        img.style.height = size + 'px';
-        img.style.display = 'block';
-        qrContainer.innerHTML = '';
-        qrContainer.appendChild(img);
-        break; // 成功则停止尝试
-      } catch (err) {
-        console.warn(`[QRCode] API ${i + 1} failed:`, err.message);
-        // 继续尝试下一个
+    // 本地生成（首次调用会懒加载编码器脚本）
+    try {
+      if (!window.MarkdownPreview.QREncoder) {
+        await window.MarkdownPreview.loadScript('iris/js/qr-encoder.js');
       }
+      const enc = window.MarkdownPreview.QREncoder;
+      const svg = enc.toSVG(data, { ecl: this._config.ecl, margin: 2 });
+      if (!svg) throw new Error('too-long');
+      qrContainer.innerHTML = svg;
+      const svgEl = qrContainer.firstElementChild;
+      svgEl.style.width = size + 'px';
+      svgEl.style.height = size + 'px';
+      svgEl.style.display = 'block';
+    } catch (err) {
+      qrContainer.innerHTML = '';
+      const errBox = document.createElement('div');
+      errBox.style.cssText = 'padding:12px 16px;border:1px solid #ff6b6b;border-radius:8px;background:#fff0f0;color:#cc0000;font-size:14px';
+      if (err && err.message === 'too-long') {
+        errBox.textContent = '二维码内容过长（上限约 ' + window.MarkdownPreview.QREncoder.capacity(this._config.ecl) + ' 字节），请缩短内容或降低纠错等级（L）';
+      } else {
+        errBox.textContent = '二维码生成失败：编码器加载失败';
+      }
+      qrContainer.appendChild(errBox);
     }
 
     // 添加内容文本
@@ -108,102 +113,11 @@ export default {
 
   // 生命周期：渲染后
   afterRender(container, context) {
-    console.log('[QRCode] afterRender complete');
+    // noop
   },
 
   // 生命周期：销毁 — 清理资源
   destroy() {
-    console.log('[QRCode] destroy called, cleaning up resources');
     this._config = null;
   }
 };
-
-// 辅助函数：异步加载图片
-function loadImage(src) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error('Failed to load image: ' + src));
-    img.src = src;
-  });
-}
-
-// Fallback QR 绘制（同步）
-function drawFallbackQR(container, data, size) {
-  const canvas = document.createElement('canvas');
-  canvas.width = size;
-  canvas.height = size;
-  canvas.style.display = 'block';
-  container.innerHTML = '';
-  container.appendChild(canvas);
-
-  const ctx = canvas.getContext('2d');
-  const modules = 25;
-  const moduleSize = size / modules;
-
-  // Background
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, size, size);
-
-  // Draw 3 position patterns
-  drawPositionPattern(ctx, 0, 0, moduleSize);
-  drawPositionPattern(ctx, modules - 7, 0, moduleSize);
-  drawPositionPattern(ctx, 0, modules - 7, moduleSize);
-
-  // Draw timing patterns
-  for (let i = 8; i < modules - 8; i++) {
-    if (i % 2 === 0) {
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(i * moduleSize, 6 * moduleSize, moduleSize, moduleSize);
-      ctx.fillRect(6 * moduleSize, i * moduleSize, moduleSize, moduleSize);
-    }
-  }
-
-  // Fill with consistent pseudo-random data
-  ctx.fillStyle = '#000000';
-  const hash = simpleHash(data);
-  for (let i = 0; i < modules; i++) {
-    for (let j = 0; j < modules; j++) {
-      if (isInPositionPattern(i, j, modules) ||
-          (i === 6 && j > 7 && j < modules - 8) ||
-          (j === 6 && i > 7 && i < modules - 8)) {
-        continue;
-      }
-      if ((hash(i, j) % 2) === 0) {
-        ctx.fillRect(j * moduleSize, i * moduleSize, moduleSize, moduleSize);
-      }
-    }
-  }
-
-  return canvas;
-}
-
-function drawPositionPattern(ctx, x, y, moduleSize) {
-  ctx.fillStyle = '#000000';
-  ctx.fillRect(x * moduleSize, y * moduleSize, 7 * moduleSize, 7 * moduleSize);
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect((x + 1) * moduleSize, (y + 1) * moduleSize, 5 * moduleSize, 5 * moduleSize);
-  ctx.fillStyle = '#000000';
-  ctx.fillRect((x + 2) * moduleSize, (y + 2) * moduleSize, 3 * moduleSize, 3 * moduleSize);
-}
-
-function isInPositionPattern(i, j, modules) {
-  if (i < 7 && j < 7) return true;
-  if (i < 7 && j >= modules - 7 && j < modules) return true;
-  if (i >= modules - 7 && i < modules && j < 7) return true;
-  return false;
-}
-
-function simpleHash(data) {
-  let h = 0;
-  for (let i = 0; i < data.length; i++) {
-    h = ((h << 5) - h) + data.charCodeAt(i);
-    h = h & h;
-  }
-  return function(i, j) {
-    let val = h;
-    val = ((val << 5) - val) + i;
-    val = ((val << 5) - val) + j;
-    return Math.abs(val);
-  };
-}

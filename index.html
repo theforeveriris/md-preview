@@ -1621,6 +1621,7 @@
           <div class="image-upload-hint">端点需接收 multipart/form-data（字段名 file），返回 JSON <code>{ "url": "..." }</code></div>
           <div class="image-upload-hint">若需鉴权，可附带请求头（见下方自定义头）</div>
           <input type="text" id="imageUploadHeaders" class="image-upload-input" placeholder='自定义请求头 JSON，如 {"Authorization":"Bearer xxx"}' />
+          <div class="image-upload-hint">⚠️ 请求头（可能含 Token）以明文保存在本机 localStorage，且会发送到你填写的任意端点；请勿在共享电脑上使用</div>
         </div>
         <div class="image-upload-actions">
           <button class="toolbar-btn" id="imageUploadClear">清除配置</button>

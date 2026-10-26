@@ -225,5 +225,7 @@ function setDigits(cells, d, h, m, s) {
 function renderError(container, message) {
   container.className = 'countdown-container countdown-error';
   container.style.cssText = 'padding:12px 16px;border:1px solid #ff6b6b;border-radius:8px;background:#fff0f0;color:#cc0000;font-size:14px';
-  container.innerHTML = '<strong>倒计时渲染错误：</strong> ' + message;
+  container.innerHTML = '<strong>倒计时渲染错误：</strong>';
+  // message 含用户输入（如日期原文），以文本节点追加避免 HTML 注入
+  container.appendChild(document.createTextNode(message));
 }

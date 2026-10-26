@@ -37,6 +37,8 @@
     if (!mermaidInitialized) {
       mermaid.initialize({
         startOnLoad: false,
+        // 显式固化消毒边界：不依赖打包的 mermaid 版本默认值
+        securityLevel: 'strict',
         theme: 'base',
         themeVariables: {
           primaryColor: '#d4a5c9',

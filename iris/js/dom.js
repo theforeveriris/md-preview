@@ -10,7 +10,7 @@
     const cache = window.MarkdownPreview._scriptCache;
     if (cache[src]) return cache[src];
     // 已经存在同名 <script>（例如历史遗留标签）则复用
-    const existing = document.querySelector('script[src="' + src + '"]');
+    const existing = document.querySelector('script[src="' + (window.CSS && CSS.escape ? CSS.escape(src) : src) + '"]');
     if (existing && existing.dataset.loaded === '1') {
       cache[src] = Promise.resolve();
       return cache[src];
@@ -34,7 +34,7 @@
   window.MarkdownPreview.loadStyle = function(href) {
     const cache = window.MarkdownPreview._styleCache;
     if (cache[href]) return cache[href];
-    if (document.querySelector('link[rel="stylesheet"][href="' + href + '"]')) {
+    if (document.querySelector('link[rel="stylesheet"][href="' + (window.CSS && CSS.escape ? CSS.escape(href) : href) + '"]')) {
       cache[href] = Promise.resolve();
       return cache[href];
     }

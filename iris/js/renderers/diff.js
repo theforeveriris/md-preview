@@ -62,7 +62,8 @@
           const diffJson = Diff2Html.parse(diffCode);
           // 生成 HTML
           const diffHtml = Diff2Html.html(diffJson, configuration);
-          // 插入 HTML
+          // 插入 HTML。diff 内容的转义完全依赖 diff2html 自身（该库历史上
+          // 出过 XSS），升级此依赖时留意其安全公告
           diffTarget.innerHTML = diffHtml;
           
           // 初始化 UI

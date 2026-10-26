@@ -25,10 +25,23 @@
     const targetHash = hash || window.location.hash;
     if (!targetHash || targetHash.length < 2) return;
 
-    let path = decodeURIComponent(targetHash.substring(1));
+    // 畸形百分号编码会抛 URIError，回退原始字符串而不是让整次导航中断
+    let path;
+    try {
+      path = decodeURIComponent(targetHash.substring(1));
+    } catch (e) {
+      path = targetHash.substring(1);
+    }
     if (path.startsWith('/')) {
       path = path.substring(1);
     }
+    // 归一化 .. 与 .（fetch 前消除路径穿越面；同源限制下风险有限，属纵深防御）
+    const segs = [];
+    for (const seg of path.split('/')) {
+      if (seg === '..') segs.pop();
+      else if (seg !== '.' && seg !== '') segs.push(seg);
+    }
+    path = segs.join('/');
 
     // 支持 #/docs/file.md#heading-id 形式的锚点直达链接
     let anchor = '';

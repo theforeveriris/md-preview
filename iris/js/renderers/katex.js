@@ -13,6 +13,14 @@
     return clone.textContent.includes('$');
   }
 
+  // KaTeX trust 上下文：允许 \href/\url 等生成链接，但仅限 http(s)/mailto/
+  // 相对锚点/相对路径，拒绝 javascript:/data: 等危险协议（trust: true 会放行任意 URL）
+  function katexTrust(context) {
+    const url = context && context.url;
+    if (typeof url !== 'string') return false;
+    return /^(https?:|mailto:|#|\/)/i.test(url);
+  }
+
   async function render(root) {
     // 容器解析走 mdRender.resolveRoot：显式 root > #markdownContent > 第一个 .markdown-body
     // （split-view 的隐藏面板同样带 .markdown-body 且排在主文档之前，直接全局查询会命中空面板）
@@ -49,7 +57,7 @@
         katex.render(latex, span, {
           displayMode: false,
           throwOnError: false,
-          trust: true,
+          trust: katexTrust,
           strict: false
         });
       } catch (e) {
@@ -68,7 +76,7 @@
           katex.render(latex, block, {
             displayMode: true,
             throwOnError: false,
-            trust: true,
+            trust: katexTrust,
             strict: false
           });
         } catch (e) {
@@ -86,7 +94,7 @@
         ],
         ignoredTags: ['pre', 'code', 'script', 'style'],
         throwOnError: false,
-        trust: true,
+        trust: katexTrust,
         strict: false
       });
     } catch (error) {

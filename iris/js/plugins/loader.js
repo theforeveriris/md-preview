@@ -1,3 +1,11 @@
+/**
+ * 插件加载器（ES module 动态加载 + 生命周期管理）
+ *
+ * 安全模型：插件 = 任意 URL 的 ES module，拿到完整 window/DOM —— 即
+ * 「插件即受信代码」，与站点自身脚本同级，无 iframe/worker 隔离。
+ * 只应配置自己仓库内的插件或完全信任的第三方插件（static site 的既定取舍，
+ * 沙箱型插件等级见 roadmap）。
+ */
 (function() {
   'use strict';
   console.log('[PluginLoader] Loading...');

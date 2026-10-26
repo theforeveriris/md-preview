@@ -603,7 +603,9 @@
     dom.pageHeader.style.display = 'flex';
     dom.editPageBtn.style.display = 'flex';
 
-    const editUrl = `https://github.com/${CONFIG.owner}/${CONFIG.repo}/edit/main/${path}`;
+    // 路径逐段编码：含空格/#/中文的文件名不编码会生成坏的 GitHub 链接
+    const encodedPath = path.split('/').map(encodeURIComponent).join('/');
+    const editUrl = `https://github.com/${CONFIG.owner}/${CONFIG.repo}/edit/main/${encodedPath}`;
     dom.editPageBtn.href = editUrl;
   }
 

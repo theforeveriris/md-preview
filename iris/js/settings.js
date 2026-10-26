@@ -595,8 +595,16 @@
   function applyRemoteFont(url) {
     const existing = document.getElementById(REMOTE_FONT_STYLE_ID);
     if (existing) existing.remove();
-    const trimmed = (url || '').trim();
+    let trimmed = (url || '').trim();
     if (!trimmed) return;
+    // 远程字体 CSS 仅接受 https: 与相对路径：防止导入的恶意备份注入远程
+    // 样式（追踪/改写），其余协议一律拒绝
+    if (!/^[a-z][a-z0-9+.-]*:/i.test(trimmed) || /^https:/i.test(trimmed)) {
+      // 相对路径或 https:，放行
+    } else {
+      console.warn('[font] 远程字体仅支持 https: 或相对路径，已忽略：', trimmed);
+      return;
+    }
     const link = document.createElement('link');
     link.id = REMOTE_FONT_STYLE_ID;
     link.rel = 'stylesheet';
