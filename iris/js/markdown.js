@@ -161,8 +161,6 @@
   // ============== GitHub Alerts / LaTeX 保护 ==============
   // 已迁移至共享模块 md-render.js，这里保留薄封装以兼容内部调用。
   // markdown.js 使用默认 emoji 版 Alert 图标（与编辑器 SVG 版区分）。
-  const processGitHubAlerts = (text) => mdRender.processGitHubAlerts(text);
-  const protectLaTeXBlocks = (text) => mdRender.protectLaTeXBlocks(text);
 
   function resolveImageSrc(src, currentPath) {
     if (!src) return src;
@@ -239,8 +237,6 @@
     mdRender.groupGalleries(container);
   }
 
-  // 幻灯片自动轮播：已迁移至共享模块 mdRender.initSliders
-  const initSliders = (container) => mdRender.initSliders(container);
 
   function wrapTables(container) {
     const tables = container.querySelectorAll('table');
@@ -389,7 +385,7 @@
 
     processImages(dom.markdownContent, currentPath);
 
-    initSliders(dom.markdownContent);
+    mdRender.initSliders(dom.markdownContent);
 
     wrapTables(dom.markdownContent);
 
@@ -408,11 +404,11 @@
       // 100ms 延迟窗口内可能已切到新文档：旧调度不得在新内容上运行
       //（currentPath 为 '' 的虚拟/本地文档无竞态面，照常执行）
       if (currentPath && state.currentFilePath !== currentPath) return;
-      console.log('[Markdown] Starting render cycle');
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Markdown] Starting render cycle');
       // 插件渲染（plugins.render 由 loader.js 始终注册，含跨文档插件资源清理；
       // 旧版 renderWithPluginsLegacy 分发路径已删除——不可达且缺少资源清理）
       await window.MarkdownPreview.plugins.render({ documentPath: currentPath });
-      console.log('[Markdown] Plugins rendered, calling other renderers');
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Markdown] Plugins rendered, calling other renderers');
       // 渲染器统一调度：遍历 renderers 注册表逐个执行（顺序 = index.html 脚本加载序），
       // 单个渲染器失败被隔离，不影响后续。见 md-render.js: runRenderers。
       await mdRender.runRenderers(null, {
@@ -423,7 +419,7 @@
           window.MarkdownPreview.pkt?.destroyOrphaned?.();
         }
       });
-      console.log('[Markdown] Render cycle complete');
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Markdown] Render cycle complete');
     }, 100);
 
     renderDocNavigation(currentPath);
@@ -778,7 +774,7 @@
         const pre = copyBtn.closest('pre');
         const code = pre && pre.querySelector('code');
         if (code) {
-          console.log('[copy] copy-btn clicked');
+          (window.MarkdownPreview.debug?.debugLog || (() => {}))('[copy] copy-btn clicked');
           copyToClipboard(code.textContent).then(ok => {
             if (ok) {
               copyBtn.classList.add('copied');
@@ -795,7 +791,7 @@
         e.preventDefault();
         const heading = anchorBtn.closest('h1');
         if (heading && heading.id) {
-          console.log('[copy] heading-anchor clicked');
+          (window.MarkdownPreview.debug?.debugLog || (() => {}))('[copy] heading-anchor clicked');
           copyHeadingLink(heading.id, anchorBtn);
         }
         return;
@@ -810,7 +806,7 @@
         return;
       }
     });
-    console.log('[copy] click delegate initialized');
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))('[copy] click delegate initialized');
     initLightbox();
   }
 
@@ -819,7 +815,7 @@
     // 优先 Clipboard API（安全上下文下最可靠）
     if (window.isSecureContext && navigator.clipboard && navigator.clipboard.writeText) {
       return navigator.clipboard.writeText(text).then(() => {
-        console.log('[copy] clipboard API 成功');
+        (window.MarkdownPreview.debug?.debugLog || (() => {}))('[copy] clipboard API 成功');
         return true;
       }).catch((err) => {
         console.warn('[copy] clipboard API 失败，降级 execCommand:', err);
@@ -847,7 +843,7 @@
     let ok = false;
     try {
       ok = document.execCommand('copy');
-      console.log('[copy] execCommand 返回:', ok);
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('[copy] execCommand 返回:', ok);
     } catch (e) {
       console.warn('[copy] execCommand 异常:', e);
     }
@@ -898,14 +894,6 @@
       btn.innerHTML = savedOriginal;
     }, 1500);
   }
-
-  // 高亮 dom.markdownContent 内的代码块（共享实现）
-  function highlightCodeBlocks() {
-    mdRender.highlightCodeBlocks(dom.markdownContent);
-  }
-
-  // 代码块复制已由 setupClickDelegate 事件委托处理，无需单独绑定
-  function setupCopyButtons() {}
 
   /* ============ 图片灯箱 ============ */
   let lightboxInitialized = false;
@@ -1103,7 +1091,6 @@
     extractExcerpt,
     updateBreadcrumbs,
     setupHeadingNavigation,
-    calculateReadingTime,
-    highlightCodeBlocks
+    calculateReadingTime
   };
 })();

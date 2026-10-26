@@ -28,7 +28,8 @@
   window.MarkdownPreview = window.MarkdownPreview || {};
 
   const t = window.MarkdownPreview.t;
-  const esc = window.MarkdownPreview.mdRender.escapeHtml;
+  // 惰性转发：解析期直接取全局依赖 index.html 加载顺序（曾按隐式契约）
+  const esc = (...a) => window.MarkdownPreview.mdRender.escapeHtml(...a);
 
   const FIGURE_LANGS = { mermaid: 1, plantuml: 1, apexcharts: 1 };
   const ALIAS_RE = /^\s*#(fig|tbl):([A-Za-z0-9_\-.]+)(?:\s+([\s\S]*?))?\s*$/;

@@ -1,7 +1,12 @@
 (function() {
   window.MarkdownPreview = window.MarkdownPreview || {};
   
-  const { dom, state, CONFIG, search } = window.MarkdownPreview;
+  // 解析期不取全局（隐式加载顺序契约改为显式绑定）：公开入口首个调用前绑定
+  let dom, state, CONFIG, search;
+  function bindGlobals() {
+    ({ dom, state, CONFIG, search } = window.MarkdownPreview);
+  }
+
 
   // 自然排序比较器与 DOM 重排（与构建期 iris/js/name-sort.js 同一实现）
   // 注意：兜底的 compareNames 必须与 name-sort.js 的选项一致
@@ -38,6 +43,7 @@
   let liTimeMap = new WeakMap();
   
   async function loadFileTree() {
+    bindGlobals();
     try {
       const prebuiltUrl = 'iris/data/file-tree.json';
       let response = await fetch(prebuiltUrl);
@@ -47,7 +53,7 @@
       }
       
       if (response.ok) {
-        console.log('✅ 使用预构建的文件树');
+        (window.MarkdownPreview.debug?.debugLog || (() => {}))('✅ 使用预构建的文件树');
         if (window.MarkdownPreview.debug && window.MarkdownPreview.debug.incrementCacheHits) {
           window.MarkdownPreview.debug.incrementCacheHits();
         }
@@ -57,7 +63,7 @@
         onFilesLoaded();
         return;
       } else {
-        console.log('⚠️ 预构建文件不存在，使用 GitHub API');
+        (window.MarkdownPreview.debug?.debugLog || (() => {}))('⚠️ 预构建文件不存在，使用 GitHub API');
         state.fileTreeSource = 'api';
         await loadFileTreeFromGitHubAPI();
       }
@@ -69,6 +75,7 @@
   }
   
   async function loadFileTreeFromGitHubAPI() {
+    bindGlobals();
     try {
       const apiUrl = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/git/trees/main?recursive=1`;
       const response = await fetch(apiUrl);
@@ -92,6 +99,7 @@
   }
   
   function buildTreeFromFlatList(tree) {
+    bindGlobals();
     const root = [];
     const map = {};
     
@@ -147,13 +155,15 @@
     return root;
   }
   
-  function formatWordCount(count) {
+  // 全站共享（local-docs.js 曾有逐字副本，单位走 i18n）
+  window.MarkdownPreview.formatWordCount = function(count) {
     if (!count && count !== 0) return '';
     if (count >= 10000) {
-      return (count / 10000).toFixed(1).replace(/\.0$/, '') + 'w';
+      return (count / 10000).toFixed(1).replace(/\.0$/, '') + window.MarkdownPreview.t('wordCount.unit', 'w');
     }
-    return count + ' words';
-  }
+    return count + window.MarkdownPreview.t('wordCount.unit2', ' words');
+  };
+  const formatWordCount = window.MarkdownPreview.formatWordCount;
 
   function safeDecode(s) {
     try { return decodeURIComponent(s); } catch { return s; }
@@ -181,6 +191,7 @@
   }
 
   function renderFileTree(files) {
+    bindGlobals();
     if (!dom.fileTree) return;
     dom.fileTree.innerHTML = '';
 
@@ -430,6 +441,7 @@
   }
   
   function setWordCountVisibility(visible) {
+    bindGlobals();
     var tree = dom.fileTree.querySelector('file-tree');
     if (tree) {
       tree.classList.toggle('show-word-count', visible);
@@ -437,6 +449,7 @@
   }
 
   function setTruncateNames(truncate) {
+    bindGlobals();
     var tree = dom.fileTree.querySelector('file-tree');
     if (tree) {
       tree.classList.toggle('truncate-names', truncate !== false);
@@ -446,6 +459,7 @@
   // 设置切换「文件夹默认展开」后即时生效：在已渲染的 Shadow DOM 内就地
   // toggle（重建整树会重新 fetch + 丢滚动位置，setSortMode 已示范就地改）
   function setExpandFolders(expand) {
+    bindGlobals();
     var tree = dom.fileTree.querySelector('file-tree');
     if (!tree || !tree.shadowRoot) return;
     tree.shadowRoot.querySelectorAll('li.folder').forEach(folder => {
@@ -458,6 +472,7 @@
    * 不重建整棵树（重建会丢失滚动位置与展开状态），只在 Shadow DOM 内重排同级节点。
    */
   function setSortMode() {
+    bindGlobals();
     var tree = dom.fileTree.querySelector('file-tree');
     if (!tree || !tree.shadowRoot) return;
     applyNaturalOrder(tree.shadowRoot, {
@@ -474,6 +489,7 @@
   }
   
   function setActiveFile(path) {
+    bindGlobals();
     var tree = dom.fileTree.querySelector('file-tree');
     if (!tree || !tree.shadowRoot) return;
 
@@ -491,10 +507,12 @@
   }
   
   function highlightFileInSidebar(path) {
+    bindGlobals();
     setActiveFile(path);
   }
   
   function toggleSidebar() {
+    bindGlobals();
     if (window.innerWidth > 768) {
       toggleSidebarCollapsed();
       return;
@@ -504,12 +522,14 @@
   }
 
   function toggleSidebarCollapsed() {
+    bindGlobals();
     setSidebarCollapsed(!document.body.classList.contains('sidebar-collapsed'));
   }
 
   // 桌面端折叠状态：写在 body.sidebar-collapsed，样式见 layout.css；
   // 持久化到设置的 sidebarOpen（默认收起，用户展开后刷新仍保持）
   function setSidebarCollapsed(collapsed) {
+    bindGlobals();
     document.body.classList.toggle('sidebar-collapsed', collapsed === true);
     try {
       var settings = window.MarkdownPreview.settings;
@@ -522,6 +542,7 @@
   }
 
   function closeSidebar() {
+    bindGlobals();
     dom.sidebar.classList.remove('open');
     dom.sidebarOverlay.classList.remove('active');
     // 桌面端：Esc / overlay 关闭语义 = 展开已折叠的侧边栏
@@ -531,12 +552,14 @@
   }
   
   function closeSidebarOnMobile() {
+    bindGlobals();
     if (window.innerWidth <= 768) {
       closeSidebar();
     }
   }
   
   function onFilesLoaded() {
+    bindGlobals();
     // 搜索索引首建已延迟到首次使用（search.js init 挂 focus/paletteopen），
     // 此处不再 500ms 后重复 buildIndex（会把已建好的索引推倒重建）
     setTimeout(() => {
@@ -549,6 +572,7 @@
   }
   
   function getAllFilesInDFSOrder(files = state.fileTreeData) {
+    bindGlobals();
     const result = [];
     
     function traverse(items) {
@@ -566,6 +590,7 @@
   }
   
   function getAdjacentFiles(currentPath) {
+    bindGlobals();
     const allFiles = getAllFilesInDFSOrder();
     const currentIndex = allFiles.findIndex(f => f.path === currentPath);
     

@@ -25,12 +25,7 @@
 
   window.MarkdownPreview = window.MarkdownPreview || {};
 
-  // ============== 工具：GitHub Pages 子路径适配（与 pkt-renderer 同款） ==============
-  function getBasePath() {
-    const path = window.location.pathname;
-    if (path.includes('/md-preview/')) return '/md-preview/';
-    return '/';
-  }
+  const getBasePath = window.MarkdownPreview.mdRender.getBasePath; // 共享副本（曾两处逐字重复）
 
   // ============== 放映模式（全局单例 overlay） ==============
   let slideshowEl = null;

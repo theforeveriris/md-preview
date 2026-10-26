@@ -76,14 +76,8 @@
     return en + cjk;
   }
 
-  // 格式与 file-tree.js formatWordCount 一致
-  function formatWordCount(count) {
-    if (!count && count !== 0) return '';
-    if (count >= 10000) {
-      return (count / 10000).toFixed(1).replace(/\.0$/, '') + 'w';
-    }
-    return count + t('wordCount.unit', ' words');
-  }
+  // 共享 file-tree 的 formatWordCount（曾逐字副本）
+  const formatWordCount = window.MarkdownPreview.formatWordCount;
 
   // ============== 面板渲染 ==============
   // 表头（文件夹行样式）在 init 中只构建一次，这里更新计数与列表
@@ -211,7 +205,8 @@
 
   // ============== 打开 / 移除 / 清空 ==============
   // 文件夹模式的文件内容懒加载：首次打开时才读取
-  async function loadEntryContent(file) {    if (file.content != null) return file.content;
+  async function loadEntryContent(file) {
+    if (file.content != null) return file.content;
     try {
       let f = file.file;
       if (!f && file.handle) f = await file.handle.getFile();

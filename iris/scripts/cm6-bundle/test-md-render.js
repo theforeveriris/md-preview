@@ -189,8 +189,7 @@ function run() {
   assert('markdown.js 调用 mdRender.groupGalleries', mdCode.includes('mdRender.groupGalleries'));
   assert('markdown.js 调用 mdRender.initSliders', mdCode.includes('mdRender.initSliders'));
   assert('markdown.js 调用 mdRender.highlightCodeBlocks', mdCode.includes('mdRender.highlightCodeBlocks'));
-  assert('markdown.js 调用 mdRender.protectLaTeXBlocks', mdCode.includes('mdRender.protectLaTeXBlocks'));
-  assert('markdown.js 调用 mdRender.processGitHubAlerts', mdCode.includes('mdRender.processGitHubAlerts'));
+  // LaTeX/Alerts 处理已内化进 mdRender.parseMarkdown（别名转发层已删），markdown.js 不再直接调用
   // 确认旧的内部实现已删除
   assert('markdown.js 无重复的 processGitHubAlerts 函数定义', !/function processGitHubAlerts\s*\(/.test(mdCode));
   assert('markdown.js 无重复的 protectLaTeXBlocks 函数定义', !/function protectLaTeXBlocks\s*\(/.test(mdCode));

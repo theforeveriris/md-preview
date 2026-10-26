@@ -37,10 +37,7 @@
 
   // i18n 文案统一走 i18n.js 的权威实现（MarkdownPreview.t，全站唯一，避免多处包装漂移）
   const t = window.MarkdownPreview.t;
-
-  function icon(name, size) {
-    return `<svg width="${size || 14}" height="${size || 14}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#${name}"/></svg>`;
-  }
+  const icon = window.MarkdownPreview.icon; // 共享副本（曾三处逐字重复）
 
   // 首行注释里的 height: N（允许分号 / 空格；N 限制在 120~2000）
   function parseHeight(src, lang) {

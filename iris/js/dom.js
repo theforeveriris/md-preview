@@ -64,6 +64,11 @@
     return cache[href];
   };
 
+  // 渲染器共用 SVG 图标构造（此前 csv-table/json-tree/sandbox 三份逐字副本）
+  window.MarkdownPreview.icon = function(name, size) {
+    return `<svg width="${size || 14}" height="${size || 14}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#${name}"/></svg>`;
+  };
+
   window.MarkdownPreview.dom = {
     fileTree: document.getElementById('fileTree'),
     markdownContent: document.getElementById('markdownContent'),
@@ -92,7 +97,6 @@
     backToTopBtn: document.getElementById('backToTopBtn'),
     openSettingsBtn: document.getElementById('openSettingsBtn'),
     settingsOverlay: document.getElementById('settingsOverlay'),
-    closeSettingsBtn: document.getElementById('closeSettingsBtn'),
     showReadingProgressToggle: document.getElementById('showReadingProgressToggle')
   };
 })();

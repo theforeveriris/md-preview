@@ -30,7 +30,9 @@
 
   function toast(msg) { alert(msg); }
 
-  function downloadBlob(blob, fileName) {
+  // 全站统一下载工具（editor.js 的旧副本立即 revoke，部分浏览器会截断下载；
+  // 延迟 revoke 保证大文件/慢浏览器可用）
+  const downloadBlob = window.MarkdownPreview.downloadBlob = function(blob, fileName) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -39,7 +41,7 @@
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 2000);
-  }
+  };
 
   function dateStamp() {
     return new Date().toISOString().slice(0, 10).replace(/-/g, '');
@@ -155,13 +157,10 @@ figure { margin: 1em 0; text-align: center; }`;
       while ((m = re.exec(chap.html)) !== null) {
         const src = m[1];
         if (/^(https?:|data:|#|\/)/i.test(src)) continue;
-        const dir = chap.path.includes('/') ? chap.path.slice(0, chap.path.lastIndexOf('/') + 1) : '';
-        const parts = [];
-        for (const seg of (dir + src).split('/')) {
-          if (seg === '..') parts.pop();
-          else if (seg !== '.' && seg !== '') parts.push(seg);
-        }
-        const sitePath = decodeURIComponent(parts.join('/'));
+        // 相对路径解析复用 split-view.resolvePath（与 markdown.js interceptLinks
+        // 同语义；此前是第三份内联副本）
+        const sitePath = decodeURIComponent(
+          window.MarkdownPreview.splitView.resolvePath(chap.path, src));
         if (!wanted.has(sitePath)) wanted.set(sitePath, []);
         wanted.get(sitePath).push({ chap, src });
       }

@@ -19,7 +19,7 @@
 
   /**
    * CodeMirrorEditor - textarea 的 drop-in replacement
-   * 兼容属性：value, selectionStart, selectionEnd, scrollTop, dataset
+   * 兼容属性：value, selectionStart, selectionEnd, scrollTop(只读), dataset
    * 兼容事件：input, focus, blur, scroll, keydown, keyup, click, select, mouseup
    */
   class CodeMirrorEditor {
@@ -166,6 +166,7 @@
       this.setSelectionRange(this.selectionStart, v);
     }
 
+    // scrollTop 只读（写入走 CM6 自身滚动管理；文件头注释不再宣称可写）
     get scrollTop() {
       return this.view.scrollDOM.scrollTop;
     }

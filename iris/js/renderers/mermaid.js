@@ -1,5 +1,5 @@
 (function() {
-  console.log('[Mermaid] Renderer module loading...');
+  (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Mermaid] Renderer module loading...');
   window.MarkdownPreview = window.MarkdownPreview || {};
   window.MarkdownPreview.renderers = window.MarkdownPreview.renderers || {};
 
@@ -16,7 +16,7 @@
   async function ensureMermaid() {
     if (typeof mermaid !== 'undefined' && mermaidInitialized) return true;
     if (typeof mermaid === 'undefined') {
-      console.log('[Mermaid] Library not loaded yet, lazy-loading mermaid.min.js');
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Mermaid] Library not loaded yet, lazy-loading mermaid.min.js');
       try {
         await window.MarkdownPreview.loadScript('iris/vendor/mermaid.min.js');
       } catch (err) {
@@ -66,17 +66,17 @@
         }
       });
       mermaidInitialized = true;
-      console.log('[Mermaid] Initialized');
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Mermaid] Initialized');
     }
     return true;
   }
 
   async function render(root) {
-    console.log('[Mermaid] render() called');
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Mermaid] render() called');
 
     // 没有任何 mermaid 代码块时直接跳过，避免无谓加载
     if (!hasMermaidBlocks()) {
-      console.log('[Mermaid] No mermaid blocks found, skipping load');
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Mermaid] No mermaid blocks found, skipping load');
       return;
     }
 
@@ -126,25 +126,34 @@
       } catch (error) {
         console.error('[Mermaid] Rendering error:', error);
 
-        const errorDiv = document.createElement('div');
-        errorDiv.style.color = '#ff6b6b';
-        errorDiv.style.padding = '10px';
-        errorDiv.style.border = '1px solid #ff6b6b';
-        errorDiv.style.borderRadius = '4px';
-        errorDiv.textContent = 'Mermaid 渲染错误: ' + error.message;
+        // 统一回退约定：错误提示 + 可折叠源码（不丢源码，与 plantuml 一致）
+        const errorBox = document.createElement('div');
+        errorBox.style.cssText = 'color:#ff6b6b;padding:10px;border:1px solid #ff6b6b;border-radius:4px';
+        const msg = document.createElement('div');
+        msg.textContent = 'Mermaid 渲染错误: ' + error.message;
+        errorBox.appendChild(msg);
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+        summary.textContent = '查看源码';
+        const srcPre = document.createElement('pre');
+        srcPre.style.cssText = 'margin-top:8px;white-space:pre-wrap';
+        srcPre.textContent = mermaidCode;
+        details.appendChild(summary);
+        details.appendChild(srcPre);
+        errorBox.appendChild(details);
 
         if (pre.parentNode) {
-          pre.parentNode.replaceChild(errorDiv, pre);
+          pre.parentNode.replaceChild(errorBox, pre);
         }
       }
     }
 
-    console.log('[Mermaid] render() complete, replaced:', done);
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Mermaid] render() complete, replaced:', done);
   }
 
   window.MarkdownPreview.renderers.mermaid = {
     render
   };
 
-  console.log('[Mermaid] Renderer module loaded and registered');
+  (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Mermaid] Renderer module loaded and registered');
 })();

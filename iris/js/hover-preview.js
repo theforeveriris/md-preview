@@ -39,7 +39,8 @@
   const t = window.MarkdownPreview.t;
 
   // HTML 转义统一走 md-render.js 的权威实现（全站唯一，避免多处副本漂移）
-  const esc = window.MarkdownPreview.mdRender.escapeHtml;
+  // 惰性转发：解析期直接取全局依赖 index.html 加载顺序（曾按隐式契约）
+  const esc = (...a) => window.MarkdownPreview.mdRender.escapeHtml(...a);
 
   // 从链接 href 提取目标文档路径：#/docs/x.md#anchor → docs/x.md
   function pathFromHref(href) {

@@ -58,7 +58,7 @@
           ((doc.title || '') + ' ' + (doc.preview || '') + ' ' + (doc.path || ''));
         flexIndex.add(i, combined);
       });
-      console.log('FlexSearch index built with', documents.length, 'documents');
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('FlexSearch index built with', documents.length, 'documents');
     } else {
       console.warn('FlexSearch not available, falling back to simple search');
     }
@@ -162,7 +162,7 @@
     }
 
     currentQuery = query.trim();
-    console.log('Searching for:', query);
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))('Searching for:', query);
 
     // tag:xxx 过滤 token：拆出后按文档标签过滤结果
     const tagsMod = window.MarkdownPreview.tags;
@@ -177,12 +177,19 @@
       if (tagFilter.tags.length > 0) {
         results = results.filter(id => tagsMod.docHasTags(documents[id], tagFilter.tags));
       }
-      console.log('Results count:', results.length);
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('Results count:', results.length);
       displaySearchResults(results);
     } catch (e) {
       console.error('Search error:', e);
       hideSearchResults();
     }
+  }
+
+  // i18n 文案读取（统一 t() 风格，替代内联三元硬编码中文兜底）
+  function t(key, fallback) {
+    const i18n = window.MarkdownPreview.i18n;
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key, fallback);
+    return fallback;
   }
 
   function displaySearchResults(results) {
@@ -192,7 +199,7 @@
     container.classList.add('active');
 
     if (!results || results.length === 0) {
-      container.innerHTML = `<div class="search-no-results">${window.MarkdownPreview.i18n ? window.MarkdownPreview.i18n.t("search.noResults") : "没有找到相关文档"}</div>`;
+      container.innerHTML = `<div class="search-no-results">${t("search.noResults", "没有找到相关文档")}</div>`;
       if (window.MarkdownPreview.palette) {
         window.MarkdownPreview.palette.appendInline(window.MarkdownPreview.palette.stripPrefix(currentQuery), container, 4);
       }
@@ -210,7 +217,7 @@
     }
 
     if (merged.length === 0) {
-      container.innerHTML = `<div class="search-no-results">${window.MarkdownPreview.i18n ? window.MarkdownPreview.i18n.t("search.noResults") : "没有找到相关文档"}</div>`;
+      container.innerHTML = `<div class="search-no-results">${t("search.noResults", "没有找到相关文档")}</div>`;
       return;
     }
 
@@ -271,7 +278,8 @@
 
   // 转义 HTML 后，将命中关键词片段用 <mark> 包裹（大小写不敏感）
   // escapeHtml 统一走 md-render.js 的权威实现（全站唯一，避免多处副本漂移）
-  const escapeHtml = window.MarkdownPreview.mdRender.escapeHtml;
+  // 惰性转发：解析期直接取全局依赖 index.html 加载顺序（曾按隐式契约）
+  const escapeHtml = (...a) => window.MarkdownPreview.mdRender.escapeHtml(...a);
 
   function highlightMatch(text, query) {
     if (!text) return '';

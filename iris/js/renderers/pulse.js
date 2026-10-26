@@ -1633,5 +1633,5 @@
     SECTION_TIME_MAP: SECTION_TIME_MAP
   };
 
-  console.log('[Pulse] Renderer module loaded (DG-LAB format)');
+  (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Pulse] Renderer module loaded (DG-LAB format)');
 })();

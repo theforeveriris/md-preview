@@ -401,5 +401,5 @@
     ensure();
   }
 
-  window.MarkdownPreview.splitView = { open, close, toggle: open, isOpen, init, toggleSync, setSyncEnabled, isSyncEnabled };
+  window.MarkdownPreview.splitView = { open, close, toggle: open, isOpen, init, toggleSync, setSyncEnabled, isSyncEnabled, resolvePath };
 })();

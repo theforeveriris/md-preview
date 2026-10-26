@@ -578,9 +578,9 @@
 
   function copyOutputHtml(cellData) {
     const html = cellData.output.innerHTML;
-    if (!html.trim()) { showToast('请先运行此 Cell'); return; }
+    if (!html.trim()) { showToast(editorT('editor.needRunThisCell', '请先运行此 Cell')); return; }
     navigator.clipboard.writeText(html).then(() => {
-      showToast('已复制 HTML');
+      showToast(editorT('editor.htmlCopied', '已复制 HTML'));
     }).catch(() => {
       // 兜底
       const ta = document.createElement('textarea');
@@ -589,7 +589,7 @@
       ta.select();
       document.execCommand('copy');
       document.body.removeChild(ta);
-      showToast('已复制 HTML');
+      showToast(editorT('editor.htmlCopied', '已复制 HTML'));
     });
   }
 
@@ -603,7 +603,7 @@
   function exportCellStandalone(cellData) {
     const idx = cells.findIndex(c => c.id === cellData.id) + 1;
     const html = cellData.output.innerHTML;
-    if (!html.trim()) { showToast('请先运行此 Cell'); return; }
+    if (!html.trim()) { showToast(editorT('editor.needRunThisCell', '请先运行此 Cell')); return; }
     const fullHtml = buildStandaloneHtml(html, `Cell ${idx}`);
     downloadBlob(new Blob([fullHtml], { type: 'text/html;charset=utf-8' }), `cell-${idx}.html`);
   }
@@ -611,6 +611,13 @@
   // ============== Toast 提示 ==============
 
   let toastTimer = null;
+  // i18n：用户可见文案统一走全站 t()（editor.js 分批迁移：本批为 toast/confirm）
+  function editorT(key, fallback) {
+    const i18n = window.MarkdownPreview.i18n;
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key, fallback);
+    return fallback;
+  }
+
   function showToast(msg) {
     let toast = document.getElementById('editorToast');
     if (!toast) {
@@ -1468,22 +1475,15 @@
 
   // ============== 下载功能 ==============
 
-  function downloadBlob(blob, filename) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
+  // 统一走 MarkdownPreview.downloadBlob（export-bundle.js 版，延迟 revoke
+  // 防下载截断；旧本地副本立即 revoke 有截断风险）
+  const downloadBlob = window.MarkdownPreview.downloadBlob;
 
   function downloadCurrentMd() {
     const cell = getActiveCell();
     if (!cell) return;
     const content = cell.textarea.value;
-    if (!content.trim()) { showToast('当前 Cell 为空'); return; }
+    if (!content.trim()) { showToast(editorT('editor.cellEmpty', '当前 Cell 为空')); return; }
     const idx = cells.findIndex(c => c.id === activeCellId) + 1;
     downloadBlob(new Blob([content], { type: 'text/markdown;charset=utf-8' }), `cell-${idx}.md`);
   }
@@ -1492,7 +1492,7 @@
     const cell = getActiveCell();
     if (!cell) return;
     const html = cell.output.innerHTML;
-    if (!html.trim()) { showToast('请先运行当前 Cell'); return; }
+    if (!html.trim()) { showToast(editorT('editor.needRunCurrentCell', '请先运行当前 Cell')); return; }
     const idx = cells.findIndex(c => c.id === activeCellId) + 1;
     const fullHtml = buildStandaloneHtml(html, `Cell ${idx}`, false);
     downloadBlob(new Blob([fullHtml], { type: 'text/html;charset=utf-8' }), `cell-${idx}.html`);
@@ -1502,7 +1502,7 @@
     const cell = getActiveCell();
     if (!cell) return;
     const html = cell.output.innerHTML;
-    if (!html.trim()) { showToast('请先运行当前 Cell'); return; }
+    if (!html.trim()) { showToast(editorT('editor.needRunCurrentCell', '请先运行当前 Cell')); return; }
     const idx = cells.findIndex(c => c.id === activeCellId) + 1;
     const fullHtml = buildStandaloneHtml(html, `Cell ${idx}`, true);
     downloadBlob(new Blob([fullHtml], { type: 'text/html;charset=utf-8' }), `cell-${idx}-offline.html`);
@@ -1576,7 +1576,7 @@
     const cell = getActiveCell();
     if (!cell) return;
     const html = cell.output.innerHTML;
-    if (!html.trim()) { showToast('请先运行当前 Cell'); return; }
+    if (!html.trim()) { showToast(editorT('editor.needRunCurrentCell', '请先运行当前 Cell')); return; }
     const idx = cells.findIndex(c => c.id === activeCellId) + 1;
     // 沙箱 iframe 替代 document.write：不含 allow-scripts，活动内容不执行
     //（旧实现把 cell 原始 innerHTML 写进同源 about:blank 窗口，活动内容以
@@ -1592,7 +1592,7 @@
           frame.contentWindow.focus();
           frame.contentWindow.print();
         } catch (e) {
-          showToast('打印窗口打开失败');
+          showToast(editorT('editor.printFailed', '打印窗口打开失败'));
         }
         setTimeout(() => frame.remove(), 1000);
       }, 500);
@@ -1652,8 +1652,8 @@
 
   async function importMdnb(text) {
     let data;
-    try { data = JSON.parse(text); } catch (e) { showToast('无效的 .mdnb 文件'); return; }
-    if (!data || !Array.isArray(data.cells)) { showToast('文件格式不正确'); return; }
+    try { data = JSON.parse(text); } catch (e) { showToast(editorT('editor.invalidMdnb', '无效的 .mdnb 文件')); return; }
+    if (!data || !Array.isArray(data.cells)) { showToast(editorT('editor.badFileFormat', '文件格式不正确')); return; }
     // 确认清空现有
     if (cells.length > 0 && cells.some(c => c.textarea.value.trim())) {
       if (!confirm('导入将替换当前所有 Cell，是否继续？')) return;
@@ -1672,7 +1672,7 @@
       if (s.output_html) {
         const clean = await mdRender.sanitizeHtml(s.output_html).catch(() => null);
         if (clean == null) {
-          showToast('净化组件加载失败，已丢弃运行结果，可重新运行 Cell 恢复');
+          showToast(editorT('editor.sanitizeFailed', '净化组件加载失败，已丢弃运行结果，可重新运行 Cell 恢复'));
         } else {
           newCell.output.innerHTML = clean;
           newCell.output.classList.add('visible');
@@ -1685,7 +1685,7 @@
     if (cells.length === 0) createCell();
     renumberCells();
     updateStatusbar();
-    showToast('已导入 ' + data.cells.length + ' 个 Cell');
+    showToast(editorT('editor.importedCells', '已导入 {n} 个 Cell').replace('{n}', data.cells.length));
   }
 
   function importMdCells(text) {
@@ -1715,18 +1715,18 @@
     if (cells.length === 0) createCell();
     renumberCells();
     updateStatusbar();
-    showToast('已导入 ' + cells.length + ' 个 Cell');
+    showToast(editorT('editor.importedCells', '已导入 {n} 个 Cell').replace('{n}', cells.length));
   }
 
   function importMdCurrent(text) {
     const cell = getActiveCell();
-    if (!cell) { showToast('没有活跃 Cell'); return; }
+    if (!cell) { showToast(editorT('editor.noActiveCell', '没有活跃 Cell')); return; }
     cell.textarea.setValue(text);
     updateCellMeta(cell);
     markModified(cell);
     markUnsaved();
     updateStatusbar();
-    showToast('已导入到当前 Cell');
+    showToast(editorT('editor.importedToCurrent', '已导入到当前 Cell'));
   }
 
   // ============== 清空所有 Cell ==============
@@ -1862,28 +1862,28 @@
     cellData.textarea.focus();
 
     if (config.mode === 'host' && config.url) {
-      showToast('正在上传图片到图床…');
+      showToast(editorT('editor.uploadingImage', '正在上传图片到图床…'));
       _imageProcessing.add(file);
       try {
         const url = await uploadImageToHost(file, config);
         const md = `![${fileName}](${url})`;
         insertAtCursor(cellData.textarea, md, 0);
-        showToast('图片上传成功');
+        showToast(editorT('editor.imageUploadOk', '图片上传成功'));
         markUnsaved();
       } catch (e) {
         // 上传失败时回退到 base64（超大图无法回退，直接失败）
         if (file.size > MAX_BASE64_IMAGE_BYTES) {
-          showToast('图床上传失败：' + e.message + '；图片超过 2MB，无法回退 base64');
+          showToast(editorT('editor.uploadFailNoFallback', '图床上传失败：{m}；图片超过 2MB，无法回退 base64').replace('{m}', e.message));
           return;
         }
-        showToast('图床上传失败：' + e.message + '，回退到 base64');
+        showToast(editorT('editor.uploadFailFallback', '图床上传失败：{m}，回退到 base64').replace('{m}', e.message));
         try {
           const dataUrl = await fileToBase64(file);
           const md = `![${fileName}](${dataUrl})`;
           insertAtCursor(cellData.textarea, md, 0);
           markUnsaved();
         } catch (e2) {
-          showToast('图片插入失败：' + e2.message);
+          showToast(editorT('editor.imageInsertFail', '图片插入失败：{m}').replace('{m}', e2.message));
         }
       } finally {
         _imageProcessing.delete(file);
@@ -1891,7 +1891,7 @@
     } else {
       // base64 模式
       if (file.size > MAX_BASE64_IMAGE_BYTES) {
-        showToast('图片 ' + (file.size / 1024 / 1024).toFixed(1) + 'MB 超过 base64 模式 2MB 上限，已拒绝；可配置图床后重试');
+        showToast(editorT('editor.imageTooLarge', '图片 {m}MB 超过 base64 模式 2MB 上限，已拒绝；可配置图床后重试').replace('{m}', (file.size / 1024 / 1024).toFixed(1)));
         return;
       }
       _imageProcessing.add(file);
@@ -1899,10 +1899,10 @@
         const dataUrl = await fileToBase64(file);
         const md = `![${fileName}](${dataUrl})`;
         insertAtCursor(cellData.textarea, md, 0);
-        showToast('图片已插入（base64）');
+        showToast(editorT('editor.imageInsertedBase64', '图片已插入（base64）'));
         markUnsaved();
       } catch (e) {
-        showToast('图片插入失败：' + e.message);
+        showToast(editorT('editor.imageInsertFail', '图片插入失败：{m}').replace('{m}', e.message));
       } finally {
         _imageProcessing.delete(file);
       }
@@ -1951,12 +1951,12 @@
       const url = document.getElementById('imageUploadUrl').value.trim();
       const headers = document.getElementById('imageUploadHeaders').value.trim();
       if (mode === 'host' && !url) {
-        showToast('请填写图床上传端点 URL');
+        showToast(editorT('editor.needHostUrl', '请填写图床上传端点 URL'));
         return;
       }
       if (headers) {
         try { JSON.parse(headers); } catch (e) {
-          showToast('自定义请求头不是有效的 JSON');
+          showToast(editorT('editor.badHeadersJson', '自定义请求头不是有效的 JSON'));
           return;
         }
       }
@@ -1975,7 +1975,7 @@
       const headersInput = document.getElementById('imageUploadHeaders');
       if (urlInput) urlInput.value = '';
       if (headersInput) headersInput.value = '';
-      showToast('图片上传配置已清除');
+      showToast(editorT('editor.hostConfigCleared', '图片上传配置已清除'));
     });
 
     // 点击外部关闭
@@ -2185,7 +2185,7 @@
       renderTabs();
     }
     persistTabMeta();
-    showToast('已关闭「' + tab.title + '」');
+    showToast(editorT('editor.tabClosed', '已关闭「{t}」').replace('{t}', tab.title));
   }
 
   // 新建按钮
@@ -2303,13 +2303,13 @@
         // IndexedDB 写入失败，回退 localStorage
         if (autosaveLocalStorage(data)) {
           markSaved(savedTabId);
-          showToast('IndexedDB 写入失败，已回退到 localStorage');
+          showToast(editorT('editor.idbFallback', 'IndexedDB 写入失败，已回退到 localStorage'));
         } else {
           if (statusSave) {
             statusSave.textContent = '保存失败';
             statusSave.style.color = '#e74c3c';
           }
-          showToast('自动保存失败：存储空间可能已满');
+          showToast(editorT('editor.autosaveFull', '自动保存失败：存储空间可能已满'));
         }
       }
     } else {
@@ -2320,7 +2320,7 @@
           statusSave.textContent = '保存失败';
           statusSave.style.color = '#e74c3c';
         }
-        showToast('自动保存失败：存储空间可能已满');
+        showToast(editorT('editor.autosaveFull', '自动保存失败：存储空间可能已满'));
       }
     }
   }
@@ -2455,7 +2455,7 @@
       restoreFromData(data);
       return true;
     } catch (e) {
-      showToast('恢复自动保存失败：数据可能已损坏');
+      showToast(editorT('editor.restoreFailed', '恢复自动保存失败：数据可能已损坏'));
       return false;
     }
   }
@@ -2712,11 +2712,11 @@
     // IDB 读取窗口内用户已在初始 cell 输入：跳过自动恢复，避免无提示覆盖
     const userTypedFirst = bootCells.some(c => cells.includes(c) && c.textarea.value.trim());
     if (restored && userTypedFirst) {
-      showToast('检测到上次会话，但已有输入，未自动恢复');
+      showToast(editorT('editor.restoreSkipped', '检测到上次会话，但已有输入，未自动恢复'));
       return;
     }
     if (restored) {
-      showToast('已恢复上次会话');
+      showToast(editorT('editor.sessionRestored', '已恢复上次会话'));
     } else if (tabs.length === 0) {
       // 无历史数据，初始化第一个空白 tab
       return createTab({ skipSaveCurrent: true });

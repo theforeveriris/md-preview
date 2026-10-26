@@ -28,10 +28,7 @@
   // HTML 转义统一走 md-render.js 的权威实现（全站唯一，避免多处副本漂移）。
   // md-render.js 先于渲染器脚本加载，此处 IIFE 执行时必然可用。
   const esc = window.MarkdownPreview.mdRender.escapeHtml;
-
-  function icon(name, size) {
-    return `<svg width="${size || 14}" height="${size || 14}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#${name}"/></svg>`;
-  }
+  const icon = window.MarkdownPreview.icon; // 共享副本（曾三处逐字重复）
 
   // ============== 解析（RFC 4180 引号规则；tsv 按制表符） ==============
   // 行数上限：万行级 CSV 全量建 DOM 会卡死渲染线程（json-tree 已有
@@ -449,11 +446,7 @@
     ta.remove();
   }
 
-  function docSlug() {
-    const st = window.MarkdownPreview.state;
-    const name = (st && (st.currentFilePath || (st.localDoc && st.localDoc.name))) || '';
-    return String(name).replace(/^.*\//, '').replace(/\.md$/i, '') || '';
-  }
+  const docSlug = window.MarkdownPreview.mdRender.docSlug; // 共享副本（曾两处逐字重复）
 
   // ============== 入口：替换文档内的 csv/tsv 代码块 ==============
   function render(root) {

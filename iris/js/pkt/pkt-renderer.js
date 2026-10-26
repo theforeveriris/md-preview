@@ -3192,12 +3192,7 @@
     }
   }
 
-  function getBasePath() {
-    // GitHub Pages 子路径适配
-    const path = window.location.pathname;
-    if (path.includes('/md-preview/')) return '/md-preview/';
-    return '/';
-  }
+  const getBasePath = window.MarkdownPreview.mdRender.getBasePath; // 共享副本（曾两处逐字重复）
 
   // ============== 暴露 API ==============
 

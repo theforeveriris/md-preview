@@ -11,9 +11,9 @@
       return;
     }
 
-    console.log('Checking diff2html libraries...');
-    console.log('  - Diff2Html:', typeof Diff2Html !== 'undefined' ? 'loaded' : 'not loaded');
-    console.log('  - Diff2HtmlUI:', typeof Diff2HtmlUI !== 'undefined' ? 'loaded' : 'not loaded');
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))('Checking diff2html libraries...');
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))('  - Diff2Html:', typeof Diff2Html !== 'undefined' ? 'loaded' : 'not loaded');
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))('  - Diff2HtmlUI:', typeof Diff2HtmlUI !== 'undefined' ? 'loaded' : 'not loaded');
 
     // 按需加载 diff2html JS + CSS
     await Promise.all([
@@ -34,8 +34,8 @@
       const classList = codeElement.className;
       if (!classList || !classList.includes('language-diff')) continue;
       
+      const diffCode = codeElement.textContent.trim();
       try {
-        const diffCode = codeElement.textContent.trim();
         const container = document.createElement('div');
         container.className = 'diff-container';
         container.style.margin = '1.5em 0';
@@ -75,12 +75,22 @@
         }
       } catch (error) {
         console.error('Diff rendering error:', error);
-        // 错误框写进本次渲染的 container（旧实现 append 到 pre.parentNode，
-        // 而 pre 已被替换，错误框会落到文档末尾）
+        // 统一回退约定：错误提示 + 可折叠源码（不丢源码）；错误框写进本次
+        // 渲染的 container（旧实现 append 到 pre.parentNode，pre 已被替换，
+        // 错误框会落到文档末尾）
         const errorDiv = document.createElement('div');
         errorDiv.style.color = '#ff6b6b';
         errorDiv.style.padding = '10px';
         errorDiv.textContent = 'Diff 渲染错误: ' + error.message;
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+        summary.textContent = '查看源码';
+        const srcPre = document.createElement('pre');
+        srcPre.style.cssText = 'margin-top:8px;white-space:pre-wrap';
+        srcPre.textContent = typeof diffCode === 'string' ? diffCode : '';
+        details.appendChild(summary);
+        details.appendChild(srcPre);
+        errorDiv.appendChild(details);
         container.appendChild(errorDiv);
       }
     }

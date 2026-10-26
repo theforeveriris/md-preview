@@ -287,11 +287,19 @@
     updatePerformance();
   }
 
+  // 统一受控日志：生产路径的调试 console.log 全部改走这里，
+  // 面板未开启（debugState.enabled=false）时静默
+  function debugLog(...args) {
+    if (!debugState.enabled) return;
+    console.log('[dbg]', ...args);
+  }
+
   window.MarkdownPreview.debug = {
     init: initDebug,
     incrementApiCalls,
     incrementCacheHits,
     updateRenderTime,
-    updateAll
+    updateAll,
+    debugLog
   };
 })();

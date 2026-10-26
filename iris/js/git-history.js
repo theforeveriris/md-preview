@@ -17,7 +17,8 @@
   window.MarkdownPreview = window.MarkdownPreview || {};
 
   const t = window.MarkdownPreview.t;
-  const esc = window.MarkdownPreview.mdRender.escapeHtml;
+  // 惰性转发：解析期直接取全局依赖 index.html 加载顺序（曾按隐式契约）
+  const esc = (...a) => window.MarkdownPreview.mdRender.escapeHtml(...a);
   const WATCH_KEY = 'md-preview-watched-docs';
   const TOKEN_KEY = 'md-preview-github-token';
 

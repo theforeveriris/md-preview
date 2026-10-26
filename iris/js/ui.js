@@ -312,19 +312,6 @@
     if (tagPanel) tagPanel.hidden = mode !== 'tags';
   }
   
-  function copyCodeToClipboard(pre) {
-    const code = pre.querySelector('code');
-    if (code) {
-      navigator.clipboard.writeText(code.textContent).then(() => {
-        const originalText = code.textContent;
-        code.textContent = 'Copied!';
-        setTimeout(() => {
-          code.textContent = originalText;
-        }, 1500);
-      });
-    }
-  }
-
   // 触发行快捷键提示按平台显示（Mac 用 ⌘K，其余用 Ctrl K）
   function initSearchTriggerKbd() {
     if (!dom.searchTriggerKbd) return;
@@ -336,9 +323,7 @@
     updateProgress,
     setupScrollProgress,
     setupEventListeners,
-    switchMode,
-    copyCodeToClipboard,
-    updateActiveHeading,
+    switchMode,    updateActiveHeading,
     openSearchPalette,
     closeSearchPalette,
     isSearchPaletteOpen,

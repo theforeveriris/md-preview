@@ -766,6 +766,19 @@
       || document.querySelector('.markdown-body');
   }
 
+  // ===== 渲染器接口约定（备查） =====
+  // 1) 容器：渲染器 render(root) 一律经 resolveRoot 解析作用域，不得直接取
+  //    dom.markdownContent（embedded/pulse 曾绕过约定命中 split-view 空面板）。
+  //    pkt 与 pptx 不在 renderers 注册表，由 embedded.js 以 loadAndRender 工厂
+  //    挂载——有意旁路（预处理产物型渲染器）。
+  // 2) 代码块选择器两套并存（历史约定，改动需全量回归）：
+  //    - pre.code-block[data-lang=xxx]：csv/json/sandbox/http/openapi/graph/
+  //      glossary/sql-erd（含复制按钮与语言标签，由上方 renderer.code 生成）
+  //    - pre code.language-xxx：mermaid/apexcharts/diff/plantuml/geo（marked
+  //      原生类名，loader.js 插件分发也走这一套）
+  // 3) 插件目录：加载器在 iris/js/plugins/，插件本体在 iris/plugins/
+  //    （ES module 动态 import），目录不对称是历史布局，勿混淆。
+
   // ---- 延迟渲染（PERF-1）：重型渲染器滚到附近才初始化 ----
   const lazyObservers = [];
 
@@ -978,6 +991,21 @@
       .replace(/^-|-$/g, '');
   }
 
+  // GitHub Pages 子路径适配（此前 pptx.js / pkt-renderer.js 两份逐字副本）
+  function getBasePath() {
+    return window.location.pathname.includes('/md-preview/') ? '/md-preview/' : '/';
+  }
+
+  // 图表默认调色板（apexcharts/csv-table 图表共用；与站点品牌紫一致）
+  const CHART_PALETTE = ['#8B5CF6', '#D946EF', '#3B82F6', '#10B981', '#F59E0B'];
+
+  // CSV/JSON 树部件共用的当前文档 slug（此前 csv-table/json-tree 两份副本）
+  function docSlug() {
+    const st = window.MarkdownPreview.state;
+    const name = (st && (st.currentFilePath || (st.localDoc && st.localDoc.name))) || '';
+    return String(name).replace(/^.*\//, '').replace(/\.md$/i, '') || '';
+  }
+
   window.MarkdownPreview.mdRender = {
     KNOWN_STYLES,
     DEFAULT_ALERT_TYPES,
@@ -1003,6 +1031,9 @@
     clearLazy,
     DEFAULT_LAZY,
     CELL_RENDERER_SUBSET,
+    docSlug,
+    getBasePath,
+    CHART_PALETTE,
     resolveRoot,
   };
 })();

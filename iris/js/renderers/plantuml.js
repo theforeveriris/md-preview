@@ -93,9 +93,8 @@
   }
 
   function buildImageUrl(server, encoded) {
-    if (server.type === 'kroki') {
-      return server.base.replace(/\/$/, '') + '/svg/' + encoded;
-    }
+    // kroki 与 plantuml 服务当前 URL 形态相同（base/svg/encoded）；
+    // 若未来某服务路径变化再在此分叉
     return server.base.replace(/\/$/, '') + '/svg/' + encoded;
   }
 

@@ -53,7 +53,7 @@
     currentTheme = themeId;
     document.documentElement.setAttribute('data-theme', themeId);
     window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: themeId, setting: currentSetting } }));
-    if (save !== false) console.log(`Theme changed to: ${themeId} (setting: ${currentSetting})`);
+    if (save !== false) (window.MarkdownPreview.debug?.debugLog || (() => {}))(`Theme changed to: ${themeId} (setting: ${currentSetting})`);
   }
 
   // 初始化主题系统
@@ -101,7 +101,7 @@
       localStorage.setItem(STORAGE_KEY, themeId);
     }
     applyResolved(resolveTheme(themeId), false);
-    console.log(`Theme setting: ${themeId}`);
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))(`Theme setting: ${themeId}`);
   }
 
   // 获取当前实际生效的主题
@@ -144,7 +144,7 @@
       customCSSLink.rel = 'stylesheet';
       customCSSLink.href = url;
       document.head.appendChild(customCSSLink);
-      console.log(`Custom CSS loaded: ${url}`);
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))(`Custom CSS loaded: ${url}`);
     }
   }
 
@@ -187,7 +187,7 @@
       } else {
         document.head.appendChild(customHljsLink);
       }
-      console.log('Custom hljs CSS loaded:', url);
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('Custom hljs CSS loaded:', url);
     }
   }
 

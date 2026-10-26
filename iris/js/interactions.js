@@ -671,6 +671,8 @@
     hideMenu,
     isMenuOpen: () => menuOpen,
     // 全站统一复制工具（clipboard API 失败自动降级 execCommand）
-    copyText
+    copyText,
+    // Canvas 文本硬换行（表格 PNG 导出 / 划词截图共用）
+    wrapLine
   };
 })();

@@ -144,6 +144,15 @@
     };
   }
 
+  // 「load → 改 → save → apply」样板收敛：约 20 处 handler 逐字重复此模式。
+  // applyFn 收到合并后的完整 settings（而非单值），便于多字段联动。
+  function updateSetting(patch, applyFn) {
+    const settings = loadSettings();
+    Object.assign(settings, patch);
+    saveSettings(settings);
+    if (typeof applyFn === 'function') applyFn(settings);
+  }
+
   function saveSettings(settings) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
@@ -351,7 +360,6 @@
 
   function initSettingsPanel() {
     const settingsOverlay = document.getElementById('settingsOverlay');
-    const closeSettingsBtn = document.getElementById('closeSettingsBtn');
     const showReadingProgressToggle = document.getElementById('showReadingProgressToggle');
     const showWordCountToggle = document.getElementById('showWordCountToggle');
     const truncateFileNamesToggle = document.getElementById('truncateFileNamesToggle');
@@ -361,10 +369,6 @@
     if (!settingsOverlay) {
       return;
     }
-
-    closeSettingsBtn?.addEventListener('click', () => {
-      closeSettingsPanel();
-    });
 
     settingsOverlay.addEventListener('click', (e) => {
       if (e.target === settingsOverlay) {
@@ -457,18 +461,12 @@
 
     // 长表格右侧越界
     document.getElementById('tableBleedToggle')?.addEventListener('change', (e) => {
-      const settings = loadSettings();
-      settings.tableBleed = e.target.checked;
-      saveSettings(settings);
-      applyTableBleed(settings.tableBleed);
+      updateSetting({ tableBleed: e.target.checked }, (st) => applyTableBleed(st.tableBleed));
     });
 
     // 标题数字无衬线
     document.getElementById('sansHeadingDigitsToggle')?.addEventListener('change', (e) => {
-      const settings = loadSettings();
-      settings.sansHeadingDigits = e.target.checked;
-      saveSettings(settings);
-      applySansHeadingDigits(settings.sansHeadingDigits);
+      updateSetting({ sansHeadingDigits: e.target.checked }, (st) => applySansHeadingDigits(st.sansHeadingDigits));
     });
 
     // 移动端手势（左右滑翻页 / 左缘右滑呼出侧边栏）
@@ -486,16 +484,14 @@
       if (!e.target.checked && window.MarkdownPreview.sectionCollapse) {
         window.MarkdownPreview.sectionCollapse.clearAll();
       } else if (e.target.checked && window.MarkdownPreview.sectionCollapse) {
-        window.MarkdownPreview.sectionCollapse.onDocRendered(loadSettings() && window.MarkdownPreview.state.currentFilePath);
+        // 遗留写法「loadSettings() && …」清理：对象恒为真值，直接取路径
+        window.MarkdownPreview.sectionCollapse.onDocRendered(window.MarkdownPreview.state.currentFilePath);
       }
     });
 
     // 专注模式（focus-mode.js：当前段落高亮、其余淡化）
     document.getElementById('focusModeToggle')?.addEventListener('change', (e) => {
-      const settings = loadSettings();
-      settings.focusMode = e.target.checked;
-      saveSettings(settings);
-      applyFocusMode(settings.focusMode);
+      updateSetting({ focusMode: e.target.checked }, (st) => applyFocusMode(st.focusMode));
     });
 
     // 对照阅读默认同步滚动（split-view.js 打开时读取；开着时即时生效）
@@ -529,18 +525,12 @@
 
     // 中文竖排（CJK-3）
     document.getElementById('verticalTextToggle')?.addEventListener('change', (e) => {
-      const settings = loadSettings();
-      settings.verticalText = e.target.checked;
-      saveSettings(settings);
-      applyVerticalText(settings.verticalText);
+      updateSetting({ verticalText: e.target.checked }, (st) => applyVerticalText(st.verticalText));
     });
 
     // 屏外内容跳过布局（PERF-2）
     document.getElementById('perfContentVisibilityToggle')?.addEventListener('change', (e) => {
-      const settings = loadSettings();
-      settings.perfContentVisibility = e.target.checked;
-      saveSettings(settings);
-      applyContentVisibility(settings.perfContentVisibility);
+      updateSetting({ perfContentVisibility: e.target.checked }, (st) => applyContentVisibility(st.perfContentVisibility));
     });
 
     // 相邻文档预取（PERF-4；预取自身读取设置，无需即时动作）
