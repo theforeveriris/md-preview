@@ -1,11 +1,12 @@
 {
-  "generatedAt": "2026-10-26T14:23:37.787Z",
+  "generatedAt": "2026-10-26T15:50:22.993Z",
   "count": {
-    "nodes": 55,
-    "edges": 91
+    "nodes": 56,
+    "edges": 96
   },
   "nodes": [
     "ARTWORK.md",
+    "CONTRIBUTING.md",
     "README.md",
     "docs/changelog.md",
     "docs/code-highlight-theme.md",
@@ -66,6 +67,12 @@
       "docs/theme-customization.md": 1,
       "docs/show.md": 1
     },
+    "CONTRIBUTING.md": {
+      "readme-dev.md": 2,
+      "docs/plugin-development.md": 3,
+      "docs/requirements.md": 1,
+      "docs/roadmap.md": 1
+    },
     "README.md": {
       "docs/shortcuts.md": 2,
       "docs/roadmap.md": 3,
@@ -78,7 +85,8 @@
       "docs/plugin-development.md": 1,
       "docs/rss.md": 1,
       "readme-dev.md": 1,
-      "ARTWORK.md": 1
+      "ARTWORK.md": 1,
+      "CONTRIBUTING.md": 1
     },
     "docs/configuration.md": {
       "docs/theme-customization.md": 1,
