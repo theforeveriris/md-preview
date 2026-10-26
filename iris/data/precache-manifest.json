@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-26T20:49:21.512Z",
+  "generatedAt": "2026-10-26T20:55:40.318Z",
   "version": 1,
-  "count": 117,
+  "count": 118,
   "urls": [
     "./",
     "./index.html",
@@ -41,6 +41,7 @@
     "./iris/js/backlinks.js",
     "./iris/js/cjk.js",
     "./iris/js/cm-editor.js",
+    "./iris/js/color-utils.js",
     "./iris/js/config.js",
     "./iris/js/debug.js",
     "./iris/js/dom.js",
