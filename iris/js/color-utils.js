@@ -109,5 +109,15 @@
     return [f(0), f(8), f(4)].map(v => Math.round(v * 255));
   }
 
-  window.MarkdownPreview.ColorUtils = { parseColor, parseRgb, resolveColor, luminance, contrast, rgbToCss, hslToRgb };
+  // 主题 CSS 变量读取（此前 graph/pkt-renderer/pulse 三种写法各自实现）
+  function getThemeVar(name, fallback) {
+    try {
+      const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+      return v || fallback;
+    } catch (e) {
+      return fallback;
+    }
+  }
+
+  window.MarkdownPreview.ColorUtils = { parseColor, parseRgb, resolveColor, luminance, contrast, rgbToCss, hslToRgb, getThemeVar };
 })();

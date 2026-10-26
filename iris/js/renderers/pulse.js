@@ -383,11 +383,10 @@
   // ============== 工具函数 ==============
 
   function getThemeColors() {
-    var cs = getComputedStyle(document.documentElement);
-    function var_(name, fallback) {
-      var v = cs.getPropertyValue(name).trim();
-      return v || fallback;
-    }
+    // 主题变量读取统一走 ColorUtils.getThemeVar（此前三种写法之一）
+    var var_ = function(name, fallback) {
+      return window.MarkdownPreview.ColorUtils.getThemeVar(name, fallback);
+    };
     return {
       accent: var_('--color-accent-purple', '#d4a5c9'),
       accentDeep: var_('--color-accent-purple-deep', '#b88aad'),

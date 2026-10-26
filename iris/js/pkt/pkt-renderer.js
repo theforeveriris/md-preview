@@ -595,10 +595,8 @@
 
   // ============== 辅助函数 ==============
 
-  function getCSSVar(name, fallback) {
-    const val = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-    return val || fallback;
-  }
+  // 主题变量读取统一走 ColorUtils.getThemeVar
+  const getCSSVar = (name, fallback) => window.MarkdownPreview.ColorUtils.getThemeVar(name, fallback);
 
   // 接口名简化：FastEthernet0/0 → Fa0/0, GigabitEthernet0/0 → Gi0/0
   // 支持 FastEthernet, GigabitEthernet, Serial, Ethernet, Vlan, Loopback

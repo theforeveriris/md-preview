@@ -192,14 +192,8 @@
   }
 
   // cytoscape 不解析 CSS var()，样式里要给出实际颜色 / 字体
-  function cssVar(name, fallback) {
-    try {
-      const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-      return v || fallback;
-    } catch (e) {
-      return fallback;
-    }
-  }
+  // 主题变量读取统一走 ColorUtils.getThemeVar
+  const cssVar = (name, fallback) => window.MarkdownPreview.ColorUtils.getThemeVar(name, fallback);
 
   // ---- 配色：主题强调色的明度阶梯 ----
   // 不用 CSS color-mix：浏览器会把它的计算值序列化成 color(srgb …) / oklab()，
