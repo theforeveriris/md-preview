@@ -58,7 +58,12 @@
     }
   }
 
+  // 导航竞态防护：快速连续导航时旧文档的 fetch 后返回，不得写回
+  // state/DOM。每次进入递增令牌，await 返回后比对，过期请求静默放弃
+  let loadSeq = 0;
+
   async function loadMarkdownFile(path) {
+    const seq = ++loadSeq;
     try {
       // 立即更新 URL，提供即时反馈
       const { router } = window.MarkdownPreview;
@@ -69,6 +74,7 @@
       resetReadingProgress();
       window.MarkdownPreview.ui.updateProgress(30);
       const response = await fetch(path, { cache: 'no-store' });
+      if (seq !== loadSeq) return; // 已有更新的导航，丢弃本次结果
 
       if (window.MarkdownPreview.debug && window.MarkdownPreview.debug.incrementApiCalls) {
         window.MarkdownPreview.debug.incrementApiCalls();
@@ -79,6 +85,7 @@
       }
       window.MarkdownPreview.ui.updateProgress(60);
       const markdown = await response.text();
+      if (seq !== loadSeq) return; // 二次校验：text() 期间可能又切了文档
       window.MarkdownPreview.ui.updateProgress(100);
       state.currentFilePath = path;
       // 加载仓库内文档后清除本地文档记录，导出功能随之切回仓库文件

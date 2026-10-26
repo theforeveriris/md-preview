@@ -56,127 +56,103 @@
   function render(container) {
     // 支持传入外部容器（如编辑器 cell 的 outputElement），不传则默认操作主文档
     const targetEl = container || dom.markdownContent;
-    const content = targetEl.innerHTML;
 
     const embedLanguages = ['embed', 'geojson', 'topojson', 'twitter', 'x', 'pkt', 'ensp', 'pptx'];
 
-    // 提前检测：文档不含任何嵌入语言标记时直接返回，
-    // 避免无条件 innerHTML 重建把 ApexCharts/Leaflet 等 JS 实例的 DOM 全部销毁重建。
-    if (!embedLanguages.some(lang => content.includes(`language-${lang}`))) {
+    // 提前检测：文档不含任何嵌入语言标记时直接返回
+    const embedSelector = embedLanguages.map(l => `pre code.language-${l}`).join(',');
+    if (!targetEl.querySelector(embedSelector)) {
       return;
     }
 
-    let processedContent = content;
+    // 逐 pre 节点处理并原地替换，绝不整容器 innerHTML 重写——
+    // 旧实现把全文档读出再写回，会摧毁此前渲染器已挂载的 Leaflet 地图、
+    // KaTeX 结果、code-tabs 监听器等活性 DOM。
+    const pres = Array.from(targetEl.querySelectorAll('pre'));
 
-    const preTags = processedContent.match(/<pre[^>]*>[\s\S]*?<\/pre>/gi) || [];
-    const prePlaceholders = [];
+    pres.forEach(preEl => {
+      const codeEl = preEl.querySelector('code');
+      if (!codeEl) return;
+      const classAttr = codeEl.getAttribute('class') || '';
+      const isEmbed = embedLanguages.some(lang => classAttr.includes(`language-${lang}`));
+      if (!isEmbed) return;
 
-    preTags.forEach((pre, idx) => {
-      const placeholder = `__PRE_PLACEHOLDER_${idx}__`;
-      prePlaceholders.push({ placeholder, content: pre });
-      processedContent = processedContent.replace(pre, () => placeholder);
-    });
+      let codeText = codeEl.textContent.trim();
+      const embedMatch = extractEmbedSyntax(codeText);
+      if (!embedMatch) return; // 保留原 pre
 
-    prePlaceholders.forEach(({ placeholder, content }) => {
-      let shouldRender = false;
+      const { service, url, fullMatch } = embedMatch;
 
-      for (const lang of embedLanguages) {
-        if (content.includes(`language-${lang}`)) {
-          shouldRender = true;
-          break;
-        }
-      }
+      // 嵌入统一挂载工厂：@[service](url) → 直接创建挂载 div 替换 pre →
+      // DOM 就绪后调用对应渲染器的 loadAndRender / renderGeoData
+      const mountEmbed = (opts) => {
+        const id = opts.prefix + '-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        const el = document.createElement('div');
+        el.id = id;
+        el.className = opts.className;
+        if (opts.style) el.style.cssText = opts.style;
+        preEl.replaceWith(el);
 
-      if (shouldRender) {
-        const codeTagMatch = content.match(/<code[^>]*>([\s\S]*?)<\/code>/i);
-        if (codeTagMatch) {
-          let codeText = codeTagMatch[1];
-
-          codeText = codeText.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim();
-
-          const embedMatch = extractEmbedSyntax(codeText);
-
-          if (embedMatch) {
-            const { service, url, fullMatch } = embedMatch;
-
-            // 嵌入统一挂载工厂：@[service](url) → 占位 div（随 innerHTML 写回）→
-            // DOM 就绪后调用对应渲染器的 loadAndRender / renderGeoData。
-            // 四类嵌入（geojson/pkt/ensp/pptx）原本是四段几乎相同的复制粘贴代码。
-            const mountEmbed = (opts) => {
-              const id = opts.prefix + '-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-              const containerHtml = `<div id="${id}" class="${opts.className}"${opts.style ? ` style="${opts.style}"` : ''}></div>`;
-
-              setTimeout(() => {
-                const el = document.getElementById(id);
-                if (!el) return;
-                try {
-                  const p = opts.mount(el, url, service);
-                  if (p && typeof p.catch === 'function') p.catch(e => console.error('[embedded] ' + service + ' render failed:', e));
-                } catch (e) {
-                  console.error('[embedded] ' + service + ' render failed:', e);
-                }
-              }, opts.delay || 50);
-
-              return containerHtml;
-            };
-
-            // 以下所有 replace 的第二参一律用函数形式：内容里可能出现
-            // $` / $& / $' 等 String.replace 特殊序列，字符串形式会被错误解释
-            if (service === 'geojson' || service === 'topojson') {
-              processedContent = processedContent.replace(placeholder, () => mountEmbed({
-                prefix: 'map',
-                className: 'geo-map',
-                style: 'height:400px;border-radius:8px;overflow:hidden',
-                delay: 10,
-                mount: (el, embedUrl) =>
-                  window.MarkdownPreview.renderers.geo.renderGeoData(service, embedUrl, fullMatch, el.id)
-              }));
-            } else if (service === 'pkt' || service === 'ensp') {
-              processedContent = processedContent.replace(placeholder, () => mountEmbed({
-                prefix: 'pkt',
-                className: 'pkt-container',
-                mount: (el, embedUrl) => {
-                  if (window.MarkdownPreview.pkt) {
-                    window.MarkdownPreview.pkt.loadAndRender(el, embedUrl, service);
-                  }
-                }
-              }));
-            } else if (service === 'pptx') {
-              // PPTX 嵌入：与 pkt 完全同风格：@[pptx](slug) → 占位 div → pptx.loadAndRender
-              processedContent = processedContent.replace(placeholder, () => mountEmbed({
-                prefix: 'pptx',
-                className: 'pptx-embed',
-                mount: (el, embedUrl) => {
-                  if (window.MarkdownPreview.pptx) {
-                    return window.MarkdownPreview.pptx.loadAndRender(el, embedUrl, 'pptx');
-                  }
-                }
-              }));
-            } else if (service === 'twitter' || service === 'x') {
-              const twitterCode = renderTwitterEmbed(service, url, fullMatch);
-              processedContent = processedContent.replace(placeholder, () => twitterCode);
-            } else {
-              const iframe = createEmbedIframe(service, url);
-              if (iframe) {
-                processedContent = processedContent.replace(placeholder, () => iframe);
-              } else {
-                processedContent = processedContent.replace(placeholder, () => content);
-              }
-            }
-          } else {
-            processedContent = processedContent.replace(placeholder, () => content);
+        setTimeout(() => {
+          if (!el.isConnected) return;
+          try {
+            const p = opts.mount(el, url, service);
+            if (p && typeof p.catch === 'function') p.catch(e => console.error('[embedded] ' + service + ' render failed:', e));
+          } catch (e) {
+            console.error('[embedded] ' + service + ' render failed:', e);
           }
-        } else {
-          processedContent = processedContent.replace(placeholder, () => content);
-        }
+        }, opts.delay || 50);
+      };
+
+      if (service === 'geojson' || service === 'topojson') {
+        mountEmbed({
+          prefix: 'map',
+          className: 'geo-map',
+          style: 'height:400px;border-radius:8px;overflow:hidden',
+          delay: 10,
+          mount: (el, embedUrl) =>
+            window.MarkdownPreview.renderers.geo.renderGeoData(service, embedUrl, fullMatch, el.id)
+        });
+      } else if (service === 'pkt' || service === 'ensp') {
+        mountEmbed({
+          prefix: 'pkt',
+          className: 'pkt-container',
+          mount: (el, embedUrl) => {
+            if (window.MarkdownPreview.pkt) {
+              window.MarkdownPreview.pkt.loadAndRender(el, embedUrl, service);
+            }
+          }
+        });
+      } else if (service === 'pptx') {
+        // PPTX 嵌入：与 pkt 完全同风格：@[pptx](slug) → 挂载 div → pptx.loadAndRender
+        mountEmbed({
+          prefix: 'pptx',
+          className: 'pptx-embed',
+          mount: (el, embedUrl) => {
+            if (window.MarkdownPreview.pptx) {
+              return window.MarkdownPreview.pptx.loadAndRender(el, embedUrl, 'pptx');
+            }
+          }
+        });
+      } else if (service === 'twitter' || service === 'x') {
+        const twitterCode = renderTwitterEmbed(service, url, fullMatch);
+        // template 内不执行脚本，与旧 innerHTML 行为一致
+        const tpl = document.createElement('template');
+        tpl.innerHTML = twitterCode;
+        preEl.replaceWith(tpl.content);
       } else {
-        processedContent = processedContent.replace(placeholder, () => content);
+        const iframe = createEmbedIframe(service, url);
+        if (iframe) {
+          const tpl = document.createElement('template');
+          tpl.innerHTML = iframe;
+          preEl.replaceWith(tpl.content);
+        }
+        // iframe 为 null（服务不支持 / URL 校验不通过）时保留原 pre，
+        // 让读者至少能看到嵌入语法原文
       }
     });
-
-    targetEl.innerHTML = processedContent;
   }
-  
+
   function renderTwitterEmbed(service, url, originalMatch) {
     try {
       let embedCode = '';

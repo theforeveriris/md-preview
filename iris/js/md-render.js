@@ -575,60 +575,65 @@
     const images = container.querySelectorAll('img');
     if (images.length < 2) return;
 
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = container.innerHTML;
-    const allElements = Array.from(tempDiv.childNodes);
+    // 直接在活动 DOM 上按顶层子节点扫描并「搬移」图片节点：
+    //  1) 旧实现整容器 innerHTML 序列化往返，会丢掉 JS 属性形式的事件
+    //     处理器（processImages 刚挂的 img.onerror），画廊图挂了不出占位符；
+    //  2) 每次渲染都全量重解析一遍 DOM 也是纯开销。
+    const allElements = Array.from(container.childNodes);
     const galleryGroups = [];
-    let currentGroup = [];
-    let pendingStyle = null;
     const markersToRemove = [];
+    let currentGroup = []; // [{ img, srcP }]
+    let pendingStyle = null;
 
-    allElements.forEach((node, index) => {
+    const flushGroup = () => {
+      if (currentGroup.length >= 2) {
+        galleryGroups.push({ items: currentGroup, style: pendingStyle });
+      }
+      currentGroup = [];
+      pendingStyle = null;
+    };
+
+    for (let index = 0; index < allElements.length; index++) {
+      const node = allElements[index];
       if (node.nodeName === 'P') {
         if (node.classList && node.classList.contains('gallery-style-marker')) {
-          if (currentGroup.length >= 2) galleryGroups.push({ imgs: [...currentGroup], style: pendingStyle });
-          currentGroup = [];
+          flushGroup();
           pendingStyle = node.getAttribute('data-style') || null;
           markersToRemove.push(node);
-          return;
+          continue;
         }
         const imgs = node.querySelectorAll('img');
         if (imgs.length > 0 && node.textContent.trim() === '') {
-          currentGroup.push(...Array.from(imgs));
+          imgs.forEach(img => currentGroup.push({ img, srcP: node }));
           const nextNode = allElements[index + 1];
           if (!nextNode || nextNode.nodeName !== 'P' || nextNode.querySelectorAll('img').length === 0) {
-            if (currentGroup.length >= 2) galleryGroups.push({ imgs: [...currentGroup], style: pendingStyle });
-            currentGroup = [];
-            pendingStyle = null;
+            flushGroup();
           }
         } else {
-          if (currentGroup.length >= 2) galleryGroups.push({ imgs: [...currentGroup], style: pendingStyle });
-          currentGroup = [];
-          pendingStyle = null;
+          flushGroup();
         }
       } else {
-        if (currentGroup.length >= 2) galleryGroups.push({ imgs: [...currentGroup], style: pendingStyle });
-        currentGroup = [];
-        pendingStyle = null;
+        flushGroup();
       }
-    });
-
-    if (currentGroup.length >= 2) galleryGroups.push({ imgs: [...currentGroup], style: pendingStyle });
+    }
+    flushGroup();
     markersToRemove.forEach(n => n.remove());
 
     galleryGroups.forEach(group => {
-      if (group.imgs.length < 2) return;
-      const firstImg = group.imgs[0];
-      const parentP = firstImg.closest('p');
-      if (!parentP) return;
       const galleryDiv = document.createElement('div');
       galleryDiv.className = 'image-gallery';
       if (group.style) galleryDiv.classList.add(`image-gallery--${group.style}`);
-      group.imgs.forEach(img => galleryDiv.appendChild(img.cloneNode(true)));
-      parentP.replaceWith(galleryDiv);
+      const sourcePs = new Set();
+      group.items.forEach(({ img, srcP }) => {
+        sourcePs.add(srcP);
+        // 节点搬移（非 clone）：onerror 等属性事件随节点保留
+        galleryDiv.appendChild(img);
+      });
+      // 用画廊容器替换首个来源段落，其余空壳段落删除
+      const firstP = group.items[0].srcP;
+      firstP.replaceWith(galleryDiv);
+      sourcePs.forEach(p => { if (p !== firstP) p.remove(); });
     });
-
-    container.innerHTML = tempDiv.innerHTML;
   }
 
   /**

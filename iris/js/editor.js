@@ -2175,7 +2175,18 @@
     scheduleAutosave();
   }
 
-  function markSaved() {
+  function markSaved(savedTabId) {
+    // 异步保存完成时若已切到其他 tab：只清发起保存那个 tab 的未保存标记，
+    // 不得触碰当前 tab 的 isUnsaved/状态栏（否则当前 tab 未保存的编辑会被
+    // closeTab 误判「已保存」而跳过确认，导致丢失）
+    if (savedTabId !== undefined && savedTabId !== activeTabId) {
+      const t0 = getTabById(savedTabId);
+      if (t0 && t0.unsaved) {
+        t0.unsaved = false;
+        renderTabs();
+      }
+      return;
+    }
     isUnsaved = false;
     if (statusSave) {
       statusSave.textContent = '已保存 ✓';
@@ -2220,15 +2231,18 @@
   }
 
   async function autosave() {
+    // await 期间用户可能切 tab：捕获发起保存时的 tabId，
+    // 完成后只清该 tab 的标记（见 markSaved 的防串扰逻辑）
+    const savedTabId = activeTabId;
     const data = serializeNotebook();
     if (useIndexedDB) {
       try {
         await storage.saveNotebook(data);
-        markSaved();
+        markSaved(savedTabId);
       } catch (e) {
         // IndexedDB 写入失败，回退 localStorage
         if (autosaveLocalStorage(data)) {
-          markSaved();
+          markSaved(savedTabId);
           showToast('IndexedDB 写入失败，已回退到 localStorage');
         } else {
           if (statusSave) {
