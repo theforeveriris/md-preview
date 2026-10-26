@@ -54,7 +54,14 @@ const GENERATED = ['docs/changelog.md'];
 const MASK = '\u0001';
 
 function git(args) {
-  return execFileSync('git', args, { cwd: ROOT, encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'] });
+  // core.quotePath=false：非 ASCII 路径（中文文件名）不转义。
+  // 否则 git 输出 "docs/\346\226\207.md" 这样的转义串，磁盘上不存在该路径，
+  // 中文文件会被静默漏检。
+  return execFileSync(
+    'git',
+    ['-c', 'core.quotePath=false', ...args],
+    { cwd: ROOT, encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'] }
+  );
 }
 
 function allTrackedMarkdown() {

@@ -28,7 +28,14 @@ const BASE_TAG = process.env.CJK_LINT_BASE_TAG || 'cjk-lint-baseline';
 
 function git(args, allowFail = false) {
   try {
-    return execFileSync('git', args, { cwd: ROOT, encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'] });
+    return execFileSync(
+      'git',
+      // core.quotePath=false：非 ASCII 路径（中文文件名）不转义，
+      // 否则 git 输出 "docs/\346\226\207.md" 这样的转义串，路径无法解析，
+      // 中文文件会被静默漏检。
+      ['-c', 'core.quotePath=false', ...args],
+      { cwd: ROOT, encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'] }
+    );
   } catch (e) {
     if (allowFail) return '';
     throw e;
