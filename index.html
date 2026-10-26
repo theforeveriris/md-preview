@@ -2032,6 +2032,9 @@
   <script defer src="iris/js/tags.js"></script>
   <script defer src="iris/js/snapshot.js"></script>
   <script defer src="iris/vendor/file-tree/prod.js"></script>
+  <!-- name-sort.js 提供文件名自然排序（数字段按数值比较），
+       file-tree.js / local-docs.js 依赖它，必须先于它们加载 -->
+  <script defer src="iris/js/name-sort.js"></script>
   <script defer src="iris/js/file-tree.js"></script>
   <script defer src="iris/js/markdown.js"></script>
   <script defer src="iris/js/cjk.js"></script>

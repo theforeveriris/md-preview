@@ -3,6 +3,10 @@
 const fs = require('fs');
 const path = require('path');
 
+// 文件名自然排序（与运行时 iris/js/name-sort.js 同一实现）：
+// 数字段按数值比较，1.0 < 2.0 < 9.0 < 10.0
+const { compareNames } = require('../js/name-sort.js');
+
 const OUTPUT_DIR = path.join(__dirname, '..', 'data');
 const OUTPUT_FILE = path.join(OUTPUT_DIR, 'file-tree.json');
 
@@ -102,7 +106,7 @@ function buildTreeFromDirectory(dir, basePath = '') {
   
   let totalWords = 0;
   
-  folders.sort((a, b) => a.name.localeCompare(b.name));
+  folders.sort((a, b) => compareNames(a.name, b.name));
   folders.forEach(folder => {
     const { children, wordCount } = buildTreeFromDirectory(folder.fullPath, folder.path);
     if (children.length > 0) {
@@ -116,7 +120,7 @@ function buildTreeFromDirectory(dir, basePath = '') {
     }
   });
   
-  files.sort((a, b) => a.name.localeCompare(b.name));
+  files.sort((a, b) => compareNames(a.name, b.name));
   files.forEach(file => {
     const content = fs.readFileSync(file.fullPath, 'utf-8');
     const wordCount = countWords(content);

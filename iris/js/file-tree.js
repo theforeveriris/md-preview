@@ -2,6 +2,13 @@
   window.MarkdownPreview = window.MarkdownPreview || {};
   
   const { dom, state, CONFIG, search } = window.MarkdownPreview;
+
+  // 自然排序比较器与 DOM 重排（与构建期 iris/js/name-sort.js 同一实现）
+  const nameSort = window.MarkdownPreview.nameSort || {};
+  const compareNames = nameSort.compareNames ||
+    ((a, b) => String(a == null ? '' : a).localeCompare(String(b == null ? '' : b), undefined, { numeric: true }));
+  const applyNaturalOrder = nameSort.applyNaturalOrder ||
+    function () { /* name-sort.js 未加载时不做重排，退回 vendor 行为 */ };
   
   async function loadFileTree() {
     try {
@@ -98,7 +105,9 @@
         if (a.type !== b.type) {
           return a.type === 'folder' ? -1 : 1;
         }
-        return a.name.localeCompare(b.name);
+        // 自然排序：数字段按数值比较（1.0 < 2.0 < 9.0 < 10.0），
+        // 避免纯字典序把 10.x 排到 2.x 前面
+        return compareNames(a.name, b.name);
       });
       
       items.forEach(item => {
@@ -205,6 +214,12 @@
     }
 
     addItems(tree, files);
+
+    // vendor 组件在每次 append() 后都按纯字典序（name.localeCompare(name)）重排
+    // DOM，数字开头的文件名会排错位（10.0 排到 2.0 前面）。这里按自然排序
+    // （数字段按数值比较）重新排列一次：文件夹在前、文件在后，各组自然序。
+    // 上游尚未修复该问题，故在本地兜底。
+    applyNaturalOrder(tree.shadowRoot);
 
     // 向 Shadow DOM 注入自定义样式（词数显示 + 选中高亮）
     var shadow = tree.shadowRoot;

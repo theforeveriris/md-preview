@@ -262,6 +262,10 @@ node iris/scripts/build-file-tree.js
 ```
 扫描仓库根下所有 `.md`（排除 node_modules / .git / vendor / .github），生成带字数统计的 `iris/data/file-tree.json`。
 
+**排序口径**：文件名按**自然排序**（`iris/js/name-sort.js` 的 `compareNames`，数字段按数值比较），即 `1.0 < 2.0 < 9.0 < 10.0 < 11.0`，而不是字典序的 `1.0 < 1.1 < 10.0 < 11.0 < 2.0`。运行时与构建期共用同一实现（`build-file-tree.js` 直接 `require('../js/name-sort.js')`）。
+
+> vendor 的 `@webreflection/file-tree` 组件在每次 `append()` 后都用纯字典序（`name.localeCompare(name)`）重排 DOM，数字开头的文件名会排错位；上游（v0.1.5 与当前 `main`）尚未修复，故运行时由 `iris/js/file-tree.js` 的 `applyNaturalOrder()` 兜底重排，构建期用同一比较器保证产物顺序一致。回归测试见 `iris/scripts/test-file-tree-sort.js`（冒烟测试第 5 项）。
+
 ### search-index 构建
 ```
 node iris/scripts/build-search-index.js
@@ -522,6 +526,7 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │   │   ├── themes/theme-manager.js
 │   │   ├── markdown.js           # 渲染管线 + 图片灯箱
 │   │   ├── file-tree.js          # 侧边栏/搜索/索引
+│   │   ├── name-sort.js          # 文件名自然排序（数字段按数值比较，运行时与构建期共用）
 │   │   ├── interactions.js       # 表格手柄、LaTeX 右键复制
 │   │   ├── local-docs.js         # 本地文件/文件夹会话
 │   │   ├── history.js / reading-pos.js  # 长按收藏·树内提示 / 阅读位置续读
@@ -555,6 +560,7 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │       ├── link-check.js         # CI 死链检查（内链全量 + 外链按日抽查）
 │       ├── lint-cjk.js           # 中文文案排版校验（--fix 自动修复）
 │       ├── cjk-lint-ci.js        # 中文排版 CI 编排（全量/增量 + 基线推进）
+│       ├── test-file-tree-sort.js # 文件树自然排序回归测试（冒烟测试调用）
 │       ├── pkt/main.py           # .pkt 解析
 │       ├── ensp/main.py          # .topo/.zip (华为 eNSP) → xml + json
 │       └── pptx/main.py          # pptx → PDF → PNG/SVG + meta json

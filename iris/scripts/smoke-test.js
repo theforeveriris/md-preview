@@ -62,7 +62,7 @@ function collectFirstPartyJs() {
 }
 
 function checkSyntax() {
-  console.log('\n[1/4] 语法检查（第一方 JS）');
+  console.log('\n[1/5] 语法检查（第一方 JS）');
   let checked = 0;
   for (const file of collectFirstPartyJs()) {
     const rel = path.relative(ROOT, file);
@@ -116,7 +116,7 @@ const REQUIRED_IDS = [
 const LOCAL_HREF_PREFIXES = ['iris/', '/iris/'];
 
 function checkIndexHtml() {
-  console.log('\n[2/4] index.html 结构与资源引用');
+  console.log('\n[2/5] index.html 结构与资源引用');
 
   let dom;
   try {
@@ -158,7 +158,7 @@ function checkIndexHtml() {
 }
 
 function checkI18nKeys(dom) {
-  console.log('\n[3/4] i18n 语言包完整性');
+  console.log('\n[3/5] i18n 语言包完整性');
 
   const doc = dom.window.document;
   const keys = new Set();
@@ -201,7 +201,7 @@ function checkI18nKeys(dom) {
 
 // ============== 4. 数据产物 ==============
 function checkDataFiles() {
-  console.log('\n[4/4] 数据产物');
+  console.log('\n[4/5] 数据产物');
 
   for (const name of ['file-tree.json', 'search-index.json', 'precache-manifest.json']) {
     const file = path.join(ROOT, 'iris', 'data', name);
@@ -262,6 +262,36 @@ function checkDataFiles() {
   }
 }
 
+// ============== 5. 文件树自然排序 ==============
+// 回归保护：vendor 组件用纯字典序排序，数字开头的文件名会排错位
+// （10.0 排到 2.0 前面）。本项目用 applyNaturalOrder 兜底，这里跑回归测试。
+function checkFileTreeSort() {
+  console.log('\n[5/5] 文件树自然排序');
+
+  const testFile = path.join(ROOT, 'iris', 'scripts', 'test-file-tree-sort.js');
+  if (!fs.existsSync(testFile)) {
+    fail('iris/scripts/test-file-tree-sort.js 不存在');
+    return;
+  }
+  try {
+    const { execFileSync } = require('child_process');
+    const out = execFileSync(process.execPath, [testFile], {
+      cwd: ROOT,
+      encoding: 'utf-8',
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    const lines = out.split('\n').filter((l) => l.includes('✓'));
+    if (lines.length > 0) {
+      pass(`文件树自然排序回归测试通过（${lines.length} 项）`);
+    } else {
+      fail('文件树自然排序回归测试没有产生通过项');
+    }
+  } catch (e) {
+    const detail = (e.stdout || '') + (e.stderr || '');
+    fail(`文件树自然排序回归测试失败:\n${detail.split('\n').map((l) => '      ' + l).join('\n')}`);
+  }
+}
+
 // ============== 主流程 ==============
 function main() {
   console.log('Markdown Preview 冒烟测试');
@@ -270,9 +300,10 @@ function main() {
   if (dom) {
     checkI18nKeys(dom);
   } else {
-    console.log('\n[3/4] i18n 语言包完整性 — 跳过（依赖 index.html 解析）');
+    console.log('\n[3/5] i18n 语言包完整性 — 跳过（依赖 index.html 解析）');
   }
   checkDataFiles();
+  checkFileTreeSort();
 
   console.log('');
   if (failures > 0) {
