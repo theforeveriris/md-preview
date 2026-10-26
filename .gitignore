@@ -50,3 +50,7 @@ __pycache__/
 
 # 工具运行目录（OpenChamber 截图等），非项目内容
 .openchamber/
+
+# 中文排版 CI 临时文件
+.cjk-lint-files.txt
+.cjk-lint-mode.txt

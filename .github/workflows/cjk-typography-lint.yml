@@ -1,0 +1,152 @@
+name: CJK Typography Lint
+
+# 中文文案排版校验（参考《中文文案排版指北》）
+# - 首次运行：全量检查仓库内所有 Markdown
+# - 之后运行：增量检查自上次基线以来改动的 Markdown
+# - main 分支上由机器人提交自动修正；PR 上只提示，不写回
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/*.md'
+  pull_request:
+    paths:
+      - '**/*.md'
+  schedule:
+    # 每周一次全量巡检
+    - cron: '17 3 * * 1'
+  workflow_dispatch:
+    inputs:
+      force_full:
+        description: '强制全量检查（忽略基线）'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cjk-typography-lint-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  BASE_TAG: cjk-lint-baseline
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # 需要完整历史与 tag 以计算增量范围
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Fetch baseline tag
+      run: |
+        git fetch --force --tags origin
+        git fetch origin "+refs/tags/${BASE_TAG}:refs/tags/${BASE_TAG}" || true
+        if git rev-parse -q --verify "refs/tags/${BASE_TAG}" >/dev/null; then
+          echo "基线存在：$(git rev-list -n 1 ${BASE_TAG})"
+        else
+          echo "基线不存在，本次将执行全量检查"
+        fi
+
+    - name: Prepare check list (full first run, incremental afterwards)
+      id: prepare
+      env:
+        PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      run: |
+        ARGS=""
+        if [ "${{ inputs.force_full }}" = "true" ]; then ARGS="--force-full"; fi
+        if [ "${{ github.event_name }}" = "pull_request" ] && [ -n "$PR_BASE_SHA" ]; then
+          export CJK_LINT_BASE_COMMIT="$PR_BASE_SHA"
+        fi
+        node iris/scripts/cjk-lint-ci.js prepare $ARGS --out .cjk-lint-files.txt | tee .cjk-lint-mode.txt
+        {
+          echo "mode=$(sed -n 's/^mode=//p' .cjk-lint-mode.txt)"
+          echo "files=$(sed -n 's/^files=//p' .cjk-lint-mode.txt)"
+          echo "base=$(sed -n 's/^base=//p' .cjk-lint-mode.txt)"
+        } >> "$GITHUB_OUTPUT"
+
+    - name: Report mode
+      run: |
+        echo "检查模式：${{ steps.prepare.outputs.mode }}"
+        echo "基线：${{ steps.prepare.outputs.base }}"
+        echo "待检查文件数：${{ steps.prepare.outputs.files }}"
+        cat .cjk-lint-files.txt
+
+    # main 分支：自动修复（lint-cjk.js 内部先修复再复检）
+    - name: Auto-fix CJK typography issues
+      if: github.event_name != 'pull_request'
+      id: fix
+      run: |
+        set +e
+        node iris/scripts/lint-cjk.js --files-from .cjk-lint-files.txt --fix
+        echo "exit=$?" >> "$GITHUB_OUTPUT"
+        exit 0
+
+    # PR：只报告问题，不改写仓库
+    - name: Check (pull request, report only)
+      if: github.event_name == 'pull_request'
+      id: check
+      run: |
+        set +e
+        node iris/scripts/lint-cjk.js --files-from .cjk-lint-files.txt
+        echo "exit=$?" >> "$GITHUB_OUTPUT"
+        exit 0
+
+    # main 分支：机器人提交修正
+    - name: Commit fixes with bot
+      if: github.event_name != 'pull_request'
+      id: commit
+      run: |
+        rm -f .cjk-lint-files.txt .cjk-lint-mode.txt
+        git config user.name 'github-actions[bot]'
+        git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+        git add -- '*.md'
+        if git diff --cached --quiet; then
+          echo "changed=false" >> "$GITHUB_OUTPUT"
+          echo "无需修正，跳过提交"
+        else
+          git commit -m 'style: 中文排版自动修正 [skip ci]' \
+                    -m '由 CJK Typography Lint 工作流自动修复，遵循《中文文案排版指北》。'
+          for i in 1 2 3; do
+            if git push origin "HEAD:${{ github.ref_name }}"; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            git pull --rebase origin "${{ github.ref_name }}" || true
+          done
+          echo "changed=false" >> "$GITHUB_OUTPUT"
+          echo "::warning::修正已提交但推送失败，请手动处理"
+
+    # PR：只提示，不写回仓库
+    - name: Report issues on pull request
+      if: github.event_name == 'pull_request'
+      run: |
+        rm -f .cjk-lint-files.txt .cjk-lint-mode.txt
+        echo "中文排版检查完成（PR 模式：仅提示，不自动改写）"
+
+    # 推进基线：后续运行改为增量检查（指向修复提交后的 main）
+    - name: Advance baseline tag
+      if: github.event_name != 'pull_request' && steps.fix.outputs.exit == '0'
+      run: |
+        git fetch origin main
+        node iris/scripts/cjk-lint-ci.js advance
+
+    # 门禁：仍有无法自动修复的错误时失败
+    - name: Enforce clean typography
+      if: >-
+        (github.event_name != 'pull_request' && steps.fix.outputs.exit != '0') ||
+        (github.event_name == 'pull_request' && steps.check.outputs.exit != '0')
+      run: |
+        echo "::error::仍有中文排版问题未能自动修复，请手动处理后重新提交。"
+        exit 1

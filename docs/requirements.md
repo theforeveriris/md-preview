@@ -253,9 +253,9 @@ tags: [规划]
 - 行首禁则（行首不出现 `，。！？、）」』` 等）；
 - 中英混排括号配对与嵌套。
 
-**交互 / 验收**：新增 `iris/scripts/lint-cjk.js`，默认**只报告不修改**；`--fix` 显式自动修复；接入 `smoke-test.yml`（建议先只告警，稳定后再升为致命）。
+**交互 / 验收**：新增 `iris/scripts/lint-cjk.js`，默认**只报告不修改**；`--fix` 显式自动修复；由独立工作流 `cjk-typography-lint.yml` 接入 CI（首次全量、之后增量，main 上自动修复并由机器人提交，PR 上仅提示）。`smoke-test.yml` 中保留一条告警级调用。
 
-**实现要点**：扫描 `docs/**/*.md`（`git ls-files` 为准，与 `link-check.js` 同构）；**必须跳过**代码围栏、行内代码、URL、frontmatter、HTML 注释（复用 `link-check.js` 的围栏/转义处理思路）；修复逐条可定位（文件:行:列）。
+**实现要点**：扫描仓库内全部 Markdown（`git ls-files '*.md'` 为准，与 `link-check.js` 同构）；**必须跳过**代码围栏、行内代码、URL、frontmatter、HTML 注释（复用 `link-check.js` 的围栏/转义处理思路）；修复逐条可定位（文件：行：列）。
 
 **依赖与风险**：自动修复会产生大范围 diff，故默认关闭 `--fix`；规则需可配置白名单豁免（如刻意保留的半角括号）。
 
@@ -314,7 +314,7 @@ tags: [规划]
 - **冒烟测试**：新增渲染器 / 插件 / 构建脚本 / i18n key 需同步更新 `iris/scripts/smoke-test.js` 与 `index.html`，避免 CI 失败。
 - **懒加载与 PWA**：新增 vendor 库必须走 `dom.js` 的 `loadScriptOnce` / `loadStyleOnce`，并纳入 `precache-manifest` 与 SW 策略，不得拖累首屏。
 - **渲染器 / 插件约定**：渲染器注册到 `window.MarkdownPreview.renderers.<id>` 并在 `index.html` 按序引入；文档级工具优先走插件系统。
-- **性能预算**：首屏体积与主线程占用不得劣化（现为约 1MB / 按需加载），改渲染管线时以 Debug Panel（`?debug=1`）实测为准。
+- **性能预算**：首屏体积与主线程占用不得劣化（现为约 1 MB / 按需加载），改渲染管线时以 Debug Panel（`?debug=1`）实测为准。
 
 ---
 

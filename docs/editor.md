@@ -111,7 +111,7 @@ Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可�
 每个 Cell 头部有「双屏编辑」按钮（分栏图标），点击进入全屏双屏 overlay：
 
 - **布局**：左侧为该 Cell 的编辑器（保留原实例与撤销栈），右侧为该 Cell 内容的实时预览；
-- **实时渲染**：输入 250ms 防抖后自动重渲染，渲染管线与文档站一致；
+- **实时渲染**：输入 250 ms 防抖后自动重渲染，渲染管线与文档站一致；
 - **分隔条拖拽**：拖动中间分隔条调整左右宽度；
 - **同步滚动**：可在开关控制下让编辑区与预览区滚动联动；
 - **退出**：`Esc` 或右上角退出按钮，CodeMirror 宿主移回原 Cell，其它 Cell 完全不受影响。
@@ -296,7 +296,7 @@ Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可�
 
 ## 九、自动保存
 
-编辑器启用自动保存，**无需手动保存**，存储层为 IndexedDB（`iris/js/storage.js`），突破 localStorage 5MB 容量限制并支持多笔记本（多标签）：
+编辑器启用自动保存，**无需手动保存**，存储层为 IndexedDB（`iris/js/storage.js`），突破 localStorage 5 MB 容量限制并支持多笔记本（多标签）：
 
 - **触发**：内容变更后 1.5 秒防抖写入
 - **保存内容**：每个 Cell 的 `id` / `type` / `content` / `output_html`

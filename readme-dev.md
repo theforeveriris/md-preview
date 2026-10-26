@@ -150,7 +150,31 @@ tags: [开发]
 | `build-pkt.yml` | push 到 `main`，且 `iris/data/pkt/raw/**` 或 `iris/data/ensp/raw/**` 变化 | 执行 `iris/scripts/pkt/main.py` 和 `iris/scripts/ensp/main.py`，把产物 push 回 `data/pkt/json`、`data/pkt/images` 等 |
 | `build-pptx.yml` | push 到 `main`，且 `iris/data/pptx/raw/**` 变化 | 安装 LibreOffice + poppler-utils，跑 `iris/scripts/pptx/main.py`：PPTX→PDF→PNG/SVG+元数据 JSON，push 回 |
 | `smoke-test.yml` | push / PR 到 `main`，或手动触发 | 跑全部构建脚本验证可执行，安装 jsdom 后运行 `iris/scripts/smoke-test.js` 冒烟测试 + `iris/scripts/link-check.js` 死链检查（内链全量 + 外链按日抽查） |
+| `cjk-typography-lint.yml` | push / PR 到 `main` 且 `**/*.md` 变化，或每周定时 | 中文文案排版校验（见下节）；main 上自动修复并由机器人提交，PR 上仅提示 |
 | `sync-to-product.yml` | push 到 `main` | 将站点产物同步到 product 分支 |
+
+### 中文排版校验（`cjk-typography-lint.yml`）
+
+依据《中文文案排版指北》校验仓库内所有 Markdown：
+
+- **首次运行全量**，之后**增量**：用基线 tag `cjk-lint-baseline` 记录上次检查到的提交；每次运行由 `iris/scripts/cjk-lint-ci.js prepare` 计算需要检查的文件（`基线..HEAD` 的改动 + 未跟踪的新文件），检查完由 `advance` 推进基线。
+- **自动修复 + 机器人提交**：`iris/scripts/lint-cjk.js --fix` 修复可安全自动处理的问题（中英文 / 数字间距、数字与单位间距、半角标点、全角标点旁空格、重复标点、全角数字、行首禁则），随后以 `github-actions[bot]` 身份提交 `style: 中文排版自动修正`。
+- **只提示不自动改写**：「中文旁直引号」等无法安全自动替换的规则只报告，不阻断。
+- **代码安全**：行内代码、链接、图片、URL、HTML 标签、代码围栏、frontmatter、HTML 注释一律跳过；围栏内按「安全片段」切分，只修复普通文本部分。
+
+本地使用：
+
+```bash
+# 全量检查（只报告）
+node iris/scripts/lint-cjk.js
+
+# 自动修复
+node iris/scripts/lint-cjk.js --fix
+
+# 只检查指定文件
+node iris/scripts/lint-cjk.js --files-from .cjk-lint-files.txt
+```
+
 
 ### 产物存放约定
 
@@ -201,7 +225,7 @@ tags: [开发]
 - vendor 中"重型"库（mermaid / apexcharts / katex / leaflet / diff2html / cytoscape）**不通过 `<script>` 引入 index.html**，而是由对应的 Renderer 在首次检测到自身代码块时 `loadScriptOnce(url)`。
 - `styles.css` 中各子样式（leaflet.css / katex.min.css / diff2html.min.css）同样按需加载。
 - 每个 `loadScriptOnce` 有 Promise 单例缓存，同一脚本不会并发加载两次。
-- 实测首屏 JS 从约 6.8MB → 约 1MB。
+- 实测首屏 JS 从约 6.8 MB → 约 1 MB。
 
 ### 可见即渲染的三层兜底（`iris/js/md-render.js: scheduleLazy`）
 
@@ -257,7 +281,7 @@ node iris/scripts/build-search-index.js
 cd iris && npm install --no-save pinyin-pro   # 仅生成时需要
 node iris/scripts/gen-pinyin-table.js
 ```
-产物 `iris/scripts/data/pinyin-initials.json`（约 93KB，9490 字）提交入库，CI 只读不生成。
+产物 `iris/scripts/data/pinyin-initials.json`（约 93 KB，9490 字）提交入库，CI 只读不生成。
 字表 = 仓库全部 `.md` 出现过的汉字 ∪ opencc 字典中的汉字；新增生僻字后重跑一次即可。
 
 ### links 构建（图谱 / 反向链接）
@@ -529,6 +553,8 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │       ├── build-sitemap.js      # sitemap.xml（robots.txt 指向）
 │       ├── smoke-test.js         # CI 冒烟测试（jsdom）
 │       ├── link-check.js         # CI 死链检查（内链全量 + 外链按日抽查）
+│       ├── lint-cjk.js           # 中文文案排版校验（--fix 自动修复）
+│       ├── cjk-lint-ci.js        # 中文排版 CI 编排（全量/增量 + 基线推进）
 │       ├── pkt/main.py           # .pkt 解析
 │       ├── ensp/main.py          # .topo/.zip (华为 eNSP) → xml + json
 │       └── pptx/main.py          # pptx → PDF → PNG/SVG + meta json
@@ -544,5 +570,6 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
     ├── build-feed.yml / build-search-index.yml  # feed + sitemap / 索引重建
     ├── build-pkt.yml / build-pptx.yml           # 拓扑 / PPTX 产物
     ├── smoke-test.yml            # CI 冒烟测试
+    ├── cjk-typography-lint.yml   # 中文排版校验（首次全量 + 增量 + 机器人提交）
     └── sync-to-product.yml       # 同步 product 分支
 ```
