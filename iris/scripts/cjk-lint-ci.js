@@ -104,15 +104,30 @@ function advance() {
     return;
   }
   // 优先指向已推送的远端 main，避免指向未推送的本地提交
-  let target = git(['rev-parse', 'HEAD'], true).trim();
-  const remote = git(['rev-parse', 'refs/remotes/origin/main'], true).trim();
-  if (remote) target = remote;
+  // （CI 里 checkout 的是 detached HEAD，HEAD 可能不是远端最新的 main）
+  let target = git(['rev-parse', 'refs/remotes/origin/main'], true).trim();
+  if (!target) target = git(['rev-parse', 'HEAD'], true).trim();
   if (!target) {
     console.log('skip advancing baseline: no target commit');
     return;
   }
   git(['tag', '-f', BASE_TAG, target]);
-  git(['push', '--force', 'origin', `refs/tags/${BASE_TAG}`]);
+  // 推送 tag 可能因并发（别的运行也推同名 tag）被拒，重试几次
+  let ok = false;
+  for (let i = 0; i < 3; i++) {
+    try {
+      git(['push', '--force', 'origin', `refs/tags/${BASE_TAG}`]);
+      ok = true;
+      break;
+    } catch (e) {
+      // 远端 tag 已被别的运行推进，重新对齐后再试
+      git(['fetch', 'origin', `+refs/tags/${BASE_TAG}:refs/tags/${BASE_TAG}`], true);
+    }
+  }
+  if (!ok) {
+    console.log('skip advancing baseline: tag push failed');
+    return;
+  }
   console.log(`baseline advanced to ${target}`);
 }
 

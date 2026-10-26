@@ -53,6 +53,14 @@ const GENERATED = ['docs/changelog.md'];
 
 const MASK = '\u0001';
 
+// 规则是否可自动修复：
+//   spacing / unit / punct / punct-space / dup-punct / fullwidth-digit —— 可安全自动修复
+//   line-start（行首禁则）—— 移动标点会改变语义，不自动修复
+//   quote（中文旁直引号）—— 需判断是引号还是代码/配置片段，不自动修复
+const FIXABLE_RULES = new Set([
+  'spacing', 'unit', 'punct', 'punct-space', 'dup-punct', 'fullwidth-digit',
+]);
+
 function git(args) {
   // core.quotePath=false：非 ASCII 路径（中文文件名）不转义。
   // 否则 git 输出 "docs/\346\226\207.md" 这样的转义串，磁盘上不存在该路径，
@@ -173,6 +181,18 @@ function maskContent(content) {
 const UNIT_RE = new RegExp(`\\d(?=(?:${UNITS.join('|')})(?![A-Za-z]))`, 'g');
 const FULLWIDTH_DIGIT_RE = /[\uff10-\uff19]/g;
 
+/**
+ * 记录一条问题。
+ * @param {string} rule 规则名
+ * @param {'error'|'warn'} level
+ */
+function report(issues, file, lineNo, col, rule, level, msg) {
+  issues.push({
+    file, line: lineNo, col, rule, level, msg,
+    fixable: level === 'error' && FIXABLE_RULES.has(rule),
+  });
+}
+
 function lintLine(line, lineNo, file, issues) {
   const clean = line;
 
@@ -180,58 +200,58 @@ function lintLine(line, lineNo, file, issues) {
   const spacingRe = new RegExp(`([${CJK}])([A-Za-z0-9])|([A-Za-z0-9])([${CJK}])`, 'g');
   let m;
   while ((m = spacingRe.exec(clean)) !== null) {
-    issues.push({ file, line: lineNo, col: m.index + 1, rule: 'spacing', level: 'error', msg: '中英文 / 数字之间应加空格' });
+    report(issues, file, lineNo, m.index + 1, 'spacing', 'error', '中英文 / 数字之间应加空格');
   }
 
   // 2) 数字与单位缺空格（% 与 ° 例外，不在 UNITS 列表内）
   while ((m = UNIT_RE.exec(clean)) !== null) {
-    issues.push({ file, line: lineNo, col: m.index + 1, rule: 'unit', level: 'error', msg: '数字与单位之间应加空格' });
+    report(issues, file, lineNo, m.index + 1, 'unit', 'error', '数字与单位之间应加空格');
   }
 
   // 3) CJK 紧邻半角标点
   const halfRe = new RegExp(`[${CJK}]([,.;:!?])(?=\\s|$|[${CJK}])`, 'g');
   while ((m = halfRe.exec(clean)) !== null) {
-    issues.push({ file, line: lineNo, col: m.index + 1, rule: 'punct', level: 'error', msg: `中文后应使用全角标点「${FULLWIDTH_MAP[m[1]] || m[1]}」` });
+    report(issues, file, lineNo, m.index + 1, 'punct', 'error', `中文后应使用全角标点「${FULLWIDTH_MAP[m[1]] || m[1]}」`);
   }
 
   // 4) 全角标点与其他字符之间多了空格
   //    标点「前」有空格：全角标点前不应加空格
   const spaceBeforeFullRe = /[ \t]+([，。！？；：、）」』】》])/g;
   while ((m = spaceBeforeFullRe.exec(clean)) !== null) {
-    issues.push({ file, line: lineNo, col: m.index + 1, rule: 'punct-space', level: 'error', msg: '全角标点前不应加空格' });
+    report(issues, file, lineNo, m.index + 1, 'punct-space', 'error', '全角标点前不应加空格');
   }
   //    标点「后」有空格：全角标点与其他字符之间不加空格
   //    排除 Markdown 表格分隔符前的空格（| 前）与行尾空白
   const spaceAfterFullRe = /([，。！？；：、）」』】》])[ \t]+(?=[^ \t|])/g;
   while ((m = spaceAfterFullRe.exec(clean)) !== null) {
-    issues.push({ file, line: lineNo, col: m.index + 2, rule: 'punct-space', level: 'error', msg: '全角标点后不应加空格' });
+    report(issues, file, lineNo, m.index + 2, 'punct-space', 'error', '全角标点后不应加空格');
   }
 
   // 5) 重复使用标点符号
   const dupRe = /([，。！？；：])\1+/g;
   while ((m = dupRe.exec(clean)) !== null) {
-    issues.push({ file, line: lineNo, col: m.index + 1, rule: 'dup-punct', level: 'error', msg: '不应重复使用标点符号' });
+    report(issues, file, lineNo, m.index + 1, 'dup-punct', 'error', '不应重复使用标点符号');
   }
   const tripleRe = /[？！]{3,}/g;
   while ((m = tripleRe.exec(clean)) !== null) {
-    issues.push({ file, line: lineNo, col: m.index + 1, rule: 'dup-punct', level: 'error', msg: '不应重复使用标点符号' });
+    report(issues, file, lineNo, m.index + 1, 'dup-punct', 'error', '不应重复使用标点符号');
   }
 
   // 6) 数字使用全角字符
   while ((m = FULLWIDTH_DIGIT_RE.exec(clean)) !== null) {
-    issues.push({ file, line: lineNo, col: m.index + 1, rule: 'fullwidth-digit', level: 'error', msg: '数字应使用半角字符' });
+    report(issues, file, lineNo, m.index + 1, 'fullwidth-digit', 'error', '数字应使用半角字符');
   }
 
   // 7) 行首禁则
   const lead = clean.replace(/^\s*(?:>|[-*+]|\d+\.)\s*/, '');
   if (lead && LINE_START_FORBIDDEN.indexOf(lead[0]) !== -1) {
-    issues.push({ file, line: lineNo, col: 1, rule: 'line-start', level: 'error', msg: `行首不应出现「${lead[0]}」` });
+    report(issues, file, lineNo, 1, 'line-start', 'error', `行首不应出现「${lead[0]}」`);
   }
 
   // 8) 中文旁直引号（仅提示）
   const quoteRe = new RegExp(`[${CJK}]"|"[${CJK}]`, 'g');
   while ((m = quoteRe.exec(clean)) !== null) {
-    issues.push({ file, line: lineNo, col: m.index + 1, rule: 'quote', level: 'warn', msg: '中文内容不应使用直引号，建议使用「」或“”' });
+    report(issues, file, lineNo, m.index + 1, 'quote', 'warn', '中文内容不应使用直引号，建议使用「」或“”');
   }
 }
 
@@ -350,6 +370,8 @@ function main() {
   // 再基于当前文件内容做一次完整检查
   let errors = 0;
   let warns = 0;
+  let fixableLeft = 0;   // 仍可自动修复（说明 --fix 没生效）
+  let unfixable = 0;     // 无法自动修复（行首禁则 / 直引号等），只提示不阻断
   let filesWithIssues = 0;
 
   for (const file of files) {
@@ -358,11 +380,14 @@ function main() {
     const fileWarns = issues.filter((is) => is.level !== 'error');
     errors += fileErrors.length;
     warns += fileWarns.length;
+    fixableLeft += fileErrors.filter((is) => is.fixable).length;
+    unfixable += fileErrors.filter((is) => !is.fixable).length;
     if (issues.length) {
       filesWithIssues++;
       if (!QUIET) {
         issues.slice(0, 100).forEach((is) => {
-          console.log(`${is.file}:${is.line}:${is.col}  [${is.level === 'error' ? 'error' : 'warn '}] ${is.rule}: ${is.msg}`);
+          const tag = is.level === 'error' ? (is.fixable ? 'error' : 'manual') : 'warn ';
+          console.log(`${is.file}:${is.line}:${is.col}  [${tag}] ${is.rule}: ${is.msg}`);
         });
         if (issues.length > 100) console.log(`  （其余 ${issues.length - 100} 条省略）`);
       }
@@ -372,7 +397,11 @@ function main() {
   const mode = BASE ? '增量' : '全量';
   console.log(`\n中文排版 lint（${mode}）：检查 ${files.length} 个文件，${errors} 处错误 / ${warns} 处提示（${filesWithIssues} 个文件有问题）`);
   if (FIX) console.log(`已自动修复 ${fixedFiles.length} 个文件`);
-  process.exit(errors > 0 ? 1 : 0);
+  if (unfixable > 0) {
+    console.log(`其中 ${unfixable} 处需人工处理（行首禁则 / 直引号等，无法安全自动修复）`);
+  }
+  // 退出码：只把「本该被自动修掉却还在」当失败；人工项只报告不阻断
+  process.exit(fixableLeft > 0 ? 1 : 0);
 }
 
 main();

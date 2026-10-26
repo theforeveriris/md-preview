@@ -84,6 +84,9 @@ jobs:
         cat .cjk-lint-files.txt
 
     # main 分支：自动修复（lint-cjk.js 内部先修复再复检）
+    # exit 码含义：
+    #   0 = 全部问题都已自动修复（或原本就干净）
+    #   1 = 仍有无法自动修复的问题（如行首禁则、中文旁直引号）——只提示，不阻断
     - name: Auto-fix CJK typography issues
       if: github.event_name != 'pull_request'
       id: fix
@@ -104,29 +107,20 @@ jobs:
         exit 0
 
     # main 分支：机器人提交修正
+    #
+    # 用 EndBug/add-and-commit（与其他构建工作流同一套机制），它内部已处理
+    # detached HEAD 与并发推送的重试。
+    # 注意：不能自己写 git push 循环 —— checkout@v4 检出的是 detached HEAD，
+    # `git pull --rebase origin <branch>` 在 detached HEAD 上会失败，
+    # 配合 shell 的 errexit 语义会让整个步骤以 exit code 2 挂掉。
     - name: Commit fixes with bot
       if: github.event_name != 'pull_request'
       id: commit
-      run: |
-        rm -f .cjk-lint-files.txt .cjk-lint-mode.txt
-        git config user.name 'github-actions[bot]'
-        git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-        git add -- '*.md'
-        if git diff --cached --quiet; then
-          echo "changed=false" >> "$GITHUB_OUTPUT"
-          echo "无需修正，跳过提交"
-        else
-          git commit -m 'style: 中文排版自动修正 [skip ci]' \
-                    -m '由 CJK Typography Lint 工作流自动修复，遵循《中文文案排版指北》。'
-          for i in 1 2 3; do
-            if git push origin "HEAD:${{ github.ref_name }}"; then
-              echo "changed=true" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-            git pull --rebase origin "${{ github.ref_name }}" || true
-          done
-          echo "changed=false" >> "$GITHUB_OUTPUT"
-          echo "::warning::修正已提交但推送失败，请手动处理"
+      uses: EndBug/add-and-commit@v9
+      with:
+        message: 'style: 中文排版自动修正 [skip ci]'
+        add: '*.md'
+        default_author: github_actions
 
     # PR：只提示，不写回仓库
     - name: Report issues on pull request
@@ -135,6 +129,11 @@ jobs:
         rm -f .cjk-lint-files.txt .cjk-lint-mode.txt
         echo "中文排版检查完成（PR 模式：仅提示，不自动改写）"
 
+    # 清理临时文件（放在提交之后，避免被 add-and-commit 带进提交）
+    - name: Cleanup temp files
+      if: always()
+      run: rm -f .cjk-lint-files.txt .cjk-lint-mode.txt
+
     # 推进基线：后续运行改为增量检查（指向修复提交后的 main）
     - name: Advance baseline tag
       if: github.event_name != 'pull_request' && steps.fix.outputs.exit == '0'
@@ -142,7 +141,9 @@ jobs:
         git fetch origin main
         node iris/scripts/cjk-lint-ci.js advance
 
-    # 门禁：仍有无法自动修复的错误时失败
+    # 门禁：仍有「本该被自动修掉却还在」的问题时失败。
+    # 需人工处理的问题（行首禁则 / 直引号等）只报告不阻断 ——
+    # 它们的退出码是 0（lint-cjk.js 只对可自动修复的残留报错）。
     - name: Enforce clean typography
       if: >-
         (github.event_name != 'pull_request' && steps.fix.outputs.exit != '0') ||
