@@ -5,677 +5,2357 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 19 Oct 2026 15:38:03 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 26 Oct 2026 09:25:20 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>功能路线图</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/roadmap.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/roadmap.md</guid>
-      <pubDate>Mon, 19 Oct 2026 15:37:26 GMT</pubDate>
-      <description>本文档收录项目的功能规划。标注「已实现」的功能已落地可用（正式说明见 README 特性清单与相关专题文档），其余仍为规划，描述目标交互、可以复用的现有基建、实现要点与边界。功能落地后，对应章节会更新为正式文档并标注版本。 &gt; 状态速记：已完成功能见 README 特性清单 与各专题文档；未标注「已实现」的章节均为「规划中（未实现）」。 --- | 分组 | 功能 | 一句话说明 | 主要复用基建</description>
-      <content:encoded><![CDATA[<h1>功能路线图</h1>
-<p>本文档收录项目的功能规划。<strong>标注「已实现」的功能已落地可用</strong>（正式说明见 README 特性清单与相关专题文档），其余仍为规划，描述目标交互、可以复用的现有基建、实现要点与边界。功能落地后，对应章节会更新为正式文档并标注版本。</p>
-<blockquote>
-<p>状态速记：已完成功能见 <a href="https://theforeveriris.github.io/md-preview/README.md#%E7%89%B9%E6%80%A7">README 特性清单</a> 与各专题文档；未标注「已实现」的章节均为「规划中（未实现）」。</p>
-</blockquote>
-<hr>
-<h2>总览</h2>
+      <title>排版测试目录</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/zw/README.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/zw/README.md</guid>
+      <pubDate>Mon, 26 Oct 2026 09:25:03 GMT</pubDate>
+      <description>本目录用于验证中文排版校验流水线。 | 文件 | 说明 | |------|------| | | 空格、标点、数字、全半角、行首禁则、重复标点、直引号 | | | 单位、版本号、冒号问号、配置片段 | | | 表格、列表、引用、代码围栏、HTML、链接 | 流水线触发后，机器人会自动修正可安全修复的排版问题，并以 提交。 无法安全自动修复的（如中文旁的直引号）只报告，不改写。</description>
+      <content:encoded><![CDATA[<h1>排版测试目录</h1>
+<p>本目录用于验证中文排版校验流水线。</p>
+<h2>文件列表</h2>
 <table>
 <thead>
 <tr>
-<th>分组</th>
-<th>功能</th>
-<th>一句话说明</th>
-<th>主要复用基建</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>内容与渲染</td>
-<td>文档演示模式</td>
-<td><code>?mode=slides</code> 按 H2 分页全屏放映，写完文档直接拿去讲</td>
-<td><code>#pptx-slideshow-overlay</code> 放映层</td>
-</tr>
-<tr>
-<td>内容与渲染</td>
-<td>CSV / TSV 交互表格 ✅</td>
-<td><code>```csv</code> 代码块渲染为可排序、可筛选、可搜索的表格</td>
-<td>渲染器注册机制、长表格横向滚动</td>
-</tr>
-<tr>
-<td>内容与渲染</td>
-<td>IOS / VRP 配置高亮 ✅</td>
-<td><code>```ios</code> / <code>```vrp</code> 渲染路由器配置高亮</td>
-<td>highlight.js 本地化依赖</td>
-</tr>
-<tr>
-<td>阅读与导航</td>
-<td>浏览历史与收藏夹 ✅</td>
-<td>侧边栏「最近阅读」「收藏」分组</td>
-<td>侧边栏面板结构、localStorage</td>
-</tr>
-<tr>
-<td>阅读与导航</td>
-<td>链接悬浮预览 ✅</td>
-<td>悬停站内链接弹出目标文档摘要卡片</td>
-<td>hash 路由、frontmatter 摘要</td>
-</tr>
-<tr>
-<td>阅读与导航</td>
-<td>阅读位置续读 ✅</td>
-<td>记住每篇文档滚动位置，重开可一键跳回</td>
-<td>顶部阅读进度条</td>
-</tr>
-<tr>
-<td>分享与输出</td>
-<td>选中文字浮动工具栏 ✅</td>
-<td>划选文字浮出：复制 / 站内搜索 / 生成分享图</td>
-<td>编辑器选区工具栏、命令面板</td>
-</tr>
-<tr>
-<td>分享与输出</td>
-<td>主题化分享卡片 ✅</td>
-<td>按当前主题配色生成引言排版 PNG 卡片</td>
-<td>表格主题化 PNG 导出（Canvas）</td>
-</tr>
-<tr>
-<td>离线与 PWA</td>
-<td>全量离线开关 ✅</td>
-<td>一键把全部 <code>.md</code> 拉进 SW 缓存，整站离线</td>
-<td><code>search-index.json</code>、RUNTIME_CACHE</td>
-</tr>
-<tr>
-<td>离线与 PWA</td>
-<td>OS 级文件关联</td>
-<td>装 PWA 后双击 <code>.md</code> 直接用本站打开</td>
-<td><code>file_handlers</code>、local-docs</td>
-</tr>
-<tr>
-<td>离线与 PWA</td>
-<td>系统分享目标</td>
-<td>其他 App 分享文本/MD 时选「用本站打开」</td>
-<td><code>share_target</code>、local-docs</td>
-</tr>
-<tr>
-<td>离线与 PWA</td>
-<td>扫码续读 ✅</td>
-<td>桌面生成文档+阅读位置的二维码，手机接着看</td>
-<td>qrcode 插件渲染器</td>
-</tr>
-<tr>
-<td>写作流程</td>
-<td>草稿系统</td>
-<td><code>draft: true</code> 不进树/搜索/RSS，仅调试模式可见</td>
-<td>构建脚本 frontmatter 过滤</td>
-</tr>
-<tr>
-<td>写作流程</td>
-<td>文档密码保护</td>
-<td>frontmatter 声明密码，客户端解密后渲染</td>
-<td>WebCrypto、构建脚本</td>
-</tr>
-<tr>
-<td>移动端</td>
-<td>移动端手势 ✅</td>
-<td>左右滑翻上/下一篇，边缘右滑呼出侧边栏</td>
-<td>上一篇/下一篇路由、移动端抽屉</td>
-</tr>
-<tr>
-<td>运维</td>
-<td>存储管理页 ✅</td>
-<td>IndexedDB 用量可视、按会话/笔记本清理</td>
-<td>storage.js、设置面板</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>一、内容与渲染</h2>
-<h3>1. 文档演示模式（<code>?mode=slides</code>）</h3>
-<blockquote>
-<p><strong>状态：已否决 ✋</strong>——经评估不提供此功能（入口与整体阅读流冲突），以下保留原方案说明备查。</p>
-</blockquote>
-<p>给任意文档加 <code>?mode=slides</code>，按 H2 分页、方向键翻页、全屏放映——写完文档直接拿去讲，让每篇文档一键变幻灯片。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>URL 参数进入 / 退出，与 <code>?mode=editor</code>、<code>?mode=pulsegen</code> 的既有惯例一致；</li>
-<li>以 H2 为分页边界，H3 及以下内容归入所属 H2 的页；文档开头（第一个 H2 之前）单独成页；</li>
-<li>页脚显示页码与当前章节标题；<code>←</code> / <code>→</code> / <code>Space</code> / <code>Shift+Space</code> / <code>Home</code> / <code>End</code> 翻页，<code>Esc</code> 退出并恢复滚动位置。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>PPTX 全屏放映层 <code>#pptx-slideshow-overlay</code>（<code>iris/js/renderers/pptx.js</code>）：backdrop + 单页容器 + 键盘事件已在捕获阶段监听并 <code>stopPropagation()</code>，优先级高于通用灯箱（见 <a href="https://theforeveriris.github.io/md-preview/readme-dev.md">开发者文档</a> 相关小节）；</li>
-<li><code>?mode=</code> 特殊页面路由（编辑器、波形生成器均已使用）；</li>
-<li>i18n 语言包（<code>iris/js/i18n.js</code>）承接新界面文案。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>分页应基于渲染完成后的 DOM（<code>.markdown-body</code> 的 H2 切片），图片 / Mermaid / 表格已经渲染好，无需重跑渲染管线；</li>
-<li>退出时恢复进入前的滚动位置与 URL；</li>
-<li>可顺带提供「导出讲义」打印样式。</li>
-</ul>
-<hr>
-<h3>2. CSV / TSV 交互表格</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> <code>csv / </code>tsv 代码块直接渲染为交互表格，示例见 <a href="https://theforeveriris.github.io/md-preview/docs/examples/csv-examples.md">CSV/TSV 交互表格示例</a>。</p>
-</blockquote>
-<p><code>```csv</code> / <code>```tsv</code> 代码块渲染为可排序、可筛选、可搜索的交互表格，贴数据的人会常用。这是长表格横向滚动优化的自然延伸。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>表头点击排序（升 / 降序切换，箭头指示）；</li>
-<li>右上角搜索框即时过滤行；每列下拉勾选筛选；</li>
-<li>行数多时保留横向滚动与「延伸到右侧空白」能力；</li>
-<li>工具栏提供「复制 CSV」「下载 CSV」。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>渲染器注册机制（<code>iris/js/renderers/</code>，<code>detect</code> + <code>render</code> 两段式）；</li>
-<li>长表格横向滚动与「延伸到右侧空白」设置（<code>iris/css/markdown.css</code> + 显示设置）；</li>
-<li>表格手柄已有的「复制 CSV」逻辑（<code>iris/js/interactions.js</code>）。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>数据量在内存中，纯 DOM 排序即可，无需引库；</li>
-<li>建议超过约 5000 行时退化为普通代码块高亮，避免卡顿；</li>
-<li>TSV 按制表符分列，注意引号转义与空行跳过。</li>
-</ul>
-<hr>
-<h3>3. Cisco IOS / 华为 VRP 配置高亮</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> <code>ios / </code>vrp（别名 <code>cisco / </code>huawei），示例见 <a href="https://theforeveriris.github.io/md-preview/docs/examples/ios-vrp-examples.md">IOS/VRP 配置高亮示例</a>。</p>
-</blockquote>
-<p>自定义两个 highlight.js 语言包，<code>```ios</code> / <code>```vrp</code> 渲染路由器配置。本站受众本就是网络工程师（PKT / eNSP 拓扑渲染已内置），配置高亮比任何图都戳中痛点。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>命令关键字（<code>interface</code> / <code>router ospf</code> / <code>acl</code> / <code>display current-configuration</code> 等）、注释（IOS 的 <code>!</code>）、字符串与数字分级着色；</li>
-<li>与内置 10 套代码高亮主题自动兼容（仅依赖 hljs class 体系）。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>highlight.js 已本地化（<code>iris/vendor/</code>），无新增运行时依赖；</li>
-<li>代码块语言标签与一键复制按钮已内建。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>通过 <code>hljs.registerLanguage(&#39;ios&#39;, grammar)</code> 注册，语法写法参考 hljs 官方「路由器配置」类 grammar；</li>
-<li>IOS 与 VRP 大量同构，可共享一套基础规则、分别维护关键字表；</li>
-<li>语言包体积应控制在数 KB 内，避免拖累首屏（可并入现有按需加载机制）。</li>
-</ul>
-<hr>
-<h2>二、阅读与导航</h2>
-<h3>4. 浏览历史与收藏夹</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> 长按文件树文档一键收藏（图标变强调色），最近打开的 5 篇在文件树中淡化显示；未设独立侧边栏分组。</p>
-</blockquote>
-<p>localStorage 记录阅读轨迹，侧边栏新增「最近阅读」「收藏」两个分组。配合已有的本地文件会话列表，整体导航体验就完整了。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>每篇文档阅读超过阈值时间（如 5 秒）记入历史：标题 + 路径 + 时间，去重、上限约 50 条；</li>
-<li>收藏入口（悬浮球菜单或标题旁星标），一键收藏 / 取消；</li>
-<li>两个分组渲染在侧边栏，与「本地文件」面板同级、可折叠，点击条目走既有 hash 路由；</li>
-<li>分组标题栏提供清空入口。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>侧边栏面板结构（本地文件面板：<code>iris/js/local-docs.js</code> + <code>iris/css/layout.css</code>）；</li>
-<li>文件树条目渲染与点击路由（<code>iris/js/file-tree.js</code>）；</li>
-<li>i18n 语言包。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>数据结构建议 <code>md-preview-history</code> / <code>md-preview-favorites</code> 两个 localStorage 键；</li>
-<li>隐私模式下 localStorage 可能抛异常，读写需 try/catch；</li>
-<li>历史去重以文档路径为键，本地文件与会话文档可不入历史（刷新即失效）。</li>
-</ul>
-<hr>
-<h3>5. 链接悬浮预览</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> 悬停站内链接弹出目标文档摘要卡片（标题 + 摘要 + 阅读时长），点击卡片跳转。</p>
-</blockquote>
-<p>鼠标悬停站内链接时，弹出目标文档的摘要卡片（Obsidian / 维基百科同款），不用离开当前页就能确认要不要跳。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>悬停约 300ms 后浮出卡片：目标标题 + 首段摘要 + 字数，跟随链接定位；</li>
-<li>点击卡片跳转，<code>Esc</code> 或鼠标移出关闭；触屏设备暂不支持（或长按触发）。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>hash 路由解析（<code>iris/app.js</code>）确定目标文档路径；</li>
-<li>按路径拉取单篇 <code>.md</code> 的运行时请求逻辑；</li>
-<li>frontmatter 解析（<code>iris/js/markdown.js</code> 的 <code>parseFrontmatter</code>），<code>description</code> 字段已用于 OGP meta。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>摘要取 <code>frontmatter.description</code> &gt; 正文首段（可复用 OGP 的摘要提炼逻辑，剥代码块 / 图片 / 标记语法）；</li>
-<li>卡片内<strong>不渲染完整 Markdown</strong>（XSS 攻击面收敛），仅纯文本 + 少量受控格式；</li>
-<li>对已打开过的文档可做内存级缓存，避免悬停风暴重复 fetch。</li>
-</ul>
-<hr>
-<h3>6. 阅读位置续读</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> 重新打开读过的文档时底部提示「上次读到 N%，继续？」。</p>
-</blockquote>
-<p>每篇文档记住滚动位置，下次打开时提示「上次读到 62%，继续？」。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>滚动节流记录阅读百分比（低于约 10% 不记录）；</li>
-<li>重新打开同一篇时，底部浮出提示条，点击平滑滚动到记录位置；</li>
-<li>「本次忽略」「不再提醒」两级记忆。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>顶部阅读进度条（已有，滚动百分比同源）；</li>
-<li>hash 路由与 localStorage。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>记录 <code>{ 路径: { pct, 时间 } }</code>，文档更新后百分比仍近似有效；</li>
-<li>仅在「重新打开」时提示，首次阅读不打扰。</li>
-</ul>
-<hr>
-<h2>三、分享与输出</h2>
-<h3>7. 选中文字浮动工具栏</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> 划选正文文字即浮出：复制 / 站内搜索 / 分享卡片。</p>
-</blockquote>
-<p>划选正文一段文字后浮出小工具条：复制 / 站内搜索 / 生成分享图。表格悬浮手柄与 LaTeX 右键复制的交互模式是现成的。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>在正文区 <code>mouseup</code> 且选区非空时，于选区上方定位工具条；点击外部或 <code>Esc</code> 消失；</li>
-<li>按钮：复制纯文本、复制 Markdown 源码、以此文字唤起 <code>Ctrl/⌘ + K</code> 命令面板搜索、生成分享卡片。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>编辑器内已有「选中文字浮动工具栏」（<code>iris/css/editor.css</code>），定位与视口边界规避逻辑可移植；</li>
-<li>居中搜索命令面板（<code>iris/js/search.js</code> + <code>ui.js</code>，<code>Ctrl/⌘ + K</code>）；</li>
-<li>表格手柄的 SVG 图标按钮风格（无 emoji）。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>仅对 <code>.markdown-body</code> 正文选区生效，避开编辑器、代码块自身工具栏与表格手柄；</li>
-<li>「复制 Markdown 源码」需要 DOM→MD 回溯，工程量大时可先退化为复制纯文本；</li>
-<li>需要与标题锚点复制、LaTeX 右键复制互不抢占事件。</li>
-</ul>
-<hr>
-<h3>8. 主题化分享卡片</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> 选中文字工具条「分享卡片」，下载 1200×630 PNG。</p>
-</blockquote>
-<p>选中段落或整篇文档生成一张带当前主题配色的 PNG 卡片（引言排版），适合发社交媒体。表格导出 PNG 的能力可以直接复用。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>卡片构成：文档标题 + 摘录正文 + 站点名 / 二维码角标；</li>
-<li>配色取当前 <code>data-theme</code> 的 CSS 变量，与站点视觉一致；</li>
-<li>尺寸可选 1200×630（与 OGP 分享图同尺寸）或 3:4 竖版；</li>
-<li>出口：下载 PNG / 复制到剪贴板。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>表格手柄的主题化 PNG 导出（<code>iris/js/interactions.js</code>，Canvas 手绘 + <code>toBlob</code>，不依赖 html2canvas）；</li>
-<li>OGP 站点分享图的 Canvas 品牌排版流程（<code>iris/icons/og-image.png</code> 的生成思路）；</li>
-<li>qrcode 插件渲染器（<code>iris/plugins/qrcode.js</code>）做角标二维码。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>沿用 Canvas 手绘方案：页面字体已加载，<code>measureText</code> 逐行排版，长文自动截断并补「阅读全文」尾行；</li>
-<li>深浅主题下分别校验对比度；</li>
-<li>剪贴板写入图片需 <code>ClipboardItem</code>，做降级（仅下载）。</li>
-</ul>
-<hr>
-<h2>四、离线与 PWA</h2>
-<h3>9. 全量离线开关</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> 设置面板 → 操作 → 「缓存全部文档」，支持一键清除文档缓存。</p>
-</blockquote>
-<p>PWA 目前只缓存访问过的页面。设置里加一个「缓存全部文档」按钮，一键把 <code>search-index</code> 覆盖的所有 <code>.md</code> 拉进 SW 缓存，飞机上也能整站阅读。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>设置面板新增按钮与进度显示（n / total，可取消）；</li>
-<li>完成后提示「已可整站离线」，并显示当前缓存文档数与「清除缓存」入口。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li><code>sw.js</code> 的 RUNTIME_CACHE 已按 <code>.md</code> 路径后缀拦截并缓存访问过的文档；</li>
-<li><code>iris/data/search-index.json</code> 覆盖全部文档路径，可作清单来源；</li>
-<li><code>precache-manifest.json</code> 的预缓存机制与版本管理。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>逐个 fetch <code>.md</code>（并发 3~5）触发 SW 拦截入库，避免一次性全量拉爆移动端流量；</li>
-<li><code>CACHE_NAME</code> 版本升级后旧缓存会被清除，需提示用户重跑「缓存全部」；</li>
-<li>渲染一篇文档还依赖 vendor 库，可顺带把常用 JS/CSS 一并纳入（或依赖 precache 已覆盖）。</li>
-</ul>
-<hr>
-<h3>10. OS 级文件关联</h3>
-<p>manifest 加 <code>file_handlers</code>，安装 PWA 后双击 <code>.md</code> 文件直接用本站打开，配合 File System Access API 就是桌面 MD 阅读器。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>系统层面把 <code>.md</code> / <code>.markdown</code> 关联到已安装的 PWA；</li>
-<li>启动后通过 <code>launchQueue</code> 拿到文件句柄，转入本地文件会话打开。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li><code>manifest.json</code>；</li>
-<li>本地文件管线（<code>iris/js/local-docs.js</code>：会话列表、懒加载、大小限制）。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li><code>window.launchQueue.setConsumer()</code> 接收 <code>FileHandle</code> → 读 File 后走「打开本地 MD」同一入口；</li>
-<li>仅 HTTPS + 已安装 PWA 的 Chromium 系浏览器生效，其余环境静默降级；</li>
-<li>与手动打开共用限制（单文件 ≤ 10MB 等）。</li>
-</ul>
-<hr>
-<h3>11. 系统分享目标</h3>
-<p><code>share_target</code> 注册后，其他 App 分享文本 / MD 时可选「用 Markdown Preview 打开」。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>移动端系统分享面板出现本站入口；</li>
-<li>分享的文本 / 文件进入站点后，转入本地文件会话或直接渲染预览。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li><code>manifest.json</code>；</li>
-<li><code>iris/js/local-docs.js</code> 的内存会话（刷新即清空，天然适合一次性分享内容）。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>最简方案：<code>method: &quot;GET&quot;</code> + query 参数承接分享文本（SW 不参与）；</li>
-<li>接收文件（POST 到 Service Worker）方案复杂度高，建议二期；</li>
-<li>进入后应立即渲染并把分享内容带入本地文件会话，避免用户困惑。</li>
-</ul>
-<hr>
-<h3>12. 扫码续读</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> 悬浮球「扫码续读」生成当前文档 + 阅读位置的二维码（<code>?pos=N</code> 参数），扫码后自动定位；二维码沿用 qrcode 插件的外部服务方案。</p>
-</blockquote>
-<p>桌面端生成当前文档 + 阅读位置的二维码，手机扫码接着看。qrcode 渲染器是现成的。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>悬浮球或分享工具条入口 → 弹窗展示二维码（URL 含文档路径与可选滚动位置参数），附当前阅读百分比；</li>
-<li>手机打开后自动滚动到记录位置（配合「阅读位置续读」）。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>qrcode 插件渲染器（<code>iris/plugins/qrcode.js</code>）；</li>
-<li>悬浮球菜单与 i18n。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>阅读位置用 query 参数（如 <code>?pos=0.62</code>）而非 hash 附加，避免与文档路由冲突；</li>
-<li>本地 / 局域网地址生成的二维码跨设备无效，需提示「需部署后的公网地址」。</li>
-</ul>
-<hr>
-<h2>五、写作流程</h2>
-<h3>13. 草稿系统</h3>
-<p>frontmatter 写 <code>draft: true</code> 的文档不出现在目录树 / 搜索 / RSS，只在调试模式（<code>?debug=1</code>）可见，写作流程就完整了。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>三个构建脚本（file-tree / search-index / feed）解析 frontmatter 并过滤草稿；</li>
-<li>运行时 GitHub API 回退路径同样过滤；</li>
-<li><code>?debug=1</code> 打开时，草稿在侧边栏以「草稿」徽标显示，方便自查。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>构建脚本（<code>iris/scripts/build-*.js</code>）已解析文档元信息，增加字段成本低；</li>
-<li><code>iris/js/markdown.js</code> 的 frontmatter 解析；</li>
-<li><code>?debug=1</code> Debug Panel（已有，见 <a href="https://theforeveriris.github.io/md-preview/readme-dev.md">开发者文档</a>）。</li>
-</ul>
-<p><strong>实现要点与边界</strong></p>
-<ul>
-<li>⚠️ <strong>内容仍是公开的静态文件</strong>：草稿只是「不展示、不被索引」，任何知道 URL 的人仍可直接访问 <code>.md</code>。需要保密的内容请配合「文档密码保护（构建期加密）」；</li>
-<li>RSS 过滤在构建期完成，已生成的 <code>feed.xml</code> 需要重跑构建才会剔除。</li>
-</ul>
-<hr>
-<h3>14. 文档密码保护</h3>
-<p>frontmatter 写 <code>password: xxx</code>，WebCrypto 客户端解密，目标是在公开仓库里放私人笔记、零后端做到真加密。</p>
-<p><strong>关键边界（必须先想清楚）</strong></p>
-<p>当前管线中 <code>.md</code> 以明文静态文件被服务，<strong>纯前端的「密码门」只是遮罩</strong>——内容可以被直接 fetch。要做到真加密，必须构建期加密：由构建脚本把正文用 AES-GCM 加密写入产物（或以 <code>```encrypted</code> 块替换正文），运行时用密码派生密钥（PBKDF2）解密后再走既有渲染管线。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>进入受保护文档显示密码输入卡片；</li>
-<li>解密成功后按「路径 + 密码哈希」在 sessionStorage 记忆，站内跳转不重复输入；</li>
-<li>密码错误时抖动提示，不暴露任何明文片段。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>构建脚本体系（可新增 <code>build-encrypt.js</code> 或在现有脚本内处理）；</li>
-<li><code>markdown.js</code> 渲染管线（解密后的明文直接进管线）；</li>
-<li>WebCrypto 为浏览器原生能力，零依赖。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>密钥派生参数（迭代次数）在安全与移动端耗时间取舍；</li>
-<li>解密结果按文档缓存，避免滚动 / 重新渲染时重复解密；</li>
-<li>仓库里只存密文与盐，密码永不入库；密码丢失无法找回，需在文档中明示。</li>
-</ul>
-<hr>
-<h2>六、移动端</h2>
-<h3>15. 移动端手势</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> 触屏设备上左右滑动正文切换上一篇 / 下一篇（本地文件会话优先），自屏幕左缘约 24px 右滑呼出侧边栏；设置面板「显示选项」提供「启用移动端手势」开关（默认开启）。</p>
-</blockquote>
-<p>左右滑翻上 / 下一篇（悬浮球的上一篇 / 下一篇逻辑复用），边缘右滑呼出侧边栏。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>正文区横向位移超过阈值（约 60px）且纵向位移小于阈值时判定为翻页手势；</li>
-<li>仅屏幕左缘约 24px 起始的右滑触发侧边栏，避免与系统返回手势互相干扰；</li>
-<li>提供「启用移动端手势」设置开关。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li>上一篇 / 下一篇路由（与悬浮球、<code>[</code> / <code>]</code> 快捷键同源，<code>iris/js/file-tree.js</code>）;</li>
-<li>移动端抽屉侧边栏（<code>iris/css/responsive.css</code>）。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li>图片灯箱、PPTX 放映打开时触摸事件让位浮层；</li>
-<li>iOS Safari 边缘滑动优先让位系统返回，手势判定需避开系统保留区；</li>
-<li>与「长按选中文字」「横向滚动的长表格」冲突，需按手势起点元素排除。</li>
-</ul>
-<hr>
-<h2>七、运维</h2>
-<h3>16. 存储管理页</h3>
-<blockquote>
-<p><strong>状态：已实现 ✅</strong> 设置面板新增「存储」区块：<code>navigator.storage.estimate()</code> 用量条、编辑器笔记本列表（逐条删除 / 全部清空，二次确认）、阅读历史与收藏 / 阅读位置的占用与一键清理（<code>iris/js/storage-manager.js</code>）。</p>
-</blockquote>
-<p>显示 IndexedDB 用量、按会话清理。本地文件会话、编辑器笔记本多了之后，现在是个黑盒。</p>
-<p><strong>交互草案</strong></p>
-<ul>
-<li>设置面板新增「存储」区块：<code>navigator.storage.estimate()</code> 的用量条（已用 / 配额）；</li>
-<li>编辑器笔记本列表（逐条 / 全部删除，带二次确认）；</li>
-<li>本地文件会话、阅读历史 / 收藏的占用与一键清理入口。</li>
-</ul>
-<p><strong>复用基建</strong></p>
-<ul>
-<li><code>iris/js/storage.js</code>（IndexedDB 笔记本存储，含 notebooks / meta 两个对象存储）；</li>
-<li><code>iris/js/local-docs.js</code> 会话模型；</li>
-<li>设置面板（<code>iris/js/settings.js</code>）。</li>
-</ul>
-<p><strong>实现要点</strong></p>
-<ul>
-<li><code>estimate()</code> 的精度因浏览器而异，展示为「约」即可；</li>
-<li>删除操作必须二次确认；清理后即时刷新用量显示。</li>
-</ul>
-<hr>
-<h2>八、本轮新增（已实现 ✅）</h2>
-<p>以下为在既有规划之外、本轮新增并已落地的能力；说明见 <a href="https://theforeveriris.github.io/md-preview/README.md#%E7%89%B9%E6%80%A7">README 特性清单</a> 与 <a href="https://theforeveriris.github.io/md-preview/docs/examples/devtools-examples.md">开发者工具与交互组件示例</a>。</p>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>功能</th>
+<th>文件</th>
 <th>说明</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>性能</td>
-<td>可见即渲染</td>
-<td>重型渲染器滚到附近才初始化；视口内立即渲染，<code>IntersectionObserver</code> 失效时自动兜底（<code>iris/js/md-render.js</code>）</td>
+<td><code>1.0-排版问题样例一.md</code></td>
+<td>空格、标点、数字、全半角、行首禁则、重复标点、直引号</td>
 </tr>
 <tr>
-<td>性能</td>
-<td>渐进式代码高亮</td>
-<td>长文档先高亮首屏代码块，其余空闲时补齐（<code>iris/js/md-render.js</code>）</td>
+<td><code>2.0-排版问题样例二.md</code></td>
+<td>单位、版本号、冒号问号、配置片段</td>
 </tr>
 <tr>
-<td>性能</td>
-<td>屏外内容跳过布局</td>
-<td>正文屏外区块 <code>content-visibility: auto</code>（<code>iris/css/markdown.css</code>）</td>
-</tr>
-<tr>
-<td>性能</td>
-<td>相邻文档预取</td>
-<td>空闲 / 悬停预取上下一篇（<code>iris/js/prefetch.js</code>）</td>
-</tr>
-<tr>
-<td>内容</td>
-<td>术语表悬浮</td>
-<td><code>glossary</code> 代码块 + 正文首次出现悬浮解释（<code>iris/js/renderers/glossary.js</code>）</td>
-</tr>
-<tr>
-<td>内容</td>
-<td>CSV → 图表联动</td>
-<td>表格工具栏「画成图」（<code>iris/js/renderers/csv-table.js</code>）</td>
-</tr>
-<tr>
-<td>内容</td>
-<td>SQL DDL → ER 图</td>
-<td><code>sql ddl</code> / <code>ddl</code> / <code>erd</code>（<code>iris/js/renderers/sql-erd.js</code>）</td>
-</tr>
-<tr>
-<td>内容</td>
-<td>拼音注音</td>
-<td>作者语法 `{汉字</td>
-</tr>
-<tr>
-<td>工具</td>
-<td>HTTP 请求块</td>
-<td><code>http</code> 代码块，点击发送实时请求（<code>iris/js/renderers/http-request.js</code>）</td>
-</tr>
-<tr>
-<td>工具</td>
-<td>OpenAPI 交互文档</td>
-<td><code>openapi</code> / <code>swagger</code> JSON / YAML + 试一下（<code>iris/js/renderers/openapi.js</code>）</td>
-</tr>
-<tr>
-<td>工具</td>
-<td>开发者小工具</td>
-<td><code>iris/plugins/</code>：regex / cron / time / color / hash / jwt</td>
-</tr>
-<tr>
-<td>中文</td>
-<td>繁简转换</td>
-<td>基于 opencc，代码块不转换（<code>iris/js/cjk.js</code> + <code>iris/vendor/opencc</code>）</td>
-</tr>
-<tr>
-<td>中文</td>
-<td>竖排阅读 / 排版选项</td>
-<td>竖排、首行缩进、标点悬挂、中西文间距（设置面板「中文」）</td>
-</tr>
-<tr>
-<td>Git</td>
-<td>单篇历史 / blame</td>
-<td>悬浮球「历史与变更」，GitHub API + 内嵌 diff（<code>iris/js/git-history.js</code>）</td>
-</tr>
-<tr>
-<td>Git</td>
-<td>文档变更订阅</td>
-<td>关注文档，有更新时正文顶部提示</td>
-</tr>
-<tr>
-<td>构建</td>
-<td>中文排版 lint</td>
-<td><code>iris/scripts/lint-cjk.js</code>，<code>--fix</code> 自动修复，CI 告警</td>
-</tr>
-<tr>
-<td>构建</td>
-<td>自动变更日志页</td>
-<td><code>iris/scripts/build-changelog.js</code> → <code>docs/changelog.md</code></td>
-</tr>
-<tr>
-<td>导航</td>
-<td>文档图谱</td>
-<td><code>#/graph</code> 沉浸式可交互图谱（入口=Ctrl/⌘+K 命令面板），节点=文档、边=站内链接、颜色=主题强调色深浅、大小=入度；悬停出邻居标签，浮层控件含缩放 / 适配 / 重置 / 全屏；Cytoscape.js 懒加载（<code>iris/js/renderers/graph.js</code>）</td>
-</tr>
-<tr>
-<td>导航</td>
-<td>反向链接与相关文档</td>
-<td>文末「被 N 篇引用」+「相关文档」，数据来自 <code>links.json</code>（<code>iris/js/backlinks.js</code>）</td>
-</tr>
-<tr>
-<td>构建</td>
-<td>链接关系数据</td>
-<td><code>iris/scripts/build-links.js</code> → <code>iris/data/links.json</code>，解析原语与死链检查共用 <code>iris/scripts/lib/md-links.js</code></td>
-</tr>
-<tr>
-<td>分发</td>
-<td>桌面端（Tauri）</td>
-<td>同一份静态站点打包为 Windows exe / NSIS 安装包；桌面端禁用 SW，外链交给系统浏览器（<code>src-tauri/</code>）</td>
-</tr>
-<tr>
-<td>搜索</td>
-<td>繁简互通 + 拼音首字母</td>
-<td>构建期写入 <code>searchText</code>；拼音表由 <code>gen-pinyin-table.js</code> 一次性生成并入库</td>
-</tr>
-<tr>
-<td>排版</td>
-<td>图 / 表自动编号与交叉引用</td>
-<td>连续编号、别名注释、空链接自动填充（<code>iris/js/figures.js</code>）</td>
-</tr>
-<tr>
-<td>内容</td>
-<td>时间线组件</td>
-<td><code>timeline</code> 代码块，状态色 + 今日标记线（<code>iris/plugins/timeline.js</code>）</td>
-</tr>
-<tr>
-<td>交互</td>
-<td>脚注悬浮预览</td>
-<td>悬停 / 聚焦脚注角标浮出脚注原文（<code>iris/js/hover-preview.js</code>）</td>
-</tr>
-<tr>
-<td>交互</td>
-<td>设置项搜索</td>
-<td>设置面板左栏搜索，行级过滤 + 隐藏空分组 + 唯一命中自动跳转</td>
+<td><code>3.0-排版问题样例三.md</code></td>
+<td>表格、列表、引用、代码围栏、HTML、链接</td>
 </tr>
 </tbody></table>
+<h2>预期行为</h2>
+<p>流水线触发后，机器人会自动修正可安全修复的排版问题，并以
+<code>style: 中文排版自动修正 [skip ci]</code> 提交。</p>
+<p>无法安全自动修复的（如中文旁的直引号）只报告，不改写。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>浏览器原生 HTML 元素与 Web API 示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/native-html-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/native-html-examples.md</guid>
+      <pubDate>Mon, 26 Oct 2026 08:37:50 GMT</pubDate>
+      <description>本页面展示丰富的浏览器原生功能，零 JS、零后端即可使用！ --- &lt;dialog id=&quot;dialogDemo&quot;&gt; &lt;h3&gt;欢迎！&lt;/h3&gt; &lt;p&gt;这是一个纯 HTML 原生模态对话框。&lt;/p&gt; &lt;button onclick=&quot;document.getElementById(&apos;dialogDemo&apos;).close()&quot;&gt;关闭&lt;/button&gt; &lt;/dialog&gt; &lt;button onclick</description>
+      <content:encoded><![CDATA[<h1>浏览器原生 HTML 元素与 Web API 示例</h1>
+<p>本页面展示丰富的浏览器原生功能，零 JS、零后端即可使用！</p>
 <hr>
-<h2>建议落地顺序</h2>
+<h2>一、语义与排版</h2>
+<h3>1.1 原生模态对话框</h3>
+<pre><code class="language-html">&lt;dialog id=&quot;dialogDemo&quot;&gt;
+  &lt;h3&gt;欢迎！&lt;/h3&gt;
+  &lt;p&gt;这是一个纯 HTML 原生模态对话框。&lt;/p&gt;
+  &lt;button onclick=&quot;document.getElementById(&#39;dialogDemo&#39;).close()&quot;&gt;关闭&lt;/button&gt;
+&lt;/dialog&gt;
+&lt;button onclick=&quot;document.getElementById(&#39;dialogDemo&#39;).showModal()&quot;&gt;打开对话框&lt;/button&gt;
+</code></pre>
+<dialog id="dialogDemo">
+  <h3>欢迎！</h3>
+  <p>这是一个纯 HTML 原生模态对话框。</p>
+  <button onclick="document.getElementById('dialogDemo').close()">关闭</button>
+</dialog>
+<button onclick="document.getElementById('dialogDemo').showModal()">打开对话框</button><hr>
+<h3>1.2 折叠面板</h3>
+<pre><code class="language-html">&lt;details&gt;
+  &lt;summary&gt;点击展开/收起&lt;/summary&gt;
+  &lt;p&gt;这是一个可嵌套的折叠面板内容。&lt;/p&gt;
+  &lt;details&gt;
+    &lt;summary&gt;再展开一层&lt;/summary&gt;
+    &lt;p&gt;多层嵌套也支持！&lt;/p&gt;
+  &lt;/details&gt;
+&lt;/details&gt;
+</code></pre>
+<details>
+  <summary>点击展开/收起</summary>
+  <p>这是一个可嵌套的折叠面板内容。</p>
+  <details>
+    <summary>再展开一层</summary>
+    <p>多层嵌套也支持！</p>
+  </details>
+</details><hr>
+<h3>1.3 中文注音</h3>
+<pre><code class="language-html">&lt;ruby&gt;
+  中 &lt;rp&gt;(&lt;/rp&gt;&lt;rt&gt;zhōng&lt;/rt&gt;&lt;rp&gt;)&lt;/rp&gt;
+  文 &lt;rp&gt;(&lt;/rp&gt;&lt;rt&gt;wén&lt;/rt&gt;&lt;rp&gt;)&lt;/rp&gt;
+&lt;/ruby&gt;
+</code></pre>
+<ruby>
+  中 <rp>(</rp><rt>zhōng</rt><rp>)</rp>
+  文 <rp>(</rp><rt>wén</rt><rp>)</rp>
+</ruby><hr>
+<h3>1.4 文本高亮</h3>
+<pre><code class="language-html">&lt;mark&gt;这是文本高亮&lt;/mark&gt;，像荧光笔一样！
+</code></pre>
+<p><mark>这是文本高亮</mark>，像荧光笔一样！</p>
+<hr>
+<h3>1.5 键盘按键</h3>
+<pre><code class="language-html">按 &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;C&lt;/kbd&gt; 复制
+</code></pre>
+<p>按 <kbd>Ctrl</kbd> + <kbd>C</kbd> 复制</p>
+<hr>
+<h3>1.6 下标上标</h3>
+<pre><code class="language-html">H&lt;sub&gt;2&lt;/sub&gt;O - 水的化学式
+x&lt;sup&gt;2&lt;/sup&gt; + y&lt;sup&gt;2&lt;/sup&gt; = z&lt;sup&gt;2&lt;/sup&gt;
+</code></pre>
+<p>H<sub>2</sub>O - 水的化学式<br>
+x<sup>2</sup> + y<sup>2</sup> = z<sup>2</sup></p>
+<hr>
+<h3>1.7 缩写说明</h3>
+<pre><code class="language-html">&lt;abbr title=&quot;HyperText Markup Language&quot;&gt;HTML&lt;/abbr&gt; 是网页的基础
+</code></pre>
+<p><abbr title="HyperText Markup Language">HTML</abbr> 是网页的基础</p>
+<hr>
+<h3>1.8 时间标记</h3>
+<pre><code class="language-html">发布于 &lt;time datetime=&quot;2024-05-20&quot;&gt;2024年5月20日&lt;/time&gt;
+</code></pre>
+<p>发布于 <time datetime="2024-05-20">2024年5月20日</time></p>
+<hr>
+<h3>1.9 增删标记</h3>
+<pre><code class="language-html">删除内容：&lt;del&gt;旧功能&lt;/del&gt;
+新增内容：&lt;ins&gt;新功能&lt;/ins&gt;
+</code></pre>
+<p>删除内容：<del>旧功能</del><br>
+新增内容：<ins>新功能</ins></p>
+<hr>
+<h3>1.10 图文组合</h3>
+<pre><code class="language-html">&lt;figure&gt;
+  &lt;canvas id=&quot;demoCanvas&quot; width=&quot;200&quot; height=&quot;100&quot; style=&quot;background:#f0f0f0; border-radius:8px;&quot;&gt;&lt;/canvas&gt;
+  &lt;figcaption&gt;示例图表 - 一个简单的画布&lt;/figcaption&gt;
+&lt;/figure&gt;
+</code></pre>
+<figure>
+  <canvas id="demoCanvas" width="200" height="100" style="background:#f0f0f0; border-radius:8px;"></canvas>
+  <figcaption>示例图表 - 一个简单的画布</figcaption>
+</figure><script>
+  // 简单的 canvas 绘制
+  const canvas = document.getElementById('demoCanvas');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#8B5CF6';
+    ctx.fillRect(10, 10, 50, 80);
+    ctx.fillStyle = '#D946EF';
+    ctx.fillRect(70, 20, 50, 70);
+    ctx.fillStyle = '#3B82F6';
+    ctx.fillRect(130, 40, 50, 50);
+  }
+</script><hr>
+<h2>二、多媒体与嵌入</h2>
+<h3>2.1 内联 SVG</h3>
+<pre><code class="language-html">&lt;svg width=&quot;200&quot; height=&quot;100&quot; viewBox=&quot;0 0 200 100&quot;&gt;
+  &lt;rect x=&quot;10&quot; y=&quot;10&quot; width=&quot;80&quot; height=&quot;60&quot; fill=&quot;#8B5CF6&quot; rx=&quot;8&quot;/&gt;
+  &lt;circle cx=&quot;150&quot; cy=&quot;40&quot; r=&quot;30&quot; fill=&quot;#D946EF&quot;/&gt;
+  &lt;text x=&quot;100&quot; y=&quot;85&quot; text-anchor=&quot;middle&quot; fill=&quot;#333&quot; font-size=&quot;14&quot;&gt;内联 SVG 示例&lt;/text&gt;
+&lt;/svg&gt;
+</code></pre>
+<svg width="200" height="100" viewBox="0 0 200 100">
+  <rect x="10" y="10" width="80" height="60" fill="#8B5CF6" rx="8"/>
+  <circle cx="150" cy="40" r="30" fill="#D946EF"/>
+  <text x="100" y="85" text-anchor="middle" fill="#333" font-size="14">内联 SVG 示例</text>
+</svg><hr>
+<h3>2.2 Canvas 2D 绘制</h3>
+<pre><code class="language-html">&lt;canvas id=&quot;animatedCanvas&quot; width=&quot;200&quot; height=&quot;100&quot; style=&quot;background:#f8fafc; border-radius:8px;&quot;&gt;&lt;/canvas&gt;
+</code></pre>
+<p><canvas id="animatedCanvas" width="200" height="100" style="background:#f8fafc; border-radius:8px;"></canvas></p>
+<script>
+  const animCanvas = document.getElementById('animatedCanvas');
+  if (animCanvas) {
+    const ctx = animCanvas.getContext('2d');
+    let angle = 0;
+    function draw() {
+      ctx.clearRect(0, 0, 200, 100);
+      ctx.save();
+      ctx.translate(100, 50);
+      ctx.rotate(angle);
+      ctx.fillStyle = '#8B5CF6';
+      ctx.fillRect(-20, -20, 40, 40);
+      ctx.restore();
+      angle += 0.02;
+      requestAnimationFrame(draw);
+    }
+    draw();
+  }
+</script><hr>
+<h3>2.3 内联 iframe</h3>
+<pre><code class="language-html">&lt;iframe srcdoc=&quot;&lt;h3&gt;内联 HTML&lt;/h3&gt;&lt;p&gt;这是通过 srcdoc 嵌入的内容&lt;/p&gt;&quot;
+        width=&quot;100%&quot; height=&quot;120&quot; style=&quot;border:1px solid #e5e7eb; border-radius:8px;&quot;&gt;&lt;/iframe&gt;
+</code></pre>
+<iframe srcdoc="<h3 style='margin:8px 16px; color:#333; font-size:18px;'>内联 HTML</h3><p style='margin:8px 16px; color:#666;'>这是通过 srcdoc 嵌入的内容</p>"
+        width="100%" height="120" style="border:1px solid #e5e7eb; border-radius:8px;"></iframe><hr>
+<h2>三、表单与交互</h2>
+<h3>3.1 仪表盘</h3>
+<pre><code class="language-html">&lt;meter value=&quot;75&quot; min=&quot;0&quot; max=&quot;100&quot; low=&quot;33&quot; high=&quot;66&quot; optimum=&quot;80&quot;&gt;75/100&lt;/meter&gt;
+</code></pre>
+<p><meter value="75" min="0" max="100" low="33" high="66" optimum="80">75/100</meter></p>
+<hr>
+<h3>3.2 进度条</h3>
+<pre><code class="language-html">&lt;progress value=&quot;60&quot; max=&quot;100&quot;&gt;60%&lt;/progress&gt;
+</code></pre>
+<p><progress value="60" max="100">60%</progress></p>
+<hr>
+<h3>3.3 自动补全</h3>
+<pre><code class="language-html">&lt;label&gt;选择语言：&lt;/label&gt;
+&lt;input list=&quot;languages&quot;&gt;
+&lt;datalist id=&quot;languages&quot;&gt;
+  &lt;option value=&quot;JavaScript&quot;&gt;
+  &lt;option value=&quot;Python&quot;&gt;
+  &lt;option value=&quot;TypeScript&quot;&gt;
+  &lt;option value=&quot;Java&quot;&gt;
+  &lt;option value=&quot;Go&quot;&gt;
+&lt;/datalist&gt;
+</code></pre>
+<p><label>选择语言：</label>
+<input list="languages">
+<datalist id="languages">
+  <option value="JavaScript">
+  <option value="Python">
+  <option value="TypeScript">
+  <option value="Java">
+  <option value="Go">
+</datalist></p>
+<hr>
+<h3>3.4 计算结果</h3>
+<pre><code class="language-html">&lt;form oninput=&quot;result.value = Number(a.value) + Number(b.value)&quot;&gt;
+  &lt;input type=&quot;number&quot; id=&quot;a&quot; value=&quot;5&quot; style=&quot;width:60px;&quot;&gt; +
+  &lt;input type=&quot;number&quot; id=&quot;b&quot; value=&quot;10&quot; style=&quot;width:60px;&quot;&gt; =
+  &lt;output name=&quot;result&quot; for=&quot;a b&quot;&gt;15&lt;/output&gt;
+&lt;/form&gt;
+</code></pre>
+<form oninput="result.value = Number(a.value) + Number(b.value)">
+  <input type="number" id="a" value="5" style="width:60px; padding:4px 8px; border:1px solid #e5e7eb; border-radius:4px;"> +
+  <input type="number" id="b" value="10" style="width:60px; padding:4px 8px; border:1px solid #e5e7eb; border-radius:4px;"> =
+  <output name="result" for="a b" style="font-weight:bold; color:#8B5CF6;">15</output>
+</form><hr>
+<h3>3.5 内容分组</h3>
+<pre><code class="language-html">&lt;fieldset style=&quot;border:2px solid #8B5CF6; padding:16px; border-radius:8px;&quot;&gt;
+  &lt;legend style=&quot;color:#8B5CF6; padding:0 8px;&quot;&gt;用户信息&lt;/legend&gt;
+  &lt;p&gt;姓名：张三&lt;/p&gt;
+  &lt;p&gt;年龄：28&lt;/p&gt;
+&lt;/fieldset&gt;
+</code></pre>
+<fieldset style="border:2px solid #8B5CF6; padding:16px; border-radius:8px;">
+  <legend style="color:#8B5CF6; padding:0 8px;">用户信息</legend>
+  <p>姓名：张三</p>
+  <p>年龄：28</p>
+</fieldset><hr>
+<h2>四、全局属性增强</h2>
+<h3>4.1 可编辑区域</h3>
+<pre><code class="language-html">&lt;div contenteditable=&quot;true&quot; style=&quot;border:1px dashed #8B5CF6; padding:12px; border-radius:8px;&quot;&gt;
+  点击这里开始编辑！这是一个纯前端的可编辑区域。
+&lt;/div&gt;
+</code></pre>
+<div contenteditable="true" style="border:1px dashed #8B5CF6; padding:12px; border-radius:8px;">
+  点击这里开始编辑！这是一个纯前端的可编辑区域。
+</div><hr>
+<h3>4.2 可拖拽</h3>
+<pre><code class="language-html">&lt;div draggable=&quot;true&quot; style=&quot;background:#8B5CF6; color:white; padding:16px; border-radius:8px; cursor:grab; display:inline-block;&quot;&gt;
+  拖拽我试试看！
+&lt;/div&gt;
+</code></pre>
+<div draggable="true" style="background:#8B5CF6; color:white; padding:16px; border-radius:8px; cursor:grab; display:inline-block;">
+  拖拽我试试看！
+</div><hr>
+<h3>4.3 原生弹出层</h3>
+<pre><code class="language-html">&lt;button popovertarget=&quot;popDemo&quot;&gt;打开弹出层&lt;/button&gt;
+&lt;div id=&quot;popDemo&quot; popover style=&quot;border:2px solid #D946EF; padding:16px; border-radius:8px; background:white;&quot;&gt;
+  &lt;p&gt;这是一个原生弹出层！&lt;/p&gt;
+  &lt;button onclick=&quot;document.getElementById(&#39;popDemo&#39;).hidePopover()&quot;&gt;关闭&lt;/button&gt;
+&lt;/div&gt;
+</code></pre>
+<p><button popovertarget="popDemo" style="background:#8B5CF6; color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer;">打开弹出层</button></p>
+<div id="popDemo" popover style="border:2px solid #D946EF; padding:16px; border-radius:8px; background:white;">
+  <p>这是一个原生弹出层！</p>
+  <button onclick="document.getElementById('popDemo').hidePopover()" style="background:#D946EF; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">关闭</button>
+</div><hr>
+<h2>五、Web Animations API</h2>
+<pre><code class="language-html">&lt;div id=&quot;animTarget&quot; style=&quot;width:100px; height:100px; background:#8B5CF6; border-radius:8px;&quot;&gt;&lt;/div&gt;
+&lt;button onclick=&quot;startAnimation()&quot; style=&quot;margin-top:16px;&quot;&gt;开始动画&lt;/button&gt;
+</code></pre>
+<div id="animTarget" style="width:100px; height:100px; background:#8B5CF6; border-radius:8px;"></div>
+<button onclick="startAnimation()" style="margin-top:16px; background:#8B5CF6; color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer;">开始动画</button><script>
+  function startAnimation() {
+    const target = document.getElementById('animTarget');
+    if (target && target.animate) {
+      target.animate([
+        { transform: 'rotate(0deg) scale(1)', backgroundColor: '#8B5CF6' },
+        { transform: 'rotate(360deg) scale(1.5)', backgroundColor: '#D946EF' },
+        { transform: 'rotate(0deg) scale(1)', backgroundColor: '#8B5CF6' }
+      ], {
+        duration: 2000,
+        iterations: 1
+      });
+    }
+  }
+</script><hr>
+<h2>六、程序输出示例</h2>
+<h3>6.1 变量</h3>
+<pre><code class="language-html">圆周率 &lt;var&gt;π&lt;/var&gt; ≈ 3.14159
+</code></pre>
+<p>圆周率 <var>π</var> ≈ 3.14159</p>
+<hr>
+<h3>6.2 程序输出</h3>
+<pre><code class="language-html">程序输出：&lt;samp&gt;Hello, World!&lt;/samp&gt;
+</code></pre>
+<p>程序输出：<samp>Hello, World!</samp></p>
+<hr>
+<h3>6.3 定义术语</h3>
+<pre><code class="language-html">&lt;dfn&gt;语义化 HTML&lt;/dfn&gt; 是指使用合适的标签来描述内容的含义
+</code></pre>
+<p><dfn>语义化 HTML</dfn> 是指使用合适的标签来描述内容的含义</p>
+<hr>
+<h3>6.4 引用</h3>
+<pre><code class="language-html">短引用：&lt;q&gt;知识就是力量&lt;/q&gt; - 培根
+
+块引用：
+&lt;blockquote cite=&quot;https://example.com&quot;&gt;
+  这是一个块级引用，可以包含更多内容
+&lt;/blockquote&gt;
+</code></pre>
+<p>短引用：<q>知识就是力量</q> - 培根<br><br></p>
+<p>块引用：</p>
+<blockquote style="border-left:4px solid #8B5CF6; padding-left:16px; margin-left:0; color:#666;">
+  这是一个块级引用，可以包含更多内容
+</blockquote><hr>
+<h3>6.5 联系信息</h3>
+<pre><code class="language-html">&lt;address&gt;
+  作者：李四&lt;br&gt;
+  邮箱：example@example.com&lt;br&gt;
+  网站：https://example.com
+&lt;/address&gt;
+</code></pre>
+<address style="font-style:normal; padding:12px; background:#f8fafc; border-radius:8px;">
+  作者：李四<br>
+  邮箱：example@example.com<br>
+  网站：https://example.com
+</address><hr>
+<h3>6.6 小号文字</h3>
+<pre><code class="language-html">&lt;small&gt;© 2024 Copyright All Rights Reserved&lt;/small&gt;
+</code></pre>
+<p><small>© 2024 Copyright All Rights Reserved</small></p>
+<hr>
+<h2>七、作品引用</h2>
+<pre><code class="language-html">阅读 &lt;cite&gt;《三体》&lt;/cite&gt; 是一次精彩的体验
+</code></pre>
+<p>阅读 <cite>《三体》</cite> 是一次精彩的体验</p>
+<hr>
+<h2>八、可选换行点</h2>
+<pre><code class="language-html">Supercalifragilisticexpialidocious
+（不换行） vs
+Super&lt;wbr&gt;cali&lt;wbr&gt;fragilistic&lt;wbr&gt;expiali&lt;wbr&gt;docious
+（有换行点）
+</code></pre>
+<p>Supercalifragilisticexpialidocious（不换行）vs<br>
+Super<wbr>cali<wbr>fragilistic<wbr>expiali<wbr>docious（有换行点）</p>
+<hr>
+<h2>九、双向文本</h2>
+<pre><code class="language-html">&lt;bdi&gt;مرحبا&lt;/bdi&gt; - 阿拉伯语问候
+</code></pre>
+<p><bdi>مرحبا</bdi> - 阿拉伯语问候</p>
+<hr>
+<h2>十、数据关联</h2>
+<pre><code class="language-html">&lt;data value=&quot;3.14159&quot;&gt;圆周率&lt;/data&gt;
+</code></pre>
+<p><data value="3.14159">圆周率</data></p>
+<hr>
+<h2>十一、模板元素</h2>
+<pre><code class="language-html">&lt;template id=&quot;myTemplate&quot;&gt;
+  &lt;div style=&quot;border:1px solid #8B5CF6; padding:12px; border-radius:8px;&quot;&gt;
+    这是一个模板内容，点击按钮后会显示出来！
+  &lt;/div&gt;
+&lt;/template&gt;
+&lt;button onclick=&quot;useTemplate()&quot;&gt;使用模板&lt;/button&gt;
+&lt;div id=&quot;templateContainer&quot;&gt;&lt;/div&gt;
+</code></pre>
+<template id="myTemplate">
+  <div style="border:1px solid #8B5CF6; padding:12px; border-radius:8px;">
+    这是一个模板内容，点击按钮后会显示出来！
+  </div>
+</template>
+<button onclick="useTemplate()" style="background:#8B5CF6; color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer;">使用模板</button>
+<div id="templateContainer"></div><script>
+  function useTemplate() {
+    const template = document.getElementById('myTemplate');
+    const container = document.getElementById('templateContainer');
+    if (template && container) {
+      const clone = template.content.cloneNode(true);
+      container.appendChild(clone);
+    }
+  }
+</script><hr>
+<h2>总结</h2>
+<p>以上展示了浏览器原生 HTML 元素和 Web API 的强大功能！所有这些功能都可以在纯前端环境中使用，无需任何后端服务。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>排版问题样例一</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/zw/1.0-%E6%8E%92%E7%89%88%E9%97%AE%E9%A2%98%E6%A0%B7%E4%BE%8B%E4%B8%80.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/zw/1.0-%E6%8E%92%E7%89%88%E9%97%AE%E9%A2%98%E6%A0%B7%E4%BE%8B%E4%B8%80.md</guid>
+      <pubDate>Mon, 26 Oct 2026 08:37:50 GMT</pubDate>
+      <description>本文档故意保留多处中文排版问题，用于验证 CI 排版校验流水线能否触发。 在LeanCloud上，数据存储是围绕进行的。 今天出去买菜花了 5000元，我家的光纤入屋宽带有 10Gbps，SSD 一共有 20TB。 刚刚买了一部 iPhone ，好开心！ 德国队竟然战胜了巴西队！！ 她竟然对你说「喵」？！！ 嗨! 你知道嘛? 今天前台的小妹跟我说 &quot;喵&quot; 了哎！ 这个蛋糕只卖 1000 元。 这个</description>
+      <content:encoded><![CDATA[<h1>排版问题样例一</h1>
+<p>本文档故意保留多处中文排版问题，用于验证 CI 排版校验流水线能否触发。</p>
+<h2>空格类问题</h2>
+<p>在LeanCloud上，数据存储是围绕<code>AVObject</code>进行的。</p>
+<p>今天出去买菜花了 5000元，我家的光纤入屋宽带有 10Gbps，SSD 一共有 20TB。</p>
+<p>刚刚买了一部 iPhone ，好开心！</p>
+<h2>标点类问题</h2>
+<p>德国队竟然战胜了巴西队！！</p>
+<p>她竟然对你说「喵」？！！</p>
+<p>嗨! 你知道嘛? 今天前台的小妹跟我说 &quot;喵&quot; 了哎！</p>
+<p>这个蛋糕只卖 1000 元。</p>
+<h2>数字类问题</h2>
+<p>这个蛋糕只卖 １０００ 元。</p>
+<p>角度为 90 ° 的角，就是直角。</p>
+<p>新 MacBook Pro 有 15 % 的 CPU 性能提升。</p>
+<h2>全半角混用</h2>
+<p>核磁共振成像 (NMRI) 是什么原理都不知道? JFGI!</p>
+<p>核磁共振成像(NMRI)是什么原理都不知道?JFGI!</p>
+<h2>行首禁则</h2>
+<p>这是一个正常段落。</p>
+<p>），这是行首出现收尾标点的情况。</p>
+<p>，这是行首出现逗号的情况。</p>
+<h2>重复标点</h2>
+<p>这个功能真的很棒！！！</p>
+<p>这个文档也很不错？？？！！！</p>
+<h2>直引号</h2>
+<p>他说&quot;这个功能很棒&quot;，然后就走了。</p>
+<h2>中英混排</h2>
+<p>使用 github 登录</p>
+<p>我们的客户有 github、foursquare、microsoft corporation、google。</p>
+<h2>数字开头文件名排序</h2>
+<p>本目录下的样例文件命名为 1.0、1.1、2.0、9.0、10.0，用于验证文件树排序。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>排版问题样例二</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/zw/2.0-%E6%8E%92%E7%89%88%E9%97%AE%E9%A2%98%E6%A0%B7%E4%BE%8B%E4%BA%8C.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/zw/2.0-%E6%8E%92%E7%89%88%E9%97%AE%E9%A2%98%E6%A0%B7%E4%BE%8B%E4%BA%8C.md</guid>
+      <pubDate>Mon, 26 Oct 2026 08:37:50 GMT</pubDate>
+      <description>第二份样例文档，补充更多排版问题类型。 在 GitHub 上，Actions 是 CI 工具。 构建耗时约 250ms，产物体积 5MB，缓存 512MB。 光纤速率 100Mbps，硬盘 4TB，内存 16GB。 延迟 30ms，重量 5kg，距离 3km。 版本号 v1.2.3 已发布，功能真的很完善！！ 测试用例共 128 个，失败 0 个。 他说: &quot;一切正常&quot;，然后就离开了。 请问: 这</description>
+      <content:encoded><![CDATA[<h1>排版问题样例二</h1>
+<p>第二份样例文档，补充更多排版问题类型。</p>
+<h2>空格</h2>
+<p>在 GitHub 上，Actions 是 CI 工具。</p>
+<p>构建耗时约 250ms，产物体积 5MB，缓存 512MB。</p>
+<h2>单位</h2>
+<p>光纤速率 100Mbps，硬盘 4TB，内存 16GB。</p>
+<p>延迟 30ms，重量 5kg，距离 3km。</p>
+<h2>标点</h2>
+<p>版本号 v1.2.3 已发布，功能真的很完善！！</p>
+<p>测试用例共 128 个，失败 0 个。</p>
+<h2>全角半角</h2>
+<p>他说: &quot;一切正常&quot;，然后就离开了。</p>
+<p>请问: 这个功能怎么用? 谢谢!</p>
+<h2>数字</h2>
+<p>价格是 50 元起。</p>
+<p>耗时 5 分钟，走了 2 公里。</p>
+<h2>行首禁则</h2>
+<p>结尾。</p>
+<p>；分号开头。</p>
+<p>：冒号开头。</p>
+<h2>直引号</h2>
+<p>配置文件里写了&quot;mode&quot;: &quot;smart&quot;。</p>
+<h2>中英混排</h2>
+<p>用 GitHub Actions 跑 CI，用 Docker 部署，用 Kubernetes 编排。</p>
+<h2>链接与代码</h2>
+<p>参考 <a href="https://github.com/sparanoid/chinese-copywriting-guidelines">中文文案排版指北</a> 的说明。</p>
+<p>行内代码 <code>npm run build</code> 不应被修改。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>排版问题样例三</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/zw/3.0-%E6%8E%92%E7%89%88%E9%97%AE%E9%A2%98%E6%A0%B7%E4%BE%8B%E4%B8%89.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/zw/3.0-%E6%8E%92%E7%89%88%E9%97%AE%E9%A2%98%E6%A0%B7%E4%BE%8B%E4%B8%89.md</guid>
+      <pubDate>Mon, 26 Oct 2026 08:37:50 GMT</pubDate>
+      <description>第三份样例，覆盖表格、列表、代码围栏等结构中的排版问题。 | 名称 | 说明 | 耗时 | |------|------|------| | 构建 | 跑所有脚本 | 250ms | | 部署 | 推送到 GitHub Pages | 5s | | 缓存 | 写入 precache | 30ms | - 第一项：在LeanCloud上开发，速度很快。 - 第二项：耗时约 250ms，性能提升 40</description>
+      <content:encoded><![CDATA[<h1>排版问题样例三</h1>
+<p>第三份样例，覆盖表格、列表、代码围栏等结构中的排版问题。</p>
+<h2>表格中的问题</h2>
 <table>
 <thead>
 <tr>
-<th>批次</th>
-<th>功能</th>
-<th>理由</th>
+<th>名称</th>
+<th>说明</th>
+<th>耗时</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>P0 快赢</td>
-<td>IOS / VRP 高亮、阅读位置续读、全量离线开关、CSV / TSV 表格</td>
-<td>改动面小、依赖少、受众感知强（已全部落地）</td>
+<td>构建</td>
+<td>跑所有脚本</td>
+<td>250ms</td>
 </tr>
 <tr>
-<td>P1 体验</td>
-<td>文档演示模式（已否决）、浏览历史与收藏夹、主题化分享卡片、选中文字工具栏</td>
-<td>除演示模式外均已落地</td>
+<td>部署</td>
+<td>推送到 GitHub Pages</td>
+<td>5s</td>
 </tr>
 <tr>
-<td>P2 打磨</td>
-<td>链接悬浮预览、移动端手势、存储管理页、扫码续读、草稿系统</td>
-<td>交互细节多，需逐个调校（移动端手势、存储管理页、扫码续读已落地）</td>
+<td>缓存</td>
+<td>写入 precache</td>
+<td>30ms</td>
+</tr>
+</tbody></table>
+<h2>列表中的问题</h2>
+<ul>
+<li>第一项：在LeanCloud上开发，速度很快。</li>
+<li>第二项：耗时约 250ms，性能提升 40%。</li>
+<li>第三项：这个功能真的很棒！！</li>
+<li>第四项：他说&quot;太好了&quot;。</li>
+</ul>
+<h2>引用块中的问题</h2>
+<blockquote>
+<p>在LeanCloud上，数据存储是围绕<code>AVObject</code>进行的。</p>
+</blockquote>
+<blockquote>
+<p>这一行开头有收尾标点）。</p>
+</blockquote>
+<h2>围栏代码块（内部不应被修改）</h2>
+<pre><code class="language-js">const a = 1;
+const 中文变量 = &quot;值&quot;;
+console.log(在LeanCloud上);
+</code></pre>
+<h2>嵌套围栏（外层四反引号）</h2>
+<pre><code class="language-markdown">```js
+const 在LeanCloud上 = 1;
+```
+</code></pre>
+<h2>HTML 标签内</h2>
+<p><span>这段文字在标签内，不应被修改</span></p>
+<h2>链接文本</h2>
+<p>请<a href="https://github.com/x/y/issues">提交一个 issue</a>并分配给相关同事。</p>
+<p>访问<a href="https://example.com">我们的网站</a>进行订阅！</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>配置参考</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
+      <pubDate>Mon, 26 Oct 2026 05:22:38 GMT</pubDate>
+      <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
+      <content:encoded><![CDATA[<h1>配置参考</h1>
+<p>Markdown Preview 的配置分为两层：</p>
+<ol>
+<li><strong>构建/部署配置</strong> — <code>iris/config.json</code>（仓库级，所有访客共享）</li>
+<li><strong>运行时设置</strong> — 浏览器 localStorage（用户级，仅当前浏览器生效）</li>
+</ol>
+<hr>
+<h2>一、<code>iris/config.json</code>（仓库级配置）</h2>
+<p>修改此文件后需推送代码触发重新部署。</p>
+<h3>基础配置</h3>
+<pre><code class="language-json">{
+  &quot;owner&quot;: &quot;your-username&quot;,
+  &quot;repo&quot;: &quot;your-repo-name&quot;
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>owner</code></td>
+<td>string</td>
+<td>-</td>
+<td>GitHub 用户名或组织名</td>
 </tr>
 <tr>
-<td>P3 攻坚</td>
-<td>OS 文件关联、系统分享目标、文档密码保护</td>
-<td>依赖 PWA 安装态 / 构建期加密设计</td>
+<td><code>repo</code></td>
+<td>string</td>
+<td>-</td>
+<td>仓库名</td>
+</tr>
+</tbody></table>
+<h3>完整配置项</h3>
+<pre><code class="language-json">{
+  &quot;owner&quot;: &quot;&quot;,
+  &quot;repo&quot;: &quot;&quot;,
+  &quot;branch&quot;: &quot;main&quot;,
+  &quot;title&quot;: &quot;Markdown Preview&quot;,
+  &quot;defaultTheme&quot;: &quot;default&quot;,
+  &quot;showEditButton&quot;: true,
+  &quot;showReadingTime&quot;: true,
+  &quot;showBreadcrumbs&quot;: true
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>branch</code></td>
+<td>string</td>
+<td><code>main</code></td>
+<td>文档所在的 Git 分支</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>string</td>
+<td><code>Markdown Preview</code></td>
+<td>站点标题</td>
+</tr>
+<tr>
+<td><code>defaultTheme</code></td>
+<td>string</td>
+<td><code>default</code></td>
+<td>默认主题 ID</td>
+</tr>
+<tr>
+<td><code>showEditButton</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>是否显示&quot;编辑此页&quot;按钮</td>
+</tr>
+<tr>
+<td><code>showReadingTime</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>是否显示阅读时间估算</td>
+</tr>
+<tr>
+<td><code>showBreadcrumbs</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>是否显示面包屑导航</td>
+</tr>
+<tr>
+<td><code>plantumlServers</code></td>
+<td>array</td>
+<td>内置列表</td>
+<td>PlantUML 渲染服务列表，按顺序尝试</td>
+</tr>
+</tbody></table>
+<h4>PlantUML 渲染服务（plantumlServers）</h4>
+<p>PlantUML 图表默认依次尝试官方服务器与 Kroki 公共服务，全部失败时自动降级为源码展示并提供在线编辑器链接。若你自建了 PlantUML 服务或想使用其他镜像，可在 <code>iris/config.json</code> 中覆盖：</p>
+<pre><code class="language-json">{
+  &quot;plantumlServers&quot;: [
+    { &quot;type&quot;: &quot;plantuml&quot;, &quot;base&quot;: &quot;https://your-self-hosted/plantuml&quot; },
+    { &quot;type&quot;: &quot;kroki&quot;, &quot;base&quot;: &quot;https://kroki.io/plantuml&quot; }
+  ]
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>type</code></td>
+<td><code>plantuml</code>（PlantUML 自定义编码）或 <code>kroki</code>（标准 base64url 编码）</td>
+</tr>
+<tr>
+<td><code>base</code></td>
+<td>服务基础地址，渲染时自动拼接 <code>/svg/&lt;编码&gt;</code></td>
+</tr>
+</tbody></table>
+<h3>配置加载顺序</h3>
+<ol>
+<li>内置默认配置</li>
+<li><code>iris/config.json</code> 中的配置（覆盖默认值）</li>
+<li>用户本地存储的设置（如主题选择，会覆盖前两者）</li>
+</ol>
+<hr>
+<h2>二、运行时设置（用户级）</h2>
+<p>通过悬浮球菜单 → <strong>设置</strong> 打开设置面板，所有改动保存在浏览器 localStorage，仅对当前浏览器生效。</p>
+<p>设置面板分七个区块：<strong>语言 / 外观 / 字体 / 阅读 / 布局 / 工具与导出 / 存储</strong>（左侧分组导航，点击平滑滚动、滚动时自动同步高亮）。</p>
+<h3>语言</h3>
+<p>设置面板最顶部为「语言」选择：<strong>自动（跟随浏览器）/ 中文 / English</strong>。选择「自动」时按浏览器语言自动判定；切换立即生效并记忆，无需刷新。</p>
+<h3>外观</h3>
+<h4>预设主题</h4>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>auto</code></td>
+<td>自动（跟随系统亮暗）</td>
+</tr>
+<tr>
+<td><code>default</code></td>
+<td>默认（紫粉渐变）</td>
+</tr>
+<tr>
+<td><code>github-light</code></td>
+<td>GitHub Light</td>
+</tr>
+<tr>
+<td><code>github-dark</code></td>
+<td>GitHub Dark</td>
+</tr>
+<tr>
+<td><code>notion</code></td>
+<td>Notion</td>
+</tr>
+<tr>
+<td><code>arc-dark</code></td>
+<td>Arc Dark</td>
+</tr>
+<tr>
+<td><code>dracula</code></td>
+<td>Dracula</td>
+</tr>
+<tr>
+<td><code>nord</code></td>
+<td>Nord</td>
 </tr>
 </tbody></table>
 <blockquote>
-<p>以上顺序仅为建议，实际取舍以维护者的版本规划为准。功能实现后请同步更新：本文件对应章节、<a href="https://theforeveriris.github.io/md-preview/README.md">README</a> 特性清单、相关专题文档与 <a href="https://theforeveriris.github.io/md-preview/docs/show.md">show.md</a> 截图页。</p>
+<p>选择预设主题会清空自定义配色。</p>
 </blockquote>
+<p><strong>自动主题（auto）</strong>：跟随系统 <code>prefers-color-scheme</code> 实时切换——系统亮色时使用「自动主题配对」中的亮色主题（默认紫粉渐变），暗色时使用暗色主题（默认 GitHub Dark）。配对可在设置面板中自由组合，系统亮暗变化时即时生效（含 PWA 桌面模式）。</p>
+<h4>自定义配色（取色器）</h4>
+<p>无需写 CSS，直接通过取色器调整：</p>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>可调变量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>强调色</strong></td>
+<td><code>--color-accent-purple</code> / <code>--color-accent-pink</code> / <code>--color-accent-purple-deep</code></td>
+<td>主色及派生色</td>
+</tr>
+<tr>
+<td><strong>中性色</strong></td>
+<td><code>--color-bg</code> / <code>--color-surface</code> / <code>--color-border</code> / <code>--color-text</code> / <code>--color-text-muted</code></td>
+<td>背景、表面、文字与边框</td>
+</tr>
+</tbody></table>
+<p>通过中性色调整即可做出亮色或暗色主题。点击「重置」恢复默认值。</p>
+<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/theme-customization.md">主题定制</a>。</p>
+<h4>字体自定义</h4>
+<p>设置面板 → <strong>外观 → 字体</strong>，无需写 CSS 即可精细控制排版：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>远程字体 URL</td>
+<td>填写 Google Fonts 等 CSS URL 即可加载远程字体</td>
+</tr>
+<tr>
+<td>展示字体族</td>
+<td>标题衬线体，独立于正文</td>
+</tr>
+<tr>
+<td>正文字体族</td>
+<td>UI / 正文无衬线体</td>
+</tr>
+<tr>
+<td>字号细调</td>
+<td>UI / 正文 / H1 / H2 / H3 独立设置</td>
+</tr>
+<tr>
+<td>字重细调</td>
+<td>UI / 正文 / 展示体 / H1 / H2 / H3 独立选择（300 ~ 800）</td>
+</tr>
+<tr>
+<td>字色</td>
+<td>正文与次要文字颜色独立取色</td>
+</tr>
+<tr>
+<td>标题数字无衬线</td>
+<td>默认标题数字随标题字体（衬线）；开启后仅数字改用无衬线字形</td>
+</tr>
+<tr>
+<td>重置字体</td>
+<td>一键恢复全部字体默认值</td>
+</tr>
+</tbody></table>
+<h4>代码高亮主题</h4>
+<table>
+<thead>
+<tr>
+<th>主题 ID</th>
+<th>名称</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>github</code></td>
+<td>GitHub Light</td>
+<td>亮色</td>
+</tr>
+<tr>
+<td><code>github-dark</code></td>
+<td>GitHub Dark</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>atom-one-light</code></td>
+<td>Atom One Light</td>
+<td>亮色</td>
+</tr>
+<tr>
+<td><code>atom-one-dark</code></td>
+<td>Atom One Dark</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>monokai</code></td>
+<td>Monokai</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>dracula</code></td>
+<td>Dracula</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>nord</code></td>
+<td>Nord</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>vs2015</code></td>
+<td>VS 2015</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>solarized-light</code></td>
+<td>Solarized Light</td>
+<td>亮色</td>
+</tr>
+<tr>
+<td><code>solarized-dark</code></td>
+<td>Solarized Dark</td>
+<td>暗色</td>
+</tr>
+</tbody></table>
+<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md">代码高亮主题</a>。</p>
+<p>在「外观 → 代码高亮」中还可填写<strong>自定义高亮主题</strong>：加载外部 highlight.js 主题 CSS URL，回车应用（覆盖内置代码主题）。</p>
+<h4>自定义 CSS</h4>
+<p>在「外观 → 自定义 CSS」中填写<strong>外部样式表 URL</strong>，加载外部 CSS 文件进一步定制页面，回车应用。</p>
+<h3>阅读</h3>
+<h4>显示选项</h4>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>显示阅读进度</td>
+<td>控制顶部进度条</td>
+</tr>
+<tr>
+<td>显示字数统计</td>
+<td>控制文件树中每个文件旁的字数显示</td>
+</tr>
+<tr>
+<td>折叠过长文件名</td>
+<td>开启时文件名过长省略号显示，关闭时完整展开（区域可横向滚动，隐藏滚动条）；默认关闭</td>
+</tr>
+<tr>
+<td>侧边栏文件夹默认展开</td>
+<td>开启时文件树中的文件夹全部展开显示；关闭时默认折叠，点击文件夹手动展开</td>
+</tr>
+<tr>
+<td>启用移动端手势</td>
+<td>触屏设备左右滑动正文切换上一篇 / 下一篇，自屏幕左缘右滑呼出侧边栏抽屉</td>
+</tr>
+<tr>
+<td>启用章节折叠</td>
+<td>H2 标题栏右侧出现折叠按钮，折叠状态按文档记忆、重开自动恢复</td>
+</tr>
+<tr>
+<td>对照阅读默认同步滚动</td>
+<td>打开双栏对照阅读时两栏按比例同步滚动（<code>Ctrl/⌘+Alt+S</code> 可随时开关本次会话）</td>
+</tr>
+<tr>
+<td>专注模式</td>
+<td>当前阅读段落保持高亮、其余内容淡化（也可在 <code>Ctrl/⌘+K</code> 命令面板开关）</td>
+</tr>
+</tbody></table>
+<h4>布局</h4>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>侧边栏样式</td>
+<td>经典：贴边通栏、微色差微阴影无边框（默认）；悬浮卡片：四周留缝的圆角卡片（桌面端）</td>
+</tr>
+<tr>
+<td>内容区宽度</td>
+<td>滑杆调整 Markdown 正文最大宽度（600–1400px，默认 720px），拖动即时生效，可一键重置</td>
+</tr>
+<tr>
+<td>正文占满可用宽度</td>
+<td>开启后正文铺满窗口可用宽度，忽略上方宽度设置，适合宽屏显示器</td>
+</tr>
+<tr>
+<td>长表格延伸到右侧空白</td>
+<td>内容宽度设置保持不变，宽表格向右适度越过正文边界、利用右侧空白显示更多列</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>侧边栏折叠：桌面端可通过侧边栏标题栏的汉堡按钮或快捷键 <code>Ctrl/⌘ + B</code> 折叠/展开侧边栏，折叠后左上角浮现展开按钮，状态自动记忆（与移动端抽屉行为一致）。</p>
+<p>以上宽度与侧边栏操作均有键盘快捷键（<code>Ctrl/⌘ + Alt + =/-/0/F</code>、<code>Ctrl/⌘ + B</code>、<code>[</code> / <code>]</code> 等），完整清单见 <a href="https://theforeveriris.github.io/md-preview/docs/shortcuts.md">快捷键</a>。</p>
+</blockquote>
+<h3>工具与导出</h3>
+<h4>工具</h4>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Markdown 编辑器</td>
+<td>在新标签页打开交互式编辑器（<code>?mode=editor</code>），支持语法快速输入和实时渲染</td>
+</tr>
+<tr>
+<td>波形生成器</td>
+<td>可视化生成 DG-LAB 郊狼 <code>.pulse</code> 波形文件（<code>?mode=pulsegen</code>），最多 20 个</td>
+</tr>
+</tbody></table>
+<h4>导出</h4>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>下载 Markdown</td>
+<td>下载当前打开的 <code>.md</code> 源文件</td>
+</tr>
+<tr>
+<td>导出 PDF</td>
+<td>通过浏览器打印对话框导出为 PDF（自动隐藏侧边栏、悬浮球等 UI）</td>
+</tr>
+<tr>
+<td>导出 HTML</td>
+<td>保存为内联当前主题样式与全部本地 CSS 的单文件 HTML，双击即可离线查看</td>
+</tr>
+</tbody></table>
+<h4>离线缓存</h4>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>全量离线缓存</td>
+<td>把文件树覆盖的所有文档拉进 PWA 缓存（带进度反馈），离线也能整站阅读；支持一键清除文档缓存。需 HTTPS 部署访问后可用</td>
+</tr>
+</tbody></table>
+<h3>存储</h3>
+<p>设置面板「存储」区块：<code>navigator.storage.estimate()</code> 用量条（已用 / 配额）、编辑器笔记本列表（逐条删除 / 全部清空，二次确认）、阅读历史与收藏 / 阅读位置的占用与一键清理（<code>iris/js/storage-manager.js</code>，打开面板时自动刷新）。</p>
+<h4>导航增强</h4>
+<ul>
+<li><strong>面包屑目录聚合页</strong>：面包屑与正文同宽对齐；点击中间路径进入该目录的聚合页，集中浏览目录下全部文档</li>
+<li><strong>标签聚合页</strong>：<code>#/tag/&lt;标签&gt;</code> 按标签聚合文档（见「标签系统」）</li>
+</ul>
+<hr>
+<h2>三、悬浮球菜单</h2>
+<p>悬浮球展开后提供 6 个快捷入口：</p>
+<table>
+<thead>
+<tr>
+<th>入口</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>回到顶部</td>
+<td>平滑滚动到文档顶部</td>
+</tr>
+<tr>
+<td>打开本地文件</td>
+<td>点击弹出选择面板：「选择文件…」可一次选中一个或多个本地 <code>.md</code> 文件预览（不写入 URL，刷新后丢失），未打开的文件进入侧边栏「本地文件」会话列表，可切换、移除或清空；「选择文件夹…」整体导入一个目录（File System Access API，旧浏览器回退 <code>webkitdirectory</code>），按目录树展示、文件夹可折叠、内容懒加载；最多收集 500 个文件，单文件 ≤ 10 MB。受浏览器限制，文件与文件夹需在面板中二选一进入</td>
+</tr>
+<tr>
+<td>扫码续读</td>
+<td>生成当前文档 + 阅读位置的二维码，手机扫码接着看</td>
+</tr>
+<tr>
+<td>安装到桌面</td>
+<td>PWA 安装（仅浏览器支持时显示）</td>
+</tr>
+<tr>
+<td>编辑此页</td>
+<td>在新标签页打开 GitHub 编辑界面</td>
+</tr>
+<tr>
+<td>设置</td>
+<td>打开设置面板</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>四、RSS 订阅</h2>
+<p>站点自动生成 RSS feed，订阅地址：</p>
+<pre><code>https://&lt;owner&gt;.github.io/&lt;repo&gt;/iris/data/feed.xml
+</code></pre>
+<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/rss.md">RSS 订阅</a>。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Markdown 编辑器</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/editor.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/editor.md</guid>
+      <pubDate>Mon, 26 Oct 2026 05:22:38 GMT</pubDate>
+      <description>Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可在浏览器内即时编写、运行、预览 Markdown，并支持自动保存、搜索替换、导入导出等能力。 编辑器以全屏覆盖层的形式叠加在文档站之上，复用站点已有的渲染管线（marked.js + 各扩展渲染器），所有渲染结果与文档站完全一致。 --- 三种方式任选其一： 1. URL 参数：在站点任意 </description>
+      <content:encoded><![CDATA[<h1>Markdown 编辑器</h1>
+<p>Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可在浏览器内即时编写、运行、预览 Markdown，并支持自动保存、搜索替换、导入导出等能力。</p>
+<p>编辑器以全屏覆盖层的形式叠加在文档站之上，复用站点已有的渲染管线（marked.js + 各扩展渲染器），所有渲染结果与文档站完全一致。</p>
+<hr>
+<h2>一、入口与退出</h2>
+<h3>进入编辑器</h3>
+<p>三种方式任选其一：</p>
+<ol>
+<li><strong>URL 参数</strong>：在站点任意 URL 后追加 <code>?mode=editor</code>，例如 <code>https://theforeveriris.github.io/md-preview/?mode=editor</code></li>
+<li><strong>设置面板</strong>：右上角悬浮球 → 设置 → 操作 → 「打开编辑器」</li>
+<li><strong>JS 调用</strong>：在控制台或代码中执行 <code>window.MarkdownPreview.enterEditorMode()</code></li>
+</ol>
+<h3>退出编辑器</h3>
+<ul>
+<li>工具栏左上角「文档站」按钮</li>
+<li>调用 <code>window.MarkdownPreview.exitEditorMode()</code></li>
+</ul>
+<p>退出后 URL 上的 <code>mode=editor</code> 参数会被移除，回到文档浏览模式。</p>
+<hr>
+<h2>二、界面布局</h2>
+<p>编辑器为单页全屏结构，自上而下分为五个区域：</p>
+<pre><code>┌─────────────────────────────────────────────────────┐
+│  顶部工具栏 (editor-toolbar)                          │
+│  左：返回文档站 / 标题 / Cell 计数                     │
+│  中：7 个下拉菜单（Markdown / HTML / 私有语法 /        │
+│      工具渲染 / 插入 / 下载 / 导入）                   │
+│  右：字号 / 搜索 / 主题 / 清空 / 全部运行 / 运行       │
+├─────────────────────────────────────────────────────┤
+│  搜索/替换面板 (search-panel，按需展开)                │
+├─────────────────────────────────────────────────────┤
+│  Cell 容器 (editor-main，可滚动)                      │
+│    ┌───────────────────────────────────────────┐    │
+│    │  Cell 1                                    │    │
+│    │  ┌─────────────────────────────────────┐  │    │
+│    │  │ 编辑区 (textarea + 行号)             │  │    │
+│    │  └─────────────────────────────────────┘  │    │
+│    │  ┌─────────────────────────────────────┐  │    │
+│    │  │ 渲染输出区 (.cell-output)            │  │    │
+│    │  └─────────────────────────────────────┘  │    │
+│    └───────────────────────────────────────────┘    │
+│    ┌───────────────────────────────────────────┐    │
+│    │  Cell 2 ...                                │    │
+│    └───────────────────────────────────────────┘    │
+│    ┌─ + 新建 Cell (全局按钮，仅最后一个 Cell 下方) ─┐  │
+├─────────────────────────────────────────────────────┤
+│  底部状态栏 (editor-statusbar)                        │
+│  左：Cell 数 / 运行统计 / 字数 / 行数 / 当前 Cell 字数 │
+│  右：光标位置 / 活跃 Cell / 保存状态                  │
+└─────────────────────────────────────────────────────┘
+</code></pre>
+<p>此外还有三个浮动元素：</p>
+<ul>
+<li><strong>选中文字浮动工具栏</strong>：在 textarea 中选中文字时浮现，提供 B/I/S/code/H1~H3/link/quote/ul 快速格式化</li>
+<li><strong>Cell 右键菜单</strong>：右键任意 Cell 弹出，2 列布局共 17 项操作</li>
+<li><strong>自动补全列表</strong>：输入触发字符时浮现，按 ↑↓ 选择、Enter/Tab 确认</li>
+</ul>
+<hr>
+<h2>三、Cell 模型</h2>
+<h3>Cell 类型</h3>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>标识</th>
+<th>行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>markdown</code></td>
+<td>MD</td>
+<td>内容经过完整渲染管线（Mermaid / KaTeX / 代码高亮等）</td>
+</tr>
+<tr>
+<td><code>plaintext</code></td>
+<td>TXT</td>
+<td>纯文本，不渲染，原样显示在输出区</td>
+</tr>
+</tbody></table>
+<p>通过右键菜单「切换类型」或导入时的 <code>---</code> 分隔符切换。</p>
+<h3>Cell 结构</h3>
+<p>每个 Cell 由以下部分组成：</p>
+<ul>
+<li><strong>头部 (cell-header)</strong>：Cell 编号、状态点（灰=未运行 / 绿=已运行 / 橙=已修改）、类型徽章、行数；右侧 6 个操作按钮（运行 / 折叠 / 上移 / 下移 / 复制 / 删除）</li>
+<li><strong>编辑区 (cell-editor-wrap)</strong>：行号栏 + textarea，支持 Tab 缩进、Shift+Tab 反缩进</li>
+<li><strong>输出区 (cell-output)</strong>：运行后显示渲染结果，未运行时隐藏</li>
+<li><strong>输出工具栏 (cell-output-toolbar)</strong>：运行后浮现，提供「复制 HTML / 清空输出 / 折叠输出 / 导出此 Cell」四项操作</li>
+</ul>
+<h3>新建 Cell</h3>
+<ul>
+<li><strong>全局按钮</strong>：在最后一个 Cell 下方有且仅有一个「+ 新建 Cell」虚线按钮</li>
+<li><strong>快捷键</strong>：<code>Ctrl+Shift+N</code> 在当前 Cell 下方新建</li>
+<li><strong>右键菜单</strong>：「上方插入 Cell」/「下方插入 Cell」</li>
+</ul>
+<h3>运行 Cell</h3>
+<ul>
+<li><strong>运行当前</strong>：工具栏「运行」按钮 / Cell 头部播放按钮 / <code>Ctrl+Enter</code></li>
+<li><strong>运行全部</strong>：工具栏「全部运行」按钮 / <code>Ctrl+Shift+Enter</code></li>
+<li><strong>运行此 Cell 及下方</strong>：右键菜单</li>
+<li>运行后状态点变绿；编辑后变橙（已修改，需重新运行）</li>
+</ul>
+<h3>双屏编辑模式</h3>
+<p>每个 Cell 头部有「双屏编辑」按钮（分栏图标），点击进入全屏双屏 overlay：</p>
+<ul>
+<li><strong>布局</strong>：左侧为该 Cell 的编辑器（保留原实例与撤销栈），右侧为该 Cell 内容的实时预览；</li>
+<li><strong>实时渲染</strong>：输入 250 ms 防抖后自动重渲染，渲染管线与文档站一致；</li>
+<li><strong>分隔条拖拽</strong>：拖动中间分隔条调整左右宽度；</li>
+<li><strong>同步滚动</strong>：可在开关控制下让编辑区与预览区滚动联动；</li>
+<li><strong>退出</strong>：<code>Esc</code> 或右上角退出按钮，CodeMirror 宿主移回原 Cell，其它 Cell 完全不受影响。</li>
+</ul>
+<hr>
+<h2>四、顶部工具栏菜单</h2>
+<p>工具栏中央有 8 个下拉菜单，覆盖 Markdown 写作所需的全部能力。</p>
+<h3>1. Markdown</h3>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>标题</td>
+<td>H1 ~ H6</td>
+</tr>
+<tr>
+<td>格式</td>
+<td>粗体 / 斜体 / 粗斜体 / 删除线 / 行内代码</td>
+</tr>
+<tr>
+<td>列表</td>
+<td>无序 / 有序 / 任务 / 已完成任务</td>
+</tr>
+<tr>
+<td>插入</td>
+<td>链接 / 带标题链接 / 图片 / 带尺寸图片 / 代码块 / 引用 / 分隔线</td>
+</tr>
+<tr>
+<td>表格</td>
+<td>2 / 3 / 4 列表格</td>
+</tr>
+<tr>
+<td>脚注 / 引用</td>
+<td>脚注定义 / 脚注引用 / 引用式链接定义</td>
+</tr>
+</tbody></table>
+<h3>2. HTML</h3>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>文本样式</td>
+<td>mark / u / small / sub / sup / kbd / abbr / time / del+ins / cite / var / samp / dfn / q / wbr</td>
+</tr>
+<tr>
+<td>结构与布局</td>
+<td>details 折叠面板 / 居中对齐 / dl 定义列表 / figure 图文组合 / ruby 注音 / address / br / hr</td>
+</tr>
+<tr>
+<td>交互组件</td>
+<td>dialog 模态对话框 / popover 原生弹出层 / contenteditable 可编辑区域 / template 模板</td>
+</tr>
+<tr>
+<td>表单与控件</td>
+<td>meter 仪表盘 / progress 进度条 / datalist 自动补全 / output 计算表单 / fieldset 分组</td>
+</tr>
+<tr>
+<td>多媒体与绘图</td>
+<td>内联 SVG / Canvas 画布 / iframe srcdoc 内联框架</td>
+</tr>
+<tr>
+<td>颜色与注释</td>
+<td>红 / 蓝 / 绿 / 橙 / 紫彩色文字 / 背景高亮 / HTML 注释</td>
+</tr>
+</tbody></table>
+<h3>3. 私有语法</h3>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>画廊样式</td>
+<td>17 种：grid / cardstack / filmstrip / polaroid / stack / mosaic / scattered / hexagon / coverflow / tape / duotone / frame / arch / masonry / slider / ticket / panorama</td>
+</tr>
+<tr>
+<td>GitHub 提示框</td>
+<td>NOTE / IMPORTANT / WARNING / TIP / CAUTION</td>
+</tr>
+<tr>
+<td>多栏与遮罩</td>
+<td>代码选项卡 code-tabs / 多列布局 columns / 剧透遮罩 spoiler / Pulse 波形 <code>[pulse]...[/pulse]</code></td>
+</tr>
+<tr>
+<td>文档结构</td>
+<td>Frontmatter 头信息 / 目录 TOC</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>画廊样式详细说明见 <a href="https://theforeveriris.github.io/md-preview/docs/examples/gallery-layouts.md">图片画廊布局</a> 与 <a href="https://theforeveriris.github.io/md-preview/docs/examples/image-gallery-examples.md">图片画廊示例</a>。</p>
+</blockquote>
+<h3>4. 工具渲染</h3>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mermaid 图表（15 种）</td>
+<td>flowchart / sequenceDiagram / classDiagram / stateDiagram-v2 / erDiagram / gantt / pie / journey / mindmap / timeline / quadrantChart / gitGraph / block / C4Context / xychart-beta</td>
+</tr>
+<tr>
+<td>PlantUML（12 种）</td>
+<td>时序图 / 类图 / 用例图 / 活动图 / 状态图 / 组件图 / 部署图 / 思维导图 / WBS / JSON 数据图 / ER 实体关系图 / 线框图 salt</td>
+</tr>
+<tr>
+<td>ApexCharts（13 种）</td>
+<td>折线 / 面积 / 柱状（分组）/ 堆叠柱状 / 条形（水平）/ 饼图 / 环形 donut / 雷达 / 散点 scatter / 气泡 bubble / 极坐标 polarArea / 范围区域 rangeArea / 烛台 candlestick</td>
+</tr>
+<tr>
+<td>代码与数学</td>
+<td>Diff 差异 / KaTeX 公式块 / 行内公式 / 矩阵 pmatrix / 方程组 cases / 求和与极限 / 二维码 / 二维码（自定义尺寸）</td>
+</tr>
+<tr>
+<td>插件渲染</td>
+<td>ColorCard 颜色卡片 / Countdown 倒计时（日期或相对时长）</td>
+</tr>
+<tr>
+<td>地理</td>
+<td>坐标地图（北京 / 上海）/ GeoJSON 多点 / GeoJSON 线 / GeoJSON 多边形 / TopoJSON</td>
+</tr>
+</tbody></table>
+<h3>5. 插入</h3>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>日期时间</td>
+<td>当前日期 / 当前时间 / 日期时间 / Unix 时间戳</td>
+</tr>
+<tr>
+<td>占位图片</td>
+<td>300×200 / 600×400 / 1200×600 横幅 / 500×500 方图</td>
+</tr>
+<tr>
+<td>颜色色块</td>
+<td>红 / 橙 / 黄 / 绿 / 蓝 / 紫（HTML 色点，非 emoji）</td>
+</tr>
+<tr>
+<td>分隔线样式</td>
+<td><code>---</code> / <code>***</code> / <code>___</code></td>
+</tr>
+<tr>
+<td>徽章</td>
+<td>Shields.io / Badgen</td>
+</tr>
+</tbody></table>
+<h3>6. 嵌入</h3>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>视频</td>
+<td>YouTube / Bilibili / Vimeo</td>
+</tr>
+<tr>
+<td>社交</td>
+<td>Twitter 推文 / Twitter 用户时间线 / GitHub Gist</td>
+</tr>
+<tr>
+<td>代码演示</td>
+<td>CodePen / JSFiddle / StackBlitz / Replit</td>
+</tr>
+<tr>
+<td>设计稿</td>
+<td>Figma</td>
+</tr>
+<tr>
+<td>地图</td>
+<td>Google Maps / OpenStreetMap</td>
+</tr>
+<tr>
+<td>办公文档</td>
+<td>Google Docs</td>
+</tr>
+<tr>
+<td>网络拓扑</td>
+<td>eNSP 拓扑（<code>```pkt</code> 包裹 <code>@[ensp](slug)</code>）</td>
+</tr>
+</tbody></table>
+<h3>7. 下载</h3>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>当前 Cell</td>
+<td>下载源文件 (.md) / 下载渲染结果 (.html) / 导出离线 HTML（内联 CSS）/ 导出 PDF</td>
+</tr>
+<tr>
+<td>整个笔记本</td>
+<td>导出笔记本 (.mdnb) / 合并导出全部 (.md)</td>
+</tr>
+</tbody></table>
+<h3>8. 导入</h3>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>笔记本</td>
+<td>导入 .mdnb 笔记本 / 导入 .md（按 <code>---</code> 切分为 Cell）</td>
+</tr>
+<tr>
+<td>当前 Cell</td>
+<td>导入 .md 到当前 Cell</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>五、自动补全</h2>
+<p>在编辑区输入触发字符即弹出补全列表，支持 ↑↓ 选择、Enter / Tab 确认、Esc 关闭。共 14 类触发字符，120+ 条目。</p>
+<table>
+<thead>
+<tr>
+<th>触发字符</th>
+<th>补全内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@</code></td>
+<td>17 种画廊样式 + 13 种嵌入服务（YouTube / Bilibili / Vimeo / Twitter / Gist / CodePen / JSFiddle / StackBlitz / Replit / Figma / Google Maps / OpenStreetMap / Google Docs）+ <code>@tab</code> 选项卡分隔</td>
+</tr>
+<tr>
+<td><code>```</code></td>
+<td>Mermaid 12 种 + PlantUML 10 种 + ApexCharts 9 种 + geo / geojson / topojson / qrcode / diff + 19 种编程语言</td>
+</tr>
+<tr>
+<td><code>&gt; [!</code></td>
+<td>5 种 GitHub Alerts</td>
+</tr>
+<tr>
+<td><code>#</code></td>
+<td>6 级标题</td>
+</tr>
+<tr>
+<td><code>-</code></td>
+<td>无序列表 / 任务列表</td>
+</tr>
+<tr>
+<td><code>|</code></td>
+<td>2 / 3 / 4 列表格</td>
+</tr>
+<tr>
+<td><code>||</code></td>
+<td>剧透遮罩 spoiler</td>
+</tr>
+<tr>
+<td><code>:::</code></td>
+<td>容器语法：code-tabs 代码选项卡 / columns 多列布局</td>
+</tr>
+<tr>
+<td><code>---</code></td>
+<td>水平分割线 / Frontmatter</td>
+</tr>
+<tr>
+<td><code>&gt;</code></td>
+<td>普通引用</td>
+</tr>
+<tr>
+<td><code>$$</code></td>
+<td>KaTeX 公式块</td>
+</tr>
+<tr>
+<td><code>![</code></td>
+<td>图片 / 带标题图片</td>
+</tr>
+<tr>
+<td><code>[</code></td>
+<td>链接 / 带标题链接 / 引用式链接</td>
+</tr>
+<tr>
+<td><code>[pulse</code></td>
+<td>DG-LAB 波形 <code>[pulse]...[/pulse]</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>六、右键菜单</h2>
+<p>右键任意 Cell 弹出 2 列布局菜单，左列「运行与插入」7 项，右列「编辑与清理」10 项，共 17 项操作。菜单位置自动检测视口边界，避免溢出；窄屏自动回退为单列。</p>
+<h3>运行与插入（左列）</h3>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>运行此 Cell</td>
+<td>等同 Ctrl+Enter</td>
+</tr>
+<tr>
+<td>运行此 Cell 及下方</td>
+<td>顺序执行当前及下方所有 Cell</td>
+</tr>
+<tr>
+<td>上方插入 Cell</td>
+<td>在当前 Cell 上方新建空 Cell</td>
+</tr>
+<tr>
+<td>下方插入 Cell</td>
+<td>在当前 Cell 下方新建空 Cell</td>
+</tr>
+<tr>
+<td>上移</td>
+<td>与上一个 Cell 交换位置</td>
+</tr>
+<tr>
+<td>下移</td>
+<td>与下一个 Cell 交换位置</td>
+</tr>
+<tr>
+<td>复制 Cell</td>
+<td>在下方复制一份内容相同的 Cell</td>
+</tr>
+</tbody></table>
+<h3>编辑与清理（右列）</h3>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>切换类型</td>
+<td>markdown ↔ plaintext</td>
+</tr>
+<tr>
+<td>折叠编辑器</td>
+<td>隐藏编辑区，仅保留输出</td>
+</tr>
+<tr>
+<td>折叠输出</td>
+<td>隐藏输出区</td>
+</tr>
+<tr>
+<td>复制输出 HTML</td>
+<td>将渲染后的 HTML 复制到剪贴板</td>
+</tr>
+<tr>
+<td>导出此 Cell</td>
+<td>单独导出当前 Cell</td>
+</tr>
+<tr>
+<td>折叠全部</td>
+<td>折叠所有 Cell 的编辑器</td>
+</tr>
+<tr>
+<td>展开全部</td>
+<td>展开所有 Cell</td>
+</tr>
+<tr>
+<td>清空输出</td>
+<td>清除当前 Cell 的渲染结果</td>
+</tr>
+<tr>
+<td>清空内容</td>
+<td>清空当前 Cell 的编辑区文字</td>
+</tr>
+<tr>
+<td>删除 Cell</td>
+<td>删除当前 Cell（危险操作，红色高亮）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>七、快捷键</h2>
+<table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Ctrl/Cmd + Enter</code></td>
+<td>运行当前 Cell</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + Shift + Enter</code></td>
+<td>运行全部 Cell</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + Shift + N</code></td>
+<td>当前 Cell 下方新建</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + F</code></td>
+<td>打开搜索面板</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + H</code></td>
+<td>打开替换面板</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + B</code></td>
+<td>粗体</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + I</code></td>
+<td>斜体</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + K</code></td>
+<td>链接</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + </code> `</td>
+<td>行内代码</td>
+</tr>
+<tr>
+<td><code>Tab</code></td>
+<td>缩进 2 空格</td>
+</tr>
+<tr>
+<td><code>Shift + Tab</code></td>
+<td>移除行首 2 空格</td>
+</tr>
+<tr>
+<td><code>F3</code> / <code>Shift + F3</code></td>
+<td>搜索下一个 / 上一个</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + Alt + T</code></td>
+<td>新建编辑器标签</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + Tab</code></td>
+<td>切换编辑器标签</td>
+</tr>
+<tr>
+<td><code>Esc</code></td>
+<td>关闭右键菜单 / 补全 / 搜索面板；双屏编辑模式中退出双屏</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>八、搜索与替换</h2>
+<p>工具栏右侧搜索图标（或 <code>Ctrl+F</code> / <code>Ctrl+H</code>）打开搜索面板：</p>
+<ul>
+<li><strong>查找</strong>：跨所有 Cell 的 textarea 内容搜索</li>
+<li><strong>替换</strong>：替换当前匹配 / 全部替换</li>
+<li><strong>导航</strong>：<code>F3</code> 下一个、<code>Shift+F3</code> 上一个，或点击 ↑↓ 按钮</li>
+<li><strong>状态信息</strong>：底部显示「N 个匹配 / 当前第 M 个」</li>
+<li><code>Esc</code> 关闭面板</li>
+</ul>
+<hr>
+<h2>九、自动保存</h2>
+<p>编辑器启用自动保存，<strong>无需手动保存</strong>，存储层为 IndexedDB（<code>iris/js/storage.js</code>），突破 localStorage 5 MB 容量限制并支持多笔记本（多标签）：</p>
+<ul>
+<li><strong>触发</strong>：内容变更后 1.5 秒防抖写入</li>
+<li><strong>保存内容</strong>：每个 Cell 的 <code>id</code> / <code>type</code> / <code>content</code> / <code>output_html</code></li>
+<li><strong>多标签</strong>：每个编辑器标签对应一个独立笔记本（IndexedDB <code>notebooks</code> 对象存储），标签顺序与激活项记录在 <code>meta</code> 对象存储</li>
+<li><strong>恢复</strong>：再次进入编辑器时自动加载当前笔记本，重建所有 Cell</li>
+<li><strong>状态指示</strong>：底部状态栏右侧显示「未保存 *」（橙色）/「已保存 ✓」（绿色）/「保存失败」（红色）</li>
+<li><strong>旧数据迁移</strong>：首次加载时若 IndexedDB 无数据而 localStorage 存在旧版自动保存数据（键 <code>mdnb_autosave_v2</code>），自动迁移到 IndexedDB 并清除旧键</li>
+</ul>
+<p>其他持久化设置（localStorage）：</p>
+<table>
+<thead>
+<tr>
+<th>键</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>mdnb_fontsize</code></td>
+<td>编辑区字号（12 / 14 / 16 / 18）</td>
+</tr>
+<tr>
+<td><code>mdnb_theme</code></td>
+<td>编辑器主题（light / dark）</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>自动保存仅写入浏览器本地存储，不会同步到仓库。如需持久分享，请使用「下载」菜单导出 <code>.mdnb</code> 笔记本或合并 <code>.md</code> 文件。存储层细节见 <a href="https://theforeveriris.github.io/md-preview/readme-dev.md">开发者文档</a>。</p>
+</blockquote>
+<hr>
+<h2>十、字号与主题</h2>
+<ul>
+<li><strong>字号调节</strong>：工具栏字号图标，可选 12 / 14 / 16 / 18 px，默认 14 px</li>
+<li><strong>主题切换</strong>：工具栏主题图标，在亮色 / 暗色间切换，独立于文档站主题</li>
+</ul>
+<hr>
+<h2>十一、笔记本文件格式 (.mdnb)</h2>
+<p><code>.mdnb</code> 是编辑器导出的笔记本格式，本质为 JSON：</p>
+<pre><code class="language-json">{
+  &quot;version&quot;: 2,
+  &quot;type&quot;: &quot;mdnb-autosave&quot;,
+  &quot;saved&quot;: &quot;2026-07-13T12:00:00.000Z&quot;,
+  &quot;cells&quot;: [
+    {
+      &quot;id&quot;: 1,
+      &quot;type&quot;: &quot;markdown&quot;,
+      &quot;content&quot;: &quot;# 标题\n\n正文&quot;,
+      &quot;output_html&quot;: &quot;&lt;h1&gt;标题&lt;/h1&gt;&lt;p&gt;正文&lt;/p&gt;&quot;
+    },
+    {
+      &quot;id&quot;: 2,
+      &quot;type&quot;: &quot;plaintext&quot;,
+      &quot;content&quot;: &quot;纯文本内容&quot;,
+      &quot;output_html&quot;: &quot;&quot;
+    }
+  ]
+}
+</code></pre>
+<p>通过「导入」菜单可重新加载 <code>.mdnb</code> 文件，完整还原 Cell 结构、类型与渲染结果。</p>
+<hr>
+<h2>相关文档</h2>
+<ul>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/getting-started.md">快速开始</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/show.md">系统运行时截图</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/gallery-layouts.md">图片画廊布局</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/mermaid-examples.md">Mermaid 示例</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/latex-examples.md">LaTeX 示例</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/readme-dev.md">开发者文档</a></li>
+</ul>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>eNSP 拓扑渲染示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/ensp-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/ensp-examples.md</guid>
+      <pubDate>Mon, 26 Oct 2026 05:22:38 GMT</pubDate>
+      <description>本站点支持在 Markdown 文档中嵌入华为 eNSP 拓扑图。将 或 压缩包放入 目录，构建脚本会自动解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。 使用 嵌入语法引用预处理好的拓扑 JSON，需要用 代码块包裹（即三反引号 + 语言标记）： &gt; 提示：如果文件名包含空格，引用时请使用 URL 编码（空格替换为 ）。例如 。 9 台设备、8 条链路的华为设备</description>
+      <content:encoded><![CDATA[<h1>华为 eNSP 拓扑渲染</h1>
+<p>本站点支持在 Markdown 文档中嵌入华为 eNSP 拓扑图。将 <code>.topo</code> 或 <code>.zip</code> 压缩包放入 <code>iris/data/ensp/raw/</code> 目录，构建脚本会自动解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。</p>
+<h2>基本用法</h2>
+<p>使用 <code>@[ensp](文件名)</code> 嵌入语法引用预处理好的拓扑 JSON，需要用 <code>ensp</code> 代码块包裹（即三反引号 + <code>ensp</code> 语言标记）：</p>
+<pre><code class="language-markdown">@[ensp](filename)
+</code></pre>
+<blockquote>
+<p><strong>提示</strong>：如果文件名包含空格，引用时请使用 URL 编码（空格替换为 <code>%20</code>）。例如 <code>@[ensp](my%20topo)</code>。</p>
+</blockquote>
+<h2>示例拓扑</h2>
+<h3>OSPF / IS-IS 排错综合实验</h3>
+<p>9 台设备、8 条链路的华为设备组网拓扑，涵盖 AR 路由器、S3700 交换机、串行链路和以太网链路，包含 Serial 串口、Copper 双绞线两种线缆类型，演示 OSPF 路由的规划与排错场景。</p>
+<pre><code class="language-ensp">@[ensp](OSPF%20IS-IS%E6%8E%92%E9%94%99)
+</code></pre>
+<h2>可用拓扑一览</h2>
+<table>
+<thead>
+<tr>
+<th>拓扑名称</th>
+<th>设备数</th>
+<th>链路数</th>
+<th>设备型号</th>
+<th>路由协议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OSPF IS-IS 排错</td>
+<td>9</td>
+<td>8</td>
+<td>AR2220 / S3700</td>
+<td>OSPF、Serial PPP</td>
+</tr>
+</tbody></table>
+<h2>支持的输入格式</h2>
+<p>eNSP 解析器支持以下两种输入方式：</p>
+<table>
+<thead>
+<tr>
+<th>格式</th>
+<th>扩展名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>单个拓扑文件</td>
+<td><code>.topo</code></td>
+<td>直接解析 XML 格式的拓扑描述</td>
+</tr>
+<tr>
+<td>工程压缩包</td>
+<td><code>.zip</code></td>
+<td>自动解压 ZIP，内部需包含 <code>.topo</code> 和按 UUID 命名的设备目录</td>
+</tr>
+</tbody></table>
+<h3>ZIP 压缩包内部结构</h3>
+<pre><code>my-topo.zip
+├── my-topo.topo                  # 拓扑描述文件
+├── {UUID-1}/                     # 设备 1 目录（按 UUID 命名）
+│   └── vrpcfg.zip                # 设备配置（VRP 命令）
+├── {UUID-2}/
+│   └── vrpcfg.zip
+└── ...
+</code></pre>
+<p>每个设备目录名对应 <code>.topo</code> 中 <code>&lt;dev id=&quot;UUID&quot;&gt;</code> 的设备 ID，内部 <code>vrpcfg.zip</code> 包含该设备的 VRP 配置（<code>vrpcfg.cfg</code>）。</p>
+<h2>交互功能</h2>
+<ul>
+<li><strong>缩放平移</strong>：鼠标滚轮缩放，拖拽平移画布</li>
+<li><strong>节点拖拽</strong>：拖动设备节点重新排列</li>
+<li><strong>hover 高亮</strong>：鼠标悬停连线显示接口、线缆和所属网段</li>
+<li><strong>点击详情</strong>：点击设备节点弹出右侧抽屉，查看接口表 / VRP 配置 / VLAN / ACL / 路由表</li>
+<li><strong>搜索过滤</strong>：在搜索框输入设备名 / IP / 类型，匹配设备高亮</li>
+<li><strong>布局切换</strong>：eNSP 原始坐标 ↔ 力导向自动布局</li>
+<li><strong>网格背景</strong>：可切换点阵网格 / 透明背景</li>
+<li><strong>导出</strong>：支持导出 PNG 图片 / JSON 数据 / Markdown 表格</li>
+</ul>
+<h2>线缆类型颜色编码</h2>
+<table>
+<thead>
+<tr>
+<th>颜色</th>
+<th>线缆类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>橙色</td>
+<td>串口线 (Serial)</td>
+</tr>
+<tr>
+<td>蓝色</td>
+<td>双绞线 (Copper)</td>
+</tr>
+<tr>
+<td>紫色</td>
+<td>光纤 (Fiber)</td>
+</tr>
+<tr>
+<td>绿色</td>
+<td>控制台线 (Console)</td>
+</tr>
+</tbody></table>
+<h2>设备类型图标</h2>
+<p>支持以下设备类型的图标渲染：AR 路由器、S 系列交换机、PC、服务器、防火墙、AP、Cloud 等。</p>
+<h2>工作流程</h2>
+<ol>
+<li>将 <code>.topo</code> 或 <code>.zip</code> 文件放入 <code>iris/data/ensp/raw/</code></li>
+<li>本地运行 <code>python iris/scripts/ensp/main.py</code> 或推送到 GitHub 触发 CI</li>
+<li>脚本自动解压（ZIP）→ 解析 XML → 读取 <code>vrpcfg.zip</code> 配置 → 输出 JSON</li>
+<li>在 Markdown 中用 <code>@[ensp](文件名)</code> 引用</li>
+</ol>
+<h3>文件命名建议</h3>
+<ul>
+<li>推荐使用英文、数字、连字符（<code>-</code>）和下划线（<code>_</code>）</li>
+<li>避免空格和特殊字符</li>
+<li>含空格的文件名引用时需用 <code>%20</code> 编码</li>
+</ul>
+<h2>解析的信息</h2>
+<p>每个设备可查看以下信息：</p>
+<ul>
+<li><strong>接口表</strong>：接口名、IP、掩码、状态、速率、双工、描述</li>
+<li><strong>配置</strong>：完整 <code>vrpcfg.cfg</code>（VRP 命令），按 interface 分块折叠，VRP 语法高亮</li>
+<li><strong>VLAN</strong>：VLAN ID 和名称</li>
+<li><strong>ACL</strong>：访问控制列表规则</li>
+<li><strong>路由表</strong>：直连路由、静态路由、OSPF 路由（从配置推算）</li>
+</ul>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Pulse 波形示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md</guid>
+      <pubDate>Mon, 26 Oct 2026 05:22:38 GMT</pubDate>
+      <description>本文档展示了 DG-LAB 郊狼波形文件（）的渲染效果。使用 语法即可渲染出逐帧动态波形演示。 如需内联的迷你波形，使用 语法，适合在文字段落中嵌入或批量展示。 所有示例均基于 DG-LAB 官方 3.4.4 版本波形文件导出规范。 &gt; 默认以官方竖线样式展示，点击左上角「竖线/曲线」按钮可切换显示模式；点击「全局/滚动」可切换视图模式。 --- | 参数 | 取值 | 说明 | |------|</description>
+      <content:encoded><![CDATA[<h1>Pulse 波形示例</h1>
+<p>本文档展示了 DG-LAB 郊狼波形文件（<code>.pulse</code>）的渲染效果。使用 <code>[pulse title=&quot;标题&quot;]Dungeonlab+pulse:...[/pulse]</code> 语法即可渲染出逐帧动态波形演示。</p>
+<p>如需内联的迷你波形，使用 <code>[pulsemini title=&quot;标题&quot;]Dungeonlab+pulse:...[/pulsemini]</code> 语法，适合在文字段落中嵌入或批量展示。</p>
+<p>所有示例均基于 DG-LAB 官方 3.4.4 版本波形文件导出规范。</p>
+<blockquote>
+<p>默认以官方<strong>竖线</strong>样式展示，点击左上角「竖线/曲线」按钮可切换显示模式；点击「全局/滚动」可切换视图模式。</p>
+</blockquote>
+<hr>
+<h2>格式速查</h2>
+<pre><code>Dungeonlab+pulse:&lt;休息时长&gt;,&lt;速度倍率&gt;,&lt;未知参数&gt;=&lt;小节1&gt;+section+&lt;小节2&gt;+section+...
+
+小节格式:  &lt;频率A&gt;,&lt;频率B&gt;,&lt;时长&gt;,&lt;频率模式&gt;,&lt;开关&gt;/&lt;强度&gt;-&lt;类型&gt;,&lt;强度&gt;-&lt;类型&gt;,...
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>取值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>休息时长</td>
+<td>0-99</td>
+<td>休息时间滑块值，×0.1 为秒数</td>
+</tr>
+<tr>
+<td>速度倍率</td>
+<td>1 / 2 / 4</td>
+<td>播放速度倍率</td>
+</tr>
+<tr>
+<td>频率 A/B</td>
+<td>0-83</td>
+<td>脉冲频率滑块值，需映射表转 ms/Hz</td>
+</tr>
+<tr>
+<td>时长</td>
+<td>0-99</td>
+<td>小节时长滑块值，需映射表转秒</td>
+</tr>
+<tr>
+<td>频率模式</td>
+<td>1-4</td>
+<td>1 固定 2 节内渐变 3 元内渐变 4 元间渐变</td>
+</tr>
+<tr>
+<td>开关</td>
+<td>0/1</td>
+<td>0=禁用 1=启用</td>
+</tr>
+<tr>
+<td>数据类型</td>
+<td>0/1</td>
+<td>0=普通脉冲 1=锚点脉冲，每点=0.1s 竖条</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>💡 某些导出文件省略 <code>=</code> 分隔符，首小节参数直接跟在 <code>Dungeonlab+pulse:</code> 之后，渲染器会自动识别。</p>
+</blockquote>
+<hr>
+<h2>1. 正弦波（单小节）</h2>
+<p>经典的正弦波形，频率节内渐变，2 倍速播放。</p>
+<p><strong>代码：</strong></p>
+<pre><code>[pulse title=&quot;正弦波 Sinusoidal&quot;]Dungeonlab+pulse:30,2,8=49,60,18,2,1/50.55-1,82.32-0,100.00-1,95.77-0,71.49-0,37.93-0,9.97-0,0.00-1,12.44-0,41.77-1[/pulse]
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<p>[pulse title=&quot;正弦波 Sinusoidal&quot;]Dungeonlab+pulse:30,2,8=49,60,18,2,1/50.55-1,82.32-0,100.00-1,95.77-0,71.49-0,37.93-0,9.97-0,0.00-1,12.44-0,41.77-1[/pulse]</p>
+<p><strong>参数解析：</strong></p>
+<ul>
+<li>全局：休息 3.0s · 2x 速度</li>
+<li>小节：频率 49→60（14.3→11.8Hz）· 1.9s · 节内渐变 · 启用</li>
+<li>脉冲元：10 个数据点（1.0s），4 个锚点</li>
+</ul>
+<hr>
+<h2>2. 方波（高低突变）</h2>
+<p>方波模式，前半段高位保持，后半段低位，元间渐变频率。</p>
+<p><strong>代码：</strong></p>
+<pre><code>[pulse title=&quot;方波 Square Wave&quot;]Dungeonlab+pulse:80,4,8=68,13,39,4,1/100.00-1,100.00-0,100.00-0,100.00-0,0.00-1,0.00-0,0.00-1,0.00-0,0.00-1,0.00-1[/pulse]
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<p>[pulse title=&quot;方波 Square Wave&quot;]Dungeonlab+pulse:80,4,8=68,13,39,4,1/100.00-1,100.00-0,100.00-0,100.00-0,0.00-1,0.00-0,0.00-1,0.00-0,0.00-1,0.00-1[/pulse]</p>
+<p><strong>参数解析：</strong></p>
+<ul>
+<li>全局：休息 8.0s · 4x 速度</li>
+<li>小节：频率 68→13（5.6→43.5Hz）· 4.0s · 元间渐变 · 启用</li>
+<li>脉冲元：10 个数据点（1.0s），方波形状</li>
+</ul>
+<hr>
+<h2>3. 尖峰波（先升后降）</h2>
+<p>从 0 快速上升到 100 峰值，再下降回 0 的尖峰波形。</p>
+<p><strong>代码：</strong></p>
+<pre><code>[pulse title=&quot;尖峰波 Spike&quot;]Dungeonlab+pulse:86,1,16=11,13,70,2,1/0.00-1,55.56-0,88.89-0,100.00-1,97.22-1,88.89-0,75.00-1,55.56-1,30.56-1,0.00-1[/pulse]
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<p>[pulse title=&quot;尖峰波 Spike&quot;]Dungeonlab+pulse:86,1,16=11,13,70,2,1/0.00-1,55.56-0,88.89-0,100.00-1,97.22-1,88.89-0,75.00-1,55.56-1,30.56-1,0.00-1[/pulse]</p>
+<p><strong>参数解析：</strong></p>
+<ul>
+<li>全局：休息 8.6s · 1x 速度</li>
+<li>小节：频率 11→13（47.6→43.5Hz）· 23.4s · 节内渐变 · 启用</li>
+<li>脉冲元：10 个数据点（1.0s），典型尖峰形状</li>
+</ul>
+<hr>
+<h2>4. 多段复合波（3 小节，含禁用段）</h2>
+<p>3 个小节组成的复合波形，其中第 2、3 小节被禁用（开关=0），仅播放第 1 小节。</p>
+<p><strong>代码：</strong></p>
+<pre><code>[pulse title=&quot;多段复合波 Multi-Section&quot;]Dungeonlab+pulse:93,1,8=0,0,12,3,1/100.00-1,100.00-0,100.00-0,100.00-0,100.00-0,100.00-0,100.00-1,28.94-1,28.15-0,27.36-0,26.58-0,25.79-0,25.00-1,100.00-1,100.00-0,100.00-0,100.00-0,100.00-0,100.00-1,27.43-1,27.86-0,28.28-0,28.70-0,29.12-0,29.54-0,29.97-0,30.39-0,30.81-0,31.23-0,31.65-1+section+0,83,23,2,0/100.00-1,0.00-1+section+0,20,8,1,0/0.00-1,100.00-1[/pulse]
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<p>[pulse title=&quot;多段复合波 Multi-Section&quot;]Dungeonlab+pulse:93,1,8=0,0,12,3,1/100.00-1,100.00-0,100.00-0,100.00-0,100.00-0,100.00-0,100.00-1,28.94-1,28.15-0,27.36-0,26.58-0,25.79-0,25.00-1,100.00-1,100.00-0,100.00-0,100.00-0,100.00-0,100.00-1,27.43-1,27.86-0,28.28-0,28.70-0,29.12-0,29.54-0,29.97-0,30.39-0,30.81-0,31.23-0,31.65-1+section+0,83,23,2,0/100.00-1,0.00-1+section+0,20,8,1,0/0.00-1,100.00-1[/pulse]</p>
+<p><strong>参数解析：</strong></p>
+<ul>
+<li>全局：休息 9.3s · 1x 速度</li>
+<li>S1（启用）：频率 0→0（100Hz 固定）· 1.3s · 元内渐变 · 32 个数据点</li>
+<li>S2（禁用）：频率 0→83（1→100Hz）· 2.4s · 节内渐变 · 2 个数据点</li>
+<li>S3（禁用）：频率 0→20（100→33Hz）· 0.9s · 固定 · 2 个数据点</li>
+<li>禁用的小节在图例中以灰色删除线样式显示，不参与波形播放</li>
+</ul>
+<hr>
+<h2>5. 呼吸波（缓动起伏）</h2>
+<p>模拟呼吸节奏的缓动波形，两次高峰之间夹低谷，2 倍速播放。</p>
+<p><strong>代码：</strong></p>
+<pre><code>[pulse title=&quot;呼吸波 Breathing&quot;]Dungeonlab+pulse:6,2,8=17,49,6,1,1/35.94-1,100.00-1,60.45-0,3.13-1,4.37-0,64.95-0,98.54-1,31.84-0,0.00-1,19.17-1[/pulse]
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<p>[pulse title=&quot;呼吸波 Breathing&quot;]Dungeonlab+pulse:6,2,8=17,49,6,1,1/35.94-1,100.00-1,60.45-0,3.13-1,4.37-0,64.95-0,98.54-1,31.84-0,0.00-1,19.17-1[/pulse]</p>
+<p><strong>参数解析：</strong></p>
+<ul>
+<li>全局：休息 0.6s · 2x 速度</li>
+<li>小节：频率 17→49（37→14.3Hz）· 0.7s · 固定频率 · 启用</li>
+<li>脉冲元：10 个数据点（1.0s），呼吸节奏起伏</li>
+</ul>
+<hr>
+<h2>6. 三角波（对称升降）</h2>
+<p>线性上升到顶点后线性下降的对称三角波。</p>
+<p><strong>代码：</strong></p>
+<pre><code>[pulse title=&quot;三角波 Triangle&quot;]Dungeonlab+pulse:55,1,8=0,90,14,3,1/59.99-1,66.66-0,73.33-0,80.00-0,86.66-0,93.33-0,100.00-1,98.24-0,90.05-1,81.87-1,73.68-0[/pulse]
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<p>[pulse title=&quot;三角波 Triangle&quot;]Dungeonlab+pulse:55,1,8=0,90,14,3,1/59.99-1,66.66-0,73.33-0,80.00-0,86.66-0,93.33-0,100.00-1,98.24-0,90.05-1,81.87-1,73.68-0[/pulse]</p>
+<p><strong>参数解析：</strong></p>
+<ul>
+<li>全局：休息 5.5s · 1x 速度</li>
+<li>小节：频率 0→90（约 100→1Hz）· 1.5s · 元内渐变 · 启用</li>
+<li>脉冲元：11 个数据点（1.1s），对称三角波</li>
+</ul>
+<hr>
+<h2>7. 双段波形（升降波 + 衰减尾）</h2>
+<p>两个启用小节组成：第一段为升降主体波形，第二段为快速衰减收尾。</p>
+<p><strong>代码：</strong></p>
+<pre><code>[pulse title=&quot;双段波形 Dual-Section&quot;]Dungeonlab+pulse:22,1,16=7,81,41,4,1/0.00-1,40.76-0,61.85-0,73.11-1,70.60-0,68.09-1,79.35-0,100.00-1,97.23-1,87.59-0,76.36-1,61.99-0,44.48-1+section+80,29,74,4,1/23.81-0,0.00-1[/pulse]
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<p>[pulse title=&quot;双段波形 Dual-Section&quot;]Dungeonlab+pulse:22,1,16=7,81,41,4,1/0.00-1,40.76-0,61.85-0,73.11-1,70.60-0,68.09-1,79.35-0,100.00-1,97.23-1,87.59-0,76.36-1,61.99-0,44.48-1+section+80,29,74,4,1/23.81-0,0.00-1[/pulse]</p>
+<p><strong>参数解析：</strong></p>
+<ul>
+<li>全局：休息 2.2s · 1x 速度</li>
+<li>S1：频率 7→81（58.8→1.3Hz）· 5.2s · 元间渐变 · 13 点 · 启用</li>
+<li>S2：频率 80→29（1.4→25.6Hz）· 36.6s · 元间渐变 · 2 点 · 启用</li>
+<li>两段均启用，首尾相接播放</li>
+</ul>
+<hr>
+<h2>8. 三段频率渐变（无 = 分隔符格式）</h2>
+<p>某些导出文件省略 <code>=</code> 分隔符，首小节参数直接跟在 <code>Dungeonlab+pulse:</code> 之后。渲染器会自动识别这种格式。</p>
+<p><strong>代码：</strong></p>
+<pre><code>[pulse title=&quot;三段频率渐变（无=分隔符）&quot;]Dungeonlab+pulse:78,78,8,1,1/100.00-1,100.00-0,100.00-0,100.00-1+section+0,20,8,3,1/100.00-1,100.00-0,100.00-0,100.00-0,100.00-0,100.00-0,100.00-0,100.00-1+section+0,20,8,1,1/100.00-1,50.00-0,0.00-1,0.00-1,50.00-0,100.00-1,66.65-0,33.35-0,0.00-1,100.00-1[/pulse]
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<p>[pulse title=&quot;三段频率渐变（无=分隔符）&quot;]Dungeonlab+pulse:78,78,8,1,1/100.00-1,100.00-0,100.00-0,100.00-1+section+0,20,8,3,1/100.00-1,100.00-0,100.00-0,100.00-0,100.00-0,100.00-0,100.00-0,100.00-1+section+0,20,8,1,1/100.00-1,50.00-0,0.00-1,0.00-1,50.00-0,100.00-1,66.65-0,33.35-0,0.00-1,100.00-1[/pulse]</p>
+<p><strong>参数解析：</strong></p>
+<ul>
+<li>无 <code>=</code> 分隔符，全局参数使用默认值（休息 0s · 1x 速度）</li>
+<li>S1：频率 78→78（1.8Hz 固定）· 0.9s · 固定模式 · 4 点 · 全高位平坦</li>
+<li>S2：频率 0→20（100→33Hz）· 0.9s · 元内渐变 · 8 点 · 全高位平坦</li>
+<li>S3：频率 0→20（100→33Hz）· 0.9s · 固定模式 · 10 点 · 三角波往复</li>
+<li>三段全部启用，连续播放</li>
+</ul>
+<hr>
+<h2>9. 频率渐变波形（3 小节全部启用）</h2>
+<p>三个启用小节的复合波形，展示频率渐变模式的不同效果。</p>
+<p><strong>代码：</strong></p>
+<pre><code>[pulse title=&quot;频率渐变复合波 Frequency Gradient&quot;]Dungeonlab+pulse:99,1,8=0,0,11,1,1/0.00-1,16.65-0,33.35-0,50.00-0,66.65-0,83.35-0,100.00-1,89.95-0,79.90-0,69.90-0,59.85-0,49.80-0,39.75-1,51.75-1,68.15-1,86.40-1,100.00-1,92.00-0,84.00-0,76.00-0,68.00-0,60.00-0,52.00-1,64.00-0,76.00-0,88.00-0,100.00-1,81.70-0,63.40-0,45.10-1+section+0,54,3,1,1/100.00-1,85.70-0,71.45-0,57.15-0,42.85-0,28.55-0,14.30-0,0.00-1+section+1,20,4,1,1/100.00-1,0.00-1[/pulse]
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<p>[pulse title=&quot;频率渐变复合波 Frequency Gradient&quot;]Dungeonlab+pulse:99,1,8=0,0,11,1,1/0.00-1,16.65-0,33.35-0,50.00-0,66.65-0,83.35-0,100.00-1,89.95-0,79.90-0,69.90-0,59.85-0,49.80-0,39.75-1,51.75-1,68.15-1,86.40-1,100.00-1,92.00-0,84.00-0,76.00-0,68.00-0,60.00-0,52.00-1,64.00-0,76.00-0,88.00-0,100.00-1,81.70-0,63.40-0,45.10-1+section+0,54,3,1,1/100.00-1,85.70-0,71.45-0,57.15-0,42.85-0,28.55-0,14.30-0,0.00-1+section+1,20,4,1,1/100.00-1,0.00-1[/pulse]</p>
+<p><strong>参数解析：</strong></p>
+<ul>
+<li>全局：休息 9.9s · 1x 速度</li>
+<li>S1：频率 0→0（100Hz 固定）· 1.2s · 固定模式 · 30 点 · 多峰复合</li>
+<li>S2：频率 0→54（12.8Hz）· 0.4s · 固定模式 · 8 点 · 线性递减</li>
+<li>S3：频率 1→20（90.9→33Hz）· 0.5s · 固定模式 · 2 点 · 骤降</li>
+<li>三段全部启用，连续播放</li>
+</ul>
+<hr>
+<h2>10. 心跳波（自定义）</h2>
+<p>模拟心电图心跳节奏的脉冲序列。</p>
+<p><strong>代码：</strong></p>
+<pre><code>[pulse title=&quot;心跳波 Heartbeat&quot;]Dungeonlab+pulse:12,1,8=0,0,10,1,1/0.00-1,0.00-0,0.00-0,95.00-1,20.00-0,35.00-1,5.00-0,0.00-1,0.00-0,0.00-1[/pulse]
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<p>[pulse title=&quot;心跳波 Heartbeat&quot;]Dungeonlab+pulse:12,1,8=0,0,10,1,1/0.00-1,0.00-0,0.00-0,95.00-1,20.00-0,35.00-1,5.00-0,0.00-1,0.00-0,0.00-1[/pulse]</p>
+<p><strong>参数解析：</strong></p>
+<ul>
+<li>全局：休息 1.2s · 1x 速度</li>
+<li>小节：频率 0（100Hz 固定）· 1.1s · 固定模式 · 启用</li>
+<li>脉冲元：10 个数据点（1.0s），心电脉冲形状</li>
+</ul>
+<hr>
+<h2>11. 迷你波形（内联样式）</h2>
+<p>迷你波形 <code>[pulsemini]</code> 适合在文字中嵌入或批量展示，仅显示波形和标题栏，默认竖线滚动模式。</p>
+<p><strong>代码：</strong></p>
+<pre><code>[pulsemini title=&quot;正弦波&quot;]Dungeonlab+pulse:30,2,8=49,60,18,2,1/50.55-1,82.32-0,100.00-1,95.77-0,71.49-0,37.93-0,9.97-0,0.00-1,12.44-0,41.77-1[/pulsemini]
+[pulsemini title=&quot;方波&quot;]Dungeonlab+pulse:80,4,8=68,13,39,4,1/100.00-1,100.00-0,100.00-0,100.00-0,0.00-1,0.00-0,0.00-1,0.00-0,0.00-1,0.00-1[/pulsemini]
+[pulsemini title=&quot;尖峰波&quot;]Dungeonlab+pulse:86,1,16=11,13,70,2,1/0.00-1,55.56-0,88.89-0,100.00-1,97.22-1,88.89-0,75.00-1,55.56-1,30.56-1,0.00-1[/pulsemini]
+[pulsemini title=&quot;呼吸波&quot;]Dungeonlab+pulse:6,2,8=17,49,6,1,1/35.94-1,100.00-1,60.45-0,3.13-1,4.37-0,64.95-0,98.54-1,31.84-0,0.00-1,19.17-1[/pulsemini]
+[pulsemini title=&quot;三角波&quot;]Dungeonlab+pulse:55,1,8=0,90,14,3,1/59.99-1,66.66-0,73.33-0,80.00-0,86.66-0,93.33-0,100.00-1,98.24-0,90.05-1,81.87-1,73.68-0[/pulsemini]
+[pulsemini title=&quot;心跳波&quot;]Dungeonlab+pulse:12,1,8=0,0,10,1,1/0.00-1,0.00-0,0.00-0,95.00-1,20.00-0,35.00-1,5.00-0,0.00-1,0.00-0,0.00-1[/pulsemini]
+</code></pre>
+<p><strong>渲染效果：</strong></p>
+<p>[pulsemini title=&quot;正弦波&quot;]Dungeonlab+pulse:30,2,8=49,60,18,2,1/50.55-1,82.32-0,100.00-1,95.77-0,71.49-0,37.93-0,9.97-0,0.00-1,12.44-0,41.77-1[/pulsemini]
+[pulsemini title=&quot;方波&quot;]Dungeonlab+pulse:80,4,8=68,13,39,4,1/100.00-1,100.00-0,100.00-0,100.00-0,0.00-1,0.00-0,0.00-1,0.00-0,0.00-1,0.00-1[/pulsemini]
+[pulsemini title=&quot;尖峰波&quot;]Dungeonlab+pulse:86,1,16=11,13,70,2,1/0.00-1,55.56-0,88.89-0,100.00-1,97.22-1,88.89-0,75.00-1,55.56-1,30.56-1,0.00-1[/pulsemini]
+[pulsemini title=&quot;呼吸波&quot;]Dungeonlab+pulse:6,2,8=17,49,6,1,1/35.94-1,100.00-1,60.45-0,3.13-1,4.37-0,64.95-0,98.54-1,31.84-0,0.00-1,19.17-1[/pulsemini]
+[pulsemini title=&quot;三角波&quot;]Dungeonlab+pulse:55,1,8=0,90,14,3,1/59.99-1,66.66-0,73.33-0,80.00-0,86.66-0,93.33-0,100.00-1,98.24-0,90.05-1,81.87-1,73.68-0[/pulsemini]
+[pulsemini title=&quot;心跳波&quot;]Dungeonlab+pulse:12,1,8=0,0,10,1,1/0.00-1,0.00-0,0.00-0,95.00-1,20.00-0,35.00-1,5.00-0,0.00-1,0.00-0,0.00-1[/pulsemini]</p>
+<p><strong>说明：</strong></p>
+<ul>
+<li>迷你波形固定为<strong>竖线 + 滚动</strong>模式，播放头在中间</li>
+<li>标题栏右侧有复制源码和下载按钮（仅图标）</li>
+<li>尺寸较小（宽约 220px），可在一行内排列多个</li>
+<li>支持与 <code>[pulse]</code> 相同的代码块保护规则</li>
+</ul>
+<hr>
+<h2>使用说明</h2>
+<h3>完整波形 <code>[pulse]</code></h3>
+<ul>
+<li>默认以<strong>竖线</strong>样式展示（DG-LAB 官方样式），点击「竖线/曲线」按钮切换显示模式</li>
+<li>点击「全局/滚动」切换视图模式：全局模式完整平铺，滚动模式播放头居中、波形滚动</li>
+<li>波形自动循环播放，播放头从左向右移动，已播放区域以主题色高亮</li>
+<li><strong>锚点脉冲</strong>（竖线顶部粉色标记 / 曲线模式粉色圆点）：可编辑的控制点</li>
+<li><strong>普通脉冲</strong>：由相邻锚点自动线性插值计算</li>
+<li>粉色虚线 + <code>S1/S2/...</code> 标记小节边界（仅启用的小节）</li>
+<li>灰色虚线 + &quot;休息&quot; 标记休息时段（播放完所有小节后的休息时间）</li>
+<li>图例标签显示每个小节的时长、频率和模式，悬停可查看详细参数</li>
+<li>禁用的小节（开关=0）以灰色删除线样式显示，不参与波形播放</li>
+<li>点击「下载 .pulse」按钮可下载原始波形文件</li>
+<li>点击「源码」按钮可展开查看完整标签代码</li>
+<li>矩形框、波形颜色会随文档站主题自动切换</li>
+<li>支持无 <code>=</code> 分隔符的导出格式，自动识别兼容</li>
+<li>行内代码（反引号）和代码块中的 <code>[pulse]...[/pulse]</code> 不会被渲染</li>
+</ul>
+<h3>迷你波形 <code>[pulsemini]</code></h3>
+<ul>
+<li>固定为<strong>竖线 + 滚动</strong>模式，播放头在正中间</li>
+<li>尺寸约 220px 宽，适合文字内联或网格排列</li>
+<li>标题栏右侧有「复制源码」和「下载 .pulse」按钮（仅图标）</li>
+<li>同样支持代码块保护：行内代码和代码块中的 <code>[pulsemini]...[/pulsemini]</code> 不会被渲染</li>
+</ul>
+<h3>波形生成器</h3>
+<ul>
+<li><strong>访问方式</strong>：设置页「操作」→ 「波形生成器」，或直接访问 URL <code>?mode=pulsegen</code>（例如 <code>https://theforeveriris.github.io/md-preview/?mode=pulsegen</code>）</li>
+<li>支持 9 大类 50+ 种波形类型，可按类别选择或指定具体类型</li>
+<li>可调节激烈程度（1-10）、强度范围、段数、数据点数、插值类型等参数</li>
+<li>支持波形叠加混合和随机种子</li>
+<li>最多一次生成 20 个波形，以 3 列网格展示迷你预览</li>
+<li>每个波形可单独复制源码或下载 .pulse 文件</li>
+</ul>
+<blockquote>
+<p>完整的参数说明、9 大类波形列表、与渲染器的搭配使用等详细内容，请参阅 <a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-generator-page.md">郊狼波形批量生成页（特殊页面）</a> 说明文档。</p>
+</blockquote>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>郊狼波形批量生成页（特殊页面）</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/pulse-generator-page.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/pulse-generator-page.md</guid>
+      <pubDate>Mon, 26 Oct 2026 05:22:38 GMT</pubDate>
+      <description>郊狼波形批量生成页是系统内置的可视化波形生成工具，面向 DG-LAB 郊狼设备的 波形创作者。以全屏覆盖层形式呈现，支持按类别/具体波形批量生成、参数调优、随机种子、波形叠加混合，并实时预览生成的迷你波形，提供一键复制源码与下载 文件的能力。 --- 四种入口方式任选其一： | 方式 | 说明 | |------|------| | URL 参数 | 在站点任意 URL 后追加 ，例如 | | 设</description>
+      <content:encoded><![CDATA[<h1>郊狼波形批量生成页（特殊页面）</h1>
+<p>郊狼波形批量生成页是系统内置的可视化波形生成工具，面向 DG-LAB 郊狼设备的 <code>.pulse</code> 波形创作者。以全屏覆盖层形式呈现，支持按类别/具体波形批量生成、参数调优、随机种子、波形叠加混合，并实时预览生成的迷你波形，提供一键复制源码与下载 <code>.pulse</code> 文件的能力。</p>
+<hr>
+<h2>一、访问方式</h2>
+<p>四种入口方式任选其一：</p>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>URL 参数</strong></td>
+<td>在站点任意 URL 后追加 <code>?mode=pulsegen</code>，例如 <code>https://theforeveriris.github.io/md-preview/?mode=pulsegen</code></td>
+</tr>
+<tr>
+<td><strong>设置面板</strong></td>
+<td>右上角悬浮球 → 设置 → 操作 → 「波形生成器」</td>
+</tr>
+<tr>
+<td><strong>JS 调用</strong></td>
+<td>在控制台或代码中执行 <code>window.MarkdownPreview.enterPulseGen()</code></td>
+</tr>
+<tr>
+<td><strong>Pulse 文档页</strong></td>
+<td>浏览 <a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md">Pulse 波形示例</a> 时点击波形生成相关入口</td>
+</tr>
+</tbody></table>
+<p>退出方式：</p>
+<ul>
+<li>左上角「返回文档站」按钮</li>
+<li>调用 <code>window.MarkdownPreview.exitPulseGen()</code></li>
+</ul>
+<p>退出后 URL 上的 <code>mode=pulsegen</code> 参数会被自动移除。</p>
+<hr>
+<h2>二、功能总览</h2>
+<p>生成器分为三大区域：</p>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│  顶部工具栏：标题 · 返回文档站 · 生成按钮 · 清空预览         │
+├─────────────────────────────────────────────────────────────┤
+│  左侧参数面板（可折叠）                                      │
+│  ┌───────────────────────────────────────────────────────┐  │
+│  │ 1. 波形类型选择（全部 / 按类别 / 按具体类型）           │  │
+│  │ 2. 激烈程度（1~10 档）                                 │  │
+│  │ 3. 强度范围预设或自定义（低 / 中 / 高 / 最大 / 满量程）  │  │
+│  │ 4. 小节数配置（固定值 / 随机区间）                      │  │
+│  │ 5. 数据点数配置（自动 / 固定值 / 随机区间）             │  │
+│  │ 6. 插值类型（线性 / 缓入 / 缓出 / 缓入缓出）            │  │
+│  │ 7. 波形叠加混合（可选）                                │  │
+│  │ 8. 随机种子输入                                        │  │
+│  │ 9. 生成数量（1~20）                                    │  │
+│  └───────────────────────────────────────────────────────┘  │
+├─────────────────────────────────────────────────────────────┤
+│  右侧预览区：3 列网格展示生成的迷你波形，每格含              │
+│  标题 · 迷你波形动画 · 所属类别标签 · 复制源码 · 下载        │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h2>三、波形类型体系</h2>
+<p>内置 <strong>9 大类 · 50+ 种波形模板</strong>，覆盖从基础形状到自然模拟、氛围营造等多种场景。</p>
+<h3>1. 脉冲类（6 种）</h3>
+<p>快速脉冲、慢速脉冲、双脉冲、单脉冲、窄脉冲串、宽脉冲</p>
+<h3>2. 基础波（4 种）</h3>
+<p>正弦波、三角波、方波、锯齿波</p>
+<h3>3. 自然类（6 种）</h3>
+<p>海浪、微风、心跳、弹跳、潮汐、涟漪</p>
+<h3>4. 衰减上升（6 种）</h3>
+<p>指数衰减、指数上升、快速衰减、缓慢衰减、快速上升、缓慢上升</p>
+<h3>5. 噪声类（3 种）</h3>
+<p>噪声、粗糙噪声、细碎噪声</p>
+<h3>6. 阶梯折线（3 种）</h3>
+<p>阶梯波、微阶梯、锯齿折线</p>
+<h3>7. 组合类（5 种）</h3>
+<p>升降波、脉冲衰减、正弦衰减、阶梯正弦、呼吸波</p>
+<h3>8. 特殊形状（7 种）</h3>
+<p>尖峰、谷底、平顶、双峰、三峰、山丘、悬崖</p>
+<h3>9. 氛围类（5 种）</h3>
+<p>地震波、雷鸣、滴答、渐强、渐弱</p>
+<p>选择模式：</p>
+<ul>
+<li><strong>全部</strong>：从全部 50+ 模板中随机抽取</li>
+<li><strong>按类别</strong>：勾选若干类别，仅从被选中的类别中抽取</li>
+<li><strong>按具体类型</strong>：逐一勾选具体波形名称，精确定位想要的模板</li>
+</ul>
+<hr>
+<h2>四、核心参数详解</h2>
+<h3>1. 激烈程度（Intensity）</h3>
+<p>范围 <strong>1 ~ 10</strong>，每档同时影响以下维度：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>影响说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>频率倍率</td>
+<td>档 1 ≈ 0.3×，档 10 ≈ 4×</td>
+</tr>
+<tr>
+<td>振幅比例</td>
+<td>档 1 ≈ 20% 量程，档 10 ≈ 100% 量程</td>
+</tr>
+<tr>
+<td>关键帧密度</td>
+<td>档 1 稀疏（≈ 5%），档 10 密集（≈ 45%）</td>
+</tr>
+<tr>
+<td>波形尖锐度</td>
+<td>档 1 平滑，档 10 突变剧烈</td>
+</tr>
+<tr>
+<td>噪声水平</td>
+<td>档 1 几乎无噪声，档 10 显著扰动</td>
+</tr>
+</tbody></table>
+<h3>2. 强度范围</h3>
+<p>控制波形强度（0~100）的上下界：</p>
+<ul>
+<li><strong>预设</strong>：低（0<del>30）、中（10</del>60）、高（25<del>85）、最大（40</del>100）、满量程（0~100）</li>
+<li><strong>自定义</strong>：分别输入最小/最大强度值</li>
+</ul>
+<h3>3. 小节数</h3>
+<p>每个 <code>.pulse</code> 文件由若干小节（section）组成，每个小节拥有独立的频率范围/模式/时长：</p>
+<ul>
+<li><strong>固定值</strong>：例如固定 2 小节</li>
+<li><strong>随机区间</strong>：例如 1~3 小节，每次生成在范围内随机取值</li>
+</ul>
+<h3>4. 数据点数</h3>
+<p>每个小节内部的脉冲元数据点数量：</p>
+<ul>
+<li><strong>自动</strong>：根据波形类型与激烈程度自动推导（推荐）</li>
+<li><strong>固定值</strong>：例如固定 30 点</li>
+<li><strong>随机区间</strong>：例如 10~40 点</li>
+</ul>
+<h3>5. 插值类型</h3>
+<p>影响关键帧之间的过渡形态：</p>
+<ul>
+<li><strong>线性</strong>：等速过渡，最常用</li>
+<li><strong>缓入</strong>（ease_in）：慢起快停</li>
+<li><strong>缓出</strong>（ease_out）：快起慢停</li>
+<li><strong>缓入缓出</strong>（ease_in_out）：平滑 S 型</li>
+</ul>
+<h3>6. 波形叠加混合</h3>
+<p>开启后，每个波形会叠加两种不同类型的子波形，生成更复杂的组合效果。叠加比例根据随机种子动态分配。</p>
+<h3>7. 随机种子</h3>
+<ul>
+<li>留空：每次生成使用 <code>Date.now()</code>，结果完全不同</li>
+<li>填入任意数字/字符串：相同种子 + 相同参数 = 完全一致的波形结果，便于分享与复现</li>
+</ul>
+<h3>8. 生成数量</h3>
+<p>一次批量生成的波形数量，范围 <strong>1 ~ 20</strong>，以 3 列网格排布迷你预览。</p>
+<hr>
+<h2>五、预览区操作</h2>
+<p>生成后每个卡片包含以下功能按钮：</p>
+<table>
+<thead>
+<tr>
+<th>按钮</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>迷你波形</td>
+<td>实时循环播放的 <code>[pulsemini]</code> 预览，直观感受波形节奏</td>
+</tr>
+<tr>
+<td>类别标签</td>
+<td>显示波形所属大类，悬停可查看具体波形类型名</td>
+</tr>
+<tr>
+<td>复制源码</td>
+<td>一键复制完整的 <code>[pulse]...[/pulse]</code> 标签代码，可直接粘贴到 Markdown 编辑器中</td>
+</tr>
+<tr>
+<td>下载 <code>.pulse</code></td>
+<td>下载官方格式的 <code>.pulse</code> 文件，可导入 DG-LAB 郊狼 App 使用</td>
+</tr>
+<tr>
+<td>清空预览</td>
+<td>顶部工具栏按钮，清空当前所有生成结果</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>六、生成的 <code>.pulse</code> 文件格式</h2>
+<p>生成器严格遵循 DG-LAB 官方 3.4.4+ 导出规范：</p>
+<pre><code>Dungeonlab+pulse:&lt;休息时长&gt;,&lt;速度倍率&gt;,&lt;未知参数&gt;=&lt;小节1&gt;+section+&lt;小节2&gt;+section+...
+
+小节格式:  &lt;频率A&gt;,&lt;频率B&gt;,&lt;时长&gt;,&lt;频率模式&gt;,&lt;开关&gt;/&lt;强度&gt;-&lt;类型&gt;,&lt;强度&gt;-&lt;类型&gt;,...
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>取值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>休息时长</td>
+<td>0-99</td>
+<td>×0.1 为实际秒数</td>
+</tr>
+<tr>
+<td>速度倍率</td>
+<td>1 / 2 / 4</td>
+<td>播放速度</td>
+</tr>
+<tr>
+<td>频率 A/B</td>
+<td>0-83</td>
+<td>脉冲频率滑块值，通过映射表换算为 Hz</td>
+</tr>
+<tr>
+<td>时长</td>
+<td>0-99</td>
+<td>小节时长滑块值，通过映射表换算为秒</td>
+</tr>
+<tr>
+<td>频率模式</td>
+<td>1-4</td>
+<td>1=固定 / 2=节内渐变 / 3=元内渐变 / 4=元间渐变</td>
+</tr>
+<tr>
+<td>开关</td>
+<td>0/1</td>
+<td>是否启用该小节</td>
+</tr>
+<tr>
+<td>数据类型</td>
+<td>0/1</td>
+<td>0=普通脉冲 / 1=锚点脉冲（可编辑控制点）</td>
+</tr>
+</tbody></table>
+<p>频率与时长映射表参考 <a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md">Pulse 波形示例</a> 中的参数解析。</p>
+<hr>
+<h2>七、与渲染器的搭配使用</h2>
+<p>生成器产出的结果可与以下渲染能力无缝衔接：</p>
+<ul>
+<li><strong>完整波形渲染</strong> <code>[pulse]</code>：<a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md">Pulse 波形示例</a> 中逐帧演示，支持竖线/曲线、全局/滚动两种视图切换，小节边界以粉色虚线标注，锚点脉冲标记粉色控制点</li>
+<li><strong>迷你内联波形</strong> <code>[pulsemini]</code>：适合在文档中批量展示或嵌入段落，固定竖线 + 滚动模式</li>
+<li><strong>内置 Markdown 编辑器</strong> <code>?mode=editor</code>：将复制的 <code>[pulse]</code> 源码粘贴到编辑器 Cell，运行即可实时渲染，配合工具栏「工具渲染 → Pulse 波形」菜单使用</li>
+</ul>
+<hr>
+<h2>八、相关文档</h2>
+<ul>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md">Pulse 波形示例</a>：10+ 种不同波形的完整渲染效果，含参数详解、格式速查、迷你波形批量展示</li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/editor.md">Markdown 编辑器说明</a>：编辑器的自动补全、工具栏菜单、导入导出能力</li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/plugin-development.md">插件开发指南</a>：自定义渲染器与插件扩展机制</li>
+</ul>
 ]]></content:encoded>
     </item>
     <item>
       <title>需求整理（候选功能）</title>
       <link>https://theforeveriris.github.io/md-preview/docs/requirements.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/requirements.md</guid>
-      <pubDate>Mon, 19 Oct 2026 11:15:43 GMT</pubDate>
+      <pubDate>Mon, 26 Oct 2026 05:22:38 GMT</pubDate>
       <description>本文整理自一轮功能头脑风暴中筛选出的候选需求，作为排期参考。 与 功能路线图 的分工：roadmap 是维护者已确认的正式规划，本文是待评估的候选池；某项落地后，请移入 roadmap / README 特性清单，并从本表移除。 约定：优先级 P0（低风险快赢）→ P1（体感/内容增强）→ P2（攻坚）；工作量 小（≤ 半天）→ 中（13 天）→ 大（多日）。 --- | ID | 名称 | 分组</description>
       <content:encoded><![CDATA[<h1>需求整理（候选功能）</h1>
 <p>本文整理自一轮功能头脑风暴中筛选出的候选需求，作为<strong>排期参考</strong>。</p>
@@ -1094,8 +2774,8 @@
 <li>行首禁则（行首不出现 <code>，。！？、）」』</code> 等）；</li>
 <li>中英混排括号配对与嵌套。</li>
 </ul>
-<p><strong>交互 / 验收</strong>：新增 <code>iris/scripts/lint-cjk.js</code>，默认<strong>只报告不修改</strong>；<code>--fix</code> 显式自动修复；接入 <code>smoke-test.yml</code>（建议先只告警，稳定后再升为致命）。</p>
-<p><strong>实现要点</strong>：扫描 <code>docs/**/*.md</code>（<code>git ls-files</code> 为准，与 <code>link-check.js</code> 同构）；<strong>必须跳过</strong>代码围栏、行内代码、URL、frontmatter、HTML 注释（复用 <code>link-check.js</code> 的围栏/转义处理思路）；修复逐条可定位（文件:行:列）。</p>
+<p><strong>交互 / 验收</strong>：新增 <code>iris/scripts/lint-cjk.js</code>，默认<strong>只报告不修改</strong>；<code>--fix</code> 显式自动修复；由独立工作流 <code>cjk-typography-lint.yml</code> 接入 CI（首次全量、之后增量，main 上自动修复并由机器人提交，PR 上仅提示）。<code>smoke-test.yml</code> 中保留一条告警级调用。</p>
+<p><strong>实现要点</strong>：扫描仓库内全部 Markdown（<code>git ls-files &#39;*.md&#39;</code> 为准，与 <code>link-check.js</code> 同构）；<strong>必须跳过</strong>代码围栏、行内代码、URL、frontmatter、HTML 注释（复用 <code>link-check.js</code> 的围栏/转义处理思路）；修复逐条可定位（文件：行：列）。</p>
 <p><strong>依赖与风险</strong>：自动修复会产生大范围 diff，故默认关闭 <code>--fix</code>；规则需可配置白名单豁免（如刻意保留的半角括号）。</p>
 <hr>
 <h2>六、Git 与协作</h2>
@@ -1155,7 +2835,7 @@
 <li><strong>冒烟测试</strong>：新增渲染器 / 插件 / 构建脚本 / i18n key 需同步更新 <code>iris/scripts/smoke-test.js</code> 与 <code>index.html</code>，避免 CI 失败。</li>
 <li><strong>懒加载与 PWA</strong>：新增 vendor 库必须走 <code>dom.js</code> 的 <code>loadScriptOnce</code> / <code>loadStyleOnce</code>，并纳入 <code>precache-manifest</code> 与 SW 策略，不得拖累首屏。</li>
 <li><strong>渲染器 / 插件约定</strong>：渲染器注册到 <code>window.MarkdownPreview.renderers.&lt;id&gt;</code> 并在 <code>index.html</code> 按序引入；文档级工具优先走插件系统。</li>
-<li><strong>性能预算</strong>：首屏体积与主线程占用不得劣化（现为约 1MB / 按需加载），改渲染管线时以 Debug Panel（<code>?debug=1</code>）实测为准。</li>
+<li><strong>性能预算</strong>：首屏体积与主线程占用不得劣化（现为约 1 MB / 按需加载），改渲染管线时以 Debug Panel（<code>?debug=1</code>）实测为准。</li>
 </ul>
 <hr>
 <h2>待确认 / 决策点</h2>
@@ -1167,6 +2847,670 @@
 <li><strong>CJK lint 门禁</strong>（BUILD-1）：默认告警还是致命？<code>--fix</code> 是否加入某条工作流？</li>
 <li><strong>术语表来源</strong>（CONTENT-1）：frontmatter 内联，还是独立的术语文件 / 构建期汇总？</li>
 </ol>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>功能路线图</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/roadmap.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/roadmap.md</guid>
+      <pubDate>Mon, 26 Oct 2026 05:22:38 GMT</pubDate>
+      <description>本文档收录项目的功能规划。标注「已实现」的功能已落地可用（正式说明见 README 特性清单与相关专题文档），其余仍为规划，描述目标交互、可以复用的现有基建、实现要点与边界。功能落地后，对应章节会更新为正式文档并标注版本。 &gt; 状态速记：已完成功能见 README 特性清单 与各专题文档；未标注「已实现」的章节均为「规划中（未实现）」。 --- | 分组 | 功能 | 一句话说明 | 主要复用基建</description>
+      <content:encoded><![CDATA[<h1>功能路线图</h1>
+<p>本文档收录项目的功能规划。<strong>标注「已实现」的功能已落地可用</strong>（正式说明见 README 特性清单与相关专题文档），其余仍为规划，描述目标交互、可以复用的现有基建、实现要点与边界。功能落地后，对应章节会更新为正式文档并标注版本。</p>
+<blockquote>
+<p>状态速记：已完成功能见 <a href="https://theforeveriris.github.io/md-preview/README.md#%E7%89%B9%E6%80%A7">README 特性清单</a> 与各专题文档；未标注「已实现」的章节均为「规划中（未实现）」。</p>
+</blockquote>
+<hr>
+<h2>总览</h2>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>功能</th>
+<th>一句话说明</th>
+<th>主要复用基建</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>内容与渲染</td>
+<td>文档演示模式</td>
+<td><code>?mode=slides</code> 按 H2 分页全屏放映，写完文档直接拿去讲</td>
+<td><code>#pptx-slideshow-overlay</code> 放映层</td>
+</tr>
+<tr>
+<td>内容与渲染</td>
+<td>CSV / TSV 交互表格 ✅</td>
+<td><code>```csv</code> 代码块渲染为可排序、可筛选、可搜索的表格</td>
+<td>渲染器注册机制、长表格横向滚动</td>
+</tr>
+<tr>
+<td>内容与渲染</td>
+<td>IOS / VRP 配置高亮 ✅</td>
+<td><code>```ios</code> / <code>```vrp</code> 渲染路由器配置高亮</td>
+<td>highlight.js 本地化依赖</td>
+</tr>
+<tr>
+<td>阅读与导航</td>
+<td>浏览历史与收藏夹 ✅</td>
+<td>侧边栏「最近阅读」「收藏」分组</td>
+<td>侧边栏面板结构、localStorage</td>
+</tr>
+<tr>
+<td>阅读与导航</td>
+<td>链接悬浮预览 ✅</td>
+<td>悬停站内链接弹出目标文档摘要卡片</td>
+<td>hash 路由、frontmatter 摘要</td>
+</tr>
+<tr>
+<td>阅读与导航</td>
+<td>阅读位置续读 ✅</td>
+<td>记住每篇文档滚动位置，重开可一键跳回</td>
+<td>顶部阅读进度条</td>
+</tr>
+<tr>
+<td>分享与输出</td>
+<td>选中文字浮动工具栏 ✅</td>
+<td>划选文字浮出：复制 / 站内搜索 / 生成分享图</td>
+<td>编辑器选区工具栏、命令面板</td>
+</tr>
+<tr>
+<td>分享与输出</td>
+<td>主题化分享卡片 ✅</td>
+<td>按当前主题配色生成引言排版 PNG 卡片</td>
+<td>表格主题化 PNG 导出（Canvas）</td>
+</tr>
+<tr>
+<td>离线与 PWA</td>
+<td>全量离线开关 ✅</td>
+<td>一键把全部 <code>.md</code> 拉进 SW 缓存，整站离线</td>
+<td><code>search-index.json</code>、RUNTIME_CACHE</td>
+</tr>
+<tr>
+<td>离线与 PWA</td>
+<td>OS 级文件关联</td>
+<td>装 PWA 后双击 <code>.md</code> 直接用本站打开</td>
+<td><code>file_handlers</code>、local-docs</td>
+</tr>
+<tr>
+<td>离线与 PWA</td>
+<td>系统分享目标</td>
+<td>其他 App 分享文本/MD 时选「用本站打开」</td>
+<td><code>share_target</code>、local-docs</td>
+</tr>
+<tr>
+<td>离线与 PWA</td>
+<td>扫码续读 ✅</td>
+<td>桌面生成文档+阅读位置的二维码，手机接着看</td>
+<td>qrcode 插件渲染器</td>
+</tr>
+<tr>
+<td>写作流程</td>
+<td>草稿系统</td>
+<td><code>draft: true</code> 不进树/搜索/RSS，仅调试模式可见</td>
+<td>构建脚本 frontmatter 过滤</td>
+</tr>
+<tr>
+<td>写作流程</td>
+<td>文档密码保护</td>
+<td>frontmatter 声明密码，客户端解密后渲染</td>
+<td>WebCrypto、构建脚本</td>
+</tr>
+<tr>
+<td>移动端</td>
+<td>移动端手势 ✅</td>
+<td>左右滑翻上/下一篇，边缘右滑呼出侧边栏</td>
+<td>上一篇/下一篇路由、移动端抽屉</td>
+</tr>
+<tr>
+<td>运维</td>
+<td>存储管理页 ✅</td>
+<td>IndexedDB 用量可视、按会话/笔记本清理</td>
+<td>storage.js、设置面板</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>一、内容与渲染</h2>
+<h3>1. 文档演示模式（<code>?mode=slides</code>）</h3>
+<blockquote>
+<p><strong>状态：已否决 ✋</strong>——经评估不提供此功能（入口与整体阅读流冲突），以下保留原方案说明备查。</p>
+</blockquote>
+<p>给任意文档加 <code>?mode=slides</code>，按 H2 分页、方向键翻页、全屏放映——写完文档直接拿去讲，让每篇文档一键变幻灯片。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>URL 参数进入 / 退出，与 <code>?mode=editor</code>、<code>?mode=pulsegen</code> 的既有惯例一致；</li>
+<li>以 H2 为分页边界，H3 及以下内容归入所属 H2 的页；文档开头（第一个 H2 之前）单独成页；</li>
+<li>页脚显示页码与当前章节标题；<code>←</code> / <code>→</code> / <code>Space</code> / <code>Shift+Space</code> / <code>Home</code> / <code>End</code> 翻页，<code>Esc</code> 退出并恢复滚动位置。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>PPTX 全屏放映层 <code>#pptx-slideshow-overlay</code>（<code>iris/js/renderers/pptx.js</code>）：backdrop + 单页容器 + 键盘事件已在捕获阶段监听并 <code>stopPropagation()</code>，优先级高于通用灯箱（见 <a href="https://theforeveriris.github.io/md-preview/readme-dev.md">开发者文档</a> 相关小节）；</li>
+<li><code>?mode=</code> 特殊页面路由（编辑器、波形生成器均已使用）；</li>
+<li>i18n 语言包（<code>iris/js/i18n.js</code>）承接新界面文案。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>分页应基于渲染完成后的 DOM（<code>.markdown-body</code> 的 H2 切片），图片 / Mermaid / 表格已经渲染好，无需重跑渲染管线；</li>
+<li>退出时恢复进入前的滚动位置与 URL；</li>
+<li>可顺带提供「导出讲义」打印样式。</li>
+</ul>
+<hr>
+<h3>2. CSV / TSV 交互表格</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> <code>csv / </code>tsv 代码块直接渲染为交互表格，示例见 <a href="https://theforeveriris.github.io/md-preview/docs/examples/csv-examples.md">CSV/TSV 交互表格示例</a>。</p>
+</blockquote>
+<p><code>```csv</code> / <code>```tsv</code> 代码块渲染为可排序、可筛选、可搜索的交互表格，贴数据的人会常用。这是长表格横向滚动优化的自然延伸。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>表头点击排序（升 / 降序切换，箭头指示）；</li>
+<li>右上角搜索框即时过滤行；每列下拉勾选筛选；</li>
+<li>行数多时保留横向滚动与「延伸到右侧空白」能力；</li>
+<li>工具栏提供「复制 CSV」「下载 CSV」。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>渲染器注册机制（<code>iris/js/renderers/</code>，<code>detect</code> + <code>render</code> 两段式）；</li>
+<li>长表格横向滚动与「延伸到右侧空白」设置（<code>iris/css/markdown.css</code> + 显示设置）；</li>
+<li>表格手柄已有的「复制 CSV」逻辑（<code>iris/js/interactions.js</code>）。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>数据量在内存中，纯 DOM 排序即可，无需引库；</li>
+<li>建议超过约 5000 行时退化为普通代码块高亮，避免卡顿；</li>
+<li>TSV 按制表符分列，注意引号转义与空行跳过。</li>
+</ul>
+<hr>
+<h3>3. Cisco IOS / 华为 VRP 配置高亮</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> <code>ios / </code>vrp（别名 <code>cisco / </code>huawei），示例见 <a href="https://theforeveriris.github.io/md-preview/docs/examples/ios-vrp-examples.md">IOS/VRP 配置高亮示例</a>。</p>
+</blockquote>
+<p>自定义两个 highlight.js 语言包，<code>```ios</code> / <code>```vrp</code> 渲染路由器配置。本站受众本就是网络工程师（PKT / eNSP 拓扑渲染已内置），配置高亮比任何图都戳中痛点。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>命令关键字（<code>interface</code> / <code>router ospf</code> / <code>acl</code> / <code>display current-configuration</code> 等）、注释（IOS 的 <code>!</code>）、字符串与数字分级着色；</li>
+<li>与内置 10 套代码高亮主题自动兼容（仅依赖 hljs class 体系）。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>highlight.js 已本地化（<code>iris/vendor/</code>），无新增运行时依赖；</li>
+<li>代码块语言标签与一键复制按钮已内建。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>通过 <code>hljs.registerLanguage(&#39;ios&#39;, grammar)</code> 注册，语法写法参考 hljs 官方「路由器配置」类 grammar；</li>
+<li>IOS 与 VRP 大量同构，可共享一套基础规则、分别维护关键字表；</li>
+<li>语言包体积应控制在数 KB 内，避免拖累首屏（可并入现有按需加载机制）。</li>
+</ul>
+<hr>
+<h2>二、阅读与导航</h2>
+<h3>4. 浏览历史与收藏夹</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> 长按文件树文档一键收藏（图标变强调色），最近打开的 5 篇在文件树中淡化显示；未设独立侧边栏分组。</p>
+</blockquote>
+<p>localStorage 记录阅读轨迹，侧边栏新增「最近阅读」「收藏」两个分组。配合已有的本地文件会话列表，整体导航体验就完整了。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>每篇文档阅读超过阈值时间（如 5 秒）记入历史：标题 + 路径 + 时间，去重、上限约 50 条；</li>
+<li>收藏入口（悬浮球菜单或标题旁星标），一键收藏 / 取消；</li>
+<li>两个分组渲染在侧边栏，与「本地文件」面板同级、可折叠，点击条目走既有 hash 路由；</li>
+<li>分组标题栏提供清空入口。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>侧边栏面板结构（本地文件面板：<code>iris/js/local-docs.js</code> + <code>iris/css/layout.css</code>）；</li>
+<li>文件树条目渲染与点击路由（<code>iris/js/file-tree.js</code>）；</li>
+<li>i18n 语言包。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>数据结构建议 <code>md-preview-history</code> / <code>md-preview-favorites</code> 两个 localStorage 键；</li>
+<li>隐私模式下 localStorage 可能抛异常，读写需 try/catch；</li>
+<li>历史去重以文档路径为键，本地文件与会话文档可不入历史（刷新即失效）。</li>
+</ul>
+<hr>
+<h3>5. 链接悬浮预览</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> 悬停站内链接弹出目标文档摘要卡片（标题 + 摘要 + 阅读时长），点击卡片跳转。</p>
+</blockquote>
+<p>鼠标悬停站内链接时，弹出目标文档的摘要卡片（Obsidian / 维基百科同款），不用离开当前页就能确认要不要跳。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>悬停约 300 ms 后浮出卡片：目标标题 + 首段摘要 + 字数，跟随链接定位；</li>
+<li>点击卡片跳转，<code>Esc</code> 或鼠标移出关闭；触屏设备暂不支持（或长按触发）。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>hash 路由解析（<code>iris/app.js</code>）确定目标文档路径；</li>
+<li>按路径拉取单篇 <code>.md</code> 的运行时请求逻辑；</li>
+<li>frontmatter 解析（<code>iris/js/markdown.js</code> 的 <code>parseFrontmatter</code>），<code>description</code> 字段已用于 OGP meta。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>摘要取 <code>frontmatter.description</code> &gt; 正文首段（可复用 OGP 的摘要提炼逻辑，剥代码块 / 图片 / 标记语法）；</li>
+<li>卡片内<strong>不渲染完整 Markdown</strong>（XSS 攻击面收敛），仅纯文本 + 少量受控格式；</li>
+<li>对已打开过的文档可做内存级缓存，避免悬停风暴重复 fetch。</li>
+</ul>
+<hr>
+<h3>6. 阅读位置续读</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> 重新打开读过的文档时底部提示「上次读到 N%，继续？」。</p>
+</blockquote>
+<p>每篇文档记住滚动位置，下次打开时提示「上次读到 62%，继续？」。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>滚动节流记录阅读百分比（低于约 10% 不记录）；</li>
+<li>重新打开同一篇时，底部浮出提示条，点击平滑滚动到记录位置；</li>
+<li>「本次忽略」「不再提醒」两级记忆。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>顶部阅读进度条（已有，滚动百分比同源）；</li>
+<li>hash 路由与 localStorage。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>记录 <code>{ 路径: { pct, 时间 } }</code>，文档更新后百分比仍近似有效；</li>
+<li>仅在「重新打开」时提示，首次阅读不打扰。</li>
+</ul>
+<hr>
+<h2>三、分享与输出</h2>
+<h3>7. 选中文字浮动工具栏</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> 划选正文文字即浮出：复制 / 站内搜索 / 分享卡片。</p>
+</blockquote>
+<p>划选正文一段文字后浮出小工具条：复制 / 站内搜索 / 生成分享图。表格悬浮手柄与 LaTeX 右键复制的交互模式是现成的。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>在正文区 <code>mouseup</code> 且选区非空时，于选区上方定位工具条；点击外部或 <code>Esc</code> 消失；</li>
+<li>按钮：复制纯文本、复制 Markdown 源码、以此文字唤起 <code>Ctrl/⌘ + K</code> 命令面板搜索、生成分享卡片。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>编辑器内已有「选中文字浮动工具栏」（<code>iris/css/editor.css</code>），定位与视口边界规避逻辑可移植；</li>
+<li>居中搜索命令面板（<code>iris/js/search.js</code> + <code>ui.js</code>，<code>Ctrl/⌘ + K</code>）；</li>
+<li>表格手柄的 SVG 图标按钮风格（无 emoji）。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>仅对 <code>.markdown-body</code> 正文选区生效，避开编辑器、代码块自身工具栏与表格手柄；</li>
+<li>「复制 Markdown 源码」需要 DOM→MD 回溯，工程量大时可先退化为复制纯文本；</li>
+<li>需要与标题锚点复制、LaTeX 右键复制互不抢占事件。</li>
+</ul>
+<hr>
+<h3>8. 主题化分享卡片</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> 选中文字工具条「分享卡片」，下载 1200×630 PNG。</p>
+</blockquote>
+<p>选中段落或整篇文档生成一张带当前主题配色的 PNG 卡片（引言排版），适合发社交媒体。表格导出 PNG 的能力可以直接复用。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>卡片构成：文档标题 + 摘录正文 + 站点名 / 二维码角标；</li>
+<li>配色取当前 <code>data-theme</code> 的 CSS 变量，与站点视觉一致；</li>
+<li>尺寸可选 1200×630（与 OGP 分享图同尺寸）或 3:4 竖版；</li>
+<li>出口：下载 PNG / 复制到剪贴板。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>表格手柄的主题化 PNG 导出（<code>iris/js/interactions.js</code>，Canvas 手绘 + <code>toBlob</code>，不依赖 html2canvas）；</li>
+<li>OGP 站点分享图的 Canvas 品牌排版流程（<code>iris/icons/og-image.png</code> 的生成思路）；</li>
+<li>qrcode 插件渲染器（<code>iris/plugins/qrcode.js</code>）做角标二维码。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>沿用 Canvas 手绘方案：页面字体已加载，<code>measureText</code> 逐行排版，长文自动截断并补「阅读全文」尾行；</li>
+<li>深浅主题下分别校验对比度；</li>
+<li>剪贴板写入图片需 <code>ClipboardItem</code>，做降级（仅下载）。</li>
+</ul>
+<hr>
+<h2>四、离线与 PWA</h2>
+<h3>9. 全量离线开关</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> 设置面板 → 操作 → 「缓存全部文档」，支持一键清除文档缓存。</p>
+</blockquote>
+<p>PWA 目前只缓存访问过的页面。设置里加一个「缓存全部文档」按钮，一键把 <code>search-index</code> 覆盖的所有 <code>.md</code> 拉进 SW 缓存，飞机上也能整站阅读。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>设置面板新增按钮与进度显示（n / total，可取消）；</li>
+<li>完成后提示「已可整站离线」，并显示当前缓存文档数与「清除缓存」入口。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li><code>sw.js</code> 的 RUNTIME_CACHE 已按 <code>.md</code> 路径后缀拦截并缓存访问过的文档；</li>
+<li><code>iris/data/search-index.json</code> 覆盖全部文档路径，可作清单来源；</li>
+<li><code>precache-manifest.json</code> 的预缓存机制与版本管理。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>逐个 fetch <code>.md</code>（并发 3~5）触发 SW 拦截入库，避免一次性全量拉爆移动端流量；</li>
+<li><code>CACHE_NAME</code> 版本升级后旧缓存会被清除，需提示用户重跑「缓存全部」；</li>
+<li>渲染一篇文档还依赖 vendor 库，可顺带把常用 JS/CSS 一并纳入（或依赖 precache 已覆盖）。</li>
+</ul>
+<hr>
+<h3>10. OS 级文件关联</h3>
+<p>manifest 加 <code>file_handlers</code>，安装 PWA 后双击 <code>.md</code> 文件直接用本站打开，配合 File System Access API 就是桌面 MD 阅读器。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>系统层面把 <code>.md</code> / <code>.markdown</code> 关联到已安装的 PWA；</li>
+<li>启动后通过 <code>launchQueue</code> 拿到文件句柄，转入本地文件会话打开。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li><code>manifest.json</code>；</li>
+<li>本地文件管线（<code>iris/js/local-docs.js</code>：会话列表、懒加载、大小限制）。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li><code>window.launchQueue.setConsumer()</code> 接收 <code>FileHandle</code> → 读 File 后走「打开本地 MD」同一入口；</li>
+<li>仅 HTTPS + 已安装 PWA 的 Chromium 系浏览器生效，其余环境静默降级；</li>
+<li>与手动打开共用限制（单文件 ≤ 10 MB 等）。</li>
+</ul>
+<hr>
+<h3>11. 系统分享目标</h3>
+<p><code>share_target</code> 注册后，其他 App 分享文本 / MD 时可选「用 Markdown Preview 打开」。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>移动端系统分享面板出现本站入口；</li>
+<li>分享的文本 / 文件进入站点后，转入本地文件会话或直接渲染预览。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li><code>manifest.json</code>；</li>
+<li><code>iris/js/local-docs.js</code> 的内存会话（刷新即清空，天然适合一次性分享内容）。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>最简方案：<code>method: &quot;GET&quot;</code> + query 参数承接分享文本（SW 不参与）；</li>
+<li>接收文件（POST 到 Service Worker）方案复杂度高，建议二期；</li>
+<li>进入后应立即渲染并把分享内容带入本地文件会话，避免用户困惑。</li>
+</ul>
+<hr>
+<h3>12. 扫码续读</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> 悬浮球「扫码续读」生成当前文档 + 阅读位置的二维码（<code>?pos=N</code> 参数），扫码后自动定位；二维码沿用 qrcode 插件的外部服务方案。</p>
+</blockquote>
+<p>桌面端生成当前文档 + 阅读位置的二维码，手机扫码接着看。qrcode 渲染器是现成的。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>悬浮球或分享工具条入口 → 弹窗展示二维码（URL 含文档路径与可选滚动位置参数），附当前阅读百分比；</li>
+<li>手机打开后自动滚动到记录位置（配合「阅读位置续读」）。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>qrcode 插件渲染器（<code>iris/plugins/qrcode.js</code>）；</li>
+<li>悬浮球菜单与 i18n。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>阅读位置用 query 参数（如 <code>?pos=0.62</code>）而非 hash 附加，避免与文档路由冲突；</li>
+<li>本地 / 局域网地址生成的二维码跨设备无效，需提示「需部署后的公网地址」。</li>
+</ul>
+<hr>
+<h2>五、写作流程</h2>
+<h3>13. 草稿系统</h3>
+<p>frontmatter 写 <code>draft: true</code> 的文档不出现在目录树 / 搜索 / RSS，只在调试模式（<code>?debug=1</code>）可见，写作流程就完整了。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>三个构建脚本（file-tree / search-index / feed）解析 frontmatter 并过滤草稿；</li>
+<li>运行时 GitHub API 回退路径同样过滤；</li>
+<li><code>?debug=1</code> 打开时，草稿在侧边栏以「草稿」徽标显示，方便自查。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>构建脚本（<code>iris/scripts/build-*.js</code>）已解析文档元信息，增加字段成本低；</li>
+<li><code>iris/js/markdown.js</code> 的 frontmatter 解析；</li>
+<li><code>?debug=1</code> Debug Panel（已有，见 <a href="https://theforeveriris.github.io/md-preview/readme-dev.md">开发者文档</a>）。</li>
+</ul>
+<p><strong>实现要点与边界</strong></p>
+<ul>
+<li>⚠️ <strong>内容仍是公开的静态文件</strong>：草稿只是「不展示、不被索引」，任何知道 URL 的人仍可直接访问 <code>.md</code>。需要保密的内容请配合「文档密码保护（构建期加密）」；</li>
+<li>RSS 过滤在构建期完成，已生成的 <code>feed.xml</code> 需要重跑构建才会剔除。</li>
+</ul>
+<hr>
+<h3>14. 文档密码保护</h3>
+<p>frontmatter 写 <code>password: xxx</code>，WebCrypto 客户端解密，目标是在公开仓库里放私人笔记、零后端做到真加密。</p>
+<p><strong>关键边界（必须先想清楚）</strong></p>
+<p>当前管线中 <code>.md</code> 以明文静态文件被服务，<strong>纯前端的「密码门」只是遮罩</strong>——内容可以被直接 fetch。要做到真加密，必须构建期加密：由构建脚本把正文用 AES-GCM 加密写入产物（或以 <code>```encrypted</code> 块替换正文），运行时用密码派生密钥（PBKDF2）解密后再走既有渲染管线。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>进入受保护文档显示密码输入卡片；</li>
+<li>解密成功后按「路径 + 密码哈希」在 sessionStorage 记忆，站内跳转不重复输入；</li>
+<li>密码错误时抖动提示，不暴露任何明文片段。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>构建脚本体系（可新增 <code>build-encrypt.js</code> 或在现有脚本内处理）；</li>
+<li><code>markdown.js</code> 渲染管线（解密后的明文直接进管线）；</li>
+<li>WebCrypto 为浏览器原生能力，零依赖。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>密钥派生参数（迭代次数）在安全与移动端耗时间取舍；</li>
+<li>解密结果按文档缓存，避免滚动 / 重新渲染时重复解密；</li>
+<li>仓库里只存密文与盐，密码永不入库；密码丢失无法找回，需在文档中明示。</li>
+</ul>
+<hr>
+<h2>六、移动端</h2>
+<h3>15. 移动端手势</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> 触屏设备上左右滑动正文切换上一篇 / 下一篇（本地文件会话优先），自屏幕左缘约 24px 右滑呼出侧边栏；设置面板「显示选项」提供「启用移动端手势」开关（默认开启）。</p>
+</blockquote>
+<p>左右滑翻上 / 下一篇（悬浮球的上一篇 / 下一篇逻辑复用），边缘右滑呼出侧边栏。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>正文区横向位移超过阈值（约 60px）且纵向位移小于阈值时判定为翻页手势；</li>
+<li>仅屏幕左缘约 24px 起始的右滑触发侧边栏，避免与系统返回手势互相干扰；</li>
+<li>提供「启用移动端手势」设置开关。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li>上一篇 / 下一篇路由（与悬浮球、<code>[</code> / <code>]</code> 快捷键同源，<code>iris/js/file-tree.js</code>）;</li>
+<li>移动端抽屉侧边栏（<code>iris/css/responsive.css</code>）。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li>图片灯箱、PPTX 放映打开时触摸事件让位浮层；</li>
+<li>iOS Safari 边缘滑动优先让位系统返回，手势判定需避开系统保留区；</li>
+<li>与「长按选中文字」「横向滚动的长表格」冲突，需按手势起点元素排除。</li>
+</ul>
+<hr>
+<h2>七、运维</h2>
+<h3>16. 存储管理页</h3>
+<blockquote>
+<p><strong>状态：已实现 ✅</strong> 设置面板新增「存储」区块：<code>navigator.storage.estimate()</code> 用量条、编辑器笔记本列表（逐条删除 / 全部清空，二次确认）、阅读历史与收藏 / 阅读位置的占用与一键清理（<code>iris/js/storage-manager.js</code>）。</p>
+</blockquote>
+<p>显示 IndexedDB 用量、按会话清理。本地文件会话、编辑器笔记本多了之后，现在是个黑盒。</p>
+<p><strong>交互草案</strong></p>
+<ul>
+<li>设置面板新增「存储」区块：<code>navigator.storage.estimate()</code> 的用量条（已用 / 配额）；</li>
+<li>编辑器笔记本列表（逐条 / 全部删除，带二次确认）；</li>
+<li>本地文件会话、阅读历史 / 收藏的占用与一键清理入口。</li>
+</ul>
+<p><strong>复用基建</strong></p>
+<ul>
+<li><code>iris/js/storage.js</code>（IndexedDB 笔记本存储，含 notebooks / meta 两个对象存储）；</li>
+<li><code>iris/js/local-docs.js</code> 会话模型；</li>
+<li>设置面板（<code>iris/js/settings.js</code>）。</li>
+</ul>
+<p><strong>实现要点</strong></p>
+<ul>
+<li><code>estimate()</code> 的精度因浏览器而异，展示为「约」即可；</li>
+<li>删除操作必须二次确认；清理后即时刷新用量显示。</li>
+</ul>
+<hr>
+<h2>八、本轮新增（已实现 ✅）</h2>
+<p>以下为在既有规划之外、本轮新增并已落地的能力；说明见 <a href="https://theforeveriris.github.io/md-preview/README.md#%E7%89%B9%E6%80%A7">README 特性清单</a> 与 <a href="https://theforeveriris.github.io/md-preview/docs/examples/devtools-examples.md">开发者工具与交互组件示例</a>。</p>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>功能</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>性能</td>
+<td>可见即渲染</td>
+<td>重型渲染器滚到附近才初始化；视口内立即渲染，<code>IntersectionObserver</code> 失效时自动兜底（<code>iris/js/md-render.js</code>）</td>
+</tr>
+<tr>
+<td>性能</td>
+<td>渐进式代码高亮</td>
+<td>长文档先高亮首屏代码块，其余空闲时补齐（<code>iris/js/md-render.js</code>）</td>
+</tr>
+<tr>
+<td>性能</td>
+<td>屏外内容跳过布局</td>
+<td>正文屏外区块 <code>content-visibility: auto</code>（<code>iris/css/markdown.css</code>）</td>
+</tr>
+<tr>
+<td>性能</td>
+<td>相邻文档预取</td>
+<td>空闲 / 悬停预取上下一篇（<code>iris/js/prefetch.js</code>）</td>
+</tr>
+<tr>
+<td>内容</td>
+<td>术语表悬浮</td>
+<td><code>glossary</code> 代码块 + 正文首次出现悬浮解释（<code>iris/js/renderers/glossary.js</code>）</td>
+</tr>
+<tr>
+<td>内容</td>
+<td>CSV → 图表联动</td>
+<td>表格工具栏「画成图」（<code>iris/js/renderers/csv-table.js</code>）</td>
+</tr>
+<tr>
+<td>内容</td>
+<td>SQL DDL → ER 图</td>
+<td><code>sql ddl</code> / <code>ddl</code> / <code>erd</code>（<code>iris/js/renderers/sql-erd.js</code>）</td>
+</tr>
+<tr>
+<td>内容</td>
+<td>拼音注音</td>
+<td>作者语法 `{汉字</td>
+</tr>
+<tr>
+<td>工具</td>
+<td>HTTP 请求块</td>
+<td><code>http</code> 代码块，点击发送实时请求（<code>iris/js/renderers/http-request.js</code>）</td>
+</tr>
+<tr>
+<td>工具</td>
+<td>OpenAPI 交互文档</td>
+<td><code>openapi</code> / <code>swagger</code> JSON / YAML + 试一下（<code>iris/js/renderers/openapi.js</code>）</td>
+</tr>
+<tr>
+<td>工具</td>
+<td>开发者小工具</td>
+<td><code>iris/plugins/</code>：regex / cron / time / color / hash / jwt</td>
+</tr>
+<tr>
+<td>中文</td>
+<td>繁简转换</td>
+<td>基于 opencc，代码块不转换（<code>iris/js/cjk.js</code> + <code>iris/vendor/opencc</code>）</td>
+</tr>
+<tr>
+<td>中文</td>
+<td>竖排阅读 / 排版选项</td>
+<td>竖排、首行缩进、标点悬挂、中西文间距（设置面板「中文」）</td>
+</tr>
+<tr>
+<td>Git</td>
+<td>单篇历史 / blame</td>
+<td>悬浮球「历史与变更」，GitHub API + 内嵌 diff（<code>iris/js/git-history.js</code>）</td>
+</tr>
+<tr>
+<td>Git</td>
+<td>文档变更订阅</td>
+<td>关注文档，有更新时正文顶部提示</td>
+</tr>
+<tr>
+<td>构建</td>
+<td>中文排版 lint</td>
+<td><code>iris/scripts/lint-cjk.js</code>，<code>--fix</code> 自动修复，CI 告警</td>
+</tr>
+<tr>
+<td>构建</td>
+<td>自动变更日志页</td>
+<td><code>iris/scripts/build-changelog.js</code> → <code>docs/changelog.md</code></td>
+</tr>
+<tr>
+<td>导航</td>
+<td>文档图谱</td>
+<td><code>#/graph</code> 沉浸式可交互图谱（入口=Ctrl/⌘+K 命令面板），节点=文档、边=站内链接、颜色=主题强调色深浅、大小=入度；悬停出邻居标签，浮层控件含缩放 / 适配 / 重置 / 全屏；Cytoscape.js 懒加载（<code>iris/js/renderers/graph.js</code>）</td>
+</tr>
+<tr>
+<td>导航</td>
+<td>反向链接与相关文档</td>
+<td>文末「被 N 篇引用」+「相关文档」，数据来自 <code>links.json</code>（<code>iris/js/backlinks.js</code>）</td>
+</tr>
+<tr>
+<td>构建</td>
+<td>链接关系数据</td>
+<td><code>iris/scripts/build-links.js</code> → <code>iris/data/links.json</code>，解析原语与死链检查共用 <code>iris/scripts/lib/md-links.js</code></td>
+</tr>
+<tr>
+<td>分发</td>
+<td>桌面端（Tauri）</td>
+<td>同一份静态站点打包为 Windows exe / NSIS 安装包；桌面端禁用 SW，外链交给系统浏览器（<code>src-tauri/</code>）</td>
+</tr>
+<tr>
+<td>搜索</td>
+<td>繁简互通 + 拼音首字母</td>
+<td>构建期写入 <code>searchText</code>；拼音表由 <code>gen-pinyin-table.js</code> 一次性生成并入库</td>
+</tr>
+<tr>
+<td>排版</td>
+<td>图 / 表自动编号与交叉引用</td>
+<td>连续编号、别名注释、空链接自动填充（<code>iris/js/figures.js</code>）</td>
+</tr>
+<tr>
+<td>内容</td>
+<td>时间线组件</td>
+<td><code>timeline</code> 代码块，状态色 + 今日标记线（<code>iris/plugins/timeline.js</code>）</td>
+</tr>
+<tr>
+<td>交互</td>
+<td>脚注悬浮预览</td>
+<td>悬停 / 聚焦脚注角标浮出脚注原文（<code>iris/js/hover-preview.js</code>）</td>
+</tr>
+<tr>
+<td>交互</td>
+<td>设置项搜索</td>
+<td>设置面板左栏搜索，行级过滤 + 隐藏空分组 + 唯一命中自动跳转</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>建议落地顺序</h2>
+<table>
+<thead>
+<tr>
+<th>批次</th>
+<th>功能</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P0 快赢</td>
+<td>IOS / VRP 高亮、阅读位置续读、全量离线开关、CSV / TSV 表格</td>
+<td>改动面小、依赖少、受众感知强（已全部落地）</td>
+</tr>
+<tr>
+<td>P1 体验</td>
+<td>文档演示模式（已否决）、浏览历史与收藏夹、主题化分享卡片、选中文字工具栏</td>
+<td>除演示模式外均已落地</td>
+</tr>
+<tr>
+<td>P2 打磨</td>
+<td>链接悬浮预览、移动端手势、存储管理页、扫码续读、草稿系统</td>
+<td>交互细节多，需逐个调校（移动端手势、存储管理页、扫码续读已落地）</td>
+</tr>
+<tr>
+<td>P3 攻坚</td>
+<td>OS 文件关联、系统分享目标、文档密码保护</td>
+<td>依赖 PWA 安装态 / 构建期加密设计</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>以上顺序仅为建议，实际取舍以维护者的版本规划为准。功能实现后请同步更新：本文件对应章节、<a href="https://theforeveriris.github.io/md-preview/README.md">README</a> 特性清单、相关专题文档与 <a href="https://theforeveriris.github.io/md-preview/docs/show.md">show.md</a> 截图页。</p>
+</blockquote>
 ]]></content:encoded>
     </item>
     <item>
@@ -1660,498 +4004,6 @@ rgb(139, 92, 246)
 4月,2200,160
 </code></pre>
 <p>点击表格工具栏的「画成图」即可生成折线 / 柱状 / 面积 / 饼图。</p>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>配置参考</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
-      <pubDate>Sun, 18 Oct 2026 08:19:55 GMT</pubDate>
-      <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
-      <content:encoded><![CDATA[<h1>配置参考</h1>
-<p>Markdown Preview 的配置分为两层：</p>
-<ol>
-<li><strong>构建/部署配置</strong> — <code>iris/config.json</code>（仓库级，所有访客共享）</li>
-<li><strong>运行时设置</strong> — 浏览器 localStorage（用户级，仅当前浏览器生效）</li>
-</ol>
-<hr>
-<h2>一、<code>iris/config.json</code>（仓库级配置）</h2>
-<p>修改此文件后需推送代码触发重新部署。</p>
-<h3>基础配置</h3>
-<pre><code class="language-json">{
-  &quot;owner&quot;: &quot;your-username&quot;,
-  &quot;repo&quot;: &quot;your-repo-name&quot;
-}
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>默认值</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>owner</code></td>
-<td>string</td>
-<td>-</td>
-<td>GitHub 用户名或组织名</td>
-</tr>
-<tr>
-<td><code>repo</code></td>
-<td>string</td>
-<td>-</td>
-<td>仓库名</td>
-</tr>
-</tbody></table>
-<h3>完整配置项</h3>
-<pre><code class="language-json">{
-  &quot;owner&quot;: &quot;&quot;,
-  &quot;repo&quot;: &quot;&quot;,
-  &quot;branch&quot;: &quot;main&quot;,
-  &quot;title&quot;: &quot;Markdown Preview&quot;,
-  &quot;defaultTheme&quot;: &quot;default&quot;,
-  &quot;showEditButton&quot;: true,
-  &quot;showReadingTime&quot;: true,
-  &quot;showBreadcrumbs&quot;: true
-}
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>默认值</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>branch</code></td>
-<td>string</td>
-<td><code>main</code></td>
-<td>文档所在的 Git 分支</td>
-</tr>
-<tr>
-<td><code>title</code></td>
-<td>string</td>
-<td><code>Markdown Preview</code></td>
-<td>站点标题</td>
-</tr>
-<tr>
-<td><code>defaultTheme</code></td>
-<td>string</td>
-<td><code>default</code></td>
-<td>默认主题 ID</td>
-</tr>
-<tr>
-<td><code>showEditButton</code></td>
-<td>boolean</td>
-<td><code>true</code></td>
-<td>是否显示&quot;编辑此页&quot;按钮</td>
-</tr>
-<tr>
-<td><code>showReadingTime</code></td>
-<td>boolean</td>
-<td><code>true</code></td>
-<td>是否显示阅读时间估算</td>
-</tr>
-<tr>
-<td><code>showBreadcrumbs</code></td>
-<td>boolean</td>
-<td><code>true</code></td>
-<td>是否显示面包屑导航</td>
-</tr>
-<tr>
-<td><code>plantumlServers</code></td>
-<td>array</td>
-<td>内置列表</td>
-<td>PlantUML 渲染服务列表，按顺序尝试</td>
-</tr>
-</tbody></table>
-<h4>PlantUML 渲染服务（plantumlServers）</h4>
-<p>PlantUML 图表默认依次尝试官方服务器与 Kroki 公共服务，全部失败时自动降级为源码展示并提供在线编辑器链接。若你自建了 PlantUML 服务或想使用其他镜像，可在 <code>iris/config.json</code> 中覆盖：</p>
-<pre><code class="language-json">{
-  &quot;plantumlServers&quot;: [
-    { &quot;type&quot;: &quot;plantuml&quot;, &quot;base&quot;: &quot;https://your-self-hosted/plantuml&quot; },
-    { &quot;type&quot;: &quot;kroki&quot;, &quot;base&quot;: &quot;https://kroki.io/plantuml&quot; }
-  ]
-}
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>type</code></td>
-<td><code>plantuml</code>（PlantUML 自定义编码）或 <code>kroki</code>（标准 base64url 编码）</td>
-</tr>
-<tr>
-<td><code>base</code></td>
-<td>服务基础地址，渲染时自动拼接 <code>/svg/&lt;编码&gt;</code></td>
-</tr>
-</tbody></table>
-<h3>配置加载顺序</h3>
-<ol>
-<li>内置默认配置</li>
-<li><code>iris/config.json</code> 中的配置（覆盖默认值）</li>
-<li>用户本地存储的设置（如主题选择，会覆盖前两者）</li>
-</ol>
-<hr>
-<h2>二、运行时设置（用户级）</h2>
-<p>通过悬浮球菜单 → <strong>设置</strong> 打开设置面板，所有改动保存在浏览器 localStorage，仅对当前浏览器生效。</p>
-<p>设置面板分七个区块：<strong>语言 / 外观 / 字体 / 阅读 / 布局 / 工具与导出 / 存储</strong>（左侧分组导航，点击平滑滚动、滚动时自动同步高亮）。</p>
-<h3>语言</h3>
-<p>设置面板最顶部为「语言」选择：<strong>自动（跟随浏览器）/ 中文 / English</strong>。选择「自动」时按浏览器语言自动判定；切换立即生效并记忆，无需刷新。</p>
-<h3>外观</h3>
-<h4>预设主题</h4>
-<table>
-<thead>
-<tr>
-<th>ID</th>
-<th>名称</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>auto</code></td>
-<td>自动（跟随系统亮暗）</td>
-</tr>
-<tr>
-<td><code>default</code></td>
-<td>默认（紫粉渐变）</td>
-</tr>
-<tr>
-<td><code>github-light</code></td>
-<td>GitHub Light</td>
-</tr>
-<tr>
-<td><code>github-dark</code></td>
-<td>GitHub Dark</td>
-</tr>
-<tr>
-<td><code>notion</code></td>
-<td>Notion</td>
-</tr>
-<tr>
-<td><code>arc-dark</code></td>
-<td>Arc Dark</td>
-</tr>
-<tr>
-<td><code>dracula</code></td>
-<td>Dracula</td>
-</tr>
-<tr>
-<td><code>nord</code></td>
-<td>Nord</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>选择预设主题会清空自定义配色。</p>
-</blockquote>
-<p><strong>自动主题（auto）</strong>：跟随系统 <code>prefers-color-scheme</code> 实时切换——系统亮色时使用「自动主题配对」中的亮色主题（默认紫粉渐变），暗色时使用暗色主题（默认 GitHub Dark）。配对可在设置面板中自由组合，系统亮暗变化时即时生效（含 PWA 桌面模式）。</p>
-<h4>自定义配色（取色器）</h4>
-<p>无需写 CSS，直接通过取色器调整：</p>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>可调变量</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>强调色</strong></td>
-<td><code>--color-accent-purple</code> / <code>--color-accent-pink</code> / <code>--color-accent-purple-deep</code></td>
-<td>主色及派生色</td>
-</tr>
-<tr>
-<td><strong>中性色</strong></td>
-<td><code>--color-bg</code> / <code>--color-surface</code> / <code>--color-border</code> / <code>--color-text</code> / <code>--color-text-muted</code></td>
-<td>背景、表面、文字与边框</td>
-</tr>
-</tbody></table>
-<p>通过中性色调整即可做出亮色或暗色主题。点击「重置」恢复默认值。</p>
-<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/theme-customization.md">主题定制</a>。</p>
-<h4>字体自定义</h4>
-<p>设置面板 → <strong>外观 → 字体</strong>，无需写 CSS 即可精细控制排版：</p>
-<table>
-<thead>
-<tr>
-<th>选项</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>远程字体 URL</td>
-<td>填写 Google Fonts 等 CSS URL 即可加载远程字体</td>
-</tr>
-<tr>
-<td>展示字体族</td>
-<td>标题衬线体，独立于正文</td>
-</tr>
-<tr>
-<td>正文字体族</td>
-<td>UI / 正文无衬线体</td>
-</tr>
-<tr>
-<td>字号细调</td>
-<td>UI / 正文 / H1 / H2 / H3 独立设置</td>
-</tr>
-<tr>
-<td>字重细调</td>
-<td>UI / 正文 / 展示体 / H1 / H2 / H3 独立选择（300 ~ 800）</td>
-</tr>
-<tr>
-<td>字色</td>
-<td>正文与次要文字颜色独立取色</td>
-</tr>
-<tr>
-<td>标题数字无衬线</td>
-<td>默认标题数字随标题字体（衬线）；开启后仅数字改用无衬线字形</td>
-</tr>
-<tr>
-<td>重置字体</td>
-<td>一键恢复全部字体默认值</td>
-</tr>
-</tbody></table>
-<h4>代码高亮主题</h4>
-<table>
-<thead>
-<tr>
-<th>主题 ID</th>
-<th>名称</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>github</code></td>
-<td>GitHub Light</td>
-<td>亮色</td>
-</tr>
-<tr>
-<td><code>github-dark</code></td>
-<td>GitHub Dark</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>atom-one-light</code></td>
-<td>Atom One Light</td>
-<td>亮色</td>
-</tr>
-<tr>
-<td><code>atom-one-dark</code></td>
-<td>Atom One Dark</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>monokai</code></td>
-<td>Monokai</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>dracula</code></td>
-<td>Dracula</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>nord</code></td>
-<td>Nord</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>vs2015</code></td>
-<td>VS 2015</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>solarized-light</code></td>
-<td>Solarized Light</td>
-<td>亮色</td>
-</tr>
-<tr>
-<td><code>solarized-dark</code></td>
-<td>Solarized Dark</td>
-<td>暗色</td>
-</tr>
-</tbody></table>
-<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md">代码高亮主题</a>。</p>
-<p>在「外观 → 代码高亮」中还可填写<strong>自定义高亮主题</strong>：加载外部 highlight.js 主题 CSS URL，回车应用（覆盖内置代码主题）。</p>
-<h4>自定义 CSS</h4>
-<p>在「外观 → 自定义 CSS」中填写<strong>外部样式表 URL</strong>，加载外部 CSS 文件进一步定制页面，回车应用。</p>
-<h3>阅读</h3>
-<h4>显示选项</h4>
-<table>
-<thead>
-<tr>
-<th>选项</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>显示阅读进度</td>
-<td>控制顶部进度条</td>
-</tr>
-<tr>
-<td>显示字数统计</td>
-<td>控制文件树中每个文件旁的字数显示</td>
-</tr>
-<tr>
-<td>折叠过长文件名</td>
-<td>开启时文件名过长省略号显示，关闭时完整展开（区域可横向滚动，隐藏滚动条）；默认关闭</td>
-</tr>
-<tr>
-<td>侧边栏文件夹默认展开</td>
-<td>开启时文件树中的文件夹全部展开显示；关闭时默认折叠，点击文件夹手动展开</td>
-</tr>
-<tr>
-<td>启用移动端手势</td>
-<td>触屏设备左右滑动正文切换上一篇 / 下一篇，自屏幕左缘右滑呼出侧边栏抽屉</td>
-</tr>
-<tr>
-<td>启用章节折叠</td>
-<td>H2 标题栏右侧出现折叠按钮，折叠状态按文档记忆、重开自动恢复</td>
-</tr>
-<tr>
-<td>对照阅读默认同步滚动</td>
-<td>打开双栏对照阅读时两栏按比例同步滚动（<code>Ctrl/⌘+Alt+S</code> 可随时开关本次会话）</td>
-</tr>
-<tr>
-<td>专注模式</td>
-<td>当前阅读段落保持高亮、其余内容淡化（也可在 <code>Ctrl/⌘+K</code> 命令面板开关）</td>
-</tr>
-</tbody></table>
-<h4>布局</h4>
-<table>
-<thead>
-<tr>
-<th>选项</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>侧边栏样式</td>
-<td>经典：贴边通栏、微色差微阴影无边框（默认）；悬浮卡片：四周留缝的圆角卡片（桌面端）</td>
-</tr>
-<tr>
-<td>内容区宽度</td>
-<td>滑杆调整 Markdown 正文最大宽度（600–1400px，默认 720px），拖动即时生效，可一键重置</td>
-</tr>
-<tr>
-<td>正文占满可用宽度</td>
-<td>开启后正文铺满窗口可用宽度，忽略上方宽度设置，适合宽屏显示器</td>
-</tr>
-<tr>
-<td>长表格延伸到右侧空白</td>
-<td>内容宽度设置保持不变，宽表格向右适度越过正文边界、利用右侧空白显示更多列</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>侧边栏折叠：桌面端可通过侧边栏标题栏的汉堡按钮或快捷键 <code>Ctrl/⌘ + B</code> 折叠/展开侧边栏，折叠后左上角浮现展开按钮，状态自动记忆（与移动端抽屉行为一致）。</p>
-<p>以上宽度与侧边栏操作均有键盘快捷键（<code>Ctrl/⌘ + Alt + =/-/0/F</code>、<code>Ctrl/⌘ + B</code>、<code>[</code> / <code>]</code> 等），完整清单见 <a href="https://theforeveriris.github.io/md-preview/docs/shortcuts.md">快捷键</a>。</p>
-</blockquote>
-<h3>工具与导出</h3>
-<h4>工具</h4>
-<table>
-<thead>
-<tr>
-<th>工具</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Markdown 编辑器</td>
-<td>在新标签页打开交互式编辑器（<code>?mode=editor</code>），支持语法快速输入和实时渲染</td>
-</tr>
-<tr>
-<td>波形生成器</td>
-<td>可视化生成 DG-LAB 郊狼 <code>.pulse</code> 波形文件（<code>?mode=pulsegen</code>），最多 20 个</td>
-</tr>
-</tbody></table>
-<h4>导出</h4>
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>下载 Markdown</td>
-<td>下载当前打开的 <code>.md</code> 源文件</td>
-</tr>
-<tr>
-<td>导出 PDF</td>
-<td>通过浏览器打印对话框导出为 PDF（自动隐藏侧边栏、悬浮球等 UI）</td>
-</tr>
-<tr>
-<td>导出 HTML</td>
-<td>保存为内联当前主题样式与全部本地 CSS 的单文件 HTML，双击即可离线查看</td>
-</tr>
-</tbody></table>
-<h4>离线缓存</h4>
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>全量离线缓存</td>
-<td>把文件树覆盖的所有文档拉进 PWA 缓存（带进度反馈），离线也能整站阅读；支持一键清除文档缓存。需 HTTPS 部署访问后可用</td>
-</tr>
-</tbody></table>
-<h3>存储</h3>
-<p>设置面板「存储」区块：<code>navigator.storage.estimate()</code> 用量条（已用 / 配额）、编辑器笔记本列表（逐条删除 / 全部清空，二次确认）、阅读历史与收藏 / 阅读位置的占用与一键清理（<code>iris/js/storage-manager.js</code>，打开面板时自动刷新）。</p>
-<h4>导航增强</h4>
-<ul>
-<li><strong>面包屑目录聚合页</strong>：面包屑与正文同宽对齐；点击中间路径进入该目录的聚合页，集中浏览目录下全部文档</li>
-<li><strong>标签聚合页</strong>：<code>#/tag/&lt;标签&gt;</code> 按标签聚合文档（见「标签系统」）</li>
-</ul>
-<hr>
-<h2>三、悬浮球菜单</h2>
-<p>悬浮球展开后提供 6 个快捷入口：</p>
-<table>
-<thead>
-<tr>
-<th>入口</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>回到顶部</td>
-<td>平滑滚动到文档顶部</td>
-</tr>
-<tr>
-<td>打开本地文件</td>
-<td>点击弹出选择面板：「选择文件…」可一次选中一个或多个本地 <code>.md</code> 文件预览（不写入 URL，刷新后丢失），未打开的文件进入侧边栏「本地文件」会话列表，可切换、移除或清空；「选择文件夹…」整体导入一个目录（File System Access API，旧浏览器回退 <code>webkitdirectory</code>），按目录树展示、文件夹可折叠、内容懒加载；最多收集 500 个文件，单文件 ≤ 10MB。受浏览器限制，文件与文件夹需在面板中二选一进入</td>
-</tr>
-<tr>
-<td>扫码续读</td>
-<td>生成当前文档 + 阅读位置的二维码，手机扫码接着看</td>
-</tr>
-<tr>
-<td>安装到桌面</td>
-<td>PWA 安装（仅浏览器支持时显示）</td>
-</tr>
-<tr>
-<td>编辑此页</td>
-<td>在新标签页打开 GitHub 编辑界面</td>
-</tr>
-<tr>
-<td>设置</td>
-<td>打开设置面板</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>四、RSS 订阅</h2>
-<p>站点自动生成 RSS feed，订阅地址：</p>
-<pre><code>https://&lt;owner&gt;.github.io/&lt;repo&gt;/iris/data/feed.xml
-</code></pre>
-<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/rss.md">RSS 订阅</a>。</p>
 ]]></content:encoded>
     </item>
     <item>
@@ -2829,660 +4681,6 @@ Pulse 格式与示例：<a href="https://theforeveriris.github.io/md-preview/doc
   color: #b58900;
 }
 </code></pre>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>Markdown 编辑器</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/editor.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/editor.md</guid>
-      <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
-      <description>Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可在浏览器内即时编写、运行、预览 Markdown，并支持自动保存、搜索替换、导入导出等能力。 编辑器以全屏覆盖层的形式叠加在文档站之上，复用站点已有的渲染管线（marked.js + 各扩展渲染器），所有渲染结果与文档站完全一致。 --- 三种方式任选其一： 1. URL 参数：在站点任意 </description>
-      <content:encoded><![CDATA[<h1>Markdown 编辑器</h1>
-<p>Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可在浏览器内即时编写、运行、预览 Markdown，并支持自动保存、搜索替换、导入导出等能力。</p>
-<p>编辑器以全屏覆盖层的形式叠加在文档站之上，复用站点已有的渲染管线（marked.js + 各扩展渲染器），所有渲染结果与文档站完全一致。</p>
-<hr>
-<h2>一、入口与退出</h2>
-<h3>进入编辑器</h3>
-<p>三种方式任选其一：</p>
-<ol>
-<li><strong>URL 参数</strong>：在站点任意 URL 后追加 <code>?mode=editor</code>，例如 <code>https://theforeveriris.github.io/md-preview/?mode=editor</code></li>
-<li><strong>设置面板</strong>：右上角悬浮球 → 设置 → 操作 → 「打开编辑器」</li>
-<li><strong>JS 调用</strong>：在控制台或代码中执行 <code>window.MarkdownPreview.enterEditorMode()</code></li>
-</ol>
-<h3>退出编辑器</h3>
-<ul>
-<li>工具栏左上角「文档站」按钮</li>
-<li>调用 <code>window.MarkdownPreview.exitEditorMode()</code></li>
-</ul>
-<p>退出后 URL 上的 <code>mode=editor</code> 参数会被移除，回到文档浏览模式。</p>
-<hr>
-<h2>二、界面布局</h2>
-<p>编辑器为单页全屏结构，自上而下分为五个区域：</p>
-<pre><code>┌─────────────────────────────────────────────────────┐
-│  顶部工具栏 (editor-toolbar)                          │
-│  左：返回文档站 / 标题 / Cell 计数                     │
-│  中：7 个下拉菜单（Markdown / HTML / 私有语法 /        │
-│      工具渲染 / 插入 / 下载 / 导入）                   │
-│  右：字号 / 搜索 / 主题 / 清空 / 全部运行 / 运行       │
-├─────────────────────────────────────────────────────┤
-│  搜索/替换面板 (search-panel，按需展开)                │
-├─────────────────────────────────────────────────────┤
-│  Cell 容器 (editor-main，可滚动)                      │
-│    ┌───────────────────────────────────────────┐    │
-│    │  Cell 1                                    │    │
-│    │  ┌─────────────────────────────────────┐  │    │
-│    │  │ 编辑区 (textarea + 行号)             │  │    │
-│    │  └─────────────────────────────────────┘  │    │
-│    │  ┌─────────────────────────────────────┐  │    │
-│    │  │ 渲染输出区 (.cell-output)            │  │    │
-│    │  └─────────────────────────────────────┘  │    │
-│    └───────────────────────────────────────────┘    │
-│    ┌───────────────────────────────────────────┐    │
-│    │  Cell 2 ...                                │    │
-│    └───────────────────────────────────────────┘    │
-│    ┌─ + 新建 Cell (全局按钮，仅最后一个 Cell 下方) ─┐  │
-├─────────────────────────────────────────────────────┤
-│  底部状态栏 (editor-statusbar)                        │
-│  左：Cell 数 / 运行统计 / 字数 / 行数 / 当前 Cell 字数 │
-│  右：光标位置 / 活跃 Cell / 保存状态                  │
-└─────────────────────────────────────────────────────┘
-</code></pre>
-<p>此外还有三个浮动元素：</p>
-<ul>
-<li><strong>选中文字浮动工具栏</strong>：在 textarea 中选中文字时浮现，提供 B/I/S/code/H1~H3/link/quote/ul 快速格式化</li>
-<li><strong>Cell 右键菜单</strong>：右键任意 Cell 弹出，2 列布局共 17 项操作</li>
-<li><strong>自动补全列表</strong>：输入触发字符时浮现，按 ↑↓ 选择、Enter/Tab 确认</li>
-</ul>
-<hr>
-<h2>三、Cell 模型</h2>
-<h3>Cell 类型</h3>
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th>标识</th>
-<th>行为</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>markdown</code></td>
-<td>MD</td>
-<td>内容经过完整渲染管线（Mermaid / KaTeX / 代码高亮等）</td>
-</tr>
-<tr>
-<td><code>plaintext</code></td>
-<td>TXT</td>
-<td>纯文本，不渲染，原样显示在输出区</td>
-</tr>
-</tbody></table>
-<p>通过右键菜单「切换类型」或导入时的 <code>---</code> 分隔符切换。</p>
-<h3>Cell 结构</h3>
-<p>每个 Cell 由以下部分组成：</p>
-<ul>
-<li><strong>头部 (cell-header)</strong>：Cell 编号、状态点（灰=未运行 / 绿=已运行 / 橙=已修改）、类型徽章、行数；右侧 6 个操作按钮（运行 / 折叠 / 上移 / 下移 / 复制 / 删除）</li>
-<li><strong>编辑区 (cell-editor-wrap)</strong>：行号栏 + textarea，支持 Tab 缩进、Shift+Tab 反缩进</li>
-<li><strong>输出区 (cell-output)</strong>：运行后显示渲染结果，未运行时隐藏</li>
-<li><strong>输出工具栏 (cell-output-toolbar)</strong>：运行后浮现，提供「复制 HTML / 清空输出 / 折叠输出 / 导出此 Cell」四项操作</li>
-</ul>
-<h3>新建 Cell</h3>
-<ul>
-<li><strong>全局按钮</strong>：在最后一个 Cell 下方有且仅有一个「+ 新建 Cell」虚线按钮</li>
-<li><strong>快捷键</strong>：<code>Ctrl+Shift+N</code> 在当前 Cell 下方新建</li>
-<li><strong>右键菜单</strong>：「上方插入 Cell」/「下方插入 Cell」</li>
-</ul>
-<h3>运行 Cell</h3>
-<ul>
-<li><strong>运行当前</strong>：工具栏「运行」按钮 / Cell 头部播放按钮 / <code>Ctrl+Enter</code></li>
-<li><strong>运行全部</strong>：工具栏「全部运行」按钮 / <code>Ctrl+Shift+Enter</code></li>
-<li><strong>运行此 Cell 及下方</strong>：右键菜单</li>
-<li>运行后状态点变绿；编辑后变橙（已修改，需重新运行）</li>
-</ul>
-<h3>双屏编辑模式</h3>
-<p>每个 Cell 头部有「双屏编辑」按钮（分栏图标），点击进入全屏双屏 overlay：</p>
-<ul>
-<li><strong>布局</strong>：左侧为该 Cell 的编辑器（保留原实例与撤销栈），右侧为该 Cell 内容的实时预览；</li>
-<li><strong>实时渲染</strong>：输入 250ms 防抖后自动重渲染，渲染管线与文档站一致；</li>
-<li><strong>分隔条拖拽</strong>：拖动中间分隔条调整左右宽度；</li>
-<li><strong>同步滚动</strong>：可在开关控制下让编辑区与预览区滚动联动；</li>
-<li><strong>退出</strong>：<code>Esc</code> 或右上角退出按钮，CodeMirror 宿主移回原 Cell，其它 Cell 完全不受影响。</li>
-</ul>
-<hr>
-<h2>四、顶部工具栏菜单</h2>
-<p>工具栏中央有 8 个下拉菜单，覆盖 Markdown 写作所需的全部能力。</p>
-<h3>1. Markdown</h3>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>项</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>标题</td>
-<td>H1 ~ H6</td>
-</tr>
-<tr>
-<td>格式</td>
-<td>粗体 / 斜体 / 粗斜体 / 删除线 / 行内代码</td>
-</tr>
-<tr>
-<td>列表</td>
-<td>无序 / 有序 / 任务 / 已完成任务</td>
-</tr>
-<tr>
-<td>插入</td>
-<td>链接 / 带标题链接 / 图片 / 带尺寸图片 / 代码块 / 引用 / 分隔线</td>
-</tr>
-<tr>
-<td>表格</td>
-<td>2 / 3 / 4 列表格</td>
-</tr>
-<tr>
-<td>脚注 / 引用</td>
-<td>脚注定义 / 脚注引用 / 引用式链接定义</td>
-</tr>
-</tbody></table>
-<h3>2. HTML</h3>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>项</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>文本样式</td>
-<td>mark / u / small / sub / sup / kbd / abbr / time / del+ins / cite / var / samp / dfn / q / wbr</td>
-</tr>
-<tr>
-<td>结构与布局</td>
-<td>details 折叠面板 / 居中对齐 / dl 定义列表 / figure 图文组合 / ruby 注音 / address / br / hr</td>
-</tr>
-<tr>
-<td>交互组件</td>
-<td>dialog 模态对话框 / popover 原生弹出层 / contenteditable 可编辑区域 / template 模板</td>
-</tr>
-<tr>
-<td>表单与控件</td>
-<td>meter 仪表盘 / progress 进度条 / datalist 自动补全 / output 计算表单 / fieldset 分组</td>
-</tr>
-<tr>
-<td>多媒体与绘图</td>
-<td>内联 SVG / Canvas 画布 / iframe srcdoc 内联框架</td>
-</tr>
-<tr>
-<td>颜色与注释</td>
-<td>红 / 蓝 / 绿 / 橙 / 紫彩色文字 / 背景高亮 / HTML 注释</td>
-</tr>
-</tbody></table>
-<h3>3. 私有语法</h3>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>项</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>画廊样式</td>
-<td>17 种：grid / cardstack / filmstrip / polaroid / stack / mosaic / scattered / hexagon / coverflow / tape / duotone / frame / arch / masonry / slider / ticket / panorama</td>
-</tr>
-<tr>
-<td>GitHub 提示框</td>
-<td>NOTE / IMPORTANT / WARNING / TIP / CAUTION</td>
-</tr>
-<tr>
-<td>多栏与遮罩</td>
-<td>代码选项卡 code-tabs / 多列布局 columns / 剧透遮罩 spoiler / Pulse 波形 <code>[pulse]...[/pulse]</code></td>
-</tr>
-<tr>
-<td>文档结构</td>
-<td>Frontmatter 头信息 / 目录 TOC</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>画廊样式详细说明见 <a href="https://theforeveriris.github.io/md-preview/docs/examples/gallery-layouts.md">图片画廊布局</a> 与 <a href="https://theforeveriris.github.io/md-preview/docs/examples/image-gallery-examples.md">图片画廊示例</a>。</p>
-</blockquote>
-<h3>4. 工具渲染</h3>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>项</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Mermaid 图表（15 种）</td>
-<td>flowchart / sequenceDiagram / classDiagram / stateDiagram-v2 / erDiagram / gantt / pie / journey / mindmap / timeline / quadrantChart / gitGraph / block / C4Context / xychart-beta</td>
-</tr>
-<tr>
-<td>PlantUML（12 种）</td>
-<td>时序图 / 类图 / 用例图 / 活动图 / 状态图 / 组件图 / 部署图 / 思维导图 / WBS / JSON 数据图 / ER 实体关系图 / 线框图 salt</td>
-</tr>
-<tr>
-<td>ApexCharts（13 种）</td>
-<td>折线 / 面积 / 柱状（分组）/ 堆叠柱状 / 条形（水平）/ 饼图 / 环形 donut / 雷达 / 散点 scatter / 气泡 bubble / 极坐标 polarArea / 范围区域 rangeArea / 烛台 candlestick</td>
-</tr>
-<tr>
-<td>代码与数学</td>
-<td>Diff 差异 / KaTeX 公式块 / 行内公式 / 矩阵 pmatrix / 方程组 cases / 求和与极限 / 二维码 / 二维码（自定义尺寸）</td>
-</tr>
-<tr>
-<td>插件渲染</td>
-<td>ColorCard 颜色卡片 / Countdown 倒计时（日期或相对时长）</td>
-</tr>
-<tr>
-<td>地理</td>
-<td>坐标地图（北京 / 上海）/ GeoJSON 多点 / GeoJSON 线 / GeoJSON 多边形 / TopoJSON</td>
-</tr>
-</tbody></table>
-<h3>5. 插入</h3>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>项</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>日期时间</td>
-<td>当前日期 / 当前时间 / 日期时间 / Unix 时间戳</td>
-</tr>
-<tr>
-<td>占位图片</td>
-<td>300×200 / 600×400 / 1200×600 横幅 / 500×500 方图</td>
-</tr>
-<tr>
-<td>颜色色块</td>
-<td>红 / 橙 / 黄 / 绿 / 蓝 / 紫（HTML 色点，非 emoji）</td>
-</tr>
-<tr>
-<td>分隔线样式</td>
-<td><code>---</code> / <code>***</code> / <code>___</code></td>
-</tr>
-<tr>
-<td>徽章</td>
-<td>Shields.io / Badgen</td>
-</tr>
-</tbody></table>
-<h3>6. 嵌入</h3>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>项</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>视频</td>
-<td>YouTube / Bilibili / Vimeo</td>
-</tr>
-<tr>
-<td>社交</td>
-<td>Twitter 推文 / Twitter 用户时间线 / GitHub Gist</td>
-</tr>
-<tr>
-<td>代码演示</td>
-<td>CodePen / JSFiddle / StackBlitz / Replit</td>
-</tr>
-<tr>
-<td>设计稿</td>
-<td>Figma</td>
-</tr>
-<tr>
-<td>地图</td>
-<td>Google Maps / OpenStreetMap</td>
-</tr>
-<tr>
-<td>办公文档</td>
-<td>Google Docs</td>
-</tr>
-<tr>
-<td>网络拓扑</td>
-<td>eNSP 拓扑（<code>```pkt</code> 包裹 <code>@[ensp](slug)</code>）</td>
-</tr>
-</tbody></table>
-<h3>7. 下载</h3>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>项</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>当前 Cell</td>
-<td>下载源文件 (.md) / 下载渲染结果 (.html) / 导出离线 HTML（内联 CSS）/ 导出 PDF</td>
-</tr>
-<tr>
-<td>整个笔记本</td>
-<td>导出笔记本 (.mdnb) / 合并导出全部 (.md)</td>
-</tr>
-</tbody></table>
-<h3>8. 导入</h3>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>项</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>笔记本</td>
-<td>导入 .mdnb 笔记本 / 导入 .md（按 <code>---</code> 切分为 Cell）</td>
-</tr>
-<tr>
-<td>当前 Cell</td>
-<td>导入 .md 到当前 Cell</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>五、自动补全</h2>
-<p>在编辑区输入触发字符即弹出补全列表，支持 ↑↓ 选择、Enter / Tab 确认、Esc 关闭。共 14 类触发字符，120+ 条目。</p>
-<table>
-<thead>
-<tr>
-<th>触发字符</th>
-<th>补全内容</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>@</code></td>
-<td>17 种画廊样式 + 13 种嵌入服务（YouTube / Bilibili / Vimeo / Twitter / Gist / CodePen / JSFiddle / StackBlitz / Replit / Figma / Google Maps / OpenStreetMap / Google Docs）+ <code>@tab</code> 选项卡分隔</td>
-</tr>
-<tr>
-<td><code>```</code></td>
-<td>Mermaid 12 种 + PlantUML 10 种 + ApexCharts 9 种 + geo / geojson / topojson / qrcode / diff + 19 种编程语言</td>
-</tr>
-<tr>
-<td><code>&gt; [!</code></td>
-<td>5 种 GitHub Alerts</td>
-</tr>
-<tr>
-<td><code>#</code></td>
-<td>6 级标题</td>
-</tr>
-<tr>
-<td><code>-</code></td>
-<td>无序列表 / 任务列表</td>
-</tr>
-<tr>
-<td><code>|</code></td>
-<td>2 / 3 / 4 列表格</td>
-</tr>
-<tr>
-<td><code>||</code></td>
-<td>剧透遮罩 spoiler</td>
-</tr>
-<tr>
-<td><code>:::</code></td>
-<td>容器语法：code-tabs 代码选项卡 / columns 多列布局</td>
-</tr>
-<tr>
-<td><code>---</code></td>
-<td>水平分割线 / Frontmatter</td>
-</tr>
-<tr>
-<td><code>&gt;</code></td>
-<td>普通引用</td>
-</tr>
-<tr>
-<td><code>$$</code></td>
-<td>KaTeX 公式块</td>
-</tr>
-<tr>
-<td><code>![</code></td>
-<td>图片 / 带标题图片</td>
-</tr>
-<tr>
-<td><code>[</code></td>
-<td>链接 / 带标题链接 / 引用式链接</td>
-</tr>
-<tr>
-<td><code>[pulse</code></td>
-<td>DG-LAB 波形 <code>[pulse]...[/pulse]</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h2>六、右键菜单</h2>
-<p>右键任意 Cell 弹出 2 列布局菜单，左列「运行与插入」7 项，右列「编辑与清理」10 项，共 17 项操作。菜单位置自动检测视口边界，避免溢出；窄屏自动回退为单列。</p>
-<h3>运行与插入（左列）</h3>
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>运行此 Cell</td>
-<td>等同 Ctrl+Enter</td>
-</tr>
-<tr>
-<td>运行此 Cell 及下方</td>
-<td>顺序执行当前及下方所有 Cell</td>
-</tr>
-<tr>
-<td>上方插入 Cell</td>
-<td>在当前 Cell 上方新建空 Cell</td>
-</tr>
-<tr>
-<td>下方插入 Cell</td>
-<td>在当前 Cell 下方新建空 Cell</td>
-</tr>
-<tr>
-<td>上移</td>
-<td>与上一个 Cell 交换位置</td>
-</tr>
-<tr>
-<td>下移</td>
-<td>与下一个 Cell 交换位置</td>
-</tr>
-<tr>
-<td>复制 Cell</td>
-<td>在下方复制一份内容相同的 Cell</td>
-</tr>
-</tbody></table>
-<h3>编辑与清理（右列）</h3>
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>切换类型</td>
-<td>markdown ↔ plaintext</td>
-</tr>
-<tr>
-<td>折叠编辑器</td>
-<td>隐藏编辑区，仅保留输出</td>
-</tr>
-<tr>
-<td>折叠输出</td>
-<td>隐藏输出区</td>
-</tr>
-<tr>
-<td>复制输出 HTML</td>
-<td>将渲染后的 HTML 复制到剪贴板</td>
-</tr>
-<tr>
-<td>导出此 Cell</td>
-<td>单独导出当前 Cell</td>
-</tr>
-<tr>
-<td>折叠全部</td>
-<td>折叠所有 Cell 的编辑器</td>
-</tr>
-<tr>
-<td>展开全部</td>
-<td>展开所有 Cell</td>
-</tr>
-<tr>
-<td>清空输出</td>
-<td>清除当前 Cell 的渲染结果</td>
-</tr>
-<tr>
-<td>清空内容</td>
-<td>清空当前 Cell 的编辑区文字</td>
-</tr>
-<tr>
-<td>删除 Cell</td>
-<td>删除当前 Cell（危险操作，红色高亮）</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>七、快捷键</h2>
-<table>
-<thead>
-<tr>
-<th>快捷键</th>
-<th>功能</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>Ctrl/Cmd + Enter</code></td>
-<td>运行当前 Cell</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + Shift + Enter</code></td>
-<td>运行全部 Cell</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + Shift + N</code></td>
-<td>当前 Cell 下方新建</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + F</code></td>
-<td>打开搜索面板</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + H</code></td>
-<td>打开替换面板</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + B</code></td>
-<td>粗体</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + I</code></td>
-<td>斜体</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + K</code></td>
-<td>链接</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + </code> `</td>
-<td>行内代码</td>
-</tr>
-<tr>
-<td><code>Tab</code></td>
-<td>缩进 2 空格</td>
-</tr>
-<tr>
-<td><code>Shift + Tab</code></td>
-<td>移除行首 2 空格</td>
-</tr>
-<tr>
-<td><code>F3</code> / <code>Shift + F3</code></td>
-<td>搜索下一个 / 上一个</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + Alt + T</code></td>
-<td>新建编辑器标签</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + Tab</code></td>
-<td>切换编辑器标签</td>
-</tr>
-<tr>
-<td><code>Esc</code></td>
-<td>关闭右键菜单 / 补全 / 搜索面板；双屏编辑模式中退出双屏</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>八、搜索与替换</h2>
-<p>工具栏右侧搜索图标（或 <code>Ctrl+F</code> / <code>Ctrl+H</code>）打开搜索面板：</p>
-<ul>
-<li><strong>查找</strong>：跨所有 Cell 的 textarea 内容搜索</li>
-<li><strong>替换</strong>：替换当前匹配 / 全部替换</li>
-<li><strong>导航</strong>：<code>F3</code> 下一个、<code>Shift+F3</code> 上一个，或点击 ↑↓ 按钮</li>
-<li><strong>状态信息</strong>：底部显示「N 个匹配 / 当前第 M 个」</li>
-<li><code>Esc</code> 关闭面板</li>
-</ul>
-<hr>
-<h2>九、自动保存</h2>
-<p>编辑器启用自动保存，<strong>无需手动保存</strong>，存储层为 IndexedDB（<code>iris/js/storage.js</code>），突破 localStorage 5MB 容量限制并支持多笔记本（多标签）：</p>
-<ul>
-<li><strong>触发</strong>：内容变更后 1.5 秒防抖写入</li>
-<li><strong>保存内容</strong>：每个 Cell 的 <code>id</code> / <code>type</code> / <code>content</code> / <code>output_html</code></li>
-<li><strong>多标签</strong>：每个编辑器标签对应一个独立笔记本（IndexedDB <code>notebooks</code> 对象存储），标签顺序与激活项记录在 <code>meta</code> 对象存储</li>
-<li><strong>恢复</strong>：再次进入编辑器时自动加载当前笔记本，重建所有 Cell</li>
-<li><strong>状态指示</strong>：底部状态栏右侧显示「未保存 *」（橙色）/「已保存 ✓」（绿色）/「保存失败」（红色）</li>
-<li><strong>旧数据迁移</strong>：首次加载时若 IndexedDB 无数据而 localStorage 存在旧版自动保存数据（键 <code>mdnb_autosave_v2</code>），自动迁移到 IndexedDB 并清除旧键</li>
-</ul>
-<p>其他持久化设置（localStorage）：</p>
-<table>
-<thead>
-<tr>
-<th>键</th>
-<th>内容</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>mdnb_fontsize</code></td>
-<td>编辑区字号（12 / 14 / 16 / 18）</td>
-</tr>
-<tr>
-<td><code>mdnb_theme</code></td>
-<td>编辑器主题（light / dark）</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>自动保存仅写入浏览器本地存储，不会同步到仓库。如需持久分享，请使用「下载」菜单导出 <code>.mdnb</code> 笔记本或合并 <code>.md</code> 文件。存储层细节见 <a href="https://theforeveriris.github.io/md-preview/readme-dev.md">开发者文档</a>。</p>
-</blockquote>
-<hr>
-<h2>十、字号与主题</h2>
-<ul>
-<li><strong>字号调节</strong>：工具栏字号图标，可选 12 / 14 / 16 / 18 px，默认 14 px</li>
-<li><strong>主题切换</strong>：工具栏主题图标，在亮色 / 暗色间切换，独立于文档站主题</li>
-</ul>
-<hr>
-<h2>十一、笔记本文件格式 (.mdnb)</h2>
-<p><code>.mdnb</code> 是编辑器导出的笔记本格式，本质为 JSON：</p>
-<pre><code class="language-json">{
-  &quot;version&quot;: 2,
-  &quot;type&quot;: &quot;mdnb-autosave&quot;,
-  &quot;saved&quot;: &quot;2026-07-13T12:00:00.000Z&quot;,
-  &quot;cells&quot;: [
-    {
-      &quot;id&quot;: 1,
-      &quot;type&quot;: &quot;markdown&quot;,
-      &quot;content&quot;: &quot;# 标题\n\n正文&quot;,
-      &quot;output_html&quot;: &quot;&lt;h1&gt;标题&lt;/h1&gt;&lt;p&gt;正文&lt;/p&gt;&quot;
-    },
-    {
-      &quot;id&quot;: 2,
-      &quot;type&quot;: &quot;plaintext&quot;,
-      &quot;content&quot;: &quot;纯文本内容&quot;,
-      &quot;output_html&quot;: &quot;&quot;
-    }
-  ]
-}
-</code></pre>
-<p>通过「导入」菜单可重新加载 <code>.mdnb</code> 文件，完整还原 Cell 结构、类型与渲染结果。</p>
-<hr>
-<h2>相关文档</h2>
-<ul>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/getting-started.md">快速开始</a></li>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/show.md">系统运行时截图</a></li>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/gallery-layouts.md">图片画廊布局</a></li>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/mermaid-examples.md">Mermaid 示例</a></li>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/latex-examples.md">LaTeX 示例</a></li>
-<li><a href="https://theforeveriris.github.io/md-preview/readme-dev.md">开发者文档</a></li>
-</ul>
 ]]></content:encoded>
     </item>
     <item>
@@ -5912,360 +7110,6 @@ ___
 </blockquote>
 <hr>
 <p>如需更多信息，请参考 <a href="https://commonmark.org/">CommonMark 规范</a>。</p>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>浏览器原生 HTML 元素与 Web API 示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/native-html-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/native-html-examples.md</guid>
-      <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
-      <description>本页面展示丰富的浏览器原生功能，零 JS、零后端即可使用！ --- &lt;dialog id=&quot;dialogDemo&quot;&gt; &lt;h3&gt;欢迎！&lt;/h3&gt; &lt;p&gt;这是一个纯 HTML 原生模态对话框。&lt;/p&gt; &lt;button onclick=&quot;document.getElementById(&apos;dialogDemo&apos;).close()&quot;&gt;关闭&lt;/button&gt; &lt;/dialog&gt; &lt;button onclick</description>
-      <content:encoded><![CDATA[<h1>浏览器原生 HTML 元素与 Web API 示例</h1>
-<p>本页面展示丰富的浏览器原生功能，零 JS、零后端即可使用！</p>
-<hr>
-<h2>一、语义与排版</h2>
-<h3>1.1 原生模态对话框</h3>
-<pre><code class="language-html">&lt;dialog id=&quot;dialogDemo&quot;&gt;
-  &lt;h3&gt;欢迎！&lt;/h3&gt;
-  &lt;p&gt;这是一个纯 HTML 原生模态对话框。&lt;/p&gt;
-  &lt;button onclick=&quot;document.getElementById(&#39;dialogDemo&#39;).close()&quot;&gt;关闭&lt;/button&gt;
-&lt;/dialog&gt;
-&lt;button onclick=&quot;document.getElementById(&#39;dialogDemo&#39;).showModal()&quot;&gt;打开对话框&lt;/button&gt;
-</code></pre>
-<dialog id="dialogDemo">
-  <h3>欢迎！</h3>
-  <p>这是一个纯 HTML 原生模态对话框。</p>
-  <button onclick="document.getElementById('dialogDemo').close()">关闭</button>
-</dialog>
-<button onclick="document.getElementById('dialogDemo').showModal()">打开对话框</button><hr>
-<h3>1.2 折叠面板</h3>
-<pre><code class="language-html">&lt;details&gt;
-  &lt;summary&gt;点击展开/收起&lt;/summary&gt;
-  &lt;p&gt;这是一个可嵌套的折叠面板内容。&lt;/p&gt;
-  &lt;details&gt;
-    &lt;summary&gt;再展开一层&lt;/summary&gt;
-    &lt;p&gt;多层嵌套也支持！&lt;/p&gt;
-  &lt;/details&gt;
-&lt;/details&gt;
-</code></pre>
-<details>
-  <summary>点击展开/收起</summary>
-  <p>这是一个可嵌套的折叠面板内容。</p>
-  <details>
-    <summary>再展开一层</summary>
-    <p>多层嵌套也支持！</p>
-  </details>
-</details><hr>
-<h3>1.3 中文注音</h3>
-<pre><code class="language-html">&lt;ruby&gt;
-  中 &lt;rp&gt;(&lt;/rp&gt;&lt;rt&gt;zhōng&lt;/rt&gt;&lt;rp&gt;)&lt;/rp&gt;
-  文 &lt;rp&gt;(&lt;/rp&gt;&lt;rt&gt;wén&lt;/rt&gt;&lt;rp&gt;)&lt;/rp&gt;
-&lt;/ruby&gt;
-</code></pre>
-<ruby>
-  中 <rp>(</rp><rt>zhōng</rt><rp>)</rp>
-  文 <rp>(</rp><rt>wén</rt><rp>)</rp>
-</ruby><hr>
-<h3>1.4 文本高亮</h3>
-<pre><code class="language-html">&lt;mark&gt;这是文本高亮&lt;/mark&gt;，像荧光笔一样！
-</code></pre>
-<p><mark>这是文本高亮</mark>，像荧光笔一样！</p>
-<hr>
-<h3>1.5 键盘按键</h3>
-<pre><code class="language-html">按 &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;C&lt;/kbd&gt; 复制
-</code></pre>
-<p>按 <kbd>Ctrl</kbd> + <kbd>C</kbd> 复制</p>
-<hr>
-<h3>1.6 下标上标</h3>
-<pre><code class="language-html">H&lt;sub&gt;2&lt;/sub&gt;O - 水的化学式
-x&lt;sup&gt;2&lt;/sup&gt; + y&lt;sup&gt;2&lt;/sup&gt; = z&lt;sup&gt;2&lt;/sup&gt;
-</code></pre>
-<p>H<sub>2</sub>O - 水的化学式<br>
-x<sup>2</sup> + y<sup>2</sup> = z<sup>2</sup></p>
-<hr>
-<h3>1.7 缩写说明</h3>
-<pre><code class="language-html">&lt;abbr title=&quot;HyperText Markup Language&quot;&gt;HTML&lt;/abbr&gt; 是网页的基础
-</code></pre>
-<p><abbr title="HyperText Markup Language">HTML</abbr> 是网页的基础</p>
-<hr>
-<h3>1.8 时间标记</h3>
-<pre><code class="language-html">发布于 &lt;time datetime=&quot;2024-05-20&quot;&gt;2024年5月20日&lt;/time&gt;
-</code></pre>
-<p>发布于 <time datetime="2024-05-20">2024年5月20日</time></p>
-<hr>
-<h3>1.9 增删标记</h3>
-<pre><code class="language-html">删除内容：&lt;del&gt;旧功能&lt;/del&gt;
-新增内容：&lt;ins&gt;新功能&lt;/ins&gt;
-</code></pre>
-<p>删除内容：<del>旧功能</del><br>
-新增内容：<ins>新功能</ins></p>
-<hr>
-<h3>1.10 图文组合</h3>
-<pre><code class="language-html">&lt;figure&gt;
-  &lt;canvas id=&quot;demoCanvas&quot; width=&quot;200&quot; height=&quot;100&quot; style=&quot;background:#f0f0f0; border-radius:8px;&quot;&gt;&lt;/canvas&gt;
-  &lt;figcaption&gt;示例图表 - 一个简单的画布&lt;/figcaption&gt;
-&lt;/figure&gt;
-</code></pre>
-<figure>
-  <canvas id="demoCanvas" width="200" height="100" style="background:#f0f0f0; border-radius:8px;"></canvas>
-  <figcaption>示例图表 - 一个简单的画布</figcaption>
-</figure><script>
-  // 简单的 canvas 绘制
-  const canvas = document.getElementById('demoCanvas');
-  if (canvas) {
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#8B5CF6';
-    ctx.fillRect(10, 10, 50, 80);
-    ctx.fillStyle = '#D946EF';
-    ctx.fillRect(70, 20, 50, 70);
-    ctx.fillStyle = '#3B82F6';
-    ctx.fillRect(130, 40, 50, 50);
-  }
-</script><hr>
-<h2>二、多媒体与嵌入</h2>
-<h3>2.1 内联 SVG</h3>
-<pre><code class="language-html">&lt;svg width=&quot;200&quot; height=&quot;100&quot; viewBox=&quot;0 0 200 100&quot;&gt;
-  &lt;rect x=&quot;10&quot; y=&quot;10&quot; width=&quot;80&quot; height=&quot;60&quot; fill=&quot;#8B5CF6&quot; rx=&quot;8&quot;/&gt;
-  &lt;circle cx=&quot;150&quot; cy=&quot;40&quot; r=&quot;30&quot; fill=&quot;#D946EF&quot;/&gt;
-  &lt;text x=&quot;100&quot; y=&quot;85&quot; text-anchor=&quot;middle&quot; fill=&quot;#333&quot; font-size=&quot;14&quot;&gt;内联 SVG 示例&lt;/text&gt;
-&lt;/svg&gt;
-</code></pre>
-<svg width="200" height="100" viewBox="0 0 200 100">
-  <rect x="10" y="10" width="80" height="60" fill="#8B5CF6" rx="8"/>
-  <circle cx="150" cy="40" r="30" fill="#D946EF"/>
-  <text x="100" y="85" text-anchor="middle" fill="#333" font-size="14">内联 SVG 示例</text>
-</svg><hr>
-<h3>2.2 Canvas 2D 绘制</h3>
-<pre><code class="language-html">&lt;canvas id=&quot;animatedCanvas&quot; width=&quot;200&quot; height=&quot;100&quot; style=&quot;background:#f8fafc; border-radius:8px;&quot;&gt;&lt;/canvas&gt;
-</code></pre>
-<p><canvas id="animatedCanvas" width="200" height="100" style="background:#f8fafc; border-radius:8px;"></canvas></p>
-<script>
-  const animCanvas = document.getElementById('animatedCanvas');
-  if (animCanvas) {
-    const ctx = animCanvas.getContext('2d');
-    let angle = 0;
-    function draw() {
-      ctx.clearRect(0, 0, 200, 100);
-      ctx.save();
-      ctx.translate(100, 50);
-      ctx.rotate(angle);
-      ctx.fillStyle = '#8B5CF6';
-      ctx.fillRect(-20, -20, 40, 40);
-      ctx.restore();
-      angle += 0.02;
-      requestAnimationFrame(draw);
-    }
-    draw();
-  }
-</script><hr>
-<h3>2.3 内联 iframe</h3>
-<pre><code class="language-html">&lt;iframe srcdoc=&quot;&lt;h3&gt;内联 HTML&lt;/h3&gt;&lt;p&gt;这是通过 srcdoc 嵌入的内容&lt;/p&gt;&quot;
-        width=&quot;100%&quot; height=&quot;120&quot; style=&quot;border:1px solid #e5e7eb; border-radius:8px;&quot;&gt;&lt;/iframe&gt;
-</code></pre>
-<iframe srcdoc="<h3 style='margin:8px 16px; color:#333; font-size:18px;'>内联 HTML</h3><p style='margin:8px 16px; color:#666;'>这是通过 srcdoc 嵌入的内容</p>"
-        width="100%" height="120" style="border:1px solid #e5e7eb; border-radius:8px;"></iframe><hr>
-<h2>三、表单与交互</h2>
-<h3>3.1 仪表盘</h3>
-<pre><code class="language-html">&lt;meter value=&quot;75&quot; min=&quot;0&quot; max=&quot;100&quot; low=&quot;33&quot; high=&quot;66&quot; optimum=&quot;80&quot;&gt;75/100&lt;/meter&gt;
-</code></pre>
-<p><meter value="75" min="0" max="100" low="33" high="66" optimum="80">75/100</meter></p>
-<hr>
-<h3>3.2 进度条</h3>
-<pre><code class="language-html">&lt;progress value=&quot;60&quot; max=&quot;100&quot;&gt;60%&lt;/progress&gt;
-</code></pre>
-<p><progress value="60" max="100">60%</progress></p>
-<hr>
-<h3>3.3 自动补全</h3>
-<pre><code class="language-html">&lt;label&gt;选择语言：&lt;/label&gt;
-&lt;input list=&quot;languages&quot;&gt;
-&lt;datalist id=&quot;languages&quot;&gt;
-  &lt;option value=&quot;JavaScript&quot;&gt;
-  &lt;option value=&quot;Python&quot;&gt;
-  &lt;option value=&quot;TypeScript&quot;&gt;
-  &lt;option value=&quot;Java&quot;&gt;
-  &lt;option value=&quot;Go&quot;&gt;
-&lt;/datalist&gt;
-</code></pre>
-<p><label>选择语言：</label>
-<input list="languages">
-<datalist id="languages">
-  <option value="JavaScript">
-  <option value="Python">
-  <option value="TypeScript">
-  <option value="Java">
-  <option value="Go">
-</datalist></p>
-<hr>
-<h3>3.4 计算结果</h3>
-<pre><code class="language-html">&lt;form oninput=&quot;result.value = Number(a.value) + Number(b.value)&quot;&gt;
-  &lt;input type=&quot;number&quot; id=&quot;a&quot; value=&quot;5&quot; style=&quot;width:60px;&quot;&gt; +
-  &lt;input type=&quot;number&quot; id=&quot;b&quot; value=&quot;10&quot; style=&quot;width:60px;&quot;&gt; =
-  &lt;output name=&quot;result&quot; for=&quot;a b&quot;&gt;15&lt;/output&gt;
-&lt;/form&gt;
-</code></pre>
-<form oninput="result.value = Number(a.value) + Number(b.value)">
-  <input type="number" id="a" value="5" style="width:60px; padding:4px 8px; border:1px solid #e5e7eb; border-radius:4px;"> +
-  <input type="number" id="b" value="10" style="width:60px; padding:4px 8px; border:1px solid #e5e7eb; border-radius:4px;"> =
-  <output name="result" for="a b" style="font-weight:bold; color:#8B5CF6;">15</output>
-</form><hr>
-<h3>3.5 内容分组</h3>
-<pre><code class="language-html">&lt;fieldset style=&quot;border:2px solid #8B5CF6; padding:16px; border-radius:8px;&quot;&gt;
-  &lt;legend style=&quot;color:#8B5CF6; padding:0 8px;&quot;&gt;用户信息&lt;/legend&gt;
-  &lt;p&gt;姓名：张三&lt;/p&gt;
-  &lt;p&gt;年龄：28&lt;/p&gt;
-&lt;/fieldset&gt;
-</code></pre>
-<fieldset style="border:2px solid #8B5CF6; padding:16px; border-radius:8px;">
-  <legend style="color:#8B5CF6; padding:0 8px;">用户信息</legend>
-  <p>姓名：张三</p>
-  <p>年龄：28</p>
-</fieldset><hr>
-<h2>四、全局属性增强</h2>
-<h3>4.1 可编辑区域</h3>
-<pre><code class="language-html">&lt;div contenteditable=&quot;true&quot; style=&quot;border:1px dashed #8B5CF6; padding:12px; border-radius:8px;&quot;&gt;
-  点击这里开始编辑！这是一个纯前端的可编辑区域。
-&lt;/div&gt;
-</code></pre>
-<div contenteditable="true" style="border:1px dashed #8B5CF6; padding:12px; border-radius:8px;">
-  点击这里开始编辑！这是一个纯前端的可编辑区域。
-</div><hr>
-<h3>4.2 可拖拽</h3>
-<pre><code class="language-html">&lt;div draggable=&quot;true&quot; style=&quot;background:#8B5CF6; color:white; padding:16px; border-radius:8px; cursor:grab; display:inline-block;&quot;&gt;
-  拖拽我试试看！
-&lt;/div&gt;
-</code></pre>
-<div draggable="true" style="background:#8B5CF6; color:white; padding:16px; border-radius:8px; cursor:grab; display:inline-block;">
-  拖拽我试试看！
-</div><hr>
-<h3>4.3 原生弹出层</h3>
-<pre><code class="language-html">&lt;button popovertarget=&quot;popDemo&quot;&gt;打开弹出层&lt;/button&gt;
-&lt;div id=&quot;popDemo&quot; popover style=&quot;border:2px solid #D946EF; padding:16px; border-radius:8px; background:white;&quot;&gt;
-  &lt;p&gt;这是一个原生弹出层！&lt;/p&gt;
-  &lt;button onclick=&quot;document.getElementById(&#39;popDemo&#39;).hidePopover()&quot;&gt;关闭&lt;/button&gt;
-&lt;/div&gt;
-</code></pre>
-<p><button popovertarget="popDemo" style="background:#8B5CF6; color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer;">打开弹出层</button></p>
-<div id="popDemo" popover style="border:2px solid #D946EF; padding:16px; border-radius:8px; background:white;">
-  <p>这是一个原生弹出层！</p>
-  <button onclick="document.getElementById('popDemo').hidePopover()" style="background:#D946EF; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">关闭</button>
-</div><hr>
-<h2>五、Web Animations API</h2>
-<pre><code class="language-html">&lt;div id=&quot;animTarget&quot; style=&quot;width:100px; height:100px; background:#8B5CF6; border-radius:8px;&quot;&gt;&lt;/div&gt;
-&lt;button onclick=&quot;startAnimation()&quot; style=&quot;margin-top:16px;&quot;&gt;开始动画&lt;/button&gt;
-</code></pre>
-<div id="animTarget" style="width:100px; height:100px; background:#8B5CF6; border-radius:8px;"></div>
-<button onclick="startAnimation()" style="margin-top:16px; background:#8B5CF6; color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer;">开始动画</button><script>
-  function startAnimation() {
-    const target = document.getElementById('animTarget');
-    if (target && target.animate) {
-      target.animate([
-        { transform: 'rotate(0deg) scale(1)', backgroundColor: '#8B5CF6' },
-        { transform: 'rotate(360deg) scale(1.5)', backgroundColor: '#D946EF' },
-        { transform: 'rotate(0deg) scale(1)', backgroundColor: '#8B5CF6' }
-      ], {
-        duration: 2000,
-        iterations: 1
-      });
-    }
-  }
-</script><hr>
-<h2>六、程序输出示例</h2>
-<h3>6.1 变量</h3>
-<pre><code class="language-html">圆周率 &lt;var&gt;π&lt;/var&gt; ≈ 3.14159
-</code></pre>
-<p>圆周率 <var>π</var> ≈ 3.14159</p>
-<hr>
-<h3>6.2 程序输出</h3>
-<pre><code class="language-html">程序输出：&lt;samp&gt;Hello, World!&lt;/samp&gt;
-</code></pre>
-<p>程序输出：<samp>Hello, World!</samp></p>
-<hr>
-<h3>6.3 定义术语</h3>
-<pre><code class="language-html">&lt;dfn&gt;语义化 HTML&lt;/dfn&gt; 是指使用合适的标签来描述内容的含义
-</code></pre>
-<p><dfn>语义化 HTML</dfn> 是指使用合适的标签来描述内容的含义</p>
-<hr>
-<h3>6.4 引用</h3>
-<pre><code class="language-html">短引用：&lt;q&gt;知识就是力量&lt;/q&gt; - 培根
-
-块引用：
-&lt;blockquote cite=&quot;https://example.com&quot;&gt;
-  这是一个块级引用，可以包含更多内容
-&lt;/blockquote&gt;
-</code></pre>
-<p>短引用：<q>知识就是力量</q> - 培根<br><br></p>
-<p>块引用：</p>
-<blockquote style="border-left:4px solid #8B5CF6; padding-left:16px; margin-left:0; color:#666;">
-  这是一个块级引用，可以包含更多内容
-</blockquote><hr>
-<h3>6.5 联系信息</h3>
-<pre><code class="language-html">&lt;address&gt;
-  作者：李四&lt;br&gt;
-  邮箱：example@example.com&lt;br&gt;
-  网站：https://example.com
-&lt;/address&gt;
-</code></pre>
-<address style="font-style:normal; padding:12px; background:#f8fafc; border-radius:8px;">
-  作者：李四<br>
-  邮箱：example@example.com<br>
-  网站：https://example.com
-</address><hr>
-<h3>6.6 小号文字</h3>
-<pre><code class="language-html">&lt;small&gt;© 2024 Copyright All Rights Reserved&lt;/small&gt;
-</code></pre>
-<p><small>© 2024 Copyright All Rights Reserved</small></p>
-<hr>
-<h2>七、作品引用</h2>
-<pre><code class="language-html">阅读 &lt;cite&gt;《三体》&lt;/cite&gt; 是一次精彩的体验
-</code></pre>
-<p>阅读 <cite>《三体》</cite> 是一次精彩的体验</p>
-<hr>
-<h2>八、可选换行点</h2>
-<pre><code class="language-html">Supercalifragilisticexpialidocious
-（不换行） vs
-Super&lt;wbr&gt;cali&lt;wbr&gt;fragilistic&lt;wbr&gt;expiali&lt;wbr&gt;docious
-（有换行点）
-</code></pre>
-<p>Supercalifragilisticexpialidocious（不换行） vs<br>
-Super<wbr>cali<wbr>fragilistic<wbr>expiali<wbr>docious（有换行点）</p>
-<hr>
-<h2>九、双向文本</h2>
-<pre><code class="language-html">&lt;bdi&gt;مرحبا&lt;/bdi&gt; - 阿拉伯语问候
-</code></pre>
-<p><bdi>مرحبا</bdi> - 阿拉伯语问候</p>
-<hr>
-<h2>十、数据关联</h2>
-<pre><code class="language-html">&lt;data value=&quot;3.14159&quot;&gt;圆周率&lt;/data&gt;
-</code></pre>
-<p><data value="3.14159">圆周率</data></p>
-<hr>
-<h2>十一、模板元素</h2>
-<pre><code class="language-html">&lt;template id=&quot;myTemplate&quot;&gt;
-  &lt;div style=&quot;border:1px solid #8B5CF6; padding:12px; border-radius:8px;&quot;&gt;
-    这是一个模板内容，点击按钮后会显示出来！
-  &lt;/div&gt;
-&lt;/template&gt;
-&lt;button onclick=&quot;useTemplate()&quot;&gt;使用模板&lt;/button&gt;
-&lt;div id=&quot;templateContainer&quot;&gt;&lt;/div&gt;
-</code></pre>
-<template id="myTemplate">
-  <div style="border:1px solid #8B5CF6; padding:12px; border-radius:8px;">
-    这是一个模板内容，点击按钮后会显示出来！
-  </div>
-</template>
-<button onclick="useTemplate()" style="background:#8B5CF6; color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer;">使用模板</button>
-<div id="templateContainer"></div><script>
-  function useTemplate() {
-    const template = document.getElementById('myTemplate');
-    const container = document.getElementById('templateContainer');
-    if (template && container) {
-      const clone = template.content.cloneNode(true);
-      container.appendChild(clone);
-    }
-  }
-</script><hr>
-<h2>总结</h2>
-<p>以上展示了浏览器原生 HTML 元素和 Web API 的强大功能！所有这些功能都可以在纯前端环境中使用，无需任何后端服务。</p>
 ]]></content:encoded>
     </item>
     <item>
@@ -8864,543 +9708,6 @@ python3 iris/scripts/pptx/main.py --verbose --file my-deck.pptx
 ]]></content:encoded>
     </item>
     <item>
-      <title>Pulse 波形示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md</guid>
-      <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
-      <description>本文档展示了 DG-LAB 郊狼波形文件（）的渲染效果。使用 语法即可渲染出逐帧动态波形演示。 如需内联的迷你波形，使用 语法，适合在文字段落中嵌入或批量展示。 所有示例均基于 DG-LAB 官方 3.4.4 版本波形文件导出规范。 &gt; 默认以官方竖线样式展示，点击左上角「竖线/曲线」按钮可切换显示模式；点击「全局/滚动」可切换视图模式。 --- | 参数 | 取值 | 说明 | |------|</description>
-      <content:encoded><![CDATA[<h1>Pulse 波形示例</h1>
-<p>本文档展示了 DG-LAB 郊狼波形文件（<code>.pulse</code>）的渲染效果。使用 <code>[pulse title=&quot;标题&quot;]Dungeonlab+pulse:...[/pulse]</code> 语法即可渲染出逐帧动态波形演示。</p>
-<p>如需内联的迷你波形，使用 <code>[pulsemini title=&quot;标题&quot;]Dungeonlab+pulse:...[/pulsemini]</code> 语法，适合在文字段落中嵌入或批量展示。</p>
-<p>所有示例均基于 DG-LAB 官方 3.4.4 版本波形文件导出规范。</p>
-<blockquote>
-<p>默认以官方<strong>竖线</strong>样式展示，点击左上角「竖线/曲线」按钮可切换显示模式；点击「全局/滚动」可切换视图模式。</p>
-</blockquote>
-<hr>
-<h2>格式速查</h2>
-<pre><code>Dungeonlab+pulse:&lt;休息时长&gt;,&lt;速度倍率&gt;,&lt;未知参数&gt;=&lt;小节1&gt;+section+&lt;小节2&gt;+section+...
-
-小节格式:  &lt;频率A&gt;,&lt;频率B&gt;,&lt;时长&gt;,&lt;频率模式&gt;,&lt;开关&gt;/&lt;强度&gt;-&lt;类型&gt;,&lt;强度&gt;-&lt;类型&gt;,...
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>取值</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>休息时长</td>
-<td>0-99</td>
-<td>休息时间滑块值，×0.1 为秒数</td>
-</tr>
-<tr>
-<td>速度倍率</td>
-<td>1 / 2 / 4</td>
-<td>播放速度倍率</td>
-</tr>
-<tr>
-<td>频率A/B</td>
-<td>0-83</td>
-<td>脉冲频率滑块值，需映射表转 ms/Hz</td>
-</tr>
-<tr>
-<td>时长</td>
-<td>0-99</td>
-<td>小节时长滑块值，需映射表转秒</td>
-</tr>
-<tr>
-<td>频率模式</td>
-<td>1-4</td>
-<td>1固定 2节内渐变 3元内渐变 4元间渐变</td>
-</tr>
-<tr>
-<td>开关</td>
-<td>0/1</td>
-<td>0=禁用 1=启用</td>
-</tr>
-<tr>
-<td>数据类型</td>
-<td>0/1</td>
-<td>0=普通脉冲 1=锚点脉冲，每点=0.1s竖条</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>💡 某些导出文件省略 <code>=</code> 分隔符，首小节参数直接跟在 <code>Dungeonlab+pulse:</code> 之后，渲染器会自动识别。</p>
-</blockquote>
-<hr>
-<h2>1. 正弦波（单小节）</h2>
-<p>经典的正弦波形，频率节内渐变，2 倍速播放。</p>
-<p><strong>代码：</strong></p>
-<pre><code>[pulse title=&quot;正弦波 Sinusoidal&quot;]Dungeonlab+pulse:30,2,8=49,60,18,2,1/50.55-1,82.32-0,100.00-1,95.77-0,71.49-0,37.93-0,9.97-0,0.00-1,12.44-0,41.77-1[/pulse]
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<p>[pulse title=&quot;正弦波 Sinusoidal&quot;]Dungeonlab+pulse:30,2,8=49,60,18,2,1/50.55-1,82.32-0,100.00-1,95.77-0,71.49-0,37.93-0,9.97-0,0.00-1,12.44-0,41.77-1[/pulse]</p>
-<p><strong>参数解析：</strong></p>
-<ul>
-<li>全局：休息 3.0s · 2x 速度</li>
-<li>小节：频率 49→60（14.3→11.8Hz）· 1.9s · 节内渐变 · 启用</li>
-<li>脉冲元：10 个数据点（1.0s），4 个锚点</li>
-</ul>
-<hr>
-<h2>2. 方波（高低突变）</h2>
-<p>方波模式，前半段高位保持，后半段低位，元间渐变频率。</p>
-<p><strong>代码：</strong></p>
-<pre><code>[pulse title=&quot;方波 Square Wave&quot;]Dungeonlab+pulse:80,4,8=68,13,39,4,1/100.00-1,100.00-0,100.00-0,100.00-0,0.00-1,0.00-0,0.00-1,0.00-0,0.00-1,0.00-1[/pulse]
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<p>[pulse title=&quot;方波 Square Wave&quot;]Dungeonlab+pulse:80,4,8=68,13,39,4,1/100.00-1,100.00-0,100.00-0,100.00-0,0.00-1,0.00-0,0.00-1,0.00-0,0.00-1,0.00-1[/pulse]</p>
-<p><strong>参数解析：</strong></p>
-<ul>
-<li>全局：休息 8.0s · 4x 速度</li>
-<li>小节：频率 68→13（5.6→43.5Hz）· 4.0s · 元间渐变 · 启用</li>
-<li>脉冲元：10 个数据点（1.0s），方波形状</li>
-</ul>
-<hr>
-<h2>3. 尖峰波（先升后降）</h2>
-<p>从 0 快速上升到 100 峰值，再下降回 0 的尖峰波形。</p>
-<p><strong>代码：</strong></p>
-<pre><code>[pulse title=&quot;尖峰波 Spike&quot;]Dungeonlab+pulse:86,1,16=11,13,70,2,1/0.00-1,55.56-0,88.89-0,100.00-1,97.22-1,88.89-0,75.00-1,55.56-1,30.56-1,0.00-1[/pulse]
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<p>[pulse title=&quot;尖峰波 Spike&quot;]Dungeonlab+pulse:86,1,16=11,13,70,2,1/0.00-1,55.56-0,88.89-0,100.00-1,97.22-1,88.89-0,75.00-1,55.56-1,30.56-1,0.00-1[/pulse]</p>
-<p><strong>参数解析：</strong></p>
-<ul>
-<li>全局：休息 8.6s · 1x 速度</li>
-<li>小节：频率 11→13（47.6→43.5Hz）· 23.4s · 节内渐变 · 启用</li>
-<li>脉冲元：10 个数据点（1.0s），典型尖峰形状</li>
-</ul>
-<hr>
-<h2>4. 多段复合波（3 小节，含禁用段）</h2>
-<p>3 个小节组成的复合波形，其中第 2、3 小节被禁用（开关=0），仅播放第 1 小节。</p>
-<p><strong>代码：</strong></p>
-<pre><code>[pulse title=&quot;多段复合波 Multi-Section&quot;]Dungeonlab+pulse:93,1,8=0,0,12,3,1/100.00-1,100.00-0,100.00-0,100.00-0,100.00-0,100.00-0,100.00-1,28.94-1,28.15-0,27.36-0,26.58-0,25.79-0,25.00-1,100.00-1,100.00-0,100.00-0,100.00-0,100.00-0,100.00-1,27.43-1,27.86-0,28.28-0,28.70-0,29.12-0,29.54-0,29.97-0,30.39-0,30.81-0,31.23-0,31.65-1+section+0,83,23,2,0/100.00-1,0.00-1+section+0,20,8,1,0/0.00-1,100.00-1[/pulse]
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<p>[pulse title=&quot;多段复合波 Multi-Section&quot;]Dungeonlab+pulse:93,1,8=0,0,12,3,1/100.00-1,100.00-0,100.00-0,100.00-0,100.00-0,100.00-0,100.00-1,28.94-1,28.15-0,27.36-0,26.58-0,25.79-0,25.00-1,100.00-1,100.00-0,100.00-0,100.00-0,100.00-0,100.00-1,27.43-1,27.86-0,28.28-0,28.70-0,29.12-0,29.54-0,29.97-0,30.39-0,30.81-0,31.23-0,31.65-1+section+0,83,23,2,0/100.00-1,0.00-1+section+0,20,8,1,0/0.00-1,100.00-1[/pulse]</p>
-<p><strong>参数解析：</strong></p>
-<ul>
-<li>全局：休息 9.3s · 1x 速度</li>
-<li>S1（启用）：频率 0→0（100Hz 固定）· 1.3s · 元内渐变 · 32 个数据点</li>
-<li>S2（禁用）：频率 0→83（1→100Hz）· 2.4s · 节内渐变 · 2 个数据点</li>
-<li>S3（禁用）：频率 0→20（100→33Hz）· 0.9s · 固定 · 2 个数据点</li>
-<li>禁用的小节在图例中以灰色删除线样式显示，不参与波形播放</li>
-</ul>
-<hr>
-<h2>5. 呼吸波（缓动起伏）</h2>
-<p>模拟呼吸节奏的缓动波形，两次高峰之间夹低谷，2 倍速播放。</p>
-<p><strong>代码：</strong></p>
-<pre><code>[pulse title=&quot;呼吸波 Breathing&quot;]Dungeonlab+pulse:6,2,8=17,49,6,1,1/35.94-1,100.00-1,60.45-0,3.13-1,4.37-0,64.95-0,98.54-1,31.84-0,0.00-1,19.17-1[/pulse]
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<p>[pulse title=&quot;呼吸波 Breathing&quot;]Dungeonlab+pulse:6,2,8=17,49,6,1,1/35.94-1,100.00-1,60.45-0,3.13-1,4.37-0,64.95-0,98.54-1,31.84-0,0.00-1,19.17-1[/pulse]</p>
-<p><strong>参数解析：</strong></p>
-<ul>
-<li>全局：休息 0.6s · 2x 速度</li>
-<li>小节：频率 17→49（37→14.3Hz）· 0.7s · 固定频率 · 启用</li>
-<li>脉冲元：10 个数据点（1.0s），呼吸节奏起伏</li>
-</ul>
-<hr>
-<h2>6. 三角波（对称升降）</h2>
-<p>线性上升到顶点后线性下降的对称三角波。</p>
-<p><strong>代码：</strong></p>
-<pre><code>[pulse title=&quot;三角波 Triangle&quot;]Dungeonlab+pulse:55,1,8=0,90,14,3,1/59.99-1,66.66-0,73.33-0,80.00-0,86.66-0,93.33-0,100.00-1,98.24-0,90.05-1,81.87-1,73.68-0[/pulse]
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<p>[pulse title=&quot;三角波 Triangle&quot;]Dungeonlab+pulse:55,1,8=0,90,14,3,1/59.99-1,66.66-0,73.33-0,80.00-0,86.66-0,93.33-0,100.00-1,98.24-0,90.05-1,81.87-1,73.68-0[/pulse]</p>
-<p><strong>参数解析：</strong></p>
-<ul>
-<li>全局：休息 5.5s · 1x 速度</li>
-<li>小节：频率 0→90（约100→1Hz）· 1.5s · 元内渐变 · 启用</li>
-<li>脉冲元：11 个数据点（1.1s），对称三角波</li>
-</ul>
-<hr>
-<h2>7. 双段波形（升降波 + 衰减尾）</h2>
-<p>两个启用小节组成：第一段为升降主体波形，第二段为快速衰减收尾。</p>
-<p><strong>代码：</strong></p>
-<pre><code>[pulse title=&quot;双段波形 Dual-Section&quot;]Dungeonlab+pulse:22,1,16=7,81,41,4,1/0.00-1,40.76-0,61.85-0,73.11-1,70.60-0,68.09-1,79.35-0,100.00-1,97.23-1,87.59-0,76.36-1,61.99-0,44.48-1+section+80,29,74,4,1/23.81-0,0.00-1[/pulse]
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<p>[pulse title=&quot;双段波形 Dual-Section&quot;]Dungeonlab+pulse:22,1,16=7,81,41,4,1/0.00-1,40.76-0,61.85-0,73.11-1,70.60-0,68.09-1,79.35-0,100.00-1,97.23-1,87.59-0,76.36-1,61.99-0,44.48-1+section+80,29,74,4,1/23.81-0,0.00-1[/pulse]</p>
-<p><strong>参数解析：</strong></p>
-<ul>
-<li>全局：休息 2.2s · 1x 速度</li>
-<li>S1：频率 7→81（58.8→1.3Hz）· 5.2s · 元间渐变 · 13 点 · 启用</li>
-<li>S2：频率 80→29（1.4→25.6Hz）· 36.6s · 元间渐变 · 2 点 · 启用</li>
-<li>两段均启用，首尾相接播放</li>
-</ul>
-<hr>
-<h2>8. 三段频率渐变（无 = 分隔符格式）</h2>
-<p>某些导出文件省略 <code>=</code> 分隔符，首小节参数直接跟在 <code>Dungeonlab+pulse:</code> 之后。渲染器会自动识别这种格式。</p>
-<p><strong>代码：</strong></p>
-<pre><code>[pulse title=&quot;三段频率渐变（无=分隔符）&quot;]Dungeonlab+pulse:78,78,8,1,1/100.00-1,100.00-0,100.00-0,100.00-1+section+0,20,8,3,1/100.00-1,100.00-0,100.00-0,100.00-0,100.00-0,100.00-0,100.00-0,100.00-1+section+0,20,8,1,1/100.00-1,50.00-0,0.00-1,0.00-1,50.00-0,100.00-1,66.65-0,33.35-0,0.00-1,100.00-1[/pulse]
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<p>[pulse title=&quot;三段频率渐变（无=分隔符）&quot;]Dungeonlab+pulse:78,78,8,1,1/100.00-1,100.00-0,100.00-0,100.00-1+section+0,20,8,3,1/100.00-1,100.00-0,100.00-0,100.00-0,100.00-0,100.00-0,100.00-0,100.00-1+section+0,20,8,1,1/100.00-1,50.00-0,0.00-1,0.00-1,50.00-0,100.00-1,66.65-0,33.35-0,0.00-1,100.00-1[/pulse]</p>
-<p><strong>参数解析：</strong></p>
-<ul>
-<li>无 <code>=</code> 分隔符，全局参数使用默认值（休息 0s · 1x 速度）</li>
-<li>S1：频率 78→78（1.8Hz 固定）· 0.9s · 固定模式 · 4 点 · 全高位平坦</li>
-<li>S2：频率 0→20（100→33Hz）· 0.9s · 元内渐变 · 8 点 · 全高位平坦</li>
-<li>S3：频率 0→20（100→33Hz）· 0.9s · 固定模式 · 10 点 · 三角波往复</li>
-<li>三段全部启用，连续播放</li>
-</ul>
-<hr>
-<h2>9. 频率渐变波形（3 小节全部启用）</h2>
-<p>三个启用小节的复合波形，展示频率渐变模式的不同效果。</p>
-<p><strong>代码：</strong></p>
-<pre><code>[pulse title=&quot;频率渐变复合波 Frequency Gradient&quot;]Dungeonlab+pulse:99,1,8=0,0,11,1,1/0.00-1,16.65-0,33.35-0,50.00-0,66.65-0,83.35-0,100.00-1,89.95-0,79.90-0,69.90-0,59.85-0,49.80-0,39.75-1,51.75-1,68.15-1,86.40-1,100.00-1,92.00-0,84.00-0,76.00-0,68.00-0,60.00-0,52.00-1,64.00-0,76.00-0,88.00-0,100.00-1,81.70-0,63.40-0,45.10-1+section+0,54,3,1,1/100.00-1,85.70-0,71.45-0,57.15-0,42.85-0,28.55-0,14.30-0,0.00-1+section+1,20,4,1,1/100.00-1,0.00-1[/pulse]
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<p>[pulse title=&quot;频率渐变复合波 Frequency Gradient&quot;]Dungeonlab+pulse:99,1,8=0,0,11,1,1/0.00-1,16.65-0,33.35-0,50.00-0,66.65-0,83.35-0,100.00-1,89.95-0,79.90-0,69.90-0,59.85-0,49.80-0,39.75-1,51.75-1,68.15-1,86.40-1,100.00-1,92.00-0,84.00-0,76.00-0,68.00-0,60.00-0,52.00-1,64.00-0,76.00-0,88.00-0,100.00-1,81.70-0,63.40-0,45.10-1+section+0,54,3,1,1/100.00-1,85.70-0,71.45-0,57.15-0,42.85-0,28.55-0,14.30-0,0.00-1+section+1,20,4,1,1/100.00-1,0.00-1[/pulse]</p>
-<p><strong>参数解析：</strong></p>
-<ul>
-<li>全局：休息 9.9s · 1x 速度</li>
-<li>S1：频率 0→0（100Hz 固定）· 1.2s · 固定模式 · 30 点 · 多峰复合</li>
-<li>S2：频率 0→54（12.8Hz）· 0.4s · 固定模式 · 8 点 · 线性递减</li>
-<li>S3：频率 1→20（90.9→33Hz）· 0.5s · 固定模式 · 2 点 · 骤降</li>
-<li>三段全部启用，连续播放</li>
-</ul>
-<hr>
-<h2>10. 心跳波（自定义）</h2>
-<p>模拟心电图心跳节奏的脉冲序列。</p>
-<p><strong>代码：</strong></p>
-<pre><code>[pulse title=&quot;心跳波 Heartbeat&quot;]Dungeonlab+pulse:12,1,8=0,0,10,1,1/0.00-1,0.00-0,0.00-0,95.00-1,20.00-0,35.00-1,5.00-0,0.00-1,0.00-0,0.00-1[/pulse]
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<p>[pulse title=&quot;心跳波 Heartbeat&quot;]Dungeonlab+pulse:12,1,8=0,0,10,1,1/0.00-1,0.00-0,0.00-0,95.00-1,20.00-0,35.00-1,5.00-0,0.00-1,0.00-0,0.00-1[/pulse]</p>
-<p><strong>参数解析：</strong></p>
-<ul>
-<li>全局：休息 1.2s · 1x 速度</li>
-<li>小节：频率 0（100Hz 固定）· 1.1s · 固定模式 · 启用</li>
-<li>脉冲元：10 个数据点（1.0s），心电脉冲形状</li>
-</ul>
-<hr>
-<h2>11. 迷你波形（内联样式）</h2>
-<p>迷你波形 <code>[pulsemini]</code> 适合在文字中嵌入或批量展示，仅显示波形和标题栏，默认竖线滚动模式。</p>
-<p><strong>代码：</strong></p>
-<pre><code>[pulsemini title=&quot;正弦波&quot;]Dungeonlab+pulse:30,2,8=49,60,18,2,1/50.55-1,82.32-0,100.00-1,95.77-0,71.49-0,37.93-0,9.97-0,0.00-1,12.44-0,41.77-1[/pulsemini]
-[pulsemini title=&quot;方波&quot;]Dungeonlab+pulse:80,4,8=68,13,39,4,1/100.00-1,100.00-0,100.00-0,100.00-0,0.00-1,0.00-0,0.00-1,0.00-0,0.00-1,0.00-1[/pulsemini]
-[pulsemini title=&quot;尖峰波&quot;]Dungeonlab+pulse:86,1,16=11,13,70,2,1/0.00-1,55.56-0,88.89-0,100.00-1,97.22-1,88.89-0,75.00-1,55.56-1,30.56-1,0.00-1[/pulsemini]
-[pulsemini title=&quot;呼吸波&quot;]Dungeonlab+pulse:6,2,8=17,49,6,1,1/35.94-1,100.00-1,60.45-0,3.13-1,4.37-0,64.95-0,98.54-1,31.84-0,0.00-1,19.17-1[/pulsemini]
-[pulsemini title=&quot;三角波&quot;]Dungeonlab+pulse:55,1,8=0,90,14,3,1/59.99-1,66.66-0,73.33-0,80.00-0,86.66-0,93.33-0,100.00-1,98.24-0,90.05-1,81.87-1,73.68-0[/pulsemini]
-[pulsemini title=&quot;心跳波&quot;]Dungeonlab+pulse:12,1,8=0,0,10,1,1/0.00-1,0.00-0,0.00-0,95.00-1,20.00-0,35.00-1,5.00-0,0.00-1,0.00-0,0.00-1[/pulsemini]
-</code></pre>
-<p><strong>渲染效果：</strong></p>
-<p>[pulsemini title=&quot;正弦波&quot;]Dungeonlab+pulse:30,2,8=49,60,18,2,1/50.55-1,82.32-0,100.00-1,95.77-0,71.49-0,37.93-0,9.97-0,0.00-1,12.44-0,41.77-1[/pulsemini]
-[pulsemini title=&quot;方波&quot;]Dungeonlab+pulse:80,4,8=68,13,39,4,1/100.00-1,100.00-0,100.00-0,100.00-0,0.00-1,0.00-0,0.00-1,0.00-0,0.00-1,0.00-1[/pulsemini]
-[pulsemini title=&quot;尖峰波&quot;]Dungeonlab+pulse:86,1,16=11,13,70,2,1/0.00-1,55.56-0,88.89-0,100.00-1,97.22-1,88.89-0,75.00-1,55.56-1,30.56-1,0.00-1[/pulsemini]
-[pulsemini title=&quot;呼吸波&quot;]Dungeonlab+pulse:6,2,8=17,49,6,1,1/35.94-1,100.00-1,60.45-0,3.13-1,4.37-0,64.95-0,98.54-1,31.84-0,0.00-1,19.17-1[/pulsemini]
-[pulsemini title=&quot;三角波&quot;]Dungeonlab+pulse:55,1,8=0,90,14,3,1/59.99-1,66.66-0,73.33-0,80.00-0,86.66-0,93.33-0,100.00-1,98.24-0,90.05-1,81.87-1,73.68-0[/pulsemini]
-[pulsemini title=&quot;心跳波&quot;]Dungeonlab+pulse:12,1,8=0,0,10,1,1/0.00-1,0.00-0,0.00-0,95.00-1,20.00-0,35.00-1,5.00-0,0.00-1,0.00-0,0.00-1[/pulsemini]</p>
-<p><strong>说明：</strong></p>
-<ul>
-<li>迷你波形固定为<strong>竖线 + 滚动</strong>模式，播放头在中间</li>
-<li>标题栏右侧有复制源码和下载按钮（仅图标）</li>
-<li>尺寸较小（宽约 220px），可在一行内排列多个</li>
-<li>支持与 <code>[pulse]</code> 相同的代码块保护规则</li>
-</ul>
-<hr>
-<h2>使用说明</h2>
-<h3>完整波形 <code>[pulse]</code></h3>
-<ul>
-<li>默认以<strong>竖线</strong>样式展示（DG-LAB 官方样式），点击「竖线/曲线」按钮切换显示模式</li>
-<li>点击「全局/滚动」切换视图模式：全局模式完整平铺，滚动模式播放头居中、波形滚动</li>
-<li>波形自动循环播放，播放头从左向右移动，已播放区域以主题色高亮</li>
-<li><strong>锚点脉冲</strong>（竖线顶部粉色标记 / 曲线模式粉色圆点）：可编辑的控制点</li>
-<li><strong>普通脉冲</strong>：由相邻锚点自动线性插值计算</li>
-<li>粉色虚线 + <code>S1/S2/...</code> 标记小节边界（仅启用的小节）</li>
-<li>灰色虚线 + &quot;休息&quot; 标记休息时段（播放完所有小节后的休息时间）</li>
-<li>图例标签显示每个小节的时长、频率和模式，悬停可查看详细参数</li>
-<li>禁用的小节（开关=0）以灰色删除线样式显示，不参与波形播放</li>
-<li>点击「下载 .pulse」按钮可下载原始波形文件</li>
-<li>点击「源码」按钮可展开查看完整标签代码</li>
-<li>矩形框、波形颜色会随文档站主题自动切换</li>
-<li>支持无 <code>=</code> 分隔符的导出格式，自动识别兼容</li>
-<li>行内代码（反引号）和代码块中的 <code>[pulse]...[/pulse]</code> 不会被渲染</li>
-</ul>
-<h3>迷你波形 <code>[pulsemini]</code></h3>
-<ul>
-<li>固定为<strong>竖线 + 滚动</strong>模式，播放头在正中间</li>
-<li>尺寸约 220px 宽，适合文字内联或网格排列</li>
-<li>标题栏右侧有「复制源码」和「下载 .pulse」按钮（仅图标）</li>
-<li>同样支持代码块保护：行内代码和代码块中的 <code>[pulsemini]...[/pulsemini]</code> 不会被渲染</li>
-</ul>
-<h3>波形生成器</h3>
-<ul>
-<li><strong>访问方式</strong>：设置页「操作」→ 「波形生成器」，或直接访问 URL <code>?mode=pulsegen</code>（例如 <code>https://theforeveriris.github.io/md-preview/?mode=pulsegen</code>）</li>
-<li>支持 9 大类 50+ 种波形类型，可按类别选择或指定具体类型</li>
-<li>可调节激烈程度（1-10）、强度范围、段数、数据点数、插值类型等参数</li>
-<li>支持波形叠加混合和随机种子</li>
-<li>最多一次生成 20 个波形，以 3 列网格展示迷你预览</li>
-<li>每个波形可单独复制源码或下载 .pulse 文件</li>
-</ul>
-<blockquote>
-<p>完整的参数说明、9 大类波形列表、与渲染器的搭配使用等详细内容，请参阅 <a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-generator-page.md">郊狼波形批量生成页（特殊页面）</a> 说明文档。</p>
-</blockquote>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>郊狼波形批量生成页（特殊页面）</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/pulse-generator-page.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/pulse-generator-page.md</guid>
-      <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
-      <description>郊狼波形批量生成页是系统内置的可视化波形生成工具，面向 DG-LAB 郊狼设备的 波形创作者。以全屏覆盖层形式呈现，支持按类别/具体波形批量生成、参数调优、随机种子、波形叠加混合，并实时预览生成的迷你波形，提供一键复制源码与下载 文件的能力。 --- 四种入口方式任选其一： | 方式 | 说明 | |------|------| | URL 参数 | 在站点任意 URL 后追加 ，例如 | | 设</description>
-      <content:encoded><![CDATA[<h1>郊狼波形批量生成页（特殊页面）</h1>
-<p>郊狼波形批量生成页是系统内置的可视化波形生成工具，面向 DG-LAB 郊狼设备的 <code>.pulse</code> 波形创作者。以全屏覆盖层形式呈现，支持按类别/具体波形批量生成、参数调优、随机种子、波形叠加混合，并实时预览生成的迷你波形，提供一键复制源码与下载 <code>.pulse</code> 文件的能力。</p>
-<hr>
-<h2>一、访问方式</h2>
-<p>四种入口方式任选其一：</p>
-<table>
-<thead>
-<tr>
-<th>方式</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>URL 参数</strong></td>
-<td>在站点任意 URL 后追加 <code>?mode=pulsegen</code>，例如 <code>https://theforeveriris.github.io/md-preview/?mode=pulsegen</code></td>
-</tr>
-<tr>
-<td><strong>设置面板</strong></td>
-<td>右上角悬浮球 → 设置 → 操作 → 「波形生成器」</td>
-</tr>
-<tr>
-<td><strong>JS 调用</strong></td>
-<td>在控制台或代码中执行 <code>window.MarkdownPreview.enterPulseGen()</code></td>
-</tr>
-<tr>
-<td><strong>Pulse 文档页</strong></td>
-<td>浏览 <a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md">Pulse 波形示例</a> 时点击波形生成相关入口</td>
-</tr>
-</tbody></table>
-<p>退出方式：</p>
-<ul>
-<li>左上角「返回文档站」按钮</li>
-<li>调用 <code>window.MarkdownPreview.exitPulseGen()</code></li>
-</ul>
-<p>退出后 URL 上的 <code>mode=pulsegen</code> 参数会被自动移除。</p>
-<hr>
-<h2>二、功能总览</h2>
-<p>生成器分为三大区域：</p>
-<pre><code>┌─────────────────────────────────────────────────────────────┐
-│  顶部工具栏：标题 · 返回文档站 · 生成按钮 · 清空预览         │
-├─────────────────────────────────────────────────────────────┤
-│  左侧参数面板（可折叠）                                      │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │ 1. 波形类型选择（全部 / 按类别 / 按具体类型）           │  │
-│  │ 2. 激烈程度（1~10 档）                                 │  │
-│  │ 3. 强度范围预设或自定义（低 / 中 / 高 / 最大 / 满量程）  │  │
-│  │ 4. 小节数配置（固定值 / 随机区间）                      │  │
-│  │ 5. 数据点数配置（自动 / 固定值 / 随机区间）             │  │
-│  │ 6. 插值类型（线性 / 缓入 / 缓出 / 缓入缓出）            │  │
-│  │ 7. 波形叠加混合（可选）                                │  │
-│  │ 8. 随机种子输入                                        │  │
-│  │ 9. 生成数量（1~20）                                    │  │
-│  └───────────────────────────────────────────────────────┘  │
-├─────────────────────────────────────────────────────────────┤
-│  右侧预览区：3 列网格展示生成的迷你波形，每格含              │
-│  标题 · 迷你波形动画 · 所属类别标签 · 复制源码 · 下载        │
-└─────────────────────────────────────────────────────────────┘
-</code></pre>
-<hr>
-<h2>三、波形类型体系</h2>
-<p>内置 <strong>9 大类 · 50+ 种波形模板</strong>，覆盖从基础形状到自然模拟、氛围营造等多种场景。</p>
-<h3>1. 脉冲类（6 种）</h3>
-<p>快速脉冲、慢速脉冲、双脉冲、单脉冲、窄脉冲串、宽脉冲</p>
-<h3>2. 基础波（4 种）</h3>
-<p>正弦波、三角波、方波、锯齿波</p>
-<h3>3. 自然类（6 种）</h3>
-<p>海浪、微风、心跳、弹跳、潮汐、涟漪</p>
-<h3>4. 衰减上升（6 种）</h3>
-<p>指数衰减、指数上升、快速衰减、缓慢衰减、快速上升、缓慢上升</p>
-<h3>5. 噪声类（3 种）</h3>
-<p>噪声、粗糙噪声、细碎噪声</p>
-<h3>6. 阶梯折线（3 种）</h3>
-<p>阶梯波、微阶梯、锯齿折线</p>
-<h3>7. 组合类（5 种）</h3>
-<p>升降波、脉冲衰减、正弦衰减、阶梯正弦、呼吸波</p>
-<h3>8. 特殊形状（7 种）</h3>
-<p>尖峰、谷底、平顶、双峰、三峰、山丘、悬崖</p>
-<h3>9. 氛围类（5 种）</h3>
-<p>地震波、雷鸣、滴答、渐强、渐弱</p>
-<p>选择模式：</p>
-<ul>
-<li><strong>全部</strong>：从全部 50+ 模板中随机抽取</li>
-<li><strong>按类别</strong>：勾选若干类别，仅从被选中的类别中抽取</li>
-<li><strong>按具体类型</strong>：逐一勾选具体波形名称，精确定位想要的模板</li>
-</ul>
-<hr>
-<h2>四、核心参数详解</h2>
-<h3>1. 激烈程度（Intensity）</h3>
-<p>范围 <strong>1 ~ 10</strong>，每档同时影响以下维度：</p>
-<table>
-<thead>
-<tr>
-<th>维度</th>
-<th>影响说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>频率倍率</td>
-<td>档 1 ≈ 0.3×，档 10 ≈ 4×</td>
-</tr>
-<tr>
-<td>振幅比例</td>
-<td>档 1 ≈ 20% 量程，档 10 ≈ 100% 量程</td>
-</tr>
-<tr>
-<td>关键帧密度</td>
-<td>档 1 稀疏（≈ 5%），档 10 密集（≈ 45%）</td>
-</tr>
-<tr>
-<td>波形尖锐度</td>
-<td>档 1 平滑，档 10 突变剧烈</td>
-</tr>
-<tr>
-<td>噪声水平</td>
-<td>档 1 几乎无噪声，档 10 显著扰动</td>
-</tr>
-</tbody></table>
-<h3>2. 强度范围</h3>
-<p>控制波形强度（0~100）的上下界：</p>
-<ul>
-<li><strong>预设</strong>：低（0<del>30）、中（10</del>60）、高（25<del>85）、最大（40</del>100）、满量程（0~100）</li>
-<li><strong>自定义</strong>：分别输入最小/最大强度值</li>
-</ul>
-<h3>3. 小节数</h3>
-<p>每个 <code>.pulse</code> 文件由若干小节（section）组成，每个小节拥有独立的频率范围/模式/时长：</p>
-<ul>
-<li><strong>固定值</strong>：例如固定 2 小节</li>
-<li><strong>随机区间</strong>：例如 1~3 小节，每次生成在范围内随机取值</li>
-</ul>
-<h3>4. 数据点数</h3>
-<p>每个小节内部的脉冲元数据点数量：</p>
-<ul>
-<li><strong>自动</strong>：根据波形类型与激烈程度自动推导（推荐）</li>
-<li><strong>固定值</strong>：例如固定 30 点</li>
-<li><strong>随机区间</strong>：例如 10~40 点</li>
-</ul>
-<h3>5. 插值类型</h3>
-<p>影响关键帧之间的过渡形态：</p>
-<ul>
-<li><strong>线性</strong>：等速过渡，最常用</li>
-<li><strong>缓入</strong>（ease_in）：慢起快停</li>
-<li><strong>缓出</strong>（ease_out）：快起慢停</li>
-<li><strong>缓入缓出</strong>（ease_in_out）：平滑 S 型</li>
-</ul>
-<h3>6. 波形叠加混合</h3>
-<p>开启后，每个波形会叠加两种不同类型的子波形，生成更复杂的组合效果。叠加比例根据随机种子动态分配。</p>
-<h3>7. 随机种子</h3>
-<ul>
-<li>留空：每次生成使用 <code>Date.now()</code>，结果完全不同</li>
-<li>填入任意数字/字符串：相同种子 + 相同参数 = 完全一致的波形结果，便于分享与复现</li>
-</ul>
-<h3>8. 生成数量</h3>
-<p>一次批量生成的波形数量，范围 <strong>1 ~ 20</strong>，以 3 列网格排布迷你预览。</p>
-<hr>
-<h2>五、预览区操作</h2>
-<p>生成后每个卡片包含以下功能按钮：</p>
-<table>
-<thead>
-<tr>
-<th>按钮</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>迷你波形</td>
-<td>实时循环播放的 <code>[pulsemini]</code> 预览，直观感受波形节奏</td>
-</tr>
-<tr>
-<td>类别标签</td>
-<td>显示波形所属大类，悬停可查看具体波形类型名</td>
-</tr>
-<tr>
-<td>复制源码</td>
-<td>一键复制完整的 <code>[pulse]...[/pulse]</code> 标签代码，可直接粘贴到 Markdown 编辑器中</td>
-</tr>
-<tr>
-<td>下载 <code>.pulse</code></td>
-<td>下载官方格式的 <code>.pulse</code> 文件，可导入 DG-LAB 郊狼 App 使用</td>
-</tr>
-<tr>
-<td>清空预览</td>
-<td>顶部工具栏按钮，清空当前所有生成结果</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>六、生成的 <code>.pulse</code> 文件格式</h2>
-<p>生成器严格遵循 DG-LAB 官方 3.4.4+ 导出规范：</p>
-<pre><code>Dungeonlab+pulse:&lt;休息时长&gt;,&lt;速度倍率&gt;,&lt;未知参数&gt;=&lt;小节1&gt;+section+&lt;小节2&gt;+section+...
-
-小节格式:  &lt;频率A&gt;,&lt;频率B&gt;,&lt;时长&gt;,&lt;频率模式&gt;,&lt;开关&gt;/&lt;强度&gt;-&lt;类型&gt;,&lt;强度&gt;-&lt;类型&gt;,...
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>取值</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>休息时长</td>
-<td>0-99</td>
-<td>×0.1 为实际秒数</td>
-</tr>
-<tr>
-<td>速度倍率</td>
-<td>1 / 2 / 4</td>
-<td>播放速度</td>
-</tr>
-<tr>
-<td>频率A/B</td>
-<td>0-83</td>
-<td>脉冲频率滑块值，通过映射表换算为 Hz</td>
-</tr>
-<tr>
-<td>时长</td>
-<td>0-99</td>
-<td>小节时长滑块值，通过映射表换算为秒</td>
-</tr>
-<tr>
-<td>频率模式</td>
-<td>1-4</td>
-<td>1=固定 / 2=节内渐变 / 3=元内渐变 / 4=元间渐变</td>
-</tr>
-<tr>
-<td>开关</td>
-<td>0/1</td>
-<td>是否启用该小节</td>
-</tr>
-<tr>
-<td>数据类型</td>
-<td>0/1</td>
-<td>0=普通脉冲 / 1=锚点脉冲（可编辑控制点）</td>
-</tr>
-</tbody></table>
-<p>频率与时长映射表参考 <a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md">Pulse 波形示例</a> 中的参数解析。</p>
-<hr>
-<h2>七、与渲染器的搭配使用</h2>
-<p>生成器产出的结果可与以下渲染能力无缝衔接：</p>
-<ul>
-<li><strong>完整波形渲染</strong> <code>[pulse]</code>：<a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md">Pulse 波形示例</a> 中逐帧演示，支持竖线/曲线、全局/滚动两种视图切换，小节边界以粉色虚线标注，锚点脉冲标记粉色控制点</li>
-<li><strong>迷你内联波形</strong> <code>[pulsemini]</code>：适合在文档中批量展示或嵌入段落，固定竖线 + 滚动模式</li>
-<li><strong>内置 Markdown 编辑器</strong> <code>?mode=editor</code>：将复制的 <code>[pulse]</code> 源码粘贴到编辑器 Cell，运行即可实时渲染，配合工具栏「工具渲染 → Pulse 波形」菜单使用</li>
-</ul>
-<hr>
-<h2>八、相关文档</h2>
-<ul>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md">Pulse 波形示例</a>：10+ 种不同波形的完整渲染效果，含参数详解、格式速查、迷你波形批量展示</li>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/editor.md">Markdown 编辑器说明</a>：编辑器的自动补全、工具栏菜单、导入导出能力</li>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/plugin-development.md">插件开发指南</a>：自定义渲染器与插件扩展机制</li>
-</ul>
-]]></content:encoded>
-    </item>
-    <item>
       <title>二维码插件示例</title>
       <link>https://theforeveriris.github.io/md-preview/docs/examples/qrcode-examples.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/qrcode-examples.md</guid>
@@ -11484,138 +11791,6 @@ display current-configuration	用户/特权	查看当前配置（VRP）
 9,edge-rtr-01,10.0.5.1,1.1.6.1,Huawei,NE40E,V800R010,GE0/0/0,10000,DC-B,钱七,出口路由器
 10,edge-rtr-02,10.0.5.2,1.1.6.2,Huawei,NE40E,V800R010,GE0/0/0,10000,DC-B,钱七,出口路由器（备）
 </code></pre>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>eNSP 拓扑渲染示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/ensp-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/ensp-examples.md</guid>
-      <pubDate>Mon, 05 Oct 2026 03:18:09 GMT</pubDate>
-      <description>本站点支持在 Markdown 文档中嵌入华为 eNSP 拓扑图。将 或 压缩包放入 目录，构建脚本会自动解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。 使用 嵌入语法引用预处理好的拓扑 JSON，需要用 代码块包裹（即三反引号 + 语言标记）： &gt; 提示：如果文件名包含空格，引用时请使用 URL 编码（空格替换为 ）。例如 。 9 台设备、8 条链路的华为设备</description>
-      <content:encoded><![CDATA[<h1>华为 eNSP 拓扑渲染</h1>
-<p>本站点支持在 Markdown 文档中嵌入华为 eNSP 拓扑图。将 <code>.topo</code> 或 <code>.zip</code> 压缩包放入 <code>iris/data/ensp/raw/</code> 目录，构建脚本会自动解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。</p>
-<h2>基本用法</h2>
-<p>使用 <code>@[ensp](文件名)</code> 嵌入语法引用预处理好的拓扑 JSON，需要用 <code>ensp</code> 代码块包裹（即三反引号 + <code>ensp</code> 语言标记）：</p>
-<pre><code class="language-markdown">@[ensp](filename)
-</code></pre>
-<blockquote>
-<p><strong>提示</strong>：如果文件名包含空格，引用时请使用 URL 编码（空格替换为 <code>%20</code>）。例如 <code>@[ensp](my%20topo)</code>。</p>
-</blockquote>
-<h2>示例拓扑</h2>
-<h3>OSPF / IS-IS 排错综合实验</h3>
-<p>9 台设备、8 条链路的华为设备组网拓扑，涵盖 AR 路由器、S3700 交换机、串行链路和以太网链路，包含 Serial 串口、Copper 双绞线两种线缆类型，演示 OSPF 路由的规划与排错场景。</p>
-<pre><code class="language-ensp">@[ensp](OSPF%20IS-IS%E6%8E%92%E9%94%99)
-</code></pre>
-<h2>可用拓扑一览</h2>
-<table>
-<thead>
-<tr>
-<th>拓扑名称</th>
-<th>设备数</th>
-<th>链路数</th>
-<th>设备型号</th>
-<th>路由协议</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>OSPF IS-IS排错</td>
-<td>9</td>
-<td>8</td>
-<td>AR2220 / S3700</td>
-<td>OSPF、Serial PPP</td>
-</tr>
-</tbody></table>
-<h2>支持的输入格式</h2>
-<p>eNSP 解析器支持以下两种输入方式：</p>
-<table>
-<thead>
-<tr>
-<th>格式</th>
-<th>扩展名</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>单个拓扑文件</td>
-<td><code>.topo</code></td>
-<td>直接解析 XML 格式的拓扑描述</td>
-</tr>
-<tr>
-<td>工程压缩包</td>
-<td><code>.zip</code></td>
-<td>自动解压 ZIP，内部需包含 <code>.topo</code> 和按 UUID 命名的设备目录</td>
-</tr>
-</tbody></table>
-<h3>ZIP 压缩包内部结构</h3>
-<pre><code>my-topo.zip
-├── my-topo.topo                  # 拓扑描述文件
-├── {UUID-1}/                     # 设备 1 目录（按 UUID 命名）
-│   └── vrpcfg.zip                # 设备配置（VRP 命令）
-├── {UUID-2}/
-│   └── vrpcfg.zip
-└── ...
-</code></pre>
-<p>每个设备目录名对应 <code>.topo</code> 中 <code>&lt;dev id=&quot;UUID&quot;&gt;</code> 的设备 ID，内部 <code>vrpcfg.zip</code> 包含该设备的 VRP 配置（<code>vrpcfg.cfg</code>）。</p>
-<h2>交互功能</h2>
-<ul>
-<li><strong>缩放平移</strong>：鼠标滚轮缩放，拖拽平移画布</li>
-<li><strong>节点拖拽</strong>：拖动设备节点重新排列</li>
-<li><strong>hover 高亮</strong>：鼠标悬停连线显示接口、线缆和所属网段</li>
-<li><strong>点击详情</strong>：点击设备节点弹出右侧抽屉，查看接口表 / VRP 配置 / VLAN / ACL / 路由表</li>
-<li><strong>搜索过滤</strong>：在搜索框输入设备名 / IP / 类型，匹配设备高亮</li>
-<li><strong>布局切换</strong>：eNSP 原始坐标 ↔ 力导向自动布局</li>
-<li><strong>网格背景</strong>：可切换点阵网格 / 透明背景</li>
-<li><strong>导出</strong>：支持导出 PNG 图片 / JSON 数据 / Markdown 表格</li>
-</ul>
-<h2>线缆类型颜色编码</h2>
-<table>
-<thead>
-<tr>
-<th>颜色</th>
-<th>线缆类型</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>橙色</td>
-<td>串口线 (Serial)</td>
-</tr>
-<tr>
-<td>蓝色</td>
-<td>双绞线 (Copper)</td>
-</tr>
-<tr>
-<td>紫色</td>
-<td>光纤 (Fiber)</td>
-</tr>
-<tr>
-<td>绿色</td>
-<td>控制台线 (Console)</td>
-</tr>
-</tbody></table>
-<h2>设备类型图标</h2>
-<p>支持以下设备类型的图标渲染：AR 路由器、S 系列交换机、PC、服务器、防火墙、AP、Cloud 等。</p>
-<h2>工作流程</h2>
-<ol>
-<li>将 <code>.topo</code> 或 <code>.zip</code> 文件放入 <code>iris/data/ensp/raw/</code></li>
-<li>本地运行 <code>python iris/scripts/ensp/main.py</code> 或推送到 GitHub 触发 CI</li>
-<li>脚本自动解压（ZIP）→ 解析 XML → 读取 <code>vrpcfg.zip</code> 配置 → 输出 JSON</li>
-<li>在 Markdown 中用 <code>@[ensp](文件名)</code> 引用</li>
-</ol>
-<h3>文件命名建议</h3>
-<ul>
-<li>推荐使用英文、数字、连字符（<code>-</code>）和下划线（<code>_</code>）</li>
-<li>避免空格和特殊字符</li>
-<li>含空格的文件名引用时需用 <code>%20</code> 编码</li>
-</ul>
-<h2>解析的信息</h2>
-<p>每个设备可查看以下信息：</p>
-<ul>
-<li><strong>接口表</strong>：接口名、IP、掩码、状态、速率、双工、描述</li>
-<li><strong>配置</strong>：完整 <code>vrpcfg.cfg</code>（VRP 命令），按 interface 分块折叠，VRP 语法高亮</li>
-<li><strong>VLAN</strong>：VLAN ID 和名称</li>
-<li><strong>ACL</strong>：访问控制列表规则</li>
-<li><strong>路由表</strong>：直连路由、静态路由、OSPF 路由（从配置推算）</li>
-</ul>
 ]]></content:encoded>
     </item>
     <item>
