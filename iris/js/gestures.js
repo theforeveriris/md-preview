@@ -67,6 +67,8 @@
     '.palette-overlay', '.resume-toast', '.mini-toast',
     '.doc-selection-toolbar', '.card-template-menu', '.qr-share-modal', '.drop-overlay',
     '.find-bar', '.split-view-overlay',
+    // 图谱画布：拖拽平移是它自己的交互，翻页 / 呼出侧边栏手势都不要掺和
+    '.doc-graph',
     'input, textarea, select, button, a, [contenteditable="true"]'
   ].join(', ');
 

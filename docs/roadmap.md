@@ -469,7 +469,7 @@ frontmatter 写 `password: xxx`，WebCrypto 客户端解密，目标是在公开
 | Git | 文档变更订阅 | 关注文档，有更新时正文顶部提示 |
 | 构建 | 中文排版 lint | `iris/scripts/lint-cjk.js`，`--fix` 自动修复，CI 告警 |
 | 构建 | 自动变更日志页 | `iris/scripts/build-changelog.js` → `docs/changelog.md` |
-| 导航 | 文档图谱 | `#/graph` 沉浸式可交互图谱（入口=Ctrl/⌘+K 命令面板），节点=文档、边=站内链接、颜色=主题强调色深浅、大小=入度；悬停出邻居标签，浮层控件含缩放 / 适配 / 重置 / 全屏；Cytoscape.js 懒加载（`iris/js/renderers/graph.js`） |
+| 导航 | 文档图谱 | `#/graph` 独立沉浸式可交互图谱（入口=Ctrl/⌘+K 命令面板，无侧边栏按钮 / 标题栏），节点=文档、边=站内链接、颜色=标签色相轮（出现 ≥3 次的标签各占一档色相、低频标签合并中性灰）、大小=入度、布局=concentric 同心圆（按连接数分层，枢纽居中）；点击节点打开文档、被引 top-10 常显标题、悬停出邻居标签；左下角功能区=退回文档站 / 缩放 / 适配 / 重置 / 全屏 / 无链接文档显隐（默认隐藏）；Cytoscape.js 懒加载（`iris/js/renderers/graph.js`） |
 | 导航 | 反向链接与相关文档 | 文末「被 N 篇引用」+「相关文档」，数据来自 `links.json`（`iris/js/backlinks.js`） |
 | 构建 | 链接关系数据 | `iris/scripts/build-links.js` → `iris/data/links.json`，解析原语与死链检查共用 `iris/scripts/lib/md-links.js` |
 | 分发 | 桌面端（Tauri） | 同一份静态站点打包为 Windows exe / NSIS 安装包；桌面端禁用 SW，外链交给系统浏览器（`src-tauri/`） |

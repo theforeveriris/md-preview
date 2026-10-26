@@ -1,4 +1,4 @@
-const CACHE_NAME = 'md-preview-v8.50';
+const CACHE_NAME = 'md-preview-v8.51';
 // 运行时缓存版本必须随发布递增：旧版曾长期停留在 v8.19，导致
 // index.html / JS / CSS 这类静态资源被「缓存优先」永久钉在旧版本
 // （用户看到的是上一版脚本，后台更新完也不会生效）。

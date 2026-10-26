@@ -1560,6 +1560,10 @@ body.graph-page .markdown-body {
    contain-intrinsic-size 的占位高度（500px）会挤掉按视口实测的画布高度 */
 body.graph-page .reading-time { display: none; }
 
+/* 独立页形态：不出阅读页的 chrome —— 侧边栏按钮消失（面板标题栏由 openPage
+   摘掉内联样式），侧边栏只能靠手势 / 按钮呼出，两者在图谱页都已被排除 */
+body.graph-page .mobile-menu-btn { display: none; }
+
 body.graph-page .markdown-body > * {
   content-visibility: visible;
   contain-intrinsic-size: none;
@@ -1591,8 +1595,7 @@ body.graph-page #markdownContent > .doc-graph {
 
 /* --- 浮层：画布上的全部 UI 都在这里 --- */
 .doc-graph-panel,
-.doc-graph-actions,
-.doc-graph-foot {
+.doc-graph-actions {
   position: absolute;
   z-index: 3;
 }
@@ -1745,8 +1748,9 @@ body.graph-page #markdownContent > .doc-graph {
 }
 
 /* 右下：画布控件（缩放 / 适配 / 重置 / 全屏） */
+/* 左下：功能区（右侧让位给悬浮球） */
 .doc-graph-actions {
-  right: 12px;
+  left: 12px;
   bottom: 12px;
   display: flex;
   flex-direction: column;
@@ -1779,26 +1783,10 @@ body.graph-page #markdownContent > .doc-graph {
 
 .doc-graph-action:active { transform: scale(.94); }
 
-/* 左下：操作提示 + 孤立文档数量 */
-.doc-graph-foot {
-  left: 12px;
-  bottom: 12px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 10px;
-  max-width: calc(100% - 76px);
-  font-size: 12px;
-  color: var(--color-text-muted);
-  pointer-events: none;
-}
-
-.doc-graph-hint,
-.doc-graph-note {
-  padding: 3px 9px;
-  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
-  backdrop-filter: blur(8px);
-  border-radius: 999px;
+/* 显隐无链接文档的开关按钮：按下态用强调色标出「正在显示」 */
+.doc-graph-action[aria-pressed="true"] {
+  color: var(--color-accent-purple, #8a63a8);
+  border-color: var(--color-accent-purple, #8a63a8);
 }
 
 .doc-graph-empty {
@@ -1816,7 +1804,6 @@ body.graph-page #markdownContent > .doc-graph {
 @media (max-width: 640px) {
   .doc-graph-panel { max-width: calc(100% - 24px); }
   .markdown-body .doc-graph-search { width: 100%; }
-  .doc-graph-hint { display: none; }
 }
 
 .doc-graph-tip {
