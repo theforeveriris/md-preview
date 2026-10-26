@@ -49,6 +49,9 @@
     loadOnce('editor', [
       'iris/vendor/codemirror/codemirror.min.js',
       'iris/js/cm-editor.js',
+      'iris/js/editor/completions.js',
+      'iris/js/editor/find-replace.js',
+      'iris/js/editor/media-upload.js',
       'iris/js/editor.js'
     ]).then(() => {
       // editor.js 已覆盖本 shim：再调一次命中的就是真实实现

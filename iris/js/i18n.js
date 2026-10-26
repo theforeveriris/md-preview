@@ -631,6 +631,8 @@
     'editor.restoreFailed': '恢复自动保存失败：数据可能已损坏',
     'editor.restoreSkipped': '检测到上次会话，但已有输入，未自动恢复',
     'editor.sessionRestored': '已恢复上次会话',
+    'editor.hostConfigSaved': '图床配置已保存',
+    'editor.base64Mode': '已切换为 base64 模式',
     'history.updated': '此文档有更新',
     'history.viewChanges': '查看变更',
     'history.markRead': '标记已读'

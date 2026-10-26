@@ -588,6 +588,8 @@
     'editor.restoreFailed': 'Failed to restore autosave: data may be corrupted',
     'editor.restoreSkipped': 'Previous session found, but you already typed — auto-restore skipped',
     'editor.sessionRestored': 'Previous session restored',
+    'editor.hostConfigSaved': 'Image host configuration saved',
+    'editor.base64Mode': 'Switched to base64 mode',
     'history.updated': 'This document has updates',
     'history.viewChanges': 'View changes',
     'history.markRead': 'Mark as read'

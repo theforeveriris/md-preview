@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-26T20:21:28.323Z",
+  "generatedAt": "2026-10-26T20:46:27.607Z",
   "version": 1,
-  "count": 113,
+  "count": 116,
   "urls": [
     "./",
     "./index.html",
@@ -45,6 +45,9 @@
     "./iris/js/debug.js",
     "./iris/js/dom.js",
     "./iris/js/editor.js",
+    "./iris/js/editor/completions.js",
+    "./iris/js/editor/find-replace.js",
+    "./iris/js/editor/media-upload.js",
     "./iris/js/export-bundle.js",
     "./iris/js/figures.js",
     "./iris/js/file-tree.js",
