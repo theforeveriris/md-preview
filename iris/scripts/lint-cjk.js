@@ -94,7 +94,28 @@ function listFiles() {
       .map((f) => path.resolve(ROOT, f));
   }
   if (explicit.length) {
-    return explicit.map((p) => path.resolve(ROOT, p)).filter((p) => fs.existsSync(p));
+    // 显式路径：文件直接取；目录递归展开（与无参时的扫描口径一致）
+    const out = [];
+    for (const p of explicit) {
+      const full = path.resolve(ROOT, p);
+      let st = null;
+      try { st = fs.statSync(full); } catch (e) { continue; }
+      if (st.isDirectory()) {
+        (function walk(dir) {
+          let items = [];
+          try { items = fs.readdirSync(dir, { withFileTypes: true }); } catch (e) { return; }
+          for (const it of items) {
+            if (it.name === 'node_modules' || it.name === '.git') continue;
+            const child = path.join(dir, it.name);
+            if (it.isDirectory()) walk(child);
+            else if (it.name.endsWith('.md')) out.push(child);
+          }
+        })(full);
+      } else if (full.endsWith('.md')) {
+        out.push(full);
+      }
+    }
+    return out;
   }
   if (BASE) {
     return changedFilesSince(BASE).filter((f) => f.endsWith('.md')).map((f) => path.resolve(ROOT, f));
@@ -167,9 +188,16 @@ function lintLine(line, lineNo, file, issues) {
   }
 
   // 4) 全角标点与其他字符之间多了空格
+  //    标点「前」有空格：全角标点前不应加空格
   const spaceBeforeFullRe = /[ \t]+([，。！？；：、）」』】》])/g;
   while ((m = spaceBeforeFullRe.exec(clean)) !== null) {
     issues.push({ file, line: lineNo, col: m.index + 1, rule: 'punct-space', level: 'error', msg: '全角标点前不应加空格' });
+  }
+  //    标点「后」有空格：全角标点与其他字符之间不加空格
+  //    排除 Markdown 表格分隔符前的空格（| 前）与行尾空白
+  const spaceAfterFullRe = /([，。！？；：、）」』】》])[ \t]+(?=[^ \t|])/g;
+  while ((m = spaceAfterFullRe.exec(clean)) !== null) {
+    issues.push({ file, line: lineNo, col: m.index + 2, rule: 'punct-space', level: 'error', msg: '全角标点后不应加空格' });
   }
 
   // 5) 重复使用标点符号
@@ -210,8 +238,9 @@ function fixLine(line) {
   // 半角标点 → 全角（仅 CJK 之后）
   out = out.replace(new RegExp(`([${CJK}])([,.;:!?])(?=\\s|$|[${CJK}])`, 'g'),
     (mm, c, p) => c + (FULLWIDTH_MAP[p] || p));
-  // 全角标点前的多余空格
+  // 全角标点前后的多余空格（不误伤 Markdown 表格分隔符前的空格）
   out = out.replace(/[ \t]+([，。！？；：、）」』】》])/g, '$1');
+  out = out.replace(/([，。！？；：、）」』】》])[ \t]+(?=[^ \t|])/g, '$1');
   // 重复标点
   out = out.replace(/([，。！？；：])\1+/g, '$1');
   out = out.replace(/[？！]{3,}/g, '？！');

@@ -486,7 +486,7 @@ Super<wbr>cali<wbr>fragilistic<wbr>expiali<wbr>docious
 （有换行点）
 ```
 
-Supercalifragilisticexpialidocious（不换行） vs<br>
+Supercalifragilisticexpialidocious（不换行）vs<br>
 Super<wbr>cali<wbr>fragilistic<wbr>expiali<wbr>docious（有换行点）
 
 ---

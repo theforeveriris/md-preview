@@ -37,7 +37,7 @@ tags: [入门]
 
 几经放弃，中途也萌生过换技术栈为 react，但由于种种原因，居然还是使用传统的 js 写完了。这算是复古吗？~~或许我哪天心血来潮就去改成 react 了？~~ 就像我重拾废弃的项目时。~~AI 时代的新模型总能给我重构和 debug 的信心。~~ 
 
-闲话说完，本项目包含基础 markdown、mermaid 渲染、plantuml 渲染、 ApexCharts 的各种图表渲染、多栏文本、类似于萌娘百科的文本遮罩、多标签代码块、diff 渲染、外部服务嵌入、~~推特帖子嵌入（待修复）~~、pkt 或 ensp 拓扑图渲染、ppt 渲染、latex 公式渲染、多种主题画廊渲染、郊狼波形渲染，支持显示自定义页面主题、配色、css，支持 pwa 安装、rss 订阅，内置包含各类本项目语法糖的仿 jupyter notebook 渲染页、郊狼波形生成器等等
+闲话说完，本项目包含基础 markdown、mermaid 渲染、plantuml 渲染、ApexCharts 的各种图表渲染、多栏文本、类似于萌娘百科的文本遮罩、多标签代码块、diff 渲染、外部服务嵌入、~~推特帖子嵌入（待修复）~~、pkt 或 ensp 拓扑图渲染、ppt 渲染、latex 公式渲染、多种主题画廊渲染、郊狼波形渲染，支持显示自定义页面主题、配色、css，支持 pwa 安装、rss 订阅，内置包含各类本项目语法糖的仿 jupyter notebook 渲染页、郊狼波形生成器等等
 
 Demo：https://theforeveriris.github.io/md-preview/
 
