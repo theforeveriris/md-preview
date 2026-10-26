@@ -1289,94 +1289,18 @@
       }
     });
 
-    // 设置导出 / 导入（含主题、语言）
-    const backupExportBtn = document.getElementById('settingsExportBtn');
-    const backupImportBtn = document.getElementById('settingsImportBtn');
-    const backupImportInput = document.getElementById('settingsImportInput');
-
-    backupExportBtn?.addEventListener('click', exportSettings);
-    backupImportBtn?.addEventListener('click', () => backupImportInput?.click());
-    backupImportInput?.addEventListener('change', async (e) => {
-      const file = e.target.files && e.target.files[0];
-      if (file) await importSettings(file);
-      e.target.value = '';
+    // 设置导出 / 导入（含主题、语言）——接线外移至 settings-backup.js
+    window.MarkdownPreview.settingsBackup.wire({
+      backupExportBtn: document.getElementById('settingsExportBtn'),
+      backupImportBtn: document.getElementById('settingsImportBtn'),
+      backupImportInput: document.getElementById('settingsImportInput'),
+      t
     });
   }
 
   // ============== 设置导出 / 导入 ==============
-  // 带走外观与阅读相关的全部 localStorage 键：设置、主题（含自动配对、
-  // 自定义 CSS / hljs）与界面语言。导入采用「写回后刷新」，保证主题、
-  // 字体、i18n 等按启动流程重新应用，避免逐项手工同步遗漏。
-  const BACKUP_KEYS = {
-    settings: 'md-preview-settings',
-    theme: 'md-preview-theme',
-    themeLight: 'md-preview-theme-light',
-    themeDark: 'md-preview-theme-dark',
-    customCss: 'md-preview-custom-css',
-    customHljs: 'md-preview-custom-hljs',
-    lang: 'md-preview-lang'
-  };
-
-  function exportSettings() {
-    const data = {};
-    Object.keys(BACKUP_KEYS).forEach(name => {
-      try {
-        const val = localStorage.getItem(BACKUP_KEYS[name]);
-        if (val != null) data[name] = val;
-      } catch (e) { /* 隐私模式等场景跳过 */ }
-    });
-    const payload = {
-      app: 'md-preview',
-      type: 'settings-backup',
-      version: 1,
-      exportedAt: new Date().toISOString(),
-      data
-    };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'md-preview-settings.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
-
-  function validBackupLang(v) {
-    return v === 'auto' || v === 'zh' || v === 'en';
-  }
-
-  async function importSettings(file) {
-    let payload;
-    try {
-      payload = JSON.parse(await file.text());
-    } catch (e) {
-      alert(t('settings.backup.invalid', '导入失败：不是有效的设置备份文件'));
-      return;
-    }
-    if (!payload || payload.app !== 'md-preview' || payload.type !== 'settings-backup' ||
-        !payload.data || typeof payload.data !== 'object') {
-      alert(t('settings.backup.invalid', '导入失败：不是有效的设置备份文件'));
-      return;
-    }
-    const data = payload.data;
-    try {
-      // settings 单独校验：必须是可解析的 JSON 对象
-      if (typeof data.settings === 'string') JSON.parse(data.settings);
-      if (data.theme != null && typeof data.theme !== 'string') throw new Error('bad theme');
-      if (data.lang != null && !validBackupLang(data.lang)) throw new Error('bad lang');
-      Object.keys(BACKUP_KEYS).forEach(name => {
-        const val = data[name];
-        if (val == null) return;
-        localStorage.setItem(BACKUP_KEYS[name], String(val));
-      });
-    } catch (e) {
-      alert(t('settings.backup.invalid', '导入失败：不是有效的设置备份文件'));
-      return;
-    }
-    location.reload();
-  }
+  // 已外移至 iris/js/settings-backup.js（settings.js 拆分）；
+  // initSettingsPanel 内通过 settingsBackup.wire(...) 接线按钮。
 
   // 导出 PDF：通过浏览器打印对话框
   function exportPdf() {
