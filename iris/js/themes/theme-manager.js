@@ -7,9 +7,9 @@
   const AUTO_LIGHT_KEY = 'md-preview-theme-light';
   const AUTO_DARK_KEY = 'md-preview-theme-dark';
 
-  const VALID_THEMES = ['default', 'github-light', 'github-dark', 'notion', 'arc', 'dracula', 'nord'];
+  const VALID_THEMES = ['default', 'iris', 'github-light', 'github-dark', 'notion', 'arc', 'dracula', 'nord'];
   const DARK_THEMES = ['github-dark', 'arc', 'dracula', 'nord'];
-  const LIGHT_THEMES = ['default', 'github-light', 'notion'];
+  const LIGHT_THEMES = ['default', 'iris', 'github-light', 'notion'];
   const DEFAULT_AUTO_LIGHT = 'default';
   const DEFAULT_AUTO_DARK = 'github-dark';
 
@@ -52,6 +52,12 @@
   function applyResolved(themeId, save) {
     currentTheme = themeId;
     document.documentElement.setAttribute('data-theme', themeId);
+    // 移动端地址栏 / 系统 UI 的 theme-color 跟随主题（原本写死默认主题色）
+    try {
+      const bg = getComputedStyle(document.documentElement).getPropertyValue('--color-bg').trim();
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta && bg) meta.setAttribute('content', bg);
+    } catch (e) { /* ignore */ }
     window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: themeId, setting: currentSetting } }));
     if (save !== false) (window.MarkdownPreview.debug?.debugLog || (() => {}))(`Theme changed to: ${themeId} (setting: ${currentSetting})`);
   }

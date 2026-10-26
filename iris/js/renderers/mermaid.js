@@ -35,24 +35,35 @@
       return false;
     }
     if (!mermaidInitialized) {
+      // 配色一律读主题变量：图表跟随当前主题（含用户自定义配色），
+      // 不再硬编码某个固定强调色。
+      const cv = (name, fallback) => window.MarkdownPreview.ColorUtils.getThemeVar(name, fallback);
+      const accent = cv('--color-accent-purple', '#d4a5c9');
+      const accentPink = cv('--color-accent-pink', '#f2c4ce');
+      const surface = cv('--color-surface', '#ffffff');
+      const bg = cv('--color-bg', '#fafafa');
+      const text = cv('--color-text', '#333333');
+      const border = cv('--color-border', '#f0f0f0');
+      const muted = cv('--color-text-muted', '#888888');
       mermaid.initialize({
         startOnLoad: false,
         // 显式固化消毒边界：不依赖打包的 mermaid 版本默认值
         securityLevel: 'strict',
         theme: 'base',
         themeVariables: {
-          primaryColor: '#8B5CF6',
-          primaryTextColor: '#333333',
-          primaryBorderColor: '#8B5CF6',
-          lineColor: '#888888',
-          secondaryColor: '#f2c4ce',
-          tertiaryColor: '#f8f8f8',
-          background: '#ffffff',
-          mainBkg: '#ffffff',
-          nodeBorder: '#8B5CF6',
-          clusterBkg: '#f8f8f8',
-          titleColor: '#333333',
-          edgeLabelBackground: '#ffffff'
+          primaryColor: accent,
+          primaryTextColor: text,
+          primaryBorderColor: accent,
+          lineColor: muted,
+          secondaryColor: accentPink,
+          tertiaryColor: bg,
+          background: surface,
+          mainBkg: surface,
+          nodeBorder: accent,
+          clusterBkg: bg,
+          clusterBorder: border,
+          titleColor: text,
+          edgeLabelBackground: surface
         },
         flowchart: {
           useMaxWidth: true,
@@ -66,9 +77,39 @@
         }
       });
       mermaidInitialized = true;
+      bindThemeChange();
       (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Mermaid] Initialized');
     }
     return true;
+  }
+
+  // 主题切换后重渲染已有图表：mermaid.initialize 只生效一次，
+  // 不重渲染的话旧图会一直停在切换前的配色上。
+  let themeListenerBound = false;
+  function bindThemeChange() {
+    if (themeListenerBound) return;
+    themeListenerBound = true;
+    window.addEventListener('themechange', () => {
+      if (typeof mermaid === 'undefined') return;
+      mermaidInitialized = false;
+      // 重新初始化以便下一次 render 使用新配色
+      ensureMermaid().catch(() => {});
+      rerenderExisting();
+    });
+  }
+
+  function rerenderExisting() {
+    const nodes = document.querySelectorAll('.mermaid-diagram[data-src]');
+    nodes.forEach((node) => {
+      const src = node.getAttribute('data-src');
+      if (!src) return;
+      const id = 'mermaid-re-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+      Promise.resolve(mermaid.render(id, src))
+        .then(({ svg }) => {
+          if (svg && node.isConnected) node.innerHTML = svg;
+        })
+        .catch(() => { /* 单个图表失败不影响其他 */ });
+    });
   }
 
   async function render(root) {

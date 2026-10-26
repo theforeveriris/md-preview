@@ -965,7 +965,7 @@
       ctx.clearRect(0, 0, w, h);
 
       const computedStyle = getComputedStyle(document.documentElement);
-      const accentColor = computedStyle.getPropertyValue('--color-accent-purple').trim() || '#8B5CF6';
+      const accentColor = computedStyle.getPropertyValue('--color-accent-purple').trim() || '#d4a5c9';
       const accentPink = computedStyle.getPropertyValue('--color-accent-pink').trim() || '#f2c4ce';
       const borderColor = computedStyle.getPropertyValue('--color-border').trim() || '#f0f0f0';
       const bgColor = computedStyle.getPropertyValue('--color-surface').trim() || '#ffffff';

@@ -1288,7 +1288,7 @@
 }
 
 .image-gallery--slider .slider-dots span.active {
-  background: var(--color-accent-purple, #8B5CF6);
+  background: var(--color-accent-purple, #d4a5c9);
   transform: scale(1.3);
 }
 

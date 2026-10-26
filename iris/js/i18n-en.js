@@ -67,6 +67,8 @@
     'settings.theme.autoDark.dracula': 'Dark · Dracula',
     'settings.theme.autoDark.nord': 'Dark · Nord',
     'settings.theme.default': 'Purple Gradient',
+    'settings.theme.iris': 'Iris Purple',
+    'settings.theme.autoLight.iris': 'Light · Iris Purple',
 
     'settings.colors.accent': 'Accent Colors',
     'settings.colors.accentDesc': 'Primary and derived colors, click a swatch to pick',

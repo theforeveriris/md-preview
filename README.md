@@ -86,7 +86,7 @@ Demo：https://theforeveriris.github.io/md-preview/
 
 ### 渲染能力
 
-- 7 种内置主题：默认 / GitHub Light / GitHub Dark / Notion / Arc Dark / Dracula / Nord
+- 8 种内置主题：默认（紫粉渐变）/ 鸢尾花紫 / GitHub Light / GitHub Dark / Notion / Arc Dark / Dracula / Nord
 - 图片灯箱：点击放大、缩放、键盘左右键翻页
 - GitHub 风格 Alerts：支持 `[!NOTE]` `[!WARNING]` 等提示语法
 - 代码块增强：一键复制按钮、语言标签、横向滚动优化、代码 Tabs
@@ -314,7 +314,7 @@ python3 iris/scripts/pptx/main.py
 | `markdown-syntax.md` | Markdown 基础语法总览 |
 | `basic-usage.md` | 基础使用与常见排版 |
 | `table-examples.md` | 表格展示与长表格优化 |
-| `theme-demo.md` | 7 种内置主题的视觉对比 |
+| `theme-demo.md` | 8 种内置主题的视觉对比 |
 | `graph-backlinks-demo.md` | 文档图谱（#/graph）与反向链接：文档间链接如何变成关系网 |
 | `image-gallery-examples.md` | 图片与灯箱功能示例 |
 | `gallery-layouts.md` | @grid / @cardstack 等画廊布局示例 |
@@ -368,7 +368,7 @@ python3 iris/scripts/pptx/main.py
 │   │   ├── markdown.css    # Markdown 正文样式
 │   │   ├── floating.css    # 悬浮球、设置面板、工具栏
 │   │   ├── editor.css      # 内置编辑器样式
-│   │   ├── themes/         # 7 种内置主题
+│   │   ├── themes/         # 8 种内置主题
 │   │   ├── pkt/            # Packet Tracer 渲染样式
 │   │   └── pptx.css        # PPTX 缩略图网格与放映样式
 │   ├── js/                 # 核心功能模块

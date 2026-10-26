@@ -792,26 +792,6 @@
       case 'csvtable': return pres.filter(p => p.dataset.lang === 'csv' || p.dataset.lang === 'tsv');
       case 'jsontree': return pres.filter(p => p.dataset.lang === 'json');
       case 'graph': return pres.filter(p => p.dataset.lang === 'graph');
-      case 'pulse': {
-        // pulse 标记在正文文本节点里（非代码块）：快速预检 + 返回含标记的
-        // 块级元素，交由 IO 接近视口时再跑 renderScoped
-        if (scope.textContent.indexOf('[pulse') === -1) return [];
-        const out = [];
-        const walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT, {
-          acceptNode: function(node) {
-            if (!node.nodeValue || node.nodeValue.indexOf('[pulse') === -1) return NodeFilter.FILTER_REJECT;
-            var p = node.parentElement;
-            if (!p || p.closest('pre, code, script, style')) return NodeFilter.FILTER_REJECT;
-            return NodeFilter.FILTER_ACCEPT;
-          }
-        });
-        let seen = new Set();
-        while (walker.nextNode()) {
-          const el = walker.currentNode.parentElement && walker.currentNode.parentElement.closest('p, div, li, blockquote, td, h1, h2, h3, h4, h5, h6');
-          if (el && !seen.has(el)) { seen.add(el); out.push(el); }
-        }
-        return out;
-      }
       default: return [];
     }
   }
@@ -929,7 +909,10 @@
   }
 
   // 延迟渲染白名单（仅当调用方传 opts.lazy 时启用；编辑器 / 对照阅读不传，保持即时渲染）
-  const DEFAULT_LAZY = ['mermaid', 'plantuml', 'apexcharts', 'diff', 'csvtable', 'jsontree', 'graph', 'pulse'];
+  // pulse 不在此列：它的标记在正文文本节点里（非代码块），走 renderScoped
+  // 的「包容器→渲染→搬回」路径会丢失渲染；波形动画改由渲染器内部的
+  // IntersectionObserver 离屏暂停（见 pulse.js attachAnimIO）。
+  const DEFAULT_LAZY = ['mermaid', 'plantuml', 'apexcharts', 'diff', 'csvtable', 'jsontree', 'graph'];
 
   // 编辑器 cell / 双屏对照渲染的渲染器子集（消除 editor.js 与 split-view.js
   // 两处硬编码副本漂移）

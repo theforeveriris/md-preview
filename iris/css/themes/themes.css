@@ -7,7 +7,7 @@
   --color-border: #f0f0f0;
   --color-text: #2d2d2d;
   --color-text-muted: #999999;
-  --color-accent-purple: #8B5CF6;
+  --color-accent-purple: #d4a5c9;
   --color-accent-pink: #f2c4ce;
   --color-accent-purple-deep: #b88aad;
   --color-glow: rgba(255, 255, 255, 0.8);
@@ -82,6 +82,34 @@ body[data-sidebar-style="classic"] {
 }
 
 /* Notion 暖灰主题 */
+/* 鸢尾花紫主题（亮色）：淡紫底 + 鸢尾品牌紫强调色
+   设计取向：低饱和淡紫背景（#f6f2fd）承担「鸢尾花瓣」的柔和感，
+   卡片与代码块保持近白以便长时间阅读；强调色用品牌鸢尾紫 #8B5CF6，
+   链接/强调色配套更深的 #6d3fd4 保证白底对比度（≥4.5:1）；
+   边框与分隔线用带紫调的浅灰，避免与背景糊在一起。 */
+[data-theme="iris"] {
+  --color-bg: #f6f2fd;
+  --color-surface: #ffffff;
+  --color-border: #e3d9f6;
+  --color-text: #2c2340;
+  --color-text-muted: #7d7295;
+  --color-accent-purple: #8B5CF6;
+  --color-accent-pink: #c4b0f0;
+  --color-accent-purple-deep: #6d3fd4;
+  --color-glow: rgba(246, 242, 253, 0.85);
+  --color-hover: rgba(139, 92, 246, 0.08);
+  --color-selection: rgba(139, 92, 246, 0.18);
+  --color-scrollbar: #cbb8ef;
+  --color-scrollbar-hover: #a98fe0;
+  --color-link: #6d3fd4;
+  --color-link-hover: #4f2ba3;
+  --color-code-bg: #f3eefc;
+  --color-code-border: #e0d4f5;
+  --color-success: #2f9e6f;
+  --color-error: #d94a63;
+  --color-warning: #b6791f;
+}
+
 [data-theme="notion"] {
   --color-bg: #f7f6f3;
   --color-surface: #ffffff;

@@ -7,7 +7,7 @@ tags: [主题, 配置]
 
 Markdown Preview 提供三种层级的外观定制方式，由易到难：
 
-1. **预设主题** — 内置 7 套配色，一键切换
+1. **预设主题** — 内置 8 套配色，一键切换
 2. **可视化取色器** — 拖动色块即可调整主题色，无需写 CSS
 3. **自定义 CSS** — 加载外部 CSS 文件，完全控制样式
 
@@ -18,6 +18,7 @@ Markdown Preview 提供三种层级的外观定制方式，由易到难：
 | ID | 名称 | 说明 |
 |----|------|------|
 | `default` | 默认 | 浅紫浅粉渐变风格 |
+| `iris` | 鸢尾花紫 | 亮色；淡紫底（`#f6f2fd`）+ 鸢尾品牌紫强调色（`#8B5CF6`），链接用更深的 `#6d3fd4` 保证对比度 |
 | `github-light` | GitHub Light | GitHub 明亮风格 |
 | `github-dark` | GitHub Dark | GitHub 深色风格 |
 | `notion` | Notion | Notion 暖灰风格 |

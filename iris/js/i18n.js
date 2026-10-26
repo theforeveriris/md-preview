@@ -87,6 +87,8 @@
     'settings.theme.autoDark.dracula': '暗 · Dracula',
     'settings.theme.autoDark.nord': '暗 · Nord',
     'settings.theme.default': '紫粉渐变',
+    'settings.theme.iris': '鸢尾花紫',
+    'settings.theme.autoLight.iris': '亮 · 鸢尾花紫',
 
     // 自定义配色
     'settings.colors.accent': '强调色',

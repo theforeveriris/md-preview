@@ -5,8 +5,219 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 26 Oct 2026 21:33:01 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 26 Oct 2026 22:12:58 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>变更日志</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/changelog.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/changelog.md</guid>
+      <pubDate>Mon, 26 Oct 2026 21:33:52 GMT</pubDate>
+      <description>&gt; 本页由 从 git 历史自动生成，请勿手动编辑。 - docs(screenshots): 46 张运行时截图全量重拍（新品牌紫 + 新 UI），show.md 补第六/七节配图 — theforeveriris - feat(artwork): 站点强调色统一为品牌紫 #8B5CF6 + 图标双源漂移门禁（原暂缓项） — theforeveriris - docs: 06 文档问题修复（19</description>
+      <content:encoded><![CDATA[<h1>变更日志</h1>
+<blockquote>
+<p>本页由 <code>iris/scripts/build-changelog.js</code> 从 git 历史自动生成，请勿手动编辑。</p>
+</blockquote>
+<h2>2026-10-27</h2>
+<ul>
+<li><code>f230013</code> docs(screenshots): 46 张运行时截图全量重拍（新品牌紫 + 新 UI），show.md 补第六/七节配图 — theforeveriris</li>
+<li><code>ff29fdb</code> feat(artwork): 站点强调色统一为品牌紫 #8B5CF6 + 图标双源漂移门禁（原暂缓项） — theforeveriris</li>
+<li><code>1ebb26b</code> docs: 06 文档问题修复（19/21，2 项需运行环境/设计工作） — theforeveriris</li>
+<li><code>1a83ac2</code> feat(graph): 配色改色相轮分层 + 独立页形态 + 修复节点点击导航（SW v8.51） — theforeveriris</li>
+</ul>
+<h2>2026-10-26</h2>
+<ul>
+<li><code>e6dd36d</code> style: 中文排版自动修正 [skip ci] — github-actions[bot]</li>
+<li><code>297e234</code> test(docs): 触发排版校验流水线 — theforeveriris</li>
+<li><code>0d5c72b</code> test(docs): 触发排版校验流水线 — theforeveriris</li>
+<li><code>12434b1</code> test(docs): 触发排版校验流水线 — theforeveriris</li>
+<li><code>d9f1ceb</code> test(docs): 新增中文排版问题样例文档（docs/zw） — theforeveriris</li>
+<li><code>ac25f3e</code> ci: 新增中文文案排版校验流水线（首次全量 + 后续增量 + 机器人提交） — theforeveriris</li>
+</ul>
+<h2>2026-10-19</h2>
+<ul>
+<li><code>4bcb72f</code> docs: 补桌面端构建说明；顺带刷新 file-tree 词数 — theforeveriris</li>
+<li><code>6c5500c</code> docs: 同步文档图谱的入口收敛与沉浸式改版 — theforeveriris</li>
+<li><code>8c83af3</code> docs: 同步本轮 8 项功能——README 特性清单 / 开发文档 / 路线图 / 候选池 + 重建产物 — theforeveriris</li>
+<li><code>3a6c0bb</code> feat(batch4): 图 / 表自动编号与交叉引用（SW v8.48） — theforeveriris</li>
+<li><code>09e9165</code> feat(batch1): 设置项搜索 + 脚注悬浮预览 + 时间线组件（SW v8.45） — theforeveriris</li>
+<li><code>a761039</code> docs: 同步本轮新增功能到 README 特性清单与功能路线图 — theforeveriris</li>
+<li><code>fe6ec47</code> feat(batch3): OpenAPI 交互文档 + 竖排模式 + Git 历史/变更订阅 + 渐进式代码高亮（SW v8.43） — theforeveriris</li>
+<li><code>8ddc218</code> feat(batch2): 可见即渲染 + 术语表悬浮 + HTTP 请求块 + 开发者小工具 + 中文排版 lint + 拼音注音（SW v8.42） — theforeveriris</li>
+<li><code>ecabc54</code> feat(batch1): 相邻文档预取 + 屏外跳过布局 + CSV→图表 + SQL DDL→ER + 正文繁简转换 + 中文排版选项 + 自动变更日志页（SW v8.41） — theforeveriris</li>
+</ul>
+<h2>2026-10-18</h2>
+<ul>
+<li><code>fdc726d</code> refactor(renderers): 统一渲染器调度器 runRenderers——注册表遍历顺序 await，消除三处硬编码清单；geo 转正支持围栏；embedded 四段挂载逻辑收敛为工厂；新增顺序/错误隔离测试（SW v8.38） — theforeveriris</li>
+</ul>
+<h2>2026-10-17</h2>
+<ul>
+<li><code>3f5cdf6</code> feat(tags): 全部文档补写 frontmatter tags（44 篇）+ 标签面板改为顶栏 Files/Index/标签 第三选项卡 — theforeveriris</li>
+</ul>
+<h2>2026-10-05</h2>
+<ul>
+<li><code>2f7b78c</code> feat: 标签系统 + 万能命令面板 + 搜索直达关键词 + live 预览沙箱 + JSON 可折叠树 + 图表悬浮工具条 + 快照分享 + 专注模式 + 多标签页同步 + Issue 一键反馈 + 讲义打印样式 — theforeveriris</li>
+</ul>
+<h2>2026-10-02</h2>
+<ul>
+<li><code>002f399</code> fix: 打包导出失效（settings.js 初始化早于 export-bundle.js 注册）+ 对照阅读沉浸化 — theforeveriris</li>
+<li><code>35595da</code> feat: 文章内查找条 + 章节折叠 + 双栏对照阅读 + EPUB/整站打包导出 + 分享卡片多模板 + PWA shortcuts — theforeveriris</li>
+<li><code>aa666a0</code> feat(ci): 死链检查——内链全量校验 + 外链按日确定性抽查 — theforeveriris</li>
+</ul>
+<h2>2026-10-01</h2>
+<ul>
+<li><code>208ce22</code> feat: 移动端手势 + 存储管理页 + 拖拽打开 + 设置导出/导入 + 全文 RSS + sitemap + CI 冒烟测试 — theforeveriris</li>
+<li><code>17fdfe1</code> refactor(settings): 设置面板分组整理——语言/外观/阅读/工具与导出四大区块 — theforeveriris</li>
+<li><code>aabc435</code> feat(ui): 「打开本地文件」改为单一入口 + 弹出式选择面板 — theforeveriris</li>
+<li><code>0cd3dc6</code> feat(ui): 悬浮球菜单精简——去上下篇、合并本地文件入口、扫码弹窗去说明文字 — theforeveriris</li>
+<li><code>04961df</code> feat: 长按收藏/树内足迹 + 链接悬浮预览 + 扫码续读；移除演示模式与页头图标 — theforeveriris</li>
+<li><code>1e86d8b</code> feat: 文档演示模式 + CSV/TSV 表格 + IOS/VRP 高亮 + 历史收藏 + 阅读续读 + 全量离线 + 选区工具栏 + 分享卡片 — theforeveriris</li>
+<li><code>9be029e</code> feat: 自动主题 + 本地文件夹 + 界面多语言 + 单文件 HTML 导出 + PlantUML 降级 — theforeveriris</li>
+</ul>
+<h2>2026-09-29</h2>
+<ul>
+<li><code>46e79b3</code> feat(ui): 搜索改造为居中命令面板（Ctrl/⌘+K） — theforeveriris</li>
+<li><code>43003bf</code> feat(ui): 侧边栏标题显示 + 中文文件名解码 + 导航阅读进度重置 — theforeveriris</li>
+<li><code>7ff069e</code> feat(ui): 全局快捷键扩展 + 快捷键文档 — theforeveriris</li>
+<li><code>52e1578</code> feat(ui): 桌面端侧边栏折叠 + 内容区宽度可调 — theforeveriris</li>
+<li><code>c576253</code> feat: 修复编辑器、XSS 与解析器共 22 处缺陷 — theforeveriris</li>
+</ul>
+<h2>2026-07-31</h2>
+<ul>
+<li><code>bb3ff1a</code> feat: 更新文档并创建系统演示 — theforeveriris</li>
+<li><code>4ad2c06</code> feat: 更新文档并创建系统演示 — theforeveriris</li>
+<li><code>b18a2da</code> Add files via upload — Iris</li>
+<li><code>1ef2171</code> Create zhanweifu.png — Iris</li>
+<li><code>4879ef3</code> chore(pptx): 移除示例文档中 example 演示及对应 data 产物 — theforeveriris</li>
+<li><code>b99caed</code> feat: 分析打卡项目卡顿原因 — theforeveriris</li>
+<li><code>075cc6d</code> feat(pptx): 新建 raw/pptx CI/CD 构建工作流，集成真实 PPTX 演示 — theforeveriris</li>
+<li><code>3fce366</code> feat: 新增 PPTX 嵌入，参考 pkt 语法，支持缩略图网格+全屏放映 — theforeveriris</li>
+</ul>
+<h2>2026-07-22</h2>
+<ul>
+<li><code>7129817</code> fix: 语法说明代码块改用4反引号包裹避免内部反引号提前结束代码块 — theforeveriris</li>
+<li><code>3f0c825</code> fix: 修复代码选项卡点击和代码块内语法误解析问题，重写示例文档 — theforeveriris</li>
+<li><code>6747434</code> feat: 增加代码选项卡和分栏布局语法糖 — theforeveriris</li>
+<li><code>655a9db</code> feat(spoiler): 添加 ||内容|| 遮罩/剧透语法支持 — theforeveriris</li>
+<li><code>ebb9a5d</code> docs(pulse): 补充 pulsmini 迷你波形和波形生成器说明 — theforeveriris</li>
+<li><code>1c610d1</code> feat(pulse): 添加竖线扫描线样式切换，修复代码块内标签渲染，更新示例文档 — theforeveriris</li>
+<li><code>5cbe59d</code> feat(pulse): 更新为 DG-LAB 官方波形文件格式 — theforeveriris</li>
+<li><code>8716213</code> feat: 文档站集成郊狼波形文件解析 — theforeveriris</li>
+</ul>
+<h2>2026-07-18</h2>
+<ul>
+<li><code>0b1b4b2</code> feat: Iris Plugin Development and Docs — omajili-manbu</li>
+</ul>
+<h2>2026-07-16</h2>
+<ul>
+<li><code>a5bd246</code> refactor(plugins): 重构插件系统 API，增强扩展能力与生命周期管理- 插件 loader 支持生命周期钩子（init/beforeRender/afterRender/destroy）- render 支持 async/await，内置错误边界与友好回退 UI- 新增 priority 优先级机制，解决多插件竞争冲突- 新增 context 上下文传递（documentPath、config、registerResource）- 简化 loadPlugin（直接使用 import(url)，移除 Blob 中间层）- autoLoad 新增 manifest/directory.json 策略，摆脱对目录列表的依赖- 重写 qrcode.js 作为 v2 API 参考实现- 更新 plugin-development.md 与 readme-dev.md 文档Co-authored-by: Kimi <a href="mailto:kimi@moonshot.cn">kimi@moonshot.cn</a> — theforeveriris</li>
+<li><code>c767dab</code> feat(ensp): 修复 eNSP XML 解析器并添加示例文档 — theforeveriris</li>
+</ul>
+<h2>2026-07-14</h2>
+<ul>
+<li><code>84d672d</code> license: 采用 AGPL-3.0 + CC-BY-SA-4.0 多许可证方案 — theforeveriris</li>
+<li><code>db81c3f</code> fix(pkt): 修复 @[pkt] 嵌入语法不渲染的问题 — theforeveriris</li>
+<li><code>5fbb165</code> fix(pkt): 修复 Twofish 解密 + XML 解析，添加真实拓扑示例 — trae</li>
+</ul>
+<h2>2026-07-13</h2>
+<ul>
+<li><code>01034be</code> docs(pkt): 更新文档，补充 Packet Tracer 拓扑渲染功能说明 — theforeveriris</li>
+<li><code>a2247cf</code> feat(pkt): 新增 Packet Tracer .pkt 拓扑渲染功能 — theforeveriris</li>
+<li><code>c5e67a6</code> feat(editor): 对照 examples 全面优化工具栏菜单覆盖度 — theforeveriris</li>
+<li><code>ff4ce4e</code> docs: 新增编辑器说明文档，更新 README/readme-dev/features/feat — theforeveriris</li>
+<li><code>1981224</code> fix(gallery): 修复移动端渲染问题，移除三种样式 — theforeveriris</li>
+<li><code>032a9f6</code> feat(gallery): 删除 stamp，slider 改自动轮播，新增 4 种样式 — theforeveriris</li>
+<li><code>8973da5</code> feat(gallery): editorial 改瀑布流，tape 改软木板，新增 3 种样式 — theforeveriris</li>
+<li><code>8707338</code> feat(gallery): 删除 carousel，新增 4 种克制艺术风格 — theforeveriris</li>
+<li><code>e1465b3</code> feat(gallery): 新增 5 种画廊布局样式 — theforeveriris</li>
+<li><code>805452b</code> docs: 更新图片画廊示例文档 — theforeveriris</li>
+<li><code>f74036d</code> feat(gallery): 支持通过 @style 标记指定画廊布局样式 — theforeveriris</li>
+<li><code>d9fa764</code> feat(debug): 调试面板扩展为 6 分组实时监控 — theforeveriris</li>
+<li><code>bb091b7</code> docs: 全面更新文档体系，反映近期所有功能更新 — theforeveriris</li>
+</ul>
+<h2>2026-07-11</h2>
+<ul>
+<li><code>a9635c8</code> chore: 清理根目录，移动 feat.md 到 docs/ — theforeveriris</li>
+</ul>
+<h2>2026-07-10</h2>
+<ul>
+<li><code>9e72bd6</code> feat: 添加代码高亮和代码块复制功能 — theforeveriris</li>
+<li><code>2429e19</code> docs: 添加插件开发指南 — theforeveriris</li>
+</ul>
+<h2>2026-07-09</h2>
+<ul>
+<li><code>5906c31</code> docs: 重写项目文档，更新为当前实际代码结构 — github-actions[bot]</li>
+<li><code>f121401</code> docs: 更新表格示例文档，添加使用提示 — theforeveriris</li>
+<li><code>61ac951</code> docs: 添加表格使用示例文档 — theforeveriris</li>
+</ul>
+<h2>2026-05-24</h2>
+<ul>
+<li><code>5b54ffa</code> chore: remove giscus comments system — theforeveriris</li>
+<li><code>d8e6ff3</code> Remove music notation rendering feature — theforeveriris</li>
+<li><code>2382f27</code> Fix: use specific language types for embed rendering — theforeveriris</li>
+<li><code>257b786</code> 调整示例文档格式：源码在代码块中，渲染效果直接显示 — theforeveriris</li>
+<li><code>8fd67e9</code> 互换示例文档中的源码和渲染效果位置 — theforeveriris</li>
+<li><code>2612ded</code> 完善项目文档系统 — theforeveriris</li>
+<li><code>5fab43b</code> Add theme market system with 7 built-in themes and custom CSS support — theforeveriris</li>
+<li><code>6d20886</code> 实现插件系统和二维码生成插件 — theforeveriris</li>
+</ul>
+<h2>2026-05-22</h2>
+<ul>
+<li><code>24b683f</code> 更新 latex-examples.md — 鸢尾</li>
+<li><code>8f28f92</code> 更新 latex-examples.md — 鸢尾</li>
+<li><code>0a28b8a</code> fix: 修复 katex.js 渲染器，直接处理 katex-block div — theforeveriris</li>
+<li><code>5f4b91c</code> feat: 添加 LaTeX 公式支持 (KaTeX) — theforeveriris</li>
+<li><code>2a3dd2f</code> Add image lazy loading, gallery mode, and error fallback — theforeveriris</li>
+<li><code>8b07160</code> Add GitHub-style Alerts feature — theforeveriris</li>
+<li><code>efb80a2</code> Refactor: Update geojson and twitter examples to match embed examples format — theforeveriris</li>
+<li><code>7faffcb</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>983f78f</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>edce270</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>e70ab11</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>7b5258e</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>d9b4484</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>912867c</code> 更新 embed-examples.md — 鸢尾</li>
+<li><code>de9ab65</code> 更新 embed-examples.md — 鸢尾</li>
+</ul>
+<h2>2026-05-21</h2>
+<ul>
+<li><code>825e378</code> docs: 从markdown语法说明中删除重复的Mermaid图表内容 — theforeveriris</li>
+</ul>
+<h2>2026-05-20</h2>
+<ul>
+<li><code>ba8fa4f</code> 添加 Twitter/X 嵌入功能 — theforeveriris</li>
+<li><code>670479e</code> 添加 Git Diff 可视化功能 (diff2html) — theforeveriris</li>
+<li><code>00dfa72</code> 添加 OSMD 乐谱渲染功能 — theforeveriris</li>
+<li><code>4fcd83d</code> feat: 添加乐谱渲染支持 (ABC记谱法、MusicXML) — theforeveriris</li>
+<li><code>4358df1</code> fix: 修正 ApexCharts 示例文档的代码块类型，源码改为txt — theforeveriris</li>
+<li><code>7e3ecd6</code> feat: 添加 ApexCharts 交互式图表支持 — theforeveriris</li>
+<li><code>dd07edc</code> feat: 添加浏览器原生 HTML 元素与 Web API 支持 — theforeveriris</li>
+<li><code>5f66906</code> feat: 添加 GeoJSON/TopoJSON 地理数据可视化功能 — theforeveriris</li>
+<li><code>0fcc181</code> feat: 添加外部服务嵌入功能 — theforeveriris</li>
+<li><code>f1a3caf</code> fix: 修复多个 PlantUML 图表语法问题 — theforeveriris</li>
+<li><code>71c8ca3</code> fix: 修复多个 PlantUML 图表渲染问题 — theforeveriris</li>
+<li><code>b7abb03</code> feat: 添加 PlantUML 图表渲染支持 — theforeveriris</li>
+<li><code>fcd3d01</code> 更新 mermaid-examples.md — 鸢尾</li>
+<li><code>97bc72a</code> 更新 mermaid-examples.md — 鸢尾</li>
+<li><code>98fdf21</code> 更新 mermaid-examples.md — 鸢尾</li>
+<li><code>abb130f</code> fix: 严格修复四象限图、块图、XY图表的Mermaid语法 — theforeveriris</li>
+<li><code>0165e88</code> Fix all mermaid source code blocks using txt format — theforeveriris</li>
+<li><code>ad631e1</code> 更新 mermaid-examples.md — 鸢尾</li>
+<li><code>f8c8f63</code> 添加完整的 Mermaid 图表示例文档 — theforeveriris</li>
+<li><code>7738f7f</code> 添加 Mermaid 图表支持 — agelaia521</li>
+</ul>
+<h2>2026-05-19</h2>
+<ul>
+<li><code>e41fb66</code> 更新 Markdown 语法参考页面，添加每种语法的渲染效果预览 — agelaia521</li>
+<li><code>2a992d1</code> 修复文档中的相对链接 — theforeveriris</li>
+<li><code>f1be494</code> 更新所有文档 - 反映自动发现功能 — theforeveriris</li>
+<li><code>b1eecd4</code> Add multi-level documentation structure with test files — theforeveriris</li>
+<li><code>4a49e3b</code> Initial commit: Markdown previewer for GitHub Pages — agelaia521</li>
+</ul>
+<blockquote>
+<p>共 127 条（最多展示 200 条）。</p>
+</blockquote>
+]]></content:encoded>
+    </item>
     <item>
       <title>系统运行时截图</title>
       <link>https://theforeveriris.github.io/md-preview/docs/show.md</link>
@@ -174,7 +385,7 @@
 <h2>三、设置面板</h2>
 <h3>预设主题 + 自定义配色（取色器）</h3>
 <p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E8%AE%BE%E7%BD%AE-%E5%85%81%E8%AE%B8%E8%87%AA%E5%AE%9A%E4%B9%89%E9%A2%84%E8%AE%BE%E4%B8%BB%E9%A2%98%E6%88%96%E8%87%AA%E8%A1%8C%E9%85%8D%E8%89%B2.png" alt="设置-允许自定义预设主题或自行配色"></p>
-<p>7 种内置主题（default / github-light / github-dark / notion / arc / dracula / nord）一键切换；在此基础上提供：</p>
+<p>8 种内置主题（default / iris 鸢尾花紫 / github-light / github-dark / notion / arc / dracula / nord）一键切换；在此基础上提供：</p>
 <ul>
 <li><strong>自动主题（auto）</strong>：跟随系统亮暗实时切换，亮 / 暗配对可自由组合（默认紫粉渐变 + GitHub Dark）</li>
 <li><strong>界面语言</strong>：中文 / English，默认跟随浏览器语言，设置面板顶部一键切换</li>
@@ -182,6 +393,13 @@
 <li><strong>中性色取色器</strong>：背景 / 表面 / 边框 / 文字 / 次要文字 五个维度，可自由组合亮色或暗色主题</li>
 <li>所有配色持久化到 localStorage</li>
 </ul>
+<p><strong>鸢尾花紫主题</strong>（新增，亮色）：淡紫背景 <code>#f6f2fd</code> + 鸢尾品牌紫强调色 <code>#8B5CF6</code>，链接用更深的 <code>#6d3fd4</code> 保证白底对比度；卡片、代码块保持近白以便长时间阅读。</p>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E4%B8%BB%E9%A2%98-%E9%B8%A2%E5%B0%BE%E8%8A%B1%E7%B4%AB.png" alt="主题-鸢尾花紫"></p>
+<p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E8%AE%BE%E7%BD%AE-%E9%B8%A2%E5%B0%BE%E8%8A%B1%E7%B4%AB%E4%B8%BB%E9%A2%98%E9%80%89%E4%B8%AD.png" alt="设置-鸢尾花紫主题选中"></p>
+<blockquote>
+<p>图表类渲染（Mermaid / ApexCharts / 波形 / 图谱 / 划词导出）一律读取主题 CSS 变量：
+切换主题后它们会自动跟随配色，不再固定在某个写死的颜色上。</p>
+</blockquote>
 <p>详细文档：<a href="https://theforeveriris.github.io/md-preview/docs/theme-customization.md">主题定制</a></p>
 <hr>
 <h3>字体/字号/字重/字色 精细控制</h3>
@@ -325,7 +543,7 @@ Pulse 格式与示例：<a href="https://theforeveriris.github.io/md-preview/doc
 <td><a href="https://theforeveriris.github.io/md-preview/docs/examples/table-examples.md">table-examples.md</a></td>
 </tr>
 <tr>
-<td>7 种内置主题视觉对比</td>
+<td>8 种内置主题视觉对比</td>
 <td><a href="https://theforeveriris.github.io/md-preview/docs/examples/theme-demo.md">theme-demo.md</a></td>
 </tr>
 <tr>
@@ -739,11 +957,11 @@ li:hover { color: #b88aad; }
       <link>https://theforeveriris.github.io/md-preview/docs/theme-customization.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/theme-customization.md</guid>
       <pubDate>Mon, 26 Oct 2026 21:01:56 GMT</pubDate>
-      <description>Markdown Preview 提供三种层级的外观定制方式，由易到难： 1. 预设主题 — 内置 7 套配色，一键切换 2. 可视化取色器 — 拖动色块即可调整主题色，无需写 CSS 3. 自定义 CSS — 加载外部 CSS 文件，完全控制样式 --- | ID | 名称 | 说明 | |----|------|------| | | 默认 | 浅紫浅粉渐变风格 | | | GitHub Li</description>
+      <description>Markdown Preview 提供三种层级的外观定制方式，由易到难： 1. 预设主题 — 内置 8 套配色，一键切换 2. 可视化取色器 — 拖动色块即可调整主题色，无需写 CSS 3. 自定义 CSS — 加载外部 CSS 文件，完全控制样式 --- | ID | 名称 | 说明 | |----|------|------| | | 默认 | 浅紫浅粉渐变风格 | | | 鸢尾花紫 | 亮色</description>
       <content:encoded><![CDATA[<h1>主题定制</h1>
 <p>Markdown Preview 提供三种层级的外观定制方式，由易到难：</p>
 <ol>
-<li><strong>预设主题</strong> — 内置 7 套配色，一键切换</li>
+<li><strong>预设主题</strong> — 内置 8 套配色，一键切换</li>
 <li><strong>可视化取色器</strong> — 拖动色块即可调整主题色，无需写 CSS</li>
 <li><strong>自定义 CSS</strong> — 加载外部 CSS 文件，完全控制样式</li>
 </ol>
@@ -761,6 +979,11 @@ li:hover { color: #b88aad; }
 <td><code>default</code></td>
 <td>默认</td>
 <td>浅紫浅粉渐变风格</td>
+</tr>
+<tr>
+<td><code>iris</code></td>
+<td>鸢尾花紫</td>
+<td>亮色；淡紫底（<code>#f6f2fd</code>）+ 鸢尾品牌紫强调色（<code>#8B5CF6</code>），链接用更深的 <code>#6d3fd4</code> 保证对比度</td>
 </tr>
 <tr>
 <td><code>github-light</code></td>
@@ -4757,198 +4980,6 @@ Super<wbr>cali<wbr>fragilistic<wbr>expiali<wbr>docious（有换行点）</p>
 <li><a href="https://theforeveriris.github.io/md-preview/docs/editor.md">Markdown 编辑器说明</a>：编辑器的自动补全、工具栏菜单、导入导出能力</li>
 <li><a href="https://theforeveriris.github.io/md-preview/docs/plugin-development.md">插件开发指南</a>：自定义渲染器与插件扩展机制</li>
 </ul>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>变更日志</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/changelog.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/changelog.md</guid>
-      <pubDate>Mon, 19 Oct 2026 09:26:28 GMT</pubDate>
-      <description>&gt; 本页由 从 git 历史自动生成，请勿手动编辑。 - feat(batch4): 图 / 表自动编号与交叉引用（SW v8.48） — theforeveriris - feat(batch1): 设置项搜索 + 脚注悬浮预览 + 时间线组件（SW v8.45） — theforeveriris - docs: 同步本轮新增功能到 README 特性清单与功能路线图 — theforeveri</description>
-      <content:encoded><![CDATA[<h1>变更日志</h1>
-<blockquote>
-<p>本页由 <code>iris/scripts/build-changelog.js</code> 从 git 历史自动生成，请勿手动编辑。</p>
-</blockquote>
-<h2>2026-10-19</h2>
-<ul>
-<li><code>d74e080</code> feat(batch4): 图 / 表自动编号与交叉引用（SW v8.48） — theforeveriris</li>
-<li><code>94d8f3f</code> feat(batch1): 设置项搜索 + 脚注悬浮预览 + 时间线组件（SW v8.45） — theforeveriris</li>
-<li><code>a761039</code> docs: 同步本轮新增功能到 README 特性清单与功能路线图 — theforeveriris</li>
-<li><code>fe6ec47</code> feat(batch3): OpenAPI 交互文档 + 竖排模式 + Git 历史/变更订阅 + 渐进式代码高亮（SW v8.43） — theforeveriris</li>
-<li><code>8ddc218</code> feat(batch2): 可见即渲染 + 术语表悬浮 + HTTP 请求块 + 开发者小工具 + 中文排版 lint + 拼音注音（SW v8.42） — theforeveriris</li>
-<li><code>ecabc54</code> feat(batch1): 相邻文档预取 + 屏外跳过布局 + CSV→图表 + SQL DDL→ER + 正文繁简转换 + 中文排版选项 + 自动变更日志页（SW v8.41） — theforeveriris</li>
-</ul>
-<h2>2026-10-18</h2>
-<ul>
-<li><code>fdc726d</code> refactor(renderers): 统一渲染器调度器 runRenderers——注册表遍历顺序 await，消除三处硬编码清单；geo 转正支持围栏；embedded 四段挂载逻辑收敛为工厂；新增顺序/错误隔离测试（SW v8.38） — theforeveriris</li>
-</ul>
-<h2>2026-10-17</h2>
-<ul>
-<li><code>3f5cdf6</code> feat(tags): 全部文档补写 frontmatter tags（44 篇）+ 标签面板改为顶栏 Files/Index/标签 第三选项卡 — theforeveriris</li>
-</ul>
-<h2>2026-10-05</h2>
-<ul>
-<li><code>2f7b78c</code> feat: 标签系统 + 万能命令面板 + 搜索直达关键词 + live 预览沙箱 + JSON 可折叠树 + 图表悬浮工具条 + 快照分享 + 专注模式 + 多标签页同步 + Issue 一键反馈 + 讲义打印样式 — theforeveriris</li>
-</ul>
-<h2>2026-10-02</h2>
-<ul>
-<li><code>002f399</code> fix: 打包导出失效（settings.js 初始化早于 export-bundle.js 注册）+ 对照阅读沉浸化 — theforeveriris</li>
-<li><code>35595da</code> feat: 文章内查找条 + 章节折叠 + 双栏对照阅读 + EPUB/整站打包导出 + 分享卡片多模板 + PWA shortcuts — theforeveriris</li>
-<li><code>aa666a0</code> feat(ci): 死链检查——内链全量校验 + 外链按日确定性抽查 — theforeveriris</li>
-</ul>
-<h2>2026-10-01</h2>
-<ul>
-<li><code>208ce22</code> feat: 移动端手势 + 存储管理页 + 拖拽打开 + 设置导出/导入 + 全文 RSS + sitemap + CI 冒烟测试 — theforeveriris</li>
-<li><code>17fdfe1</code> refactor(settings): 设置面板分组整理——语言/外观/阅读/工具与导出四大区块 — theforeveriris</li>
-<li><code>aabc435</code> feat(ui): 「打开本地文件」改为单一入口 + 弹出式选择面板 — theforeveriris</li>
-<li><code>0cd3dc6</code> feat(ui): 悬浮球菜单精简——去上下篇、合并本地文件入口、扫码弹窗去说明文字 — theforeveriris</li>
-<li><code>04961df</code> feat: 长按收藏/树内足迹 + 链接悬浮预览 + 扫码续读；移除演示模式与页头图标 — theforeveriris</li>
-<li><code>1e86d8b</code> feat: 文档演示模式 + CSV/TSV 表格 + IOS/VRP 高亮 + 历史收藏 + 阅读续读 + 全量离线 + 选区工具栏 + 分享卡片 — theforeveriris</li>
-<li><code>9be029e</code> feat: 自动主题 + 本地文件夹 + 界面多语言 + 单文件 HTML 导出 + PlantUML 降级 — theforeveriris</li>
-</ul>
-<h2>2026-09-29</h2>
-<ul>
-<li><code>46e79b3</code> feat(ui): 搜索改造为居中命令面板（Ctrl/⌘+K） — theforeveriris</li>
-<li><code>43003bf</code> feat(ui): 侧边栏标题显示 + 中文文件名解码 + 导航阅读进度重置 — theforeveriris</li>
-<li><code>7ff069e</code> feat(ui): 全局快捷键扩展 + 快捷键文档 — theforeveriris</li>
-<li><code>52e1578</code> feat(ui): 桌面端侧边栏折叠 + 内容区宽度可调 — theforeveriris</li>
-<li><code>c576253</code> feat: 修复编辑器、XSS 与解析器共 22 处缺陷 — theforeveriris</li>
-</ul>
-<h2>2026-07-31</h2>
-<ul>
-<li><code>bb3ff1a</code> feat: 更新文档并创建系统演示 — theforeveriris</li>
-<li><code>4ad2c06</code> feat: 更新文档并创建系统演示 — theforeveriris</li>
-<li><code>b18a2da</code> Add files via upload — Iris</li>
-<li><code>1ef2171</code> Create zhanweifu.png — Iris</li>
-<li><code>4879ef3</code> chore(pptx): 移除示例文档中 example 演示及对应 data 产物 — theforeveriris</li>
-<li><code>b99caed</code> feat: 分析打卡项目卡顿原因 — theforeveriris</li>
-<li><code>075cc6d</code> feat(pptx): 新建 raw/pptx CI/CD 构建工作流，集成真实 PPTX 演示 — theforeveriris</li>
-<li><code>3fce366</code> feat: 新增 PPTX 嵌入，参考 pkt 语法，支持缩略图网格+全屏放映 — theforeveriris</li>
-</ul>
-<h2>2026-07-22</h2>
-<ul>
-<li><code>7129817</code> fix: 语法说明代码块改用4反引号包裹避免内部反引号提前结束代码块 — theforeveriris</li>
-<li><code>3f0c825</code> fix: 修复代码选项卡点击和代码块内语法误解析问题，重写示例文档 — theforeveriris</li>
-<li><code>6747434</code> feat: 增加代码选项卡和分栏布局语法糖 — theforeveriris</li>
-<li><code>655a9db</code> feat(spoiler): 添加 ||内容|| 遮罩/剧透语法支持 — theforeveriris</li>
-<li><code>ebb9a5d</code> docs(pulse): 补充 pulsmini 迷你波形和波形生成器说明 — theforeveriris</li>
-<li><code>1c610d1</code> feat(pulse): 添加竖线扫描线样式切换，修复代码块内标签渲染，更新示例文档 — theforeveriris</li>
-<li><code>5cbe59d</code> feat(pulse): 更新为 DG-LAB 官方波形文件格式 — theforeveriris</li>
-<li><code>8716213</code> feat: 文档站集成郊狼波形文件解析 — theforeveriris</li>
-</ul>
-<h2>2026-07-18</h2>
-<ul>
-<li><code>0b1b4b2</code> feat: Iris Plugin Development and Docs — omajili-manbu</li>
-</ul>
-<h2>2026-07-16</h2>
-<ul>
-<li><code>a5bd246</code> refactor(plugins): 重构插件系统 API，增强扩展能力与生命周期管理- 插件 loader 支持生命周期钩子（init/beforeRender/afterRender/destroy）- render 支持 async/await，内置错误边界与友好回退 UI- 新增 priority 优先级机制，解决多插件竞争冲突- 新增 context 上下文传递（documentPath、config、registerResource）- 简化 loadPlugin（直接使用 import(url)，移除 Blob 中间层）- autoLoad 新增 manifest/directory.json 策略，摆脱对目录列表的依赖- 重写 qrcode.js 作为 v2 API 参考实现- 更新 plugin-development.md 与 readme-dev.md 文档Co-authored-by: Kimi <a href="mailto:kimi@moonshot.cn">kimi@moonshot.cn</a> — theforeveriris</li>
-<li><code>c767dab</code> feat(ensp): 修复 eNSP XML 解析器并添加示例文档 — theforeveriris</li>
-</ul>
-<h2>2026-07-14</h2>
-<ul>
-<li><code>84d672d</code> license: 采用 AGPL-3.0 + CC-BY-SA-4.0 多许可证方案 — theforeveriris</li>
-<li><code>db81c3f</code> fix(pkt): 修复 @[pkt] 嵌入语法不渲染的问题 — theforeveriris</li>
-<li><code>5fbb165</code> fix(pkt): 修复 Twofish 解密 + XML 解析，添加真实拓扑示例 — trae</li>
-</ul>
-<h2>2026-07-13</h2>
-<ul>
-<li><code>01034be</code> docs(pkt): 更新文档，补充 Packet Tracer 拓扑渲染功能说明 — theforeveriris</li>
-<li><code>a2247cf</code> feat(pkt): 新增 Packet Tracer .pkt 拓扑渲染功能 — theforeveriris</li>
-<li><code>c5e67a6</code> feat(editor): 对照 examples 全面优化工具栏菜单覆盖度 — theforeveriris</li>
-<li><code>ff4ce4e</code> docs: 新增编辑器说明文档，更新 README/readme-dev/features/feat — theforeveriris</li>
-<li><code>1981224</code> fix(gallery): 修复移动端渲染问题，移除三种样式 — theforeveriris</li>
-<li><code>032a9f6</code> feat(gallery): 删除 stamp，slider 改自动轮播，新增 4 种样式 — theforeveriris</li>
-<li><code>8973da5</code> feat(gallery): editorial 改瀑布流，tape 改软木板，新增 3 种样式 — theforeveriris</li>
-<li><code>8707338</code> feat(gallery): 删除 carousel，新增 4 种克制艺术风格 — theforeveriris</li>
-<li><code>e1465b3</code> feat(gallery): 新增 5 种画廊布局样式 — theforeveriris</li>
-<li><code>805452b</code> docs: 更新图片画廊示例文档 — theforeveriris</li>
-<li><code>f74036d</code> feat(gallery): 支持通过 @style 标记指定画廊布局样式 — theforeveriris</li>
-<li><code>d9fa764</code> feat(debug): 调试面板扩展为 6 分组实时监控 — theforeveriris</li>
-<li><code>bb091b7</code> docs: 全面更新文档体系，反映近期所有功能更新 — theforeveriris</li>
-</ul>
-<h2>2026-07-11</h2>
-<ul>
-<li><code>a9635c8</code> chore: 清理根目录，移动 feat.md 到 docs/ — theforeveriris</li>
-</ul>
-<h2>2026-07-10</h2>
-<ul>
-<li><code>9e72bd6</code> feat: 添加代码高亮和代码块复制功能 — theforeveriris</li>
-<li><code>2429e19</code> docs: 添加插件开发指南 — theforeveriris</li>
-</ul>
-<h2>2026-07-09</h2>
-<ul>
-<li><code>5906c31</code> docs: 重写项目文档，更新为当前实际代码结构 — github-actions[bot]</li>
-<li><code>f121401</code> docs: 更新表格示例文档，添加使用提示 — theforeveriris</li>
-<li><code>61ac951</code> docs: 添加表格使用示例文档 — theforeveriris</li>
-</ul>
-<h2>2026-05-24</h2>
-<ul>
-<li><code>5b54ffa</code> chore: remove giscus comments system — theforeveriris</li>
-<li><code>d8e6ff3</code> Remove music notation rendering feature — theforeveriris</li>
-<li><code>2382f27</code> Fix: use specific language types for embed rendering — theforeveriris</li>
-<li><code>257b786</code> 调整示例文档格式：源码在代码块中，渲染效果直接显示 — theforeveriris</li>
-<li><code>8fd67e9</code> 互换示例文档中的源码和渲染效果位置 — theforeveriris</li>
-<li><code>2612ded</code> 完善项目文档系统 — theforeveriris</li>
-<li><code>5fab43b</code> Add theme market system with 7 built-in themes and custom CSS support — theforeveriris</li>
-<li><code>6d20886</code> 实现插件系统和二维码生成插件 — theforeveriris</li>
-</ul>
-<h2>2026-05-22</h2>
-<ul>
-<li><code>24b683f</code> 更新 latex-examples.md — 鸢尾</li>
-<li><code>8f28f92</code> 更新 latex-examples.md — 鸢尾</li>
-<li><code>0a28b8a</code> fix: 修复 katex.js 渲染器，直接处理 katex-block div — theforeveriris</li>
-<li><code>5f4b91c</code> feat: 添加 LaTeX 公式支持 (KaTeX) — theforeveriris</li>
-<li><code>2a3dd2f</code> Add image lazy loading, gallery mode, and error fallback — theforeveriris</li>
-<li><code>8b07160</code> Add GitHub-style Alerts feature — theforeveriris</li>
-<li><code>efb80a2</code> Refactor: Update geojson and twitter examples to match embed examples format — theforeveriris</li>
-<li><code>7faffcb</code> 更新 embed-examples.md — 鸢尾</li>
-<li><code>983f78f</code> 更新 embed-examples.md — 鸢尾</li>
-<li><code>edce270</code> 更新 embed-examples.md — 鸢尾</li>
-<li><code>e70ab11</code> 更新 embed-examples.md — 鸢尾</li>
-<li><code>7b5258e</code> 更新 embed-examples.md — 鸢尾</li>
-<li><code>d9b4484</code> 更新 embed-examples.md — 鸢尾</li>
-<li><code>912867c</code> 更新 embed-examples.md — 鸢尾</li>
-<li><code>de9ab65</code> 更新 embed-examples.md — 鸢尾</li>
-</ul>
-<h2>2026-05-21</h2>
-<ul>
-<li><code>825e378</code> docs: 从markdown语法说明中删除重复的Mermaid图表内容 — theforeveriris</li>
-</ul>
-<h2>2026-05-20</h2>
-<ul>
-<li><code>ba8fa4f</code> 添加 Twitter/X 嵌入功能 — theforeveriris</li>
-<li><code>670479e</code> 添加 Git Diff 可视化功能 (diff2html) — theforeveriris</li>
-<li><code>00dfa72</code> 添加 OSMD 乐谱渲染功能 — theforeveriris</li>
-<li><code>4fcd83d</code> feat: 添加乐谱渲染支持 (ABC记谱法、MusicXML) — theforeveriris</li>
-<li><code>4358df1</code> fix: 修正 ApexCharts 示例文档的代码块类型，源码改为txt — theforeveriris</li>
-<li><code>7e3ecd6</code> feat: 添加 ApexCharts 交互式图表支持 — theforeveriris</li>
-<li><code>dd07edc</code> feat: 添加浏览器原生 HTML 元素与 Web API 支持 — theforeveriris</li>
-<li><code>5f66906</code> feat: 添加 GeoJSON/TopoJSON 地理数据可视化功能 — theforeveriris</li>
-<li><code>0fcc181</code> feat: 添加外部服务嵌入功能 — theforeveriris</li>
-<li><code>f1a3caf</code> fix: 修复多个 PlantUML 图表语法问题 — theforeveriris</li>
-<li><code>71c8ca3</code> fix: 修复多个 PlantUML 图表渲染问题 — theforeveriris</li>
-<li><code>b7abb03</code> feat: 添加 PlantUML 图表渲染支持 — theforeveriris</li>
-<li><code>fcd3d01</code> 更新 mermaid-examples.md — 鸢尾</li>
-<li><code>97bc72a</code> 更新 mermaid-examples.md — 鸢尾</li>
-<li><code>98fdf21</code> 更新 mermaid-examples.md — 鸢尾</li>
-<li><code>abb130f</code> fix: 严格修复四象限图、块图、XY图表的Mermaid语法 — theforeveriris</li>
-<li><code>0165e88</code> Fix all mermaid source code blocks using txt format — theforeveriris</li>
-<li><code>ad631e1</code> 更新 mermaid-examples.md — 鸢尾</li>
-<li><code>f8c8f63</code> 添加完整的 Mermaid 图表示例文档 — theforeveriris</li>
-<li><code>7738f7f</code> 添加 Mermaid 图表支持 — agelaia521</li>
-</ul>
-<h2>2026-05-19</h2>
-<ul>
-<li><code>e41fb66</code> 更新 Markdown 语法参考页面，添加每种语法的渲染效果预览 — agelaia521</li>
-<li><code>2a992d1</code> 修复文档中的相对链接 — theforeveriris</li>
-<li><code>f1be494</code> 更新所有文档 - 反映自动发现功能 — theforeveriris</li>
-<li><code>b1eecd4</code> Add multi-level documentation structure with test files — theforeveriris</li>
-<li><code>4a49e3b</code> Initial commit: Markdown previewer for GitHub Pages — agelaia521</li>
-</ul>
-<blockquote>
-<p>共 114 条（最多展示 200 条）。</p>
-</blockquote>
 ]]></content:encoded>
     </item>
     <item>
@@ -10367,7 +10398,7 @@ function hello() {
       <link>https://theforeveriris.github.io/md-preview/docs/examples/theme-demo.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/theme-demo.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
-      <description>这是一个展示主题系统的示例文档。点击左下角的调色盘图标可以切换不同的主题。 | 主题名称 | 描述 | |---------|------| | 🌸 紫粉渐变 | 默认的浅紫浅粉渐变主题 | | ⚡ GitHub Light | 仿 GitHub 明亮主题 | | 🌙 GitHub Dark | 仿 GitHub 深色主题 | | 📝 Notion | 仿 Notion 暖灰主题 | | �</description>
+      <description>这是一个展示主题系统的示例文档。点击左下角的调色盘图标可以切换不同的主题。 | 主题名称 | 描述 | |---------|------| | 🌸 紫粉渐变 | 默认的浅紫浅粉渐变主题 | | 💜 鸢尾花紫 | 亮色淡紫底 + 鸢尾品牌紫强调色 | | ⚡ GitHub Light | 仿 GitHub 明亮主题 | | 🌙 GitHub Dark | 仿 GitHub 深色主题 | | </description>
       <content:encoded><![CDATA[<h1>主题市场演示</h1>
 <p>这是一个展示主题系统的示例文档。点击左下角的调色盘图标可以切换不同的主题。</p>
 <h2>可用主题</h2>
@@ -10381,6 +10412,10 @@ function hello() {
 <tbody><tr>
 <td>🌸 紫粉渐变</td>
 <td>默认的浅紫浅粉渐变主题</td>
+</tr>
+<tr>
+<td>💜 鸢尾花紫</td>
+<td>亮色淡紫底 + 鸢尾品牌紫强调色</td>
 </tr>
 <tr>
 <td>⚡ GitHub Light</td>

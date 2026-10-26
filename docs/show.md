@@ -282,12 +282,21 @@ DG-LAB 郊狼设备 `.pulse` 波形文件的完整渲染器。基于 `Dungeonlab
 
 ![设置-允许自定义预设主题或自行配色](image/设置-允许自定义预设主题或自行配色.png)
 
-7 种内置主题（default / github-light / github-dark / notion / arc / dracula / nord）一键切换；在此基础上提供：
+8 种内置主题（default / iris 鸢尾花紫 / github-light / github-dark / notion / arc / dracula / nord）一键切换；在此基础上提供：
 - **自动主题（auto）**：跟随系统亮暗实时切换，亮 / 暗配对可自由组合（默认紫粉渐变 + GitHub Dark）
 - **界面语言**：中文 / English，默认跟随浏览器语言，设置面板顶部一键切换
 - **强调色取色器**：主色 / 粉色 / 深色 独立调整
 - **中性色取色器**：背景 / 表面 / 边框 / 文字 / 次要文字 五个维度，可自由组合亮色或暗色主题
 - 所有配色持久化到 localStorage
+
+**鸢尾花紫主题**（新增，亮色）：淡紫背景 `#f6f2fd` + 鸢尾品牌紫强调色 `#8B5CF6`，链接用更深的 `#6d3fd4` 保证白底对比度；卡片、代码块保持近白以便长时间阅读。
+
+![主题-鸢尾花紫](image/主题-鸢尾花紫.png)
+
+![设置-鸢尾花紫主题选中](image/设置-鸢尾花紫主题选中.png)
+
+> 图表类渲染（Mermaid / ApexCharts / 波形 / 图谱 / 划词导出）一律读取主题 CSS 变量：
+> 切换主题后它们会自动跟随配色，不再固定在某个写死的颜色上。
 
 详细文档：[主题定制](theme-customization.md)
 
@@ -488,7 +497,7 @@ Pulse 格式与示例：[Pulse 波形示例](examples/pulse-examples.md)
 |----------|------------|
 | Markdown 基础语法与排版 | [basic-usage.md](examples/basic-usage.md) / [markdown-syntax.md](examples/markdown-syntax.md) |
 | 表格展示与长表格滚动优化 | [table-examples.md](examples/table-examples.md) |
-| 7 种内置主题视觉对比 | [theme-demo.md](examples/theme-demo.md) |
+| 8 种内置主题视觉对比 | [theme-demo.md](examples/theme-demo.md) |
 | 图片灯箱与画廊布局 | [image-gallery-examples.md](examples/image-gallery-examples.md) / [gallery-layouts.md](examples/gallery-layouts.md) |
 | GitHub Alerts 提示块 | [github-alerts-examples.md](examples/github-alerts-examples.md) |
 | HTML 原生标签排版技巧 | [native-html-examples.md](examples/native-html-examples.md) |

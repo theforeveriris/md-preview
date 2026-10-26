@@ -610,7 +610,7 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │   │   ├── responsive.css        # 响应式
 │   │   ├── pkt/pkt.css           # Packet Tracer 渲染样式
 │   │   ├── pptx.css              # PPTX 网格 + 放映样式
-│   │   └── themes/themes.css     # 6 种亮暗预设主题（default 为 base.css 默认值，不计入 preset 数）；README 口径「7 种」= default + 6 preset 的 --color-* 覆盖
+│   │   └── themes/themes.css     # 7 种亮暗预设主题（default 为 base.css 默认值，不计入 preset 数）；README 口径「8 种」= default + 7 preset 的 --color-* 覆盖
 │   ├── js/
 │   │   ├── settings.js           # 设置面板 + customColors + fontConfig
 │   │   ├── themes/theme-manager.js

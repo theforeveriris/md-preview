@@ -2,8 +2,8 @@
   {
     "path": "changelog.md",
     "title": "变更日志",
-    "preview": "变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-19 - d74e080 feat(batch4): 图 / 表自动编号与交叉引用（SW v8.48） — theforeveriris - 94d8f3f feat(batch1): 设置项搜索 + 脚注悬浮预览 + 时间线组件（SW v8.45） — ",
-    "searchText": "变更日志 规划 变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-19 - d74e080 feat(batch4): 图 / 表自动编号与交叉引用（SW v8.48） — theforeveriris - 94d8f3f feat(batch1): 设置项搜索 + 脚注悬浮预览 + 时间线组件（SW v8.45） —  changelog.md 變更日誌 規劃 bgrz gh",
+    "preview": "变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-27 - f230013 docs(screenshots): 46 张运行时截图全量重拍（新品牌紫 + 新 UI），show.md 补第六/七节配图 — theforeveriris - ff29fdb feat(artwork): 站点强调色统一为品牌",
+    "searchText": "变更日志 规划 变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-27 - f230013 docs(screenshots): 46 张运行时截图全量重拍（新品牌紫 + 新 UI），show.md 补第六/七节配图 — theforeveriris - ff29fdb feat(artwork): 站点强调色统一为品牌 changelog.md 變更日誌 規劃 bgrz gh",
     "tags": [
       "规划"
     ]
@@ -344,8 +344,8 @@
   {
     "path": "examples/theme-demo.md",
     "title": "主题市场演示",
-    "preview": "主题市场演示 这是一个展示主题系统的示例文档。点击左下角的调色盘图标可以切换不同的主题。 可用主题 | 主题名称 | 描述 | |---------|------| | 🌸 紫粉渐变 | 默认的浅紫浅粉渐变主题 | | ⚡ GitHub Light | 仿 GitHub 明亮主题 | | 🌙 GitHub Dark | 仿 GitHub 深色主题 | | 📝 Notion | 仿 Notio",
-    "searchText": "主题市场演示 主题 主题市场演示 这是一个展示主题系统的示例文档。点击左下角的调色盘图标可以切换不同的主题。 可用主题 | 主题名称 | 描述 | |---------|------| | 🌸 紫粉渐变 | 默认的浅紫浅粉渐变主题 | | ⚡ GitHub Light | 仿 GitHub 明亮主题 | | 🌙 GitHub Dark | 仿 GitHub 深色主题 | | 📝 Notion | 仿 Notio examples/theme-demo.md 主題市場演示 主題 ztscys zt",
+    "preview": "主题市场演示 这是一个展示主题系统的示例文档。点击左下角的调色盘图标可以切换不同的主题。 可用主题 | 主题名称 | 描述 | |---------|------| | 🌸 紫粉渐变 | 默认的浅紫浅粉渐变主题 | | 💜 鸢尾花紫 | 亮色淡紫底 + 鸢尾品牌紫强调色 | | ⚡ GitHub Light | 仿 GitHub 明亮主题 | | 🌙 GitHub Dark | 仿 GitH",
+    "searchText": "主题市场演示 主题 主题市场演示 这是一个展示主题系统的示例文档。点击左下角的调色盘图标可以切换不同的主题。 可用主题 | 主题名称 | 描述 | |---------|------| | 🌸 紫粉渐变 | 默认的浅紫浅粉渐变主题 | | 💜 鸢尾花紫 | 亮色淡紫底 + 鸢尾品牌紫强调色 | | ⚡ GitHub Light | 仿 GitHub 明亮主题 | | 🌙 GitHub Dark | 仿 GitH examples/theme-demo.md 主題市場演示 主題 ztscys zt",
     "tags": [
       "主题"
     ]
@@ -437,8 +437,8 @@
   {
     "path": "theme-customization.md",
     "title": "主题定制",
-    "preview": "主题定制 Markdown Preview 提供三种层级的外观定制方式，由易到难： 1. 预设主题 — 内置 7 套配色，一键切换 2. 可视化取色器 — 拖动色块即可调整主题色，无需写 CSS 3. 自定义 CSS — 加载外部 CSS 文件，完全控制样式 --- 一、内置主题 | ID | 名称 | 说明 | |----|------|------| | default | 默认 | 浅紫浅粉",
-    "searchText": "主题定制 主题 配置 主题定制 Markdown Preview 提供三种层级的外观定制方式，由易到难： 1. 预设主题 — 内置 7 套配色，一键切换 2. 可视化取色器 — 拖动色块即可调整主题色，无需写 CSS 3. 自定义 CSS — 加载外部 CSS 文件，完全控制样式 --- 一、内置主题 | ID | 名称 | 说明 | |----|------|------| | default | 默认 | 浅紫浅粉 theme-customization.md 主題定製 主題 配置 ztdz zt pz",
+    "preview": "主题定制 Markdown Preview 提供三种层级的外观定制方式，由易到难： 1. 预设主题 — 内置 8 套配色，一键切换 2. 可视化取色器 — 拖动色块即可调整主题色，无需写 CSS 3. 自定义 CSS — 加载外部 CSS 文件，完全控制样式 --- 一、内置主题 | ID | 名称 | 说明 | |----|------|------| | default | 默认 | 浅紫浅粉",
+    "searchText": "主题定制 主题 配置 主题定制 Markdown Preview 提供三种层级的外观定制方式，由易到难： 1. 预设主题 — 内置 8 套配色，一键切换 2. 可视化取色器 — 拖动色块即可调整主题色，无需写 CSS 3. 自定义 CSS — 加载外部 CSS 文件，完全控制样式 --- 一、内置主题 | ID | 名称 | 说明 | |----|------|------| | default | 默认 | 浅紫浅粉 theme-customization.md 主題定製 主題 配置 ztdz zt pz",
     "tags": [
       "主题",
       "配置"

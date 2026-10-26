@@ -388,7 +388,7 @@
       return window.MarkdownPreview.ColorUtils.getThemeVar(name, fallback);
     };
     return {
-      accent: var_('--color-accent-purple', '#8B5CF6'),
+      accent: var_('--color-accent-purple', '#d4a5c9'),
       accentDeep: var_('--color-accent-purple-deep', '#b88aad'),
       accentPink: var_('--color-accent-pink', '#f2c4ce'),
       surface: var_('--color-surface', '#ffffff'),
@@ -1058,6 +1058,7 @@
     var startTime = null;
     var rafId = null;
     var running = true;
+    var paused = false; // 离屏暂停标记（IO 驱动；strict mode 下缺声明会让首帧抛 ReferenceError）
 
     function frame(timestamp) {
       if (!running || paused) { rafId = null; return; }
@@ -1089,10 +1090,15 @@
     // pause/resume：离屏暂停（IO 驱动），回视口续播
     return {
       el: canvas.closest('.pulse-widget') || null,
-      pause: function() { paused = true; if (rafId) cancelAnimationFrame(rafId); rafId = null; },
+      pause: function() {
+        paused = true;
+        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      },
       resume: function() {
-        if (!running || paused === false) { paused = false; if (!rafId) rafId = requestAnimationFrame(frame); return; }
+        if (!running || !paused) return;
         paused = false;
+        // 续播重置基准时间：否则暂停期间累积的 elapsed 会让画面跳帧
+        startTime = null;
         if (!rafId) rafId = requestAnimationFrame(frame);
       },
       stop: function() {
@@ -1281,6 +1287,7 @@
     requestAnimationFrame(function() {
       var anim = startAnimation(canvas, wave, parsed, infoLeft, styleRef, viewModeRef);
       animations.push(anim);
+      attachAnimIO(anim); // 大部件的 anim 此刻才存在，需即时挂载
     });
 
     return widget;
@@ -1367,14 +1374,14 @@
     // 主题色帧外缓存一次（RAF 内每帧 4 次 getComputedStyle 会强制重算样式），
     // themechange 时刷新
     var themeColors = {
-      accent: getComputedStyle(document.documentElement).getPropertyValue('--color-accent-purple').trim() || '#8B5CF6',
+      accent: getComputedStyle(document.documentElement).getPropertyValue('--color-accent-purple').trim() || '#d4a5c9',
       accentPink: getComputedStyle(document.documentElement).getPropertyValue('--color-accent-pink').trim() || '#f2c4ce',
       border: getComputedStyle(document.documentElement).getPropertyValue('--color-border').trim() || '#f0f0f0',
       bg: getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim() || '#ffffff'
     };
     var onMiniThemeChange = function() {
       var cs = getComputedStyle(document.documentElement);
-      themeColors.accent = cs.getPropertyValue('--color-accent-purple').trim() || '#8B5CF6';
+      themeColors.accent = cs.getPropertyValue('--color-accent-purple').trim() || '#d4a5c9';
       themeColors.accentPink = cs.getPropertyValue('--color-accent-pink').trim() || '#f2c4ce';
       themeColors.border = cs.getPropertyValue('--color-border').trim() || '#f0f0f0';
       themeColors.bg = cs.getPropertyValue('--color-surface').trim() || '#ffffff';
@@ -1477,7 +1484,7 @@
     };
     window.addEventListener('resize', onResize);
 
-    animations.push({
+    var miniHandle = {
       el: canvasWrap.closest('.pulse-mini-widget') || null,
       pause: function() { paused = true; if (rafId) cancelAnimationFrame(rafId); rafId = 0; },
       resume: function() { paused = false; if (!rafId) rafId = requestAnimationFrame(draw); },
@@ -1487,17 +1494,73 @@
         window.removeEventListener('resize', onResize);
         window.removeEventListener('themechange', onMiniThemeChange);
       }
-    });
+    };
+    animations.push(miniHandle);
+    attachAnimIO(miniHandle);
 
     return widget;
   }
 
   // ============== 主渲染入口 ==============
 
-  var animIORef = null; // 离屏暂停观察器（跨 render 存活）
+  var animIORef = null;       // 离屏暂停观察器（跨 render 存活）
+  var animHandles = [];       // 已挂载的动画句柄（滚动兜底复查用）
+  var animCheckScheduled = false;
+
+  // 几何可见性（与 IO 结论互补：IO 首回调在布局未就绪时易误判）
+  function isHandleVisible(handle) {
+    if (!handle || !handle.el || !handle.el.isConnected) return false;
+    var rect = handle.el.getBoundingClientRect();
+    var vh = window.innerHeight || document.documentElement.clientHeight || 800;
+    return rect.height > 0 && rect.bottom > -100 && rect.top < vh + 100;
+  }
+
+  // 滚动/尺寸变化时兜底复查：IO 在元素「一直在视口内但被判不可见」时
+  // 不会再回调，必须有这一步，否则波形会永久停摆（曾复现该 bug）。
+  function scheduleAnimCheck() {
+    if (animCheckScheduled) return;
+    animCheckScheduled = true;
+    requestAnimationFrame(function() {
+      animCheckScheduled = false;
+      for (var i = 0; i < animHandles.length; i++) {
+        var h = animHandles[i];
+        if (!h.el || !h.el.isConnected) continue;
+        if (isHandleVisible(h)) h.resume();
+        else h.pause();
+      }
+    });
+  }
+
+  // 离屏暂停：动画帧只在部件可见时跑（离屏 RAF 纯耗电）。
+  // 挂载点即时登记——大部件的 anim 是在 rAF 回调里才 push 的，
+  // render 末尾统一遍历 animations 会漏掉它们。
+  function attachAnimIO(handle) {
+    if (!handle || !handle.el) return;
+    animHandles.push(handle);
+    if (typeof IntersectionObserver !== 'function') return; // 无 IO：保持默认运行
+    if (!animIORef) {
+      animIORef = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          var h = entry.target._pulseAnim;
+          if (!h) return;
+          if (entry.isIntersecting) h.resume();
+          else h.pause();
+        });
+      }, { rootMargin: '100px 0px' });
+      window.addEventListener('scroll', scheduleAnimCheck, { passive: true });
+      window.addEventListener('resize', scheduleAnimCheck);
+    }
+    handle.el._pulseAnim = handle;
+    animIORef.observe(handle.el);
+    // 初次不主动 pause：让动画先跑起来，只在确认离屏后才停（宁可多跑不可停死）
+    if (!isHandleVisible(handle)) handle.pause();
+  }
 
   function render(container) {
     animations.forEach(function(a) { a.stop(); });
+    // 上一轮的离屏观察器（元素即将被替换）统一断开，新部件在挂载点重新 bind
+    if (animIORef) { try { animIORef.disconnect(); } catch (e) { /* ignore */ } animIORef = null; }
+    animHandles = [];
     animations = [];
 
     injectStyles();
@@ -1576,26 +1639,6 @@
         item.ph.parentNode.replaceChild(widget, item.ph);
       });
     });
-
-    // IO 离屏暂停：动画帧只在部件可见时跑（离屏 RAF 纯耗电）
-    if (typeof IntersectionObserver === 'function') {
-      if (animIORef) { try { animIORef.disconnect(); } catch (e) {} }
-      var animIO = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          var handle = entry.target._pulseAnim;
-          if (!handle) return;
-          if (entry.isIntersecting) handle.resume();
-          else handle.pause();
-        });
-      }, { rootMargin: '100px 0px' });
-      animations.forEach(function(handle) {
-        if (handle.el) {
-          handle.el._pulseAnim = handle;
-          animIO.observe(handle.el);
-        }
-      });
-      animIORef = animIO; // 持引用防 GC，下一轮 render 会先 disconnect
-    }
 
     miniParents.forEach(function(p) {
       var hasOnlyMini = true;

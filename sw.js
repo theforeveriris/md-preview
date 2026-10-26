@@ -207,28 +207,24 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Markdown 文档：stale-while-revalidate——立即回缓存副本，后台拉新版
-  // 更新缓存供下次使用。此前「网络优先 + no-store」让相邻文档预取在
-  // 在线时毫无收益（预取只暖了离线缓存）；SWR 下预取的文档直接命中，
-  // 导航即时呈现。页面侧 fetch 的 cache:'no-store' 只绕过 HTTP 缓存，
-  // 不影响 SW 拦截响应。
+  // Markdown 文档：网络优先，失败回退缓存。
+  // 不用 stale-while-revalidate：SWR 会先返回缓存副本，导致「文档已更新但
+  // 页面仍显示上一版」（作者改完文档刷新看不到改动，是真实踩过的坑）。
+  // 预取仍保留价值——离线可用与弱网回退都依赖这份运行时缓存。
   if (isMarkdownDoc(url)) {
     event.respondWith(
-      caches.match(request).then(cached => {
-        const fetchPromise = fetch(request, { cache: 'no-cache' })
-          .then(response => {
-            if (response.ok) {
-              const clone = response.clone();
-              caches.open(RUNTIME_CACHE).then(cache => cache.put(request, clone));
-            }
-            return response;
-          })
-          .catch(() => cached);
-        return cached || fetchPromise;
-      }).catch(() => new Response('离线模式下无法加载此文档', {
-        status: 503,
-        headers: { 'Content-Type': 'text/plain; charset=utf-8' }
-      }))
+      fetch(request, { cache: 'no-cache' })
+        .then(response => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(RUNTIME_CACHE).then(cache => cache.put(request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request).then(cached => cached || new Response('离线模式下无法加载此文档', {
+          status: 503,
+          headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+        })))
     );
     return;
   }
