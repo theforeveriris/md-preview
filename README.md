@@ -431,6 +431,7 @@ python3 iris/scripts/pptx/main.py
 - [RSS 订阅](docs/rss.md)
 - [开发者文档](readme-dev.md)
 - [美术设计规范](ARTWORK.md)
+- [贡献指南](CONTRIBUTING.md)
 
 ## 致谢
 

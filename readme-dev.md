@@ -118,7 +118,7 @@ tags: [开发]
 
 **通用工具约定**（新增代码请直接使用，勿再手写本地副本）：
 
-- `mdRender.escapeHtml(s)` — HTML 转义（全站唯一实现，此前 7 份副本已收敛至此）
+- `mdRender.escapeHtml(s)` — HTML 转义（推荐用这个；此前 7 份副本已收敛至此，但 `palette.js` 与 `pkt/pkt-renderer.js` 仍各有一份本地实现，细节略有差异，新代码别再抄）
 - `mdRender.slugify(text)` — 标题锚点 slug 规则（markdown.js 标题 id、split-view.js 跟读高亮共用；`link-check.js` 的 Node 侧副本有注释指向此处，改动需同步）
 - `MarkdownPreview.t(key, fallback)` — i18n 文案（`i18n.js` 导出；带占位符时自写 `tf` 包装，参考 `pulse.js`）
 - `markdown.parseFrontmatter(md)` / `markdown.extractExcerpt(md)` — frontmatter / 摘要提取（hover-preview.js 等已复用）
@@ -131,12 +131,32 @@ tags: [开发]
 
 ### 插件系统
 
-详见 [docs/plugin-development.md](docs/plugin-development.md)。插件本质上是一个提供 `install(app)` 方法的对象，可：
+详见 [docs/plugin-development.md](docs/plugin-development.md)。
 
-- 扩展 marked lexer / parser / renderer
-- 注册自定义代码块语言（在 markdown.js 的 afterRender 里处理）
-- 注入自定义 CSS 或 <script>
-- 挂接路由、设置面板自定义控件
+插件是本项目里**唯一使用 ES Module** 的地方 —— 加载器
+`iris/js/plugins/loader.js` 用 `import()` 动态加载它们，因此可以写
+`export default { ... }`；这与「运行时 JS 一律用传统 `<script>`」的约定不冲突
+（插件走独立通道，不进 `index.html` 的 script 标签）。
+
+插件对象提供的钩子：
+
+| 成员 | 必填 | 说明 |
+|------|------|------|
+| `name` | ✅ | 唯一标识 |
+| `description` | | 描述信息 |
+| `priority` | | 优先级，默认 0，越大越优先 |
+| `init(config)` | | 初始化，接收 `config.json` 里的配置 |
+| `test(code, language)` | | 判断是否处理该代码块，默认 `language === name` |
+| `beforeRender(code, container, context)` | | 渲染前钩子 |
+| `render(code, container, context)` | ✅ | 渲染内容到容器，可 async |
+| `afterRender(container, context)` | | 渲染后钩子 |
+| `destroy()` | | 清理资源 |
+
+插件可：扩展 marked lexer / parser / renderer、注册自定义代码块语言、
+注入自定义 CSS 或 `<script>`、挂接路由与设置面板自定义控件。
+
+> `iris/plugins/directory.json` 是插件索引，**目前手动维护**
+> （新增插件时要一并把文件名加进它的 `files` 数组，否则运行时不会加载）。
 
 ## CI / CD 工作流
 
@@ -562,6 +582,7 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 ├── sw.js                         # Service Worker（版本号控制缓存）
 ├── README.md                     # 用户手册
 ├── readme-dev.md                 # 本文件（开发者文档）
+├── CONTRIBUTING.md               # 贡献指南（架构约定 / PR 流程 / CI 说明）
 ├── iris/
 │   ├── app.js                    # Hash 路由 + 模式切换
 │   ├── config.js                 # 读取 iris/config.json
