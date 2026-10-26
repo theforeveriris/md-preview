@@ -9,6 +9,30 @@
     ((a, b) => String(a == null ? '' : a).localeCompare(String(b == null ? '' : b), undefined, { numeric: true }));
   const applyNaturalOrder = nameSort.applyNaturalOrder ||
     function () { /* name-sort.js 未加载时不做重排，退回 vendor 行为 */ };
+  const SORT_MODES = nameSort.SORT_MODES || {
+    smart: 'smart', createdDesc: 'createdDesc', createdAsc: 'createdAsc',
+    modifiedDesc: 'modifiedDesc', modifiedAsc: 'modifiedAsc'
+  };
+  const DEFAULT_SORT_MODE = nameSort.DEFAULT_SORT_MODE || 'smart';
+
+  /** 当前排序策略（由设置面板写入 settings.treeSort） */
+  function currentSortMode() {
+    try {
+      const s = window.MarkdownPreview.settings && window.MarkdownPreview.settings.load
+        ? window.MarkdownPreview.settings.load() : {};
+      const mode = s && s.treeSort;
+      return (mode && nameSort.isValidSortMode ? nameSort.isValidSortMode(mode) : true) ? mode : DEFAULT_SORT_MODE;
+    } catch (e) {
+      return DEFAULT_SORT_MODE;
+    }
+  }
+
+  /**
+   * 文档的首次添加 / 最后修改时间（Unix 秒）
+   * key = 对应的 li 元素；数据来自构建期 build-file-tree.js 采集的 git 提交时间。
+   * 用 WeakMap 存 li 引用，避免渲染后从 DOM 反推路径（此时文件名已换成显示标题）。
+   */
+  let liTimeMap = new WeakMap();
   
   async function loadFileTree() {
     try {
@@ -138,6 +162,8 @@
     while (current && current.tagName === 'LI') {
       const btn = current.querySelector('button');
       if (btn) {
+        // 注意：渲染后文件名文本会被包进 span.file-name（内容是显示用标题，
+        // 不是文件名），故此处只认裸文本节点 —— 必须在替换文本前调用。
         let name = '';
         for (const node of btn.childNodes) {
           if (node.nodeType === Node.TEXT_NODE) {
@@ -197,6 +223,9 @@
     }
     buildTitleMap(files);
 
+    // 重建 li -> 时间戳 的映射（每次渲染重置）
+    liTimeMap = new WeakMap();
+
     function addItems(parent, items) {
       items.forEach(item => {
         if (item.type === 'folder') {
@@ -215,11 +244,49 @@
 
     addItems(tree, files);
 
+    // 记录每个 li 对应的时间戳（渲染后按钮文本会变成显示用标题，
+    // 届时已无法从 DOM 反推原始路径，故在渲染时按顺序对应）
+    // vendor 的 DOM 结构：根 ul > li（文件夹 / 文件），文件夹 li > ul > li …
+    (function recordTimes(parentUl, items) {
+      const lis = Array.prototype.slice.call(parentUl.children);
+      // vendor 的顺序与 addItems 的追加顺序可能不同（它会自行重排），
+      // 故按「同层同类型 + 名称」匹配，而不是按下标对应。
+      const byName = new Map();
+      lis.forEach((li) => {
+        const btn = li.querySelector('button');
+        let n = '';
+        if (btn) for (const node of btn.childNodes) if (node.nodeType === 3) n += node.textContent;
+        byName.set(safeDecode(n.trim()), li);
+      });
+      items.forEach((item) => {
+        const li = byName.get(item.name);
+        if (!li) return;
+        if (item.created || item.modified) {
+          liTimeMap.set(li, { created: item.created || 0, modified: item.modified || 0 });
+        }
+        if (item.type === 'folder' && item.children) {
+          const subUl = li.querySelector('ul');
+          if (subUl) recordTimes(subUl, item.children);
+        }
+      });
+    })(tree.list, files);
+
     // vendor 组件在每次 append() 后都按纯字典序（name.localeCompare(name)）重排
-    // DOM，数字开头的文件名会排错位（10.0 排到 2.0 前面）。这里按自然排序
-    // （数字段按数值比较）重新排列一次：文件夹在前、文件在后，各组自然序。
+    // DOM，数字开头的文件名会排错位（10.0 排到 2.0 前面）。这里按所选排序策略
+    // 重新排列一次：文件夹在前、文件在后，组内按策略排序。
     // 上游尚未修复该问题，故在本地兜底。
-    applyNaturalOrder(tree.shadowRoot);
+    //
+    // 策略（设置项「侧边栏排序」）：
+    //   smart       智能顺序：名称自然序（数字段按数值、大写优先）
+    //   createdAsc/Desc  最初创建时间 正序 / 倒序
+    //   modifiedAsc/Desc 最后修改时间 正序 / 倒序
+    applyNaturalOrder(tree.shadowRoot, {
+      mode: currentSortMode(),
+      resolveMeta: (li) => {
+        const meta = liTimeMap.get(li);
+        return meta || { created: 0, modified: 0 };
+      }
+    });
 
     // 向 Shadow DOM 注入自定义样式（词数显示 + 选中高亮）
     var shadow = tree.shadowRoot;
@@ -377,6 +444,26 @@
   function setExpandFolders(expand) {
     loadFileTree();
   }
+
+  /**
+   * 设置切换「侧边栏排序」后即时重排当前已渲染的文件树。
+   * 不重建整棵树（重建会丢失滚动位置与展开状态），只在 Shadow DOM 内重排同级节点。
+   */
+  function setSortMode() {
+    var tree = dom.fileTree.querySelector('file-tree');
+    if (!tree || !tree.shadowRoot) return;
+    applyNaturalOrder(tree.shadowRoot, {
+      mode: currentSortMode(),
+      resolveMeta: function (li) {
+        var meta = liTimeMap.get(li);
+        return meta || { created: 0, modified: 0 };
+      }
+    });
+    // 顺序变了，已选中项的高亮与滚动位置需要重新对齐
+    if (state.currentFilePath) {
+      setActiveFile(state.currentFilePath);
+    }
+  }
   
   function setActiveFile(path) {
     var tree = dom.fileTree.querySelector('file-tree');
@@ -493,6 +580,7 @@
     setActiveFile,
     highlightFileInSidebar,
     setExpandFolders,
+    setSortMode,
     toggleSidebar,
     closeSidebar,
     closeSidebarOnMobile,

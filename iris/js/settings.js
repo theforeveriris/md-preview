@@ -13,6 +13,7 @@
     showWordCount: false,
     truncateFileNames: false,
     expandFolders: true,
+    treeSort: 'smart',         // 侧边栏排序：smart | createdDesc/Asc | modifiedDesc/Asc
     sidebarStyle: 'classic',   // classic = 贴边经典样式（默认）；floating = 悬浮卡片
     codeTheme: 'github',
     customColors: {},
@@ -39,6 +40,13 @@
   const CONTENT_WIDTH_MIN = 600;
   const CONTENT_WIDTH_MAX = 1400;
   const CONTENT_WIDTH_DEFAULT = 720;
+
+  // 侧边栏排序策略合法值（与 iris/js/name-sort.js 的 SORT_MODES 一致）
+  const TREE_SORT_MODES = ['smart', 'createdDesc', 'createdAsc', 'modifiedDesc', 'modifiedAsc'];
+
+  function normalizeTreeSort(value) {
+    return TREE_SORT_MODES.indexOf(value) !== -1 ? value : 'smart';
+  }
 
   // 主题色默认值（与 base.css :root 保持一致）
   const defaultColors = {
@@ -104,6 +112,7 @@
           showWordCount: parsed.showWordCount ?? defaultSettings.showWordCount,
           truncateFileNames: parsed.truncateFileNames ?? defaultSettings.truncateFileNames,
           expandFolders: parsed.expandFolders ?? defaultSettings.expandFolders,
+          treeSort: normalizeTreeSort(parsed.treeSort),
           sidebarStyle: parsed.sidebarStyle === 'floating' ? 'floating' : 'classic',
           codeTheme: parsed.codeTheme ?? defaultSettings.codeTheme,
           customColors: (parsed.customColors && typeof parsed.customColors === 'object') ? parsed.customColors : {},
@@ -344,6 +353,7 @@
     const showReadingProgressToggle = document.getElementById('showReadingProgressToggle');
     const showWordCountToggle = document.getElementById('showWordCountToggle');
     const truncateFileNamesToggle = document.getElementById('truncateFileNamesToggle');
+    const treeSortSelect = document.getElementById('treeSortSelect');
     const codeThemeSelect = document.getElementById('codeThemeSelect');
 
     if (!settingsOverlay) {
@@ -386,6 +396,13 @@
       settings.expandFolders = e.target.checked;
       saveSettings(settings);
       toggleExpandFolders(settings.expandFolders);
+    });
+
+    treeSortSelect?.addEventListener('change', (e) => {
+      const settings = loadSettings();
+      settings.treeSort = normalizeTreeSort(e.target.value);
+      saveSettings(settings);
+      toggleTreeSort(settings.treeSort);
     });
 
     sidebarStyleSelect?.addEventListener('change', (e) => {
@@ -945,6 +962,13 @@
   function toggleExpandFolders(expand) {
     if (window.MarkdownPreview?.fileTree?.setExpandFolders) {
       window.MarkdownPreview.fileTree.setExpandFolders(expand);
+    }
+  }
+
+  // 侧边栏排序策略（就地重排文件树，不重建，保留滚动位置与展开状态）
+  function toggleTreeSort(mode) {
+    if (window.MarkdownPreview?.fileTree?.setSortMode) {
+      window.MarkdownPreview.fileTree.setSortMode(mode);
     }
   }
 
@@ -1513,6 +1537,7 @@ body { margin: 0; }
     const showWordCountToggle = document.getElementById('showWordCountToggle');
     const truncateFileNamesToggle = document.getElementById('truncateFileNamesToggle');
     const expandFoldersToggle = document.getElementById('expandFoldersToggle');
+    const treeSortSelect = document.getElementById('treeSortSelect');
     const sidebarStyleSelect = document.getElementById('sidebarStyleSelect');
     const codeThemeSelect = document.getElementById('codeThemeSelect');
     const tableBleedToggle = document.getElementById('tableBleedToggle');
@@ -1524,6 +1549,7 @@ body { margin: 0; }
     if (showWordCountToggle) showWordCountToggle.checked = settings.showWordCount;
     if (truncateFileNamesToggle) truncateFileNamesToggle.checked = settings.truncateFileNames !== false;
     if (expandFoldersToggle) expandFoldersToggle.checked = settings.expandFolders !== false;
+    if (treeSortSelect) treeSortSelect.value = normalizeTreeSort(settings.treeSort);
     if (sidebarStyleSelect) sidebarStyleSelect.value = settings.sidebarStyle === 'floating' ? 'floating' : 'classic';
     if (codeThemeSelect) codeThemeSelect.value = settings.codeTheme;
     if (tableBleedToggle) tableBleedToggle.checked = settings.tableBleed === true;

@@ -262,9 +262,36 @@ node iris/scripts/build-file-tree.js
 ```
 扫描仓库根下所有 `.md`（排除 node_modules / .git / vendor / .github），生成带字数统计的 `iris/data/file-tree.json`。
 
-**排序口径**：文件名按**自然排序**（`iris/js/name-sort.js` 的 `compareNames`，数字段按数值比较），即 `1.0 < 2.0 < 9.0 < 10.0 < 11.0`，而不是字典序的 `1.0 < 1.1 < 10.0 < 11.0 < 2.0`。运行时与构建期共用同一实现（`build-file-tree.js` 直接 `require('../js/name-sort.js')`）。
+**排序口径**：文件名按**自然排序**（`iris/js/name-sort.js` 的 `compareNames`），即 `1.0 < 2.0 < 9.0 < 10.0 < 11.0`，而不是字典序的 `1.0 < 1.1 < 10.0 < 11.0 < 2.0`。比较器用 `Intl.Collator({ numeric: true, caseFirst: 'upper' })`：
+
+- `numeric: true` —— 数字段按数值比较；
+- `caseFirst: 'upper'` —— ASCII 大写优先（`A.md` 排在 `a.md` 前面）。
+  **不能用 `sensitivity: 'base'`**：那会让 `A.md` 与 `a.md` 比较结果为 `0`，最终顺序取决于文件系统 `readdir` 的原始返回顺序，跨平台不确定（Windows NTFS / Linux ext4 / macOS APFS 行为各异）。
+
+运行时与构建期共用同一实现（`build-file-tree.js` 直接 `require('../js/name-sort.js')`）。
 
 > vendor 的 `@webreflection/file-tree` 组件在每次 `append()` 后都用纯字典序（`name.localeCompare(name)`）重排 DOM，数字开头的文件名会排错位；上游（v0.1.5 与当前 `main`）尚未修复，故运行时由 `iris/js/file-tree.js` 的 `applyNaturalOrder()` 兜底重排，构建期用同一比较器保证产物顺序一致。回归测试见 `iris/scripts/test-file-tree-sort.js`（冒烟测试第 5 项）。
+
+**提交时间**：构建期用 `iris/scripts/lib/git-times.js` 采集每个文档的 git 提交时间，写入产物的 `created`（首次添加）与 `modified`（最后修改）字段（Unix 秒）。文件夹的时间取其下所有条目的极值（最早创建 / 最晚修改）。非 git 环境返回空表，时间排序自动回退到名称序。
+
+### 侧边栏排序策略
+
+设置面板「阅读 → 显示选项 → 侧边栏排序」可切换 5 种策略（`settings.treeSort`）：
+
+| 值 | 含义 |
+|---|---|
+| `smart` | 智能顺序：名称自然序（默认） |
+| `createdDesc` / `createdAsc` | 最初创建时间：新 → 旧 / 旧 → 新 |
+| `modifiedDesc` / `modifiedAsc` | 最后修改时间：新 → 旧 / 旧 → 新 |
+
+规则：
+
+- 文件夹在前、文件在后，两组**各按所选策略独立排序**；
+- 时间相同或缺失时回退到名称自然序，保证顺序确定不抖动；
+- 切换策略时**就地重排**已渲染的文件树（`fileTree.setSortMode()`），不重建整棵树，保留滚动位置与展开状态。
+
+排序策略的比较逻辑（`compareEntries` / `sortEntries`）与自然序同在 `iris/js/name-sort.js`，运行时与构建期共用。
+
 
 ### search-index 构建
 ```
@@ -526,7 +553,7 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │   │   ├── themes/theme-manager.js
 │   │   ├── markdown.js           # 渲染管线 + 图片灯箱
 │   │   ├── file-tree.js          # 侧边栏/搜索/索引
-│   │   ├── name-sort.js          # 文件名自然排序（数字段按数值比较，运行时与构建期共用）
+│   │   ├── name-sort.js          # 文件名自然排序 + 排序策略（运行时与构建期共用）
 │   │   ├── interactions.js       # 表格手柄、LaTeX 右键复制
 │   │   ├── local-docs.js         # 本地文件/文件夹会话
 │   │   ├── history.js / reading-pos.js  # 长按收藏·树内提示 / 阅读位置续读
@@ -561,6 +588,7 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │       ├── lint-cjk.js           # 中文文案排版校验（--fix 自动修复）
 │       ├── cjk-lint-ci.js        # 中文排版 CI 编排（全量/增量 + 基线推进）
 │       ├── test-file-tree-sort.js # 文件树自然排序回归测试（冒烟测试调用）
+│       ├── lib/git-times.js       # 采集文档的 git 提交时间（创建 / 修改）
 │       ├── pkt/main.py           # .pkt 解析
 │       ├── ensp/main.py          # .topo/.zip (华为 eNSP) → xml + json
 │       └── pptx/main.py          # pptx → PDF → PNG/SVG + meta json

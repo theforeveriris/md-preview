@@ -633,6 +633,22 @@
 
               <div class="setting-item">
                 <div>
+                  <div class="setting-label" data-i18n="settings.display.treeSort">侧边栏排序</div>
+                  <div class="setting-description" data-i18n="settings.display.treeSortDesc">文件树中文件与文件夹的排列顺序</div>
+                </div>
+                <div class="setting-control">
+                  <select id="treeSortSelect" class="theme-select">
+                    <option value="smart" data-i18n="settings.treeSort.smart">智能顺序</option>
+                    <option value="createdDesc" data-i18n="settings.treeSort.createdDesc">最初创建时间（新 → 旧）</option>
+                    <option value="createdAsc" data-i18n="settings.treeSort.createdAsc">最初创建时间（旧 → 新）</option>
+                    <option value="modifiedDesc" data-i18n="settings.treeSort.modifiedDesc">最后修改时间（新 → 旧）</option>
+                    <option value="modifiedAsc" data-i18n="settings.treeSort.modifiedAsc">最后修改时间（旧 → 新）</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div>
                   <div class="setting-label" data-i18n="settings.display.gestures">启用移动端手势</div>
                   <div class="setting-description" data-i18n="settings.display.gesturesDesc">触屏设备上左右滑动正文切换上一篇 / 下一篇，自屏幕左缘右滑呼出侧边栏</div>
                 </div>
