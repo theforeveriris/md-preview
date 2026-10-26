@@ -50,7 +50,7 @@
             "path": "docs/examples/colorcard-examples.md",
             "wordCount": 162,
             "created": 1784403626,
-            "modified": 1792250506,
+            "modified": 1793048516,
             "title": "ColorCard 插件示例",
             "tags": [
               "插件",
@@ -100,7 +100,7 @@
             "path": "docs/examples/devtools-examples.md",
             "wordCount": 171,
             "created": 1792356642,
-            "modified": 1792356642,
+            "modified": 1793048516,
             "title": "开发者工具与交互组件示例",
             "tags": [
               "示例",
@@ -195,8 +195,8 @@
             "type": "file",
             "path": "docs/examples/graph-backlinks-demo.md",
             "wordCount": 151,
-            "created": 0,
-            "modified": 0,
+            "created": 1793046153,
+            "modified": 1793046153,
             "title": "文档图谱与反向链接示例",
             "tags": [
               "导航",
@@ -246,7 +246,7 @@
             "path": "docs/examples/live-preview-examples.md",
             "wordCount": 184,
             "created": 1791170289,
-            "modified": 1791170289,
+            "modified": 1793048516,
             "title": "Live 预览与 JSON 树示例",
             "tags": [
               "图表",
@@ -451,7 +451,7 @@
         ],
         "wordCount": 12569,
         "created": 1779157467,
-        "modified": 1793003870
+        "modified": 1793048516
       },
       {
         "name": "changelog.md",
@@ -471,7 +471,7 @@
         "path": "docs/code-highlight-theme.md",
         "wordCount": 521,
         "created": 1783645568,
-        "modified": 1792250506,
+        "modified": 1793046153,
         "title": "代码高亮主题开发指南",
         "tags": [
           "主题",
@@ -484,7 +484,7 @@
         "path": "docs/configuration.md",
         "wordCount": 1830,
         "created": 1779600314,
-        "modified": 1792992175,
+        "modified": 1793046153,
         "title": "配置参考",
         "tags": [
           "配置"
@@ -496,7 +496,7 @@
         "path": "docs/editor.md",
         "wordCount": 1351,
         "created": 1783934812,
-        "modified": 1792992175,
+        "modified": 1793046153,
         "title": "Markdown 编辑器",
         "tags": [
           "编辑器"
@@ -508,7 +508,7 @@
         "path": "docs/getting-started.md",
         "wordCount": 123,
         "created": 1779157467,
-        "modified": 1792250506,
+        "modified": 1793046153,
         "title": "快速开始",
         "tags": [
           "入门"
@@ -532,7 +532,7 @@
         "path": "docs/requirements.md",
         "wordCount": 1894,
         "created": 1792355917,
-        "modified": 1793035279,
+        "modified": 1793046153,
         "title": "需求整理（候选功能）",
         "tags": [
           "规划"
@@ -580,9 +580,9 @@
         "name": "show.md",
         "type": "file",
         "path": "docs/show.md",
-        "wordCount": 2756,
+        "wordCount": 3034,
         "created": 1785512983,
-        "modified": 1792311595,
+        "modified": 1793046153,
         "title": "系统运行时截图",
         "tags": [
           "截图"
@@ -594,7 +594,7 @@
         "path": "docs/theme-customization.md",
         "wordCount": 586,
         "created": 1779600314,
-        "modified": 1792250506,
+        "modified": 1793048516,
         "title": "主题定制",
         "tags": [
           "主题",
@@ -602,9 +602,9 @@
         ]
       }
     ],
-    "wordCount": 24284,
+    "wordCount": 24562,
     "created": 1779157467,
-    "modified": 1793035279
+    "modified": 1793048516
   },
   {
     "name": "iris",
@@ -661,7 +661,7 @@
     "path": "CONTRIBUTING.md",
     "wordCount": 1801,
     "created": 1793029783,
-    "modified": 1793030245,
+    "modified": 1793046153,
     "title": "贡献指南"
   },
   {
@@ -670,7 +670,7 @@
     "path": "readme-dev.md",
     "wordCount": 1302,
     "created": 1779253703,
-    "modified": 1793029783,
+    "modified": 1793048516,
     "title": "Markdown Preview — 开发者文档",
     "tags": [
       "开发"
@@ -682,7 +682,7 @@
     "path": "README.md",
     "wordCount": 1205,
     "created": 1779156860,
-    "modified": 1793035279,
+    "modified": 1793046153,
     "title": "Markdown Preview",
     "tags": [
       "入门"

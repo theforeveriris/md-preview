@@ -1097,10 +1097,18 @@
     });
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
+  // 按需加载兼容：本脚本由 lazy-modules.js 在进入波形模式时才 loadScript，
+  // 此时 DOMContentLoaded 早已触发——只挂监听会让 initControls 永不执行
+  //（控件无事件绑定，点「生成波形」无反应）。readyState 非 loading 时立即初始化。
+  function bootPulseGen() {
     initControls();
     checkPulseGenMode();
-  });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootPulseGen);
+  } else {
+    bootPulseGen();
+  }
 
   window.MarkdownPreview.enterPulseGen = enterPulseGen;
   window.MarkdownPreview.exitPulseGen = exitPulseGen;
