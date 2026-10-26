@@ -153,6 +153,37 @@ tags: [开发]
 | `cjk-typography-lint.yml` | push / PR 到 `main` 且 `**/*.md` 变化，或每周定时 | 中文文案排版校验（见下节）；main 上自动修复并由机器人提交，PR 上仅提示 |
 | `sync-to-product.yml` | push 到 `main` | 将站点产物同步到 product 分支 |
 
+### AI 代码审查（CodeRabbit）
+
+仓库配置在 `.coderabbit.yaml`，由 [CodeRabbit](https://www.coderabbit.ai) GitHub App 执行
+（公开仓库免费，含 Team 档功能，无需付费订阅）。PR 打开 / 更新时自动审查，
+在 PR 上发行内评论 + 总结，**不自动批准、不请求修改** —— 合并决策权始终在维护者手里。
+
+**为什么需要这份配置**：通用 code review 工具不知道本项目的架构约定，
+容易反复提无效建议。`path_instructions` 把既定约定喂给它：
+
+| 约定 | 内容 |
+|---|---|
+| 模块系统 | 全部运行时 JS 用传统 `<script defer>` + IIFE，通过 `window.MarkdownPreview` 通信。**不要建议改 ES module / 引入 import / 调整加载顺序** —— 会破坏 64 个 script 标签的顺序约束、运行时动态加载、以及「同一份 JS 被浏览器和 Node 构建脚本共用」的设计 |
+| 纯静态零构建 | 没有打包器、没有运行时依赖。引入第三方库须 vendor 进 `iris/vendor/`，**不要建议**加 npm 依赖 / 构建步骤 / TypeScript |
+| i18n 双语 | 用户可见文案必须同时加进 `iris/js/i18n.js` 的 zh 与 en 两段，漏了英文属于必须指出的问题 |
+| 构建产物 | `iris/data/` 下多数 json / xml 是 `iris/scripts/build-*.js` 生成的，**改源文件而不是产物** |
+| 设置项 | 新增设置项需同步 `defaultSettings`、`load()` 取值、`applyAllSettings()` 控件回填与 i18n |
+| git 路径 | 脚本里读路径**必须加 `-c core.quotePath=false`**，否则中文文件名被八进制转义、路径在磁盘上不存在，会被静默漏检 |
+| 并发推送 | 多个工作流同时向 `main` 推送，push 失败要 fetch + rebase 重试 |
+
+`path_filters` 排除 `iris/vendor/`（第三方库）、`iris/data/`（构建产物）、
+`docs/` 与 `*.md`（文档由 `lint-cjk.js` 管），只审自研代码。
+
+**配置校验**（属性名写错会被静默忽略，等于规则没生效，故纳入 CI）：
+
+```bash
+python iris/scripts/validate-coderabbit.py    # 对照官方 schema 校验
+python iris/scripts/check-coderabbit-paths.py # 校验 path_filters 命中预期
+```
+
+`smoke-test.yml` 会在 `.coderabbit.yaml` 存在时自动跑这两项。
+
 ### 中文排版校验（`cjk-typography-lint.yml`）
 
 依据《中文文案排版指北》校验仓库内所有 Markdown：
@@ -589,6 +620,8 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │       ├── cjk-lint-ci.js        # 中文排版 CI 编排（全量/增量 + 基线推进）
 │       ├── test-file-tree-sort.js # 文件树自然排序回归测试（冒烟测试调用）
 │       ├── lib/git-times.js       # 采集文档的 git 提交时间（创建 / 修改）
+│       ├── validate-coderabbit.py    # 校验 .coderabbit.yaml 是否符合官方 schema
+│       ├── check-coderabbit-paths.py # 校验 CodeRabbit 的 path_filters 命中预期
 │       ├── pkt/main.py           # .pkt 解析
 │       ├── ensp/main.py          # .topo/.zip (华为 eNSP) → xml + json
 │       └── pptx/main.py          # pptx → PDF → PNG/SVG + meta json

@@ -1,0 +1,210 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+#
+# CodeRabbit 配置 —— 中文文案排版指北 + 本项目专属约定
+#
+# 目的：让 AI 审查贴合本项目的既定架构，而不是套用通用「现代化」建议。
+# 本项目是纯静态前端，架构上有大量「看起来过时、实则刻意」的选择，
+# 不加规则的话 AI 会反复提无效建议（详见各条 instructions）。
+
+language: zh-CN
+tone_instructions: |
+  你是本项目（md-preview，纯静态 Markdown 文档站）的主力维护者。
+  风格要求：
+  - 用中文回复，术语（API / DOM / Shadow DOM / ESM 等）保留英文原词。
+  - 直接、具体、可执行：指出问题在哪一行、为什么是问题、怎么改。
+  - 不要泛泛而谈「建议提升代码质量」「考虑优化性能」这类无信息量的话。
+  - 拿不准的地方明说「这一点我不确定」，不要编造 API 行为。
+
+reviews:
+  # chill = 平衡的反馈量（quiet 只报最要紧的，assertive 会连 nitpick 也提）。
+  # 个人项目要少噪音，用 chill。
+  profile: chill
+  high_level_summary: true
+  # 审查只发评论，不自动批准、也不请求修改 —— 合并决策权始终在维护者手里。
+  auto_approvals:
+    enabled: false
+
+  # ---- 路径过滤：只审自研代码 ----
+  path_filters:
+    # 第三方库：本地化的 vendor 代码，不要改也不必审
+    - "!iris/vendor/**"
+    # 构建产物：由 iris/scripts/build-*.js 生成，改源文件而不是产物
+    - "!iris/data/file-tree.json"
+    - "!iris/data/links.json"
+    - "!iris/data/search-index.json"
+    - "!iris/data/precache-manifest.json"
+    - "!iris/data/feed.xml"
+    - "!iris/data/sitemap.xml"
+    # 拓扑 / PPTX 解析产物（由 Python 脚本生成）
+    - "!iris/data/pkt/**"
+    - "!iris/data/ensp/**"
+    - "!iris/data/pptx/**"
+    # 文档站本身的文档：排版由 lint-cjk.js 管，代码审查帮不上
+    - "!docs/**"
+    - "!*.md"
+    # 依赖与构建缓存
+    - "!node_modules/**"
+    - "!iris/node_modules/**"
+    - "!dist/**"
+    - "!src-tauri/target/**"
+    # 桌面端构建产物
+    - "!iris/scripts/cm6-bundle/**"
+
+  # ---- 路径专属规则 ----
+  path_instructions:
+    - path: "iris/js/**/*.js"
+      instructions: |
+        审查本目录时必须遵守以下架构约定。这些是刻意选择，不是遗留代码，
+        提出「现代化」改造建议前请先确认不会破坏它们。
+
+        ## 1. 模块系统：传统 script + IIFE，不是 ES module
+        全部 64 个运行时 JS 都用 `<script defer src="iris/js/xxx.js">` 加载，
+        文件内容是 IIFE（立即执行函数表达式），通过
+        `window.MarkdownPreview` 命名空间对外暴露。
+        **不要建议**：
+        - 改用 ES module / import / export
+        - 把 IIFE 里的东西抽到顶层作用域
+        - 调整 index.html 里的 script 加载顺序
+        原因：
+        - index.html 有 64 个 script 标签 + 17 个渲染器，加载顺序有严格约束
+          （md-render.js 必须先于所有引用 mdRender 的模块，
+           由 iris/scripts/check-script-order.js 检查）
+        - 模块间通过 window.MarkdownPreview 通信，且支持运行时动态加载
+          （dom.js 会按需加载样式与工具），与 ESM 的静态 import 图不兼容
+        - 同一份 JS 要同时被浏览器和 Node 构建脚本复用
+          （见 iris/js/name-sort.js：浏览器用 <script>，Node 用 require）
+        - type="module" 加载失败是静默的，排查成本高
+
+        ## 2. 命名空间与全局
+        - 跨模块通信一律走 `window.MarkdownPreview.<module>`，
+          不要引入新的全局变量。
+        - 顶层 `const` / `let` 会污染全局并相互覆盖，所以一律包在 IIFE 里。
+        - 老文件里存在 `var`，新增代码用 `const` / `let` 即可，
+          **不要建议批量重写已有 var**（属于无收益的大范围改动）。
+
+        ## 3. 纯静态、零构建
+        - 本项目没有打包器、没有 node_modules 运行时依赖。
+        - 引入第三方库必须 vendor 进 iris/vendor/ 并在 index.html 里按需加载，
+          **不要建议**「用 npm 安装依赖」「引入构建步骤」「加上 TypeScript」。
+        - 桌面端（Tauri / src-tauri）复用同一套 index.html + 脚本。
+
+        ## 4. 界面文案必须双语齐备
+        - 任何用户可见文案都要同时加进 iris/js/i18n.js 的 zh 与 en 两段，
+          key 命名保持一致。
+        - index.html 上的静态文案用 `data-i18n` 系列属性标记。
+        - 改文案时漏了英文，属于**必须指出**的问题。
+        - 动态文案走 `MarkdownPreview.t(key, fallback)`。
+
+        ## 5. 设置项约定
+        - 新增设置项要同步：iris/js/settings.js 的 defaultSettings、
+          load() 的取值、applyAllSettings() 的控件回填、以及 i18n 文案。
+        - 设置的持久化 key 是 `md-preview-settings`（localStorage）。
+
+        ## 6. 脚本里操作 git 的注意事项
+        - 读取文件列表 / 路径时**必须加 `-c core.quotePath=false`**。
+          git 默认对非 ASCII 路径做八进制转义，输出形如
+          "docs/\346\226\207.md"，该路径在磁盘上不存在，
+          会导致中文文件名被静默漏检（本项目踩过这个坑）。
+        - 多个工作流会同时向 main 推送，push 失败时要 fetch + rebase 后重试，
+          直接 push 会被 non-fast-forward 拒绝。
+
+        ## 7. 中文排版
+        - 中文文案排版遵循《中文文案排版指北》，由
+          iris/scripts/lint-cjk.js 自动校验（CI 会自动修正）。
+          涉及中文文案的改动，顺带确认排版是否符合规范即可，
+          不必重复指出 lint 能查出的问题。
+
+        ## 8. 值得重点关注的方向
+        - 真实的逻辑错误：边界条件、空值处理、异步竞态、事件监听未解绑
+        - Shadow DOM 相关：vendor 的 file-tree 组件在 Shadow DOM 内，
+          跨边界访问要用 composedPath 之类的正确方式
+        - 资源清理：定时器、事件监听、Object URL 的释放
+        - XSS：拼接 HTML 前是否转义（项目里有 mdRender.escapeHtml）
+        - 性能：大列表、频繁 DOM 查询、重复计算
+
+    - path: "iris/scripts/**"
+      instructions: |
+        这些是 Node 构建期脚本（CommonJS，`require` / `module.exports`）。
+
+        - 保持 CommonJS 风格，不要建议改成 ESM。
+        - 构建脚本的输出产物不要手改（iris/data/ 下的 json/xml 多数是生成的）。
+        - 读取 git 路径时用 `-c core.quotePath=false`（见 path_instructions 里
+          运行时目录的第 6 条）。
+        - 脚本的退出码有 CI 语义：0 = 通过，非 0 = 失败并阻断。
+          特别地，lint-cjk.js 区分「可自动修复」与「需人工处理」，
+          退出码只对前者报错，改动时别破坏这个语义。
+        - 共享的纯函数放 iris/scripts/lib/，避免多份副本漂移
+          （参考 lib/md-links.js 的做法）。
+
+    - path: ".github/workflows/**"
+      instructions: |
+        GitHub Actions 工作流。
+
+        - 多个工作流会同时向 main 推送，提交步骤必须处理
+          non-fast-forward（fetch + rebase 后重试）。
+        - 不要用 EndBug/add-and-commit 的默认配置：它的执行顺序是
+          add → pull → commit → push，只要暂存了改动，
+          随后的 `git pull --rebase` 就会报
+          "cannot pull with rebase: Your index contains uncommitted changes"。
+        - 暂存文件列表要用 `git -c core.quotePath=false diff --name-only` 获取，
+          否则中文文件名是转义串，git add 找不到文件。
+        - 触发条件里的 paths 过滤要留意：只改 .js 的提交不会触发
+          `**/*.md` 路径过滤的工作流。
+        - 中文文案提交信息里的 `[skip ci]` 是有意为之，避免机器人提交
+          触发新一轮流水线。
+
+  # ---- 质量工具（本项目自带的检查）----
+  tools:
+    # 项目自身的检查由 smoke-test.js 完成（vm.Script 语法检查 + jsdom 断言），
+    # 没有 ESLint 配置，所以关掉。
+    markdownlint:
+      enabled: false
+    # 工作流 YAML 值得静态检查（GitHub Actions 表达式容易写错）
+    actionlint:
+      enabled: true
+    yamllint:
+      enabled: true
+    # 仓库里有 AGPL 授权的第三方 vendor 代码，密钥扫描意义有限但成本低
+    gitleaks:
+      enabled: true
+
+  # ---- 自动审查触发 ----
+  auto_review:
+    enabled: true
+    drafts: false
+    # 忽略明显是临时内容的 PR
+    ignore_title_keywords:
+      - "wip"
+      - "draft"
+      - "tmp"
+      - "temp"
+    ignore_usernames:
+      - "dependabot[bot]"
+      - "dependabot"
+    labels:
+      - "!skip-review"
+      - "!no-review"
+    base_branches:
+      - "main"
+
+chat:
+  auto_reply: true
+  art: false
+
+knowledge_base:
+  opt_out: false
+  web_search:
+    enabled: false
+  learnings:
+    scope: global
+  issues:
+    scope: global
+  # 编码规范从项目文档里取
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - "readme-dev.md"
+      - "docs/requirements.md"
+      - "docs/roadmap.md"
+
+early_access: true

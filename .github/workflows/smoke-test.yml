@@ -49,3 +49,11 @@ jobs:
 
     - name: Run link check (internal full + external daily sample)
       run: node iris/scripts/link-check.js
+
+    - name: Validate CodeRabbit config (schema + path filters)
+      if: hashFiles('.coderabbit.yaml') != ''
+      run: |
+        python3 -m pip install --quiet --disable-pip-version-check pyyaml
+        python3 iris/scripts/validate-coderabbit.py
+        python3 iris/scripts/check-coderabbit-paths.py
+
