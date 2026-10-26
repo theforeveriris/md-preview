@@ -1591,7 +1591,7 @@
     reader.readAsText(file);
   });
 
-  function importMdnb(text) {
+  async function importMdnb(text) {
     let data;
     try { data = JSON.parse(text); } catch (e) { showToast('无效的 .mdnb 文件'); return; }
     if (!data || !Array.isArray(data.cells)) { showToast('文件格式不正确'); return; }
@@ -1600,20 +1600,29 @@
       if (!confirm('导入将替换当前所有 Cell，是否继续？')) return;
     }
     // 清空现有 Cell
-    cells.slice().forEach(c => { c.div.remove(); });
+    cells.slice().forEach(c => {
+      if (c.textarea && typeof c.textarea.destroy === 'function') c.textarea.destroy();
+      c.div.remove();
+    });
     cells.length = 0;
     cellCounter = 0;
-    // 创建新 Cell
-    data.cells.forEach(s => {
+    // 创建新 Cell。output_html 来自外部文件（非受信内容，可能是他人分享的
+    // 笔记本），注入前必须经 DOMPurify 净化，防止导入即触发的存储型 XSS
+    for (const s of data.cells) {
       const newCell = createCell(null, s.content || '', { type: s.type === 'plaintext' ? 'plaintext' : 'markdown' });
       if (s.output_html) {
-        newCell.output.innerHTML = s.output_html;
-        newCell.output.classList.add('visible');
-        if (newCell.outputToolbar) newCell.outputToolbar.classList.add('visible');
-        markRun(newCell);
+        const clean = await mdRender.sanitizeHtml(s.output_html).catch(() => null);
+        if (clean == null) {
+          showToast('净化组件加载失败，已丢弃运行结果，可重新运行 Cell 恢复');
+        } else {
+          newCell.output.innerHTML = clean;
+          newCell.output.classList.add('visible');
+          if (newCell.outputToolbar) newCell.outputToolbar.classList.add('visible');
+          markRun(newCell);
+        }
       }
       updateLineNumbers(newCell);
-    });
+    }
     if (cells.length === 0) createCell();
     renumberCells();
     updateStatusbar();
@@ -1626,7 +1635,10 @@
     if (cells.some(c => c.textarea.value.trim())) {
       if (!confirm('导入将替换当前所有 Cell，是否继续？')) return;
     }
-    cells.slice().forEach(c => { c.div.remove(); });
+    cells.slice().forEach(c => {
+      if (c.textarea && typeof c.textarea.destroy === 'function') c.textarea.destroy();
+      c.div.remove();
+    });
     cells.length = 0;
     cellCounter = 0;
     parts.forEach(part => {
@@ -2040,16 +2052,16 @@
       // 3) 加载目标 notebook
       let restored = false;
       if (opts.initData) {
-        restored = restoreFromData(opts.initData);
+        restored = await restoreFromData(opts.initData);
       } else if (useIndexedDB) {
         try {
           const data = await storage.loadNotebook(id);
-          if (data) restored = restoreFromData(data);
+          if (data) restored = await restoreFromData(data);
         } catch (e) { console.warn('[tabs] 加载笔记本失败:', e); }
       }
       if (!restored) {
         // 空白笔记本
-        restoreFromData({ cells: [] });
+        await restoreFromData({ cells: [] });
       }
       // 4) 更新 UI 状态
       isUnsaved = false;
@@ -2211,7 +2223,7 @@
     }
   }
 
-  function restoreFromData(data) {
+  async function restoreFromData(data) {
     const cellList = (data && Array.isArray(data.cells)) ? data.cells : [];
     // 清空现有
     cells.slice().forEach(c => {
@@ -2220,15 +2232,20 @@
     });
     cells.length = 0;
     cellCounter = 0;
-    cellList.forEach(s => {
+    // output_html 持久化在 IndexedDB / localStorage：旧版本导入的污染数据可能
+    // 已入库，统一在注入前净化（导入边界已有一次净化，这里是纵深防御）
+    for (const s of cellList) {
       const newCell = createCell(null, s.content || '', { type: s.type === 'plaintext' ? 'plaintext' : 'markdown' });
       if (s.output_html) {
-        newCell.output.innerHTML = s.output_html;
-        newCell.output.classList.add('visible');
-        if (newCell.outputToolbar) newCell.outputToolbar.classList.add('visible');
-        markRun(newCell);
+        const clean = await mdRender.sanitizeHtml(s.output_html).catch(() => null);
+        if (clean != null) {
+          newCell.output.innerHTML = clean;
+          newCell.output.classList.add('visible');
+          if (newCell.outputToolbar) newCell.outputToolbar.classList.add('visible');
+          markRun(newCell);
+        }
       }
-    });
+    }
     if (cells.length === 0) createCell();
     renumberCells();
     updateStatusbar();

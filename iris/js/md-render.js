@@ -48,6 +48,32 @@
       .replace(/'/g, '&#39;');
   }
 
+  // ============== 非受信来源 HTML 净化（DOMPurify，按需懒加载） ==============
+  // 净化分级：仓库自身文档（站点 fetch 的 .md）视为受信内容直通；
+  // 快照链接（#/s?z= 完全由 URL 控制）、「打开本地文件」、导入 .mdnb
+  // 等非受信来源的渲染产物在注入 DOM 前必须先过 sanitizeHtml。
+  // vendor 库与 mermaid/apexcharts 一样按需懒加载，不占首屏。
+  let purifyReady = null;
+
+  function ensurePurify() {
+    if (typeof DOMPurify !== 'undefined') return Promise.resolve();
+    if (!purifyReady) {
+      purifyReady = window.MarkdownPreview.loadScript('iris/vendor/purify.min.js')
+        .catch(e => { purifyReady = null; throw e; });
+    }
+    return purifyReady;
+  }
+
+  /**
+   * 净化非受信来源的 HTML（异步：首次调用会加载 DOMPurify）。
+   * 加载失败时 Promise reject，调用方应按「渲染失败」处理，不得直通原文。
+   * @param {string} html - 待净化 HTML
+   * @returns {Promise<string>}
+   */
+  function sanitizeHtml(html) {
+    return ensurePurify().then(() => DOMPurify.sanitize(String(html == null ? '' : html)));
+  }
+
   /**
    * 处理 GitHub Alerts（> [!TYPE] 语法）
    * @param {string} text - Markdown 文本
@@ -921,6 +947,8 @@
     DEFAULT_ALERT_TYPES,
     escapeHtml,
     slugify,
+    ensurePurify,
+    sanitizeHtml,
     processGitHubAlerts,
     processSpoilers,
     processRuby,

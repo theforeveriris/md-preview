@@ -7,16 +7,16 @@
   function extractEmbedSyntax(text) {
     const atBracketStart = text.indexOf('@[');
     if (atBracketStart === -1) return null;
-    
+
     const serviceStart = atBracketStart + 2;
     const serviceEnd = text.indexOf(']', serviceStart);
     if (serviceEnd === -1) return null;
-    
+
     const service = text.substring(serviceStart, serviceEnd);
-    
+
     const urlStart = serviceEnd + 1;
     if (text[urlStart] !== '(') return null;
-    
+
     let depth = 1;
     let urlEnd = -1;
     for (let i = urlStart + 1; i < text.length; i++) {
@@ -29,13 +29,28 @@
         }
       }
     }
-    
+
     if (urlEnd === -1) return null;
-    
+
     const url = text.substring(urlStart + 1, urlEnd);
     const fullMatch = text.substring(atBracketStart, urlEnd + 1);
-    
+
     return { service, url, fullMatch };
+  }
+
+  // 嵌入内容来自文档文本（可能是非受信来源），拼进 HTML 属性前必须转义
+  function escAttr(value) {
+    return window.MarkdownPreview.mdRender.escapeHtml(value);
+  }
+
+  // 仅接受 http(s) 绝对 URL，拒绝 javascript:/data: 等危险协议；
+  // restrictHosts 传入时额外校验主机名，返回标准化后的 URL 或 null
+  function safeHttpUrl(url, restrictHosts) {
+    let u;
+    try { u = new URL(url); } catch (e) { return null; }
+    if (u.protocol !== 'https:' && u.protocol !== 'http:') return null;
+    if (restrictHosts && !restrictHosts.includes(u.hostname)) return null;
+    return u;
   }
   
   function render(container) {
@@ -59,7 +74,7 @@
     preTags.forEach((pre, idx) => {
       const placeholder = `__PRE_PLACEHOLDER_${idx}__`;
       prePlaceholders.push({ placeholder, content: pre });
-      processedContent = processedContent.replace(pre, placeholder);
+      processedContent = processedContent.replace(pre, () => placeholder);
     });
 
     prePlaceholders.forEach(({ placeholder, content }) => {
@@ -105,8 +120,10 @@
               return containerHtml;
             };
 
+            // 以下所有 replace 的第二参一律用函数形式：内容里可能出现
+            // $` / $& / $' 等 String.replace 特殊序列，字符串形式会被错误解释
             if (service === 'geojson' || service === 'topojson') {
-              processedContent = processedContent.replace(placeholder, mountEmbed({
+              processedContent = processedContent.replace(placeholder, () => mountEmbed({
                 prefix: 'map',
                 className: 'geo-map',
                 style: 'height:400px;border-radius:8px;overflow:hidden',
@@ -115,7 +132,7 @@
                   window.MarkdownPreview.renderers.geo.renderGeoData(service, embedUrl, fullMatch, el.id)
               }));
             } else if (service === 'pkt' || service === 'ensp') {
-              processedContent = processedContent.replace(placeholder, mountEmbed({
+              processedContent = processedContent.replace(placeholder, () => mountEmbed({
                 prefix: 'pkt',
                 className: 'pkt-container',
                 mount: (el, embedUrl) => {
@@ -126,7 +143,7 @@
               }));
             } else if (service === 'pptx') {
               // PPTX 嵌入：与 pkt 完全同风格：@[pptx](slug) → 占位 div → pptx.loadAndRender
-              processedContent = processedContent.replace(placeholder, mountEmbed({
+              processedContent = processedContent.replace(placeholder, () => mountEmbed({
                 prefix: 'pptx',
                 className: 'pptx-embed',
                 mount: (el, embedUrl) => {
@@ -137,23 +154,23 @@
               }));
             } else if (service === 'twitter' || service === 'x') {
               const twitterCode = renderTwitterEmbed(service, url, fullMatch);
-              processedContent = processedContent.replace(placeholder, twitterCode);
+              processedContent = processedContent.replace(placeholder, () => twitterCode);
             } else {
               const iframe = createEmbedIframe(service, url);
               if (iframe) {
-                processedContent = processedContent.replace(placeholder, iframe);
+                processedContent = processedContent.replace(placeholder, () => iframe);
               } else {
-                processedContent = processedContent.replace(placeholder, content);
+                processedContent = processedContent.replace(placeholder, () => content);
               }
             }
           } else {
-            processedContent = processedContent.replace(placeholder, content);
+            processedContent = processedContent.replace(placeholder, () => content);
           }
         } else {
-          processedContent = processedContent.replace(placeholder, content);
+          processedContent = processedContent.replace(placeholder, () => content);
         }
       } else {
-        processedContent = processedContent.replace(placeholder, content);
+        processedContent = processedContent.replace(placeholder, () => content);
       }
     });
 
@@ -163,19 +180,23 @@
   function renderTwitterEmbed(service, url, originalMatch) {
     try {
       let embedCode = '';
-      
+
+      // URL 可能含引号/尖括号（非受信内容），拼进 HTML 前一律转义
+      const safeUrl = escAttr(url);
+
       const tweetMatch = url.match(/twitter\.com\/\w+\/status\/(\d+)/);
       if (tweetMatch) {
-        embedCode = '<blockquote class="twitter-tweet"><a href="' + url + '">Loading tweet...</a></blockquote>';
+        embedCode = '<blockquote class="twitter-tweet"><a href="' + safeUrl + '">Loading tweet...</a></blockquote>';
       } else if (url.includes('twitter.com') && (url.includes('/likes') || url.includes('/with_replies') || url.includes('/media'))) {
-        embedCode = '<a class="twitter-timeline" href="' + url + '">Loading Twitter timeline...</a>';
+        embedCode = '<a class="twitter-timeline" href="' + safeUrl + '">Loading Twitter timeline...</a>';
       } else if (url.includes('twitter.com')) {
-        const handle = url.match(/twitter\.com\/([^\/?]+)/)?.[1];
+        const handle = url.match(/twitter\.com\/([A-Za-z0-9_]{1,15})/)?.[1];
         if (handle && !url.includes('/status/')) {
-          embedCode = '<a class="twitter-timeline" href="https://twitter.com/' + handle + '?ref_src=twsrc%5Etfw">Tweets by @' + handle + '</a>';
+          const safeHandle = escAttr(handle);
+          embedCode = '<a class="twitter-timeline" href="https://twitter.com/' + safeHandle + '?ref_src=twsrc%5Etfw">Tweets by @' + safeHandle + '</a>';
         }
       } else if (url.includes('x.com')) {
-        embedCode = '<blockquote class="twitter-tweet"><a href="' + url + '">Loading tweet...</a></blockquote>';
+        embedCode = '<blockquote class="twitter-tweet"><a href="' + safeUrl + '">Loading tweet...</a></blockquote>';
       }
       
       if (embedCode) {
@@ -201,97 +222,109 @@
     }
   }
   
+  // 安全约定：各服务只按正则强提取 ID 后拼官方 embed URL；提取失败一律
+  // 返回 null 拒绝渲染（绝不回退原始 URL）。所有拼进属性的值过 escAttr。
   function createEmbedIframe(service, url) {
     const iframeBase = '<iframe src="{src}" width="100%" height="{height}" frameborder="0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>';
-    
+
     let src = '';
     let height = '400';
-    
+
     switch (service) {
       case 'youtube':
-        const videoId = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/)?.[1] || url;
-        src = 'https://www.youtube.com/embed/' + videoId;
+        const videoId = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/)?.[1];
+        if (!videoId) return null;
+        src = 'https://www.youtube.com/embed/' + encodeURIComponent(videoId);
         height = '315';
         break;
-        
+
       case 'bilibili':
-        const bvid = url.match(/BV[\w]+/)?.[0] || url;
-        src = 'https://player.bilibili.com/player.html?bvid=' + bvid + '&page=1';
+        const bvid = url.match(/BV[0-9A-Za-z]+/)?.[0];
+        if (!bvid) return null;
+        src = 'https://player.bilibili.com/player.html?bvid=' + encodeURIComponent(bvid) + '&page=1';
         height = '315';
         break;
-        
+
       case 'vimeo':
-        const vimeoId = url.match(/vimeo\.com\/(\d+)/)?.[1] || url;
-        src = 'https://player.vimeo.com/video/' + vimeoId;
+        const vimeoId = url.match(/vimeo\.com\/(\d+)/)?.[1];
+        if (!vimeoId) return null;
+        src = 'https://player.vimeo.com/video/' + encodeURIComponent(vimeoId);
         height = '315';
         break;
-        
+
       case 'figma':
-        const figmaId = url.match(/figma\.com\/file\/([^\/?]+)/)?.[1] || url;
-        src = 'https://www.figma.com/embed?embed_host=share&url=https://www.figma.com/file/' + figmaId;
+        const figmaId = url.match(/figma\.com\/file\/([^\/?"&\s]+)/)?.[1];
+        if (!figmaId) return null;
+        src = 'https://www.figma.com/embed?embed_host=share&url=' + encodeURIComponent('https://www.figma.com/file/' + figmaId);
         height = '400';
         break;
-        
+
       case 'codepen':
-        const codepenMatch = url.match(/codepen\.io\/([^\/]+)\/pen\/([^\/?]+)/);
-        if (codepenMatch) {
-          src = 'https://codepen.io/' + codepenMatch[1] + '/embed/' + codepenMatch[2];
-        } else {
-          src = url + '/embed';
-        }
+        const codepenMatch = url.match(/codepen\.io\/([^\/?"&\s]+)\/pen\/([^\/?"&\s]+)/);
+        if (!codepenMatch) return null;
+        src = 'https://codepen.io/' + encodeURIComponent(codepenMatch[1]) + '/embed/' + encodeURIComponent(codepenMatch[2]);
         height = '300';
         break;
-        
+
       case 'jsfiddle':
-        const fiddleId = url.match(/jsfiddle\.net\/([^\/?]+)/)?.[1] || url;
-        src = 'https://jsfiddle.net/' + fiddleId + '/embedded/';
+        const fiddleId = url.match(/jsfiddle\.net\/([^\/?"&\s]+)/)?.[1];
+        if (!fiddleId) return null;
+        src = 'https://jsfiddle.net/' + encodeURIComponent(fiddleId) + '/embedded/';
         height = '300';
         break;
-        
-      case 'stackblitz':
-        src = url + '/embed';
+
+      case 'stackblitz': {
+        const sbUrl = safeHttpUrl(url, ['stackblitz.com']);
+        if (!sbUrl) return null;
+        src = 'https://stackblitz.com' + sbUrl.pathname + '/embed' + sbUrl.search;
         height = '500';
         break;
-        
-      case 'replit':
-        const replitMatch = url.match(/replit\.com\/@([^\/]+)\/([^\/?]+)/);
-        if (replitMatch) {
-          src = 'https://replit.com/embed/' + replitMatch[1] + '/' + replitMatch[2];
-        } else {
-          src = url + '/embed';
-        }
+      }
+
+      case 'replit': {
+        const replitMatch = url.match(/replit\.com\/@([^\/?"&\s]+)\/([^\/?"&\s]+)/);
+        if (!replitMatch) return null;
+        src = 'https://replit.com/embed/' + encodeURIComponent(replitMatch[1]) + '/' + encodeURIComponent(replitMatch[2]);
         height = '400';
         break;
-        
-      case 'googlemaps':
-        src = url;
+      }
+
+      case 'googlemaps': {
+        const gmUrl = safeHttpUrl(url, ['www.google.com', 'google.com', 'maps.google.com']);
+        if (!gmUrl) return null;
+        src = escAttr(gmUrl.href);
         height = '300';
         break;
-        
-      case 'openstreetmap':
-        src = url;
+      }
+
+      case 'openstreetmap': {
+        const osmUrl = safeHttpUrl(url, ['www.openstreetmap.org', 'openstreetmap.org']);
+        if (!osmUrl) return null;
+        src = escAttr(osmUrl.href);
         height = '300';
         break;
-        
-      case 'googledocs':
-        src = url;
+      }
+
+      case 'googledocs': {
+        const gdUrl = safeHttpUrl(url, ['docs.google.com']);
+        if (!gdUrl) return null;
+        src = escAttr(gdUrl.href);
         height = '400';
         break;
-        
+      }
+
       case 'gist':
-        const gistMatch = url.match(/gist\.github\.com\/([^\/]+)\/([^\/?]+)/);
-        if (gistMatch) {
-          src = 'https://gist.github.com/' + gistMatch[1] + '/' + gistMatch[2] + '.js';
-          return '<script src="' + src + '"></script>';
-        }
-        return null;
-        
+        const gistMatch = url.match(/gist\.github\.com\/([\w.-]+)\/([\w.-]+)/);
+        if (!gistMatch) return null;
+        src = 'https://gist.github.com/' + encodeURIComponent(gistMatch[1]) + '/' + encodeURIComponent(gistMatch[2]) + '.js';
+        return '<script src="' + src + '"></script>';
+
       default:
         console.warn('Unsupported embed service:', service);
         return null;
     }
-    
-    return iframeBase.replace('{src}', src).replace('{height}', height);
+
+    return iframeBase.replace('{src}', escAttr(src)).replace('{height}', height);
   }
   
   window.MarkdownPreview.renderers.embedded = {

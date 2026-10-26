@@ -144,8 +144,14 @@
     }
 
     const title = data.title || t('snap.name', '快照');
-    if (markdown) markdown.renderVirtualDoc(data.content, title);
-    mountBanner(data.content, title);
+    // 快照内容完全由 URL 控制（非受信来源），渲染产物必须先经 DOMPurify 净化；
+    // 横幅插入依赖正文已注入，需等渲染 Promise resolve
+    const rendered = markdown
+      ? markdown.renderVirtualDoc(data.content, title, { sanitize: true })
+      : Promise.resolve();
+    rendered
+      .then(() => mountBanner(data.content, title))
+      .catch(e => console.error('[Snapshot] sanitize failed:', e));
   }
 
   function mountBanner(content, title) {

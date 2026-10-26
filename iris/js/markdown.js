@@ -291,7 +291,15 @@
     setMeta('name', 'twitter:description', description);
   }
 
-  function renderMarkdown(markdown, currentPath = '') {
+  /**
+   * 渲染 Markdown 到正文区
+   * @param {string} markdown - 原文（可含 frontmatter）
+   * @param {string} currentPath - 文档路径（'' = 虚拟/本地文档）
+   * @param {Object} [opts]
+   * @param {Function} [opts.sanitize] - 非受信来源的净化函数（渲染产物注入 DOM
+   *   前调用；由 renderVirtualDoc/renderMarkdownDirect 按 sanitize 选项传入）
+   */
+  function renderMarkdown(markdown, currentPath = '', opts = {}) {
     const renderStartTime = performance.now();
     // 图谱页是沉浸式布局（body.graph-page）。任何一次新文档渲染都先摘掉这个标记，
     // #/graph 会在渲染完成后由 graph.openPage() 重新打上 —— 这样「离开图谱页」
@@ -322,7 +330,11 @@
     state.currentFrontmatter = frontmatter;
 
     // Markdown → HTML（LaTeX 保护 + Alerts + 自定义 Renderer）已迁移至共享模块
-    const { html } = mdRender.parseMarkdown(content);
+    let { html } = mdRender.parseMarkdown(content);
+    // 非受信来源（快照链接 / 本地文件 / 导入内容）：注入前净化渲染产物
+    if (typeof opts.sanitize === 'function') {
+      html = opts.sanitize(html);
+    }
 
     const plainText = content.replace(/[#*`\[\]()_{}]/g, '').replace(/\n+/g, ' ').trim();
     const readingTime = calculateReadingTime(plainText);
@@ -1023,19 +1035,30 @@
     loadMarkdownFile,
     renderMarkdown,
     // 渲染虚拟文档（标签聚合页等站内合成内容）：保留当前 hash（#/tag/x 可分享），
-    // 不经过 fetch；内容视同本地文档（导出 MD / PDF 直接取用合成文本）
-    renderVirtualDoc: function(content, fileName) {
-      resetReadingProgress();
-      state.localDoc = { name: fileName || 'document.md', content: content, virtual: true };
-      if (fileName) {
-        const bc = document.getElementById('pageBreadcrumbs');
-        const header = document.getElementById('pageHeader');
-        if (bc) bc.textContent = fileName;
-        if (header) header.style.display = 'flex';
+    // 不经过 fetch；内容视同本地文档（导出 MD / PDF 直接取用合成文本）。
+    // opts.sanitize = true 时先加载 DOMPurify 再渲染（快照等 URL 可控来源必须传），
+    // 返回 Promise，注入 DOM 后 resolve —— 调用方的后续 DOM 操作须 await。
+    renderVirtualDoc: function(content, fileName, opts = {}) {
+      const doRender = (sanitizeFn) => {
+        resetReadingProgress();
+        state.localDoc = { name: fileName || 'document.md', content: content, virtual: true };
+        if (fileName) {
+          const bc = document.getElementById('pageBreadcrumbs');
+          const header = document.getElementById('pageHeader');
+          if (bc) bc.textContent = fileName;
+          if (header) header.style.display = 'flex';
+        }
+        renderMarkdown(content, '', sanitizeFn ? { sanitize: sanitizeFn } : {});
+      };
+      if (opts.sanitize) {
+        return mdRender.ensurePurify().then(() => doRender((html) => DOMPurify.sanitize(html)));
       }
-      renderMarkdown(content, '');
+      doRender(null);
+      return Promise.resolve();
     },
-    // 直接渲染内容字符串（用于本地 MD 文件，不经过 fetch 和 URL）
+    // 直接渲染内容字符串（用于本地 MD 文件，不经过 fetch 和 URL）。
+    // 本地文件来源不可信（可能是他人分享的 .md），渲染产物默认经 DOMPurify
+    // 净化；返回 Promise，注入 DOM 后 resolve。
     renderMarkdownDirect: function(content, fileName) {
       // 清空 URL hash，避免刷新后仍尝试加载原路径
       if (window.location.hash) {
@@ -1051,7 +1074,11 @@
         if (bc) bc.textContent = fileName;
         if (header) header.style.display = 'flex';
       }
-      renderMarkdown(content, '');
+      return mdRender.ensurePurify()
+        .then(() => renderMarkdown(content, '', { sanitize: (html) => DOMPurify.sanitize(html) }))
+        .catch(e => {
+          console.error('[Markdown] sanitize failed, refusing to render untrusted content:', e);
+        });
     },
     interceptLinks,
     simplifyPath,
