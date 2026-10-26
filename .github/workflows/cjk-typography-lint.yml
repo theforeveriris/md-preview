@@ -108,28 +108,54 @@ jobs:
 
     # main 分支：机器人提交修正
     #
-    # 用 EndBug/add-and-commit（与其他构建工作流同一套机制）。
-    # 关键参数：
-    #   pull: '--rebase'  —— 多个工作流会同时向 main 推送，先 rebase 远端再推，
-    #                        否则后推的那个会被 non-fast-forward 拒绝
-    #   add: '.'          —— 暂存全部改动（含中文文件名，不能用 '*.md'：
-    #                        shell 会先展开通配符，匹配不到根目录 .md 时
-    #                        git add 报 "pathspec did not match any files"）
+    # 自己实现提交与推送，而不是用 EndBug/add-and-commit，原因：
+    #   1) 该动作的执行顺序是 add → pull → commit → push。只要暂存了改动，
+    #      随后的 `git pull --rebase` 就会报
+    #      "cannot pull with rebase: Your index contains uncommitted changes"；
+    #   2) 它的 add 输入是 shell 通配符语义，add: '*.md' 只会匹配根目录的 .md，
+    #      嵌套目录（docs/zw/*.md）的修正会被漏掉；add: '.' 又会误伤其它工作流的产物。
+    #
+    # 这里的做法：先在本工作区提交，再循环「拉取远端 + rebase + 推送」，
+    # 处理多个工作流同时向 main 推送的竞态。
     - name: Commit and push changes
       if: github.event_name != 'pull_request'
-      uses: EndBug/add-and-commit@v9
-      with:
-        message: 'style: 中文排版自动修正 [skip ci]'
-        # add: '.' —— 暂存全部改动。
-        # 不能写 '*.md'：shell 会先展开通配符，匹配不到根目录 .md 时
-        # git add 报 "pathspec did not match any files"；即使匹配到，
-        # 也只会暂存根目录的 .md，嵌套目录（docs/zw/*.md）会被漏掉。
-        add: '.'
-        default_author: github_actions
-        # 多个工作流会同时向 main 推送，先 rebase 远端再推，
-        # 否则后推的那个会被 non-fast-forward 拒绝。
-        pull: '--rebase'
-        push: 'origin HEAD:refs/heads/${{ github.ref_name }} --force-with-lease'
+      id: commit
+      run: |
+        set +e
+        git config user.name 'github-actions[bot]'
+        git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+        # 暂存本次实际改动的文件
+        # 用 core.quotePath=false 保证中文文件名不被转义（否则路径是转义串，add 不到）
+        CHANGED=$(git -c core.quotePath=false diff --name-only)
+        if [ -n "$CHANGED" ]; then
+          git add -- $CHANGED
+        fi
+        if git diff --cached --quiet; then
+          echo "changed=false" >> "$GITHUB_OUTPUT"
+          echo "无需修正，跳过提交"
+          exit 0
+        fi
+        git commit -m 'style: 中文排版自动修正 [skip ci]' \
+                  -m '由 CJK Typography Lint 工作流自动修复，遵循《中文文案排版指北》。'
+        # 推送重试：多个工作流会同时向 main 推送，
+        # 被 non-fast-forward 拒绝时先 rebase 远端再推
+        for i in 1 2 3 4 5; do
+          if git push origin "HEAD:refs/heads/${{ github.ref_name }}"; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "推送被拒（第 $i 次），rebase 远端后重试..."
+          git fetch origin "${{ github.ref_name }}"
+          # 变基到远端最新提交之上；冲突时中止（排版修正与他人改动冲突概率极低）
+          git rebase "origin/${{ github.ref_name }}" || {
+            echo "::error::rebase 冲突，请手动处理"
+            git rebase --abort
+            exit 1
+          }
+        done
+        echo "changed=false" >> "$GITHUB_OUTPUT"
+        echo "::warning::修正已提交但多次推送失败，请手动处理"
+        exit 0
 
     # PR：只提示，不写回仓库
     - name: Report issues on pull request

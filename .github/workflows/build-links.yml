@@ -27,13 +27,34 @@ jobs:
     - name: Build links data (graph / backlinks)
       run: node iris/scripts/build-links.js
 
+    # 提交并推送。
+    # 不用 EndBug/add-and-commit：它的执行顺序是 add → pull → commit → push，
+    # 只要暂存了改动，随后的 `git pull --rebase` 就会报
+    # "cannot pull with rebase: Your index contains uncommitted changes"。
+    # 改为先提交，再循环「拉取远端 + rebase + 推送」，
+    # 处理多个工作流同时向 main 推送的竞态。
     - name: Commit and push changes
-      uses: EndBug/add-and-commit@v9
-      with:
-        message: 'build: update links.json'
-        add: 'iris/data/links.json'
-        default_author: github_actions
-        # 多个工作流会同时向 main 推送，先 rebase 远端再推，
-        # 否则后推的那个会被 non-fast-forward 拒绝。
-        pull: '--rebase'
-        push: 'origin HEAD:refs/heads/${{ github.ref_name }} --force-with-lease'
+      run: |
+        set +e
+        git config user.name 'github-actions[bot]'
+        git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+        git add -- iris/data/links.json
+        if git diff --cached --quiet; then
+          echo "无变化，跳过提交"
+          exit 0
+        fi
+        git commit -m 'build: update links.json'
+        for i in 1 2 3 4 5; do
+          if git push origin "HEAD:refs/heads/${{ github.ref_name }}"; then
+            exit 0
+          fi
+          echo "推送被拒（第 $i 次），rebase 远端后重试..."
+          git fetch origin "${{ github.ref_name }}"
+          git rebase "origin/${{ github.ref_name }}" || {
+            echo "::error::rebase 冲突，请手动处理"
+            git rebase --abort
+            exit 1
+          }
+        done
+        echo "::warning::产物已提交但多次推送失败，请手动处理"
+        exit 0
