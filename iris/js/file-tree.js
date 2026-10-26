@@ -4,15 +4,15 @@
   const { dom, state, CONFIG, search } = window.MarkdownPreview;
 
   // 自然排序比较器与 DOM 重排（与构建期 iris/js/name-sort.js 同一实现）
+  // 注意：兜底的 compareNames 必须与 name-sort.js 的选项一致
+  // （numeric + caseFirst:'upper'），否则 name-sort.js 加载失败时
+  // 排序会静默退回旧行为（大写不再优先）。
   const nameSort = window.MarkdownPreview.nameSort || {};
   const compareNames = nameSort.compareNames ||
-    ((a, b) => String(a == null ? '' : a).localeCompare(String(b == null ? '' : b), undefined, { numeric: true }));
+    ((a, b) => String(a == null ? '' : a).localeCompare(
+      String(b == null ? '' : b), undefined, { numeric: true, caseFirst: 'upper' }));
   const applyNaturalOrder = nameSort.applyNaturalOrder ||
     function () { /* name-sort.js 未加载时不做重排，退回 vendor 行为 */ };
-  const SORT_MODES = nameSort.SORT_MODES || {
-    smart: 'smart', createdDesc: 'createdDesc', createdAsc: 'createdAsc',
-    modifiedDesc: 'modifiedDesc', modifiedAsc: 'modifiedAsc'
-  };
   const DEFAULT_SORT_MODE = nameSort.DEFAULT_SORT_MODE || 'smart';
 
   /** 当前排序策略（由设置面板写入 settings.treeSort） */
@@ -21,7 +21,10 @@
       const s = window.MarkdownPreview.settings && window.MarkdownPreview.settings.load
         ? window.MarkdownPreview.settings.load() : {};
       const mode = s && s.treeSort;
-      return (mode && nameSort.isValidSortMode ? nameSort.isValidSortMode(mode) : true) ? mode : DEFAULT_SORT_MODE;
+      // name-sort.js 未加载时无法校验策略，退回默认（智能顺序）
+      if (!mode) return DEFAULT_SORT_MODE;
+      if (!nameSort.isValidSortMode) return mode;
+      return nameSort.isValidSortMode(mode) ? mode : DEFAULT_SORT_MODE;
     } catch (e) {
       return DEFAULT_SORT_MODE;
     }

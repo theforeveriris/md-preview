@@ -44,22 +44,6 @@
   }
 
   /**
-   * 按名称排序（不修改入参）
-   * @param {Array<{name: string}>} items
-   */
-  function sortByName(items) {
-    return items.slice().sort((a, b) => compareNames(a.name, b.name));
-  }
-
-  /**
-   * 按路径排序（不修改入参）
-   * @param {string[]} paths
-   */
-  function sortPaths(paths) {
-    return paths.slice().sort((a, b) => compareNames(a, b));
-  }
-
-  /**
    * 取 li 的直接子 button（vendor 结构：li > button (+ ul)）
    * 不用 :scope 选择器，避免部分环境在 Shadow DOM 内不支持。
    */
@@ -219,14 +203,11 @@
 
   const api = {
     compareNames,
-    sortByName,
-    sortPaths,
     directButton,
     applyNaturalOrder,
     SORT_MODES,
     DEFAULT_SORT_MODE,
     isValidSortMode,
-    timeFieldOf,
     compareEntries,
     sortEntries,
   };
