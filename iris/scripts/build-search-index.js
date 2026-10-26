@@ -59,7 +59,7 @@ function extractPreview(content) {
 const { collectMarkdownFiles } = require('./lib/docs.js');
 
 function collectFiles(dir) {
-  return collectMarkdownFiles(dir).map(f => ({
+  return collectMarkdownFiles(dir, { skipRel: ['zw'] }).map(f => ({
     path: f.rel,
     fullPath: f.path
   }));

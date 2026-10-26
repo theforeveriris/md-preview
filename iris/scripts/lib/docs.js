@@ -23,6 +23,9 @@ const DEFAULT_SKIP = new Set([
 function collectMarkdownFiles(rootDir, opts) {
   const o = opts || {};
   const skip = o.skip || DEFAULT_SKIP;
+  // 相对路径前缀排除（如 ['zw']）：docs/zw/ 是中文排版 lint 的故意写错样例，
+  // 不进公开站点的目录树 / 搜索索引 / RSS（见 readme-dev.md「测试夹具目录」）
+  const skipRel = o.skipRel || null;
   const base = o.relBase || rootDir;
   const out = [];
 
@@ -37,6 +40,7 @@ function collectMarkdownFiles(rootDir, opts) {
     if (skip.has(entry.name)) continue;
     const full = path.join(rootDir, entry.name);
     const rel = path.relative(base, full).split(path.sep).join('/');
+    if (skipRel && skipRel.some(prefix => rel === prefix || rel.startsWith(prefix + '/'))) continue;
     if (entry.isDirectory()) {
       out.push(...collectMarkdownFiles(full, { skip, relBase: base }));
     } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.md')) {

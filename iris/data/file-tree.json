@@ -191,6 +191,19 @@
             ]
           },
           {
+            "name": "graph-backlinks-demo.md",
+            "type": "file",
+            "path": "docs/examples/graph-backlinks-demo.md",
+            "wordCount": 151,
+            "created": 0,
+            "modified": 0,
+            "title": "文档图谱与反向链接示例",
+            "tags": [
+              "导航",
+              "进阶"
+            ]
+          },
+          {
             "name": "image-gallery-examples.md",
             "type": "file",
             "path": "docs/examples/image-gallery-examples.md",
@@ -436,66 +449,9 @@
             ]
           }
         ],
-        "wordCount": 12418,
+        "wordCount": 12569,
         "created": 1779157467,
         "modified": 1793003870
-      },
-      {
-        "name": "zw",
-        "type": "folder",
-        "children": [
-          {
-            "name": "1.0-排版问题样例一.md",
-            "type": "file",
-            "path": "docs/zw/1.0-排版问题样例一.md",
-            "wordCount": 287,
-            "created": 1793003870,
-            "modified": 1793006725,
-            "title": "排版问题样例一",
-            "tags": [
-              "测试"
-            ]
-          },
-          {
-            "name": "2.0-排版问题样例二.md",
-            "type": "file",
-            "path": "docs/zw/2.0-排版问题样例二.md",
-            "wordCount": 183,
-            "created": 1793003870,
-            "modified": 1793006725,
-            "title": "排版问题样例二",
-            "tags": [
-              "测试"
-            ]
-          },
-          {
-            "name": "3.0-排版问题样例三.md",
-            "type": "file",
-            "path": "docs/zw/3.0-排版问题样例三.md",
-            "wordCount": 108,
-            "created": 1793003870,
-            "modified": 1793006725,
-            "title": "排版问题样例三",
-            "tags": [
-              "测试"
-            ]
-          },
-          {
-            "name": "README.md",
-            "type": "file",
-            "path": "docs/zw/README.md",
-            "wordCount": 127,
-            "created": 1793003870,
-            "modified": 1793006703,
-            "title": "排版测试目录",
-            "tags": [
-              "测试"
-            ]
-          }
-        ],
-        "wordCount": 705,
-        "created": 1793003870,
-        "modified": 1793006725
       },
       {
         "name": "changelog.md",
@@ -513,7 +469,7 @@
         "name": "code-highlight-theme.md",
         "type": "file",
         "path": "docs/code-highlight-theme.md",
-        "wordCount": 520,
+        "wordCount": 521,
         "created": 1783645568,
         "modified": 1792250506,
         "title": "代码高亮主题开发指南",
@@ -574,7 +530,7 @@
         "name": "requirements.md",
         "type": "file",
         "path": "docs/requirements.md",
-        "wordCount": 1840,
+        "wordCount": 1894,
         "created": 1792355917,
         "modified": 1793035279,
         "title": "需求整理（候选功能）",
@@ -624,7 +580,7 @@
         "name": "show.md",
         "type": "file",
         "path": "docs/show.md",
-        "wordCount": 2825,
+        "wordCount": 2756,
         "created": 1785512983,
         "modified": 1792311595,
         "title": "系统运行时截图",
@@ -646,7 +602,7 @@
         ]
       }
     ],
-    "wordCount": 24852,
+    "wordCount": 24284,
     "created": 1779157467,
     "modified": 1793035279
   },
@@ -703,7 +659,7 @@
     "name": "CONTRIBUTING.md",
     "type": "file",
     "path": "CONTRIBUTING.md",
-    "wordCount": 1743,
+    "wordCount": 1801,
     "created": 1793029783,
     "modified": 1793030245,
     "title": "贡献指南"
@@ -712,7 +668,7 @@
     "name": "readme-dev.md",
     "type": "file",
     "path": "readme-dev.md",
-    "wordCount": 1299,
+    "wordCount": 1302,
     "created": 1779253703,
     "modified": 1793029783,
     "title": "Markdown Preview — 开发者文档",
@@ -724,7 +680,7 @@
     "name": "README.md",
     "type": "file",
     "path": "README.md",
-    "wordCount": 1184,
+    "wordCount": 1205,
     "created": 1779156860,
     "modified": 1793035279,
     "title": "Markdown Preview",

@@ -5,20 +5,64 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 26 Oct 2026 19:37:30 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 26 Oct 2026 20:21:27 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>文档图谱与反向链接示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/graph-backlinks-demo.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/graph-backlinks-demo.md</guid>
+      <pubDate>Mon, 26 Oct 2026 20:20:06 GMT</pubDate>
+      <description>文档图谱（#/graph）与反向链接区块的用法示例：文档间的 markdown 链接如何变成图谱的边与文末的反向链接。</description>
+      <content:encoded><![CDATA[<h1>文档图谱与反向链接</h1>
+<p>文档之间的关系来自<strong>正文里的 markdown 相对链接</strong>：构建期 <code>iris/scripts/build-links.js</code>
+扫描全部文档，产出 <code>iris/data/links.json</code>（谁链接了谁），运行时用它渲染两个地方：</p>
+<ol>
+<li><strong>文末反向链接区</strong>——列出「哪些文档链接到了本文」与相关文档；</li>
+<li><strong>文档图谱</strong>——把全部文档画成一张可交互的关系网。</li>
+</ol>
+<h2>打开文档图谱</h2>
+<p>两种入口：</p>
+<ul>
+<li>命令面板（<code>Ctrl/⌘ + K</code>）搜索「图谱」并回车；</li>
+<li>直接访问 <code>#/graph</code>（hash 可分享）。</li>
+</ul>
+<pre><code class="language-graph">
+</code></pre>
+<blockquote>
+<p>上面的 <code>```graph</code> 代码块是图谱的**挂载点**（内容留空即可）——在本文里会
+就地渲染一张交互式图谱：拖拽平移、滚轮缩放、点击节点跳转对应文档。
+独立沉浸式形态请用 <code>#/graph</code> 入口（画布撑满视口 + 搜索 + 图例 + 功能区）。</p>
+</blockquote>
+<h2>它是怎么连起来的</h2>
+<p>本文链接了另外两篇文档，所以图谱里会出现对应的边：</p>
+<ul>
+<li>渲染器总览见 <a href="https://theforeveriris.github.io/md-preview/docs/show.md">show.md</a>；</li>
+<li>配置项参考见 <a href="https://theforeveriris.github.io/md-preview/docs/configuration.md">configuration.md</a>。</li>
+</ul>
+<p>反向来看，本文末尾的「反向链接」区块会自动列出链接到本文的文档——
+现在你看到的这篇示例还没有被别的文档引用，所以该区块为空；
+访问 <a href="https://theforeveriris.github.io/md-preview/docs/configuration.md">configuration.md</a> 就能看到反向链接的实际效果。</p>
+<h2>小结</h2>
+<ul>
+<li>想让两篇文档在图谱里相连：写一条普通的 markdown 相对链接即可；</li>
+<li>新增文档后需等 <code>build-links.yml</code> 构建出新的 <code>links.json</code>（push 触发）；</li>
+<li>无任何链接关系的文档在图谱中默认隐藏（左下角按钮可切换显隐）。</li>
+</ul>
+]]></content:encoded>
+    </item>
     <item>
       <title>需求整理（候选功能）</title>
       <link>https://theforeveriris.github.io/md-preview/docs/requirements.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/requirements.md</guid>
       <pubDate>Mon, 26 Oct 2026 17:21:19 GMT</pubDate>
-      <description>本文整理自一轮功能头脑风暴中筛选出的候选需求，作为排期参考。 与 功能路线图 的分工：roadmap 是维护者已确认的正式规划，本文是待评估的候选池；某项落地后，请移入 roadmap / README 特性清单，并从本表移除。 约定：优先级 P0（低风险快赢）→ P1（体感/内容增强）→ P2（攻坚）；工作量 小（≤ 半天）→ 中（13 天）→ 大（多日）。 --- | ID | 名称 | 分组</description>
+      <description>本文整理自一轮功能头脑风暴中筛选出的候选需求，作为排期参考。 与 功能路线图 的分工：roadmap 是维护者已确认的正式规划，本文是待评估的候选池；某项落地后，请移入 roadmap / README 特性清单，并从本表移除。 约定：优先级 P0（低风险快赢）→ P1（体感/内容增强）→ P2（攻坚）；工作量 小（≤ 半天）→ 中（13 天）→ 大（多日）。 --- 以下 25 项已全部落地（按</description>
       <content:encoded><![CDATA[<h1>需求整理（候选功能）</h1>
 <p>本文整理自一轮功能头脑风暴中筛选出的候选需求，作为<strong>排期参考</strong>。</p>
 <p>与 <a href="https://theforeveriris.github.io/md-preview/docs/roadmap.md">功能路线图</a> 的分工：roadmap 是维护者已确认的正式规划，本文是<strong>待评估的候选池</strong>；某项落地后，请移入 roadmap / README 特性清单，并从本表移除。</p>
 <p>约定：<strong>优先级</strong> P0（低风险快赢）→ P1（体感/内容增强）→ P2（攻坚）；<strong>工作量</strong> 小（≤ 半天）→ 中（1~3 天）→ 大（多日）。</p>
 <hr>
 <h2>总览</h2>
+<p>以下 25 项<strong>已全部落地</strong>（按本文件开头的自我约定，落地后应移入 roadmap/README 并从本表移除；为保留追溯性暂整表保留，状态改为已完成）：</p>
 <table>
 <thead>
 <tr>
@@ -494,14 +538,22 @@
 <li><strong>性能预算</strong>：首屏体积与主线程占用不得劣化（现为约 1 MB / 按需加载），改渲染管线时以 Debug Panel（<code>?debug=1</code>）实测为准。</li>
 </ul>
 <hr>
-<h2>待确认 / 决策点</h2>
+<h2>待确认 / 决策点（均已随功能落地有答案）</h2>
 <ol>
-<li><strong>渲染调度合并</strong>：PERF-1 / PERF-2 / PERF-3 是否合并为一次「渲染调度」重构统一实现？（建议是）</li>
-<li><strong>跨域请求类组件</strong>（TOOL-1、TOOL-2）：CORS 限制如何向读者解释？是否内置一个可选的代理说明？</li>
-<li><strong>GitHub API 鉴权</strong>：GIT-1 / GIT-3 是否需要引导用户填 Token？私有仓库如何支持？</li>
-<li><strong>繁简范围</strong>（CJK-1）：仅正文，还是含 UI 文案与侧边栏？</li>
-<li><strong>CJK lint 门禁</strong>（BUILD-1）：默认告警还是致命？<code>--fix</code> 是否加入某条工作流？</li>
-<li><strong>术语表来源</strong>（CONTENT-1）：frontmatter 内联，还是独立的术语文件 / 构建期汇总？</li>
+<li><del><strong>渲染调度合并</strong></del> ✅ 已定：PERF-1 以 md-render.js 的 <code>runRenderers</code> 统一调度 +
+IntersectionObserver 懒加载实现（PERF-3 渐进渲染经 <code>highlightCodeBlocksProgressive</code>
+同款思路覆盖）；未再合并为单次重构。</li>
+<li><del><strong>跨域请求类组件</strong></del> ✅ 已定：不内置代理；在示例文档（devtools-examples）与
+requirements 正文中向读者解释「仅支持允许跨域的端点」（见产品已知限制）。</li>
+<li><del><strong>GitHub API 鉴权</strong></del> ✅ 已定：git-history 支持 Token（sessionStorage 存储，
+不再明文存 localStorage）；匿名 60 次/时配额靠 ETag 条件请求 + 10 分钟限频缓解；
+私有仓库由用户自行配 Token。</li>
+<li><del><strong>繁简范围</strong></del> ✅ 已定：正文 + 文件树标题等 UI 同步切换（cjk.js afterRender 覆盖
+主文档；搜索索引构建期繁简双 token）。</li>
+<li><del><strong>CJK lint 门禁</strong></del> ✅ 已定：advisory（smoke-test 中 continue-on-error 预跑 +
+专用工作流 main 上自动修复、PR 仅提示），<code>--fix</code> 已在 cjk-typography-lint.yml。</li>
+<li><del><strong>术语表来源</strong></del> ✅ 已定：frontmatter 内联（glossary 渲染器直接解析
+pre.code-block 代码块内容，无需独立术语文件）。</li>
 </ol>
 ]]></content:encoded>
     </item>
@@ -1170,181 +1222,6 @@
 ]]></content:encoded>
     </item>
     <item>
-      <title>排版问题样例一</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/zw/1.0-%E6%8E%92%E7%89%88%E9%97%AE%E9%A2%98%E6%A0%B7%E4%BE%8B%E4%B8%80.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/zw/1.0-%E6%8E%92%E7%89%88%E9%97%AE%E9%A2%98%E6%A0%B7%E4%BE%8B%E4%B8%80.md</guid>
-      <pubDate>Mon, 26 Oct 2026 09:25:25 GMT</pubDate>
-      <description>本文档故意保留多处中文排版问题，用于验证 CI 排版校验流水线能否触发。 在 LeanCloud 上，数据存储是围绕进行的。 今天出去买菜花了 5000 元，我家的光纤入屋宽带有 10 Gbps，SSD 一共有 20 TB。 刚刚买了一部 iPhone，好开心！ 德国队竟然战胜了巴西队！ 她竟然对你说「喵」？！ 嗨！你知道嘛？今天前台的小妹跟我说 &quot;喵&quot; 了哎！ 这个蛋糕只卖 1000 元。 这个</description>
-      <content:encoded><![CDATA[<h1>排版问题样例一</h1>
-<p>本文档故意保留多处中文排版问题，用于验证 CI 排版校验流水线能否触发。</p>
-<h2>空格类问题</h2>
-<p>在 LeanCloud 上，数据存储是围绕<code>AVObject</code>进行的。</p>
-<p>今天出去买菜花了 5000 元，我家的光纤入屋宽带有 10 Gbps，SSD 一共有 20 TB。</p>
-<p>刚刚买了一部 iPhone，好开心！</p>
-<h2>标点类问题</h2>
-<p>德国队竟然战胜了巴西队！</p>
-<p>她竟然对你说「喵」？！</p>
-<p>嗨！你知道嘛？今天前台的小妹跟我说 &quot;喵&quot; 了哎！</p>
-<p>这个蛋糕只卖 1000 元。</p>
-<h2>数字类问题</h2>
-<p>这个蛋糕只卖 1000 元。</p>
-<p>角度为 90 ° 的角，就是直角。</p>
-<p>新 MacBook Pro 有 15 % 的 CPU 性能提升。</p>
-<h2>全半角混用</h2>
-<p>核磁共振成像 (NMRI) 是什么原理都不知道？JFGI!</p>
-<p>核磁共振成像(NMRI)是什么原理都不知道?JFGI!</p>
-<h2>行首禁则</h2>
-<p>这是一个正常段落。</p>
-<p>），这是行首出现收尾标点的情况。</p>
-<p>，这是行首出现逗号的情况。</p>
-<h2>重复标点</h2>
-<p>这个功能真的很棒！</p>
-<p>这个文档也很不错？！</p>
-<h2>直引号</h2>
-<p>他说&quot;这个功能很棒&quot;，然后就走了。</p>
-<h2>中英混排</h2>
-<p>使用 github 登录</p>
-<p>我们的客户有 github、foursquare、microsoft corporation、google。</p>
-<h2>数字开头文件名排序</h2>
-<p>本目录下的样例文件命名为 1.0、1.1、2.0、9.0、10.0，用于验证文件树排序。</p>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>排版问题样例二</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/zw/2.0-%E6%8E%92%E7%89%88%E9%97%AE%E9%A2%98%E6%A0%B7%E4%BE%8B%E4%BA%8C.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/zw/2.0-%E6%8E%92%E7%89%88%E9%97%AE%E9%A2%98%E6%A0%B7%E4%BE%8B%E4%BA%8C.md</guid>
-      <pubDate>Mon, 26 Oct 2026 09:25:25 GMT</pubDate>
-      <description>第二份样例文档，补充更多排版问题类型。 在 GitHub 上，Actions 是 CI 工具。 构建耗时约 250 ms，产物体积 5 MB，缓存 512 MB。 光纤速率 100 Mbps，硬盘 4 TB，内存 16 GB。 延迟 30 ms，重量 5 kg，距离 3 km。 版本号 v1.2.3 已发布，功能真的很完善！ 测试用例共 128 个，失败 0 个。 他说：&quot;一切正常&quot;，然后就离开了</description>
-      <content:encoded><![CDATA[<h1>排版问题样例二</h1>
-<p>第二份样例文档，补充更多排版问题类型。</p>
-<h2>空格</h2>
-<p>在 GitHub 上，Actions 是 CI 工具。</p>
-<p>构建耗时约 250 ms，产物体积 5 MB，缓存 512 MB。</p>
-<h2>单位</h2>
-<p>光纤速率 100 Mbps，硬盘 4 TB，内存 16 GB。</p>
-<p>延迟 30 ms，重量 5 kg，距离 3 km。</p>
-<h2>标点</h2>
-<p>版本号 v1.2.3 已发布，功能真的很完善！</p>
-<p>测试用例共 128 个，失败 0 个。</p>
-<h2>全角半角</h2>
-<p>他说：&quot;一切正常&quot;，然后就离开了。</p>
-<p>请问：这个功能怎么用？谢谢！</p>
-<h2>数字</h2>
-<p>价格是 50 元起。</p>
-<p>耗时 5 分钟，走了 2 公里。</p>
-<h2>行首禁则</h2>
-<p>结尾。</p>
-<p>；分号开头。</p>
-<p>：冒号开头。</p>
-<h2>直引号</h2>
-<p>配置文件里写了&quot;mode&quot;: &quot;smart&quot;。</p>
-<h2>中英混排</h2>
-<p>用 GitHub Actions 跑 CI，用 Docker 部署，用 Kubernetes 编排。</p>
-<h2>链接与代码</h2>
-<p>参考 <a href="https://github.com/sparanoid/chinese-copywriting-guidelines">中文文案排版指北</a> 的说明。</p>
-<p>行内代码 <code>npm run build</code> 不应被修改。</p>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>排版问题样例三</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/zw/3.0-%E6%8E%92%E7%89%88%E9%97%AE%E9%A2%98%E6%A0%B7%E4%BE%8B%E4%B8%89.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/zw/3.0-%E6%8E%92%E7%89%88%E9%97%AE%E9%A2%98%E6%A0%B7%E4%BE%8B%E4%B8%89.md</guid>
-      <pubDate>Mon, 26 Oct 2026 09:25:25 GMT</pubDate>
-      <description>第三份样例，覆盖表格、列表、代码围栏等结构中的排版问题。 | 名称 | 说明 | 耗时 | |------|------|------| | 构建 | 跑所有脚本 | 250 ms | | 部署 | 推送到 GitHub Pages | 5s | | 缓存 | 写入 precache | 30 ms | - 第一项：在 LeanCloud 上开发，速度很快。 - 第二项：耗时约 250 ms，性能</description>
-      <content:encoded><![CDATA[<h1>排版问题样例三</h1>
-<p>第三份样例，覆盖表格、列表、代码围栏等结构中的排版问题。</p>
-<h2>表格中的问题</h2>
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>说明</th>
-<th>耗时</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>构建</td>
-<td>跑所有脚本</td>
-<td>250 ms</td>
-</tr>
-<tr>
-<td>部署</td>
-<td>推送到 GitHub Pages</td>
-<td>5s</td>
-</tr>
-<tr>
-<td>缓存</td>
-<td>写入 precache</td>
-<td>30 ms</td>
-</tr>
-</tbody></table>
-<h2>列表中的问题</h2>
-<ul>
-<li>第一项：在 LeanCloud 上开发，速度很快。</li>
-<li>第二项：耗时约 250 ms，性能提升 40%。</li>
-<li>第三项：这个功能真的很棒！</li>
-<li>第四项：他说&quot;太好了&quot;。</li>
-</ul>
-<h2>引用块中的问题</h2>
-<blockquote>
-<p>在 LeanCloud 上，数据存储是围绕<code>AVObject</code>进行的。</p>
-</blockquote>
-<blockquote>
-<p>这一行开头有收尾标点）。</p>
-</blockquote>
-<h2>围栏代码块（内部不应被修改）</h2>
-<pre><code class="language-js">const a = 1;
-const 中文变量 = &quot;值&quot;;
-console.log(在LeanCloud上);
-</code></pre>
-<h2>嵌套围栏（外层四反引号）</h2>
-<pre><code class="language-markdown">```js
-const 在LeanCloud上 = 1;
-```
-</code></pre>
-<h2>HTML 标签内</h2>
-<p><span>这段文字在标签内，不应被修改</span></p>
-<h2>链接文本</h2>
-<p>请<a href="https://github.com/x/y/issues">提交一个 issue</a>并分配给相关同事。</p>
-<p>访问<a href="https://example.com">我们的网站</a>进行订阅！</p>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>排版测试目录</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/zw/README.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/zw/README.md</guid>
-      <pubDate>Mon, 26 Oct 2026 09:25:03 GMT</pubDate>
-      <description>本目录用于验证中文排版校验流水线。 | 文件 | 说明 | |------|------| | | 空格、标点、数字、全半角、行首禁则、重复标点、直引号 | | | 单位、版本号、冒号问号、配置片段 | | | 表格、列表、引用、代码围栏、HTML、链接 | 流水线触发后，机器人会自动修正可安全修复的排版问题，并以 提交。 无法安全自动修复的（如中文旁的直引号）只报告，不改写。</description>
-      <content:encoded><![CDATA[<h1>排版测试目录</h1>
-<p>本目录用于验证中文排版校验流水线。</p>
-<h2>文件列表</h2>
-<table>
-<thead>
-<tr>
-<th>文件</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1.0-排版问题样例一.md</code></td>
-<td>空格、标点、数字、全半角、行首禁则、重复标点、直引号</td>
-</tr>
-<tr>
-<td><code>2.0-排版问题样例二.md</code></td>
-<td>单位、版本号、冒号问号、配置片段</td>
-</tr>
-<tr>
-<td><code>3.0-排版问题样例三.md</code></td>
-<td>表格、列表、引用、代码围栏、HTML、链接</td>
-</tr>
-</tbody></table>
-<h2>预期行为</h2>
-<p>流水线触发后，机器人会自动修正可安全修复的排版问题，并以
-<code>style: 中文排版自动修正 [skip ci]</code> 提交。</p>
-<p>无法安全自动修复的（如中文旁的直引号）只报告，不改写。</p>
-]]></content:encoded>
-    </item>
-    <item>
       <title>浏览器原生 HTML 元素与 Web API 示例</title>
       <link>https://theforeveriris.github.io/md-preview/docs/examples/native-html-examples.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/native-html-examples.md</guid>
@@ -1872,7 +1749,7 @@ Super<wbr>cali<wbr>fragilistic<wbr>expiali<wbr>docious（有换行点）</p>
 <td>Notion</td>
 </tr>
 <tr>
-<td><code>arc-dark</code></td>
+<td><code>arc</code></td>
 <td>Arc Dark</td>
 </tr>
 <tr>
@@ -2220,8 +2097,8 @@ Super<wbr>cali<wbr>fragilistic<wbr>expiali<wbr>docious（有换行点）</p>
 <pre><code>┌─────────────────────────────────────────────────────┐
 │  顶部工具栏 (editor-toolbar)                          │
 │  左：返回文档站 / 标题 / Cell 计数                     │
-│  中：7 个下拉菜单（Markdown / HTML / 私有语法 /        │
-│      工具渲染 / 插入 / 下载 / 导入）                   │
+│  中：8 个下拉菜单（Markdown / HTML / 私有语法 /        │
+│      工具渲染 / 插入 / 嵌入 / 下载 / 导入）             │
 │  右：字号 / 搜索 / 主题 / 清空 / 全部运行 / 运行       │
 ├─────────────────────────────────────────────────────┤
 │  搜索/替换面板 (search-panel，按需展开)                │
@@ -4169,7 +4046,7 @@ rgb(139, 92, 246)
 <h2>三、设置面板</h2>
 <h3>预设主题 + 自定义配色（取色器）</h3>
 <p><img src="https://theforeveriris.github.io/md-preview/docs/image/%E8%AE%BE%E7%BD%AE-%E5%85%81%E8%AE%B8%E8%87%AA%E5%AE%9A%E4%B9%89%E9%A2%84%E8%AE%BE%E4%B8%BB%E9%A2%98%E6%88%96%E8%87%AA%E8%A1%8C%E9%85%8D%E8%89%B2.png" alt="设置-允许自定义预设主题或自行配色"></p>
-<p>7 种内置主题（default / github-light / github-dark / notion / arc-dark / dracula / nord）一键切换；在此基础上提供：</p>
+<p>7 种内置主题（default / github-light / github-dark / notion / arc / dracula / nord）一键切换；在此基础上提供：</p>
 <ul>
 <li><strong>自动主题（auto）</strong>：跟随系统亮暗实时切换，亮 / 暗配对可自由组合（默认紫粉渐变 + GitHub Dark）</li>
 <li><strong>界面语言</strong>：中文 / English，默认跟随浏览器语言，设置面板顶部一键切换</li>
@@ -4272,6 +4149,13 @@ atom-one-dark、atom-one-light、dracula、github-dark、github、monokai、nord
 <p>详细文档：<a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-generator-page.md">郊狼波形批量生成页说明</a>
 Pulse 格式与示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md">Pulse 波形示例</a></p>
 <hr>
+<h2>七、文档图谱与反向链接（截图待补）</h2>
+<p><strong>文档图谱</strong>：命令面板搜「图谱」或访问 <code>#/graph</code> 进入沉浸式关系网——全部文档
+按标签色相轮配色、按连接数同心圆分层；支持拖拽缩放、节点搜索、图例筛选、
+点击跳转。正文内也可以用 <code>```graph</code> 代码块就地挂一张图谱。</p>
+<p><strong>反向链接</strong>：每篇文档末尾自动列出「哪些文档链接到了本文」与相关文档，
+数据与图谱同源（<code>links.json</code>）。</p>
+<p>示例与用法详见 <a href="https://theforeveriris.github.io/md-preview/docs/examples/graph-backlinks-demo.md">文档图谱与反向链接示例</a>。</p>
 <h2>六、界面与导航增强（截图待补）</h2>
 <p>以下功能已上线但尚未补充运行时截图，功能说明与详细文档先行收录：</p>
 <h3>搜索命令面板（<code>Ctrl/⌘ + K</code>）</h3>
@@ -4471,13 +4355,13 @@ Pulse 格式与示例：<a href="https://theforeveriris.github.io/md-preview/doc
 <h3>方法：加载外部 highlight.js 主题 CSS</h3>
 <ol>
 <li>找到你喜欢的主题 CSS（例如从 <a href="https://highlightjs.org/demo">highlight.js demo</a> 或 CDN 获取）</li>
-<li>在设置面板的 <strong>外观 → 高级 → 自定义高亮 JS</strong> 输入框中填入主题 CSS 的 URL</li>
+<li>在设置面板的 <strong>外观 → 高级 → 自定义高亮主题</strong> 输入框中填入主题 CSS 的 URL</li>
 <li>回车应用</li>
 </ol>
 <p>自定义 hljs CSS 会插入到内置 <code>#hljs-theme</code> 之后，确保覆盖内置主题。</p>
 <blockquote>
-<p><strong>注意</strong>：自定义高亮 JS 优先级高于「代码高亮主题」下拉框的选择。如需切换回内置主题，清空自定义高亮 JS 输入框回车即可。</p>
-<p>「自定义 CSS」与「自定义高亮 JS」是两个独立输入框：前者用于覆盖整站样式（布局、字体等），后者仅用于代码块语法颜色。</p>
+<p><strong>注意</strong>：自定义高亮主题 优先级高于「代码高亮主题」下拉框的选择。如需切换回内置主题，清空自定义高亮主题 输入框回车即可。</p>
+<p>「自定义 CSS」与「自定义高亮主题」是两个独立输入框：前者用于覆盖整站样式（布局、字体等），后者仅用于代码块语法颜色。</p>
 </blockquote>
 <h2>开发自定义主题</h2>
 <h3>highlight.js 主题结构</h3>
@@ -10529,21 +10413,39 @@ const themes = MarkdownPreview.themes.getAllThemes();
 <li>侧边栏显示名称优先取文档标题（frontmatter <code>title:</code> 或正文首个 <code>#</code> 标题），没有标题时回退为文件名（自动去掉 <code>.md</code> 后缀、解码中文）</li>
 </ul>
 <h2>本地预览</h2>
+<blockquote>
+<p>本节与 README 的「快速开始」内容保持同步（README 为权威出处，改动请两处同步）。</p>
+</blockquote>
 <pre><code class="language-bash"># 克隆仓库
 git clone &lt;your-repo-url&gt;
 cd &lt;repo-name&gt;
 
-# 构建文件树（可选）
+# 构建文件树（可选，不构建则使用 GitHub API 回退）
 node iris/scripts/build-file-tree.js
 
-# 构建搜索索引（可选）
+# 构建搜索索引
 node iris/scripts/build-search-index.js
 
-# 构建 RSS feed（可选）
+# 构建文档链接关系（图谱 / 反向链接数据）
+node iris/scripts/build-links.js
+
+# 构建 RSS feed
 node iris/scripts/build-feed.js
 
-# 直接用浏览器打开
-open index.html
+# 构建 sitemap（可选）
+node iris/scripts/build-sitemap.js
+
+# 死链检查（内链全量 + 外链抽查，可选）
+node iris/scripts/link-check.js
+
+# 构建 PKT/eNSP 产物（若有 raw 目录文件）
+python3 iris/scripts/pkt/main.py
+python3 iris/scripts/ensp/main.py
+
+# 构建 PPTX 产物（若有 data/pptx/raw 下的 ppt/pptx 文件）
+python3 iris/scripts/pptx/main.py
+
+# 用浏览器打开 index.html
 </code></pre>
 <blockquote>
 <p><strong>注意</strong>：直接打开 <code>index.html</code> 时，如果预构建文件不存在，会通过 GitHub API 加载文件树，可能受 API 限流影响。建议先构建文件树再预览。</p>
@@ -11222,7 +11124,7 @@ date: 2026-01-15
 <td>Notion 暖灰风格</td>
 </tr>
 <tr>
-<td><code>arc-dark</code></td>
+<td><code>arc</code></td>
 <td>Arc Dark</td>
 <td>Arc 浏览器彩虹紫风格</td>
 </tr>

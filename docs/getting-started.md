@@ -53,22 +53,39 @@ tags: [入门]
 
 ## 本地预览
 
+> 本节与 README 的「快速开始」内容保持同步（README 为权威出处，改动请两处同步）。
+
 ```bash
 # 克隆仓库
 git clone <your-repo-url>
 cd <repo-name>
 
-# 构建文件树（可选）
+# 构建文件树（可选，不构建则使用 GitHub API 回退）
 node iris/scripts/build-file-tree.js
 
-# 构建搜索索引（可选）
+# 构建搜索索引
 node iris/scripts/build-search-index.js
 
-# 构建 RSS feed（可选）
+# 构建文档链接关系（图谱 / 反向链接数据）
+node iris/scripts/build-links.js
+
+# 构建 RSS feed
 node iris/scripts/build-feed.js
 
-# 直接用浏览器打开
-open index.html
+# 构建 sitemap（可选）
+node iris/scripts/build-sitemap.js
+
+# 死链检查（内链全量 + 外链抽查，可选）
+node iris/scripts/link-check.js
+
+# 构建 PKT/eNSP 产物（若有 raw 目录文件）
+python3 iris/scripts/pkt/main.py
+python3 iris/scripts/ensp/main.py
+
+# 构建 PPTX 产物（若有 data/pptx/raw 下的 ppt/pptx 文件）
+python3 iris/scripts/pptx/main.py
+
+# 用浏览器打开 index.html
 ```
 
 > **注意**：直接打开 `index.html` 时，如果预构建文件不存在，会通过 GitHub API 加载文件树，可能受 API 限流影响。建议先构建文件树再预览。

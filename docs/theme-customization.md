@@ -21,7 +21,7 @@ Markdown Preview 提供三种层级的外观定制方式，由易到难：
 | `github-light` | GitHub Light | GitHub 明亮风格 |
 | `github-dark` | GitHub Dark | GitHub 深色风格 |
 | `notion` | Notion | Notion 暖灰风格 |
-| `arc-dark` | Arc Dark | Arc 浏览器彩虹紫风格 |
+| `arc` | Arc Dark | Arc 浏览器彩虹紫风格 |
 | `dracula` | Dracula | Dracula 经典配色 |
 | `nord` | Nord | 北极光配色 |
 

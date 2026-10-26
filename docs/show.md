@@ -274,7 +274,7 @@ DG-LAB 郊狼设备 `.pulse` 波形文件的完整渲染器。基于 `Dungeonlab
 
 ![设置-允许自定义预设主题或自行配色](image/设置-允许自定义预设主题或自行配色.png)
 
-7 种内置主题（default / github-light / github-dark / notion / arc-dark / dracula / nord）一键切换；在此基础上提供：
+7 种内置主题（default / github-light / github-dark / notion / arc / dracula / nord）一键切换；在此基础上提供：
 - **自动主题（auto）**：跟随系统亮暗实时切换，亮 / 暗配对可自由组合（默认紫粉渐变 + GitHub Dark）
 - **界面语言**：中文 / English，默认跟随浏览器语言，设置面板顶部一键切换
 - **强调色取色器**：主色 / 粉色 / 深色 独立调整
@@ -414,6 +414,17 @@ atom-one-dark、atom-one-light、dracula、github-dark、github、monokai、nord
 Pulse 格式与示例：[Pulse 波形示例](examples/pulse-examples.md)
 
 ---
+
+## 七、文档图谱与反向链接（截图待补）
+
+**文档图谱**：命令面板搜「图谱」或访问 `#/graph` 进入沉浸式关系网——全部文档
+按标签色相轮配色、按连接数同心圆分层；支持拖拽缩放、节点搜索、图例筛选、
+点击跳转。正文内也可以用 ` ```graph ` 代码块就地挂一张图谱。
+
+**反向链接**：每篇文档末尾自动列出「哪些文档链接到了本文」与相关文档，
+数据与图谱同源（`links.json`）。
+
+示例与用法详见 [文档图谱与反向链接示例](examples/graph-backlinks-demo.md)。
 
 ## 六、界面与导航增强（截图待补）
 

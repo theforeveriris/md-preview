@@ -72,7 +72,8 @@ function buildTreeFromDirectory(dir, basePath = '') {
 
   // 排除依赖 / 版本库 / 构建产物目录（与 readme-dev 的声明一致；
   // 本地开发装了 iris/node_modules 时会把依赖文档混进站点目录树）
-  const EXCLUDED_DIRS = new Set(['.git', 'node_modules', 'vendor', '.github', 'dist', 'src-tauri']);
+  // 'zw' = docs/zw/ 中文排版 lint 故意写错样例，不进公开目录树
+  const EXCLUDED_DIRS = new Set(['.git', 'node_modules', 'vendor', '.github', 'dist', 'src-tauri', 'zw']);
 
   items.forEach(item => {
     if (item.isDirectory() && EXCLUDED_DIRS.has(item.name)) return;

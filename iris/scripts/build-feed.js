@@ -163,6 +163,8 @@ function collectFiles(dir, basePath = '') {
   }
 
   for (const item of items) {
+    // docs/zw/ 为中文排版 lint 样例，不进 RSS/sitemap
+    if (item.name === 'zw' && dir.endsWith('docs')) continue;
     const fullPath = path.join(dir, item.name);
     const relPath = basePath ? `${basePath}/${item.name}` : item.name;
     if (item.isDirectory()) {

@@ -99,7 +99,7 @@ npm install --no-save --prefix iris jsdom@^29.1.1
 
 **为什么**：
 
-- `index.html` 有 64 个 script 标签 + 17 个渲染器，加载顺序有严格约束
+- `index.html` 的 script 标签数量随功能增减（当前约 70 个）+ 17 个渲染器，加载顺序有严格约束（可用 `node iris/scripts/check-script-order.js` 门禁校验）
   （`md-render.js` 必须先于所有引用 `mdRender` 的模块，由
   `iris/scripts/check-script-order.js` 检查）
 - 模块间通过 `window.MarkdownPreview` 通信，且支持**运行时动态加载**
@@ -475,3 +475,9 @@ NSIS 首次打包需要联网下载工具链，超时的手动处理步骤见 `r
 - 其它 → 开 issue 讨论
 
 任何问题都欢迎先开 issue 聊清楚再动手，能少走很多弯路。
+
+## docs/zw/ 测试夹具目录
+
+`docs/zw/` 是中文排版 lint（cjk-typography-lint.yml）的故意写错样例目录，
+**不属于站点内容**——构建脚本（file-tree / search-index / feed / sitemap）已排除。
+修改排版 lint 规则时，用这些样例验证检出效果；新增样例 frontmatter 带 `tags: [测试]`。
