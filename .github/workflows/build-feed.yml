@@ -38,3 +38,7 @@ jobs:
         message: 'build: update feed.xml and sitemap.xml'
         add: 'iris/data/feed.xml iris/data/sitemap.xml'
         default_author: github_actions
+        # 多个工作流会同时向 main 推送，先 rebase 远端再推，
+        # 否则后推的那个会被 non-fast-forward 拒绝。
+        pull: '--rebase'
+        push: 'origin HEAD:refs/heads/${{ github.ref_name }} --force-with-lease'
