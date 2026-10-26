@@ -7,10 +7,27 @@ tags: [规划]
 
 > 本页由 `iris/scripts/build-changelog.js` 从 git 历史自动生成，请勿手动编辑。
 
+## 2026-10-27
+
+- `f230013` docs(screenshots): 46 张运行时截图全量重拍（新品牌紫 + 新 UI），show.md 补第六/七节配图 — theforeveriris
+- `ff29fdb` feat(artwork): 站点强调色统一为品牌紫 #8B5CF6 + 图标双源漂移门禁（原暂缓项） — theforeveriris
+- `1ebb26b` docs: 06 文档问题修复（19/21，2 项需运行环境/设计工作） — theforeveriris
+- `1a83ac2` feat(graph): 配色改色相轮分层 + 独立页形态 + 修复节点点击导航（SW v8.51） — theforeveriris
+## 2026-10-26
+
+- `e6dd36d` style: 中文排版自动修正 [skip ci] — github-actions[bot]
+- `297e234` test(docs): 触发排版校验流水线 — theforeveriris
+- `0d5c72b` test(docs): 触发排版校验流水线 — theforeveriris
+- `12434b1` test(docs): 触发排版校验流水线 — theforeveriris
+- `d9f1ceb` test(docs): 新增中文排版问题样例文档（docs/zw） — theforeveriris
+- `ac25f3e` ci: 新增中文文案排版校验流水线（首次全量 + 后续增量 + 机器人提交） — theforeveriris
 ## 2026-10-19
 
-- `d74e080` feat(batch4): 图 / 表自动编号与交叉引用（SW v8.48） — theforeveriris
-- `94d8f3f` feat(batch1): 设置项搜索 + 脚注悬浮预览 + 时间线组件（SW v8.45） — theforeveriris
+- `4bcb72f` docs: 补桌面端构建说明；顺带刷新 file-tree 词数 — theforeveriris
+- `6c5500c` docs: 同步文档图谱的入口收敛与沉浸式改版 — theforeveriris
+- `8c83af3` docs: 同步本轮 8 项功能——README 特性清单 / 开发文档 / 路线图 / 候选池 + 重建产物 — theforeveriris
+- `3a6c0bb` feat(batch4): 图 / 表自动编号与交叉引用（SW v8.48） — theforeveriris
+- `09e9165` feat(batch1): 设置项搜索 + 脚注悬浮预览 + 时间线组件（SW v8.45） — theforeveriris
 - `a761039` docs: 同步本轮新增功能到 README 特性清单与功能路线图 — theforeveriris
 - `fe6ec47` feat(batch3): OpenAPI 交互文档 + 竖排模式 + Git 历史/变更订阅 + 渐进式代码高亮（SW v8.43） — theforeveriris
 - `8ddc218` feat(batch2): 可见即渲染 + 术语表悬浮 + HTTP 请求块 + 开发者小工具 + 中文排版 lint + 拼音注音（SW v8.42） — theforeveriris
@@ -164,4 +181,4 @@ tags: [规划]
 - `b1eecd4` Add multi-level documentation structure with test files — theforeveriris
 - `4a49e3b` Initial commit: Markdown previewer for GitHub Pages — agelaia521
 
-> 共 114 条（最多展示 200 条）。
+> 共 127 条（最多展示 200 条）。
