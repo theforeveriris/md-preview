@@ -8,6 +8,14 @@ on:
       - '.github/workflows/build-pptx.yml'
   workflow_dispatch:
 
+# 回写 main 的最小权限（此前缺省吃到仓库默认 token 权限）
+permissions:
+  contents: write
+
+concurrency:
+  group: build-pptx
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -37,13 +45,7 @@ jobs:
         run: python iris/scripts/pptx/main.py --force --verbose
 
       - name: Commit generated JSON + images
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git add iris/data/pptx/images/ iris/data/pptx/json/
-          if git diff --staged --quiet; then
-            echo '无需提交：images/json 已是最新'
-          else
-            git commit -m 'chore(pptx): 自动构建 PPT 缩略图与元数据 [skip ci]'
-            git push
-          fi
+        uses: ./.github/actions/commit-with-retry
+        with:
+          message: 'chore(pptx): 自动构建 PPT 缩略图与元数据 [skip ci]'
+          files: 'iris/data/pptx/images/ iris/data/pptx/json/'

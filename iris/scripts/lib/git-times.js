@@ -131,4 +131,4 @@ function collectMarkdownTimesWithCreated(root = ROOT) {
 }
 
 // 只导出带 created 的版本：collectMarkdownTimes 是它的内部实现
-module.exports = { collectMarkdownTimesWithCreated, ROOT };
+module.exports = { collectMarkdownTimes, collectMarkdownTimesWithCreated, ROOT };

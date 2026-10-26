@@ -43,48 +43,9 @@ function countWords(content) {
   return chineseChars + englishWords;
 }
 
-// 提取文档标题：frontmatter.title 优先，其次正文第一个 `#` 标题，都没有则返回空串（显示时回退文件名）
-function extractTitle(content) {
-  const fm = content.match(/^---\s*\n([\s\S]*?)\n---\s*/);
-  let meta = '';
-  let body = content;
-  if (fm) {
-    meta = fm[1];
-    body = content.slice(fm[0].length);
-  }
-
-  let title = '';
-  const titleLine = meta.split('\n').find(l => l.trim().startsWith('title:'));
-  if (titleLine) {
-    title = titleLine.trim().replace(/^title:\s*/, '').trim().replace(/^["']|["']$/g, '');
-  }
-  if (!title) {
-    const h1 = body.match(/^#\s+(.+?)\s*$/m);
-    if (h1) title = h1[1].trim();
-  }
-  return title;
-}
-
-// 提取文档标签：frontmatter `tags:` 行，支持内联数组 [a, b] 与逗号分隔两种写法
-function extractTags(content) {
-  const fm = content.match(/^---\s*\n([\s\S]*?)\n---\s*/);
-  if (!fm) return [];
-  const tagsLine = fm[1].split('\n').find(l => l.trim().startsWith('tags:'));
-  if (!tagsLine) return [];
-  const raw = tagsLine.trim().replace(/^tags:\s*/, '').trim();
-
-  let list = [];
-  if (raw.startsWith('[')) {
-    const inner = raw.replace(/^\[/, '').replace(/\]$/, '');
-    list = inner.split(',');
-  } else {
-    list = raw.split(/[,，]/);
-  }
-  return list
-    .map(s => s.trim().replace(/^["']|["']$/g, ''))
-    .filter(Boolean)
-    .slice(0, 20);
-}
+// 提取标题/标签：统一走 lib/frontmatter.js（此前与本仓其他构建脚本各自
+// 手写正则且口径漂移，现收敛到共享库）
+const { extractTitle, extractTags } = require('./lib/frontmatter.js');
 
 /**
  * 汇总一组条目的时间：最早创建 / 最晚修改。
@@ -174,6 +135,18 @@ try {
   const rootDir = path.join(__dirname, '../..');
   // 采集文档的首次添加 / 最后修改时间（非 git 环境下为空表，排序回退名称序）
   gitTimes = collectMarkdownTimesWithCreated(rootDir);
+function countFiles(tree) {
+  let count = 0;
+  tree.forEach(item => {
+    if (item.type === 'file') {
+      count++;
+    } else if (item.type === 'folder' && item.children) {
+      count += countFiles(item.children);
+    }
+  });
+  return count;
+}
+
   const { children: fileTreeData } = buildTreeFromDirectory(rootDir);
 
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(fileTreeData, null, 2));
@@ -188,14 +161,3 @@ try {
   process.exit(1);
 }
 
-function countFiles(tree) {
-  let count = 0;
-  tree.forEach(item => {
-    if (item.type === 'file') {
-      count++;
-    } else if (item.type === 'folder' && item.children) {
-      count += countFiles(item.children);
-    }
-  });
-  return count;
-}

@@ -39,79 +39,30 @@ function pinyinInitials(text) {
   return out;
 }
 
-function extractTitle(content) {
-  // 与 build-file-tree.js#extractTitle 同口径：先剥出 frontmatter 块，只在块内
-  // 找 title:（旧正则在块内无 title: 时会匹配到正文/代码块里的 title:），
-  // 再从正文找第一个 # 标题
-  const fm = content.match(/^---\s*\n([\s\S]*?)\n---\s*/);
-  let meta = '';
-  let body = content;
-  if (fm) {
-    meta = fm[1];
-    body = content.slice(fm[0].length);
-  }
-  const titleLine = meta.split('\n').find(l => l.trim().startsWith('title:'));
-  if (titleLine) {
-    return titleLine.trim().replace(/^title:\s*/, '').trim().replace(/^["']|["']$/g, '');
-  }
-
-  const headingMatch = body.match(/^#\s+(.+?)\s*$/m);
-  if (headingMatch) return headingMatch[1].trim();
-
-  return null;
-}
+// 标题/标签/frontmatter 剥离：统一走 lib/frontmatter.js
+const { extractTitle, extractTags, splitFrontmatter } = require('./lib/frontmatter.js');
 
 function extractPreview(content) {
-  let text = content;
-  
-  text = text.replace(/^---[\s\S]*?---\s*/, '');
-  text = text.replace(/```[\s\S]*?```/g, '');
-  text = text.replace(/^#+\s*/gm, '');
-  text = text.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1');
-  text = text.replace(/!\[([^\]]*)\]\([^)]*\)/g, '');
-  text = text.replace(/[*_~`]/g, '');
-  text = text.replace(/\s+/g, ' ').trim();
-  
+  const { body } = splitFrontmatter(content);
+  const text = body
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/^#+\s*/gm, '')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '')
+    .replace(/[*_~`]/g, '')
+    .replace(/\s+/g, ' ').trim();
+
   return text.substring(0, 200);
 }
 
-function extractTags(content) {
-  const frontmatterMatch = content.match(/^---\s*\n([\s\S]*?)\n---/);
-  if (!frontmatterMatch) return [];
-  const tagsLine = frontmatterMatch[1].split('\n').find(l => l.trim().startsWith('tags:'));
-  if (!tagsLine) return [];
-  const raw = tagsLine.trim().replace(/^tags:\s*/, '').trim();
+// 目录遍历统一走 lib/docs.js（rel 相对仓库根：docs/xxx.md）
+const { collectMarkdownFiles } = require('./lib/docs.js');
 
-  let list = [];
-  if (raw.startsWith('[')) {
-    list = raw.replace(/^\[/, '').replace(/\]$/, '').split(',');
-  } else {
-    list = raw.split(/[,，]/);
-  }
-  return list.map(s => s.trim().replace(/^["']|["']$/g, '')).filter(Boolean).slice(0, 20);
-}
-
-function collectFiles(dir, basePath = '') {
-  const files = [];
-  const items = fs.readdirSync(dir);
-  
-  for (const item of items) {
-    const fullPath = path.join(dir, item);
-    const stats = fs.statSync(fullPath);
-    
-    if (stats.isDirectory()) {
-      files.push(...collectFiles(fullPath, basePath ? `${basePath}/${item}` : item));
-    } else if (item.endsWith('.md')) {
-      // 存储相对于仓库根目录的完整路径（含 docs/ 前缀），
-      // 供前端直接使用，避免硬编码拼接前缀
-      files.push({
-        path: 'docs/' + (basePath ? `${basePath}/${item}` : item),
-        fullPath: fullPath
-      });
-    }
-  }
-  
-  return files;
+function collectFiles(dir) {
+  return collectMarkdownFiles(dir).map(f => ({
+    path: f.rel,
+    fullPath: f.path
+  }));
 }
 
 async function buildIndex() {

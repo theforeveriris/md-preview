@@ -12,6 +12,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: smoke-test-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   smoke:
     runs-on: ubuntu-latest
@@ -26,22 +30,24 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
+        # npm 缓存：jsdom 安装不再每次全量下载
+        cache: npm
+        cache-dependency-path: iris/package-lock.json
 
-    - name: Build data files (file-tree / search-index / links / precache / feed / sitemap)
-      run: |
-        node iris/scripts/build-file-tree.js
-        node iris/scripts/build-search-index.js
-        node iris/scripts/build-links.js
-        node iris/scripts/build-precache.js
-        node iris/scripts/build-feed.js
-        node iris/scripts/build-sitemap.js
+    # 构建脚本清单与 deploy 共用 composite action（避免两份列表漂移）
+    - name: Build site data
+      uses: ./.github/actions/build-data
 
     - name: Install jsdom (smoke test only)
       working-directory: iris
-      run: npm install --no-save --no-audit --no-fund jsdom@^29.1.1
+      # 固定精确版本（此前裸 --no-save 装最新 ^29，行为可能漂移）；
+      # 只装 jsdom 一个包（npm ci 会连带装全部运行时依赖，过重）
+      run: npm install --no-save --no-audit --no-fund jsdom@29.1.1
 
-    - name: Run smoke test
-      run: node iris/scripts/smoke-test.js
+    # npm test = smoke（结构/产物/i18n 双语/索引内容）+ unit（slug 一致性 /
+    # 文件树排序 / 渲染管线端到端）+ cm6 全套 —— 此前三组散落无统一入口
+    - name: Run tests (smoke + unit + cm6)
+      run: npm test
 
     - name: CJK typography lint (advisory; dedicated workflow is authoritative)
       continue-on-error: true

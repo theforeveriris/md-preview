@@ -733,7 +733,13 @@
     apply,
     setLang,
     getLang,
-    getSetting
+    getSetting,
+    // 构建期校验用（smoke-test 的双语键齐备检查）：返回语言包字典或 null。
+    // en 未按需加载时返回 null（调用方先 ensureEnDict 或读 I18N_EN）
+    getDict: function(lang) {
+      if (lang === 'en') return enDict || null;
+      return zh || null;
+    }
   };
 
   // 全站通用的 t() 快捷引用：供各模块 `const t = window.MarkdownPreview.t` 替换

@@ -23,13 +23,24 @@ const { execFileSync, execSync } = require('child_process');
 const SITE_URL = 'https://theforeveriris.github.io/md-preview/';
 const DOCS_DIR = path.join(__dirname, '../../docs');
 const OUTPUT_FILE = path.join(__dirname, '../data/sitemap.xml');
+const REPO_ROOT = path.resolve(__dirname, '..', '..');
 
 /**
  * git 最后一次提交时间（ISO 8601），失败回退文件 mtime
  */
+// 批量预取全部 .md 的最后提交时间（lib/git-times.js 单遍 git log 扫全仓，
+// 此前对每个文件 execSync 一次 git log，N 篇文档 = N 个子进程）
+const { collectMarkdownTimes } = require('./lib/git-times.js');
+const commitTimes = collectMarkdownTimes();
+
 function getLastmod(fullPath) {
+  const rel = path.relative(REPO_ROOT, fullPath).split(path.sep).join('/');
+  const ts = commitTimes.get(rel);
+  if (ts !== undefined && ts.modified) {
+    return new Date(ts.modified * 1000).toISOString();
+  }
+  // 非 .md（如 index.html）或 git 不可用：单文件查询 / mtime 兜底
   try {
-    // execFileSync 数组形式：路径含引号/$/反引号不会破坏命令（同仓其余脚本惯例）
     const out = execFileSync(
       'git', ['log', '-1', '--format=%cI', '--', fullPath],
       { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] }

@@ -326,9 +326,10 @@
     setupSearchEvents();
     // 首建延迟到真正使用（搜索框聚焦/输入、命令面板打开）：
     // 56KB search-index.json + FlexSearch 全量重建不再占用首屏主线程
-    if (dom.searchInput) {
+    const MPDom = window.MarkdownPreview.dom;
+    if (MPDom && MPDom.searchInput) {
       // 命令面板与搜索共用此输入框：聚焦即触发首建
-      dom.searchInput.addEventListener('focus', ensureIndexLoaded, { once: true });
+      MPDom.searchInput.addEventListener('focus', ensureIndexLoaded, { once: true });
     }
   }
 

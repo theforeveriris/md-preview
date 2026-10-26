@@ -17,6 +17,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const REPO_ROOT = path.resolve(__dirname, '..', '..');
 const { execFileSync } = require('child_process');
 const marked = require('../vendor/marked.js');
 
@@ -35,36 +36,13 @@ const OUTPUT_FILE = path.join(__dirname, '../data/feed.xml');
  * 解析 frontmatter，返回 { frontmatter, content }
  * 仅支持简单的 key: value 形式，与 markdown.js 中 parseFrontmatter 保持一致
  */
-function parseFrontmatter(markdown) {
-  const fmRegex = /^---\s*\n([\s\S]*?)\n---\s*/;
-  const match = markdown.match(fmRegex);
-  if (!match) return { frontmatter: {}, content: markdown };
-
-  const fm = {};
-  const lines = match[1].split('\n');
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#')) continue;
-    const colon = trimmed.indexOf(':');
-    if (colon > 0) {
-      const key = trimmed.substring(0, colon).trim();
-      let value = trimmed.substring(colon + 1).trim();
-      if ((value.startsWith('"') && value.endsWith('"')) ||
-          (value.startsWith("'") && value.endsWith("'"))) {
-        value = value.substring(1, value.length - 1);
-      }
-      fm[key] = value;
-    }
-  }
-  return { frontmatter: fm, content: markdown.substring(match[0].length) };
-}
+// frontmatter 解析/标题提取：统一走 lib/frontmatter.js
+const { parseFrontmatter, splitFrontmatter } = require('./lib/frontmatter.js');
 
 function extractTitle(content, fallbackName) {
-  // 1. frontmatter.title 由调用方优先判断
-  // 2. 第一个 # 标题
-  const heading = content.match(/^#\s+(.+)$/m);
+  const { body } = splitFrontmatter(content);
+  const heading = body.match(/^#\s+(.+?)\s*$/m);
   if (heading) return heading[1].trim();
-  // 3. 文件名兜底
   return fallbackName.replace(/\.md$/i, '');
 }
 
@@ -90,7 +68,16 @@ function extractDescription(content) {
 /**
  * 用 git log 获取文件最后一次提交时间，失败回退到文件 mtime
  */
+// 批量预取全部 .md 的最后提交时间（单遍 git log，消除 N+1 子进程）
+const { collectMarkdownTimes } = require('./lib/git-times.js');
+const commitTimes = collectMarkdownTimes();
+
 function getPublishDate(fullPath) {
+  const rel = path.relative(REPO_ROOT, fullPath).split(path.sep).join('/');
+  const ts = commitTimes.get(rel);
+  if (ts !== undefined && ts.modified) {
+    return new Date(ts.modified * 1000);
+  }
   try {
     // execFileSync 数组形式：路径含引号/$/反引号不会破坏命令（同仓其余脚本惯例）
     const out = execFileSync(

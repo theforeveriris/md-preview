@@ -1,0 +1,57 @@
+name: 'Commit with rebase retry'
+description: '提交工作区改动并带 rebase 重试推送（多个回写工作流并发推送 main 时的竞态统一处理）'
+inputs:
+  message:
+    description: 'commit message'
+    required: true
+  files:
+    description: '要暂存的文件（git add 参数；留空则暂存全部改动，含中文路径场景）'
+    required: false
+    default: ''
+outputs:
+  changed:
+    description: '是否有变更被提交（true/false）'
+    value: ${{ steps.commit.outputs.changed }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Commit and push with rebase retry
+      id: commit
+      shell: bash
+      run: |
+        set +e
+        git config user.name 'github-actions[bot]'
+        git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+        if [ -n "${{ inputs.files }}" ]; then
+          git add -- ${{ inputs.files }}
+        else
+          # 用 core.quotePath=false 保证中文文件名不被转义（否则路径是转义串，add 不到）
+          CHANGED=$(git -c core.quotePath=false diff --name-only)
+          if [ -n "$CHANGED" ]; then
+            git add -- $CHANGED
+          fi
+        fi
+        if git diff --cached --quiet; then
+          echo "changed=false" >> "$GITHUB_OUTPUT"
+          echo "无变化，跳过提交"
+          exit 0
+        fi
+        git commit -m "${{ inputs.message }}"
+        # 推送重试：被 non-fast-forward 拒绝时先 rebase 远端再推
+        #（此前 build-pkt/build-pptx 连重试都没有，并发下直接失败）
+        for i in 1 2 3 4 5; do
+          if git push origin "HEAD:refs/heads/${{ github.ref_name }}"; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "推送被拒（第 $i 次），rebase 远端后重试..."
+          git fetch origin "${{ github.ref_name }}"
+          git rebase "origin/${{ github.ref_name }}" || {
+            echo "::error::rebase 冲突，请手动处理"
+            git rebase --abort
+            exit 1
+          }
+        done
+        echo "changed=false" >> "$GITHUB_OUTPUT"
+        echo "::warning::产物已提交但多次推送失败，请手动处理"
+        exit 0

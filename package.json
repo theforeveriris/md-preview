@@ -7,7 +7,11 @@
     "desktop:dist": "node iris/scripts/build-desktop-dist.js",
     "desktop:icon": "tauri icon iris/icons/icon.svg",
     "desktop:dev": "npm run desktop:dist && tauri dev",
-    "desktop:build": "npm run desktop:dist && tauri build"
+    "desktop:build": "npm run desktop:dist && tauri build",
+    "test": "npm run test:smoke && npm run test:unit && npm run test:cm6",
+    "test:smoke": "node iris/scripts/smoke-test.js",
+    "test:unit": "node iris/scripts/test-slug-consistency.js && node iris/scripts/test-file-tree-sort.js && node iris/scripts/test-render-pipeline.js",
+    "test:cm6": "node iris/scripts/cm6-bundle/test-cm-editor.js && node iris/scripts/cm6-bundle/test-md-render.js && node iris/scripts/cm6-bundle/test-run-renderers.js && node iris/scripts/cm6-bundle/test-storage.js && node iris/scripts/cm6-bundle/test-tabs.js && node iris/scripts/cm6-bundle/test-precache.js && node iris/scripts/cm6-bundle/test-lazy-render.js && node iris/scripts/cm6-bundle/test-footnote.js && node iris/scripts/cm6-bundle/test-graph-style.js"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.12.3"

@@ -12,7 +12,7 @@
     return;
   }
 
-  const { EditorState, EditorView, EditorSelection, Compartment, Annotation } = CM;
+  const { EditorState, EditorView, EditorSelection, Compartment, Annotation, Transaction } = CM;
 
   // 用于标记程序化更新（不触发 input 回调）
   const programmaticUpdate = Annotation.define();

@@ -85,7 +85,10 @@ function checkSyntax() {
 
 // ============== 2/3. index.html 解析（jsdom） ==============
 function loadIndexDom() {
-  const { JSDOM } = require(path.join(ROOT, 'iris', 'node_modules', 'jsdom'));
+  // createRequire 从 iris/package.json 解析：不硬编码 node_modules 物理路径
+  const { createRequire } = require('module');
+  const requireFromIris = createRequire(path.join(ROOT, 'iris', 'package.json'));
+  const { JSDOM } = requireFromIris('jsdom');
   const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf-8');
   return new JSDOM(html, { url: 'https://example.invalid/', runScripts: 'outside-only' });
 }
@@ -197,6 +200,34 @@ function checkI18nKeys(dom) {
   } else {
     pass(`${keys.size} 个 data-i18n key 全部有 zh 翻译`);
   }
+
+  // en 语言包（按需加载的 i18n-en.js）：data-i18n key 全覆盖 + 与 zh 键集一致
+  //（.coderabbit.yaml 把「双语齐备」定为必须项，此前无自动检查）
+  try {
+    const enCode = fs.readFileSync(path.join(ROOT, 'iris', 'js', 'i18n-en.js'), 'utf-8');
+    vm.runInContext(enCode, sandbox, { filename: 'iris/js/i18n-en.js' });
+  } catch (e) {
+    fail(`i18n-en.js 沙箱加载失败: ${e.message}`);
+    return;
+  }
+  const enDict = sandbox.window.MarkdownPreview.I18N_EN;
+  if (!enDict || typeof enDict !== 'object') {
+    fail('i18n-en.js 未暴露 window.MarkdownPreview.I18N_EN');
+    return;
+  }
+  const zhDict = i18n.getDict ? i18n.getDict('zh') : null;
+  const enMissing = [...keys].filter(k => enDict[k] == null);
+  if (enMissing.length > 0) {
+    fail(`index.html 中 ${enMissing.length} 个 data-i18n key 缺少 en 翻译: ${enMissing.join(', ')}`);
+  } else {
+    pass(`${keys.size} 个 data-i18n key 全部有 en 翻译`);
+  }
+  // zh/en 键集差异（反向漂移：en 有而 zh 没有的键）
+  if (zhDict) {
+    const diff = Object.keys(zhDict).filter(k => enDict[k] == null);
+    if (diff.length > 0) fail(`zh 有而 en 缺失 ${diff.length} 个键: ${diff.slice(0, 8).join(', ')}`);
+    else pass('zh/en 语言包键集一致');
+  }
 }
 
 // ============== 4. 数据产物 ==============
@@ -211,6 +242,44 @@ function checkDataFiles() {
     } catch (e) {
       fail(`${name} JSON 解析失败: ${e.message}`);
     }
+  }
+
+  // search-index 检索增强产物内容断言（此前只查「可解析」，拼音/繁体
+  // token 是否真的生成无校验）
+  try {
+    const index = JSON.parse(fs.readFileSync(path.join(ROOT, 'iris', 'data', 'search-index.json'), 'utf-8'));
+    if (!Array.isArray(index) || index.length === 0) {
+      fail('search-index.json 为空');
+    } else {
+      const cjkRe = /[一-鿿]/;
+      const entries = index.filter(e => e && e.searchText && cjkRe.test(e.title || ''));
+      // 拼音首字母 token：标题含中文的条目，searchText 尾部应出现纯小写
+      // 拉丁字母 token（且不是标题/预览原文里的英文单词）
+      let pinyinCount = 0;
+      for (const e of entries) {
+        const head = ((e.title || '') + (e.preview || '') + (e.path || '')).toLowerCase();
+        const tokens = String(e.searchText).split(/\s+/);
+        if (tokens.some(t => /^[a-z]{2,}$/.test(t) && !head.includes(t))) pinyinCount++;
+      }
+      const expect = Math.max(1, Math.floor(entries.length * 0.6));
+      if (entries.length > 0 && pinyinCount < expect) {
+        fail(`拼音首字母 token 覆盖不足: ${pinyinCount}/${entries.length}（预期 ≥${expect}）`);
+      } else {
+        pass(`拼音首字母 token 覆盖 ${pinyinCount}/${entries.length} 条中文标题文档`);
+      }
+      // 繁体 token（opencc）：任一含「变/图/设」等简体标题的条目应带对应繁体
+      const s2t = { '变': '變', '图': '圖', '设': '設', '历': '歷', '记': '記' };
+      let tCount = 0;
+      for (const e of entries) {
+        for (const [simp, trad] of Object.entries(s2t)) {
+          if ((e.title || '').includes(simp) && String(e.searchText).includes(trad)) { tCount++; break; }
+        }
+      }
+      if (tCount === 0) fail('繁体 token 未检出（opencc 增强可能失效）');
+      else pass(`繁体 token 覆盖 ${tCount} 条文档`);
+    }
+  } catch (e) {
+    fail(`search-index.json 内容校验失败: ${e.message}`);
   }
 
   // precache 清单引用的文件必须存在

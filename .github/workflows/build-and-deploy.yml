@@ -21,31 +21,31 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # 完整历史：file-tree 的 created/modified（lib/git-times.js 单遍扫描）
+          # 与 build-changelog 依赖 git log——浅克隆会让线上时间字段全部等于
+          # 最后一次提交、changelog 只剩 1 条（smoke-test.yml 已正确设置）
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Build File Tree
-        run: node iris/scripts/build-file-tree.js
+      # 构建脚本清单与 smoke-test 共用 composite action（避免两份列表漂移）
+      - name: Build site data
+        uses: ./.github/actions/build-data
 
-      - name: Build Search Index
-        run: node iris/scripts/build-search-index.js
-
-      - name: Build Precache Manifest
-        run: node iris/scripts/build-precache.js
-
-      - name: Build Sitemap
-        run: node iris/scripts/build-sitemap.js
-
-      - name: Build Changelog
-        run: node iris/scripts/build-changelog.js
+      # 挑选运行时文件构建到独立 dist/ 再上传：此前 path: '.' 会把 .git/
+      # （浅历史）一起公开托管到 Pages（复用 build-desktop-dist.js 的挑选逻辑，
+      # 剔除 .git/.github/node_modules/scripts 等）
+      - name: Build Site Dist
+        run: node iris/scripts/build-desktop-dist.js
 
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: dist
 
   deploy:
     environment:
