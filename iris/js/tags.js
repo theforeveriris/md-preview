@@ -79,6 +79,19 @@
       .map(([name, docs]) => ({ name, count: docs.length }))
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 
+    // 层级标签（KNOW-2）：任一标签含 `/` 时渲染树形面板；
+    // 纯平铺标签维持原云图视图
+    const hierarchical = tags.some(tag => tag.name.includes('/'));
+    const body = hierarchical
+      ? renderTagTree(tags)
+      : `<div class="tag-cloud">
+          ${tags.map(tag => `
+            <button type="button" class="tag-chip" data-tag="${esc(tag.name)}" title="${esc(t('tags.openTag', '查看该标签下的文档'))}">
+              ${esc(tag.name)}<span class="tag-chip-count">${tag.count}</span>
+            </button>
+          `).join('')}
+        </div>`;
+
     // filetreeloaded 晚于首次渲染时当前可能处于 files/index 模式，
     // 面板仅在「标签」选项卡激活时显示（选项卡本身始终恢复可见）
     const state = window.MarkdownPreview.state;
@@ -87,18 +100,43 @@
       <div class="tag-panel-header">
         <span class="tag-panel-title">${icon('i-tag', 13)}<span>${esc(t('tags.panelTitle', '标签'))}</span></span>
       </div>
-      <div class="tag-cloud">
-        ${tags.map(tag => `
-          <button type="button" class="tag-chip" data-tag="${esc(tag.name)}" title="${esc(t('tags.openTag', '查看该标签下的文档'))}">
-            ${esc(tag.name)}<span class="tag-chip-count">${tag.count}</span>
-          </button>
-        `).join('')}
-      </div>
+      ${body}
     `;
 
-    panel.querySelectorAll('.tag-chip').forEach(btn => {
+    panel.querySelectorAll('[data-tag]').forEach(btn => {
       btn.addEventListener('click', () => openTagPage(btn.dataset.tag));
     });
+  }
+
+  // 层级标签树：`network/ospf` → network 下挂 ospf，计数为该前缀下全部文档
+  function renderTagTree(tags) {
+    const root = { children: new Map() };
+    tags.forEach(tag => {
+      const parts = tag.name.split('/');
+      let node = root;
+      parts.forEach((part, i) => {
+        const name = parts.slice(0, i + 1).join('/');
+        if (!node.children.has(part)) {
+          node.children.set(part, { name, count: 0, children: new Map() });
+        }
+        node = node.children.get(part);
+        node.count += tag.count;
+      });
+    });
+
+    const lines = [];
+    (function renderNode(node, depth) {
+      node.children.forEach(child => {
+        lines.push(`
+          <button type="button" class="tag-tree-item" data-tag="${esc(child.name)}" style="padding-left:${8 + depth * 14}px" title="${esc(t('tags.openTag', '查看该标签下的文档'))}">
+            <span class="tag-tree-branch">${depth > 0 ? '└' : ''}</span>
+            <span class="tag-tree-name">${esc(child.name.split('/').pop())}</span>
+            <span class="tag-chip-count">${child.count}</span>
+          </button>`);
+        renderNode(child, depth + 1);
+      });
+    })(root, 0);
+    return `<div class="tag-tree">${lines.join('')}</div>`;
   }
 
   function icon(name, size) {
@@ -109,7 +147,21 @@
 
   function openTagPage(name) {
     const index = buildIndex();
-    const docs = (index && index.get(name)) || [];
+    // 层级标签：`tag/network` 聚合页包含 `tag/network/*` 全部子层级
+    const prefix = name + '/';
+    const docs = [];
+    const seen = new Set();
+    if (index) {
+      index.forEach((list, tagName) => {
+        if (tagName !== name && !tagName.startsWith(prefix)) return;
+        list.forEach(doc => {
+          if (seen.has(doc.path)) return;
+          seen.add(doc.path);
+          docs.push(doc);
+        });
+      });
+    }
+    docs.sort((a, b) => a.title.localeCompare(b.title, 'zh'));
     const lines = [];
     lines.push(`# ${t('tags.pageTitle', '标签')}:${name}`);
     lines.push('');
@@ -145,7 +197,9 @@
     if (!wanted.length) return true;
     if (!doc || !Array.isArray(doc.tags)) return false;
     const lower = doc.tags.map(x => String(x).toLowerCase());
-    return wanted.every(w => lower.includes(w));
+    // 层级标签前缀匹配：tag:network 命中 network 与 network/ospf
+    // （要求层级分隔符，不会让 os 误命中 ospf）
+    return wanted.every(w => lower.some(x => x === w || x.startsWith(w + '/')));
   }
 
   function init() {

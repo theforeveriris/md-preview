@@ -624,3 +624,23 @@ body[data-sidebar-style="floating"] .main-content {
     display: flex;
   }
 }
+
+/* ============== 层级标签树（tags.js） ============== */
+.tag-tree { display: flex; flex-direction: column; gap: 2px; padding: 4px 8px 10px; }
+.tag-tree-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s ease;
+}
+.tag-tree-item:hover { background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent); }
+.tag-tree-branch { color: var(--color-text-muted); font-size: 11px; width: 10px; flex: 0 0 auto; }
+.tag-tree-name { flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
