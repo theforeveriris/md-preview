@@ -546,3 +546,27 @@ pre.code-block .line-hl-bar {
   box-sizing: border-box;
 }
 pre.code-block code { position: relative; z-index: 1; }
+
+/* ============== 多语言文档关联药丸（lang-links.js） ============== */
+.lang-links-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+.lang-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 12.5px;
+  color: var(--color-accent-purple-deep, var(--color-accent-purple));
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.lang-link:hover {
+  background: color-mix(in srgb, var(--color-accent-purple) 12%, transparent);
+  border-color: var(--color-accent-purple);
+}
