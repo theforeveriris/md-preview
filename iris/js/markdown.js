@@ -84,12 +84,18 @@
       resetReadingProgress();
       window.MarkdownPreview.ui.updateProgress(30);
 
-      // 桌面端本地知识库：kb/ 前缀路径经 Tauri 桥读取，不走站点 fetch
+      // 桌面端本地知识库：kb/ 前缀路径经 Tauri 桥读取，不走站点 fetch。
+      // 本地目录内容视同不可信来源：先确保 DOMPurify 就绪再渲染（与
+      // renderMarkdownDirect 同策略，CodeRabbit review fix）
       const kb = window.MarkdownPreview.desktopKb;
       let markdown;
+      let kbSanitize = false;
       if (kb && kb.isActive && kb.isActive() && path.startsWith('kb/')) {
         markdown = await kb.readFile(path);
         if (seq !== loadSeq) return; // 已有更新的导航，丢弃本次结果
+        kbSanitize = true;
+        await window.MarkdownPreview.mdRender.ensurePurify();
+        if (seq !== loadSeq) return;
       } else {
         const response = await fetch(path, { cache: 'no-store' });
         if (seq !== loadSeq) return; // 已有更新的导航，丢弃本次结果
@@ -111,7 +117,7 @@
       state.localDoc = null;
       // 本地文件列表保留（可随时切回），仅清除其选中高亮
       window.MarkdownPreview.localDocs?.clearActive();
-      renderMarkdown(markdown, path);
+      renderMarkdown(markdown, path, kbSanitize ? { sanitize: (html) => DOMPurify.sanitize(html) } : {});
       extractAndRenderIndex();
       updateEditButton(path);
       updateBreadcrumbs(path);

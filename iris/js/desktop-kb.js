@@ -124,7 +124,7 @@
       while (next < files.length) {
         const f = files[next++];
         try {
-          const text = await invoke('read_kb_file', { root, path: f.path });
+          const text = await invoke('read_kb_file', { path: f.path });
           const { frontmatter, content } = parseFrontmatter(text);
           docs.set(f.path, {
             text,
@@ -172,7 +172,10 @@
       const root = await invoke('pick_folder');
       if (!root) return; // 用户取消
       notify(t('kb.scanning', '正在扫描本地知识库…'));
-      const treeJson = await invoke('read_kb_tree', { root });
+      // 根目录绑定在 Rust 侧（State）：读取/遍历/监视命令不再从前端传 root，
+      // WebView 内脚本无法借道读取任意路径（CodeRabbit review fix）
+      await invoke('bind_kb_root', { root });
+      const treeJson = await invoke('read_kb_tree');
       const docs = await readAllDocs(root, treeJson);
       if (docs.size === 0) {
         notify(t('kb.empty', '该文件夹下没有找到 Markdown 文档'));
@@ -182,7 +185,7 @@
       const st = window.MarkdownPreview.state;
       st.desktopKb = { root };
       // 实时预览：监视挂载目录（失败不阻断挂载，只少热更新）
-      invoke('watch_kb_folder', { root }).catch(() => {});
+      invoke('watch_kb_folder').catch(() => {});
 
       const enriched = enrichTree(JSON.parse(treeJson), docs);
       st.fileTreeData = enriched;
@@ -195,7 +198,12 @@
       const links = {};
       const searchDocs = [];
       docs.forEach((meta, rel) => {
-        links[rel] = scanLinks(rel, meta.text, allSet);
+        // 链接关系的源与目标都统一挂 kb/ 前缀——消费端（backlinks/graph）
+        // 用 state.currentFilePath（kb/…）与 enrichTree 的 key 匹配
+        const out = {};
+        Object.entries(scanLinks(rel, meta.text, allSet))
+          .forEach(([to, n]) => { out[KB_PREFIX + to] = n; });
+        links[KB_PREFIX + rel] = out;
         searchDocs.push({
           path: KB_PREFIX + rel,
           title: meta.title,
@@ -224,7 +232,7 @@
   async function unmount() {
     const st = window.MarkdownPreview.state;
     if (!st || !st.desktopKb) return;
-    invoke('unwatch_kb_folder').catch(() => {});
+    invoke('unbind_kb_root').catch(() => {});
     delete st.desktopKb;
     delete st.desktopKbDocs;
     delete st.desktopKbLinks;
@@ -255,7 +263,7 @@
     const rel = kbPath.slice(KB_PREFIX.length);
     const doc = st.desktopKbDocs && st.desktopKbDocs.get(rel);
     if (doc) return doc.text;
-    return invoke('read_kb_file', { root: st.desktopKb.root, path: rel });
+    return invoke('read_kb_file', { path: rel });
   }
 
   function getLinksData() {
@@ -277,13 +285,14 @@
   // ============== 文件关联 + 实时预览 ==============
 
   // 双击 .md 打开：argv 路径由 Rust 捕获，前端就绪后取走并渲染
-  async function openExternalDoc(path) {
+  // 双击 .md 打开：文件关联启动时 Rust 捕获 argv 路径并读取内容，
+  // 前端经 take_open_file 一次性取走（路径与内容一起，前端无法指定任意路径）
+  async function openExternalDoc(payload) {
     try {
-      const text = await invoke('read_open_file', { path });
-      const name = String(path).replace(/[\\/]+$/, '').split(/[\\/]/).pop() || 'document.md';
+      const name = String(payload.path).replace(/[\\/]+$/, '').split(/[\\/]/).pop() || 'document.md';
       const markdown = window.MarkdownPreview.markdown;
       if (markdown && markdown.renderMarkdownDirect) {
-        await markdown.renderMarkdownDirect(text, name);
+        await markdown.renderMarkdownDirect(payload.text, name);
         notify(t('kb.openFile', '已打开 {n}').replace('{n}', name));
       }
     } catch (e) {
@@ -292,8 +301,8 @@
   }
 
   function takeOpenFileArg() {
-    invoke('take_open_file_arg').then(path => {
-      if (path) openExternalDoc(path);
+    invoke('take_open_file').then(payload => {
+      if (payload) openExternalDoc(payload);
     }).catch(() => {});
   }
 
@@ -315,7 +324,7 @@
     const name = rel.split('/').pop();
 
     try {
-      const text = await invoke('read_kb_file', { root: st.desktopKb.root, path: rel });
+      const text = await invoke('read_kb_file', { path: rel });
       const { frontmatter, content } = parseFrontmatter(text);
       const docs = st.desktopKbDocs;
       if (docs) {

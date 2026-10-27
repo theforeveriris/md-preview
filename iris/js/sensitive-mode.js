@@ -118,6 +118,8 @@
   window.MarkdownPreview.sensitiveMode = { toggle, applyIfOn, isOn };
 
   function init() {
+    // 渐进式高亮异步完成后重刷（避免新高亮的代码块绕过模糊）
+    window.addEventListener('md-hljs-done', () => { if (isOn()) applyIfOn(); });
     const palette = window.MarkdownPreview.palette;
     if (palette && palette.extraActions) {
       palette.extraActions.push({

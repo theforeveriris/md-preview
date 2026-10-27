@@ -378,7 +378,7 @@
     });
 
     // 拖拽排序：手柄是 cell-number 徽标（编辑区文本拖拽不受影响）
-    const dragHandle = cellDiv.querySelector('.cell-number');
+    const dragHandle = div.querySelector('.cell-number');
     if (dragHandle) {
       dragHandle.draggable = true;
       dragHandle.title = '拖动调整 Cell 顺序';
@@ -387,31 +387,31 @@
         draggingCellId = id;
         e.dataTransfer.effectAllowed = 'move';
         try { e.dataTransfer.setData('text/plain', String(id)); } catch (err) { /* ignore */ }
-        requestAnimationFrame(() => cellDiv.classList.add('cell-dragging'));
+        requestAnimationFrame(() => div.classList.add('cell-dragging'));
       });
       dragHandle.addEventListener('dragend', () => {
         draggingCellId = null;
-        cellDiv.classList.remove('cell-dragging');
+        div.classList.remove('cell-dragging');
         document.querySelectorAll('.cell-drag-over-top, .cell-drag-over-bottom')
           .forEach(el => el.classList.remove('cell-drag-over-top', 'cell-drag-over-bottom'));
       });
     }
-    cellDiv.addEventListener('dragover', (e) => {
+    div.addEventListener('dragover', (e) => {
       if (draggingCellId == null || draggingCellId === id) return;
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
-      const rect = cellDiv.getBoundingClientRect();
+      const rect = div.getBoundingClientRect();
       const before = e.clientY < rect.top + rect.height / 2;
-      cellDiv.classList.toggle('cell-drag-over-top', before);
-      cellDiv.classList.toggle('cell-drag-over-bottom', !before);
+      div.classList.toggle('cell-drag-over-top', before);
+      div.classList.toggle('cell-drag-over-bottom', !before);
     });
-    cellDiv.addEventListener('dragleave', () => {
-      cellDiv.classList.remove('cell-drag-over-top', 'cell-drag-over-bottom');
+    div.addEventListener('dragleave', () => {
+      div.classList.remove('cell-drag-over-top', 'cell-drag-over-bottom');
     });
-    cellDiv.addEventListener('drop', (e) => {
+    div.addEventListener('drop', (e) => {
       if (draggingCellId == null || draggingCellId === id) return;
       e.preventDefault();
-      const rect = cellDiv.getBoundingClientRect();
+      const rect = div.getBoundingClientRect();
       moveCellOnto(draggingCellId, id, e.clientY < rect.top + rect.height / 2);
     });
 
@@ -1643,13 +1643,14 @@
     showToast(editorT('editor.importedCells', '已导入 {n} 个 Cell').replace('{n}', data.cells.length));
   }
 
-  function importMdCells(text) {
+  function importMdCells(text, opts) {
     // 优先按显式 cell 边界切分（downloadAllMd 导出格式，正文含 --- 也安全）；
     // 无标记的旧文件/手写文件回退按 --- 切分
     const parts = text.includes(CELL_BOUNDARY)
       ? text.split(/\n?\s*<!-- mdp2:cell -->\s*\n?/)
       : text.split(/\n\s*---\s*\n/);
-    if (cells.some(c => c.textarea.value.trim())) {
+    // 快照回滚等已在调用方确认过的路径传 skipConfirm 免二次打断
+    if (!(opts && opts.skipConfirm) && cells.some(c => c.textarea.value.trim())) {
       if (!confirm('导入将替换当前所有 Cell，是否继续？')) return;
     }
     cells.slice().forEach(c => {
@@ -2465,25 +2466,30 @@
       showToast,
       getNotebookId: () => NOTEBOOK_ID,
       getCells: () => cells,
-      importCells: (text) => importMdCells(text),
+      importCells: (text) => { importMdCells(text, { skipConfirm: true }); markUnsaved(); },
       registerMenuAction
     });
   }
 
-  // 命令面板「从模板新建」在编辑器加载完成前点的：编辑器就绪后消费
-  window.MarkdownPreview.docTemplates?.consumePending?.();
+  // 取件箱消费统一延迟到 loadAutosave 之后：否则有历史会话时 tabOrder 恢复
+  // 会覆盖刚建的模板/文档 tab（CodeRabbit review fix）
+  function consumePendingEditorJobs() {
+    // 命令面板「从模板新建」在编辑器加载完成前点的
+    window.MarkdownPreview.docTemplates?.consumePending?.();
 
-  // 命令面板「在编辑器打开当前文档」同款取件箱：登记 repoPath 供 HEAD 对比
-  const pendingDoc = window.MarkdownPreview.editorPendingContent;
-  if (pendingDoc) {
-    window.MarkdownPreview.editorPendingContent = null;
-    createTab({ initData: pendingDoc.initData, title: pendingDoc.title, skipSaveCurrent: true })
-      .then(tab => { if (pendingDoc.repoPath) editorRepoPaths.set(tab.id, pendingDoc.repoPath); });
+    // 命令面板「在编辑器打开当前文档」：登记 repoPath 供 HEAD 对比
+    const pendingDoc = window.MarkdownPreview.editorPendingContent;
+    if (pendingDoc) {
+      window.MarkdownPreview.editorPendingContent = null;
+      createTab({ initData: pendingDoc.initData, title: pendingDoc.title, skipSaveCurrent: true })
+        .then(tab => { if (pendingDoc.repoPath) editorRepoPaths.set(tab.id, pendingDoc.repoPath); });
+    }
   }
 
   const bootCells = cells.slice(); // 启动时的初始 cell 引用
   bootCellsRef = bootCells;       // 供 loadAutosave 在恢复前判定是否已被输入
   loadAutosave().then(restored => {
+    consumePendingEditorJobs();
     // 判定已下沉到 loadAutosave 的每个恢复分支之前（恢复后再查必然为 false）
     const userTypedFirst = bootCells.some(c => c && (c.textarea.value || '').trim());
     if (!restored && userTypedFirst) {

@@ -33,8 +33,10 @@
   // Token：沿用站内 GitHub Token 的 sessionStorage 惯例，按平台分键
   function token() {
     const p = cfg().provider;
-    const keys = p === 'gitee' ? ['md-preview-gitee-token', 'md-preview-github-token']
-      : p === 'gitlab' ? ['md-preview-gitlab-token', 'md-preview-github-token']
+    // 只读本平台的 key：GitHub PAT 对 Gitee/GitLab 无意义，
+    // 跨服务回退只会造成凭据泄露（CodeRabbit review fix）
+    const keys = p === 'gitee' ? ['md-preview-gitee-token']
+      : p === 'gitlab' ? ['md-preview-gitlab-token']
       : ['md-preview-github-token'];
     for (const k of keys) {
       try {

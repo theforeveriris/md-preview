@@ -732,6 +732,11 @@
       const end = Math.min(i + 6, rest.length);
       for (; i < end; i++) run(rest[i]);
       if (i < rest.length) schedule(chunk);
+      else {
+        // 全部补齐完成：敏感模式等后处理监听此事件重刷（异步高亮会重写
+        // 代码块文本节点，先前的 blur 包裹会被丢弃）
+        window.dispatchEvent(new CustomEvent('md-hljs-done'));
+      }
     };
     schedule(chunk);
   }

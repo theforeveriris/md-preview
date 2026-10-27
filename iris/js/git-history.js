@@ -95,7 +95,9 @@
   }
 
   async function getCommits(path, limit) {
-    if (commitsCache.has(path)) return commitsCache.get(path);
+    // 缓存 key 带上 limit：openWorkingDiff 只取 1 条的缓存不能污染完整列表
+    const cacheKey = path + '#' + (limit || 20);
+    if (commitsCache.has(cacheKey)) return commitsCache.get(cacheKey);
     // 非 GitHub 托管：git-provider 适配层归一 commit 形态
     const gp = window.MarkdownPreview.gitProvider;
     let data;
@@ -107,7 +109,7 @@
       const url = `https://api.github.com/repos/${owner}/${repo}/commits?path=${encodeURIComponent(path)}&per_page=${limit || 20}`;
       data = await api(url);
     }
-    commitsCache.set(path, data);
+    commitsCache.set(cacheKey, data);
     return data;
   }
 

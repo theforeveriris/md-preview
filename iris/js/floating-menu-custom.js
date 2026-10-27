@@ -56,10 +56,11 @@
     });
     // 未在 order 里的剩余节点跟在后面
     nodes.forEach((el, id) => { if (!order.includes(id)) menuItems.appendChild(el); });
-    // 显隐
+    // 显隐：专用类表达「用户隐藏」，不清内联 display——installPwaBtn /
+    // kbMountBtn / editPageBtn 等按钮的默认隐藏与运行时显隐不受影响
     nodes.forEach((el, id) => {
       if (PINNED.includes(id)) return;
-      el.style.display = hidden.includes(id) ? 'none' : '';
+      el.classList.toggle('fm-user-hidden', hidden.includes(id));
     });
   }
 

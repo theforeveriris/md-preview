@@ -40,8 +40,17 @@ struct KbNode {
 
 /// 遍历跳过的目录：隐藏目录与依赖/构建产物（挂载本仓库也不会扫进大海）
 const KB_SKIP_DIRS: &[&str] = &[
-    "node_modules", "dist", "target", "__pycache__", ".git", ".github",
-    ".vscode", ".idea", "vendor", "iris", "node_modules.bak",
+    "node_modules",
+    "dist",
+    "target",
+    "__pycache__",
+    ".git",
+    ".github",
+    ".vscode",
+    ".idea",
+    "vendor",
+    "iris",
+    "node_modules.bak",
 ];
 const KB_MAX_FILES: usize = 2000;
 const KB_MAX_DEPTH: usize = 12;
@@ -49,8 +58,12 @@ const KB_MAX_DEPTH: usize = 12;
 const KB_MAX_FILE_BYTES: u64 = 8 * 1024 * 1024;
 
 fn modified_secs(p: &Path) -> Option<i64> {
-    p.metadata().ok()?.modified().ok()?
-        .duration_since(UNIX_EPOCH).ok()
+    p.metadata()
+        .ok()?
+        .modified()
+        .ok()?
+        .duration_since(UNIX_EPOCH)
+        .ok()
         .map(|d| d.as_secs() as i64)
 }
 
@@ -131,13 +144,43 @@ async fn pick_folder() -> Result<Option<String>, String> {
     Ok(picked.and_then(|handle| handle.path().to_str().map(|s| s.to_string())))
 }
 
-/// 遍历目录返回文件树 JSON（.md 文件 + 目录骨架）
+/// 挂载根目录保存在 Rust 侧（State）：读取/遍历/监视命令不再从前端传 root，
+/// WebView 内脚本无法借道读取任意路径（CodeRabbit review fix）
+struct KbRootState(Mutex<Option<PathBuf>>);
+
 #[tauri::command]
-fn read_kb_tree(root: String) -> Result<String, String> {
+fn bind_kb_root(root: String, state: tauri::State<KbRootState>) -> Result<(), String> {
     let root_path = PathBuf::from(&root);
     if !root_path.is_dir() {
         return Err("not a directory".to_string());
     }
+    *state.0.lock().unwrap() = Some(root_path);
+    Ok(())
+}
+
+#[tauri::command]
+fn unbind_kb_root(
+    state: tauri::State<KbRootState>,
+    watch: tauri::State<KbWatchState>,
+) -> Result<(), String> {
+    *state.0.lock().unwrap() = None;
+    *watch.0.lock().unwrap() = None;
+    Ok(())
+}
+
+fn kb_root(state: &tauri::State<KbRootState>) -> Result<PathBuf, String> {
+    state
+        .0
+        .lock()
+        .unwrap()
+        .clone()
+        .ok_or_else(|| "kb root not bound".to_string())
+}
+
+/// 遍历挂载根目录返回文件树 JSON（.md 文件 + 目录骨架）
+#[tauri::command]
+fn read_kb_tree(state: tauri::State<KbRootState>) -> Result<String, String> {
+    let root_path = kb_root(&state)?;
     let mut count = 0usize;
     let tree = walk_kb(&root_path, "", 0, &mut count);
     serde_json::to_string(&tree).map_err(|e| e.to_string())
@@ -161,26 +204,29 @@ fn resolve_kb_path(root: &Path, rel: &str) -> Result<PathBuf, String> {
     Ok(out)
 }
 
-/// 读取挂载目录内的单个文件（路径限定在 root 内，拒绝穿越）
+/// 读取挂载目录内的单个文件（路径限定在绑定的 root 内，拒绝穿越）。
+/// 校验顺序：先 canonicalize（root 外与不存在的路径返回同一错误，
+/// 不泄露「文件是否存在」），再做大小检查。
 #[tauri::command]
-fn read_kb_file(root: String, path: String) -> Result<String, String> {
-    let root_path = PathBuf::from(&root);
+fn read_kb_file(path: String, state: tauri::State<KbRootState>) -> Result<String, String> {
+    let root_path = kb_root(&state)?;
     let target = resolve_kb_path(&root_path, &path)?;
-    if !target.is_file() {
+    let canonical_root = root_path
+        .canonicalize()
+        .map_err(|_| "not a file".to_string())?;
+    let canonical_target = target
+        .canonicalize()
+        .map_err(|_| "not a file".to_string())?;
+    if !canonical_target.is_file() || !canonical_target.starts_with(&canonical_root) {
         return Err("not a file".to_string());
     }
-    let meta = target.metadata().map_err(|e| e.to_string())?;
+    let meta = canonical_target
+        .metadata()
+        .map_err(|_| "not a file".to_string())?;
     if meta.len() > KB_MAX_FILE_BYTES {
         return Err("file too large".to_string());
     }
-    // canonicalize 二次校验：符号链接等路径花招也逃不出 root
-    let canonical_root = root_path.canonicalize().map_err(|e| e.to_string())?;
-    let canonical_target = target.canonicalize().map_err(|e| e.to_string())?;
-    if !canonical_target.starts_with(&canonical_root) {
-        return Err("path escapes mounted root".to_string());
-    }
-    std::fs::read_to_string(&target)
-        .map_err(|e| format!("read failed: {}", e))
+    std::fs::read_to_string(&target).map_err(|e| format!("read failed: {}", e))
 }
 
 // ============== 文件关联 + 实时预览 ==============
@@ -202,23 +248,22 @@ fn is_md_path(p: &Path) -> bool {
 #[tauri::command]
 fn watch_kb_folder(
     app: tauri::AppHandle,
-    root: String,
     state: tauri::State<KbWatchState>,
+    root: tauri::State<KbRootState>,
 ) -> Result<(), String> {
-    let root_path = PathBuf::from(&root);
-    if !root_path.is_dir() {
-        return Err("not a directory".to_string());
-    }
-    let mut watcher = notify::recommended_watcher(move |res: Result<notify::Event, notify::Error>| {
-        if let Ok(event) = res {
-            for p in event.paths {
-                if is_md_path(&p) {
-                    let _ = app.emit("kb-changed", p.to_string_lossy().to_string());
+    // 根目录用 Rust 侧绑定的值，不再从前端传入
+    let root_path = kb_root(&root)?;
+    let mut watcher =
+        notify::recommended_watcher(move |res: Result<notify::Event, notify::Error>| {
+            if let Ok(event) = res {
+                for p in event.paths {
+                    if is_md_path(&p) {
+                        let _ = app.emit("kb-changed", p.to_string_lossy().to_string());
+                    }
                 }
             }
-        }
-    })
-    .map_err(|e| e.to_string())?;
+        })
+        .map_err(|e| e.to_string())?;
     watcher
         .watch(&root_path, notify::RecursiveMode::Recursive)
         .map_err(|e| e.to_string())?;
@@ -226,32 +271,29 @@ fn watch_kb_folder(
     Ok(())
 }
 
-/// 卸载知识库时停止监视
-#[tauri::command]
-fn unwatch_kb_folder(state: tauri::State<KbWatchState>) -> Result<(), String> {
-    *state.0.lock().unwrap() = None;
-    Ok(())
+/// 前端就绪后取走启动参数里的 .md 文件（一次性；事件先于 JS 监听建立，
+/// 所以用取件箱模式而不是启动期 emit）。路径与内容一并返回：
+/// 读取动作只发生在「启动参数捕获到的那个文件」上，前端无法指定任意路径。
+#[derive(Serialize)]
+struct OpenFilePayload {
+    path: String,
+    text: String,
 }
 
-/// 前端就绪后取走启动参数里的 .md 路径（一次性；事件先于 JS 监听建立，
-/// 所以用取件箱模式而不是启动期 emit）
 #[tauri::command]
-fn take_open_file_arg(state: tauri::State<OpenFileArg>) -> Result<Option<String>, String> {
-    Ok(state.0.lock().unwrap().take())
-}
-
-/// 读取通过文件关联打开的外部 .md 文件（限 md/markdown 扩展名与大小上限）
-#[tauri::command]
-fn read_open_file(path: String) -> Result<String, String> {
+fn take_open_file(state: tauri::State<OpenFileArg>) -> Result<Option<OpenFilePayload>, String> {
+    let arg = state.0.lock().unwrap().take();
+    let Some(path) = arg else { return Ok(None) };
     let p = PathBuf::from(&path);
     if !p.is_file() || !is_md_path(&p) {
-        return Err("not a markdown file".to_string());
+        return Ok(None);
     }
     let meta = p.metadata().map_err(|e| e.to_string())?;
     if meta.len() > KB_MAX_FILE_BYTES {
-        return Err("file too large".to_string());
+        return Ok(None);
     }
-    std::fs::read_to_string(&p).map_err(|e| format!("read failed: {}", e))
+    let text = std::fs::read_to_string(&p).map_err(|e| format!("read failed: {}", e))?;
+    Ok(Some(OpenFilePayload { path, text }))
 }
 
 /// 启动参数捕获：Windows 文件关联会把文档路径作为 argv 传入
@@ -332,22 +374,18 @@ async fn install_update(
 // 新开一个 WebviewWindow 加载同一份站点（同一 WebView 数据目录 →
 // IndexedDB 天然共享），窗口 label=editor 时前端自动进入编辑器模式。
 
-#[tauri::command]
-fn open_editor_window(app: tauri::AppHandle) -> Result<(), String> {
+#[tauri::command(async)]
+async fn open_editor_window(app: tauri::AppHandle) -> Result<(), String> {
     if let Some(existing) = app.get_webview_window("editor") {
         let _ = existing.set_focus();
         return Ok(());
     }
-    tauri::WebviewWindowBuilder::new(
-        &app,
-        "editor",
-        tauri::WebviewUrl::App("index.html".into()),
-    )
-    .title("md-preview · 编辑器")
-    .inner_size(1240.0, 840.0)
-    .min_inner_size(420.0, 420.0)
-    .build()
-    .map_err(|e| e.to_string())?;
+    tauri::WebviewWindowBuilder::new(&app, "editor", tauri::WebviewUrl::App("index.html".into()))
+        .title("md-preview · 编辑器")
+        .inner_size(1240.0, 840.0)
+        .min_inner_size(420.0, 420.0)
+        .build()
+        .map_err(|e| e.to_string())?;
     Ok(())
 }
 
@@ -355,18 +393,19 @@ fn main() {
     let open_arg = capture_open_file_arg();
     tauri::Builder::default()
         .plugin(tauri_plugin_updater::Builder::new().build())
+        .manage(KbRootState(Mutex::new(None)))
         .manage(KbWatchState(Mutex::new(None)))
         .manage(OpenFileArg(Mutex::new(open_arg)))
         .manage(PendingUpdate(Mutex::new(None)))
         .invoke_handler(tauri::generate_handler![
             open_external,
             pick_folder,
+            bind_kb_root,
+            unbind_kb_root,
             read_kb_tree,
             read_kb_file,
             watch_kb_folder,
-            unwatch_kb_folder,
-            take_open_file_arg,
-            read_open_file,
+            take_open_file,
             check_update,
             install_update,
             open_editor_window

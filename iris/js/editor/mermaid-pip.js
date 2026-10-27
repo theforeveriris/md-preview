@@ -13,6 +13,7 @@
   window.MarkdownPreview.editorModules.mermaidPip = {
     init: function(ctx) {
       const editorT = ctx.editorT;
+      const esc = window.MarkdownPreview.mdRender.escapeHtml;
       let panel = null;
       let stage = null;
       let errBox = null;

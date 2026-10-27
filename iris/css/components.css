@@ -1130,6 +1130,9 @@ pre.code-block code { position: relative; z-index: 1; }
 .hm-month { grid-row: 1; white-space: nowrap; }
 
 /* ============== 悬浮球菜单自定义（floating-menu-custom.js） ============== */
+/* 用户隐藏用 !important 类：不清按钮自身的内联 display（默认隐藏与
+   运行时显隐逻辑不受影响，CodeRabbit review fix） */
+.menu-item-btn.fm-user-hidden { display: none !important; }
 .fm-list { display: flex; flex-direction: column; gap: 2px; width: 100%; }
 .fm-row {
   display: flex;

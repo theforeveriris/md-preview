@@ -133,10 +133,12 @@ function buildTreeFromDirectory(dir, basePath = '') {
     // 贡献者徽标（KNOW-6）：按提交次数取前 8 位
     const authors = gitContributors.get(file.path);
     if (authors && authors.size > 0) {
+      // 只发布 name/count：原始邮箱进产物会变成可批量采集的
+      // 隐私数据（CWE-359，CodeRabbit review fix）；头像用首字母替代
       entry.contributors = [...authors.values()]
         .sort((a, b) => b.count - a.count)
         .slice(0, 8)
-        .map(a => ({ name: a.name, email: a.email, count: a.count }));
+        .map(a => ({ name: a.name, count: a.count }));
     }
     result.push(entry);
     totalWords += wordCount;

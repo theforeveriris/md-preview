@@ -35,14 +35,17 @@
 
     const bar = document.createElement('div');
     bar.className = 'contributors-bar';
+    // 隐私：产物不含邮箱（CWE-359），头像用首字母章 + 由名字派生的色相
+    const hueFor = (name) => {
+      let h = 0;
+      for (let i = 0; i < String(name).length; i++) h = (h * 31 + String(name).charCodeAt(i)) % 360;
+      return h;
+    };
     const chips = list.map((a, i) => {
       const title = `${a.name} · ${t('contributors.commits', '{n} 次提交').replace('{n}', a.count)}`;
-      const fallback = `<span class="contributor-fallback">${esc((a.name || '?')[0].toUpperCase())}</span>`;
+      const hue = hueFor(a.name || '?');
       return `<span class="contributor-chip" title="${esc(title)}" data-order="${i}">
-        <img class="contributor-avatar" alt="" loading="lazy"
-             src="https://github.com/${encodeURIComponent(a.email)}.png?size=48"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'">
-        ${fallback}
+        <span class="contributor-fallback" style="background:hsl(${hue}, 62%, 52%)">${esc((a.name || '?')[0].toUpperCase())}</span>
       </span>`;
     }).join('');
     bar.innerHTML = `<span class="contributors-label">👥 ${esc(t('contributors.label', '贡献者'))}</span><span class="contributors-stack">${chips}</span>`;

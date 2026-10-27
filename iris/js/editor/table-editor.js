@@ -149,6 +149,16 @@
             <div class="tbl-editor-body"></div>
             <div class="tbl-editor-foot">
               <button type="button" class="download-btn tbl-save">${esc(editorT('tbl.save', '保存并回写源码'))}</button>
+              <span class="tbl-editor-foot-mid">
+                <label class="tbl-preset-label">${esc(editorT('tbl.preset', '样式预设'))}
+                  <select class="tbl-preset-sel">
+                    <option value="">${esc(editorT('tbl.presetDefault', '默认'))}</option>
+                    <option value="md-table-zebra">${esc(editorT('tbl.presetZebra', '斑马纹'))}</option>
+                    <option value="md-table-compact">${esc(editorT('tbl.presetCompact', '紧凑'))}</option>
+                    <option value="md-table-accent-header">${esc(editorT('tbl.presetAccent', '强调首行'))}</option>
+                  </select>
+                </label>
+              </span>
               <span class="tbl-editor-hint">${esc(editorT('tbl.hint', '保存后自动重渲染当前 Cell'))}</span>
             </div>
           </div>`;
@@ -198,12 +208,15 @@
         overlay.querySelector('.tbl-save').addEventListener('click', () => {
           const lines = text.split('\n');
           // 样式预设（ADJ-TABLE-2）：非默认预设以 HTML 注释标记跟在表格后，
-          // 渲染管线（mdRender.applyTablePresets）读标记给表格挂类
+          // 渲染管线（mdRender.applyTablePresets）读标记给表格挂类。
+          // 先移除紧跟表格后的旧标记（span.end 起），避免重复累积。
+          let end = span.end;
+          while (end < lines.length && /<!--\s*table-style:/.test(lines[end])) end++;
           const preset = overlay.querySelector('.tbl-preset-sel').value;
           const marker = preset ? '\n<!-- table-style: ' + preset + ' -->' : '';
           const tableText = serializeTable(rows, hasHeader) + marker;
           const newText = lines.slice(0, span.start)
-            .concat([tableText], lines.slice(span.end))
+            .concat([tableText], lines.slice(end))
             .join('\n');
           cellData.textarea.setValue(newText);
           ctx.afterSourceEdit(cellData);
