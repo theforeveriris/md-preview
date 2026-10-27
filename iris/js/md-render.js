@@ -990,6 +990,50 @@
     return window.location.pathname.includes('/md-preview/') ? '/md-preview/' : '/';
   }
 
+  /**
+   * 行级 LCS diff（版本快照 / 与 git HEAD 对比共用）。
+   * 返回 [{ type: 'ctx'|'del'|'add'|'note', text }]；超长截断并给出 note 行。
+   */
+  function diffLines(aText, bText, lineCap) {
+    const cap = lineCap || 2000;
+    const NL = String.fromCharCode(10);
+    let a = String(aText == null ? '' : aText).split(NL);
+    let b = String(bText == null ? '' : bText).split(NL);
+    let aCut = 0, bCut = 0;
+    if (a.length > cap) { aCut = a.length - cap; a = a.slice(0, cap); }
+    if (b.length > cap) { bCut = b.length - cap; b = b.slice(0, cap); }
+    const N = a.length, M = b.length;
+    const ops = [];
+    if (N * M > 4000000) {
+      // 超大文档：降级为整体替换，保证不卡死
+      ops.push({ type: 'del', text: aText.slice(0, 2000) });
+      ops.push({ type: 'add', text: bText.slice(0, 2000) });
+      if (aCut) ops.push({ type: 'note', text: '… 快照侧还有 ' + aCut + ' 行未显示' });
+      if (bCut) ops.push({ type: 'note', text: '… 当前侧还有 ' + bCut + ' 行未显示' });
+      return ops;
+    }
+    const dp = new Uint32Array((N + 1) * (M + 1));
+    const at = (i, j) => i * (M + 1) + j;
+    for (let i = N - 1; i >= 0; i--) {
+      for (let j = M - 1; j >= 0; j--) {
+        dp[at(i, j)] = a[i] === b[j]
+          ? dp[at(i + 1, j + 1)] + 1
+          : Math.max(dp[at(i + 1, j)], dp[at(i, j + 1)]);
+      }
+    }
+    let i = 0, j = 0;
+    while (i < N && j < M) {
+      if (a[i] === b[j]) { ops.push({ type: 'ctx', text: a[i] }); i++; j++; }
+      else if (dp[at(i + 1, j)] >= dp[at(i, j + 1)]) { ops.push({ type: 'del', text: a[i] }); i++; }
+      else { ops.push({ type: 'add', text: b[j] }); j++; }
+    }
+    while (i < N) { ops.push({ type: 'del', text: a[i] }); i++; }
+    while (j < M) { ops.push({ type: 'add', text: b[j] }); j++; }
+    if (aCut) ops.push({ type: 'note', text: '… 还有 ' + aCut + ' 行未显示' });
+    if (bCut) ops.push({ type: 'note', text: '… 还有 ' + bCut + ' 行未显示' });
+    return ops;
+  }
+
   // 图表默认调色板（apexcharts/csv-table 图表共用；与站点品牌紫一致）
   const CHART_PALETTE = ['#8B5CF6', '#D946EF', '#3B82F6', '#10B981', '#F59E0B'];
 
@@ -1029,5 +1073,6 @@
     getBasePath,
     CHART_PALETTE,
     resolveRoot,
+    diffLines,
   };
 })();

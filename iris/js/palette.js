@@ -180,6 +180,33 @@
         run: () => window.MarkdownPreview.enterEditorMode && window.MarkdownPreview.enterEditorMode()
       },
       {
+        id: 'edit-current-doc',
+        icon: 'i-code',
+        label: t('cmd.editCurrentDoc', '在编辑器打开当前文档'),
+        run: async () => {
+          const st = window.MarkdownPreview.state;
+          const path = st && st.currentFilePath;
+          if (!path) return;
+          let text;
+          try {
+            const resp = await fetch(path, { cache: 'no-store' });
+            if (!resp.ok) return;
+            text = await resp.text();
+          } catch (e) { return; }
+          const initData = { cells: [{ type: 'markdown', content: text }] };
+          const title = path.split('/').pop().replace(/\.md$/i, '');
+          if (window.MarkdownPreview.editorCreateTab) {
+            const tab = await window.MarkdownPreview.editorCreateTab(initData, title);
+            const map = window.MarkdownPreview.editorRepoPaths =
+              window.MarkdownPreview.editorRepoPaths || new Map();
+            map.set(tab.id, path);
+          } else {
+            window.MarkdownPreview.editorPendingContent = { initData, title, repoPath: path };
+            window.MarkdownPreview.enterEditorMode();
+          }
+        }
+      },
+      {
         id: 'new-from-template',
         icon: 'i-save',
         label: t('cmd.newFromTemplate', '从模板新建'),

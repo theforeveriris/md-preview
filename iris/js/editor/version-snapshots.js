@@ -86,42 +86,10 @@
       }
 
       // ============== 行级 LCS diff ==============
+      // 共享实现（md-render.js diffLines），与「与 git HEAD 对比」共用
 
       function diffLines(aText, bText) {
-        let a = aText.split('\n');
-        let b = bText.split('\n');
-        let aCut = 0, bCut = 0;
-        if (a.length > DIFF_LINE_CAP) { aCut = a.length - DIFF_LINE_CAP; a = a.slice(0, DIFF_LINE_CAP); }
-        if (b.length > DIFF_LINE_CAP) { bCut = b.length - DIFF_LINE_CAP; b = b.slice(0, DIFF_LINE_CAP); }
-        const N = a.length, M = b.length;
-        const ops = [];
-        if (N * M > 4000000) {
-          // 超大文档：降级为整体替换，保证不卡死
-          ops.push({ type: 'del', text: aText.slice(0, 2000) });
-          ops.push({ type: 'add', text: bText.slice(0, 2000) });
-          return ops;
-        }
-        // LCS DP（滚动行）
-        const dp = new Uint32Array((N + 1) * (M + 1));
-        const at = (i, j) => i * (M + 1) + j;
-        for (let i = N - 1; i >= 0; i--) {
-          for (let j = M - 1; j >= 0; j--) {
-            dp[at(i, j)] = a[i] === b[j]
-              ? dp[at(i + 1, j + 1)] + 1
-              : Math.max(dp[at(i + 1, j)], dp[at(i, j + 1)]);
-          }
-        }
-        let i = 0, j = 0;
-        while (i < N && j < M) {
-          if (a[i] === b[j]) { ops.push({ type: 'ctx', text: a[i] }); i++; j++; }
-          else if (dp[at(i + 1, j)] >= dp[at(i, j + 1)]) { ops.push({ type: 'del', text: a[i] }); i++; }
-          else { ops.push({ type: 'add', text: b[j] }); j++; }
-        }
-        while (i < N) { ops.push({ type: 'del', text: a[i] }); i++; }
-        while (j < M) { ops.push({ type: 'add', text: b[j] }); j++; }
-        if (aCut) ops.push({ type: 'note', text: `… 快照侧还有 ${aCut} 行未显示` });
-        if (bCut) ops.push({ type: 'note', text: `… 当前侧还有 ${bCut} 行未显示` });
-        return ops;
+        return window.MarkdownPreview.mdRender.diffLines(aText, bText, DIFF_LINE_CAP);
       }
 
       // ============== 面板 ==============

@@ -2368,10 +2368,24 @@
 
   // 模板脚手架：命令面板 / 「导入」菜单「从模板新建」经此建新笔记本
   window.MarkdownPreview.editorCreateTab = (initData, title) => {
-    createTab({ initData, title, skipSaveCurrent: true });
+    return createTab({ initData, title, skipSaveCurrent: true });
   };
   registerMenuAction('new-from-template', () => {
     window.MarkdownPreview.docTemplates?.openPicker?.();
+  });
+
+  // 仓库文档 → 编辑器 tab 的路径登记（「与 git HEAD 对比」用）
+  const editorRepoPaths = window.MarkdownPreview.editorRepoPaths =
+    window.MarkdownPreview.editorRepoPaths || new Map();
+  registerMenuAction('diff-vs-head', () => {
+    const repoPath = editorRepoPaths.get(activeTabId);
+    if (!repoPath) {
+      showToast(editorT('editor.notFromRepo', '当前笔记本不是从仓库文档打开的（用「在编辑器打开当前文档」试试）'));
+      return;
+    }
+    const text = cells.map(c => c.textarea.value).join(String.fromCharCode(10, 10));
+    window.MarkdownPreview.gitHistory?.openWorkingDiff?.(repoPath, text);
+    window.MarkdownPreview.gitHistory?.openWorkingDiff?.(repoPath, text);
   });
 
   const versionSnapshotsMod = window.MarkdownPreview.editorModules &&
@@ -2390,6 +2404,14 @@
 
   // 命令面板「从模板新建」在编辑器加载完成前点的：编辑器就绪后消费
   window.MarkdownPreview.docTemplates?.consumePending?.();
+
+  // 命令面板「在编辑器打开当前文档」同款取件箱：登记 repoPath 供 HEAD 对比
+  const pendingDoc = window.MarkdownPreview.editorPendingContent;
+  if (pendingDoc) {
+    window.MarkdownPreview.editorPendingContent = null;
+    createTab({ initData: pendingDoc.initData, title: pendingDoc.title, skipSaveCurrent: true })
+      .then(tab => { if (pendingDoc.repoPath) editorRepoPaths.set(tab.id, pendingDoc.repoPath); });
+  }
 
   const bootCells = cells.slice(); // 启动时的初始 cell 引用
   bootCellsRef = bootCells;       // 供 loadAutosave 在恢复前判定是否已被输入
