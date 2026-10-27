@@ -206,8 +206,16 @@
       if (!projectId) return null;
       const base = `${gitlabUrl}/api/v4/projects/${projectId}/repository/commits/${encodeURIComponent(sha)}`;
       const meta = await api(base);
-      const diffs = await api(base + '/diff').catch(() => []);
-      const files = (Array.isArray(diffs) ? diffs : []).map(d => {
+      // /diff 默认 20 条一页：按页拉全；失败直接抛错走 showCommit 的
+      // 错误分支，不以空 files 伪装成「零变更」（CodeRabbit review fix）
+      const diffs = [];
+      for (let page = 1; page <= 50; page++) {
+        const pageDiffs = await api(`${base}/diff?per_page=100&page=${page}`);
+        if (!Array.isArray(pageDiffs) || pageDiffs.length === 0) break;
+        diffs.push(...pageDiffs);
+        if (pageDiffs.length < 100) break;
+      }
+      const files = diffs.map(d => {
         const patch = d.diff || '';
         const lines = patch.split('\n');
         return {

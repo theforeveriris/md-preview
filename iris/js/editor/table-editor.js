@@ -120,10 +120,21 @@
         const renderedFps = allRendered.map(tableFp);
         const fp = renderedFps[renderedIndex];
 
+        // 源码侧指纹用「与 renderer 相同的内联语义文本」：**名称**、`code`、
+        // [链接](url) 渲染后会脱掉标记，直接比较原文会误拒合法表格。
+        // 经 template 惰性解析（内容不渲染：图片不加载、脚本不执行）取
+        // textContent（CodeRabbit review fix）
+        const scratch = document.createElement('template');
+        const cellText = (md) => {
+          scratch.innerHTML = window.MarkdownPreview.mdRender.parseMarkdown(String(md == null ? '' : md));
+          const text2 = scratch.content.textContent;
+          scratch.innerHTML = '';
+          return text2;
+        };
         const spans = findSourceTables(text);
         const srcFps = spans.map(sp => {
           const parsedFp = parseTableBlock(text.split('\n').slice(sp.start, sp.end));
-          return parsedFp ? normRow(parsedFp.rows.flat()) : null;
+          return parsedFp ? normRow(parsedFp.rows.flat().map(cellText)) : null;
         });
         // 当前渲染表格在其指纹组内的序号
         const occ = renderedFps.slice(0, renderedIndex + 1).filter(f => f === fp).length - 1;

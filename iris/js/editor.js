@@ -1607,12 +1607,7 @@
       if (!confirm('导入将替换当前所有 Cell，是否继续？')) return;
     }
     // 清空现有 Cell
-    cells.slice().forEach(c => {
-      if (c.textarea && typeof c.textarea.destroy === 'function') c.textarea.destroy();
-      c.div.remove();
-    });
-    cells.length = 0;
-    cellCounter = 0;
+    resetAllCells();
     // 创建新 Cell。output_html 来自外部文件（非受信内容，可能是他人分享的
     // 笔记本），注入前必须经 DOMPurify 净化，防止导入即触发的存储型 XSS。
     // 净化是 await，期间不能自动保存（会用半成品覆盖原笔记本）
@@ -1653,12 +1648,7 @@
     if (!(opts && opts.skipConfirm) && cells.some(c => c.textarea.value.trim())) {
       if (!confirm('导入将替换当前所有 Cell，是否继续？')) return;
     }
-    cells.slice().forEach(c => {
-      if (c.textarea && typeof c.textarea.destroy === 'function') c.textarea.destroy();
-      c.div.remove();
-    });
-    cells.length = 0;
-    cellCounter = 0;
+    resetAllCells();
     parts.forEach(part => {
       const trimmed = part.trim();
       if (!trimmed) return;
@@ -2113,18 +2103,25 @@
     }
   }
 
-  async function restoreFromDataInner(data) {
-    const cellList = (data && Array.isArray(data.cells)) ? data.cells : [];
-    // 旧 cell 即将被销毁：先关双屏，否则 cmHost 残留在双屏 overlay 里
-    // 形成死编辑器 + escHandler 泄漏
+  // 清空全部 Cell 的统一入口：closeDualPane（cmHost 不残留双屏 overlay）
+  // + findReplace 匹配失效（cellCounter 归零后新 Cell 复用旧 id）。
+  // 此前四处复制、已出现分歧（CodeRabbit review fix）
+  function resetAllCells() {
     closeDualPane();
-    // 清空现有
+    if (findReplace) findReplace.invalidateMatches();
     cells.slice().forEach(c => {
       if (c.textarea && typeof c.textarea.destroy === 'function') c.textarea.destroy();
       c.div.remove();
     });
     cells.length = 0;
     cellCounter = 0;
+  }
+
+  async function restoreFromDataInner(data) {
+    const cellList = (data && Array.isArray(data.cells)) ? data.cells : [];
+    // 旧 cell 即将被销毁：先关双屏，否则 cmHost 残留在双屏 overlay 里
+    // 形成死编辑器 + escHandler 泄漏
+    resetAllCells();
     // output_html 持久化在 IndexedDB / localStorage：旧版本导入的污染数据可能
     // 已入库，统一在注入前净化（导入边界已有一次净化，这里是纵深防御）
     for (const s of cellList) {
@@ -2471,12 +2468,7 @@
         if (!Array.isArray(cellsData)) return;
         restoreDepth++;
         try {
-          cells.slice().forEach(c => {
-            if (c.textarea && typeof c.textarea.destroy === 'function') c.textarea.destroy();
-            c.div.remove();
-          });
-          cells.length = 0;
-          cellCounter = 0;
+          resetAllCells();
           for (const sdata of cellsData) {
             const nc = createCell(null, sdata.content || '', {
               type: sdata.type === 'plaintext' ? 'plaintext' : 'markdown'
