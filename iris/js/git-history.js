@@ -96,10 +96,17 @@
 
   async function getCommits(path, limit) {
     if (commitsCache.has(path)) return commitsCache.get(path);
-    const { owner, repo } = cfg();
-    if (!owner || !repo) return [];
-    const url = `https://api.github.com/repos/${owner}/${repo}/commits?path=${encodeURIComponent(path)}&per_page=${limit || 20}`;
-    const data = await api(url);
+    // 非 GitHub 托管：git-provider 适配层归一 commit 形态
+    const gp = window.MarkdownPreview.gitProvider;
+    let data;
+    if (gp && gp.cfg().provider !== 'github') {
+      data = await gp.commits(path, limit);
+    } else {
+      const { owner, repo } = cfg();
+      if (!owner || !repo) return [];
+      const url = `https://api.github.com/repos/${owner}/${repo}/commits?path=${encodeURIComponent(path)}&per_page=${limit || 20}`;
+      data = await api(url);
+    }
     commitsCache.set(path, data);
     return data;
   }
@@ -259,6 +266,11 @@
   }
 
   async function getHeadContent(path, sha) {
+    // 非 GitHub 托管：走 git-provider（返回已解码文本）
+    const gp = window.MarkdownPreview.gitProvider;
+    if (gp && gp.cfg().provider !== 'github') {
+      return gp.headContent(path, sha);
+    }
     const { owner, repo } = cfg();
     const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path.split('/').map(encodeURIComponent).join('/')}?ref=${sha}`;
     const data = await api(url);

@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-27T19:07:03.347Z",
+  "generatedAt": "2026-10-27T19:11:33.976Z",
   "version": 1,
-  "count": 137,
+  "count": 138,
   "urls": [
     "./",
     "./index.html",
@@ -63,6 +63,7 @@
     "./iris/js/focus-mode.js",
     "./iris/js/gestures.js",
     "./iris/js/git-history.js",
+    "./iris/js/git-provider.js",
     "./iris/js/history.js",
     "./iris/js/hover-preview.js",
     "./iris/js/i18n-en.js",

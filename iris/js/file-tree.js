@@ -77,18 +77,25 @@
   async function loadFileTreeFromGitHubAPI() {
     bindGlobals();
     try {
-      const apiUrl = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/git/trees/main?recursive=1`;
-      const response = await fetch(apiUrl);
-      
+      // 非 GitHub 托管：git-provider 适配层按 config.provider 切换平台
+      // （gitee/gitlab 亦归一为 { tree: [{path, type}] } 形态）
+      const gp = window.MarkdownPreview.gitProvider;
+      let data;
+      if (gp) {
+        data = await gp.listFiles(CONFIG.branch || 'main');
+      } else {
+        const apiUrl = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/git/trees/main?recursive=1`;
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch file tree from GitHub API: ${response.status} ${response.statusText}`);
+        }
+        data = await response.json();
+      }
+
       if (window.MarkdownPreview.debug && window.MarkdownPreview.debug.incrementApiCalls) {
         window.MarkdownPreview.debug.incrementApiCalls();
       }
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch file tree from GitHub API: ${response.status} ${response.statusText}`);
-      }
-      
-      const data = await response.json();
+
       state.fileTreeData = buildTreeFromFlatList(data.tree);
       renderFileTree(state.fileTreeData);
       onFilesLoaded();

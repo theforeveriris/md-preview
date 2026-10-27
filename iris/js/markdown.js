@@ -651,10 +651,12 @@
     dom.pageHeader.style.display = 'flex';
     dom.editPageBtn.style.display = 'flex';
 
-    // 路径逐段编码：含空格/#/中文的文件名不编码会生成坏的 GitHub 链接
-    const encodedPath = path.split('/').map(encodeURIComponent).join('/');
-    const editUrl = `https://github.com/${CONFIG.owner}/${CONFIG.repo}/edit/main/${encodedPath}`;
-    dom.editPageBtn.href = editUrl;
+    // 路径逐段编码：含空格/#/中文的文件名不编码会生成坏链接；
+    // 非 GitHub 托管由 git-provider 按平台拼编辑 URL
+    const gp = window.MarkdownPreview.gitProvider;
+    dom.editPageBtn.href = (gp && gp.cfg().provider !== 'github')
+      ? gp.editUrl(path)
+      : `https://github.com/${CONFIG.owner}/${CONFIG.repo}/edit/main/${path.split('/').map(encodeURIComponent).join('/')}`;
   }
 
   function updateBreadcrumbs(path) {
