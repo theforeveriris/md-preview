@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-27T18:50:11.217Z",
+  "generatedAt": "2026-10-27T18:54:27.480Z",
   "version": 1,
-  "count": 131,
+  "count": 132,
   "urls": [
     "./",
     "./index.html",
@@ -88,6 +88,7 @@
     "./iris/js/qr-share.js",
     "./iris/js/reading-pos.js",
     "./iris/js/renderers/apexcharts.js",
+    "./iris/js/renderers/config-diff.js",
     "./iris/js/renderers/csv-table.js",
     "./iris/js/renderers/diff.js",
     "./iris/js/renderers/embedded.js",

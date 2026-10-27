@@ -70,6 +70,19 @@
             ]
           },
           {
+            "name": "config-diff-examples.md",
+            "type": "file",
+            "path": "docs/examples/config-diff-examples.md",
+            "wordCount": 39,
+            "created": 0,
+            "modified": 0,
+            "title": "配置语义 diff 示例",
+            "tags": [
+              "网络",
+              "示例"
+            ]
+          },
+          {
             "name": "countdown-examples.md",
             "type": "file",
             "path": "docs/examples/countdown-examples.md",
@@ -258,8 +271,8 @@
             "type": "file",
             "path": "docs/examples/learning-path-examples.md",
             "wordCount": 102,
-            "created": 0,
-            "modified": 0,
+            "created": 1793127038,
+            "modified": 1793127038,
             "title": "学习路径示例",
             "tags": [
               "学习",
@@ -491,9 +504,9 @@
             ]
           }
         ],
-        "wordCount": 12753,
+        "wordCount": 12792,
         "created": 1779157467,
-        "modified": 1793115086
+        "modified": 1793127038
       },
       {
         "name": "changelog.md",
@@ -644,9 +657,9 @@
         ]
       }
     ],
-    "wordCount": 24830,
+    "wordCount": 24869,
     "created": 1779157467,
-    "modified": 1793115086
+    "modified": 1793127038
   },
   {
     "name": "iris",
