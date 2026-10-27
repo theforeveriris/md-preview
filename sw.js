@@ -1,8 +1,11 @@
-const CACHE_NAME = 'md-preview-v8.51';
+// 版本单一来源：发布时只改这里，CACHE_NAME / RUNTIME_CACHE 随之派生
+//（此前 RUNTIME_CACHE 版本手工维护、跨版本永不重建，曾出过「钉死旧版」事故）
+const VERSION = 'v8.52';
+const CACHE_NAME = 'md-preview-' + VERSION;
 // 运行时缓存版本必须随发布递增：旧版曾长期停留在 v8.19，导致
 // index.html / JS / CSS 这类静态资源被「缓存优先」永久钉在旧版本
 // （用户看到的是上一版脚本，后台更新完也不会生效）。
-const RUNTIME_CACHE = 'md-preview-runtime-v8.20';
+const RUNTIME_CACHE = 'md-preview-runtime-' + VERSION;
 const PRECACHE_MANIFEST_URL = './iris/data/precache-manifest.json';
 
 // 最小化兜底清单：当 manifest 拉取失败时使用，仅保证核心骨架可离线
@@ -39,7 +42,7 @@ const PRECACHE_FALLBACK_URLS = [
   './iris/vendor/highlight.js/highlight.min.js'
 ];
 
-// 拉取自动生成�?precache-manifest.json，失败时回退到最小清�?
+// 拉取构建期生成的 precache-manifest.json，失败时回退到最小预缓存清单
 async function loadPrecacheUrls() {
   try {
     const resp = await fetch(PRECACHE_MANIFEST_URL, { cache: 'no-store' });
@@ -48,7 +51,7 @@ async function loadPrecacheUrls() {
     if (!data || !Array.isArray(data.urls) || data.urls.length === 0) {
       throw new Error('manifest empty or invalid');
     }
-    // manifest 自身也加入缓存，便于后续 activate 时校�?
+    // manifest 自身也加入缓存，便于后续 activate 时校验
     const urls = data.urls.slice();
     if (!urls.includes(PRECACHE_MANIFEST_URL)) urls.push(PRECACHE_MANIFEST_URL);
     console.log('[SW] Loaded precache manifest:', data.count, 'urls (v' + (data.version || '?') + ')');
@@ -69,12 +72,13 @@ async function precache() {
 
   await Promise.all(
     urls.map(async (url) => {
-      // 网络优先：install 时总是重新拉取，确保发布新版本后预缓存立即刷新�?
-      // 而不是命中旧缓存直接跳过（旧逻辑导致预缓存从未更新）�?
-      // 仅当网络失败时才回退旧缓存，避免更新失败导致离线不可用�?
+      // 网络优先：install 时总是重新拉取（cache: 'reload' 绕过 HTTP 缓存），
+      // 确保发布新版本后预缓存立即刷新，而不是命中旧缓存直接跳过；
+      // 仅当网络失败时才回退旧缓存
       const cached = await cache.match(url);
       try {
-        const response = await fetch(url);
+        // cache: 'reload' 绕过 HTTP 缓存，避免把旧资源写进新版本缓存
+        const response = await fetch(url, { cache: 'reload' });
         if (response.ok) {
           await cache.put(url, response);
           successCount++;
@@ -88,22 +92,30 @@ async function precache() {
   );
 
   console.log('[SW] Precache done:', successCount, 'success,', failCount, 'failed');
+  // 弱网下全部/大多数下载失败时抛错：install 保持 pending，留在旧版本，
+  // 避免激活一个近乎空缓存的新 SW 导致离线用户直接不可用
+  if (successCount === 0 || failCount > successCount) {
+    throw new Error(`Precache majority failed (${failCount}/${successCount + failCount})`);
+  }
 }
 
 self.addEventListener('install', event => {
-  console.log('[SW] Installing v7.3...');
+  console.log('[SW] Installing', CACHE_NAME, '...');
   event.waitUntil(
     precache()
       .then(() => self.skipWaiting())
       .catch(err => {
-        console.error('[SW] Precache error:', err);
-        return self.skipWaiting();
+        // 预缓存失败：让 install 真正失败（重新抛出），旧 SW 继续服务。
+        // 只「不调用 skipWaiting」不够：旧页面全部关闭后浏览器仍会激活新 SW，
+        // 并执行 activate 的旧缓存清理，用户可能失去原有离线内容。
+        console.error('[SW] Precache failed, install aborted, staying on old version:', err);
+        throw err;
       })
   );
 });
 
 self.addEventListener('activate', event => {
-  console.log('[SW] Activating v7.3...');
+  console.log('[SW] Activating', CACHE_NAME, '...');
   event.waitUntil(
     caches.keys().then(keys => {
       return Promise.all(
@@ -116,6 +128,21 @@ self.addEventListener('activate', event => {
     }).then(() => self.clients.claim())
   );
 });
+
+
+// 运行时缓存容量上限：图片/字体无限累积会撑爆用户磁盘配额。
+// 超过 RUNTIME_CACHE_MAX_ENTRIES 时按插入序淘汰一半（Cache keys 顺序
+// 近似插入序，够用；精确 LRU 需要访问时间戳，此处从简）
+const RUNTIME_CACHE_MAX_ENTRIES = 300;
+async function trimRuntimeCache() {
+  try {
+    const cache = await caches.open(RUNTIME_CACHE);
+    const keys = await cache.keys();
+    if (keys.length <= RUNTIME_CACHE_MAX_ENTRIES) return;
+    const excess = keys.length - Math.floor(RUNTIME_CACHE_MAX_ENTRIES / 2);
+    for (let i = 0; i < excess; i++) await cache.delete(keys[i]);
+  } catch (e) { /* 清理失败不阻塞写入 */ }
+}
 
 // 资源类型分流策略
 // 代码与入口类资源：必须「网络优先」，否则会把用户钉在旧版本上。
@@ -164,14 +191,16 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // 媒体资源：缓存优先 + 后台更新
+  // 媒体资源：缓存优先 + 后台更新 + 容量上限（LRU 简化：超限删最旧一半）
   if (isMediaAsset(url)) {
     event.respondWith(
       caches.match(request).then(cached => {
         const fetchPromise = fetch(request).then(response => {
           if (response.ok) {
             const clone = response.clone();
-            caches.open(RUNTIME_CACHE).then(cache => cache.put(request, clone));
+            trimRuntimeCache()
+              .then(() => caches.open(RUNTIME_CACHE))
+              .then(cache => cache.put(request, clone));
           }
           return response;
         }).catch(() => cached);
@@ -181,7 +210,10 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Markdown 文档：网络优先，强制 no-cache 绕过 stale runtime 响应；离线降级到缓存
+  // Markdown 文档：网络优先，失败回退缓存。
+  // 不用 stale-while-revalidate：SWR 会先返回缓存副本，导致「文档已更新但
+  // 页面仍显示上一版」（作者改完文档刷新看不到改动，是真实踩过的坑）。
+  // 预取仍保留价值——离线可用与弱网回退都依赖这份运行时缓存。
   if (isMarkdownDoc(url)) {
     event.respondWith(
       fetch(request, { cache: 'no-cache' })
@@ -192,19 +224,15 @@ self.addEventListener('fetch', event => {
           }
           return response;
         })
-        .catch(() => {
-          return caches.match(request).then(cached => {
-            return cached || new Response('离线模式下无法加载此文档', {
-              status: 503,
-              headers: { 'Content-Type': 'text/plain; charset=utf-8' }
-            });
-          });
-        })
+        .catch(() => caches.match(request).then(cached => cached || new Response('离线模式下无法加载此文档', {
+          status: 503,
+          headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+        })))
     );
     return;
   }
 
-  // 其他请求：缓存优�?
+  // 其他请求：缓存优先
   event.respondWith(
     caches.match(request).then(cached => {
       return cached || fetch(request).then(response => {
@@ -222,7 +250,7 @@ self.addEventListener('message', event => {
   if (event.data?.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
-  // 清空文档缓存（设置面板「清除文档缓存」）：仅�?.md 条目，保留静态资�?
+  // 清空文档缓存（设置面板「清除文档缓存」）：仅删 .md 条目，保留静态资源
   if (event.data?.type === 'CLEAR_DOC_CACHE') {
     event.waitUntil(
       caches.open(RUNTIME_CACHE).then(cache =>

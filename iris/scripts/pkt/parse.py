@@ -13,7 +13,6 @@ PT 的 XML schema 没有官方文档，结构随版本变化。
 本模块兼容 PT 5.x / 6.x / 7.x / 8.x 的主要节点命名。
 """
 
-import ipaddress
 import re
 import xml.etree.ElementTree as ET
 from typing import Any

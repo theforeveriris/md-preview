@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+// 只扫 docs/：与 build-file-tree.js 扫仓库根是有意差异——侧边栏展示仓库全部
+// .md（含 README/示例），公开搜索索引只收录 docs/ 站内文档
 const docsDir = path.join(__dirname, '../../docs');
 const outputFile = path.join(__dirname, '../data/search-index.json');
 
@@ -37,67 +39,36 @@ function pinyinInitials(text) {
   return out;
 }
 
-function extractTitle(content) {
-  const frontmatterMatch = content.match(/^---[\s\S]*?title:\s*['"]?(.+?)['"]?\s*(?:\n|---)/i);
-  if (frontmatterMatch) return frontmatterMatch[1].trim();
-  
-  const headingMatch = content.match(/^#\s+(.+)$/m);
-  if (headingMatch) return headingMatch[1].trim();
-  
-  return null;
-}
+// 标题/标签/frontmatter 剥离：统一走 lib/frontmatter.js
+const { extractTitle, extractTags, splitFrontmatter } = require('./lib/frontmatter.js');
 
 function extractPreview(content) {
-  let text = content;
-  
-  text = text.replace(/^---[\s\S]*?---\s*/, '');
-  text = text.replace(/```[\s\S]*?```/g, '');
-  text = text.replace(/^#+\s*/gm, '');
-  text = text.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1');
-  text = text.replace(/!\[([^\]]*)\]\([^)]*\)/g, '');
-  text = text.replace(/[*_~`]/g, '');
-  text = text.replace(/\s+/g, ' ').trim();
-  
+  const { body } = splitFrontmatter(content);
+  const text = body
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/^#+\s*/gm, '')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '')
+    .replace(/[*_~`]/g, '')
+    .replace(/\s+/g, ' ').trim();
+
   return text.substring(0, 200);
 }
 
-function extractTags(content) {
-  const frontmatterMatch = content.match(/^---\s*\n([\s\S]*?)\n---/);
-  if (!frontmatterMatch) return [];
-  const tagsLine = frontmatterMatch[1].split('\n').find(l => l.trim().startsWith('tags:'));
-  if (!tagsLine) return [];
-  const raw = tagsLine.trim().replace(/^tags:\s*/, '').trim();
+// 目录遍历统一走 lib/docs.js。relBase 传仓库根：rel 必须带 docs/ 前缀，
+// 否则前端 search.js 用 result.path 调 loadMarkdownFile 会 404
+//（relBase 默认取遍历起点 docs/，rel 就丢了前缀——曾因此搜索点击全部失效）。
+const { collectMarkdownFiles } = require('./lib/docs.js');
+const REPO_ROOT = path.resolve(__dirname, '..', '..');
 
-  let list = [];
-  if (raw.startsWith('[')) {
-    list = raw.replace(/^\[/, '').replace(/\]$/, '').split(',');
-  } else {
-    list = raw.split(/[,，]/);
-  }
-  return list.map(s => s.trim().replace(/^["']|["']$/g, '')).filter(Boolean).slice(0, 20);
-}
-
-function collectFiles(dir, basePath = '') {
-  const files = [];
-  const items = fs.readdirSync(dir);
-  
-  for (const item of items) {
-    const fullPath = path.join(dir, item);
-    const stats = fs.statSync(fullPath);
-    
-    if (stats.isDirectory()) {
-      files.push(...collectFiles(fullPath, basePath ? `${basePath}/${item}` : item));
-    } else if (item.endsWith('.md')) {
-      // 存储相对于仓库根目录的完整路径（含 docs/ 前缀），
-      // 供前端直接使用，避免硬编码拼接前缀
-      files.push({
-        path: 'docs/' + (basePath ? `${basePath}/${item}` : item),
-        fullPath: fullPath
-      });
-    }
-  }
-  
-  return files;
+function collectFiles(dir) {
+  return collectMarkdownFiles(dir, {
+    relBase: REPO_ROOT,
+    skipRel: ['docs/zw']
+  }).map(f => ({
+    path: f.rel,
+    fullPath: f.path
+  }));
 }
 
 async function buildIndex() {

@@ -5,7 +5,9 @@
  * 另提供「关注文档」：记住上次看到的提交，文档有新提交时在正文顶部提示。
  *
  * - owner / repo 来自 iris/config.json（MarkdownPreview.CONFIG）
- * - 可选 Token：localStorage('md-preview-github-token')，用于提高限流额度 / 访问私有仓库
+ * - 可选 Token：sessionStorage('md-preview-github-token')，用于提高限流额度 / 访问私有仓库
+ *   （不再存 localStorage：明文 Token 对任何同源脚本全程可读，缩短为标签页生命周期）
+ * - API 走 ETag 条件请求（If-None-Match → 304 复用），节省匿名限额
  * - 结果按「路径」「sha」做内存缓存；离线或 API 失败时静默降级
  *
  * 入口：悬浮球「历史与变更」按钮（index.html #historyBtn）
@@ -15,7 +17,8 @@
   window.MarkdownPreview = window.MarkdownPreview || {};
 
   const t = window.MarkdownPreview.t;
-  const esc = window.MarkdownPreview.mdRender.escapeHtml;
+  // 惰性转发：解析期直接取全局依赖 index.html 加载顺序（曾按隐式契约）
+  const esc = (...a) => window.MarkdownPreview.mdRender.escapeHtml(...a);
   const WATCH_KEY = 'md-preview-watched-docs';
   const TOKEN_KEY = 'md-preview-github-token';
 
@@ -27,23 +30,68 @@
     return { owner: c.owner, repo: c.repo };
   }
 
+  // Token 只存 sessionStorage（标签页生命周期）。旧版本曾存 localStorage，
+  // 首次读取时迁移过来并清除旧键，避免明文长期驻留
+  function getToken() {
+    try {
+      let token = sessionStorage.getItem(TOKEN_KEY);
+      if (!token) {
+        const legacy = localStorage.getItem(TOKEN_KEY);
+        if (legacy) {
+          sessionStorage.setItem(TOKEN_KEY, legacy);
+          localStorage.removeItem(TOKEN_KEY);
+          token = legacy;
+        }
+      }
+      return token;
+    } catch (e) { return null; }
+  }
+
   function apiHeaders() {
     const headers = { Accept: 'application/vnd.github+json' };
-    try {
-      const token = localStorage.getItem(TOKEN_KEY);
-      if (token) headers.Authorization = 'Bearer ' + token;
-    } catch (e) { /* ignore */ }
+    const token = getToken();
+    if (token) headers.Authorization = 'Bearer ' + token;
     return headers;
   }
 
+  // ETag 条件请求缓存（sessionStorage 持久化，跨刷新仍可 304 命中省配额）
+  function etagGet(url) {
+    try {
+      const raw = sessionStorage.getItem('md-preview-etag:' + url);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+  }
+  function etagSet(url, etag, data) {
+    try {
+      const payload = JSON.stringify({ etag, data });
+      if (payload.length < 256 * 1024) sessionStorage.setItem('md-preview-etag:' + url, payload);
+    } catch (e) { /* 存储满则放弃 */ }
+  }
+
   async function api(url) {
-    const resp = await fetch(url, { headers: apiHeaders() });
+    const headers = apiHeaders();
+    const cached = etagGet(url);
+    if (cached && cached.etag) headers['If-None-Match'] = cached.etag;
+    const resp = await fetch(url, { headers });
+    if (resp.status === 304 && cached) return cached.data;
     if (!resp.ok) {
       const err = new Error('HTTP ' + resp.status);
       err.status = resp.status;
+      // 读限流响应头：只有 Remaining=0 才是真正限流，并给出重置时间
+      const remaining = resp.headers.get('X-RateLimit-Remaining');
+      const reset = resp.headers.get('X-RateLimit-Reset');
+      if (remaining === '0') {
+        err.rateLimited = true;
+        if (reset && Number.isFinite(parseInt(reset, 10))) {
+          err.resetAt = new Date(parseInt(reset, 10) * 1000);
+        }
+      }
       throw err;
     }
-    return resp.json();
+    const etag = resp.headers.get('ETag');
+    const data = await resp.json();
+    if (etag) etagSet(url, etag, data);
+    return data;
   }
 
   async function getCommits(path, limit) {
@@ -111,6 +159,8 @@
   function openHistory(path) {
     if (!path) return;
     const ov = ensureOverlay();
+    // 捕获打开时的路径：弹窗开着切换文档后，「返回列表」仍应回到原文档
+    ov.dataset.currentPath = path;
     ov.querySelector('.git-history-title').textContent = path;
     const body = ov.querySelector('.git-history-body');
     body.innerHTML = `<div class="git-history-loading">${esc(t('history.loading', '加载中…'))}</div>`;
@@ -148,7 +198,16 @@
   }
 
   function errorText(err) {
-    if (err && err.status === 403) return t('history.rateLimited', 'GitHub API 限流（未登录 60 次/时）。请稍后再试或配置 Token。');
+    if (err && err.rateLimited) {
+      let text = t('history.rateLimited', 'GitHub API 限流（未登录 60 次/时）。请稍后再试或配置 Token。');
+      if (err.resetAt) {
+        try {
+          text += ' ' + t('history.resetAt', '限额重置：') + err.resetAt.toLocaleTimeString('zh-CN', { hour12: false });
+        } catch (e) { /* ignore */ }
+      }
+      return text;
+    }
+    if (err && err.status === 403) return t('history.forbidden', 'GitHub 拒绝了请求（403，非限流）。');
     if (err && err.status === 404) return t('history.notFound', '未找到该文档的提交（可能是新文件或私有仓库）。');
     return t('history.failed', '加载失败：') + (err && err.message ? err.message : '');
   }
@@ -171,7 +230,9 @@
             <div class="git-file-head">${esc(f.filename)} <span class="git-file-stat">+${f.additions} −${f.deletions}</span></div>
             ${f.patch ? `<pre class="git-patch"><code class="language-diff">${esc(f.patch)}</code></pre>` : `<div class="git-file-note">${esc(t('history.binary', '（无文本 diff）'))}</div>`}
           </div>`).join('');
-      body.querySelector('.git-back').addEventListener('click', () => openHistory(window.MarkdownPreview.state.currentFilePath));
+      body.querySelector('.git-back').addEventListener('click', () => {
+        openHistory(overlay.dataset.currentPath || window.MarkdownPreview.state.currentFilePath);
+      });
       const codes = body.querySelectorAll('code.language-diff');
       if (codes.length && typeof window.hljs !== 'undefined') {
         codes.forEach(c => { try { window.hljs.highlightElement(c); } catch (e) { /* ignore */ } });
@@ -186,10 +247,17 @@
   }
 
   // ---------- 变更订阅：文档打开时检查关注项 ----------
+  // 限频：同一文档 10 分钟内不重复请求（匿名 60 次/时，每次渲染都查太费）
+  const lastWatchCheck = new Map(); // path -> ts
+  const WATCH_CHECK_INTERVAL = 10 * 60 * 1000;
+
   async function afterRender(path) {
     if (!path) return;
     const watch = loadWatched();
     if (!watch[path]) return;
+    const last = lastWatchCheck.get(path) || 0;
+    if (Date.now() - last < WATCH_CHECK_INTERVAL) return;
+    lastWatchCheck.set(path, Date.now());
     // 先移除旧提示
     const old = document.querySelector('.doc-update-banner');
     if (old) old.remove();

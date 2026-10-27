@@ -50,7 +50,7 @@
             "path": "docs/examples/colorcard-examples.md",
             "wordCount": 162,
             "created": 1784403626,
-            "modified": 1792250506,
+            "modified": 1793048516,
             "title": "ColorCard 插件示例",
             "tags": [
               "插件",
@@ -100,7 +100,7 @@
             "path": "docs/examples/devtools-examples.md",
             "wordCount": 171,
             "created": 1792356642,
-            "modified": 1792356642,
+            "modified": 1793048516,
             "title": "开发者工具与交互组件示例",
             "tags": [
               "示例",
@@ -191,6 +191,19 @@
             ]
           },
           {
+            "name": "graph-backlinks-demo.md",
+            "type": "file",
+            "path": "docs/examples/graph-backlinks-demo.md",
+            "wordCount": 151,
+            "created": 1793046153,
+            "modified": 1793046153,
+            "title": "文档图谱与反向链接示例",
+            "tags": [
+              "导航",
+              "进阶"
+            ]
+          },
+          {
             "name": "image-gallery-examples.md",
             "type": "file",
             "path": "docs/examples/image-gallery-examples.md",
@@ -233,7 +246,7 @@
             "path": "docs/examples/live-preview-examples.md",
             "wordCount": 184,
             "created": 1791170289,
-            "modified": 1791170289,
+            "modified": 1793048516,
             "title": "Live 预览与 JSON 树示例",
             "tags": [
               "图表",
@@ -402,9 +415,9 @@
             "name": "theme-demo.md",
             "type": "file",
             "path": "docs/examples/theme-demo.md",
-            "wordCount": 193,
+            "wordCount": 210,
             "created": 1779598601,
-            "modified": 1792250506,
+            "modified": 1793052885,
             "title": "主题市场演示",
             "tags": [
               "主题"
@@ -436,66 +449,9 @@
             ]
           }
         ],
-        "wordCount": 12418,
+        "wordCount": 12586,
         "created": 1779157467,
-        "modified": 1793003870
-      },
-      {
-        "name": "zw",
-        "type": "folder",
-        "children": [
-          {
-            "name": "1.0-排版问题样例一.md",
-            "type": "file",
-            "path": "docs/zw/1.0-排版问题样例一.md",
-            "wordCount": 287,
-            "created": 1793003870,
-            "modified": 1793006725,
-            "title": "排版问题样例一",
-            "tags": [
-              "测试"
-            ]
-          },
-          {
-            "name": "2.0-排版问题样例二.md",
-            "type": "file",
-            "path": "docs/zw/2.0-排版问题样例二.md",
-            "wordCount": 183,
-            "created": 1793003870,
-            "modified": 1793006725,
-            "title": "排版问题样例二",
-            "tags": [
-              "测试"
-            ]
-          },
-          {
-            "name": "3.0-排版问题样例三.md",
-            "type": "file",
-            "path": "docs/zw/3.0-排版问题样例三.md",
-            "wordCount": 108,
-            "created": 1793003870,
-            "modified": 1793006725,
-            "title": "排版问题样例三",
-            "tags": [
-              "测试"
-            ]
-          },
-          {
-            "name": "README.md",
-            "type": "file",
-            "path": "docs/zw/README.md",
-            "wordCount": 127,
-            "created": 1793003870,
-            "modified": 1793006703,
-            "title": "排版测试目录",
-            "tags": [
-              "测试"
-            ]
-          }
-        ],
-        "wordCount": 705,
-        "created": 1793003870,
-        "modified": 1793006725
+        "modified": 1793052885
       },
       {
         "name": "changelog.md",
@@ -503,7 +459,7 @@
         "path": "docs/changelog.md",
         "wordCount": 8,
         "created": 1792355917,
-        "modified": 1792401988,
+        "modified": 1793091644,
         "title": "变更日志",
         "tags": [
           "规划"
@@ -513,9 +469,9 @@
         "name": "code-highlight-theme.md",
         "type": "file",
         "path": "docs/code-highlight-theme.md",
-        "wordCount": 520,
+        "wordCount": 521,
         "created": 1783645568,
-        "modified": 1792250506,
+        "modified": 1793046153,
         "title": "代码高亮主题开发指南",
         "tags": [
           "主题",
@@ -528,7 +484,7 @@
         "path": "docs/configuration.md",
         "wordCount": 1830,
         "created": 1779600314,
-        "modified": 1792992175,
+        "modified": 1793046153,
         "title": "配置参考",
         "tags": [
           "配置"
@@ -540,7 +496,7 @@
         "path": "docs/editor.md",
         "wordCount": 1351,
         "created": 1783934812,
-        "modified": 1792992175,
+        "modified": 1793046153,
         "title": "Markdown 编辑器",
         "tags": [
           "编辑器"
@@ -552,7 +508,7 @@
         "path": "docs/getting-started.md",
         "wordCount": 123,
         "created": 1779157467,
-        "modified": 1792250506,
+        "modified": 1793046153,
         "title": "快速开始",
         "tags": [
           "入门"
@@ -574,9 +530,9 @@
         "name": "requirements.md",
         "type": "file",
         "path": "docs/requirements.md",
-        "wordCount": 1767,
+        "wordCount": 1894,
         "created": 1792355917,
-        "modified": 1792992175,
+        "modified": 1793046153,
         "title": "需求整理（候选功能）",
         "tags": [
           "规划"
@@ -586,9 +542,9 @@
         "name": "roadmap.md",
         "type": "file",
         "path": "docs/roadmap.md",
-        "wordCount": 1085,
+        "wordCount": 1163,
         "created": 1790831276,
-        "modified": 1792992175,
+        "modified": 1793035279,
         "title": "功能路线图",
         "tags": [
           "规划"
@@ -624,9 +580,9 @@
         "name": "show.md",
         "type": "file",
         "path": "docs/show.md",
-        "wordCount": 2825,
+        "wordCount": 3090,
         "created": 1785512983,
-        "modified": 1792311595,
+        "modified": 1793052885,
         "title": "系统运行时截图",
         "tags": [
           "截图"
@@ -636,9 +592,9 @@
         "name": "theme-customization.md",
         "type": "file",
         "path": "docs/theme-customization.md",
-        "wordCount": 586,
+        "wordCount": 614,
         "created": 1779600314,
-        "modified": 1792250506,
+        "modified": 1793052885,
         "title": "主题定制",
         "tags": [
           "主题",
@@ -646,9 +602,9 @@
         ]
       }
     ],
-    "wordCount": 24701,
+    "wordCount": 24663,
     "created": 1779157467,
-    "modified": 1793006725
+    "modified": 1793091644
   },
   {
     "name": "iris",
@@ -703,18 +659,18 @@
     "name": "CONTRIBUTING.md",
     "type": "file",
     "path": "CONTRIBUTING.md",
-    "wordCount": 1743,
-    "created": 0,
-    "modified": 0,
+    "wordCount": 1801,
+    "created": 1793029783,
+    "modified": 1793046153,
     "title": "贡献指南"
   },
   {
     "name": "readme-dev.md",
     "type": "file",
     "path": "readme-dev.md",
-    "wordCount": 1299,
+    "wordCount": 1305,
     "created": 1779253703,
-    "modified": 1793024555,
+    "modified": 1793052885,
     "title": "Markdown Preview — 开发者文档",
     "tags": [
       "开发"
@@ -724,9 +680,9 @@
     "name": "README.md",
     "type": "file",
     "path": "README.md",
-    "wordCount": 1184,
+    "wordCount": 1205,
     "created": 1779156860,
-    "modified": 1793003870,
+    "modified": 1793052885,
     "title": "Markdown Preview",
     "tags": [
       "入门"

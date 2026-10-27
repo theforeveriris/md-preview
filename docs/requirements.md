@@ -15,6 +15,8 @@ tags: [规划]
 
 ## 总览
 
+以下 25 项**已全部落地**（按本文件开头的自我约定，落地后应移入 roadmap/README 并从本表移除；为保留追溯性暂整表保留，状态改为已完成）：
+
 | ID | 名称 | 分组 | 优先级 | 工作量 | 主要复用 |
 |----|------|------|--------|--------|----------|
 | PERF-1 | 可见即渲染（图表延迟初始化） | 性能与阅读体验 | P1 | 中 | `md-render.js` 调度器、`dom.js` 懒加载 |
@@ -318,11 +320,19 @@ tags: [规划]
 
 ---
 
-## 待确认 / 决策点
+## 待确认 / 决策点（均已随功能落地有答案）
 
-1. **渲染调度合并**：PERF-1 / PERF-2 / PERF-3 是否合并为一次「渲染调度」重构统一实现？（建议是）
-2. **跨域请求类组件**（TOOL-1、TOOL-2）：CORS 限制如何向读者解释？是否内置一个可选的代理说明？
-3. **GitHub API 鉴权**：GIT-1 / GIT-3 是否需要引导用户填 Token？私有仓库如何支持？
-4. **繁简范围**（CJK-1）：仅正文，还是含 UI 文案与侧边栏？
-5. **CJK lint 门禁**（BUILD-1）：默认告警还是致命？`--fix` 是否加入某条工作流？
-6. **术语表来源**（CONTENT-1）：frontmatter 内联，还是独立的术语文件 / 构建期汇总？
+1. ~~**渲染调度合并**~~ ✅ 已定：PERF-1 以 md-render.js 的 `runRenderers` 统一调度 +
+   IntersectionObserver 懒加载实现（PERF-3 渐进渲染经 `highlightCodeBlocksProgressive`
+   同款思路覆盖）；未再合并为单次重构。
+2. ~~**跨域请求类组件**~~ ✅ 已定：不内置代理；在示例文档（devtools-examples）与
+   requirements 正文中向读者解释「仅支持允许跨域的端点」（见产品已知限制）。
+3. ~~**GitHub API 鉴权**~~ ✅ 已定：git-history 支持 Token（sessionStorage 存储，
+   不再明文存 localStorage）；匿名 60 次/时配额靠 ETag 条件请求 + 10 分钟限频缓解；
+   私有仓库由用户自行配 Token。
+4. ~~**繁简范围**~~ ✅ 已定：正文 + 文件树标题等 UI 同步切换（cjk.js afterRender 覆盖
+   主文档；搜索索引构建期繁简双 token）。
+5. ~~**CJK lint 门禁**~~ ✅ 已定：advisory（smoke-test 中 continue-on-error 预跑 +
+   专用工作流 main 上自动修复、PR 仅提示），`--fix` 已在 cjk-typography-lint.yml。
+6. ~~**术语表来源**~~ ✅ 已定：frontmatter 内联（glossary 渲染器直接解析
+   pre.code-block 代码块内容，无需独立术语文件）。

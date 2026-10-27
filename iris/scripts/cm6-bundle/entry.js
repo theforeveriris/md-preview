@@ -1,21 +1,23 @@
 // CodeMirror 6 打包入口
+// 重建命令（cm6-bundle 目录下）：
+//   npx esbuild entry.js --bundle --minify --format=iife //     --outfile=../../vendor/codemirror/codemirror.min.js
+// 导出面 = cm-editor.js 实际使用的最小集合（此前导出了 autocompletion/
+// search/foldGutter 等 14 项未用 API，白白增大 vendor 体积）
 // 将 CM6 核心模块打包为单一 IIFE bundle，暴露到 window.CodeMirror
 import { EditorState, Compartment, Transaction, Annotation, EditorSelection, Prec } from '@codemirror/state';
 import {
   EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter,
-  drawSelection, highlightSpecialChars, rectangularSelection, crosshairCursor,
-  placeholder, ViewPlugin, Decoration, WidgetType
+  drawSelection, highlightSpecialChars, placeholder
 } from '@codemirror/view';
 import {
-  defaultKeymap, history, historyKeymap, indentWithTab, undo, redo,
-  selectAll, undoSelection, redoSelection
+  defaultKeymap, history, historyKeymap, indentWithTab, undo, redo
 } from '@codemirror/commands';
 import {
-  indentOnInput, bracketMatching, foldGutter, foldKeymap, indentUnit,
-  LanguageDescription, syntaxHighlighting, defaultHighlightStyle, HighlightStyle
+  indentOnInput, bracketMatching, foldKeymap, indentUnit,
+  syntaxHighlighting, defaultHighlightStyle
 } from '@codemirror/language';
-import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
-import { searchKeymap, highlightSelectionMatches, search, openSearchPanel } from '@codemirror/search';
+import { completionKeymap, closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
+import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 
 const CodeMirrorAPI = {
@@ -34,12 +36,7 @@ const CodeMirrorAPI = {
   highlightActiveLineGutter,
   drawSelection,
   highlightSpecialChars,
-  rectangularSelection,
-  crosshairCursor,
   placeholder,
-  ViewPlugin,
-  Decoration,
-  WidgetType,
   // commands
   defaultKeymap,
   history,
@@ -47,29 +44,20 @@ const CodeMirrorAPI = {
   indentWithTab,
   undo,
   redo,
-  selectAll,
-  undoSelection,
-  redoSelection,
   // language
   indentOnInput,
   bracketMatching,
-  foldGutter,
   foldKeymap,
   indentUnit,
-  LanguageDescription,
   syntaxHighlighting,
   defaultHighlightStyle,
-  HighlightStyle,
   // autocomplete
-  autocompletion,
   completionKeymap,
   closeBrackets,
   closeBracketsKeymap,
   // search
   searchKeymap,
   highlightSelectionMatches,
-  search,
-  openSearchPanel,
   // markdown
   markdown,
   markdownLanguage,

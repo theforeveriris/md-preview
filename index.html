@@ -23,7 +23,7 @@
   <meta name="twitter:description" content="一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能">
   <meta name="twitter:image" content="https://theforeveriris.github.io/md-preview/iris/icons/og-image.png">
   <meta name="twitter:creator" content="@theforeveriris">
-  <meta name="theme-color" content="#8B5CF6">
+  <meta name="theme-color" content="#d4a5c9">
   <link rel="manifest" href="manifest.json">
   
   <link rel="icon" type="image/svg+xml" href="iris/icons/icon.svg">
@@ -32,7 +32,10 @@
   <link rel="alternate" type="application/rss+xml" title="Markdown Preview" href="iris/data/feed.xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- 字体 CSS 非阻塞加载：media="print" + onload 切回 all（display=swap 保证
+       字体就绪前用回退字体渲染，不白屏）；noscript 兜底直接加载 -->
+  <link id="googleFontsCss" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" media="print">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
   <link rel="preload" href="iris/styles.css" as="style">
   <link rel="preload" href="iris/vendor/marked.js" as="script">
   <link rel="preload" href="iris/js/config.js" as="script">
@@ -274,6 +277,7 @@
                   <select id="themeSelect" class="theme-select">
                     <option value="auto" data-i18n="settings.theme.auto">自动（跟随系统）</option>
                     <option value="default" data-i18n="settings.theme.default">紫粉渐变</option>
+                    <option value="iris" data-i18n="settings.theme.iris">鸢尾花紫</option>
                     <option value="github-light">GitHub Light</option>
                     <option value="github-dark">GitHub Dark</option>
                     <option value="notion">Notion</option>
@@ -291,6 +295,7 @@
                 <div class="setting-control auto-theme-pair">
                   <select id="autoThemeLightSelect" class="theme-select" aria-label="亮色时使用的主题">
                     <option value="default" data-i18n="settings.theme.autoLight.default">亮 · 紫粉渐变</option>
+                    <option value="iris" data-i18n="settings.theme.autoLight.iris">亮 · 鸢尾花紫</option>
                     <option value="github-light" data-i18n="settings.theme.autoLight.github">亮 · GitHub Light</option>
                     <option value="notion" data-i18n="settings.theme.autoLight.notion">亮 · Notion</option>
                   </select>
@@ -1210,7 +1215,9 @@
     </div>
   </div>
 
-  <!-- ============== 编辑器模式（默认隐藏，?mode=editor 激活） ============== -->
+  <!-- ============== 编辑器模式（模板化：进入编辑模式时由 lazy-modules.js
+       注入 DOM 并按需加载 editor.js，约 800 行隐藏 HTML 不再参与首屏解析） ============== -->
+  <template id="tplEditorHtml">
   <div class="editor-overlay" id="editorOverlay" style="display:none;">
     <!-- 顶部工具栏 -->
     <header class="editor-toolbar">
@@ -1621,6 +1628,7 @@
           <div class="image-upload-hint">端点需接收 multipart/form-data（字段名 file），返回 JSON <code>{ "url": "..." }</code></div>
           <div class="image-upload-hint">若需鉴权，可附带请求头（见下方自定义头）</div>
           <input type="text" id="imageUploadHeaders" class="image-upload-input" placeholder='自定义请求头 JSON，如 {"Authorization":"Bearer xxx"}' />
+          <div class="image-upload-hint">⚠️ 请求头（可能含 Token）以明文保存在本机 localStorage，且会发送到你填写的任意端点；请勿在共享电脑上使用</div>
         </div>
         <div class="image-upload-actions">
           <button class="toolbar-btn" id="imageUploadClear">清除配置</button>
@@ -1764,7 +1772,10 @@
     <div class="autocomplete-list" id="autocompleteList"></div>
   </div>
 
-  <!-- ============== 波形生成器 ============== -->
+  </template>
+
+  <!-- ============== 波形生成器（同上模板化） ============== -->
+  <template id="tplPulseGenHtml">
   <div class="pulse-gen-overlay" id="pulseGenOverlay" style="display:none;">
     <header class="pulse-gen-toolbar">
       <div class="pulse-gen-toolbar-left">
@@ -2018,6 +2029,7 @@
       </main>
     </div>
   </div>
+  </template>
 
   <script defer src="iris/vendor/marked.js"></script>
   <script defer src="iris/vendor/marked-footnote.min.js"></script>
@@ -2027,9 +2039,10 @@
   <!-- 以下重型 vendor 库改为按需懒加载（由各 renderer 在 DOM 出现对应内容时调用 dom.js#loadScript/loadStyle）：
        mermaid.min.js / pako.min.js / leaflet.js / apexcharts.min.js
        diff2html.min.js / diff2html-ui.min.js / katex.min.js / auto-render.min.js / cytoscape.min.js
-       仅保留 codemirror.min.js 仍 defer（编辑器适配层强耦合 CM6，后续单独优化） -->
+       codemirror.min.js / cm-editor.js / editor.js 由 lazy-modules.js 在进入编辑模式时按需加载 -->
 
-  <script async src="https://platform.twitter.com/widgets.js"></script>
+  <!-- twitter widgets.js 改为按需注入：embedded.js 检测到 twitter 嵌入块时
+       才加载（第三方脚本，无推文的页面不再加载/暴露访问记录） -->
 
   <!-- App Modules -->
   <script defer src="iris/js/config.js"></script>
@@ -2061,6 +2074,7 @@
   <script defer src="iris/js/router.js"></script>
   <script defer src="iris/js/zip.js"></script>
   <script defer src="iris/js/export-bundle.js"></script>
+  <script defer src="iris/js/settings-backup.js"></script>
   <script defer src="iris/js/settings.js"></script>
   <script defer src="iris/js/reading-pos.js"></script>
   <script defer src="iris/js/history.js"></script>
@@ -2081,6 +2095,8 @@
   <!-- Built-in Plugins (loaded dynamically via loader.js) -->
 
   <!-- Renderers -->
+  <!-- color-utils：graph 渲染器与 color 插件共用的颜色解析/对比度工具 -->
+  <script defer src="iris/js/color-utils.js"></script>
   <script defer src="iris/js/renderers/sql-erd.js"></script>
   <script defer src="iris/js/renderers/mermaid.js"></script>
   <script defer src="iris/js/renderers/plantuml.js"></script>
@@ -2097,7 +2113,6 @@
   <script defer src="iris/js/renderers/openapi.js"></script>
   <script defer src="iris/js/renderers/graph.js"></script>
   <script defer src="iris/js/renderers/glossary.js"></script>
-  <script defer src="iris/js/pulse-generator.js"></script>
 
   <!-- Packet Tracer 拓扑渲染器（cytoscape.min.js 已改为按需懒加载，见 pkt-renderer.js#loadAndRender） -->
   <script defer src="iris/js/pkt/pkt-renderer.js"></script>
@@ -2108,217 +2123,17 @@
   <!-- Main Entry -->
   <script defer src="iris/js/themes/theme-manager.js"></script>
   <script defer src="iris/js/sync-tabs.js"></script>
-  <script defer src="iris/vendor/codemirror/codemirror.min.js"></script>
-  <script defer src="iris/js/cm-editor.js"></script>
+  <!-- codemirror.min.js + cm-editor.js 仅编辑器使用：与 editor.js 同批按需加载
+       （lazy-modules.js 保证 codemirror → cm-editor → editor 顺序） -->
   <script defer src="iris/js/storage.js"></script>
-  <script defer src="iris/js/editor.js"></script>
+  <!-- editor.js（107KB）与 pulse-generator.js（40KB）按需加载：
+       lazy-modules.js 在进入对应模式（?mode=editor/pulsegen 或点击入口）时
+       经 loadScript 拉取，纯阅读模式不再下载执行 -->
+  <script defer src="iris/js/lazy-modules.js"></script>
   <script defer src="iris/js/sidebar-resize.js"></script>
   <script defer src="iris/app.js"></script>
   
-  <script>
-    let deferredPrompt = null;
-    let swRegistration = null;
-
-    function showInstallButton() {
-      const installBtn = document.getElementById('installPwaBtn');
-      if (installBtn) {
-        installBtn.style.display = 'flex';
-        console.log('[PWA] Install button shown');
-      }
-    }
-
-    function hideInstallButton() {
-      const installBtn = document.getElementById('installPwaBtn');
-      if (installBtn) {
-        installBtn.style.display = 'none';
-        console.log('[PWA] Install button hidden');
-      }
-    }
-
-    function checkStandaloneMode() {
-      if (window.matchMedia('(display-mode: standalone)').matches || 
-          window.navigator.standalone ||
-          document.referrer.includes('android-app://')) {
-        console.log('[PWA] App is running in standalone mode');
-        hideInstallButton();
-        return true;
-      }
-      return false;
-    }
-
-    function registerServiceWorker() {
-      // 桌面端（Tauri）里所有资源都已在本地包内，SW 的缓存拦截没有意义，
-      // 自定义协议下注册也容易出问题 —— 直接跳过。网页版行为不变。
-      if (window.__TAURI_INTERNALS__) return;
-      if ('serviceWorker' in navigator) {
-        // 每次都以 no-cache 拉取 sw.js，保证部署后新版本能被浏览器发现
-        fetch('sw.js', { cache: 'no-store' })
-          .then(() => {
-            return navigator.serviceWorker.register('sw.js', {
-              scope: './',
-              updateViaCache: 'none'
-            });
-          })
-          .then(reg => {
-            swRegistration = reg;
-            console.log('[PWA] Service Worker registered, scope:', reg.scope);
-
-            // 每次进入页面主动触发一次 update 检查
-            try { reg.update && reg.update(); } catch (_) { /* ignore */ }
-
-            reg.addEventListener('updatefound', () => {
-              const newWorker = reg.installing;
-              newWorker.addEventListener('statechange', () => {
-                console.log('[PWA] Worker state:', newWorker.state);
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  newWorker.postMessage({ type: 'SKIP_WAITING' });
-                }
-              });
-            });
-
-            if (navigator.serviceWorker.controller) {
-              console.log('[PWA] Service Worker is active');
-            }
-          })
-          .catch(err => {
-            console.error('[PWA] Service Worker registration failed:', err);
-          });
-
-        // 新 SW 接管后显示更新提示
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          showUpdateToast();
-        });
-      }
-    }
-
-    function showUpdateToast() {
-      // 避免首次安装时触发
-      if (!sessionStorage.getItem('sw-first-load')) {
-        sessionStorage.setItem('sw-first-load', '1');
-        return;
-      }
-      const toast = document.getElementById('updateToast');
-      if (!toast) return;
-      toast.classList.add('show');
-    }
-
-    function dismissUpdateToast() {
-      const toast = document.getElementById('updateToast');
-      if (toast) toast.classList.remove('show');
-    }
-
-    function handleBeforeInstallPrompt(e) {
-      e.preventDefault();
-      deferredPrompt = e;
-      console.log('[PWA] beforeinstallprompt fired');
-      showInstallButton();
-    }
-
-    function showInstallProgress() {
-      const menuItems = document.querySelector('.menu-items');
-      if (menuItems) {
-        const progressDiv = document.createElement('div');
-        progressDiv.className = 'install-progress';
-        progressDiv.innerHTML = `
-          <div class="install-progress-spinner"></div>
-          <span>正在安装中...</span>
-        `;
-        menuItems.appendChild(progressDiv);
-      }
-    }
-
-    function hideInstallProgress() {
-      const progressDiv = document.querySelector('.install-progress');
-      if (progressDiv) {
-        progressDiv.remove();
-      }
-    }
-
-    function handleInstallClick() {
-      if (deferredPrompt) {
-        const installBtn = document.getElementById('installPwaBtn');
-        if (installBtn) {
-          installBtn.classList.add('loading');
-        }
-        showInstallProgress();
-
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(choiceResult => {
-          console.log('[PWA] User choice:', choiceResult.outcome);
-          hideInstallProgress();
-
-          if (installBtn) {
-            installBtn.classList.remove('loading');
-          }
-
-          deferredPrompt = null;
-          if (choiceResult.outcome === 'accepted') {
-            hideInstallButton();
-          }
-        }).catch(err => {
-          console.error('[PWA] Install prompt error:', err);
-          hideInstallProgress();
-
-          if (installBtn) {
-            installBtn.classList.remove('loading');
-          }
-          deferredPrompt = null;
-        });
-      } else {
-        console.log('[PWA] No install prompt available');
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      checkStandaloneMode();
-
-      window.matchMedia('(display-mode: standalone)').addEventListener('change', () => {
-        checkStandaloneMode();
-      });
-
-      registerServiceWorker();
-
-      window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-
-      window.addEventListener('appinstalled', () => {
-        console.log('[PWA] App installed successfully');
-        hideInstallButton();
-        deferredPrompt = null;
-      });
-
-      const installBtn = document.getElementById('installPwaBtn');
-      if (installBtn) {
-        installBtn.addEventListener('click', handleInstallClick);
-      }
-
-      const updateRefreshBtn = document.getElementById('updateRefreshBtn');
-      if (updateRefreshBtn) {
-        // 单次刷新生效：等 waiting SW 接管（controllerchange）后再 reload，
-        // 否则 reload 时页面仍由旧 SW 控制、静态资源命中旧缓存（要刷两次）
-        updateRefreshBtn.addEventListener('click', () => {
-          let reloaded = false;
-          const doReload = () => { if (!reloaded) { reloaded = true; window.location.reload(); } };
-          if (navigator.serviceWorker.controller) {
-            navigator.serviceWorker.addEventListener('controllerchange', doReload, { once: true });
-            // 兜底：600ms 内没触发 controllerchange（如无 waiting SW）也照常刷新
-            setTimeout(doReload, 600);
-          } else {
-            doReload();
-          }
-        });
-      }
-      const updateDismissBtn = document.getElementById('updateDismissBtn');
-      if (updateDismissBtn) {
-        updateDismissBtn.addEventListener('click', dismissUpdateToast);
-      }
-
-      setTimeout(() => {
-        if (!deferredPrompt && !checkStandaloneMode()) {
-          console.log('[PWA] Checking if installable after 5 seconds');
-        }
-      }, 5000);
-    });
-  </script>
+  <script defer src="iris/js/pwa-boot.js"></script>
   <input type="file" id="localMdInput" accept=".md,.markdown,text/markdown,text/plain" multiple style="position:fixed;top:-9999px;left:-9999px;opacity:0;">
   <input type="file" id="localMdFolderInput" webkitdirectory directory multiple style="position:fixed;top:-9999px;left:-9999px;opacity:0;">
 </body>

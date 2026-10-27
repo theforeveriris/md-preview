@@ -102,7 +102,7 @@ PlantUML 图表默认依次尝试官方服务器与 Kroki 公共服务，全部�
 | `github-light` | GitHub Light |
 | `github-dark` | GitHub Dark |
 | `notion` | Notion |
-| `arc-dark` | Arc Dark |
+| `arc` | Arc Dark |
 | `dracula` | Dracula |
 | `nord` | Nord |
 

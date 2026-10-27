@@ -16,3 +16,8 @@ console.log('loaded before md-render.js:', bad.length ? bad : 'none');
 const renderers = refs.filter(r => r.includes('/renderers/'));
 const badR = renderers.filter(r => refs.indexOf(r) < iMdRender);
 console.log('renderers before md-render.js:', badR.length ? badR : 'none');
+
+// 门禁：检出任何问题即非零退出（此前只打印不退出，门禁实际不存在）
+const failed = missing.length > 0 || bad.length > 0 || badR.length > 0;
+if (failed) process.exit(1);
+console.log('[check-script-order] OK');

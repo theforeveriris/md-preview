@@ -134,7 +134,8 @@
   }
 
   // HTML 转义统一走 md-render.js 的权威实现（全站唯一，避免多处副本漂移）
-  const esc = window.MarkdownPreview.mdRender.escapeHtml;
+  // 惰性转发：解析期直接取全局依赖 index.html 加载顺序（曾按隐式契约）
+  const esc = (...a) => window.MarkdownPreview.mdRender.escapeHtml(...a);
 
   function docTitle() {
     const st = window.MarkdownPreview.state || {};
@@ -225,30 +226,8 @@
     return v || fallback;
   }
 
-  // 文本按像素宽度硬换行（CJK 逐字、西文按词，与表格 PNG 导出同思路）
-  function wrapLine(ctx, text, maxWidth) {
-    if (!text) return [''];
-    const tokens = text.split(/(\s+)/).filter(tok => tok !== '');
-    const lines = [];
-    let current = '';
-    const push = () => { lines.push(current); current = ''; };
-    for (const token of tokens) {
-      if (ctx.measureText(token).width > maxWidth && token.length > 1) {
-        for (const ch of token) {
-          if (ctx.measureText(current + ch).width > maxWidth && current) push();
-          current += ch;
-        }
-        continue;
-      }
-      if (ctx.measureText(current + token).width > maxWidth && current) {
-        push();
-        if (/^\s+$/.test(token)) continue;
-      }
-      current += token;
-    }
-    if (current) lines.push(current);
-    return lines;
-  }
+  // Canvas 文本硬换行：共享 interactions.wrapLine（曾两份逐字副本）
+  const wrapLine = window.MarkdownPreview.interactions.wrapLine;
 
   function roundRectPath(ctx, x, y, w, h, r) {
     ctx.beginPath();

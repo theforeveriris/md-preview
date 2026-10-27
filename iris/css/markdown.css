@@ -1520,3 +1520,15 @@ body.cjk-vertical .markdown-body .openapi-doc,
 body.cjk-vertical .markdown-body .devtool,
 body.cjk-vertical .markdown-body .glossary-list,
 body.cjk-vertical .markdown-body img { writing-mode: horizontal-tb; }
+
+/* 标题 hover 左侧强调条（原 JS mouseenter/mouseleave 内联样式实现，PERF 改纯 CSS） */
+.markdown-body .heading-clickable {
+  border-left: 3px solid transparent;
+  padding-left: 0;
+  margin-left: -11px;
+  transition: border-color 0.15s ease, padding 0.15s ease;
+}
+.markdown-body .heading-clickable:hover {
+  border-left-color: var(--color-accent-purple);
+  padding-left: 8px;
+}

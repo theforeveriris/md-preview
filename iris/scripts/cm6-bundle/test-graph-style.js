@@ -31,6 +31,8 @@ dom.window.MarkdownPreview = {
   mdRender: { escapeHtml: (s) => String(s == null ? '' : s) },
   t: (key, fallback) => fallback || key,
 };
+// graph.js 的颜色工具已收敛到 color-utils.js，测试环境需先加载
+dom.window.eval(fs.readFileSync(path.join(ROOT, 'js', 'color-utils.js'), 'utf8'));
 dom.window.eval(fs.readFileSync(path.join(ROOT, 'js', 'renderers', 'graph.js'), 'utf8'));
 
 const { graphStyle } = dom.window.MarkdownPreview.renderers.graph;

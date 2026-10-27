@@ -21,7 +21,8 @@
 
   function t(key, fallback) {
     const i18n = window.MarkdownPreview.i18n;
-    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
+    // fallback 透传：键缺失时回退内置文案，而不是裸键名上屏
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key, fallback);
     return fallback;
   }
 
@@ -46,11 +47,24 @@
     return (all[docPath] || {});
   }
 
+  // 存储上限：按「文档×标题」累积从不清理会无限膨胀（history/reading-pos
+  // 都有上限），超出时按文档键整体淘汰（近似 LRU：清掉一半旧键）
+  const MAX_COLLAPSE_DOCS = 500;
+
   function setCollapsed(docPath, headingId, collapsed) {
     const all = readStore();
     if (!all[docPath]) all[docPath] = {};
     if (collapsed) all[docPath][headingId] = 1;
     else delete all[docPath][headingId];
+    // 先把自己挪到末尾（最近写入 = 最新），再做淘汰，
+    // 否则 Object.keys 保持原插入序，刚更新的文档可能恰好排在最前被删掉
+    const entry = all[docPath];
+    delete all[docPath];
+    all[docPath] = entry;
+    const keys = Object.keys(all);
+    if (keys.length > MAX_COLLAPSE_DOCS) {
+      keys.slice(0, keys.length - Math.floor(MAX_COLLAPSE_DOCS / 2)).forEach(k => delete all[k]);
+    }
     writeStore(all);
   }
 

@@ -15,7 +15,8 @@
   window.MarkdownPreview = window.MarkdownPreview || {};
 
   const t = window.MarkdownPreview.t;
-  const esc = window.MarkdownPreview.mdRender.escapeHtml;
+  // 惰性转发：解析期直接取全局依赖 index.html 加载顺序（曾按隐式契约）
+  const esc = (...a) => window.MarkdownPreview.mdRender.escapeHtml(...a);
   const LINKS_URL = 'iris/data/links.json';
   const TOP_N = 5;
   const MAX_RELATED = 20;
@@ -31,7 +32,12 @@
       linksPromise = fetch(LINKS_URL, { cache: 'no-cache' })
         .then(r => (r.ok ? r.json() : null))
         .then(d => { linksCache = d; return d; })
-        .catch(() => null);
+        .catch(() => null)
+        .finally(() => {
+          // 失败结果（null）不缓存：瞬时网络故障后下次导航重试，
+          // 否则反向链接区被永久禁用
+          if (!linksCache) linksPromise = null;
+        });
     }
     return linksPromise;
   }

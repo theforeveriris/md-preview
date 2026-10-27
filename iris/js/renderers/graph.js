@@ -192,84 +192,20 @@
   }
 
   // cytoscape 不解析 CSS var()，样式里要给出实际颜色 / 字体
-  function cssVar(name, fallback) {
-    try {
-      const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-      return v || fallback;
-    } catch (e) {
-      return fallback;
-    }
-  }
+  // 主题变量读取统一走 ColorUtils.getThemeVar
+  const cssVar = (name, fallback) => window.MarkdownPreview.ColorUtils.getThemeVar(name, fallback);
 
   // ---- 配色：主题强调色的明度阶梯 ----
   // 不用 CSS color-mix：浏览器会把它的计算值序列化成 color(srgb …) / oklab()，
   // cytoscape 的解析器只认 rgb()/#hex，解析不了就会退回黑色。这里自己算 RGB。
 
-  // hex / rgb() / rgba() / color(srgb …) → [r, g, b]（0-255）
-  function parseColor(str) {
-    const s = String(str || '').trim();
-    let m = s.match(/^rgba?\(([^)]+)\)$/i);
-    if (m) {
-      const parts = m[1].split(/[\s,/]+/).filter(Boolean).map(Number);
-      if (parts.length >= 3 && parts.slice(0, 3).every(n => Number.isFinite(n))) {
-        return parts.slice(0, 3);
-      }
-      return null;
-    }
-    m = s.match(/^color\(srgb\s+([^)]+)\)$/i);
-    if (m) {
-      const parts = m[1].split(/[\s/]+/).filter(Boolean).map(Number);
-      if (parts.length >= 3 && parts.slice(0, 3).every(n => Number.isFinite(n))) {
-        return parts.slice(0, 3).map(v => Math.round(v * 255));
-      }
-      return null;
-    }
-    m = s.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
-    if (m) {
-      let h = m[1];
-      if (h.length === 3) h = h.split('').map(c => c + c).join('');
-      return [
-        parseInt(h.slice(0, 2), 16),
-        parseInt(h.slice(2, 4), 16),
-        parseInt(h.slice(4, 6), 16),
-      ];
-    }
-    return null;
-  }
-
-  // 交给浏览器解析成计算值（能吃 var() / 任意主题自定义格式），再转成 RGB
-  function resolveColor(cssValue, fallback) {
-    if (!cssValue) return parseColor(fallback) || [148, 163, 184];
-    const probe = document.createElement('span');
-    probe.style.cssText = 'position:absolute;left:-9999px;top:-9999px;';
-    probe.style.color = cssValue;
-    document.body.appendChild(probe);
-    let out = '';
-    try { out = getComputedStyle(probe).color || ''; } catch (e) { out = ''; }
-    probe.remove();
-    return parseColor(out) || parseColor(cssValue) || parseColor(fallback) || [148, 163, 184];
-  }
-
-  function luminanceOf(rgb) {
-    const f = c => {
-      const v = c / 255;
-      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-    };
-    return 0.2126 * f(rgb[0]) + 0.7152 * f(rgb[1]) + 0.0722 * f(rgb[2]);
-  }
-
-  function rgbToCss(rgb) {
-    return 'rgb(' + rgb.map(c => Math.max(0, Math.min(255, Math.round(c)))).join(', ') + ')';
-  }
-
-  function hslToRgb(h, s, l) {
-    const a = s * Math.min(l, 1 - l);
-    const f = n => {
-      const k = (n + h / 30) % 12;
-      return l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1));
-    };
-    return [f(0), f(8), f(4)].map(v => Math.round(v * 255));
-  }
+  // 颜色解析/亮度/对比度统一走 MarkdownPreview.ColorUtils
+  // （此前与 iris/plugins/color.js 两套并行实现，已收敛；本地薄封装保持调用点不变）
+  const parseColor = (str) => window.MarkdownPreview.ColorUtils.parseRgb(str);
+  const resolveColor = (cssValue, fallback) => window.MarkdownPreview.ColorUtils.resolveColor(cssValue, fallback);
+  const luminanceOf = (rgb) => window.MarkdownPreview.ColorUtils.luminance(rgb);
+  const rgbToCss = (rgb) => window.MarkdownPreview.ColorUtils.rgbToCss(rgb);
+  const hslToRgb = (h, sl, l) => window.MarkdownPreview.ColorUtils.hslToRgb(h, sl, l);
 
   // ---- 标签配色：色相轮 + 频次分层 ----
   // 旧方案是主题强调色的明度阶梯：单一色相撑不起 26 档（人眼在同色相上只能辨

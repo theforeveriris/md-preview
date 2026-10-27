@@ -55,7 +55,7 @@ tags: [开发]
 5. `iris/js/dom.js` — 按需加载样式、DOM 工具
 6. `iris/js/file-tree.js` — 构建侧边栏
 7. `iris/js/markdown.js` — Markdown 渲染 + 图片灯箱
-8. `iris/js/app.js` — 组装 Hash 路由、编辑器模式、波形生成器模式
+8. `iris/app.js` — 组装 Hash 路由、编辑器模式、波形生成器模式
 
 ### 核心模块
 
@@ -84,7 +84,7 @@ tags: [开发]
 | Section Collapse | `iris/js/section-collapse.js` | 章节折叠（H2 标题栏按钮，`:scope > h2` 限定顶层章节），按「文档路径 + 标题 id」存 localStorage 记忆 |
 | Split View | `iris/js/split-view.js` | 双栏对照阅读（悬浮球入口，全屏浮层）：编辑器 Cell 同款渲染管线独立渲染两栏、比例同步滚动、内置文档选择器与栏内链接跟读 |
 | i18n | `iris/js/i18n.js` | zh/en 语言包；静态文案用 `data-i18n` 系列属性标记，动态文案走 `t(key, fallback)`；语言选择存 `localStorage('md-preview-lang')`，切换后广播 `langchange` 事件 |
-| App | `iris/js/app.js` | Hash 路由、编辑器模式 (`?mode=editor`)、Pulse 生成器 (`?mode=pulsegen`) |
+| App | `iris/app.js` | Hash 路由、编辑器模式 (`?mode=editor`)、Pulse 生成器 (`?mode=pulsegen`) |
 
 ### 渲染器（Renderer）
 
@@ -165,6 +165,8 @@ tags: [开发]
 | 工作流文件 | 触发条件 | 作用 |
 |-----------|----------|------|
 | `build-and-deploy.yml` | push 到 `main`，或手动触发 | 构建 file-tree / search-index / precache / sitemap 并部署到 GitHub Pages |
+| `build-links.yml` | push 到 `main` 且 `docs/**` 变化 | 运行 `build-links.js`，`links.json`（反向链接数据）有变化时提交回仓库 |
+| `tauri-check.yml` | push / PR 且 `src-tauri/**` 变化 | cargo fmt/clippy/check 轻量检查 + `build-desktop-dist.js` 产物结构校验 |
 | `build-feed.yml` | push 到 `main` 且 `docs/**` 变化 | 运行 `build-feed.js` + `build-sitemap.js`，`feed.xml` / `sitemap.xml` 有变化时提交回仓库 |
 | `build-search-index.yml` | push 到 `main` | 运行 `build-search-index.js`，`search-index.json` 有变化时提交回仓库 |
 | `build-pkt.yml` | push 到 `main`，且 `iris/data/pkt/raw/**` 或 `iris/data/ensp/raw/**` 变化 | 执行 `iris/scripts/pkt/main.py` 和 `iris/scripts/ensp/main.py`，把产物 push 回 `data/pkt/json`、`data/pkt/images` 等 |
@@ -172,6 +174,32 @@ tags: [开发]
 | `smoke-test.yml` | push / PR 到 `main`，或手动触发 | 跑全部构建脚本验证可执行，安装 jsdom 后运行 `iris/scripts/smoke-test.js` 冒烟测试 + `iris/scripts/link-check.js` 死链检查（内链全量 + 外链按日抽查） |
 | `cjk-typography-lint.yml` | push / PR 到 `main` 且 `**/*.md` 变化，或每周定时 | 中文文案排版校验（见下节）；main 上自动修复并由机器人提交，PR 上仅提示 |
 | `sync-to-product.yml` | push 到 `main` | 将站点产物同步到 product 分支 |
+
+### 桌面端 CSP 取舍（src-tauri/tauri.conf.json）
+
+`app.security.csp` 从 `null` 收紧为分域白名单，但 `script-src` 保留
+`'unsafe-inline'`，原因：
+
+- **必须保留**：`iris/js/renderers/sandbox.js` 用 `iframe.srcdoc` 做 HTML/JS
+  实时预览，文档内含内联 `<script>`（console 捕获 + 用户代码）。srcdoc 文档会
+  继承父页面的 CSP，`script-src 'self'` 会把这些内联脚本全部拦掉，桌面端的
+  代码预览直接失效。对动态用户代码无法用 hash / nonce 白名单解决。
+- **隔离边界不是 CSP**：用户代码跑在 `sandbox` 属性未开
+  `allow-same-origin` 的 iframe 里，属于不透明源，碰不到主站点 DOM /
+  localStorage / cookie。
+- **已经收紧的部分**：无 `'unsafe-eval'`；`object-src 'none'`；
+  `base-uri 'self'`；远端脚本只允许 `platform.twitter.com`（推文嵌入需要）。
+
+如需进一步收紧，正确方向是把 sandbox 预览改成「外部脚本文件 + postMessage」
+的形式而不是给 CSP 开口子——属于独立改造，未在本轮做。
+
+### 测试夹具目录 docs/zw/
+
+`docs/zw/` 下 3 篇「排版问题样例」是 `cjk-typography-lint.yml` 的**故意写错样例**
+（用于验证中文排版 lint 的检出能力），不属于站点内容。构建脚本
+（build-file-tree / build-search-index / build-feed / build-sitemap）均已排除
+该目录——不会进公开站点的目录树、搜索索引与 RSS。新增样例时保持
+frontmatter 带 `tags: [测试]` 即可被自动排除。
 
 ### AI 代码审查（CodeRabbit）
 
@@ -416,7 +444,7 @@ node iris/scripts/build-sitemap.js
 node iris/scripts/smoke-test.js        # 需先在 iris/ 下安装 jsdom
 npm install --no-save jsdom@^29.1.1 --prefix iris   # 只装冒烟测试依赖
 ```
-`iris/scripts/smoke-test.js` 做 4 组快速校验：① 全部第一方 JS 用 `vm.Script` 语法解析；② jsdom 解析 index.html，校验关键骨架节点与脚本/样式引用真实存在；③ 隔离沙箱加载 i18n.js，校验 `data-i18n*` key 在 zh 语言包齐全；④ 数据产物（file-tree / search-index / precache 清单引用 / feed 全文标记 / sitemap / robots.txt）完好。CI 中先跑全部构建脚本再跑冒烟（见 `smoke-test.yml`）。
+`iris/scripts/smoke-test.js` 做 6 组快速校验：① 全部第一方 JS 用 `vm.Script` 语法解析；② jsdom 解析 index.html，校验关键骨架节点与脚本/样式引用真实存在；③ 隔离沙箱加载 i18n.js，校验 `data-i18n*` key 在 zh/en 语言包齐全（含双语键集一致）；④ 数据产物完好（file-tree / search-index / precache 清单引用 / feed 全文标记 / sitemap / robots.txt），并断言 search-index 的拼音/繁体 token 覆盖；⑤ 文件树自然排序回归；⑥ 图标源一致性（icon.svg 与 hero.svg 的鸢尾 path 逐字一致，check-icon-sync.js 门禁）。CI 中先跑全部构建脚本再跑冒烟（见 `smoke-test.yml`）。
 
 ### 死链检查
 
@@ -585,7 +613,8 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 ├── CONTRIBUTING.md               # 贡献指南（架构约定 / PR 流程 / CI 说明）
 ├── iris/
 │   ├── app.js                    # Hash 路由 + 模式切换
-│   ├── config.js                 # 读取 iris/config.json
+│   ├── js/
+│   │   ├── config.js             # 读取 iris/config.json
 │   ├── styles.css                # 样式入口（@import 各 css 子模块）
 │   ├── css/
 │   │   ├── base.css              # :root 变量、reset、body 默认
@@ -599,7 +628,7 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │   │   ├── responsive.css        # 响应式
 │   │   ├── pkt/pkt.css           # Packet Tracer 渲染样式
 │   │   ├── pptx.css              # PPTX 网格 + 放映样式
-│   │   └── themes/themes.css     # 6 种亮暗预设主题（default 为 base.css 默认值）的 --color-* 覆盖
+│   │   └── themes/themes.css     # 7 种亮暗预设主题（default 为 base.css 默认值，不计入 preset 数）；README 口径「8 种」= default + 7 preset 的 --color-* 覆盖
 │   ├── js/
 │   │   ├── settings.js           # 设置面板 + customColors + fontConfig
 │   │   ├── themes/theme-manager.js
@@ -621,7 +650,7 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │   │   ├── storage.js            # IndexedDB 笔记本
 │   │   ├── pulse.js              # DG-LAB .pulse 波形解析与 [pulse]/[pulsemini] 渲染（renderers/ 目录）
 │   │   ├── pulse-generator.js    # ?mode=pulsegen 可视化波形生成器
-│   │   └── renderers/            # 12+ 个代码块/嵌入渲染器（见上文渲染器表）
+│   │   └── renderers/            # 17 个代码块/嵌入渲染器（见上文渲染器表）
 │   ├── vendor/                   # 本地化的前端依赖
 │   ├── plugins/                  # 插件（qrcode / countdown / colorcard）
 │   ├── data/                     # 预构建数据
@@ -652,7 +681,7 @@ URL 加 `?debug=1`，右下角会出现 Debug Panel，实时显示：
 │   ├── roadmap.md / shortcuts.md
 │   ├── theme-customization.md / code-highlight-theme.md
 │   ├── plugin-development.md / rss.md
-│   └── examples/                 # 27+ 篇功能示例
+│   └── examples/                 # 36 篇功能示例
 └── .github/workflows/
     ├── build-and-deploy.yml      # 构建产物 + 部署 GitHub Pages
     ├── build-feed.yml / build-search-index.yml  # feed + sitemap / 索引重建

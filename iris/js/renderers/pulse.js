@@ -28,7 +28,7 @@
   // i18n 文案统一走 i18n.js 的权威实现（MarkdownPreview.t，全站唯一）
   function t(key, fallback) {
     var i18n = window.MarkdownPreview.i18n;
-    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key, fallback);
     return fallback;
   }
 
@@ -383,11 +383,10 @@
   // ============== 工具函数 ==============
 
   function getThemeColors() {
-    var cs = getComputedStyle(document.documentElement);
-    function var_(name, fallback) {
-      var v = cs.getPropertyValue(name).trim();
-      return v || fallback;
-    }
+    // 主题变量读取统一走 ColorUtils.getThemeVar（此前三种写法之一）
+    var var_ = function(name, fallback) {
+      return window.MarkdownPreview.ColorUtils.getThemeVar(name, fallback);
+    };
     return {
       accent: var_('--color-accent-purple', '#d4a5c9'),
       accentDeep: var_('--color-accent-purple-deep', '#b88aad'),
@@ -1059,9 +1058,10 @@
     var startTime = null;
     var rafId = null;
     var running = true;
+    var paused = false; // 离屏暂停标记（IO 驱动；strict mode 下缺声明会让首帧抛 ReferenceError）
 
     function frame(timestamp) {
-      if (!running) return;
+      if (!running || paused) { rafId = null; return; }
       if (startTime === null) startTime = timestamp;
       var elapsed = timestamp - startTime;
       var progress = (elapsed % duration) / duration;
@@ -1087,7 +1087,20 @@
     }
     window.addEventListener('themechange', onThemeChange);
 
+    // pause/resume：离屏暂停（IO 驱动），回视口续播
     return {
+      el: canvas.closest('.pulse-widget') || null,
+      pause: function() {
+        paused = true;
+        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      },
+      resume: function() {
+        if (!running || !paused) return;
+        paused = false;
+        // 续播重置基准时间：否则暂停期间累积的 elapsed 会让画面跳帧
+        startTime = null;
+        if (!rafId) rafId = requestAnimationFrame(frame);
+      },
       stop: function() {
         running = false;
         if (rafId) cancelAnimationFrame(rafId);
@@ -1274,6 +1287,7 @@
     requestAnimationFrame(function() {
       var anim = startAnimation(canvas, wave, parsed, infoLeft, styleRef, viewModeRef);
       animations.push(anim);
+      attachAnimIO(anim); // 大部件的 anim 此刻才存在，需即时挂载
     });
 
     return widget;
@@ -1310,11 +1324,17 @@
     copyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
     copyBtn.addEventListener('click', function(e) {
       e.stopPropagation();
-      navigator.clipboard.writeText('[pulsemini' + (title ? ' title="' + title + '"' : '') + ']' + rawData + '[/pulsemini]');
-      copyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-      setTimeout(function() {
-        copyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-      }, 1500);
+      // 统一复制工具：非 HTTPS / 权限拒绝时降级 execCommand，不再产生未处理 rejection
+      var src = '[pulsemini' + (title ? ' title="' + title + '"' : '') + ']' + rawData + '[/pulsemini]';
+      var copy = window.MarkdownPreview.interactions && window.MarkdownPreview.interactions.copyText;
+      var done = function() {
+        copyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+        setTimeout(function() {
+          copyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+        }, 1500);
+      };
+      if (copy) copy(src).then(done, done);
+      else done();
     });
 
     var dlBtn = document.createElement('button');
@@ -1351,12 +1371,32 @@
       points.push({ value: wave.values[i], isKey: wave.anchors[i] });
     }
 
+    // 主题色帧外缓存一次（RAF 内每帧 4 次 getComputedStyle 会强制重算样式），
+    // themechange 时刷新
+    var themeColors = {
+      accent: getComputedStyle(document.documentElement).getPropertyValue('--color-accent-purple').trim() || '#d4a5c9',
+      accentPink: getComputedStyle(document.documentElement).getPropertyValue('--color-accent-pink').trim() || '#f2c4ce',
+      border: getComputedStyle(document.documentElement).getPropertyValue('--color-border').trim() || '#f0f0f0',
+      bg: getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim() || '#ffffff'
+    };
+    var onMiniThemeChange = function() {
+      var cs = getComputedStyle(document.documentElement);
+      themeColors.accent = cs.getPropertyValue('--color-accent-purple').trim() || '#d4a5c9';
+      themeColors.accentPink = cs.getPropertyValue('--color-accent-pink').trim() || '#f2c4ce';
+      themeColors.border = cs.getPropertyValue('--color-border').trim() || '#f0f0f0';
+      themeColors.bg = cs.getPropertyValue('--color-surface').trim() || '#ffffff';
+    };
+    window.addEventListener('themechange', onMiniThemeChange);
+
+    var paused = false;
+    var rafId = 0;
     function draw(time) {
       if (stopped) return;
+      if (paused) { rafId = 0; return; }
 
       var cssW = canvas.clientWidth || canvasWrap.clientWidth;
       if (cssW < 10) {
-        requestAnimationFrame(draw);
+        rafId = requestAnimationFrame(draw);
         return;
       }
       if (canvas.width !== Math.round(cssW * dpr) || canvas.height !== Math.round(canvasH * dpr)) {
@@ -1377,18 +1417,17 @@
       var graphH = h - padY * 2;
 
       if (graphW < 10 || points.length === 0) {
-        requestAnimationFrame(draw);
+        rafId = requestAnimationFrame(draw);
         return;
       }
 
       playheadIdx += delta * 0.025;
       if (playheadIdx >= points.length) playheadIdx = 0;
 
-      var computedStyle = getComputedStyle(document.documentElement);
-      var accentColor = computedStyle.getPropertyValue('--color-accent-purple').trim() || '#d4a5c9';
-      var accentPink = computedStyle.getPropertyValue('--color-accent-pink').trim() || '#f2c4ce';
-      var borderColor = computedStyle.getPropertyValue('--color-border').trim() || '#f0f0f0';
-      var bgColor = computedStyle.getPropertyValue('--color-surface').trim() || '#ffffff';
+      var accentColor = themeColors.accent;
+      var accentPink = themeColors.accentPink;
+      var borderColor = themeColors.border;
+      var bgColor = themeColors.bg;
 
       ctx.clearRect(0, 0, w, h);
 
@@ -1435,30 +1474,93 @@
       ctx.lineTo(playheadFixedX, h - padY);
       ctx.stroke();
 
-      requestAnimationFrame(draw);
+      rafId = requestAnimationFrame(draw);
     }
 
-    requestAnimationFrame(draw);
+    rafId = requestAnimationFrame(draw);
 
     var onResize = function() {
       lastTime = null;
     };
     window.addEventListener('resize', onResize);
 
-    animations.push({
+    var miniHandle = {
+      el: canvasWrap.closest('.pulse-mini-widget') || null,
+      pause: function() { paused = true; if (rafId) cancelAnimationFrame(rafId); rafId = 0; },
+      resume: function() { paused = false; if (!rafId) rafId = requestAnimationFrame(draw); },
       stop: function() {
         stopped = true;
+        if (rafId) cancelAnimationFrame(rafId);
         window.removeEventListener('resize', onResize);
+        window.removeEventListener('themechange', onMiniThemeChange);
       }
-    });
+    };
+    animations.push(miniHandle);
+    attachAnimIO(miniHandle);
 
     return widget;
   }
 
   // ============== 主渲染入口 ==============
 
+  var animIORef = null;       // 离屏暂停观察器（跨 render 存活）
+  var animHandles = [];       // 已挂载的动画句柄（滚动兜底复查用）
+  var animCheckScheduled = false;
+
+  // 几何可见性（与 IO 结论互补：IO 首回调在布局未就绪时易误判）
+  function isHandleVisible(handle) {
+    if (!handle || !handle.el || !handle.el.isConnected) return false;
+    var rect = handle.el.getBoundingClientRect();
+    var vh = window.innerHeight || document.documentElement.clientHeight || 800;
+    return rect.height > 0 && rect.bottom > -100 && rect.top < vh + 100;
+  }
+
+  // 滚动/尺寸变化时兜底复查：IO 在元素「一直在视口内但被判不可见」时
+  // 不会再回调，必须有这一步，否则波形会永久停摆（曾复现该 bug）。
+  function scheduleAnimCheck() {
+    if (animCheckScheduled) return;
+    animCheckScheduled = true;
+    requestAnimationFrame(function() {
+      animCheckScheduled = false;
+      for (var i = 0; i < animHandles.length; i++) {
+        var h = animHandles[i];
+        if (!h.el || !h.el.isConnected) continue;
+        if (isHandleVisible(h)) h.resume();
+        else h.pause();
+      }
+    });
+  }
+
+  // 离屏暂停：动画帧只在部件可见时跑（离屏 RAF 纯耗电）。
+  // 挂载点即时登记——大部件的 anim 是在 rAF 回调里才 push 的，
+  // render 末尾统一遍历 animations 会漏掉它们。
+  function attachAnimIO(handle) {
+    if (!handle || !handle.el) return;
+    animHandles.push(handle);
+    if (typeof IntersectionObserver !== 'function') return; // 无 IO：保持默认运行
+    if (!animIORef) {
+      animIORef = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          var h = entry.target._pulseAnim;
+          if (!h) return;
+          if (entry.isIntersecting) h.resume();
+          else h.pause();
+        });
+      }, { rootMargin: '100px 0px' });
+      window.addEventListener('scroll', scheduleAnimCheck, { passive: true });
+      window.addEventListener('resize', scheduleAnimCheck);
+    }
+    handle.el._pulseAnim = handle;
+    animIORef.observe(handle.el);
+    // 初次不主动 pause：让动画先跑起来，只在确认离屏后才停（宁可多跑不可停死）
+    if (!isHandleVisible(handle)) handle.pause();
+  }
+
   function render(container) {
     animations.forEach(function(a) { a.stop(); });
+    // 上一轮的离屏观察器（元素即将被替换）统一断开，新部件在挂载点重新 bind
+    if (animIORef) { try { animIORef.disconnect(); } catch (e) { /* ignore */ } animIORef = null; }
+    animHandles = [];
     animations = [];
 
     injectStyles();
@@ -1466,73 +1568,76 @@
     var targetEl = container || (window.MarkdownPreview.dom && window.MarkdownPreview.dom.markdownContent);
     if (!targetEl) return;
 
-    var pulseRegex = /\[pulse(?:\s+title\s*=\s*(?:"([^"]*)"|'([^']*)'))?\]([\s\S]*?)\[\/pulse\]/gi;
-    var pulseminiRegex = /\[pulsemini(?:\s+title\s*=\s*(?:"([^"]*)"|'([^']*)'))?\]([\s\S]*?)\[\/pulsemini\]/gi;
+    var pulseRegex = /\[pulse(?:\s+title\s*=\s*(?:"([^"]*)"|'([^']*)'))?\]([\s\S]*?)\[\/pulse\]/i;
+    var pulseminiRegex = /\[pulsemini(?:\s+title\s*=\s*(?:"([^"]*)"|'([^']*)'))?\]([\s\S]*?)\[\/pulsemini\]/i;
 
-    var html = targetEl.innerHTML;
-    var match;
-    var replacements = [];
-
-    function isInsideCode(htmlStr, index) {
-      var before = htmlStr.substring(0, index);
-      var codeOpen = before.match(/<code[^>]*>/gi);
-      var codeClose = before.match(/<\/code>/gi);
-      var openCount = codeOpen ? codeOpen.length : 0;
-      var closeCount = codeClose ? codeClose.length : 0;
-      if (openCount > closeCount) return true;
-      var preOpen = before.match(/<pre[^>]*>/gi);
-      var preClose = before.match(/<\/pre>/gi);
-      var preOpenCount = preOpen ? preOpen.length : 0;
-      var preCloseCount = preClose ? preClose.length : 0;
-      if (preOpenCount > preCloseCount) return true;
-      return false;
-    }
-
-    while ((match = pulseRegex.exec(html)) !== null) {
-      if (isInsideCode(html, match.index)) continue;
-      var title = match[1] !== undefined ? match[1] : (match[2] !== undefined ? match[2] : '');
-      var rawData = decodeEntities(match[3].trim());
-      replacements.push({ matchStr: match[0], title: title, rawData: rawData, index: match.index, type: 'full' });
-    }
-
-    while ((match = pulseminiRegex.exec(html)) !== null) {
-      if (isInsideCode(html, match.index)) continue;
-      var miniTitle = match[1] !== undefined ? match[1] : (match[2] !== undefined ? match[2] : '');
-      var miniRawData = decodeEntities(match[3].trim());
-      replacements.push({ matchStr: match[0], title: miniTitle, rawData: miniRawData, index: match.index, type: 'mini' });
-    }
-
-    if (replacements.length === 0) return;
-
-    var sorted = replacements.slice().sort(function(a, b) { return b.index - a.index; });
-    for (var i = 0; i < sorted.length; i++) {
-      var rep = sorted[i];
-      var repIdx = replacements.indexOf(rep);
-      var placeholder = '<div data-pulse-placeholder="' + repIdx + '"></div>';
-      html = html.substring(0, rep.index) + placeholder + html.substring(rep.index + rep.matchStr.length);
-    }
-
-    targetEl.innerHTML = html;
-
-    var placeholders = targetEl.querySelectorAll('[data-pulse-placeholder]');
-    var miniParents = new Set();
-    placeholders.forEach(function(ph) {
-      var repIdx = parseInt(ph.getAttribute('data-pulse-placeholder'), 10);
-      var rep = replacements[repIdx];
-      if (rep) {
-        var widget = rep.type === 'mini'
-          ? createPulseMiniWidget(rep.title, rep.rawData)
-          : createPulseWidget(rep.title, rep.rawData);
-        var parentP = ph.closest('p');
-        if (parentP && parentP.textContent.trim() === '') {
-          parentP.parentNode.replaceChild(widget, parentP);
-        } else {
-          if (rep.type === 'mini' && parentP) {
-            miniParents.add(parentP);
+    // 按 DOM 文本节点扫描（跳过 pre/code/script/style）：
+    //  1) 旧实现在 innerHTML 字符串上跑正则，属性值里的 [pulse] 标记也会
+    //     命中并破坏 HTML 结构；
+    //  2) 旧实现整容器 innerHTML 读写会摧毁其它渲染器挂载的活性 DOM
+    var walker = document.createTreeWalker(targetEl, NodeFilter.SHOW_TEXT, {
+      acceptNode: function(node) {
+        var v = node.nodeValue;
+        if (!v || v.indexOf('[pulse') === -1) return NodeFilter.FILTER_REJECT;
+        var p = node.parentElement;
+        while (p && p !== targetEl) {
+          var tag = p.tagName;
+          if (tag === 'CODE' || tag === 'PRE' || tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TEXTAREA') {
+            return NodeFilter.FILTER_REJECT;
           }
-          ph.parentNode.replaceChild(widget, ph);
+          p = p.parentElement;
         }
+        return NodeFilter.FILTER_ACCEPT;
       }
+    });
+
+    var textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+    if (!textNodes.length) return;
+
+    var miniParents = new Set();
+
+    textNodes.forEach(function(textNode) {
+      var rest = textNode.nodeValue;
+      var segments = []; // { text } 或 { type, title, rawData }
+      while (rest.length) {
+        var pm = pulseRegex.exec(rest);
+        var mm = pulseminiRegex.exec(rest);
+        if (!pm && !mm) break;
+        var useMini = mm && (!pm || mm.index < pm.index);
+        var m = useMini ? mm : pm;
+        segments.push({ text: rest.slice(0, m.index) });
+        segments.push({
+          type: useMini ? 'mini' : 'full',
+          title: m[1] !== undefined ? m[1] : (m[2] !== undefined ? m[2] : ''),
+          rawData: decodeEntities(m[3].trim())
+        });
+        rest = rest.slice(m.index + m[0].length);
+      }
+      if (!segments.length) return;
+      segments.push({ text: rest });
+
+      var frag = document.createDocumentFragment();
+      var mounts = [];
+      segments.forEach(function(seg) {
+        if (seg.text !== undefined) {
+          if (seg.text) frag.appendChild(document.createTextNode(seg.text));
+          return;
+        }
+        var ph = document.createElement('span');
+        frag.appendChild(ph);
+        mounts.push({ ph: ph, seg: seg });
+      });
+      textNode.parentNode.replaceChild(frag, textNode);
+
+      mounts.forEach(function(item) {
+        var widget = item.seg.type === 'mini'
+          ? createPulseMiniWidget(item.seg.title, item.seg.rawData)
+          : createPulseWidget(item.seg.title, item.seg.rawData);
+        var parentP = item.ph.closest('p');
+        if (item.seg.type === 'mini' && parentP) miniParents.add(parentP);
+        item.ph.parentNode.replaceChild(widget, item.ph);
+      });
     });
 
     miniParents.forEach(function(p) {
@@ -1570,5 +1675,5 @@
     SECTION_TIME_MAP: SECTION_TIME_MAP
   };
 
-  console.log('[Pulse] Renderer module loaded (DG-LAB format)');
+  (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Pulse] Renderer module loaded (DG-LAB format)');
 })();

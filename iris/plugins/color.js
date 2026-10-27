@@ -1,6 +1,6 @@
 // 色板 / 对比度检查插件（TOOL-4）
 // ```color
-// #d4a5c9
+// #8B5CF6
 // #1f2937
 // rgb(139, 92, 246)
 // ```
@@ -16,7 +16,7 @@ export default {
 
     const items = lines.map(parseColor).filter(Boolean);
     if (!items.length) {
-      container.innerHTML = '<div class="devtool-error">请提供颜色：十六进制（#d4a5c9）或 rgb(139, 92, 246)</div>';
+      container.innerHTML = '<div class="devtool-error">请提供颜色：十六进制（#8B5CF6）或 rgb(139, 92, 246)</div>';
       return;
     }
 
@@ -35,37 +35,6 @@ export default {
   }
 };
 
-function parseColor(s) {
-  let m = s.match(/^#?([0-9a-f]{6})$/i);
-  if (m) {
-    const hex = '#' + m[1].toLowerCase();
-    return {
-      hex,
-      r: parseInt(m[1].slice(0, 2), 16),
-      g: parseInt(m[1].slice(2, 4), 16),
-      b: parseInt(m[1].slice(4, 6), 16)
-    };
-  }
-  m = s.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
-  if (m) {
-    const r = Math.min(255, +m[1]), g = Math.min(255, +m[2]), b = Math.min(255, +m[3]);
-    return { hex: '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join(''), r, g, b };
-  }
-  return null;
-}
+// 颜色解析/亮度/对比度统一走 MarkdownPreview.ColorUtils（全站唯一实现）
+const { parseColor, luminance, contrast } = window.MarkdownPreview.ColorUtils;
 
-function luminance(c) {
-  const f = v => {
-    v /= 255;
-    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-  };
-  return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b);
-}
-
-function contrast(a, b) {
-  const la = luminance(a);
-  const lb = luminance(b);
-  const hi = Math.max(la, lb);
-  const lo = Math.min(la, lb);
-  return (hi + 0.05) / (lo + 0.05);
-}

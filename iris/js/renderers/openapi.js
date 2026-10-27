@@ -19,6 +19,7 @@
  * 填参后点击发送，展示状态码、耗时与响应体。YAML 解析依赖按需加载的 js-yaml。
  * 跨域（CORS）由目标服务决定，失败时给出可读提示。
  */
+
 (function() {
   'use strict';
   window.MarkdownPreview = window.MarkdownPreview || {};
@@ -113,7 +114,7 @@
           <span class="openapi-summary">${esc(summary)}</span>
           <button type="button" class="download-btn openapi-try-toggle">${esc(t('openapi.try', '试一下'))}</button>
         </div>
-        ${rows ? `<table class="openapi-params"><thead><tr><th>名称</th><th>位置</th><th>类型</th><th>必填</th><th>说明</th></tr></thead><tbody>${rows}</tbody></table>` : ''}
+        ${rows ? `<table class="openapi-params"><thead><tr><th>${esc(t('openapi.colName', '名称'))}</th><th>${esc(t('openapi.colIn', '位置'))}</th><th>${esc(t('openapi.colType', '类型'))}</th><th>${esc(t('openapi.colRequired', '必填'))}</th><th>${esc(t('openapi.colDesc', '说明'))}</th></tr></thead><tbody>${rows}</tbody></table>` : ''}
         <details class="openapi-try" hidden>
           <div class="openapi-try-form">${inputs}</div>
           ${bodyExample ? `<textarea class="devtool-input openapi-body" rows="4" placeholder="请求体 (JSON)">${esc(bodyExample)}</textarea>` : ''}
@@ -147,7 +148,9 @@
           if (!val) return;
           const where = inp.dataset.in;
           const name = inp.dataset.name;
-          if (where === 'path') url = url.replace('{' + name + '}', encodeURIComponent(val));
+          // 同名参数可能出现多次（如 /files/{id}/versions/{id}），全局替换
+          const pattern = '\\' + '{' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\' + '}';
+          if (where === 'path') url = url.replace(new RegExp(pattern, 'g'), encodeURIComponent(val));
           else if (where === 'query') url += (url.indexOf('?') >= 0 ? '&' : '?') + encodeURIComponent(name) + '=' + encodeURIComponent(val);
           else if (where === 'header') headers[name] = val;
         });

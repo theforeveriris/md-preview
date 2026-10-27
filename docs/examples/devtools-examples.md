@@ -94,7 +94,7 @@ CREATE TABLE orders (
 ### 色板与对比度
 
 ```color
-#d4a5c9
+#8B5CF6
 #1f2937
 rgb(139, 92, 246)
 ```

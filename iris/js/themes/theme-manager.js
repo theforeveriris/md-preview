@@ -7,9 +7,9 @@
   const AUTO_LIGHT_KEY = 'md-preview-theme-light';
   const AUTO_DARK_KEY = 'md-preview-theme-dark';
 
-  const VALID_THEMES = ['default', 'github-light', 'github-dark', 'notion', 'arc', 'dracula', 'nord'];
+  const VALID_THEMES = ['default', 'iris', 'github-light', 'github-dark', 'notion', 'arc', 'dracula', 'nord'];
   const DARK_THEMES = ['github-dark', 'arc', 'dracula', 'nord'];
-  const LIGHT_THEMES = ['default', 'github-light', 'notion'];
+  const LIGHT_THEMES = ['default', 'iris', 'github-light', 'notion'];
   const DEFAULT_AUTO_LIGHT = 'default';
   const DEFAULT_AUTO_DARK = 'github-dark';
 
@@ -52,8 +52,14 @@
   function applyResolved(themeId, save) {
     currentTheme = themeId;
     document.documentElement.setAttribute('data-theme', themeId);
+    // 移动端地址栏 / 系统 UI 的 theme-color 跟随主题（原本写死默认主题色）
+    try {
+      const bg = getComputedStyle(document.documentElement).getPropertyValue('--color-bg').trim();
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta && bg) meta.setAttribute('content', bg);
+    } catch (e) { /* ignore */ }
     window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: themeId, setting: currentSetting } }));
-    if (save !== false) console.log(`Theme changed to: ${themeId} (setting: ${currentSetting})`);
+    if (save !== false) (window.MarkdownPreview.debug?.debugLog || (() => {}))(`Theme changed to: ${themeId} (setting: ${currentSetting})`);
   }
 
   // 初始化主题系统
@@ -101,7 +107,7 @@
       localStorage.setItem(STORAGE_KEY, themeId);
     }
     applyResolved(resolveTheme(themeId), false);
-    console.log(`Theme setting: ${themeId}`);
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))(`Theme setting: ${themeId}`);
   }
 
   // 获取当前实际生效的主题
@@ -112,6 +118,17 @@
   // 获取用户的主题设置（可能是 'auto'）
   function getThemeSetting() {
     return currentSetting;
+  }
+
+  // 外链 CSS 仅接受 https: 与站内相对路径：恶意备份文件可借此注入远程
+  // 样式做追踪/改写，http:/javascript:/data: 等协议一律拒绝
+  function safeCssUrl(url) {
+    const trimmed = (url || '').trim();
+    if (!trimmed) return '';
+    if (!/^[a-z][a-z0-9+.-]*:/i.test(trimmed)) return trimmed; // 相对路径
+    if (/^https:/i.test(trimmed)) return trimmed;
+    console.warn('[theme] 外链样式仅支持 https: 或相对路径，已忽略：', trimmed);
+    return '';
   }
 
   // 加载自定义 CSS
@@ -127,12 +144,13 @@
       url = localStorage.getItem(CUSTOM_CSS_KEY);
     }
 
+    url = safeCssUrl(url);
     if (url) {
       customCSSLink = document.createElement('link');
       customCSSLink.rel = 'stylesheet';
       customCSSLink.href = url;
       document.head.appendChild(customCSSLink);
-      console.log(`Custom CSS loaded: ${url}`);
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))(`Custom CSS loaded: ${url}`);
     }
   }
 
@@ -163,6 +181,7 @@
       url = localStorage.getItem(CUSTOM_HLJS_KEY);
     }
 
+    url = safeCssUrl(url);
     if (url) {
       customHljsLink = document.createElement('link');
       customHljsLink.rel = 'stylesheet';
@@ -174,7 +193,7 @@
       } else {
         document.head.appendChild(customHljsLink);
       }
-      console.log('Custom hljs CSS loaded:', url);
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('Custom hljs CSS loaded:', url);
     }
   }
 

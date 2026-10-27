@@ -28,12 +28,13 @@
   // HTML 转义统一走 md-render.js 的权威实现（全站唯一，避免多处副本漂移）。
   // md-render.js 先于渲染器脚本加载，此处 IIFE 执行时必然可用。
   const esc = window.MarkdownPreview.mdRender.escapeHtml;
-
-  function icon(name, size) {
-    return `<svg width="${size || 14}" height="${size || 14}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#${name}"/></svg>`;
-  }
+  const icon = window.MarkdownPreview.icon; // 共享副本（曾三处逐字重复）
 
   // ============== 解析（RFC 4180 引号规则；tsv 按制表符） ==============
+  // 行数上限：万行级 CSV 全量建 DOM 会卡死渲染线程（json-tree 已有
+  // 256KB/5000 节点封顶可参照），超限截断并在计数条提示
+  const MAX_ROWS = 5000;
+
   function parseDelimited(text, delim) {
     const rows = [];
     let row = [];
@@ -63,8 +64,10 @@
     }
     // 末行（无换行结尾）
     if (field !== '' || row.length > 0) { row.push(field); rows.push(row); }
-    // 去掉完全为空的行
-    return rows.filter(r => r.some(cell => String(cell).trim() !== ''));
+    // 去掉完全为空的行，并截断到上限
+    return rows
+      .filter(r => r.some(cell => String(cell).trim() !== ''))
+      .slice(0, MAX_ROWS);
   }
 
   function parseCsv(text) { return parseDelimited(text, ','); }
@@ -212,10 +215,12 @@
       renderBody();
     });
 
-    // 搜索
+    // 搜索：100ms 防抖（find-bar.js 同款），避免每键全量重建 tbody
+    let searchDebounce = null;
     widget.querySelector('.csv-search-input').addEventListener('input', (e) => {
       state.q = e.target.value;
-      renderBody();
+      if (searchDebounce) clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(renderBody, 100);
     });
 
     // 复制 / 下载 CSV（保留原文）
@@ -400,10 +405,22 @@
       popover.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - pw - 8)) + 'px';
       popover.style.top = Math.min(rect.bottom + 6, window.innerHeight - ph - 8) + 'px';
     });
-    document.addEventListener('click', (e) => {
+    // document/window 级监听在 widget 脱离 DOM 后自动摘除：
+    // 否则 N 个表格 = N 份监听永不释放
+    const detachGlobalListeners = () => {
+      document.removeEventListener('click', onDocClick, true);
+      window.removeEventListener('resize', onWinResize);
+    };
+    const onDocClick = (e) => {
+      if (!widget.isConnected) { detachGlobalListeners(); return; }
       if (popover && !popover.contains(e.target)) closePopover();
-    }, true);
-    window.addEventListener('resize', closePopover);
+    };
+    const onWinResize = () => {
+      if (!widget.isConnected) { detachGlobalListeners(); return; }
+      closePopover();
+    };
+    document.addEventListener('click', onDocClick, true);
+    window.addEventListener('resize', onWinResize);
 
     renderBody();
     return widget;
@@ -429,11 +446,7 @@
     ta.remove();
   }
 
-  function docSlug() {
-    const st = window.MarkdownPreview.state;
-    const name = (st && (st.currentFilePath || (st.localDoc && st.localDoc.name))) || '';
-    return String(name).replace(/^.*\//, '').replace(/\.md$/i, '') || '';
-  }
+  const docSlug = window.MarkdownPreview.mdRender.docSlug; // 共享副本（曾两处逐字重复）
 
   // ============== 入口：替换文档内的 csv/tsv 代码块 ==============
   function render(root) {

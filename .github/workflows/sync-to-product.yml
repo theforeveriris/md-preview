@@ -9,12 +9,16 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: sync-to-product
+  cancel-in-progress: true
+
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
 
@@ -31,9 +35,10 @@ jobs:
           # 添加所有文件
           git add -A
           
-          # 删除所有 MD 文件
-          git rm --cached $(find . -name "*.md" -type f)
-          rm -f $(find . -name "*.md" -type f)
+          # 删除所有 MD 文件（.github 下的保留；文件名含空格/中文按 NUL 分隔，
+          # 避免按词拆分断裂与 ARG_MAX 风险）
+          find . -path ./.github -prune -o -name "*.md" -type f -print0 | xargs -0 -r git rm -q --cached --ignore-unmatch
+          find . -path ./.github -prune -o -name "*.md" -type f -print0 | xargs -0 -r rm -f
           
           # 提交更改
           git add -A

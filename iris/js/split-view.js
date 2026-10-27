@@ -125,10 +125,11 @@
     setTimeout(() => {
       const renderers = window.MarkdownPreview && window.MarkdownPreview.renderers;
       if (renderers) {
-        // 统一调度器（md-render.js: runRenderers）：子集与既有行为一致——
-        // mermaid/apexcharts/diff/katex/plantuml/embedded，顺序按注册表插入序
-        const subset = ['mermaid', 'plantuml', 'apexcharts', 'diff', 'katex', 'embedded'];
-        mdRender.runRenderers(container, { only: subset });
+        // 统一调度器（md-render.js: runRenderers）：子集与 editor.js 共用
+        // mdRender.CELL_RENDERER_SUBSET（消除两处硬编码漂移）。
+        // mdRender 必须在本函数内取：模块里其它函数各自的局部 const 不共享作用域
+        const mdRender = window.MarkdownPreview.mdRender;
+        mdRender.runRenderers(container, { only: mdRender.CELL_RENDERER_SUBSET });
       }
     }, 150);
   }
@@ -402,5 +403,5 @@
     ensure();
   }
 
-  window.MarkdownPreview.splitView = { open, close, toggle: open, isOpen, init, toggleSync, setSyncEnabled, isSyncEnabled };
+  window.MarkdownPreview.splitView = { open, close, toggle: open, isOpen, init, toggleSync, setSyncEnabled, isSyncEnabled, resolvePath };
 })();

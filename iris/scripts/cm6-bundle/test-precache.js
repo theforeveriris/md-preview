@@ -66,7 +66,7 @@ async function main() {
   assert('data/ensp/ 排除', builder.isExcluded('data/ensp/foo.json') === true);
   assert('data/pkt/raw/ 排除', builder.isExcluded('data/pkt/raw/foo.bin') === true);
   assert('data/pkt/xml/ 排除', builder.isExcluded('data/pkt/xml/foo.xml') === true);
-  assert('examples/ 排除', builder.isExcluded('examples/demo.md') === true);
+  assert('examples/ 收录（站点示例文档）', builder.isExcluded('examples/demo.md') === false);
   assert('scripts/ 排除', builder.isExcluded('scripts/build.js') === true);
   assert('vendor/katex/ 排除', builder.isExcluded('vendor/katex/katex.min.css') === true);
   assert('vendor/leaflet/ 排除', builder.isExcluded('vendor/leaflet/leaflet.js') === true);
@@ -193,8 +193,11 @@ async function main() {
   assert('sw.js manifest 失败时回退', /PRECACHE_FALLBACK_URLS\.slice\(\)/.test(swCode));
   assert('sw.js manifest 自身加入缓存', /urls\.push\s*\(\s*PRECACHE_MANIFEST_URL\s*\)/.test(swCode));
   assert('sw.js precache 调用 loadPrecacheUrls', /const\s+urls\s*=\s*await\s+loadPrecacheUrls\s*\(\s*\)/.test(swCode));
-  assert('sw.js CACHE_NAME 已升级到 v7.1', /md-preview-v7\.1/.test(swCode));
-  assert('sw.js RUNTIME_CACHE 已升级到 v7.1', /md-preview-runtime-v7\.1/.test(swCode));
+  // 版本单一来源断言：CACHE_NAME / RUNTIME_CACHE 由 VERSION 常量派生
+  //（不再硬编码版本号，改版本只动 VERSION）
+  assert('sw.js 有 VERSION 单一来源常量', /const VERSION = 'v\d+\.\d+'/.test(swCode));
+  assert('sw.js CACHE_NAME 由 VERSION 派生', /md-preview-' \+ VERSION/.test(swCode));
+  assert('sw.js RUNTIME_CACHE 由 VERSION 派生', /md-preview-runtime-' \+ VERSION/.test(swCode));
   assert('sw.js 不再含旧的硬编码 PRECACHE_URLS 数组', !/const\s+PRECACHE_URLS\s*=\s*\[/.test(swCode));
   assert('fallback 含 ./', /['"]\.\/['"]/.test(swCode));
   assert('fallback 含 ./index.html', /['"]\.\/index\.html['"]/.test(swCode));
@@ -257,12 +260,10 @@ async function main() {
   const wfPath = path.join(ROOT, '.github/workflows/build-and-deploy.yml');
   assert('workflow 文件存在', fs.existsSync(wfPath));
   const wf = fs.readFileSync(wfPath, 'utf8');
-  assert('workflow 含 Build File Tree 步骤', /Build File Tree/.test(wf));
-  assert('workflow 含 Build Search Index 步骤', /Build Search Index/.test(wf));
-  assert('workflow 含 Build Precache Manifest 步骤', /Build Precache Manifest/.test(wf));
-  assert('workflow 调用 build-precache.js', /node iris\/scripts\/build-precache\.js/.test(wf));
-  assert('workflow 调用 build-file-tree.js', /node iris\/scripts\/build-file-tree\.js/.test(wf));
-  assert('precache 步骤在 artifact upload 之前', wf.indexOf('build-precache.js') < wf.indexOf('upload-pages-artifact'));
+  // 构建步骤已收敛到 .github/actions/build-data composite action（deploy 与
+  // smoke-test 共用一份清单），workflow 本身不再内联脚本调用
+  assert('workflow 调用 build-data composite action', /\.\.?\/\.github\/actions\/build-data/.test(wf));
+  assert('precache 构建在 artifact upload 之前', wf.indexOf('actions/build-data') < wf.indexOf('upload-pages-artifact'));
 
   console.log(`\n=== 结果: ${pass} 通过 / ${fail} 失败 ===`);
   if (fail > 0) process.exit(1);

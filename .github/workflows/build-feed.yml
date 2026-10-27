@@ -11,18 +11,22 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: build-feed
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       with:
         fetch-depth: 0  # 完整 git 历史，用于读取文件提交时间
 
     - name: Set up Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
       with:
         node-version: '20'
 
@@ -32,34 +36,11 @@ jobs:
     - name: Build sitemap
       run: node iris/scripts/build-sitemap.js
 
-    # 提交并推送。
-    # 不用 EndBug/add-and-commit：它的执行顺序是 add → pull → commit → push，
-    # 只要暂存了改动，随后的 `git pull --rebase` 就会报
-    # "cannot pull with rebase: Your index contains uncommitted changes"。
-    # 改为先提交，再循环「拉取远端 + rebase + 推送」，
-    # 处理多个工作流同时向 main 推送的竞态。
+    # 提交+rebase 重试统一走 composite action（此前 feed/links/cjk 三处近逐字重复；
+    # EndBug/add-and-commit 的 add → pull → commit → push 顺序在暂存后 pull --rebase
+    # 会报 uncommitted changes，因此弃用）
     - name: Commit and push changes
-      run: |
-        set +e
-        git config user.name 'github-actions[bot]'
-        git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-        git add -- iris/data/feed.xml iris/data/sitemap.xml
-        if git diff --cached --quiet; then
-          echo "无变化，跳过提交"
-          exit 0
-        fi
-        git commit -m 'build: update feed.xml and sitemap.xml'
-        for i in 1 2 3 4 5; do
-          if git push origin "HEAD:refs/heads/${{ github.ref_name }}"; then
-            exit 0
-          fi
-          echo "推送被拒（第 $i 次），rebase 远端后重试..."
-          git fetch origin "${{ github.ref_name }}"
-          git rebase "origin/${{ github.ref_name }}" || {
-            echo "::error::rebase 冲突，请手动处理"
-            git rebase --abort
-            exit 1
-          }
-        done
-        echo "::warning::产物已提交但多次推送失败，请手动处理"
-        exit 0
+      uses: ./.github/actions/commit-with-retry
+      with:
+        message: 'build: update feed.xml and sitemap.xml'
+        files: 'iris/data/feed.xml iris/data/sitemap.xml'

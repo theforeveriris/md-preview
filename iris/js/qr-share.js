@@ -9,9 +9,8 @@
  *     设备打开后读取该参数，渲染完成后一次性跳转并从 URL 移除
  *   - 位置走 query 而非 hash 附加，避免与文档路由冲突
  *
- * 二维码图片沿用 qrcode 插件的外部服务方案（api.qrserver.com 优先，
- * Google Chart 兜底，与 iris/plugins/qrcode.js 一致，零本地依赖）。
- * 生成时桌面端在线即可；扫码后目标设备独立加载。
+ * 二维码本地生成（iris/js/qr-encoder.js 按需懒加载）：文档路径与阅读进度
+ * 属于本机浏览记录，不应作为 query 发给第三方服务。
  */
 (function() {
   'use strict';
@@ -21,7 +20,8 @@
 
   function t(key, fallback) {
     const i18n = window.MarkdownPreview.i18n;
-    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
+    // fallback 透传：键缺失时回退内置文案，而不是裸键名上屏
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key, fallback);
     return fallback;
   }
 
@@ -50,6 +50,7 @@
         <button type="button" class="qr-share-close" aria-label="${t('common.close', '关闭')}">✕</button>
         <div class="qr-share-title">${t('qr.title', '扫码续读')}</div>
         <div class="qr-share-img-wrap"><img class="qr-share-img" alt="QR Code"></div>
+        <div class="qr-share-hint" style="padding:8px 16px 0;font-size:12px;color:var(--color-text-muted);text-align:center">${t('qr.lanHint', '提示：本地 / 局域网地址生成的二维码仅本机可扫，跨设备请使用部署后的公网地址')}</div>
       </div>
     `;
     document.body.appendChild(dialogEl);
@@ -67,23 +68,35 @@
     dialogEl.classList.remove('open');
   }
 
-  function open() {
+  async function open() {
     const st = window.MarkdownPreview.state || {};
     if (!st.currentFilePath) return;
     const url = buildQrUrl();
     if (!url) return;
 
     const el = ensureDialog();
-    const img = el.querySelector('.qr-share-img');
+    const wrap = el.querySelector('.qr-share-img-wrap');
     const size = 220;
-    // 双端点回退：主服务失败时换 Google Chart（与 qrcode 插件同策略）
-    img.onerror = () => {
-      if (img.dataset.fallback === '1') { img.onerror = null; return; }
-      img.dataset.fallback = '1';
-      img.src = `https://chart.googleapis.com/chart?chs=${size}x${size}&cht=qr&chl=${encodeURIComponent(url)}`;
-    };
-    delete img.dataset.fallback;
-    img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}`;
+    // 本地生成：文档路径与阅读进度不出本机（首次调用懒加载编码器）
+    try {
+      if (!window.MarkdownPreview.QREncoder) {
+        await window.MarkdownPreview.loadScript('iris/js/qr-encoder.js');
+      }
+      const svg = window.MarkdownPreview.QREncoder.toSVG(url, { ecl: 'M', margin: 4 });
+      if (!svg) throw new Error('too-long');
+      wrap.innerHTML = svg;
+      const svgEl = wrap.firstElementChild;
+      svgEl.style.width = size + 'px';
+      svgEl.style.height = size + 'px';
+    } catch (e) {
+      wrap.innerHTML = '';
+      const errBox = document.createElement('div');
+      errBox.style.cssText = 'padding:10px 14px;border:1px solid #ff6b6b;border-radius:8px;background:#fff0f0;color:#cc0000;font-size:14px';
+      errBox.textContent = e && e.message === 'too-long'
+        ? '链接过长，无法生成二维码'
+        : '二维码组件加载失败，请检查网络后重试';
+      wrap.appendChild(errBox);
+    }
 
     el.classList.add('open');
   }

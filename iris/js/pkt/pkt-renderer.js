@@ -114,9 +114,9 @@
               <circle cx="12" cy="12" r="10"/>
               <path d="M12 8v4M12 16h.01"/>
             </svg>
-            <div class="pkt-error-title">解析失败：${sourceFile}</div>
-            <div class="pkt-error-message">${jsonData.error.message || '未知错误'}</div>
-            <div class="pkt-error-detail">${jsonData.error.detail || jsonData.error.message || ''}</div>
+            <div class="pkt-error-title">解析失败：${esc(sourceFile)}</div>
+            <div class="pkt-error-message">${esc(jsonData.error.message || '未知错误')}</div>
+            <div class="pkt-error-detail">${esc(jsonData.error.detail || jsonData.error.message || '')}</div>
           </div>
         </div>
       `;
@@ -160,7 +160,7 @@
         </div>
       </div>
       <div class="pkt-canvas-wrapper">
-        <div class="pkt-canvas-watermark" title="${sourceFile}">
+        <div class="pkt-canvas-watermark" title="${esc(sourceFile)}">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="6" cy="6" r="2"/>
             <circle cx="18" cy="6" r="2"/>
@@ -168,7 +168,7 @@
             <circle cx="18" cy="18" r="2"/>
             <path d="M8 6h8M6 8v8M18 8v8M8 18h8"/>
           </svg>
-          <span class="pkt-canvas-watermark-text">${sourceFile}</span>
+          <span class="pkt-canvas-watermark-text">${esc(sourceFile)}</span>
         </div>
         <div class="pkt-canvas"></div>
       </div>
@@ -177,7 +177,7 @@
           <span class="pkt-statusbar-item">设备 <strong>${jsonData.meta.deviceCount}</strong></span>
           <span class="pkt-statusbar-item">链路 <strong>${jsonData.meta.linkCount}</strong></span>
           <span class="pkt-statusbar-item">配置 <strong>${jsonData.meta.configCount}</strong></span>
-          <span class="pkt-statusbar-item">${jsonData.meta.ptVersion || ''}</span>
+          <span class="pkt-statusbar-item">${esc(jsonData.meta.ptVersion || '')}</span>
         </div>
         <div class="pkt-statusbar-search">
           <input type="search" class="pkt-search-input" placeholder="搜索" />
@@ -595,10 +595,8 @@
 
   // ============== 辅助函数 ==============
 
-  function getCSSVar(name, fallback) {
-    const val = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-    return val || fallback;
-  }
+  // 主题变量读取统一走 ColorUtils.getThemeVar
+  const getCSSVar = (name, fallback) => window.MarkdownPreview.ColorUtils.getThemeVar(name, fallback);
 
   // 接口名简化：FastEthernet0/0 → Fa0/0, GigabitEthernet0/0 → Gi0/0
   // 支持 FastEthernet, GigabitEthernet, Serial, Ethernet, Vlan, Loopback
@@ -787,8 +785,8 @@
 
     const metaHtml = metaItems.map(m => `
       <div class="pkt-meta-item">
-        <span class="pkt-meta-label">${m.label}</span>
-        <span class="pkt-meta-value">${m.value}</span>
+        <span class="pkt-meta-label">${esc(m.label)}</span>
+        <span class="pkt-meta-value">${esc(m.value)}</span>
       </div>
     `).join('');
 
@@ -807,7 +805,7 @@
           <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6">
             <use href="#${iconId}"/>
           </svg>
-          ${devName}
+          ${esc(devName)}
         </div>
         <button class="pkt-drawer-close" title="关闭">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -889,15 +887,15 @@
     }
     const rows = interfaces.map(iface => `
       <tr>
-        <td>${iface.name}</td>
-        <td>${iface.ip || '-'}</td>
-        <td>${iface.mask || '-'}</td>
-        <td><span class="pkt-status-badge ${iface.status}">${iface.status}</span></td>
-        <td>${iface.duplex || '-'}</td>
-        <td>${iface.speed || '-'}</td>
-        <td>${iface.description || '-'}</td>
-        <td>${iface.mac || '-'}</td>
-        <td>${iface.gateway || '-'}</td>
+        <td>${esc(iface.name)}</td>
+        <td>${esc(iface.ip || '-')}</td>
+        <td>${esc(iface.mask || '-')}</td>
+        <td><span class="pkt-status-badge ${esc(iface.status)}">${esc(iface.status)}</span></td>
+        <td>${esc(iface.duplex || '-')}</td>
+        <td>${esc(iface.speed || '-')}</td>
+        <td>${esc(iface.description || '-')}</td>
+        <td>${esc(iface.mac || '-')}</td>
+        <td>${esc(iface.gateway || '-')}</td>
         <td>${iface.dhcp === true ? '是' : (iface.dhcp === false ? '否' : '-')}</td>
       </tr>
     `).join('');
@@ -949,7 +947,7 @@
     return `
       <div class="pkt-config-block">
         <div class="pkt-config-header">
-          <span>${name}</span>
+          <span>${esc(name)}</span>
           <span class="pkt-config-toggle">▼</span>
         </div>
         <pre class="pkt-config-body">${highlighted}</pre>
@@ -963,8 +961,8 @@
     }
     const items = vlans.map(v => `
       <div class="pkt-vlan-item">
-        <span class="pkt-vlan-id">${v.id}</span>
-        <span class="pkt-vlan-name">${v.name}</span>
+        <span class="pkt-vlan-id">${esc(v.id)}</span>
+        <span class="pkt-vlan-name">${esc(v.name)}</span>
       </div>
     `).join('');
     return `<div class="pkt-tab-content" data-tab="vlans"><div class="pkt-vlan-list">${items}</div></div>`;
@@ -977,11 +975,11 @@
     const items = acls.map(acl => {
       const rules = acl.rules.map(r => {
         const cls = r.includes('permit') ? 'acl-permit' : (r.includes('deny') ? 'acl-deny' : '');
-        return `<div class="${cls}">${r}</div>`;
+        return `<div class="${cls}">${esc(r)}</div>`;
       }).join('');
       return `
         <div class="pkt-acl-item">
-          <div class="pkt-acl-header">${acl.name} (${acl.type})</div>
+          <div class="pkt-acl-header">${esc(acl.name)} (${esc(acl.type)})</div>
           <div class="pkt-acl-rules">${rules}</div>
         </div>
       `;
@@ -1000,28 +998,28 @@
         subnet = `${r.network}/${r.cidr}`;
       }
       // 下一跳：BGP 显示 AS 号和邻居信息
-      let nextHopHtml = r.nextHop || '-';
+      let nextHopHtml = esc(r.nextHop || '-');
       if (r.type === 'bgp') {
         const parts = [];
-        if (r.processId) parts.push(`AS ${r.processId}`);
+        if (r.processId) parts.push(`AS ${esc(r.processId)}`);
         if (Array.isArray(r.neighbors) && r.neighbors.length) {
-          const nbStr = r.neighbors.map(n => `${n.ip || '?'}(AS${n.remoteAs || '?'})`).join(', ');
+          const nbStr = r.neighbors.map(n => `${esc(n.ip || '?')}(AS${esc(n.remoteAs || '?')})`).join(', ');
           parts.push(`邻居: ${nbStr}`);
         }
         if (parts.length) {
-          nextHopHtml = `${r.nextHop || 'BGP'}<br><span class="pkt-route-nbr">${parts.join(' · ')}</span>`;
+          nextHopHtml = `${esc(r.nextHop || 'BGP')}<br><span class="pkt-route-nbr">${parts.join(' · ')}</span>`;
         }
       }
       // 默认路由行特殊高亮
       const rowCls = r.type === 'default' ? ' class="pkt-route-row-default"' : '';
       return `
         <tr${rowCls}>
-          <td><span class="pkt-route-type ${r.type}">${r.type}</span></td>
-          <td>${r.network}</td>
-          <td>${r.mask}</td>
-          <td>${subnet}</td>
+          <td><span class="pkt-route-type ${esc(r.type)}">${esc(r.type)}</span></td>
+          <td>${esc(r.network)}</td>
+          <td>${esc(r.mask)}</td>
+          <td>${esc(subnet)}</td>
           <td>${nextHopHtml}</td>
-          <td>${r.interface || '-'}</td>
+          <td>${esc(r.interface || '-')}</td>
         </tr>
       `;
     }).join('');
@@ -1089,12 +1087,12 @@
     `;
   }
 
+  // 统一委托 md-render 的权威实现（含引号转义，属性插值同样安全）；
+  // 原本地弱化版（不转义引号）是「副本漂移」隐患，已删除
   function escapeHtml(text) {
-    return String(text)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
+    return window.MarkdownPreview.mdRender.escapeHtml(text);
   }
+  const esc = escapeHtml;
 
   // ============== 厂商语法识别 ==============
   function detectVendor(configText, ptVersion) {
@@ -3183,8 +3181,8 @@
               <path d="M12 8v4M12 16h.01"/>
             </svg>
             <div class="pkt-error-title">加载失败</div>
-            <div class="pkt-error-message">${err.message}</div>
-            <div class="pkt-error-detail">路径: ${jsonPath}</div>
+            <div class="pkt-error-message">${esc(err.message)}</div>
+            <div class="pkt-error-detail">路径: ${esc(jsonPath)}</div>
           </div>
         </div>
       `;
@@ -3192,12 +3190,7 @@
     }
   }
 
-  function getBasePath() {
-    // GitHub Pages 子路径适配
-    const path = window.location.pathname;
-    if (path.includes('/md-preview/')) return '/md-preview/';
-    return '/';
-  }
+  const getBasePath = window.MarkdownPreview.mdRender.getBasePath; // 共享副本（曾两处逐字重复）
 
   // ============== 暴露 API ==============
 

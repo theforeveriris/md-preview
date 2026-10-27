@@ -26,10 +26,7 @@
 
   // i18n 文案统一走 i18n.js 的权威实现（MarkdownPreview.t，全站唯一，避免多处包装漂移）
   const t = window.MarkdownPreview.t;
-
-  function icon(name, size) {
-    return `<svg width="${size || 14}" height="${size || 14}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#${name}"/></svg>`;
-  }
+  const icon = window.MarkdownPreview.icon; // 共享副本（曾三处逐字重复）
 
   // ============== 路径格式化 ==============
   // 标识符键用 a.b.c，其余用 a["b-c"][0]
@@ -195,10 +192,10 @@
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }
 
+  // 共享实现（mdRender.docSlug 默认 ''）；json-tree 语境默认 'data'
+  const docSlugShared = window.MarkdownPreview.mdRender.docSlug;
   function docSlug() {
-    const st = window.MarkdownPreview.state;
-    const name = (st && (st.currentFilePath || (st.localDoc && st.localDoc.name))) || 'data';
-    return String(name).replace(/^.*\//, '').replace(/\.md$/i, '') || 'data';
+    return docSlugShared() || 'data';
   }
 
   // ============== 入口：替换文档内的 json 代码块 ==============

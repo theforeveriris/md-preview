@@ -50,6 +50,10 @@
   function initEditor() {
 
   // ============== 状态 ==============
+  // 恢复/导入是异步的（output_html 净化要 await）：期间 cells 只重建了一部分，
+  // 若自动保存此刻触发，会把「半成品」用同一个 notebook id 覆盖完整记录。
+  // 用计数器覆盖整个生命周期，autosave / beforeunload 检测到就延后/跳过。
+  let restoreDepth = 0;
   let cells = [];
   let cellCounter = 0;
   let activeCellId = null;
@@ -70,137 +74,9 @@
   };
 
   // ============== 自动补全：多触发器条目库 ==============
-  // 每个条目：{ trigger: 触发前缀, label, desc, insert, replaceLength: 替换前缀长度 }
-  const autocompleteItems = [
-    // @ 画廊样式 + 嵌入服务（@ 前缀双义）
-    { trigger: '@', label: '@grid', desc: '画廊·默认网格', insert: '@grid\n', replaceLength: 1 },
-    { trigger: '@', label: '@cardstack', desc: '画廊·扑克牌堆', insert: '@cardstack\n', replaceLength: 1 },
-    { trigger: '@', label: '@filmstrip', desc: '画廊·胶片条', insert: '@filmstrip\n', replaceLength: 1 },
-    { trigger: '@', label: '@polaroid', desc: '画廊·拍立得墙', insert: '@polaroid\n', replaceLength: 1 },
-    { trigger: '@', label: '@stack', desc: '画廊·堆叠覆盖', insert: '@stack\n', replaceLength: 1 },
-    { trigger: '@', label: '@mosaic', desc: '画廊·马赛克', insert: '@mosaic\n', replaceLength: 1 },
-    { trigger: '@', label: '@scattered', desc: '画廊·散落明信片', insert: '@scattered\n', replaceLength: 1 },
-    { trigger: '@', label: '@hexagon', desc: '画廊·蜂巢六边形', insert: '@hexagon\n', replaceLength: 1 },
-    { trigger: '@', label: '@coverflow', desc: '画廊·Cover Flow', insert: '@coverflow\n', replaceLength: 1 },
-    { trigger: '@', label: '@tape', desc: '画廊·软木板留言墙', insert: '@tape\n', replaceLength: 1 },
-    { trigger: '@', label: '@duotone', desc: '画廊·双色调', insert: '@duotone\n', replaceLength: 1 },
-    { trigger: '@', label: '@frame', desc: '画廊·画框装裱', insert: '@frame\n', replaceLength: 1 },
-    { trigger: '@', label: '@arch', desc: '画廊·拱形画廊', insert: '@arch\n', replaceLength: 1 },
-    { trigger: '@', label: '@masonry', desc: '画廊·瀑布流', insert: '@masonry\n', replaceLength: 1 },
-    { trigger: '@', label: '@slider', desc: '画廊·幻灯片', insert: '@slider\n', replaceLength: 1 },
-    { trigger: '@', label: '@ticket', desc: '画廊·票根', insert: '@ticket\n', replaceLength: 1 },
-    { trigger: '@', label: '@panorama', desc: '画廊·全景横幅', insert: '@panorama\n', replaceLength: 1 },
-    // 注：@[service] 嵌入语法必须包裹在 ```embed 代码块中，统一在 ``` 触发补全中提供
-    // @tab 代码选项卡分隔符
-    { trigger: '@', label: '@tab 名称', desc: 'code-tabs 选项卡分隔', insert: '@tab ', replaceLength: 1 },
-    // ``` 代码块语言
-    { trigger: '```', label: '```mermaid', desc: 'Mermaid 流程图', insert: '```mermaid\nflowchart TD\n    A --> B\n```', replaceLength: 3 },
-    { trigger: '```', label: '```mermaid 时序图', desc: 'sequenceDiagram', insert: '```mermaid\nsequenceDiagram\n    Alice->>Bob: Hello\n    Bob-->>Alice: Hi\n```', replaceLength: 3 },
-    { trigger: '```', label: '```mermaid 类图', desc: 'classDiagram', insert: '```mermaid\nclassDiagram\n    class Animal {\n        +String name\n        +makeSound()\n    }\n```', replaceLength: 3 },
-    { trigger: '```', label: '```mermaid 状态图', desc: 'stateDiagram-v2', insert: '```mermaid\nstateDiagram-v2\n    [*] --> 待机\n    待机 --> [*]\n```', replaceLength: 3 },
-    { trigger: '```', label: '```mermaid ER 图', desc: 'erDiagram', insert: '```mermaid\nerDiagram\n    A ||--o{ B : has\n```', replaceLength: 3 },
-    { trigger: '```', label: '```mermaid 甘特图', desc: 'gantt', insert: '```mermaid\ngantt\n    title 计划\n    dateFormat YYYY-MM-DD\n    section 阶段\n    任务1 :2024-01-01, 7d\n```', replaceLength: 3 },
-    { trigger: '```', label: '```mermaid 饼图', desc: 'pie', insert: '```mermaid\npie title 占比\n    "A" : 40\n    "B" : 60\n```', replaceLength: 3 },
-    { trigger: '```', label: '```mermaid 用户旅程', desc: 'journey', insert: '```mermaid\njourney\n    title 旅程\n    section 阶段\n    步骤: 5: 用户\n```', replaceLength: 3 },
-    { trigger: '```', label: '```mermaid 思维导图', desc: 'mindmap', insert: '```mermaid\nmindmap\n  root((主题))\n    分支A\n    分支B\n```', replaceLength: 3 },
-    { trigger: '```', label: '```mermaid 时间线', desc: 'timeline', insert: '```mermaid\ntimeline\n    title 时间线\n    2024-01 : 启动\n    2024-12 : 发布\n```', replaceLength: 3 },
-    { trigger: '```', label: '```mermaid 四象限', desc: 'quadrantChart', insert: '```mermaid\nquadrantChart\n    title 四象限\n    x-axis 低 --> 高\n    y-axis 低 --> 高\n    quadrant-1 Q1\n    quadrant-2 Q2\n    quadrant-3 Q3\n    quadrant-4 Q4\n```', replaceLength: 3 },
-    { trigger: '```', label: '```mermaid Git 图', desc: 'gitGraph', insert: '```mermaid\ngitGraph\n    commit id: "init"\n    branch develop\n    checkout develop\n    commit id: "feat"\n    checkout main\n    merge develop\n```', replaceLength: 3 },
-    { trigger: '```', label: '```plantuml', desc: 'PlantUML 时序图', insert: '```plantuml\n@startuml\nAlice -> Bob: Hello\nBob --> Alice: Hi\n@enduml\n```', replaceLength: 3 },
-    { trigger: '```', label: '```plantuml 类图', desc: 'PlantUML class', insert: '```plantuml\n@startuml\nclass Animal\nAnimal : + String name\nAnimal <|-- Dog\n@enduml\n```', replaceLength: 3 },
-    { trigger: '```', label: '```plantuml 用例图', desc: 'PlantUML usecase', insert: '```plantuml\n@startuml\nleft to right direction\nactor 用户\nusecase 登录\n用户 --> 登录\n@enduml\n```', replaceLength: 3 },
-    { trigger: '```', label: '```plantuml 活动图', desc: 'PlantUML activity', insert: '```plantuml\n@startuml\nstart\n:开始;\nif (条件?) then (是)\n  :执行;\nelse (否)\n  :跳过;\nendif\nstop\n@enduml\n```', replaceLength: 3 },
-    { trigger: '```', label: '```plantuml 组件图', desc: 'PlantUML component', insert: '```plantuml\n@startuml\npackage 应用 {\n  [Web UI] as ui\n  [API] as api\n}\nui --> api\n@enduml\n```', replaceLength: 3 },
-    { trigger: '```', label: '```plantuml 部署图', desc: 'PlantUML deployment', insert: '```plantuml\n@startuml\nnode 客户端 {\n  [浏览器]\n}\nnode 服务器 {\n  [服务]\n}\n@enduml\n```', replaceLength: 3 },
-    { trigger: '```', label: '```plantuml 思维导图', desc: 'PlantUML mindmap', insert: '```plantuml\n@startmindmap\n* 主题\n** 分支A\n** 分支B\n@endmindmap\n```', replaceLength: 3 },
-    { trigger: '```', label: '```plantuml WBS', desc: 'PlantUML WBS', insert: '```plantuml\n@startwbs\n* 项目\n** 阶段1\n** 阶段2\n@endwbs\n```', replaceLength: 3 },
-    { trigger: '```', label: '```plantuml ER 图', desc: 'PlantUML entity', insert: '```plantuml\n@startuml\nentity 用户 {\n  * id : bigint <<PK>>\n  --\n  名称 : string\n}\n@enduml\n```', replaceLength: 3 },
-    { trigger: '```', label: '```plantuml 线框图', desc: 'PlantUML salt', insert: '```plantuml\n@startsalt\n{\n  登录\n  用户: [          ]\n  [确定]\n}\n@endsalt\n```', replaceLength: 3 },
-    { trigger: '```', label: '```apexcharts 折线图', desc: 'ApexCharts line', insert: '```apexcharts\n{"chart":{"type":"line"},"series":[{"name":"A","data":[10,20,15,30]}]}\n```', replaceLength: 3 },
-    { trigger: '```', label: '```apexcharts 柱状图', desc: 'ApexCharts bar', insert: '```apexcharts\n{"chart":{"type":"bar"},"series":[{"data":[30,40,35]}]}\n```', replaceLength: 3 },
-    { trigger: '```', label: '```apexcharts 面积图', desc: 'ApexCharts area', insert: '```apexcharts\n{"chart":{"type":"area"},"series":[{"data":[10,20,15,30]}]}\n```', replaceLength: 3 },
-    { trigger: '```', label: '```apexcharts 饼图', desc: 'ApexCharts pie', insert: '```apexcharts\n{"chart":{"type":"pie"},"series":[30,40,30],"labels":["A","B","C"]}\n```', replaceLength: 3 },
-    { trigger: '```', label: '```apexcharts 环形图', desc: 'ApexCharts donut', insert: '```apexcharts\n{"chart":{"type":"donut"},"series":[44,55,13],"labels":["A","B","C"]}\n```', replaceLength: 3 },
-    { trigger: '```', label: '```apexcharts 雷达图', desc: 'ApexCharts radar', insert: '```apexcharts\n{"chart":{"type":"radar"},"series":[{"data":[80,50,90,70,60]}]}\n```', replaceLength: 3 },
-    { trigger: '```', label: '```apexcharts 散点图', desc: 'ApexCharts scatter', insert: '```apexcharts\n{"chart":{"type":"scatter"},"series":[{"data":[[10,30],[20,40]]}]}\n```', replaceLength: 3 },
-    { trigger: '```', label: '```apexcharts 气泡图', desc: 'ApexCharts bubble', insert: '```apexcharts\n{"chart":{"type":"bubble"},"series":[{"data":[[1,30,10],[2,40,15]]}]}\n```', replaceLength: 3 },
-    { trigger: '```', label: '```apexcharts 极坐标', desc: 'ApexCharts polarArea', insert: '```apexcharts\n{"chart":{"type":"polarArea"},"series":[14,23,21,17]}\n```', replaceLength: 3 },
-    { trigger: '```', label: '```pptx', desc: '嵌入 PPTX 演示', insert: '```pptx\n@[pptx](example)\n```', replaceLength: 3 },
-    { trigger: '```', label: '```pkt', desc: '嵌入 PT 拓扑', insert: '```pkt\n@[pkt](example)\n```', replaceLength: 3 },
-    { trigger: '```', label: '```pkt (ensp)', desc: '嵌入 eNSP 拓扑', insert: '```pkt\n@[ensp](example)\n```', replaceLength: 3 },
-    { trigger: '```', label: '```embed', desc: '外部内容嵌入', insert: '```embed\n@[youtube](dQw4w9WgXcQ)\n```', replaceLength: 3 },
-    { trigger: '```', label: '```diff', desc: 'Diff 差异', insert: '```diff\n+ 新增\n- 删除\n```', replaceLength: 3 },
-    { trigger: '```', label: '```geo', desc: '坐标地图', insert: '```geo\n{"lat":39.9042,"lng":116.4074,"zoom":12}\n```', replaceLength: 3 },
-    { trigger: '```', label: '```geojson', desc: 'GeoJSON 地图', insert: '```geojson\n{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"name":"点"},"geometry":{"type":"Point","coordinates":[116.4,39.9]}}]}\n```', replaceLength: 3 },
-    { trigger: '```', label: '```topojson', desc: 'TopoJSON 地图', insert: '```topojson\n{"type":"Topology","objects":{},"arcs":[]}\n```', replaceLength: 3 },
-    { trigger: '```', label: '```qrcode', desc: '二维码', insert: '```qrcode\nhttps://github.com\n```', replaceLength: 3 },
-    { trigger: '```', label: '```colorcard', desc: '颜色卡片', insert: '```colorcard\n#FF6B6B\n#4ECDC4\n#45B7D1\n```', replaceLength: 3 },
-    { trigger: '```', label: '```countdown', desc: '倒计时', insert: '```countdown\n2025-12-31T23:59:59\n```', replaceLength: 3 },
-    { trigger: '```', label: '```javascript', desc: 'JavaScript', insert: '```javascript\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```python', desc: 'Python', insert: '```python\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```bash', desc: 'Shell', insert: '```bash\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```json', desc: 'JSON', insert: '```json\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```html', desc: 'HTML', insert: '```html\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```css', desc: 'CSS', insert: '```css\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```sql', desc: 'SQL', insert: '```sql\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```yaml', desc: 'YAML', insert: '```yaml\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```typescript', desc: 'TypeScript', insert: '```typescript\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```go', desc: 'Go', insert: '```go\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```rust', desc: 'Rust', insert: '```rust\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```java', desc: 'Java', insert: '```java\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```c', desc: 'C', insert: '```c\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```cpp', desc: 'C++', insert: '```cpp\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```ruby', desc: 'Ruby', insert: '```ruby\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```php', desc: 'PHP', insert: '```php\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```swift', desc: 'Swift', insert: '```swift\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```kotlin', desc: 'Kotlin', insert: '```kotlin\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```dockerfile', desc: 'Dockerfile', insert: '```dockerfile\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```nginx', desc: 'Nginx', insert: '```nginx\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```ini', desc: 'INI', insert: '```ini\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```xml', desc: 'XML', insert: '```xml\n\n```', replaceLength: 3 },
-    { trigger: '```', label: '```markdown', desc: 'Markdown', insert: '```markdown\n\n```', replaceLength: 3 },
-    // > [! GitHub Alert
-    { trigger: '> [!', label: '> [!NOTE]', desc: '提示', insert: '> [!NOTE]\n> ', replaceLength: 4 },
-    { trigger: '> [!', label: '> [!IMPORTANT]', desc: '重要', insert: '> [!IMPORTANT]\n> ', replaceLength: 4 },
-    { trigger: '> [!', label: '> [!WARNING]', desc: '警告', insert: '> [!WARNING]\n> ', replaceLength: 4 },
-    { trigger: '> [!', label: '> [!TIP]', desc: '建议', insert: '> [!TIP]\n> ', replaceLength: 4 },
-    { trigger: '> [!', label: '> [!CAUTION]', desc: '谨慎', insert: '> [!CAUTION]\n> ', replaceLength: 4 },
-    // # 标题
-    { trigger: '#', label: '# 一级标题', desc: 'H1', insert: '# ', replaceLength: 1 },
-    { trigger: '#', label: '## 二级标题', desc: 'H2', insert: '## ', replaceLength: 1 },
-    { trigger: '#', label: '### 三级标题', desc: 'H3', insert: '### ', replaceLength: 1 },
-    { trigger: '#', label: '#### 四级标题', desc: 'H4', insert: '#### ', replaceLength: 1 },
-    { trigger: '#', label: '##### 五级标题', desc: 'H5', insert: '##### ', replaceLength: 1 },
-    { trigger: '#', label: '###### 六级标题', desc: 'H6', insert: '###### ', replaceLength: 1 },
-    // - 列表
-    { trigger: '-', label: '- 无序列表', desc: 'Bullet list', insert: '- ', replaceLength: 1 },
-    { trigger: '-', label: '- [ ] 任务列表', desc: 'Task list', insert: '- [ ] ', replaceLength: 1 },
-    // | 表格
-    { trigger: '|', label: '| 表格 (2 列)', desc: '2 列表格', insert: '| 列1 | 列2 |\n| --- | --- |\n|  |  |\n', replaceLength: 1 },
-    { trigger: '|', label: '| 表格 (3 列)', desc: '3 列表格', insert: '| 列1 | 列2 | 列3 |\n| --- | --- | --- |\n|  |  |  |\n', replaceLength: 1 },
-    { trigger: '|', label: '| 表格 (4 列)', desc: '4 列表格', insert: '| 列1 | 列2 | 列3 | 列4 |\n| --- | --- | --- | --- |\n|  |  |  |  |\n', replaceLength: 1 },
-    // --- 水平线 / Frontmatter
-    { trigger: '---', label: '--- 水平分割线', desc: 'Horizontal rule', insert: '---\n', replaceLength: 3 },
-    { trigger: '---', label: '--- Frontmatter', desc: 'YAML 文档头', insert: '---\ntitle: \ndate: \n---\n', replaceLength: 3 },
-    // > 普通引用触发
-    { trigger: '>', label: '> 引用', desc: 'Blockquote', insert: '> ', replaceLength: 1 },
-    // ::: 容器（code-tabs / columns）
-    { trigger: ':::', label: '::: code-tabs', desc: '代码选项卡', insert: '::: code-tabs\n@tab 选项卡 A\n\n内容 A\n\n@tab 选项卡 B\n\n内容 B\n\n:::\n', replaceLength: 3 },
-    { trigger: ':::', label: '::: columns', desc: '多列布局', insert: '::: columns\n\n::: column 标题一\n\n第一栏内容\n\n::: column 标题二\n\n第二栏内容\n\n:::\n', replaceLength: 3 },
-    // || 剧透
-    { trigger: '||', label: '||剧透||', desc: '剧透/遮罩', insert: '||剧透内容||', replaceLength: 2 },
-    // [pulse DG-LAB 波形
-    { trigger: '[pulse', label: '[pulse]...[/pulse]', desc: 'DG-LAB 波形', insert: '[pulse title="标题"]\nDungeonlab+pulse:0,1,16=10,10,10,1,0/50-1,50-1,50-1,50-1\n[/pulse]', replaceLength: 6 },
-    // $$ KaTeX 公式块
-    { trigger: '$$', label: '$$ 公式块', desc: 'KaTeX block', insert: '$$\n\n$$', replaceLength: 2 },
-    // ![ 图片
-    { trigger: '![', label: '![alt](url) 图片', desc: '图片', insert: '![](https://)', replaceLength: 2 },
-    { trigger: '![', label: '![alt](url "标题") 带标题图片', desc: '带标题', insert: '![](https:// "标题")', replaceLength: 2 },
-    // [ 链接
-    { trigger: '[', label: '[text](url) 链接', desc: '超链接', insert: '[](https://)', replaceLength: 1 },
-    { trigger: '[', label: '[text](url "标题") 带标题链接', desc: '带标题', insert: '[](https:// "标题")', replaceLength: 1 },
-    { trigger: '[', label: '[ref]: url 引用链接', desc: '引用式', insert: '[1]: https://', replaceLength: 1 },
-  ];
+  // 条目库已外移至 iris/js/editor/completions.js（纯静态数据，editor.js 拆分第一批）
+  const autocompleteItems = window.MarkdownPreview.editorCompletions;
+
 
   // ============== DOM 引用 ==============
   const editorMain = document.getElementById('editorMain');
@@ -266,14 +142,16 @@
     // 初始渲染一次
     renderDualPanePreview(cell.textarea.value);
 
-    // 输入时实时预览（防抖 250ms，避免渲染器频繁重入）
-    let debounceTimer = null;
+    // 输入时实时预览（防抖 250ms，避免渲染器频繁重入）。
+    // 计时器存到 dualPaneState 上：闭包局部变量外部清不到，closeDualPane
+    // 的 clearTimeout 会永远扑空（旧 Bug）
+    const paneState = { cell, cmHost, originalHostParent, inputHandler: null, escHandler: null, debounceTimer: null };
     const inputHandler = () => {
       updateCellMeta(cell);
       markUnsaved();
       updateStatusbar();
-      if (debounceTimer) clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
+      if (paneState.debounceTimer) clearTimeout(paneState.debounceTimer);
+      paneState.debounceTimer = setTimeout(() => {
         renderDualPanePreview(cell.textarea.value);
       }, 250);
     };
@@ -288,7 +166,9 @@
     };
     document.addEventListener('keydown', escHandler);
 
-    dualPaneState = { cell, cmHost, originalHostParent, inputHandler, escHandler, debounceTimer: null };
+    paneState.inputHandler = inputHandler;
+    paneState.escHandler = escHandler;
+    dualPaneState = paneState;
 
     dualPaneOverlay.classList.add('visible');
     document.body.classList.add('dual-pane-active');
@@ -481,6 +361,8 @@
       markModified(cellData);
       markUnsaved();
       updateStatusbar();
+      // 内容已变，旧偏移的查找匹配失效（外移模块：find-replace.js）
+      findReplace.invalidateMatches();
     });
 
     textarea.addEventListener('keydown', onTextareaKeydown);
@@ -532,7 +414,7 @@
       }
       if (imageFiles.length === 0) return;
       e.preventDefault();
-      imageFiles.forEach(file => insertImageToCell(cellData, file));
+      imageFiles.forEach(file => mediaUpload.insertImageToCell(cellData, file));
     });
 
     // 图片拖拽：dragover 阻止默认以允许 drop
@@ -553,7 +435,7 @@
       if (imageFiles.length === 0) return;
       e.preventDefault();
       activeCellId = id;
-      imageFiles.forEach(file => insertImageToCell(cellData, file));
+      imageFiles.forEach(file => mediaUpload.insertImageToCell(cellData, file));
     });
   }
 
@@ -568,9 +450,9 @@
 
   function copyOutputHtml(cellData) {
     const html = cellData.output.innerHTML;
-    if (!html.trim()) { showToast('请先运行此 Cell'); return; }
+    if (!html.trim()) { showToast(editorT('editor.needRunThisCell', '请先运行此 Cell')); return; }
     navigator.clipboard.writeText(html).then(() => {
-      showToast('已复制 HTML');
+      showToast(editorT('editor.htmlCopied', '已复制 HTML'));
     }).catch(() => {
       // 兜底
       const ta = document.createElement('textarea');
@@ -579,7 +461,7 @@
       ta.select();
       document.execCommand('copy');
       document.body.removeChild(ta);
-      showToast('已复制 HTML');
+      showToast(editorT('editor.htmlCopied', '已复制 HTML'));
     });
   }
 
@@ -593,7 +475,7 @@
   function exportCellStandalone(cellData) {
     const idx = cells.findIndex(c => c.id === cellData.id) + 1;
     const html = cellData.output.innerHTML;
-    if (!html.trim()) { showToast('请先运行此 Cell'); return; }
+    if (!html.trim()) { showToast(editorT('editor.needRunThisCell', '请先运行此 Cell')); return; }
     const fullHtml = buildStandaloneHtml(html, `Cell ${idx}`);
     downloadBlob(new Blob([fullHtml], { type: 'text/html;charset=utf-8' }), `cell-${idx}.html`);
   }
@@ -601,6 +483,13 @@
   // ============== Toast 提示 ==============
 
   let toastTimer = null;
+  // i18n：用户可见文案统一走全站 t()（editor.js 分批迁移：本批为 toast/confirm）
+  function editorT(key, fallback) {
+    const i18n = window.MarkdownPreview.i18n;
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key, fallback);
+    return fallback;
+  }
+
   function showToast(msg) {
     let toast = document.getElementById('editorToast');
     if (!toast) {
@@ -671,6 +560,8 @@
     }
     cell.div.remove();
     cells.splice(idx, 1);
+    // pkt 等渲染器持有全局注册表：清理已脱离 DOM 的孤儿实例（对照 split-view.js）
+    window.MarkdownPreview.pkt?.destroyOrphaned?.();
     if (activeCellId === id) {
       const newIdx = Math.min(idx, cells.length - 1);
       activeCellId = cells[newIdx].id;
@@ -738,6 +629,7 @@
     cellData.statusDot.classList.remove('modified');
     cellData.statusDot.classList.add('run');
     cellData.lastRunContent = cellData.textarea.value;
+    cellData._outputHtmlCache = undefined; // 输出已变化，序列化缓存失效
   }
 
   // ============== Markdown 渲染（共享渲染逻辑） ==============
@@ -753,21 +645,43 @@
     mdRender.initSliders(outputElement);
     mdRender.highlightCodeBlocks(outputElement);
 
-    setTimeout(() => {
-      try {
-        const renderers = window.MarkdownPreview?.renderers;
-        if (renderers) {
-          // 统一调度器（md-render.js: runRenderers）：子集与既有行为一致——
-          // mermaid/apexcharts/diff/katex/plantuml/embedded，顺序按注册表插入序。
-          // katex 自 461a8e5（行内 LaTeX 修复）起就应在 cell 内渲染，此前遗漏。
-          const subset = ['mermaid', 'plantuml', 'apexcharts', 'diff', 'katex', 'embedded'];
-          // 传入 outputElement 让渲染器在 cell 容器内处理（resolveRoot 会优先用 root）
-          mdRender.runRenderers(outputElement, { only: subset });
-        }
-      } catch (e) { console.warn('[Editor] Plugin render error:', e); }
-    }, 200);
+    // 渲染器批量调度：runAllCells 时 N 个 cell 各自 setTimeout 会叠 N 批，
+    // 收集 roots 合并为一次 200ms 调度
+    scheduleCellRenderers(outputElement);
 
     outputElement.classList.add('visible');
+  }
+
+  // cell 渲染器批量调度器（子集常量来自 mdRender.CELL_RENDERER_SUBSET，
+  // 与 split-view.js 共用，消除两处硬编码漂移）
+  let pendingRendererRoots = [];
+  let rendererScheduleTimer = null;
+  function scheduleCellRenderers(outputElement) {
+    if (outputElement) pendingRendererRoots.push(outputElement);
+    if (rendererScheduleTimer) return;
+    rendererScheduleTimer = setTimeout(() => {
+      rendererScheduleTimer = null;
+      const roots = pendingRendererRoots;
+      pendingRendererRoots = [];
+      const subset = mdRender.CELL_RENDERER_SUBSET;
+      // 缓存挂在 cell 对象上（serializeNotebook 读 c._outputHtmlCache），
+      // 这里拿到的是 output DOM 节点，必须回查所属 cell 再失效，
+      // 否则渲染器改动过的输出会一直复用旧缓存
+      const invalidateOutputCache = (outputElement) => {
+        const owner = cells.find(c => c.output === outputElement);
+        if (owner) owner._outputHtmlCache = undefined;
+      };
+      roots.forEach(root => {
+        try {
+          Promise.resolve(mdRender.runRenderers(root, { only: subset })).then(() => {
+            invalidateOutputCache(root);
+          });
+        } catch (e) {
+          invalidateOutputCache(root);
+          console.warn('[Editor] Plugin render error:', e);
+        }
+      });
+    }, 200);
   }
 
   // ============== 运行 Cell ==============
@@ -1332,17 +1246,17 @@
       return;
     }
 
-    // Ctrl/Cmd + F: 全局搜索（仅在编辑器内）
+    // Ctrl/Cmd + F: 全局搜索（仅在编辑器内）；Ctrl+H: 替换
+    // （面板开关已外移至 find-replace.js 模块）
     if ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F')) {
       e.preventDefault();
-      openSearchPanel();
+      findReplace.openSearchPanel();
       return;
     }
 
-    // Ctrl/Cmd + H: 替换
     if ((e.ctrlKey || e.metaKey) && (e.key === 'h' || e.key === 'H')) {
       e.preventDefault();
-      openSearchPanel();
+      findReplace.openSearchPanel();
       setTimeout(() => replaceInput.focus(), 50);
       return;
     }
@@ -1399,6 +1313,25 @@
     const runCount = cells.filter(c => c.output.classList.contains('visible')).length;
     if (statusRunStats) statusRunStats.textContent = `运行 ${runCount}/${cells.length}`;
 
+    // 光标位置（CM6 原生行列 API，开销小，立即更新保证跟手）
+    const cell = getActiveCell();
+    if (cell) {
+      const cursor = cell.editor.getCursorPos();
+      statusCursor.textContent = `行 ${cursor.line}, 列 ${cursor.col}`;
+    }
+
+    // 字数与行数（两个正则全文扫描 × 全部 Cell）：300ms 防抖。
+    // 此函数在每个按键的 input/keyup/click 里都会触发，长文档同步算必卡
+    if (!statusStatsTimer) {
+      statusStatsTimer = setTimeout(() => {
+        statusStatsTimer = null;
+        computeStatusStats();
+      }, 300);
+    }
+  }
+
+  let statusStatsTimer = null;
+  function computeStatusStats() {
     // 字数与行数（全部 Cell 汇总）
     let totalWords = 0;
     let totalLines = 0;
@@ -1417,33 +1350,19 @@
     } else if (statusCurCellWords) {
       statusCurCellWords.textContent = '当前 0 字';
     }
-
-    // 光标位置（使用 CM6 原生行列 API）
-    const cell = getActiveCell();
-    if (cell) {
-      const cursor = cell.editor.getCursorPos();
-      statusCursor.textContent = `行 ${cursor.line}, 列 ${cursor.col}`;
-    }
   }
 
   // ============== 下载功能 ==============
 
-  function downloadBlob(blob, filename) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
+  // 统一走 MarkdownPreview.downloadBlob（export-bundle.js 版，延迟 revoke
+  // 防下载截断；旧本地副本立即 revoke 有截断风险）
+  const downloadBlob = window.MarkdownPreview.downloadBlob;
 
   function downloadCurrentMd() {
     const cell = getActiveCell();
     if (!cell) return;
     const content = cell.textarea.value;
-    if (!content.trim()) { showToast('当前 Cell 为空'); return; }
+    if (!content.trim()) { showToast(editorT('editor.cellEmpty', '当前 Cell 为空')); return; }
     const idx = cells.findIndex(c => c.id === activeCellId) + 1;
     downloadBlob(new Blob([content], { type: 'text/markdown;charset=utf-8' }), `cell-${idx}.md`);
   }
@@ -1452,7 +1371,7 @@
     const cell = getActiveCell();
     if (!cell) return;
     const html = cell.output.innerHTML;
-    if (!html.trim()) { showToast('请先运行当前 Cell'); return; }
+    if (!html.trim()) { showToast(editorT('editor.needRunCurrentCell', '请先运行当前 Cell')); return; }
     const idx = cells.findIndex(c => c.id === activeCellId) + 1;
     const fullHtml = buildStandaloneHtml(html, `Cell ${idx}`, false);
     downloadBlob(new Blob([fullHtml], { type: 'text/html;charset=utf-8' }), `cell-${idx}.html`);
@@ -1462,7 +1381,7 @@
     const cell = getActiveCell();
     if (!cell) return;
     const html = cell.output.innerHTML;
-    if (!html.trim()) { showToast('请先运行当前 Cell'); return; }
+    if (!html.trim()) { showToast(editorT('editor.needRunCurrentCell', '请先运行当前 Cell')); return; }
     const idx = cells.findIndex(c => c.id === activeCellId) + 1;
     const fullHtml = buildStandaloneHtml(html, `Cell ${idx}`, true);
     downloadBlob(new Blob([fullHtml], { type: 'text/html;charset=utf-8' }), `cell-${idx}-offline.html`);
@@ -1536,12 +1455,28 @@
     const cell = getActiveCell();
     if (!cell) return;
     const html = cell.output.innerHTML;
-    if (!html.trim()) { showToast('请先运行当前 Cell'); return; }
+    if (!html.trim()) { showToast(editorT('editor.needRunCurrentCell', '请先运行当前 Cell')); return; }
     const idx = cells.findIndex(c => c.id === activeCellId) + 1;
-    const win = window.open('', '_blank');
-    win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Cell ${idx}</title><link rel="stylesheet" href="iris/styles.css"><link rel="stylesheet" href="iris/css/galleries.css"><link rel="stylesheet" href="iris/vendor/highlight.js/styles/github.css"><link rel="stylesheet" href="iris/vendor/katex/katex.min.css"><style>@media print{body{margin:0;}}</style></head><body><article class="markdown-body" style="max-width:800px;margin:20px auto;padding:0 20px;">${html}</article></body></html>`);
-    win.document.close();
-    setTimeout(() => { win.print(); }, 500);
+    // 沙箱 iframe 替代 document.write：不含 allow-scripts，活动内容不执行
+    //（旧实现把 cell 原始 innerHTML 写进同源 about:blank 窗口，活动内容以
+    // 完整源权限运行）；打印由父页面调用 contentWindow.print()
+    const doc = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Cell ${idx}</title><link rel="stylesheet" href="iris/styles.css"><link rel="stylesheet" href="iris/css/galleries.css"><link rel="stylesheet" href="iris/vendor/highlight.js/styles/github.css"><link rel="stylesheet" href="iris/vendor/katex/katex.min.css"><style>@media print{body{margin:0;}}</style></head><body><article class="markdown-body" style="max-width:800px;margin:20px auto;padding:0 20px;">${html}</article></body></html>`;
+    const frame = document.createElement('iframe');
+    frame.style.cssText = 'position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0';
+    frame.setAttribute('sandbox', 'allow-same-origin allow-modals');
+    frame.srcdoc = doc;
+    frame.addEventListener('load', () => {
+      setTimeout(() => {
+        try {
+          frame.contentWindow.focus();
+          frame.contentWindow.print();
+        } catch (e) {
+          showToast(editorT('editor.printFailed', '打印窗口打开失败'));
+        }
+        setTimeout(() => frame.remove(), 1000);
+      }, 500);
+    });
+    document.body.appendChild(frame);
   }
 
   function downloadNotebook() {
@@ -1559,11 +1494,14 @@
     downloadBlob(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' }), 'notebook.mdnb');
   }
 
+  // 显式 cell 边界标记：正文里的独立水平线（---）不会再被导入误拆
+  const CELL_BOUNDARY = '<!-- mdp2:cell -->';
+
   function downloadAllMd() {
     const content = cells.map(c => {
       const typeTag = c.type === 'plaintext' ? '<!-- cell: plaintext -->\n' : '';
       return typeTag + c.textarea.value;
-    }).join('\n\n---\n\n');
+    }).join('\n\n' + CELL_BOUNDARY + '\n\n');
     downloadBlob(new Blob([content], { type: 'text/markdown;charset=utf-8' }), 'all-cells.md');
   }
 
@@ -1591,42 +1529,64 @@
     reader.readAsText(file);
   });
 
-  function importMdnb(text) {
+  async function importMdnb(text) {
     let data;
-    try { data = JSON.parse(text); } catch (e) { showToast('无效的 .mdnb 文件'); return; }
-    if (!data || !Array.isArray(data.cells)) { showToast('文件格式不正确'); return; }
+    try { data = JSON.parse(text); } catch (e) { showToast(editorT('editor.invalidMdnb', '无效的 .mdnb 文件')); return; }
+    if (!data || !Array.isArray(data.cells)) { showToast(editorT('editor.badFileFormat', '文件格式不正确')); return; }
     // 确认清空现有
     if (cells.length > 0 && cells.some(c => c.textarea.value.trim())) {
       if (!confirm('导入将替换当前所有 Cell，是否继续？')) return;
     }
     // 清空现有 Cell
-    cells.slice().forEach(c => { c.div.remove(); });
+    cells.slice().forEach(c => {
+      if (c.textarea && typeof c.textarea.destroy === 'function') c.textarea.destroy();
+      c.div.remove();
+    });
     cells.length = 0;
     cellCounter = 0;
-    // 创建新 Cell
-    data.cells.forEach(s => {
+    // 创建新 Cell。output_html 来自外部文件（非受信内容，可能是他人分享的
+    // 笔记本），注入前必须经 DOMPurify 净化，防止导入即触发的存储型 XSS。
+    // 净化是 await，期间不能自动保存（会用半成品覆盖原笔记本）
+    restoreDepth++;
+    try {
+    for (const s of data.cells) {
       const newCell = createCell(null, s.content || '', { type: s.type === 'plaintext' ? 'plaintext' : 'markdown' });
       if (s.output_html) {
-        newCell.output.innerHTML = s.output_html;
-        newCell.output.classList.add('visible');
-        if (newCell.outputToolbar) newCell.outputToolbar.classList.add('visible');
-        markRun(newCell);
+        const clean = await mdRender.sanitizeHtml(s.output_html).catch(() => null);
+        if (clean == null) {
+          showToast(editorT('editor.sanitizeFailed', '净化组件加载失败，已丢弃运行结果，可重新运行 Cell 恢复'));
+        } else {
+          newCell.output.innerHTML = clean;
+          newCell.output.classList.add('visible');
+          if (newCell.outputToolbar) newCell.outputToolbar.classList.add('visible');
+          markRun(newCell);
+        }
       }
       updateLineNumbers(newCell);
-    });
+    }
+    } finally {
+      restoreDepth--;
+    }
     if (cells.length === 0) createCell();
     renumberCells();
     updateStatusbar();
-    showToast('已导入 ' + data.cells.length + ' 个 Cell');
+    if (restoreDepth === 0) scheduleAutosave();
+    showToast(editorT('editor.importedCells', '已导入 {n} 个 Cell').replace('{n}', data.cells.length));
   }
 
   function importMdCells(text) {
-    // 按 --- 分隔符切分为多个 Cell
-    const parts = text.split(/\n\s*---\s*\n/);
+    // 优先按显式 cell 边界切分（downloadAllMd 导出格式，正文含 --- 也安全）；
+    // 无标记的旧文件/手写文件回退按 --- 切分
+    const parts = text.includes(CELL_BOUNDARY)
+      ? text.split(/\n?\s*<!-- mdp2:cell -->\s*\n?/)
+      : text.split(/\n\s*---\s*\n/);
     if (cells.some(c => c.textarea.value.trim())) {
       if (!confirm('导入将替换当前所有 Cell，是否继续？')) return;
     }
-    cells.slice().forEach(c => { c.div.remove(); });
+    cells.slice().forEach(c => {
+      if (c.textarea && typeof c.textarea.destroy === 'function') c.textarea.destroy();
+      c.div.remove();
+    });
     cells.length = 0;
     cellCounter = 0;
     parts.forEach(part => {
@@ -1641,18 +1601,18 @@
     if (cells.length === 0) createCell();
     renumberCells();
     updateStatusbar();
-    showToast('已导入 ' + cells.length + ' 个 Cell');
+    showToast(editorT('editor.importedCells', '已导入 {n} 个 Cell').replace('{n}', cells.length));
   }
 
   function importMdCurrent(text) {
     const cell = getActiveCell();
-    if (!cell) { showToast('没有活跃 Cell'); return; }
+    if (!cell) { showToast(editorT('editor.noActiveCell', '没有活跃 Cell')); return; }
     cell.textarea.setValue(text);
     updateCellMeta(cell);
     markModified(cell);
     markUnsaved();
     updateStatusbar();
-    showToast('已导入到当前 Cell');
+    showToast(editorT('editor.importedToCurrent', '已导入到当前 Cell'));
   }
 
   // ============== 清空所有 Cell ==============
@@ -1689,17 +1649,17 @@
       e.preventDefault();
       if (activeCellId) runCell(activeCellId);
     }
-    // 全局 F3 / Shift+F3 搜索导航
-    if (e.key === 'F3' && searchPanel && searchPanel.classList.contains('visible')) {
+    // 全局 F3 / Shift+F3 搜索导航（外移模块：find-replace.js）
+    if (e.key === 'F3' && findReplace.isPanelOpen()) {
       e.preventDefault();
-      if (e.shiftKey) searchNavigate(-1);
-      else searchNavigate(1);
+      if (e.shiftKey) findReplace.searchNavigate(-1);
+      else findReplace.searchNavigate(1);
     }
     if (e.key === 'Escape') {
       hideContextMenu();
       hideAutocomplete();
       hideSelectionToolbar();
-      if (searchPanel && searchPanel.classList.contains('visible')) closeSearchPanel();
+      if (findReplace.isPanelOpen()) findReplace.closeSearchPanel();
     }
   });
 
@@ -1707,198 +1667,8 @@
   window.addEventListener('scroll', hideSelectionToolbar, true);
 
   // ============== 图片上传 ==============
-
-  const IMAGE_UPLOAD_KEY = 'mdnb_image_upload';
-
-  function getImageUploadConfig() {
-    try {
-      const raw = localStorage.getItem(IMAGE_UPLOAD_KEY);
-      if (!raw) return { mode: 'base64', url: '', headers: '' };
-      const cfg = JSON.parse(raw);
-      return {
-        mode: cfg.mode === 'host' ? 'host' : 'base64',
-        url: cfg.url || '',
-        headers: cfg.headers || '',
-      };
-    } catch (e) {
-      return { mode: 'base64', url: '', headers: '' };
-    }
-  }
-
-  function setImageUploadConfig(cfg) {
-    try {
-      localStorage.setItem(IMAGE_UPLOAD_KEY, JSON.stringify(cfg));
-    } catch (e) {}
-  }
-
-  function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error('文件读取失败'));
-      reader.readAsDataURL(file);
-    });
-  }
-
-  async function uploadImageToHost(file, config) {
-    const formData = new FormData();
-    formData.append('file', file, file.name || 'image.png');
-    const headers = {};
-    if (config.headers) {
-      try {
-        Object.assign(headers, JSON.parse(config.headers));
-      } catch (e) {
-        throw new Error('自定义请求头 JSON 格式错误');
-      }
-    }
-    const resp = await fetch(config.url, {
-      method: 'POST',
-      body: formData,
-      headers,
-    });
-    if (!resp.ok) throw new Error('图床返回错误：HTTP ' + resp.status);
-    const text = await resp.text();
-    // 尝试解析 JSON，支持 { url } / { data: { url } } / { link } 等常见格式
-    let data;
-    try { data = JSON.parse(text); } catch (e) {
-      // 非 JSON 响应，若看起来像 URL 直接使用
-      const trimmed = text.trim();
-      if (/^https?:\/\//.test(trimmed)) return trimmed;
-      throw new Error('图床响应无法解析：' + text.slice(0, 100));
-    }
-    const url = data.url || data.link || (data.data && (data.data.url || data.data.link)) || data.image;
-    if (!url || typeof url !== 'string') throw new Error('图床响应缺少 url 字段');
-    return url;
-  }
-
-  // 正在处理的图片标记，避免同一文件重复插入（以 file 为 key，
-  // 这样同一次粘贴/拖拽多张图片可以并发插入，而不会被 cellData 粒度拦截）
-  const _imageProcessing = new WeakSet();
-
-  async function insertImageToCell(cellData, file) {
-    if (!cellData || !file) return;
-    if (_imageProcessing.has(file)) return;
-    const config = getImageUploadConfig();
-    const fileName = (file.name || 'image').replace(/[`\[\]()]/g, '').replace(/\.[^.]+$/, '') || 'image';
-    activeCellId = cellData.id;
-    cellData.textarea.focus();
-
-    if (config.mode === 'host' && config.url) {
-      showToast('正在上传图片到图床…');
-      _imageProcessing.add(file);
-      try {
-        const url = await uploadImageToHost(file, config);
-        const md = `![${fileName}](${url})`;
-        insertAtCursor(cellData.textarea, md, 0);
-        showToast('图片上传成功');
-        markUnsaved();
-      } catch (e) {
-        // 上传失败时回退到 base64
-        showToast('图床上传失败：' + e.message + '，回退到 base64');
-        try {
-          const dataUrl = await fileToBase64(file);
-          const md = `![${fileName}](${dataUrl})`;
-          insertAtCursor(cellData.textarea, md, 0);
-          markUnsaved();
-        } catch (e2) {
-          showToast('图片插入失败：' + e2.message);
-        }
-      } finally {
-        _imageProcessing.delete(file);
-      }
-    } else {
-      // base64 模式
-      _imageProcessing.add(file);
-      try {
-        const dataUrl = await fileToBase64(file);
-        const md = `![${fileName}](${dataUrl})`;
-        insertAtCursor(cellData.textarea, md, 0);
-        showToast('图片已插入（base64）');
-        markUnsaved();
-      } catch (e) {
-        showToast('图片插入失败：' + e.message);
-      } finally {
-        _imageProcessing.delete(file);
-      }
-    }
-  }
-
-  // ============== 图片上传设置弹出层 ==============
-
-  if (imageUploadBtn && imageUploadPopover) {
-    imageUploadBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const rect = imageUploadBtn.getBoundingClientRect();
-      imageUploadPopover.style.top = (rect.bottom + 4) + 'px';
-      imageUploadPopover.style.right = (window.innerWidth - rect.right) + 'px';
-      imageUploadPopover.style.left = 'auto';
-      // 加载当前配置到 UI
-      const cfg = getImageUploadConfig();
-      const radioBase = imageUploadPopover.querySelector('input[value="base64"]');
-      const radioHost = imageUploadPopover.querySelector('input[value="host"]');
-      const urlInput = document.getElementById('imageUploadUrl');
-      const headersInput = document.getElementById('imageUploadHeaders');
-      const hostConfig = document.getElementById('imageHostConfig');
-      if (cfg.mode === 'host') {
-        radioHost.checked = true;
-        hostConfig.style.display = '';
-      } else {
-        radioBase.checked = true;
-        hostConfig.style.display = 'none';
-      }
-      if (urlInput) urlInput.value = cfg.url;
-      if (headersInput) headersInput.value = cfg.headers;
-      imageUploadPopover.classList.toggle('visible');
-    });
-
-    // 模式切换
-    imageUploadPopover.querySelectorAll('input[name="imgMode"]').forEach(radio => {
-      radio.addEventListener('change', () => {
-        const hostConfig = document.getElementById('imageHostConfig');
-        hostConfig.style.display = radio.value === 'host' ? '' : 'none';
-      });
-    });
-
-    // 保存
-    document.getElementById('imageUploadSave')?.addEventListener('click', () => {
-      const mode = imageUploadPopover.querySelector('input[name="imgMode"]:checked').value;
-      const url = document.getElementById('imageUploadUrl').value.trim();
-      const headers = document.getElementById('imageUploadHeaders').value.trim();
-      if (mode === 'host' && !url) {
-        showToast('请填写图床上传端点 URL');
-        return;
-      }
-      if (headers) {
-        try { JSON.parse(headers); } catch (e) {
-          showToast('自定义请求头不是有效的 JSON');
-          return;
-        }
-      }
-      setImageUploadConfig({ mode, url, headers });
-      showToast(mode === 'host' ? '图床配置已保存' : '已切换为 base64 模式');
-      imageUploadPopover.classList.remove('visible');
-    });
-
-    // 清除
-    document.getElementById('imageUploadClear')?.addEventListener('click', () => {
-      setImageUploadConfig({ mode: 'base64', url: '', headers: '' });
-      const radioBase = imageUploadPopover.querySelector('input[value="base64"]');
-      if (radioBase) radioBase.checked = true;
-      document.getElementById('imageHostConfig').style.display = 'none';
-      const urlInput = document.getElementById('imageUploadUrl');
-      const headersInput = document.getElementById('imageUploadHeaders');
-      if (urlInput) urlInput.value = '';
-      if (headersInput) headersInput.value = '';
-      showToast('图片上传配置已清除');
-    });
-
-    // 点击外部关闭
-    document.addEventListener('click', (e) => {
-      if (!imageUploadPopover.contains(e.target) && e.target !== imageUploadBtn) {
-        imageUploadPopover.classList.remove('visible');
-      }
-    });
-  }
+  // 已外移至 iris/js/editor/media-upload.js（editor.js 拆分第一批），
+  // initEditor 通过 editorModules.mediaUpload.init(ctx) 注入协作对象。
 
   // ============== 自动保存（IndexedDB，localStorage 兜底） ==============
 
@@ -2023,11 +1793,12 @@
     try { await storage.saveNotebook(data); } catch (e) {}
   }
 
+  let pendingTabId = null;
   async function activateTab(id, opts) {
     opts = opts || {};
     const tab = getTabById(id);
     if (!tab) return;
-    if (isSwitching) return;
+    if (isSwitching) { pendingTabId = id; return; } // 排队而非静默丢弃
     isSwitching = true;
     try {
       // 1) 保存当前 notebook 数据（先序列化，不动 DOM）
@@ -2040,16 +1811,16 @@
       // 3) 加载目标 notebook
       let restored = false;
       if (opts.initData) {
-        restored = restoreFromData(opts.initData);
+        restored = await restoreFromData(opts.initData);
       } else if (useIndexedDB) {
         try {
           const data = await storage.loadNotebook(id);
-          if (data) restored = restoreFromData(data);
+          if (data) restored = await restoreFromData(data);
         } catch (e) { console.warn('[tabs] 加载笔记本失败:', e); }
       }
       if (!restored) {
         // 空白笔记本
-        restoreFromData({ cells: [] });
+        await restoreFromData({ cells: [] });
       }
       // 4) 更新 UI 状态
       isUnsaved = false;
@@ -2058,6 +1829,14 @@
       persistTabMeta();
     } finally {
       isSwitching = false;
+      // 处理切换期间排队的请求（跳过中间态，直达最后点击的 tab）
+      if (pendingTabId && pendingTabId !== activeTabId) {
+        const next = pendingTabId;
+        pendingTabId = null;
+        activateTab(next);
+      } else {
+        pendingTabId = null;
+      }
     }
   }
 
@@ -2090,7 +1869,7 @@
       renderTabs();
     }
     persistTabMeta();
-    showToast('已关闭「' + tab.title + '」');
+    showToast(editorT('editor.tabClosed', '已关闭「{t}」').replace('{t}', tab.title));
   }
 
   // 新建按钮
@@ -2119,6 +1898,7 @@
   });
 
   function markUnsaved() {
+    bumpRevision(activeTabId);
     isUnsaved = true;
     if (statusSave) {
       statusSave.textContent = '未保存 *';
@@ -2135,7 +1915,33 @@
     scheduleAutosave();
   }
 
-  function markSaved() {
+  // 每个 tab 的编辑修订号：保存开始时记录，完成时比对。
+  // 只比 tabId 无法识别「同一 tab 在 await 期间又改了」——旧写入完成会把
+  // 新编辑误标为已保存，closeTab 于是跳过确认导致丢失。
+  const tabRevisions = new Map();
+  function bumpRevision(tabId) {
+    if (!tabId) return;
+    tabRevisions.set(tabId, (tabRevisions.get(tabId) || 0) + 1);
+  }
+
+  function markSaved(savedTabId, savedRevision) {
+    // 异步保存完成时若已切到其他 tab：只清发起保存那个 tab 的未保存标记，
+    // 不得触碰当前 tab 的 isUnsaved/状态栏（否则当前 tab 未保存的编辑会被
+    // closeTab 误判「已保存」而跳过确认，导致丢失）
+    if (savedTabId !== undefined && savedTabId !== activeTabId) {
+      const t0 = getTabById(savedTabId);
+      const revChanged = savedRevision !== undefined &&
+        (tabRevisions.get(savedTabId) || 0) !== savedRevision;
+      if (t0 && t0.unsaved && !revChanged) {
+        t0.unsaved = false;
+        renderTabs();
+      }
+      return;
+    }
+    // 同 tab：保存期间又产生了新编辑 → 保留未保存状态，等下一轮保存
+    if (savedRevision !== undefined && (tabRevisions.get(savedTabId) || 0) !== savedRevision) {
+      return;
+    }
     isUnsaved = false;
     if (statusSave) {
       statusSave.textContent = '已保存 ✓';
@@ -2164,7 +1970,12 @@
         id: c.id,
         type: c.type || 'markdown',
         content: c.textarea.value,
-        output_html: c.output.classList.contains('visible') ? c.output.innerHTML : ''
+        // output_html 序列化缓存：打字触发的 1.5s 自动保存不再全量重读
+        // 每个 cell 的 output DOM（含 base64 图/mermaid SVG 的 innerHTML
+        // 序列化是最大头）；markRun / 渲染器跑完时失效重建
+        output_html: c.output.classList.contains('visible')
+          ? (c._outputHtmlCache !== undefined ? c._outputHtmlCache : (c._outputHtmlCache = c.output.innerHTML))
+          : ''
       }))
     };
   }
@@ -2180,39 +1991,61 @@
   }
 
   async function autosave() {
+    // 恢复/导入进行中：数据结构不完整，延后到恢复结束（见 restoreDepth）
+    if (restoreDepth > 0) {
+      scheduleAutosave();
+      return;
+    }
+    // await 期间用户可能切 tab：捕获发起保存时的 tabId，
+    // 完成后只清该 tab 的标记（见 markSaved 的防串扰逻辑）
+    const savedTabId = activeTabId;
+    const savedRevision = tabRevisions.get(savedTabId) || 0;
     const data = serializeNotebook();
     if (useIndexedDB) {
       try {
         await storage.saveNotebook(data);
-        markSaved();
+        markSaved(savedTabId, savedRevision);
       } catch (e) {
         // IndexedDB 写入失败，回退 localStorage
         if (autosaveLocalStorage(data)) {
-          markSaved();
-          showToast('IndexedDB 写入失败，已回退到 localStorage');
+          markSaved(savedTabId, savedRevision);
+          showToast(editorT('editor.idbFallback', 'IndexedDB 写入失败，已回退到 localStorage'));
         } else {
           if (statusSave) {
             statusSave.textContent = '保存失败';
             statusSave.style.color = '#e74c3c';
           }
-          showToast('自动保存失败：存储空间可能已满');
+          showToast(editorT('editor.autosaveFull', '自动保存失败：存储空间可能已满'));
         }
       }
     } else {
       if (autosaveLocalStorage(data)) {
-        markSaved();
+        markSaved(savedTabId, savedRevision);
       } else {
         if (statusSave) {
           statusSave.textContent = '保存失败';
           statusSave.style.color = '#e74c3c';
         }
-        showToast('自动保存失败：存储空间可能已满');
+        showToast(editorT('editor.autosaveFull', '自动保存失败：存储空间可能已满'));
       }
     }
   }
 
-  function restoreFromData(data) {
+  async function restoreFromData(data) {
+    restoreDepth++;
+    try {
+      return await restoreFromDataInner(data);
+    } finally {
+      restoreDepth--;
+      if (restoreDepth === 0) scheduleAutosave();
+    }
+  }
+
+  async function restoreFromDataInner(data) {
     const cellList = (data && Array.isArray(data.cells)) ? data.cells : [];
+    // 旧 cell 即将被销毁：先关双屏，否则 cmHost 残留在双屏 overlay 里
+    // 形成死编辑器 + escHandler 泄漏
+    closeDualPane();
     // 清空现有
     cells.slice().forEach(c => {
       if (c.textarea && typeof c.textarea.destroy === 'function') c.textarea.destroy();
@@ -2220,19 +2053,37 @@
     });
     cells.length = 0;
     cellCounter = 0;
-    cellList.forEach(s => {
+    // output_html 持久化在 IndexedDB / localStorage：旧版本导入的污染数据可能
+    // 已入库，统一在注入前净化（导入边界已有一次净化，这里是纵深防御）
+    for (const s of cellList) {
       const newCell = createCell(null, s.content || '', { type: s.type === 'plaintext' ? 'plaintext' : 'markdown' });
       if (s.output_html) {
-        newCell.output.innerHTML = s.output_html;
-        newCell.output.classList.add('visible');
-        if (newCell.outputToolbar) newCell.outputToolbar.classList.add('visible');
-        markRun(newCell);
+        const clean = await mdRender.sanitizeHtml(s.output_html).catch(() => null);
+        if (clean != null) {
+          newCell.output.innerHTML = clean;
+          newCell.output.classList.add('visible');
+          if (newCell.outputToolbar) newCell.outputToolbar.classList.add('visible');
+          markRun(newCell);
+        }
       }
-    });
+    }
     if (cells.length === 0) createCell();
     renumberCells();
     updateStatusbar();
+    // 旧 cellId 已全部失效：清掉查找匹配，F3 不再按陈旧偏移选中
+    // （外移模块：find-replace.js；initEditor 首次运行前模块未注入，需判空）
+    if (findReplace) findReplace.invalidateMatches();
     return cellList.length > 0;
+  }
+
+  // 启动恢复会销毁初始 cell，所以「用户是否已在初始 cell 输入」必须在
+  // 恢复前判定：恢复之后再拿 cells.includes(bootCell) 恒为 false，
+  // 那个检查等于没做。
+  let bootCellsRef = null;
+  function userTypedInBootCells() {
+    if (!bootCellsRef) return false;
+    return bootCellsRef.some(c => c && c.isConnected !== false &&
+      cells.includes(c) && (c.textarea.value || '').trim());
   }
 
   async function loadAutosave() {
@@ -2247,6 +2098,12 @@
           if (!legacyData) {
             legacyData = await storage.migrateFromLocalStorage(STORAGE_KEY, 'autosave');
           }
+          // 兜底快照可能比 IDB 最后一次成功保存更新（卸载时 IDB 异步写未完成）：
+          // 按 saved 时间戳取新者，别让同步写完的 localStorage 数据被忽略
+          const backup0 = readLocalStorageBackup();
+          if (backup0 && (!legacyData || (backup0.saved || '') > (legacyData.saved || ''))) {
+            legacyData = backup0;
+          }
           // 创建单个 tab 承载旧数据
           const legacyId = (legacyData && legacyData.id) || 'autosave';
           tabs = [{ id: legacyId, title: deriveTabTitleFromData(legacyData) || defaultTabTitle(1), unsaved: false }];
@@ -2254,7 +2111,8 @@
           NOTEBOOK_ID = legacyId;
           renderTabs();
           if (legacyData) {
-            restoreFromData(legacyData);
+            if (userTypedInBootCells()) return false;
+            await restoreFromData(legacyData);
             return true;
           }
           return false;
@@ -2278,6 +2136,20 @@
         tabs = validTabs;
         // 选择激活 tab
         let target = savedActive && tabs.find(t => t.id === savedActive) ? savedActive : tabs[0].id;
+        // 同 id 的 localStorage 兜底快照更新时，直接以快照初始化该 tab
+        const backup = readLocalStorageBackup();
+        if (backup && backup.id === target) {
+          try {
+            const idbData = await storage.loadNotebook(target);
+            if (!idbData || (backup.saved || '') >= (idbData.saved || '')) {
+              if (userTypedInBootCells()) return false;
+              activeTabId = null;
+              await activateTab(target, { initData: backup });
+              return true;
+            }
+          } catch (e) { /* IDB 读取失败：用快照兜底 */ }
+        }
+        if (userTypedInBootCells()) return false;
         activeTabId = null; // 强制 activateTab 走完整加载流程
         await activateTab(target);
         return true;
@@ -2293,7 +2165,8 @@
             activeTabId = 'autosave';
             NOTEBOOK_ID = 'autosave';
             renderTabs();
-            restoreFromData(data);
+            if (userTypedInBootCells()) return false;
+            await restoreFromData(data);
             return true;
           }
         } catch (e2) {}
@@ -2309,10 +2182,11 @@
       activeTabId = 'autosave';
       NOTEBOOK_ID = 'autosave';
       renderTabs();
-      restoreFromData(data);
+      if (userTypedInBootCells()) return false;
+      await restoreFromData(data);
       return true;
     } catch (e) {
-      showToast('恢复自动保存失败：数据可能已损坏');
+      showToast(editorT('editor.restoreFailed', '恢复自动保存失败：数据可能已损坏'));
       return false;
     }
   }
@@ -2329,8 +2203,19 @@
     return null;
   }
 
+  // 读取 beforeunload 写入 localStorage 的兜底快照
+  function readLocalStorageBackup() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      return (data && Array.isArray(data.cells)) ? data : null;
+    } catch (e) { return null; }
+  }
+
   // 页面卸载前尽力保存（IndexedDB 异步，无法保证完成，但 1.5s 防抖通常已保存）
   window.addEventListener('beforeunload', () => {
+    if (restoreDepth > 0) return; // 恢复中的半成品不得写进兜底快照
     if (isUnsaved) {
       const data = serializeNotebook();
       if (useIndexedDB) {
@@ -2345,126 +2230,8 @@
   });
 
   // ============== 搜索/替换 ==============
-
-  let searchMatches = []; // [{cellId, start, end}]
-  let searchIdx = -1;
-
-  function openSearchPanel() {
-    if (!searchPanel) return;
-    searchPanel.classList.add('visible');
-    setTimeout(() => searchInput.focus(), 50);
-  }
-
-  function closeSearchPanel() {
-    if (!searchPanel) return;
-    searchPanel.classList.remove('visible');
-    searchMatches = [];
-    searchIdx = -1;
-    if (searchInfo) searchInfo.textContent = '未搜索';
-    // 清除高亮（textarea 无法真正高亮，仅清除选中）
-    const cell = getActiveCell();
-    if (cell) cell.textarea.blur();
-  }
-
-  function doSearch() {
-    const query = searchInput.value;
-    searchMatches = [];
-    searchIdx = -1;
-    if (!query) {
-      if (searchInfo) searchInfo.textContent = '请输入查找内容';
-      return;
-    }
-    const lowerQuery = query.toLowerCase();
-    cells.forEach(c => {
-      const val = c.textarea.value.toLowerCase();
-      let pos = 0;
-      while (true) {
-        const idx = val.indexOf(lowerQuery, pos);
-        if (idx === -1) break;
-        searchMatches.push({ cellId: c.id, start: idx, end: idx + query.length });
-        pos = idx + 1;
-      }
-    });
-    if (searchMatches.length === 0) {
-      if (searchInfo) searchInfo.textContent = '未找到匹配';
-    } else {
-      searchIdx = 0;
-      highlightMatch(searchMatches[0]);
-      if (searchInfo) searchInfo.textContent = `1 / ${searchMatches.length} 个匹配`;
-    }
-  }
-
-  function highlightMatch(m) {
-    const cell = getCell(m.cellId);
-    if (!cell) return;
-    activeCellId = m.cellId;
-    cell.textarea.focus();
-    cell.textarea.setSelectionRange(m.start, m.end);
-    // CM6 的 scrollIntoView 在 setSelectionRange 中已处理
-  }
-
-  function searchNavigate(dir) {
-    if (searchMatches.length === 0) return;
-    searchIdx = (searchIdx + dir + searchMatches.length) % searchMatches.length;
-    highlightMatch(searchMatches[searchIdx]);
-    if (searchInfo) searchInfo.textContent = `${searchIdx + 1} / ${searchMatches.length} 个匹配`;
-  }
-
-  function replaceOne() {
-    if (searchIdx < 0 || searchIdx >= searchMatches.length) return;
-    const m = searchMatches[searchIdx];
-    const cell = getCell(m.cellId);
-    if (!cell) return;
-    const replaceText = replaceInput.value;
-    cell.textarea.replaceRange(m.start, m.end, replaceText);
-    updateCellMeta(cell);
-    markModified(cell);
-    markUnsaved();
-    doSearch();
-  }
-
-  function replaceAll() {
-    if (!searchInput.value) return;
-    const replaceText = replaceInput.value;
-    let count = 0;
-    cells.forEach(c => {
-      const val = c.textarea.value;
-      if (val.toLowerCase().indexOf(searchInput.value.toLowerCase()) !== -1) {
-        const regex = new RegExp(escapeRegExp(searchInput.value), 'gi');
-        const newVal = val.replace(regex, () => { count++; return replaceText; });
-        if (newVal !== val) {
-          c.textarea.setValue(newVal);
-          updateCellMeta(c);
-          markModified(c);
-        }
-      }
-    });
-    markUnsaved();
-    if (searchInfo) searchInfo.textContent = `已替换 ${count} 处`;
-    searchMatches = [];
-    searchIdx = -1;
-  }
-
-  function escapeRegExp(s) {
-    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  }
-
-  // 搜索面板事件
-  if (searchBtn) searchBtn.addEventListener('click', () => {
-    if (searchPanel.classList.contains('visible')) closeSearchPanel();
-    else openSearchPanel();
-  });
-  if (searchInput) {
-    searchInput.addEventListener('input', doSearch);
-    searchInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); e.shiftKey ? searchNavigate(-1) : searchNavigate(1); }
-    });
-  }
-  document.getElementById('searchPrevBtn')?.addEventListener('click', () => searchNavigate(-1));
-  document.getElementById('searchNextBtn')?.addEventListener('click', () => searchNavigate(1));
-  document.getElementById('replaceOneBtn')?.addEventListener('click', replaceOne);
-  document.getElementById('replaceAllBtn')?.addEventListener('click', replaceAll);
-  document.getElementById('searchCloseBtn')?.addEventListener('click', closeSearchPanel);
+  // 已外移至 iris/js/editor/find-replace.js（editor.js 拆分第一批），
+  // initEditor 末尾通过 editorModules.findReplace.init(ctx) 注入协作对象。
 
   // ============== 字号调节 ==============
 
@@ -2545,9 +2312,39 @@
   // 尝试恢复自动保存（IndexedDB 异步读取）
   createCell(); // 先创建默认 Cell，避免界面空白
   markSaved();
+  // ===== 子系统注入（editor.js 拆分第一批：查找替换 / 图片上传外移模块） =====
+  const findReplace = window.MarkdownPreview.editorModules.findReplace.init({
+    searchPanel, searchInput, replaceInput, searchInfo, searchBtn,
+    getCells: () => cells,
+    getCell,
+    getActiveCell,
+    setActiveCellId: (id) => { activeCellId = id; },
+    updateCellMeta,
+    markModified,
+    markUnsaved
+  });
+  const mediaUpload = window.MarkdownPreview.editorModules.mediaUpload;
+  mediaUpload.init({
+    editorT,
+    showToast,
+    markUnsaved,
+    insertAtCursor,
+    imageUploadBtn,
+    imageUploadPopover,
+    setActiveCellId: (id) => { activeCellId = id; }
+  });
+
+  const bootCells = cells.slice(); // 启动时的初始 cell 引用
+  bootCellsRef = bootCells;       // 供 loadAutosave 在恢复前判定是否已被输入
   loadAutosave().then(restored => {
+    // 判定已下沉到 loadAutosave 的每个恢复分支之前（恢复后再查必然为 false）
+    const userTypedFirst = bootCells.some(c => c && (c.textarea.value || '').trim());
+    if (!restored && userTypedFirst) {
+      showToast(editorT('editor.restoreSkipped', '检测到上次会话，但已有输入，未自动恢复'));
+      return;
+    }
     if (restored) {
-      showToast('已恢复上次会话');
+      showToast(editorT('editor.sessionRestored', '已恢复上次会话'));
     } else if (tabs.length === 0) {
       // 无历史数据，初始化第一个空白 tab
       return createTab({ skipSaveCurrent: true });

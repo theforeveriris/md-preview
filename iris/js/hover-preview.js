@@ -39,7 +39,8 @@
   const t = window.MarkdownPreview.t;
 
   // HTML 转义统一走 md-render.js 的权威实现（全站唯一，避免多处副本漂移）
-  const esc = window.MarkdownPreview.mdRender.escapeHtml;
+  // 惰性转发：解析期直接取全局依赖 index.html 加载顺序（曾按隐式契约）
+  const esc = (...a) => window.MarkdownPreview.mdRender.escapeHtml(...a);
 
   // 从链接 href 提取目标文档路径：#/docs/x.md#anchor → docs/x.md
   function pathFromHref(href) {
@@ -271,5 +272,10 @@
     }, true);
   }
 
-  window.MarkdownPreview.hoverPreview = { init };
+  window.MarkdownPreview.hoverPreview = {
+    init,
+    // 文档重新渲染后内存缓存可能已 stale（内存命中短路了 fetch 层的
+    // no-cache 重验证）：文档边界清空重建
+    onDocRendered: function() { dataCache.clear(); }
+  };
 })();

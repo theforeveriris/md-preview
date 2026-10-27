@@ -12,14 +12,14 @@
     return;
   }
 
-  const { EditorState, EditorView, EditorSelection, Compartment, Annotation } = CM;
+  const { EditorState, EditorView, EditorSelection, Compartment, Annotation, Transaction } = CM;
 
   // 用于标记程序化更新（不触发 input 回调）
   const programmaticUpdate = Annotation.define();
 
   /**
    * CodeMirrorEditor - textarea 的 drop-in replacement
-   * 兼容属性：value, selectionStart, selectionEnd, scrollTop, dataset
+   * 兼容属性：value, selectionStart, selectionEnd, scrollTop(只读), dataset
    * 兼容事件：input, focus, blur, scroll, keydown, keyup, click, select, mouseup
    */
   class CodeMirrorEditor {
@@ -166,6 +166,7 @@
       this.setSelectionRange(this.selectionStart, v);
     }
 
+    // scrollTop 只读（写入走 CM6 自身滚动管理；文件头注释不再宣称可写）
     get scrollTop() {
       return this.view.scrollDOM.scrollTop;
     }
@@ -258,7 +259,12 @@
       if (current === v) return;
       this.view.dispatch({
         changes: { from: 0, to: current.length, insert: v },
-        annotations: programmaticUpdate.of(true),
+        annotations: [
+          programmaticUpdate.of(true),
+          // CM6 history 只认 addToHistory.of(false)：自定义注解压不住撤销栈，
+          // 旧实现每次 setValue 产生一条独立历史，无法一次性撤销
+          Transaction.addToHistory.of(false),
+        ],
       });
     }
 
@@ -313,7 +319,9 @@
       const newText = before + selected + after;
       this.view.dispatch({
         changes: { from: sel.from, to: sel.to, insert: newText },
-        selection: EditorSelection.cursor(sel.from + before.length, sel.from + before.length + selected.length),
+        // EditorSelection.range 保持包裹后的选区；cursor() 的第二参数是
+        // assoc 而非选区终点（旧 Bug：加粗/斜体后选区丢失）
+        selection: EditorSelection.range(sel.from + before.length, sel.from + before.length + selected.length),
         scrollIntoView: true,
       });
     }

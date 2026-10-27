@@ -1,9 +1,7 @@
 (function() {
   window.MarkdownPreview = window.MarkdownPreview || {};
   window.MarkdownPreview.renderers = window.MarkdownPreview.renderers || {};
-  
-  const { dom } = window.MarkdownPreview;
-  
+
   async function renderGeoData(type, dataStr, originalMatch, mapId) {
     // 按需加载 leaflet JS + CSS（~150KB，仅在出现 geojson/topojson 嵌入时才需要）
     if (typeof L === 'undefined') {
@@ -19,37 +17,31 @@
 
     try {
       const geoData = JSON.parse(dataStr);
-      
+
       setTimeout(() => {
-        let containerId = mapId;
-        
-        if (!containerId) {
-          containerId = 'map-' + Date.now();
-          const container = document.createElement('div');
-          container.id = containerId;
-          container.className = 'geo-map';
-          container.style.height = '400px';
-          container.style.borderRadius = '8px';
-          container.style.overflow = 'hidden';
-          
-          const content = dom.markdownContent.innerHTML;
-          dom.markdownContent.innerHTML = content.replace(originalMatch, container.outerHTML);
+        // 当前所有调用方（embedded.js 嵌入工厂 / 围栏渲染）都传 mapId；
+        // 旧的「无 mapId 时整页 innerHTML 重写」路径已删除（死代码且含
+        // String.replace $ 序列与注入风险）
+        if (!mapId) {
+          console.warn('[geo] renderGeoData called without mapId, skipped');
+          return;
         }
-        
-        const mapContainer = document.getElementById(containerId);
+        const mapContainer = document.getElementById(mapId);
         if (!mapContainer) return;
-        
-        const map = L.map(containerId).setView([35.8617, 104.1954], 5);
-        
+
+        const map = L.map(mapId).setView([35.8617, 104.1954], 5);
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '© OpenStreetMap contributors'
         }).addTo(map);
-        
+
         if (type === 'geojson') {
           L.geoJSON(geoData, {
             onEachFeature: function(feature, layer) {
               if (feature.properties && feature.properties.name) {
-                layer.bindPopup(feature.properties.name);
+                // 弹窗内容以文本节点传入：properties.name 来自 GeoJSON 数据
+                // （可能为非受信来源），字符串形式会被 Leaflet 按 HTML 解析
+                layer.bindPopup(document.createTextNode(feature.properties.name));
               }
             }
           }).addTo(map);
@@ -58,12 +50,12 @@
           L.geoJSON(geojsonData, {
             onEachFeature: function(feature, layer) {
               if (feature.properties && feature.properties.name) {
-                layer.bindPopup(feature.properties.name);
+                layer.bindPopup(document.createTextNode(feature.properties.name));
               }
             }
           }).addTo(map);
         }
-        
+
         const bounds = map.getBounds();
         if (bounds.isValid()) {
           map.fitBounds(bounds);

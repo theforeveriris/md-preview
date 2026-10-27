@@ -1,5 +1,5 @@
 (function() {
-  console.log('[Mermaid] Renderer module loading...');
+  (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Mermaid] Renderer module loading...');
   window.MarkdownPreview = window.MarkdownPreview || {};
   window.MarkdownPreview.renderers = window.MarkdownPreview.renderers || {};
 
@@ -16,7 +16,7 @@
   async function ensureMermaid() {
     if (typeof mermaid !== 'undefined' && mermaidInitialized) return true;
     if (typeof mermaid === 'undefined') {
-      console.log('[Mermaid] Library not loaded yet, lazy-loading mermaid.min.js');
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Mermaid] Library not loaded yet, lazy-loading mermaid.min.js');
       try {
         await window.MarkdownPreview.loadScript('iris/vendor/mermaid.min.js');
       } catch (err) {
@@ -35,22 +35,35 @@
       return false;
     }
     if (!mermaidInitialized) {
+      // 配色一律读主题变量：图表跟随当前主题（含用户自定义配色），
+      // 不再硬编码某个固定强调色。
+      const cv = (name, fallback) => window.MarkdownPreview.ColorUtils.getThemeVar(name, fallback);
+      const accent = cv('--color-accent-purple', '#d4a5c9');
+      const accentPink = cv('--color-accent-pink', '#f2c4ce');
+      const surface = cv('--color-surface', '#ffffff');
+      const bg = cv('--color-bg', '#fafafa');
+      const text = cv('--color-text', '#333333');
+      const border = cv('--color-border', '#f0f0f0');
+      const muted = cv('--color-text-muted', '#888888');
       mermaid.initialize({
         startOnLoad: false,
+        // 显式固化消毒边界：不依赖打包的 mermaid 版本默认值
+        securityLevel: 'strict',
         theme: 'base',
         themeVariables: {
-          primaryColor: '#d4a5c9',
-          primaryTextColor: '#333333',
-          primaryBorderColor: '#d4a5c9',
-          lineColor: '#888888',
-          secondaryColor: '#f2c4ce',
-          tertiaryColor: '#f8f8f8',
-          background: '#ffffff',
-          mainBkg: '#ffffff',
-          nodeBorder: '#d4a5c9',
-          clusterBkg: '#f8f8f8',
-          titleColor: '#333333',
-          edgeLabelBackground: '#ffffff'
+          primaryColor: accent,
+          primaryTextColor: text,
+          primaryBorderColor: accent,
+          lineColor: muted,
+          secondaryColor: accentPink,
+          tertiaryColor: bg,
+          background: surface,
+          mainBkg: surface,
+          nodeBorder: accent,
+          clusterBkg: bg,
+          clusterBorder: border,
+          titleColor: text,
+          edgeLabelBackground: surface
         },
         flowchart: {
           useMaxWidth: true,
@@ -64,17 +77,47 @@
         }
       });
       mermaidInitialized = true;
-      console.log('[Mermaid] Initialized');
+      bindThemeChange();
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Mermaid] Initialized');
     }
     return true;
   }
 
+  // 主题切换后重渲染已有图表：mermaid.initialize 只生效一次，
+  // 不重渲染的话旧图会一直停在切换前的配色上。
+  let themeListenerBound = false;
+  function bindThemeChange() {
+    if (themeListenerBound) return;
+    themeListenerBound = true;
+    window.addEventListener('themechange', () => {
+      if (typeof mermaid === 'undefined') return;
+      mermaidInitialized = false;
+      // 重新初始化以便下一次 render 使用新配色
+      ensureMermaid().catch(() => {});
+      rerenderExisting();
+    });
+  }
+
+  function rerenderExisting() {
+    const nodes = document.querySelectorAll('.mermaid-diagram[data-src]');
+    nodes.forEach((node) => {
+      const src = node.getAttribute('data-src');
+      if (!src) return;
+      const id = 'mermaid-re-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+      Promise.resolve(mermaid.render(id, src))
+        .then(({ svg }) => {
+          if (svg && node.isConnected) node.innerHTML = svg;
+        })
+        .catch(() => { /* 单个图表失败不影响其他 */ });
+    });
+  }
+
   async function render(root) {
-    console.log('[Mermaid] render() called');
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Mermaid] render() called');
 
     // 没有任何 mermaid 代码块时直接跳过，避免无谓加载
     if (!hasMermaidBlocks()) {
-      console.log('[Mermaid] No mermaid blocks found, skipping load');
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Mermaid] No mermaid blocks found, skipping load');
       return;
     }
 
@@ -86,75 +129,72 @@
     const markdownBody = window.MarkdownPreview.mdRender.resolveRoot(root);
     if (!markdownBody) return;
 
-    let foundMermaid = true;
-    let iteration = 0;
+    // 先一次性收集所有 mermaid 候选（旧实现每替换一个就重扫全部 pre，
+    // O(n²) 且上限 50 个），再顺序替换
+    const candidates = [];
+    markdownBody.querySelectorAll('pre').forEach(pre => {
+      const codeElement = pre.querySelector('code');
+      if (!codeElement) return;
+      const classList = codeElement.className;
+      if (!classList || !classList.includes('language-mermaid')) return;
+      candidates.push({ pre, code: codeElement.textContent.trim() });
+    });
 
-    // 持续查找直到找不到 mermaid 代码块，或者最多 50 次防止死循环
-    while (foundMermaid && iteration < 50) {
-      foundMermaid = false;
-      iteration++;
+    let done = 0;
+    for (const item of candidates) {
+      const { pre, code: mermaidCode } = item;
+      if (!document.body.contains(pre)) continue; // 可能已被前置渲染器处理
+      const id = 'mermaid-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
 
-      const pres = markdownBody.querySelectorAll('pre');
+      try {
+        const { svg } = await mermaid.render(id, mermaidCode);
 
-      for (const pre of pres) {
-        const codeElement = pre.querySelector('code');
-        if (!codeElement) continue;
-
-        const classList = codeElement.className;
-        if (!classList || !classList.includes('language-mermaid')) continue;
-
-        foundMermaid = true;
-
-        console.log('[Mermaid] Found mermaid code block, iteration', iteration);
-
-        const mermaidCode = codeElement.textContent.trim();
-        const id = 'mermaid-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-
-        try {
-          const { svg } = await mermaid.render(id, mermaidCode);
-
-          if (!svg || svg.length === 0) {
-            console.error('[Mermaid] SVG is empty!');
-            continue;
-          }
-
-          const container = document.createElement('div');
-          container.className = 'mermaid-diagram';
-          container.innerHTML = svg;
-          // 源码标记：供悬浮工具条「复制源码」使用（interactions.js）
-          container.dataset.src = mermaidCode;
-
-          if (pre.parentNode && document.body.contains(pre)) {
-            console.log('[Mermaid] Replacing pre with container');
-            pre.parentNode.replaceChild(container, pre);
-            console.log('[Mermaid] ✅ Successfully replaced pre with SVG container');
-          }
-        } catch (error) {
-          console.error('[Mermaid] Rendering error:', error);
-
-          const errorDiv = document.createElement('div');
-          errorDiv.style.color = '#ff6b6b';
-          errorDiv.style.padding = '10px';
-          errorDiv.style.border = '1px solid #ff6b6b';
-          errorDiv.style.borderRadius = '4px';
-          errorDiv.textContent = 'Mermaid 渲染错误: ' + error.message;
-
-          if (pre.parentNode && document.body.contains(pre)) {
-            pre.parentNode.replaceChild(errorDiv, pre);
-          }
+        if (!svg || svg.length === 0) {
+          console.error('[Mermaid] SVG is empty!');
+          continue;
         }
 
-        // 找到一个并替换后，重新开始循环，因为 DOM 已经变化了
-        break;
+        const container = document.createElement('div');
+        container.className = 'mermaid-diagram';
+        container.innerHTML = svg;
+        // 源码标记：供悬浮工具条「复制源码」使用（interactions.js）
+        container.dataset.src = mermaidCode;
+
+        if (pre.parentNode) {
+          pre.parentNode.replaceChild(container, pre);
+          done++;
+        }
+      } catch (error) {
+        console.error('[Mermaid] Rendering error:', error);
+
+        // 统一回退约定：错误提示 + 可折叠源码（不丢源码，与 plantuml 一致）
+        const errorBox = document.createElement('div');
+        errorBox.style.cssText = 'color:#ff6b6b;padding:10px;border:1px solid #ff6b6b;border-radius:4px';
+        const msg = document.createElement('div');
+        msg.textContent = 'Mermaid 渲染错误: ' + error.message;
+        errorBox.appendChild(msg);
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+        summary.textContent = '查看源码';
+        const srcPre = document.createElement('pre');
+        srcPre.style.cssText = 'margin-top:8px;white-space:pre-wrap';
+        srcPre.textContent = mermaidCode;
+        details.appendChild(summary);
+        details.appendChild(srcPre);
+        errorBox.appendChild(details);
+
+        if (pre.parentNode) {
+          pre.parentNode.replaceChild(errorBox, pre);
+        }
       }
     }
 
-    console.log('[Mermaid] render() complete, iterations:', iteration);
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Mermaid] render() complete, replaced:', done);
   }
 
   window.MarkdownPreview.renderers.mermaid = {
     render
   };
 
-  console.log('[Mermaid] Renderer module loaded and registered');
+  (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Mermaid] Renderer module loaded and registered');
 })();

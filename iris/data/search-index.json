@@ -2,8 +2,8 @@
   {
     "path": "docs/changelog.md",
     "title": "变更日志",
-    "preview": "变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-19 - d74e080 feat(batch4): 图 / 表自动编号与交叉引用（SW v8.48） — theforeveriris - 94d8f3f feat(batch1): 设置项搜索 + 脚注悬浮预览 + 时间线组件（SW v8.45） — ",
-    "searchText": "变更日志 规划 变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-19 - d74e080 feat(batch4): 图 / 表自动编号与交叉引用（SW v8.48） — theforeveriris - 94d8f3f feat(batch1): 设置项搜索 + 脚注悬浮预览 + 时间线组件（SW v8.45） —  docs/changelog.md 變更日誌 規劃 bgrz gh",
+    "preview": "变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-27 - 44c7657 fix(review): 处理 CodeRabbit 的 20 条 minor 与 2 条 nitpick — theforeveriris - 7f6935e fix(review): 修正 CodeRabbit 评审的 11 ",
+    "searchText": "变更日志 规划 变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-27 - 44c7657 fix(review): 处理 CodeRabbit 的 20 条 minor 与 2 条 nitpick — theforeveriris - 7f6935e fix(review): 修正 CodeRabbit 评审的 11  docs/changelog.md 變更日誌 規劃 bgrz gh",
     "tags": [
       "规划"
     ]
@@ -175,6 +175,16 @@
     ]
   },
   {
+    "path": "docs/examples/graph-backlinks-demo.md",
+    "title": "文档图谱与反向链接示例",
+    "preview": "文档图谱与反向链接 文档之间的关系来自正文里的 markdown 相对链接：构建期 iris/scripts/build-links.js 扫描全部文档，产出 iris/data/links.json（谁链接了谁），运行时用它渲染两个地方： 1. 文末反向链接区——列出「哪些文档链接到了本文」与相关文档； 2. 文档图谱——把全部文档画成一张可交互的关系网。 打开文档图谱 两种入口： - 命令面板",
+    "searchText": "文档图谱与反向链接示例 导航 进阶 文档图谱与反向链接 文档之间的关系来自正文里的 markdown 相对链接：构建期 iris/scripts/build-links.js 扫描全部文档，产出 iris/data/links.json（谁链接了谁），运行时用它渲染两个地方： 1. 文末反向链接区——列出「哪些文档链接到了本文」与相关文档； 2. 文档图谱——把全部文档画成一张可交互的关系网。 打开文档图谱 两种入口： - 命令面板 docs/examples/graph-backlinks-demo.md 文檔圖譜與反向鏈接示例 導航 進階 wdtpyfxljsl dh jj",
+    "tags": [
+      "导航",
+      "进阶"
+    ]
+  },
+  {
     "path": "docs/examples/image-gallery-examples.md",
     "title": "图片画廊与懒加载示例",
     "preview": "图片画廊与懒加载示例 本页面展示图片的懒加载、画廊模式（含多种布局样式）、图片灯箱和错误降级功能。 --- 1. 图片懒加载 所有图片都自动添加了 loading=\"lazy\" 属性，会在图片进入视口时才加载。 语法格式： 图片会在滚动到视口时才开始加载，提升页面性能。 --- 2. 画廊模式 当文档中出现连续两张或以上的图片（中间无其他内容）时，会自动包装成画廊布局。 两张图片画廊 以下两张图片",
@@ -334,8 +344,8 @@
   {
     "path": "docs/examples/theme-demo.md",
     "title": "主题市场演示",
-    "preview": "主题市场演示 这是一个展示主题系统的示例文档。点击左下角的调色盘图标可以切换不同的主题。 可用主题 | 主题名称 | 描述 | |---------|------| | 🌸 紫粉渐变 | 默认的浅紫浅粉渐变主题 | | ⚡ GitHub Light | 仿 GitHub 明亮主题 | | 🌙 GitHub Dark | 仿 GitHub 深色主题 | | 📝 Notion | 仿 Notio",
-    "searchText": "主题市场演示 主题 主题市场演示 这是一个展示主题系统的示例文档。点击左下角的调色盘图标可以切换不同的主题。 可用主题 | 主题名称 | 描述 | |---------|------| | 🌸 紫粉渐变 | 默认的浅紫浅粉渐变主题 | | ⚡ GitHub Light | 仿 GitHub 明亮主题 | | 🌙 GitHub Dark | 仿 GitHub 深色主题 | | 📝 Notion | 仿 Notio docs/examples/theme-demo.md 主題市場演示 主題 ztscys zt",
+    "preview": "主题市场演示 这是一个展示主题系统的示例文档。点击左下角的调色盘图标可以切换不同的主题。 可用主题 | 主题名称 | 描述 | |---------|------| | 🌸 紫粉渐变 | 默认的浅紫浅粉渐变主题 | | 💜 鸢尾花紫 | 亮色淡紫底 + 鸢尾品牌紫强调色 | | ⚡ GitHub Light | 仿 GitHub 明亮主题 | | 🌙 GitHub Dark | 仿 GitH",
+    "searchText": "主题市场演示 主题 主题市场演示 这是一个展示主题系统的示例文档。点击左下角的调色盘图标可以切换不同的主题。 可用主题 | 主题名称 | 描述 | |---------|------| | 🌸 紫粉渐变 | 默认的浅紫浅粉渐变主题 | | 💜 鸢尾花紫 | 亮色淡紫底 + 鸢尾品牌紫强调色 | | ⚡ GitHub Light | 仿 GitHub 明亮主题 | | 🌙 GitHub Dark | 仿 GitH docs/examples/theme-demo.md 主題市場演示 主題 ztscys zt",
     "tags": [
       "主题"
     ]
@@ -427,47 +437,11 @@
   {
     "path": "docs/theme-customization.md",
     "title": "主题定制",
-    "preview": "主题定制 Markdown Preview 提供三种层级的外观定制方式，由易到难： 1. 预设主题 — 内置 7 套配色，一键切换 2. 可视化取色器 — 拖动色块即可调整主题色，无需写 CSS 3. 自定义 CSS — 加载外部 CSS 文件，完全控制样式 --- 一、内置主题 | ID | 名称 | 说明 | |----|------|------| | default | 默认 | 浅紫浅粉",
-    "searchText": "主题定制 主题 配置 主题定制 Markdown Preview 提供三种层级的外观定制方式，由易到难： 1. 预设主题 — 内置 7 套配色，一键切换 2. 可视化取色器 — 拖动色块即可调整主题色，无需写 CSS 3. 自定义 CSS — 加载外部 CSS 文件，完全控制样式 --- 一、内置主题 | ID | 名称 | 说明 | |----|------|------| | default | 默认 | 浅紫浅粉 docs/theme-customization.md 主題定製 主題 配置 ztdz zt pz",
+    "preview": "主题定制 Markdown Preview 提供三种层级的外观定制方式，由易到难： 1. 预设主题 — 内置 8 套配色，一键切换 2. 可视化取色器 — 拖动色块即可调整主题色，无需写 CSS 3. 自定义 CSS — 加载外部 CSS 文件，完全控制样式 --- 一、内置主题 | ID | 名称 | 说明 | |----|------|------| | default | 默认 | 浅紫浅粉",
+    "searchText": "主题定制 主题 配置 主题定制 Markdown Preview 提供三种层级的外观定制方式，由易到难： 1. 预设主题 — 内置 8 套配色，一键切换 2. 可视化取色器 — 拖动色块即可调整主题色，无需写 CSS 3. 自定义 CSS — 加载外部 CSS 文件，完全控制样式 --- 一、内置主题 | ID | 名称 | 说明 | |----|------|------| | default | 默认 | 浅紫浅粉 docs/theme-customization.md 主題定製 主題 配置 ztdz zt pz",
     "tags": [
       "主题",
       "配置"
-    ]
-  },
-  {
-    "path": "docs/zw/1.0-排版问题样例一.md",
-    "title": "排版问题样例一",
-    "preview": "排版问题样例一 本文档故意保留多处中文排版问题，用于验证 CI 排版校验流水线能否触发。 空格类问题 在 LeanCloud 上，数据存储是围绕AVObject进行的。 今天出去买菜花了 5000 元，我家的光纤入屋宽带有 10 Gbps，SSD 一共有 20 TB。 刚刚买了一部 iPhone，好开心！ 标点类问题 德国队竟然战胜了巴西队！ 她竟然对你说「喵」？！ 嗨！你知道嘛？今天前台的小妹跟",
-    "searchText": "排版问题样例一 测试 排版问题样例一 本文档故意保留多处中文排版问题，用于验证 CI 排版校验流水线能否触发。 空格类问题 在 LeanCloud 上，数据存储是围绕AVObject进行的。 今天出去买菜花了 5000 元，我家的光纤入屋宽带有 10 Gbps，SSD 一共有 20 TB。 刚刚买了一部 iPhone，好开心！ 标点类问题 德国队竟然战胜了巴西队！ 她竟然对你说「喵」？！ 嗨！你知道嘛？今天前台的小妹跟 docs/zw/1.0-排版问题样例一.md 排版問題樣例一 測試 pbwtyly cs",
-    "tags": [
-      "测试"
-    ]
-  },
-  {
-    "path": "docs/zw/2.0-排版问题样例二.md",
-    "title": "排版问题样例二",
-    "preview": "排版问题样例二 第二份样例文档，补充更多排版问题类型。 空格 在 GitHub 上，Actions 是 CI 工具。 构建耗时约 250 ms，产物体积 5 MB，缓存 512 MB。 单位 光纤速率 100 Mbps，硬盘 4 TB，内存 16 GB。 延迟 30 ms，重量 5 kg，距离 3 km。 标点 版本号 v1.2.3 已发布，功能真的很完善！ 测试用例共 128 个，失败 0 个。",
-    "searchText": "排版问题样例二 测试 排版问题样例二 第二份样例文档，补充更多排版问题类型。 空格 在 GitHub 上，Actions 是 CI 工具。 构建耗时约 250 ms，产物体积 5 MB，缓存 512 MB。 单位 光纤速率 100 Mbps，硬盘 4 TB，内存 16 GB。 延迟 30 ms，重量 5 kg，距离 3 km。 标点 版本号 v1.2.3 已发布，功能真的很完善！ 测试用例共 128 个，失败 0 个。 docs/zw/2.0-排版问题样例二.md 排版問題樣例二 測試 pbwtyle cs",
-    "tags": [
-      "测试"
-    ]
-  },
-  {
-    "path": "docs/zw/3.0-排版问题样例三.md",
-    "title": "排版问题样例三",
-    "preview": "排版问题样例三 第三份样例，覆盖表格、列表、代码围栏等结构中的排版问题。 表格中的问题 | 名称 | 说明 | 耗时 | |------|------|------| | 构建 | 跑所有脚本 | 250 ms | | 部署 | 推送到 GitHub Pages | 5s | | 缓存 | 写入 precache | 30 ms | 列表中的问题 - 第一项：在 LeanCloud 上开发，速度很",
-    "searchText": "排版问题样例三 测试 排版问题样例三 第三份样例，覆盖表格、列表、代码围栏等结构中的排版问题。 表格中的问题 | 名称 | 说明 | 耗时 | |------|------|------| | 构建 | 跑所有脚本 | 250 ms | | 部署 | 推送到 GitHub Pages | 5s | | 缓存 | 写入 precache | 30 ms | 列表中的问题 - 第一项：在 LeanCloud 上开发，速度很 docs/zw/3.0-排版问题样例三.md 排版問題樣例三 測試 pbwtyls cs",
-    "tags": [
-      "测试"
-    ]
-  },
-  {
-    "path": "docs/zw/README.md",
-    "title": "排版测试目录",
-    "preview": "排版测试目录 本目录用于验证中文排版校验流水线。 文件列表 | 文件 | 说明 | |------|------| | 1.0-排版问题样例一.md | 空格、标点、数字、全半角、行首禁则、重复标点、直引号 | | 2.0-排版问题样例二.md | 单位、版本号、冒号问号、配置片段 | | 3.0-排版问题样例三.md | 表格、列表、引用、代码围栏、HTML、链接 | 预期行为 流水线触发后，机",
-    "searchText": "排版测试目录 测试 排版测试目录 本目录用于验证中文排版校验流水线。 文件列表 | 文件 | 说明 | |------|------| | 1.0-排版问题样例一.md | 空格、标点、数字、全半角、行首禁则、重复标点、直引号 | | 2.0-排版问题样例二.md | 单位、版本号、冒号问号、配置片段 | | 3.0-排版问题样例三.md | 表格、列表、引用、代码围栏、HTML、链接 | 预期行为 流水线触发后，机 docs/zw/README.md 排版測試目錄 測試 pbcsml cs",
-    "tags": [
-      "测试"
     ]
   }
 ]

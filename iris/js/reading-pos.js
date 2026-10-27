@@ -29,16 +29,24 @@
 
   function t(key, fallback) {
     const i18n = window.MarkdownPreview.i18n;
-    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
+    // fallback 透传：键缺失时回退内置文案，而不是裸键名上屏
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key, fallback);
     return fallback;
   }
 
+  // 内存持有 store：滚动期间每秒 loadStore（JSON.parse 全量 200 条）+
+  // saveStore（整体序列化写回）双开销；改为启动读一次、写盘 write-through
+  let storeCache = null;
+
   function loadStore() {
-    try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; }
-    catch (e) { return {}; }
+    if (storeCache) return storeCache;
+    try { storeCache = JSON.parse(localStorage.getItem(STORE_KEY)) || {}; }
+    catch (e) { storeCache = {}; }
+    return storeCache;
   }
 
   function saveStore(store) {
+    storeCache = store;
     try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
     catch (e) { /* 隐私模式等场景下 localStorage 可能不可用，静默跳过 */ }
   }

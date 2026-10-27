@@ -144,12 +144,23 @@
     };
   }
 
+  // 「load → 改 → save → apply」样板收敛：约 20 处 handler 逐字重复此模式。
+  // applyFn 收到合并后的完整 settings（而非单值），便于多字段联动。
+  function updateSetting(patch, applyFn) {
+    const settings = loadSettings();
+    Object.assign(settings, patch);
+    saveSettings(settings);
+    if (typeof applyFn === 'function') applyFn(settings);
+  }
+
   function saveSettings(settings) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
     } catch (e) {
       console.error('Failed to save settings:', e);
     }
+    // 本页内的设置快照缓存（prefetch/gestures 等高频路径）失效
+    document.dispatchEvent(new CustomEvent('mdpreview:settingschanged'));
     // 多标签页同步：设置变化广播给其他标签页（sync-tabs.js）
     if (window.MarkdownPreview.syncTabs) {
       window.MarkdownPreview.syncTabs.post({ type: 'settings', settings });
@@ -349,7 +360,6 @@
 
   function initSettingsPanel() {
     const settingsOverlay = document.getElementById('settingsOverlay');
-    const closeSettingsBtn = document.getElementById('closeSettingsBtn');
     const showReadingProgressToggle = document.getElementById('showReadingProgressToggle');
     const showWordCountToggle = document.getElementById('showWordCountToggle');
     const truncateFileNamesToggle = document.getElementById('truncateFileNamesToggle');
@@ -359,10 +369,6 @@
     if (!settingsOverlay) {
       return;
     }
-
-    closeSettingsBtn?.addEventListener('click', () => {
-      closeSettingsPanel();
-    });
 
     settingsOverlay.addEventListener('click', (e) => {
       if (e.target === settingsOverlay) {
@@ -391,6 +397,10 @@
       toggleTruncateFileNames(settings.truncateFileNames);
     });
 
+    // 显式 getElementById：不依赖「有 id 的元素自动成为 window 属性」这一
+    // 非标准隐式行为
+    const expandFoldersToggle = document.getElementById('expandFoldersToggle');
+    const sidebarStyleSelect = document.getElementById('sidebarStyleSelect');
     expandFoldersToggle?.addEventListener('change', (e) => {
       const settings = loadSettings();
       settings.expandFolders = e.target.checked;
@@ -424,12 +434,21 @@
     const contentFullWidthToggle = document.getElementById('contentFullWidthToggle');
     const resetContentWidthBtn = document.getElementById('resetContentWidthBtn');
 
+    // input 只改 CSS 变量保证跟手；saveSettings（JSON 序列化 + localStorage
+    // 写入 + BroadcastChannel 广播）合并到 change/停顿
+    let contentWidthSaveTimer = null;
     contentWidthRange?.addEventListener('input', (e) => {
-      const settings = loadSettings();
-      settings.contentWidth = normalizeContentWidth(e.target.value);
-      saveSettings(settings);
-      applyContentWidthSettings(settings);
-      syncContentWidthControls(settings);
+      const width = normalizeContentWidth(e.target.value);
+      document.documentElement.style.setProperty('--content-width', width + 'px');
+      document.body.classList.remove('content-full-width');
+      if (contentWidthSaveTimer) clearTimeout(contentWidthSaveTimer);
+      contentWidthSaveTimer = setTimeout(() => {
+        contentWidthSaveTimer = null;
+        const settings = loadSettings();
+        settings.contentWidth = width;
+        saveSettings(settings);
+        syncContentWidthControls(settings);
+      }, 300);
     });
 
     contentFullWidthToggle?.addEventListener('change', (e) => {
@@ -442,18 +461,12 @@
 
     // 长表格右侧越界
     document.getElementById('tableBleedToggle')?.addEventListener('change', (e) => {
-      const settings = loadSettings();
-      settings.tableBleed = e.target.checked;
-      saveSettings(settings);
-      applyTableBleed(settings.tableBleed);
+      updateSetting({ tableBleed: e.target.checked }, (st) => applyTableBleed(st.tableBleed));
     });
 
     // 标题数字无衬线
     document.getElementById('sansHeadingDigitsToggle')?.addEventListener('change', (e) => {
-      const settings = loadSettings();
-      settings.sansHeadingDigits = e.target.checked;
-      saveSettings(settings);
-      applySansHeadingDigits(settings.sansHeadingDigits);
+      updateSetting({ sansHeadingDigits: e.target.checked }, (st) => applySansHeadingDigits(st.sansHeadingDigits));
     });
 
     // 移动端手势（左右滑翻页 / 左缘右滑呼出侧边栏）
@@ -471,16 +484,14 @@
       if (!e.target.checked && window.MarkdownPreview.sectionCollapse) {
         window.MarkdownPreview.sectionCollapse.clearAll();
       } else if (e.target.checked && window.MarkdownPreview.sectionCollapse) {
-        window.MarkdownPreview.sectionCollapse.onDocRendered(loadSettings() && window.MarkdownPreview.state.currentFilePath);
+        // 遗留写法「loadSettings() && …」清理：对象恒为真值，直接取路径
+        window.MarkdownPreview.sectionCollapse.onDocRendered(window.MarkdownPreview.state.currentFilePath);
       }
     });
 
     // 专注模式（focus-mode.js：当前段落高亮、其余淡化）
     document.getElementById('focusModeToggle')?.addEventListener('change', (e) => {
-      const settings = loadSettings();
-      settings.focusMode = e.target.checked;
-      saveSettings(settings);
-      applyFocusMode(settings.focusMode);
+      updateSetting({ focusMode: e.target.checked }, (st) => applyFocusMode(st.focusMode));
     });
 
     // 对照阅读默认同步滚动（split-view.js 打开时读取；开着时即时生效）
@@ -514,18 +525,12 @@
 
     // 中文竖排（CJK-3）
     document.getElementById('verticalTextToggle')?.addEventListener('change', (e) => {
-      const settings = loadSettings();
-      settings.verticalText = e.target.checked;
-      saveSettings(settings);
-      applyVerticalText(settings.verticalText);
+      updateSetting({ verticalText: e.target.checked }, (st) => applyVerticalText(st.verticalText));
     });
 
     // 屏外内容跳过布局（PERF-2）
     document.getElementById('perfContentVisibilityToggle')?.addEventListener('change', (e) => {
-      const settings = loadSettings();
-      settings.perfContentVisibility = e.target.checked;
-      saveSettings(settings);
-      applyContentVisibility(settings.perfContentVisibility);
+      updateSetting({ perfContentVisibility: e.target.checked }, (st) => applyContentVisibility(st.perfContentVisibility));
     });
 
     // 相邻文档预取（PERF-4；预取自身读取设置，无需即时动作）
@@ -595,8 +600,16 @@
   function applyRemoteFont(url) {
     const existing = document.getElementById(REMOTE_FONT_STYLE_ID);
     if (existing) existing.remove();
-    const trimmed = (url || '').trim();
+    let trimmed = (url || '').trim();
     if (!trimmed) return;
+    // 远程字体 CSS 仅接受 https: 与相对路径：防止导入的恶意备份注入远程
+    // 样式（追踪/改写），其余协议一律拒绝
+    if (!/^[a-z][a-z0-9+.-]*:/i.test(trimmed) || /^https:/i.test(trimmed)) {
+      // 相对路径或 https:，放行
+    } else {
+      console.warn('[font] 远程字体仅支持 https: 或相对路径，已忽略：', trimmed);
+      return;
+    }
     const link = document.createElement('link');
     link.id = REMOTE_FONT_STYLE_ID;
     link.rel = 'stylesheet';
@@ -704,11 +717,25 @@
       el.addEventListener('blur', commit);
     });
 
-    // 字号 / 字重：变化即实时保存
+    // 字号滑杆：input 实时改 CSS 变量（跟手），持久化合并到停顿/change
+    //（updateFont 每 input 事件都做 JSON 序列化 + localStorage 写 + 广播）
+    // 每个字号控件独立定时器：共用一个 timer 时，快速拖动两个滑杆会互相
+    // 取消对方的待保存更新（只保留最后一次），先拖的那个值永不落库
+    const fontSaveTimers = new Map();
+    const pxMap = { fontSizeBody: '--font-size-body', fontSizeMd: '--font-size-md',
+      fontSizeH1: '--font-size-h1', fontSizeH2: '--font-size-h2', fontSizeH3: '--font-size-h3' };
     ['fontSizeBody', 'fontSizeMd', 'fontSizeH1', 'fontSizeH2', 'fontSizeH3'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
-      el.addEventListener('input', () => updateFont({ [id]: el.value }));
+      el.addEventListener('input', () => {
+        const prop = pxMap[id];
+        if (prop) document.documentElement.style.setProperty(prop, el.value + 'px');
+        if (fontSaveTimers.has(id)) clearTimeout(fontSaveTimers.get(id));
+        fontSaveTimers.set(id, setTimeout(() => {
+          fontSaveTimers.delete(id);
+          updateFont({ [id]: el.value });
+        }, 300));
+      });
     });
     ['fontWeightBody', 'fontWeightMd', 'fontWeightDisplay',
      'fontWeightH1', 'fontWeightH2', 'fontWeightH3'].forEach(id => {
@@ -1264,94 +1291,18 @@
       }
     });
 
-    // 设置导出 / 导入（含主题、语言）
-    const backupExportBtn = document.getElementById('settingsExportBtn');
-    const backupImportBtn = document.getElementById('settingsImportBtn');
-    const backupImportInput = document.getElementById('settingsImportInput');
-
-    backupExportBtn?.addEventListener('click', exportSettings);
-    backupImportBtn?.addEventListener('click', () => backupImportInput?.click());
-    backupImportInput?.addEventListener('change', async (e) => {
-      const file = e.target.files && e.target.files[0];
-      if (file) await importSettings(file);
-      e.target.value = '';
+    // 设置导出 / 导入（含主题、语言）——接线外移至 settings-backup.js
+    window.MarkdownPreview.settingsBackup.wire({
+      backupExportBtn: document.getElementById('settingsExportBtn'),
+      backupImportBtn: document.getElementById('settingsImportBtn'),
+      backupImportInput: document.getElementById('settingsImportInput'),
+      t
     });
   }
 
   // ============== 设置导出 / 导入 ==============
-  // 带走外观与阅读相关的全部 localStorage 键：设置、主题（含自动配对、
-  // 自定义 CSS / hljs）与界面语言。导入采用「写回后刷新」，保证主题、
-  // 字体、i18n 等按启动流程重新应用，避免逐项手工同步遗漏。
-  const BACKUP_KEYS = {
-    settings: 'md-preview-settings',
-    theme: 'md-preview-theme',
-    themeLight: 'md-preview-theme-light',
-    themeDark: 'md-preview-theme-dark',
-    customCss: 'md-preview-custom-css',
-    customHljs: 'md-preview-custom-hljs',
-    lang: 'md-preview-lang'
-  };
-
-  function exportSettings() {
-    const data = {};
-    Object.keys(BACKUP_KEYS).forEach(name => {
-      try {
-        const val = localStorage.getItem(BACKUP_KEYS[name]);
-        if (val != null) data[name] = val;
-      } catch (e) { /* 隐私模式等场景跳过 */ }
-    });
-    const payload = {
-      app: 'md-preview',
-      type: 'settings-backup',
-      version: 1,
-      exportedAt: new Date().toISOString(),
-      data
-    };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'md-preview-settings.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
-
-  function validBackupLang(v) {
-    return v === 'auto' || v === 'zh' || v === 'en';
-  }
-
-  async function importSettings(file) {
-    let payload;
-    try {
-      payload = JSON.parse(await file.text());
-    } catch (e) {
-      alert(t('settings.backup.invalid', '导入失败：不是有效的设置备份文件'));
-      return;
-    }
-    if (!payload || payload.app !== 'md-preview' || payload.type !== 'settings-backup' ||
-        !payload.data || typeof payload.data !== 'object') {
-      alert(t('settings.backup.invalid', '导入失败：不是有效的设置备份文件'));
-      return;
-    }
-    const data = payload.data;
-    try {
-      // settings 单独校验：必须是可解析的 JSON 对象
-      if (typeof data.settings === 'string') JSON.parse(data.settings);
-      if (data.theme != null && typeof data.theme !== 'string') throw new Error('bad theme');
-      if (data.lang != null && !validBackupLang(data.lang)) throw new Error('bad lang');
-      Object.keys(BACKUP_KEYS).forEach(name => {
-        const val = data[name];
-        if (val == null) return;
-        localStorage.setItem(BACKUP_KEYS[name], String(val));
-      });
-    } catch (e) {
-      alert(t('settings.backup.invalid', '导入失败：不是有效的设置备份文件'));
-      return;
-    }
-    location.reload();
-  }
+  // 已外移至 iris/js/settings-backup.js（settings.js 拆分）；
+  // initSettingsPanel 内通过 settingsBackup.wire(...) 接线按钮。
 
   // 导出 PDF：通过浏览器打印对话框
   function exportPdf() {
@@ -1594,9 +1545,11 @@ body { margin: 0; }
   // 远端标签页推送的设置：写入本地后整体应用（sync-tabs.js 调用）
   function applyRemoteSettings(remote) {
     if (!remote || typeof remote !== 'object') return;
-    // 远端为全量 settings 快照：直接采用并回写
-    saveSettings(remote);
-    applyAllSettings(remote);
+    // 先归一化：旧版本标签页广播的快照可能缺字段，直接 apply 会因
+    // 「!== false」与「?? false」口径差造成界面态与存储态背离
+    const merged = { ...loadSettings(), ...remote };
+    saveSettings(merged);
+    applyAllSettings(merged);
   }
 
   function init() {

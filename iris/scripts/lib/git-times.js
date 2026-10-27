@@ -70,7 +70,7 @@ function collectMarkdownTimes(root = ROOT) {
     for (let i = 1; i < lines.length; i++) {
       const file = lines[i].trim();
       if (!file) continue;
-      const rel = file.split(path.sep).join('/');
+      const rel = file.split('/').join('/')  // git 输出分隔符本就是 '/'，此处仅做防御性归一;
 
       // git log 按时间倒序：第一次遇到即该文件的最后一次修改
       const cur = times.get(rel);
@@ -116,7 +116,7 @@ function collectMarkdownTimesWithCreated(root = ROOT) {
     for (let i = 1; i < lines.length; i++) {
       const file = lines[i].trim();
       if (!file) continue;
-      const rel = file.split(path.sep).join('/');
+      const rel = file.split('/').join('/')  // git 输出分隔符本就是 '/'，此处仅做防御性归一;
       const cur = times.get(rel);
       if (cur) {
         // 首次添加的提交更早，取较小者
@@ -131,4 +131,4 @@ function collectMarkdownTimesWithCreated(root = ROOT) {
 }
 
 // 只导出带 created 的版本：collectMarkdownTimes 是它的内部实现
-module.exports = { collectMarkdownTimesWithCreated, ROOT };
+module.exports = { collectMarkdownTimes, collectMarkdownTimesWithCreated, ROOT };

@@ -95,7 +95,8 @@ function walkFs(dir, relBase, out) {
     try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
   for (const entry of entries) {
     if (entry.name === '.git' || entry.name === 'node_modules' ||
-        entry.name === 'dist' || entry.name === 'src-tauri') continue;
+        entry.name === 'dist' || entry.name === 'src-tauri' ||
+        entry.name === 'vendor') continue; // vendor 内若出现 .md 会并入校验宇宙
     const rel = relBase ? `${relBase}/${entry.name}` : entry.name;
     if (entry.isDirectory()) {
       DIRS.add(rel);

@@ -1,14 +1,24 @@
+/**
+ * 插件加载器（ES module 动态加载 + 生命周期管理）
+ *
+ * 安全模型：插件 = 任意 URL 的 ES module，拿到完整 window/DOM —— 即
+ * 「插件即受信代码」，与站点自身脚本同级，无 iframe/worker 隔离。
+ * 只应配置自己仓库内的插件或完全信任的第三方插件（static site 的既定取舍，
+ * 沙箱型插件等级见 roadmap）。
+ */
 (function() {
   'use strict';
-  console.log('[PluginLoader] Loading...');
+  (window.MarkdownPreview.debug?.debugLog || (() => {}))('[PluginLoader] Loading...');
   window.MarkdownPreview = window.MarkdownPreview || {};
 
   const pluginRegistry = new Map();
   const pluginInstances = new Map(); // 存储已初始化的插件实例
   const pluginResources = new WeakMap(); // 插件资源追踪（用于清理）
-  console.log('[PluginLoader] Plugin system initialized');
+  (window.MarkdownPreview.debug?.debugLog || (() => {}))('[PluginLoader] Plugin system initialized');
 
   // ===== 配置与工具 =====
+
+  const resolveRoot = () => window.MarkdownPreview.mdRender.resolveRoot();
 
   function getPluginConfig(name) {
     try {
@@ -32,7 +42,7 @@
   // ===== 核心注册/注销 =====
 
   function registerPlugin(plugin) {
-    console.log('[PluginLoader] registerPlugin called, plugin:', plugin?.name);
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))('[PluginLoader] registerPlugin called, plugin:', plugin?.name);
     if (!plugin || typeof plugin !== 'object') {
       console.error('[PluginLoader] Plugin must be an object');
       return false;
@@ -68,13 +78,13 @@
     }
 
     pluginRegistry.set(plugin.name, normalizedPlugin);
-    console.log(`[PluginLoader] Plugin registered: ${plugin.name} (priority=${normalizedPlugin.priority})`);
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))(`[PluginLoader] Plugin registered: ${plugin.name} (priority=${normalizedPlugin.priority})`);
 
     // 调用 init 生命周期钩子（如果存在）
     const config = getPluginConfig(plugin.name);
     emitHook(normalizedPlugin, 'init', config);
 
-    console.log('[PluginLoader] Current registry:', Array.from(pluginRegistry.keys()));
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))('[PluginLoader] Current registry:', Array.from(pluginRegistry.keys()));
     return true;
   }
 
@@ -97,7 +107,7 @@
     }
 
     pluginRegistry.delete(name);
-    console.log(`[PluginLoader] Plugin unregistered: ${name}`);
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))(`[PluginLoader] Plugin unregistered: ${name}`);
     return true;
   }
 
@@ -150,7 +160,7 @@
   // ===== 插件加载 =====
 
   async function loadPlugin(url) {
-    console.log(`[PluginLoader] Loading plugin from: ${url}`);
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))(`[PluginLoader] Loading plugin from: ${url}`);
     try {
       // 浏览器 import() 需要绝对 URL 或以 / ./ ../ 开头的路径
       // 将 bare specifier 解析为相对于 baseURI 的绝对 URL
@@ -195,15 +205,15 @@
   // ===== 自动加载 =====
 
   async function autoLoadPlugins() {
-    console.log('[Plugins] Starting auto-load');
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Plugins] Starting auto-load');
 
     // 策略 1：如果 config.json 中定义了 plugins.manifest，按 manifest 加载
     try {
       const config = window.MarkdownPreview.CONFIG || {};
       if (config.plugins && Array.isArray(config.plugins.manifest)) {
-        console.log('[Plugins] Loading from manifest:', config.plugins.manifest);
+        (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Plugins] Loading from manifest:', config.plugins.manifest);
         const loaded = await loadPlugins(config.plugins.manifest);
-        console.log(`[Plugins] Loaded ${loaded.length} plugins from manifest`);
+        (window.MarkdownPreview.debug?.debugLog || (() => {}))(`[Plugins] Loaded ${loaded.length} plugins from manifest`);
         return loaded;
       }
     } catch (e) {
@@ -222,7 +232,7 @@
         if (Array.isArray(manifest.files)) {
           const urls = manifest.files.map(f => pluginDir.replace(/\/?$/, '/') + f);
           const loaded = await loadPlugins(urls);
-          console.log(`[Plugins] Loaded ${loaded.length} plugins from directory.json`);
+          (window.MarkdownPreview.debug?.debugLog || (() => {}))(`[Plugins] Loaded ${loaded.length} plugins from directory.json`);
           return loaded;
         }
       }
@@ -243,7 +253,7 @@
       const doc = parser.parseFromString(html, 'text/html');
       const links = doc.querySelectorAll('a[href$=".js"]');
 
-      console.log('[Plugins] Found plugin files via directory scan:', links.length);
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Plugins] Found plugin files via directory scan:', links.length);
       if (links.length === 0) {
         console.warn('[Plugins] No .js files found in directory listing. Consider using a manifest (directory.json or config.plugins.manifest) for reliable plugin auto-loading.');
       }
@@ -257,7 +267,7 @@
       });
 
       const loaded = await loadPlugins(urls);
-      console.log(`[Plugins] Loaded ${loaded.length} plugins from directory scan`);
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))(`[Plugins] Loaded ${loaded.length} plugins from directory scan`);
       return loaded;
     } catch (error) {
       console.warn('[Plugins] Auto plugin loading skipped:', error.message);
@@ -268,8 +278,6 @@
   // ===== 渲染（支持异步） =====
 
   async function renderWithPlugins(context) {
-    console.log('[Plugins] renderWithPlugins called');
-
     // 文档渲染边界：清理上一轮文档渲染遗留的插件资源（倒计时定时器、监听器等），
     // 防止跨文档导航时这些资源持续累积泄漏。渲染器只在本函数内注册资源，
     // 编辑器 cell 路径不经过这里，不受影响。
@@ -284,12 +292,14 @@
 
     const plugins = window.MarkdownPreview.plugins;
     if (!plugins || typeof plugins.find !== 'function') {
-      console.log('[Plugins] Plugin system not available');
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Plugins] Plugin system not available');
       return;
     }
 
-    const allPres = document.querySelectorAll('.markdown-body pre');
-    console.log('[Plugins] Found pre elements:', allPres.length);
+    // 容器解析走 mdRender.resolveRoot：split-view 隐藏面板同样带 .markdown-body，
+    // 全局查询会重复处理隐藏面板里的块
+    const rootEl = resolveRoot();
+    const allPres = rootEl.querySelectorAll('pre');
 
     // 收集需要渲染的任务
     const renderTasks = [];
@@ -299,9 +309,11 @@
       const codeElement = pre.querySelector('code');
       if (!codeElement) continue;
 
-      const classList = codeElement.className;
-      const languageMatch = classList ? classList.match(/language-(\S+)/) : null;
-      const language = languageMatch ? languageMatch[1] : '';
+      // 语言统一从渲染器约定的 data-lang 解析（pre.code-block 体系），
+      // 多 token fence（如 "sql ddl"）取首 token，等价于 language-* 类首段
+      const language = (pre.dataset && pre.dataset.lang)
+        ? String(pre.dataset.lang).trim().split(/\s+/)[0]
+        : '';
       const code = codeElement.textContent.trim();
 
       const plugin = plugins.find(code, language);
@@ -313,7 +325,7 @@
     // 执行渲染（支持异步，保持 DOM 替换顺序从后往前）
     for (const task of renderTasks) {
       const { pre, plugin, code, language } = task;
-      console.log('[Plugins] Rendering with plugin:', plugin.name, 'language:', language);
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Plugins] Rendering with plugin:', plugin.name, 'language:', language);
 
       const container = document.createElement('div');
       container.className = `plugin-rendered plugin-${plugin.name}`;
@@ -351,13 +363,15 @@
         // 调用 afterRender 钩子
         emitHook(plugin, 'afterRender', container, ctx);
 
-        console.log('[Plugins] Successfully rendered plugin:', plugin.name);
+        (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Plugins] Successfully rendered plugin:', plugin.name);
       } catch (error) {
         console.error(`[Plugins] Plugin "${plugin.name}" render error:`, error);
 
-        // 渲染错误时显示友好的错误边界（插件名/错误消息转义后拼入，防止注入）
-        const safePluginName = String(plugin.name || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        const safeError = String(error && error.message ? error.message : error).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        // 渲染错误时显示友好错误边界 + 可折叠源码（统一回退约定：
+        // 错误提示 + 不丢源码，与 plantuml/apexcharts 范本一致）
+        const escNow = (v) => window.MarkdownPreview.mdRender.escapeHtml(v);
+        const safePluginName = escNow(plugin.name || '');
+        const safeError = escNow(error && error.message ? error.message : error);
         container.innerHTML = `
           <div class="plugin-error" style="
             padding: 12px 16px;
@@ -371,6 +385,10 @@
             <div style="font-weight: 600; margin-bottom: 4px;">❌ 插件渲染错误</div>
             <div style="opacity: 0.8;">插件: <code>${safePluginName}</code></div>
             <div style="opacity: 0.8; font-size: 12px; margin-top: 4px;">${safeError}</div>
+            <details style="margin-top: 8px;">
+              <summary style="cursor: pointer;">查看源码</summary>
+              <pre style="margin-top: 8px; white-space: pre-wrap; color: inherit;">${escNow(code)}</pre>
+            </details>
           </div>
         `;
         if (pre.parentNode) {

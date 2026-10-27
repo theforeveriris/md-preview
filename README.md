@@ -86,7 +86,7 @@ Demo：https://theforeveriris.github.io/md-preview/
 
 ### 渲染能力
 
-- 7 种内置主题：默认 / GitHub Light / GitHub Dark / Notion / Arc Dark / Dracula / Nord
+- 8 种内置主题：默认（紫粉渐变）/ 鸢尾花紫 / GitHub Light / GitHub Dark / Notion / Arc Dark / Dracula / Nord
 - 图片灯箱：点击放大、缩放、键盘左右键翻页
 - GitHub 风格 Alerts：支持 `[!NOTE]` `[!WARNING]` 等提示语法
 - 代码块增强：一键复制按钮、语言标签、横向滚动优化、代码 Tabs
@@ -163,7 +163,7 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 双屏编辑模式：Cell 头部一键进入全屏双屏，左侧编辑右侧实时预览，分隔条可拖宽、支持同步滚动
 - 自动保存：IndexedDB 存储 + 1.5s 防抖保存，刷新不丢内容，多笔记本多 Tab 支持
 - 搜索替换：跨所有 Cell 查找、替换、跳转
-- 11 类自动补全：`@` / `` ``` `` / `#` / `$$` / `![` 等触发字符即弹补全，120+ 条目
+- 14 类自动补全：`@` / `` ``` `` / `#` / `$$` / `![` 等触发字符即弹补全，120+ 条目
 - 8 大工具栏菜单：Markdown / HTML / 私有语法 / 工具渲染 / 插入 / 嵌入 / 下载 / 导入
 - 2 列右键菜单：17 项 Cell 操作，视口边界自适应定位
 - 导入导出：`.md` / `.html` / `.pdf` / `.mdnb` 笔记本格式
@@ -210,6 +210,8 @@ Demo：https://theforeveriris.github.io/md-preview/
 | 写作流程 | 草稿系统（`draft: true`）、文档密码保护 |
 
 ## 快速开始
+
+> 完整分步说明见 [快速开始](docs/getting-started.md)（本节为其速查版）。
 
 ### GitHub Pages 部署
 
@@ -289,7 +291,7 @@ python3 iris/scripts/pptx/main.py
 | 功能 | 说明 |
 |------|------|
 | Markdown 基础 | 标题、列表、表格、引用、代码块等 |
-- Mermaid 图表 | 流程图、时序图、甘特图等 18+ 种；图表悬浮出工具条（复制源码 / 导出 SVG / 导出 PNG） |
+| Mermaid 图表 | 流程图、时序图、甘特图等 18+ 种；图表悬浮出工具条（复制源码 / 导出 SVG / 导出 PNG） |
 | PlantUML | UML 图、架构图、思维导图等；多渲染服务自动切换，全部失败时降级为源码展示；与 Mermaid 同款悬浮工具条 |
 | ApexCharts | 交互式折线图、柱状图、饼图等 |
 | LaTeX 公式 | 基于 KaTeX 的数学公式渲染 |
@@ -312,7 +314,8 @@ python3 iris/scripts/pptx/main.py
 | `markdown-syntax.md` | Markdown 基础语法总览 |
 | `basic-usage.md` | 基础使用与常见排版 |
 | `table-examples.md` | 表格展示与长表格优化 |
-| `theme-demo.md` | 7 种内置主题的视觉对比 |
+| `theme-demo.md` | 8 种内置主题的视觉对比 |
+| `graph-backlinks-demo.md` | 文档图谱（#/graph）与反向链接：文档间链接如何变成关系网 |
 | `image-gallery-examples.md` | 图片与灯箱功能示例 |
 | `gallery-layouts.md` | @grid / @cardstack 等画廊布局示例 |
 | `github-alerts-examples.md` | GitHub 风格 Alerts 提示语法 |
@@ -365,7 +368,7 @@ python3 iris/scripts/pptx/main.py
 │   │   ├── markdown.css    # Markdown 正文样式
 │   │   ├── floating.css    # 悬浮球、设置面板、工具栏
 │   │   ├── editor.css      # 内置编辑器样式
-│   │   ├── themes/         # 7 种内置主题
+│   │   ├── themes/         # 8 种内置主题
 │   │   ├── pkt/            # Packet Tracer 渲染样式
 │   │   └── pptx.css        # PPTX 缩略图网格与放映样式
 │   ├── js/                 # 核心功能模块
@@ -413,8 +416,8 @@ python3 iris/scripts/pptx/main.py
 │   ├── plugin-development.md
 │   ├── rss.md
 │   ├── getting-started.md
-│   └── examples/           # 功能示例（27+ 篇）
-└── .github/workflows/      # GitHub Actions：build-site / build-pkt / build-pptx
+│   └── examples/           # 功能示例（36 篇）
+└── .github/workflows/      # GitHub Actions：共 10 个（构建部署 / 数据回写 / 冒烟 / 排版 / Tauri 检查等，见 readme-dev.md CI 清单）
 ```
 
 ## 文档

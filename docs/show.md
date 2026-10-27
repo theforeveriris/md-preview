@@ -104,6 +104,10 @@ ApexCharts 交互式图表渲染器，涵盖 13 种常见类型：折线、面�
 
 多语言代码并排标签页，适合同一逻辑的多种语言实现对比。支持点击 Tab 切换语言，每张 Tab 独立拥有复制按钮与语言标签。
 
+![渲染-代码选项卡](image/渲染-代码选项卡.png)
+
+上图展示切换不同语言 Tab 后的独立渲染（每个 Tab 内容互不影响，复制按钮取当前 Tab 源码）。
+
 详细示例：[代码 Tabs 示例](examples/code-tabs-examples.md)
 
 ---
@@ -210,6 +214,10 @@ ApexCharts 交互式图表渲染器，涵盖 13 种常见类型：折线、面�
 
 通过 CI 构建流程（`iris/scripts/pptx/main.py`，基于 LibreOffice + Poppler/pdftoppm）将 `.pptx` 预处理为逐页图片。文档端以缩略图网格呈现，点击任意页面进入全屏放映模式，支持左右键/方向键翻页、回到网格等交互。
 
+![渲染-ppt放映模式](image/渲染-ppt放映模式.png)
+
+上图为全屏放映模式：顶部计数器显示当前页 / 总页数，左右两侧翻页按钮，`Esc` 或点击空白处退出。
+
 详细示例：[PPTX 嵌入与放映示例](examples/pptx-examples.md)
 
 ---
@@ -274,12 +282,21 @@ DG-LAB 郊狼设备 `.pulse` 波形文件的完整渲染器。基于 `Dungeonlab
 
 ![设置-允许自定义预设主题或自行配色](image/设置-允许自定义预设主题或自行配色.png)
 
-7 种内置主题（default / github-light / github-dark / notion / arc-dark / dracula / nord）一键切换；在此基础上提供：
+8 种内置主题（default / iris 鸢尾花紫 / github-light / github-dark / notion / arc / dracula / nord）一键切换；在此基础上提供：
 - **自动主题（auto）**：跟随系统亮暗实时切换，亮 / 暗配对可自由组合（默认紫粉渐变 + GitHub Dark）
 - **界面语言**：中文 / English，默认跟随浏览器语言，设置面板顶部一键切换
 - **强调色取色器**：主色 / 粉色 / 深色 独立调整
 - **中性色取色器**：背景 / 表面 / 边框 / 文字 / 次要文字 五个维度，可自由组合亮色或暗色主题
 - 所有配色持久化到 localStorage
+
+**鸢尾花紫主题**（新增，亮色）：淡紫背景 `#f6f2fd` + 鸢尾品牌紫强调色 `#8B5CF6`，链接用更深的 `#6d3fd4` 保证白底对比度；卡片、代码块保持近白以便长时间阅读。
+
+![主题-鸢尾花紫](image/主题-鸢尾花紫.png)
+
+![设置-鸢尾花紫主题选中](image/设置-鸢尾花紫主题选中.png)
+
+> 图表类渲染（Mermaid / ApexCharts / 波形 / 图谱 / 划词导出）一律读取主题 CSS 变量：
+> 切换主题后它们会自动跟随配色，不再固定在某个写死的颜色上。
 
 详细文档：[主题定制](theme-customization.md)
 
@@ -415,39 +432,62 @@ Pulse 格式与示例：[Pulse 波形示例](examples/pulse-examples.md)
 
 ---
 
-## 六、界面与导航增强（截图待补）
-
-以下功能已上线但尚未补充运行时截图，功能说明与详细文档先行收录：
+## 六、界面与导航增强
 
 ### 搜索命令面板（`Ctrl/⌘ + K`）
 
-搜索改造为居中弹出的命令面板（Claude/ZCode 风格）：基于 FlexSearch 的中文分词全文检索、结果关键词高亮；侧边栏仅保留一行轻量搜索入口唤起面板。
+![功能-搜索命令面板](image/功能-搜索命令面板.png)
+
+搜索改造为居中弹出的命令面板（Claude/ZCode 风格）：基于 FlexSearch 的中文分词全文检索、结果关键词高亮；侧边栏仅保留一行轻量搜索入口唤起面板。输入即出结果，`Esc` 关闭，`↑↓` 选择、`Enter` 打开。
 
 相关文档：[快捷键](shortcuts.md)
 
 ### 侧边栏折叠 + 内容区宽度可调
 
-桌面端可用汉堡按钮或 `Ctrl/⌘ + B` 折叠/展开侧边栏（状态自动记忆）；正文最大宽度可在设置面板滑杆调整（600–1400px），或一键占满可用宽度，快捷键 `Ctrl/⌘ + Alt + =/-/0/F`。
+![功能-侧边栏折叠与内容宽度调节](image/功能-侧边栏折叠与内容宽度调节.png)
+
+桌面端可用汉堡按钮或 `Ctrl/⌘ + B` 折叠/展开侧边栏（状态自动记忆）；正文最大宽度可在设置面板滑杆调整（600–1400px），或一键占满可用宽度，快捷键 `Ctrl/⌘ + Alt + =/-/0/F`。上图为折叠侧边栏 + 收窄内容宽度后的阅读视图。
 
 相关文档：[快捷键](shortcuts.md) / [配置参考](configuration.md)
 
 ### 本地文件会话列表 + 打开本地文件夹
 
-「打开本地 MD」支持一次多选（最多 20 个），未打开的文件进入侧边栏「本地文件」面板，可点击切换、单个移除、一键清空；「打开本地文件夹」整体导入目录（File System Access API，旧浏览器自动回退），按目录树展示、可折叠、内容懒加载，上一篇/下一篇在全部文件间循环。
+![功能-本地文件会话](image/功能-本地文件会话.png)
+
+「打开本地 MD」支持一次多选（最多 20 个），未打开的文件进入侧边栏「本地文件」面板，可点击切换、单个移除、一键清空；「打开本地文件夹」整体导入目录（File System Access API，旧浏览器自动回退），按目录树展示、可折叠、内容懒加载，上一篇/下一篇在全部文件间循环。本地会话不经过 fetch 与路由，刷新后不保留。
 
 相关文档：[配置参考](configuration.md)
 
 ### 自动主题 / 界面多语言 / 单文件 HTML 导出
 
-详见「设置面板」一节与 README 特性清单：自动主题跟随系统亮暗实时切换；界面语言中文 / English 一键切换；导出 HTML 生成内联全部样式的单文件离线页面。
+![设置-自动主题多语言与导出](image/设置-自动主题多语言与导出.png)
+
+详见「设置面板」一节与 README 特性清单：自动主题跟随系统亮暗实时切换；界面语言中文 / English 一键切换；导出 HTML 生成内联全部样式的单文件离线页面。上图为「工具与导出」分组（MD / PDF / HTML / EPUB / 整站打包 + 配置备份）。
 
 相关文档：[主题定制](theme-customization.md) / [配置参考](configuration.md)
 
 ### 设置面板分组导航 / 侧边栏样式
 
-设置面板 Chrome 风格改造：左侧分组导航（语言 / 外观 / 字体 / 阅读 / 布局 / 工具与导出 / 存储），点击平滑滚动、滚动时自动同步高亮；侧边栏样式新增「经典贴边 / 悬浮卡片」切换；面包屑点击中间路径可进入目录聚合页。
+![设置-面板分组导航](image/设置-面板分组导航.png)
+
+设置面板 Chrome 风格改造：左侧分组导航（语言 / 外观 / 字体 / 阅读 / 布局 / 工具与导出 / 存储 / 中文 / 性能），点击切换分组、顶部搜索框可跨分组过滤；侧边栏样式新增「经典贴边 / 悬浮卡片」切换；面包屑点击中间路径可进入目录聚合页。
 
 相关文档：[配置参考](configuration.md)
+
+---
+
+## 七、文档图谱与反向链接
+
+![特殊页面-文档图谱](image/特殊页面-文档图谱.png)
+
+**文档图谱**：命令面板搜「图谱」或访问 `#/graph` 进入沉浸式关系网——全部文档
+按标签色相轮配色、按连接数同心圆分层；支持拖拽缩放、节点搜索、图例筛选、
+点击跳转。正文内也可以用 ` ```graph ` 代码块就地挂一张图谱。
+
+**反向链接**：每篇文档末尾自动列出「哪些文档链接到了本文」与相关文档，
+数据与图谱同源（`links.json`）。
+
+示例与用法详见 [文档图谱与反向链接示例](examples/graph-backlinks-demo.md)。
 
 ---
 
@@ -457,7 +497,7 @@ Pulse 格式与示例：[Pulse 波形示例](examples/pulse-examples.md)
 |----------|------------|
 | Markdown 基础语法与排版 | [basic-usage.md](examples/basic-usage.md) / [markdown-syntax.md](examples/markdown-syntax.md) |
 | 表格展示与长表格滚动优化 | [table-examples.md](examples/table-examples.md) |
-| 7 种内置主题视觉对比 | [theme-demo.md](examples/theme-demo.md) |
+| 8 种内置主题视觉对比 | [theme-demo.md](examples/theme-demo.md) |
 | 图片灯箱与画廊布局 | [image-gallery-examples.md](examples/image-gallery-examples.md) / [gallery-layouts.md](examples/gallery-layouts.md) |
 | GitHub Alerts 提示块 | [github-alerts-examples.md](examples/github-alerts-examples.md) |
 | HTML 原生标签排版技巧 | [native-html-examples.md](examples/native-html-examples.md) |

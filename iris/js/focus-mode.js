@@ -18,7 +18,8 @@
 
   function t(key, fallback) {
     const i18n = window.MarkdownPreview.i18n;
-    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
+    // fallback 透传：键缺失时回退内置文案，而不是裸键名上屏
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key, fallback);
     return fallback;
   }
 
@@ -43,6 +44,7 @@
       if (rect.top > line) break;
       current = block;
     }
+    if (!current) return; // 中线在首个块之前：无需改高亮
     for (const block of blocks) {
       block.classList.toggle('focus-current', block === current);
     }

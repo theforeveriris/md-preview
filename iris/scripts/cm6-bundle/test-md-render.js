@@ -104,7 +104,8 @@ function run() {
   assert('blocks 数组长度', blocks.length === 1);
   assert('blocks 内容正确', blocks[0].includes('x^2 + y^2 = z^2'));
   const restored = mdRender.restoreLaTeXBlocks(processed, blocks);
-  assert('还原后含 katex-block', restored.includes('<div class="katex-block">'));
+  // katex-block 现带 data-latex 属性（供悬浮工具条复制源码），不断言闭合尖括号
+  assert('还原后含 katex-block', restored.includes('<div class="katex-block"'));
   assert('还原后含 LaTeX 内容', restored.includes('x^2 + y^2 = z^2'));
 
   console.log('=== createMdRenderer ===');
@@ -188,8 +189,7 @@ function run() {
   assert('markdown.js 调用 mdRender.groupGalleries', mdCode.includes('mdRender.groupGalleries'));
   assert('markdown.js 调用 mdRender.initSliders', mdCode.includes('mdRender.initSliders'));
   assert('markdown.js 调用 mdRender.highlightCodeBlocks', mdCode.includes('mdRender.highlightCodeBlocks'));
-  assert('markdown.js 调用 mdRender.protectLaTeXBlocks', mdCode.includes('mdRender.protectLaTeXBlocks'));
-  assert('markdown.js 调用 mdRender.processGitHubAlerts', mdCode.includes('mdRender.processGitHubAlerts'));
+  // LaTeX/Alerts 处理已内化进 mdRender.parseMarkdown（别名转发层已删），markdown.js 不再直接调用
   // 确认旧的内部实现已删除
   assert('markdown.js 无重复的 processGitHubAlerts 函数定义', !/function processGitHubAlerts\s*\(/.test(mdCode));
   assert('markdown.js 无重复的 protectLaTeXBlocks 函数定义', !/function protectLaTeXBlocks\s*\(/.test(mdCode));
@@ -213,7 +213,9 @@ function run() {
   const mdLines = mdCode.split('\n').length;
   const sharedLines = fs.readFileSync(path.join(ROOT, 'iris/js/md-render.js'), 'utf8').split('\n').length;
   console.log(`  编辑器: ${editorLines} 行 | markdown.js: ${mdLines} 行 | md-render.js: ${sharedLines} 行（共享）`);
-  assert('md-render.js 行数合理', sharedLines > 200 && sharedLines < 350);
+  // 共享模块已承担 alerts/spoiler/ruby/codeTabs/columns/画廊/懒加载/净化等，
+  // 体积上限放宽（曾 350，现约 1000）
+  assert('md-render.js 行数合理', sharedLines > 200 && sharedLines < 1200);
 
   console.log('');
   console.log(`============================`);

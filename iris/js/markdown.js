@@ -8,7 +8,8 @@
   // i18n 文案读取：i18n 模块未加载或语言包缺 key 时回退到内置中文
   function t(key, fallback) {
     const i18n = window.MarkdownPreview.i18n;
-    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
+    // fallback 透传：键缺失时回退内置文案，而不是裸键名上屏
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key, fallback);
     return fallback;
   }
 
@@ -43,6 +44,8 @@
   function notifyDocRendered(path) {
     const st = window.MarkdownPreview.state;
     if (!st) return;
+    // 滚动高亮用的标题列表缓存（ui.js），文档更新时重建
+    window.MarkdownPreview.uiRefreshHeadings?.();
     let h1Title = '';
     const h1 = dom.markdownContent.querySelector('h1');
     if (h1) h1Title = h1.textContent.trim();
@@ -56,9 +59,17 @@
     if (window.MarkdownPreview.history?.onDocRendered) {
       window.MarkdownPreview.history.onDocRendered(path, st.docTitle);
     }
+    if (window.MarkdownPreview.hoverPreview?.onDocRendered) {
+      window.MarkdownPreview.hoverPreview.onDocRendered();
+    }
   }
 
+  // 导航竞态防护：快速连续导航时旧文档的 fetch 后返回，不得写回
+  // state/DOM。每次进入递增令牌，await 返回后比对，过期请求静默放弃
+  let loadSeq = 0;
+
   async function loadMarkdownFile(path) {
+    const seq = ++loadSeq;
     try {
       // 立即更新 URL，提供即时反馈
       const { router } = window.MarkdownPreview;
@@ -69,6 +80,7 @@
       resetReadingProgress();
       window.MarkdownPreview.ui.updateProgress(30);
       const response = await fetch(path, { cache: 'no-store' });
+      if (seq !== loadSeq) return; // 已有更新的导航，丢弃本次结果
 
       if (window.MarkdownPreview.debug && window.MarkdownPreview.debug.incrementApiCalls) {
         window.MarkdownPreview.debug.incrementApiCalls();
@@ -79,6 +91,7 @@
       }
       window.MarkdownPreview.ui.updateProgress(60);
       const markdown = await response.text();
+      if (seq !== loadSeq) return; // 二次校验：text() 期间可能又切了文档
       window.MarkdownPreview.ui.updateProgress(100);
       state.currentFilePath = path;
       // 加载仓库内文档后清除本地文档记录，导出功能随之切回仓库文件
@@ -92,6 +105,8 @@
       setupHeadingNavigation();
       notifyDocRendered(path);
     } catch (error) {
+      // 旧请求失败时也已过期：不能把用户刚打开的新文档替换成错误页
+      if (seq !== loadSeq) return;
       console.error('Error loading markdown:', error);
       dom.markdownContent.innerHTML = `<div class="welcome-state"><p class="welcome-text">${t('md.loadFailed', '无法加载文件')}</p></div>`;
       setTimeout(() => window.MarkdownPreview.ui.updateProgress(0), 300);
@@ -148,8 +163,6 @@
   // ============== GitHub Alerts / LaTeX 保护 ==============
   // 已迁移至共享模块 md-render.js，这里保留薄封装以兼容内部调用。
   // markdown.js 使用默认 emoji 版 Alert 图标（与编辑器 SVG 版区分）。
-  const processGitHubAlerts = (text) => mdRender.processGitHubAlerts(text);
-  const protectLaTeXBlocks = (text) => mdRender.protectLaTeXBlocks(text);
 
   function resolveImageSrc(src, currentPath) {
     if (!src) return src;
@@ -226,8 +239,6 @@
     mdRender.groupGalleries(container);
   }
 
-  // 幻灯片自动轮播：已迁移至共享模块 mdRender.initSliders
-  const initSliders = (container) => mdRender.initSliders(container);
 
   function wrapTables(container) {
     const tables = container.querySelectorAll('table');
@@ -291,7 +302,15 @@
     setMeta('name', 'twitter:description', description);
   }
 
-  function renderMarkdown(markdown, currentPath = '') {
+  /**
+   * 渲染 Markdown 到正文区
+   * @param {string} markdown - 原文（可含 frontmatter）
+   * @param {string} currentPath - 文档路径（'' = 虚拟/本地文档）
+   * @param {Object} [opts]
+   * @param {Function} [opts.sanitize] - 非受信来源的净化函数（渲染产物注入 DOM
+   *   前调用；由 renderVirtualDoc/renderMarkdownDirect 按 sanitize 选项传入）
+   */
+  function renderMarkdown(markdown, currentPath = '', opts = {}) {
     const renderStartTime = performance.now();
     // 图谱页是沉浸式布局（body.graph-page）。任何一次新文档渲染都先摘掉这个标记，
     // #/graph 会在渲染完成后由 graph.openPage() 重新打上 —— 这样「离开图谱页」
@@ -322,7 +341,11 @@
     state.currentFrontmatter = frontmatter;
 
     // Markdown → HTML（LaTeX 保护 + Alerts + 自定义 Renderer）已迁移至共享模块
-    const { html } = mdRender.parseMarkdown(content);
+    let { html } = mdRender.parseMarkdown(content);
+    // 非受信来源（快照链接 / 本地文件 / 导入内容）：注入前净化渲染产物
+    if (typeof opts.sanitize === 'function') {
+      html = opts.sanitize(html);
+    }
 
     const plainText = content.replace(/[#*`\[\]()_{}]/g, '').replace(/\n+/g, ' ').trim();
     const readingTime = calculateReadingTime(plainText);
@@ -351,7 +374,9 @@
       renderMs: Math.round(performance.now() - renderStartTime)
     };
 
-    document.querySelectorAll('.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6').forEach(heading => {
+    // 以主文档容器为查询根：分栏对照窗格与编辑器预览也用 .markdown-body
+    // 类名，全局查询会给它们赋重复 id（目录/锚点错乱）
+    dom.markdownContent.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(heading => {
       heading.id = mdRender.slugify(heading.textContent);
     });
 
@@ -362,7 +387,7 @@
 
     processImages(dom.markdownContent, currentPath);
 
-    initSliders(dom.markdownContent);
+    mdRender.initSliders(dom.markdownContent);
 
     wrapTables(dom.markdownContent);
 
@@ -378,11 +403,14 @@
     }
 
     setTimeout(async () => {
-      console.log('[Markdown] Starting render cycle');
+      // 100ms 延迟窗口内可能已切到新文档：旧调度不得在新内容上运行
+      //（currentPath 为 '' 的虚拟/本地文档无竞态面，照常执行）
+      if (currentPath && state.currentFilePath !== currentPath) return;
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Markdown] Starting render cycle');
       // 插件渲染（plugins.render 由 loader.js 始终注册，含跨文档插件资源清理；
       // 旧版 renderWithPluginsLegacy 分发路径已删除——不可达且缺少资源清理）
       await window.MarkdownPreview.plugins.render({ documentPath: currentPath });
-      console.log('[Markdown] Plugins rendered, calling other renderers');
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Markdown] Plugins rendered, calling other renderers');
       // 渲染器统一调度：遍历 renderers 注册表逐个执行（顺序 = index.html 脚本加载序），
       // 单个渲染器失败被隔离，不影响后续。见 md-render.js: runRenderers。
       await mdRender.runRenderers(null, {
@@ -393,7 +421,7 @@
           window.MarkdownPreview.pkt?.destroyOrphaned?.();
         }
       });
-      console.log('[Markdown] Render cycle complete');
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Markdown] Render cycle complete');
     }, 100);
 
     renderDocNavigation(currentPath);
@@ -437,7 +465,9 @@
   }
 
   function interceptLinks(currentPath) {
-    document.querySelectorAll('.markdown-body a').forEach(link => {
+    // 只接管主文档内的链接：分栏窗格里的相对链接有自己的根路径语义，
+    // 用主文档路径改写会指错文件
+    dom.markdownContent.querySelectorAll('a').forEach(link => {
       const href = link.getAttribute('href');
       if (!href) return;
 
@@ -591,7 +621,9 @@
     dom.pageHeader.style.display = 'flex';
     dom.editPageBtn.style.display = 'flex';
 
-    const editUrl = `https://github.com/${CONFIG.owner}/${CONFIG.repo}/edit/main/${path}`;
+    // 路径逐段编码：含空格/#/中文的文件名不编码会生成坏的 GitHub 链接
+    const encodedPath = path.split('/').map(encodeURIComponent).join('/');
+    const editUrl = `https://github.com/${CONFIG.owner}/${CONFIG.repo}/edit/main/${encodedPath}`;
     dom.editPageBtn.href = editUrl;
   }
 
@@ -714,18 +746,8 @@
         heading.appendChild(anchorBtn);
       }
 
-      heading.addEventListener('mouseenter', () => {
-        heading.style.borderLeft = '3px solid var(--color-accent-purple)';
-        heading.style.paddingLeft = '8px';
-        heading.style.marginLeft = '-11px';
-      });
-
-      heading.addEventListener('mouseleave', () => {
-        heading.style.borderLeft = '';
-        heading.style.paddingLeft = '';
-        heading.style.marginLeft = '';
-      });
-
+      // hover 效果（左侧强调条）已改纯 CSS :hover（markdown.css
+      // .heading-clickable），不再用 JS 每标题双监听+内联样式全量重绑
       heading.addEventListener('click', (e) => {
         // 点击锚点按钮时不触发的标题滚动逻辑
         if (e.target.closest('.heading-anchor')) return;
@@ -754,7 +776,7 @@
         const pre = copyBtn.closest('pre');
         const code = pre && pre.querySelector('code');
         if (code) {
-          console.log('[copy] copy-btn clicked');
+          (window.MarkdownPreview.debug?.debugLog || (() => {}))('[copy] copy-btn clicked');
           copyToClipboard(code.textContent).then(ok => {
             if (ok) {
               copyBtn.classList.add('copied');
@@ -771,7 +793,7 @@
         e.preventDefault();
         const heading = anchorBtn.closest('h1');
         if (heading && heading.id) {
-          console.log('[copy] heading-anchor clicked');
+          (window.MarkdownPreview.debug?.debugLog || (() => {}))('[copy] heading-anchor clicked');
           copyHeadingLink(heading.id, anchorBtn);
         }
         return;
@@ -786,7 +808,7 @@
         return;
       }
     });
-    console.log('[copy] click delegate initialized');
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))('[copy] click delegate initialized');
     initLightbox();
   }
 
@@ -795,7 +817,7 @@
     // 优先 Clipboard API（安全上下文下最可靠）
     if (window.isSecureContext && navigator.clipboard && navigator.clipboard.writeText) {
       return navigator.clipboard.writeText(text).then(() => {
-        console.log('[copy] clipboard API 成功');
+        (window.MarkdownPreview.debug?.debugLog || (() => {}))('[copy] clipboard API 成功');
         return true;
       }).catch((err) => {
         console.warn('[copy] clipboard API 失败，降级 execCommand:', err);
@@ -823,7 +845,7 @@
     let ok = false;
     try {
       ok = document.execCommand('copy');
-      console.log('[copy] execCommand 返回:', ok);
+      (window.MarkdownPreview.debug?.debugLog || (() => {}))('[copy] execCommand 返回:', ok);
     } catch (e) {
       console.warn('[copy] execCommand 异常:', e);
     }
@@ -874,14 +896,6 @@
       btn.innerHTML = savedOriginal;
     }, 1500);
   }
-
-  // 高亮 dom.markdownContent 内的代码块（共享实现）
-  function highlightCodeBlocks() {
-    mdRender.highlightCodeBlocks(dom.markdownContent);
-  }
-
-  // 代码块复制已由 setupClickDelegate 事件委托处理，无需单独绑定
-  function setupCopyButtons() {}
 
   /* ============ 图片灯箱 ============ */
   let lightboxInitialized = false;
@@ -1023,35 +1037,66 @@
     loadMarkdownFile,
     renderMarkdown,
     // 渲染虚拟文档（标签聚合页等站内合成内容）：保留当前 hash（#/tag/x 可分享），
-    // 不经过 fetch；内容视同本地文档（导出 MD / PDF 直接取用合成文本）
-    renderVirtualDoc: function(content, fileName) {
-      resetReadingProgress();
-      state.localDoc = { name: fileName || 'document.md', content: content, virtual: true };
-      if (fileName) {
-        const bc = document.getElementById('pageBreadcrumbs');
-        const header = document.getElementById('pageHeader');
-        if (bc) bc.textContent = fileName;
-        if (header) header.style.display = 'flex';
+    // 不经过 fetch；内容视同本地文档（导出 MD / PDF 直接取用合成文本）。
+    // opts.sanitize = true 时先加载 DOMPurify 再渲染（快照等 URL 可控来源必须传），
+    // 返回 Promise，注入 DOM 后 resolve —— 调用方的后续 DOM 操作须 await。
+    renderVirtualDoc: function(content, fileName, opts = {}) {
+      // 净化是异步的（首次要加载 DOMPurify）：等待期间用户可能已导航到别的
+      // 文档，凭令牌确认仍是当前请求再写 DOM
+      const seq = ++loadSeq;
+      const doRender = (sanitizeFn) => {
+        if (sanitizeFn && seq !== loadSeq) return;
+        resetReadingProgress();
+        state.localDoc = { name: fileName || 'document.md', content: content, virtual: true };
+        if (fileName) {
+          const bc = document.getElementById('pageBreadcrumbs');
+          const header = document.getElementById('pageHeader');
+          if (bc) bc.textContent = fileName;
+          if (header) header.style.display = 'flex';
+        }
+        renderMarkdown(content, '', sanitizeFn ? { sanitize: sanitizeFn } : {});
+      };
+      if (opts.sanitize) {
+        return mdRender.ensurePurify()
+          .then(() => doRender((html) => DOMPurify.sanitize(html)))
+          .catch(e => {
+            console.error('[Markdown] sanitize failed for virtual doc:', e);
+            dom.markdownContent.innerHTML = `<div class="welcome-state"><p class="welcome-text">${t('md.loadFailed', '无法加载文件')}</p></div>`;
+          });
       }
-      renderMarkdown(content, '');
+      doRender(null);
+      return Promise.resolve();
     },
-    // 直接渲染内容字符串（用于本地 MD 文件，不经过 fetch 和 URL）
+    // 直接渲染内容字符串（用于本地 MD 文件，不经过 fetch 和 URL）。
+    // 本地文件来源不可信（可能是他人分享的 .md），渲染产物默认经 DOMPurify
+    // 净化；返回 Promise，注入 DOM 后 resolve。
     renderMarkdownDirect: function(content, fileName) {
+      const seq = ++loadSeq;
       // 清空 URL hash，避免刷新后仍尝试加载原路径
       if (window.location.hash) {
         history.replaceState(null, '', window.location.pathname + window.location.search);
       }
       resetReadingProgress();
-      // 记录本地文档原文，导出 MD / PDF 时直接取用
-      state.localDoc = { name: fileName || 'document.md', content: content };
-      // 更新面包屑为文件名
-      if (fileName) {
-        const bc = document.getElementById('pageBreadcrumbs');
-        const header = document.getElementById('pageHeader');
-        if (bc) bc.textContent = fileName;
-        if (header) header.style.display = 'flex';
-      }
-      renderMarkdown(content, '');
+      // state.localDoc / 面包屑要等净化成功、令牌校验通过后再写：
+      // 否则净化失败时页面还是旧文档，但导出对象和面包屑已经指向新文件
+      return mdRender.ensurePurify()
+        .then(() => {
+          if (seq !== loadSeq) return; // 净化期间已导航，放弃写入
+          // 记录本地文档原文，导出 MD / PDF 时直接取用
+          state.localDoc = { name: fileName || 'document.md', content: content };
+          if (fileName) {
+            const bc = document.getElementById('pageBreadcrumbs');
+            const header = document.getElementById('pageHeader');
+            if (bc) bc.textContent = fileName;
+            if (header) header.style.display = 'flex';
+          }
+          renderMarkdown(content, '', { sanitize: (html) => DOMPurify.sanitize(html) });
+        })
+        .catch(e => {
+          console.error('[Markdown] sanitize failed, refusing to render untrusted content:', e);
+          // 不能只写控制台：用户看到的是「什么都没发生」
+          dom.markdownContent.innerHTML = `<div class="welcome-state"><p class="welcome-text">${t('md.loadFailed', '无法加载文件')}</p></div>`;
+        });
     },
     interceptLinks,
     simplifyPath,
@@ -1064,7 +1109,6 @@
     extractExcerpt,
     updateBreadcrumbs,
     setupHeadingNavigation,
-    calculateReadingTime,
-    highlightCodeBlocks
+    calculateReadingTime
   };
 })();

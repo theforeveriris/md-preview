@@ -8,9 +8,24 @@
   // 这样可以避免含 shell 变量 $HOME 之类的技术文档无谓加载 katex（275KB）
   function needsKatex(markdownBody) {
     if (markdownBody.querySelector('.katex-block')) return true;
-    const clone = markdownBody.cloneNode(true);
-    clone.querySelectorAll('pre,code,script,style').forEach(el => el.remove());
-    return clone.textContent.includes('$');
+    // TreeWalker 扫文本（旧实现整树 cloneNode(true) 再删节点，大文档纯浪费）
+    const walker = document.createTreeWalker(markdownBody, NodeFilter.SHOW_TEXT, {
+      acceptNode: function(node) {
+        if (!node.nodeValue || node.nodeValue.indexOf('$') === -1) return NodeFilter.FILTER_REJECT;
+        const p = node.parentElement;
+        if (p && p.closest('pre, code, script, style')) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    return walker.nextNode() !== null;
+  }
+
+  // KaTeX trust 上下文：允许 \href/\url 等生成链接，但仅限 http(s)/mailto/
+  // 相对锚点/相对路径，拒绝 javascript:/data: 等危险协议（trust: true 会放行任意 URL）
+  function katexTrust(context) {
+    const url = context && context.url;
+    if (typeof url !== 'string') return false;
+    return /^(https?:|mailto:|#|\/)/i.test(url);
   }
 
   async function render(root) {
@@ -49,7 +64,7 @@
         katex.render(latex, span, {
           displayMode: false,
           throwOnError: false,
-          trust: true,
+          trust: katexTrust,
           strict: false
         });
       } catch (e) {
@@ -68,7 +83,7 @@
           katex.render(latex, block, {
             displayMode: true,
             throwOnError: false,
-            trust: true,
+            trust: katexTrust,
             strict: false
           });
         } catch (e) {
@@ -86,7 +101,7 @@
         ],
         ignoredTags: ['pre', 'code', 'script', 'style'],
         throwOnError: false,
-        trust: true,
+        trust: katexTrust,
         strict: false
       });
     } catch (error) {

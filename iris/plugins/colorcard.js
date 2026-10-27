@@ -347,7 +347,9 @@ function showToast(card, message, isError) {
 function renderError(container, message) {
   container.className = 'colorcard-container colorcard-error';
   container.style.cssText = 'padding:12px 16px;border:1px solid #ff6b6b;border-radius:8px;background:#fff0f0;color:#cc0000;font-size:14px';
-  container.innerHTML = '<strong>颜色卡片渲染错误：</strong> ' + message;
+  container.innerHTML = '<strong>颜色卡片渲染错误：</strong>';
+  // message 含用户输入（如日期原文），以文本节点追加避免 HTML 注入
+  container.appendChild(document.createTextNode(message));
 }
 
 function clamp(v, min, max) {

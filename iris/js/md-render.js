@@ -48,6 +48,32 @@
       .replace(/'/g, '&#39;');
   }
 
+  // ============== 非受信来源 HTML 净化（DOMPurify，按需懒加载） ==============
+  // 净化分级：仓库自身文档（站点 fetch 的 .md）视为受信内容直通；
+  // 快照链接（#/s?z= 完全由 URL 控制）、「打开本地文件」、导入 .mdnb
+  // 等非受信来源的渲染产物在注入 DOM 前必须先过 sanitizeHtml。
+  // vendor 库与 mermaid/apexcharts 一样按需懒加载，不占首屏。
+  let purifyReady = null;
+
+  function ensurePurify() {
+    if (typeof DOMPurify !== 'undefined') return Promise.resolve();
+    if (!purifyReady) {
+      purifyReady = window.MarkdownPreview.loadScript('iris/vendor/purify.min.js')
+        .catch(e => { purifyReady = null; throw e; });
+    }
+    return purifyReady;
+  }
+
+  /**
+   * 净化非受信来源的 HTML（异步：首次调用会加载 DOMPurify）。
+   * 加载失败时 Promise reject，调用方应按「渲染失败」处理，不得直通原文。
+   * @param {string} html - 待净化 HTML
+   * @returns {Promise<string>}
+   */
+  function sanitizeHtml(html) {
+    return ensurePurify().then(() => DOMPurify.sanitize(String(html == null ? '' : html)));
+  }
+
   /**
    * 处理 GitHub Alerts（> [!TYPE] 语法）
    * @param {string} text - Markdown 文本
@@ -549,74 +575,81 @@
     const images = container.querySelectorAll('img');
     if (images.length < 2) return;
 
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = container.innerHTML;
-    const allElements = Array.from(tempDiv.childNodes);
+    // 直接在活动 DOM 上按顶层子节点扫描并「搬移」图片节点：
+    //  1) 旧实现整容器 innerHTML 序列化往返，会丢掉 JS 属性形式的事件
+    //     处理器（processImages 刚挂的 img.onerror），画廊图挂了不出占位符；
+    //  2) 每次渲染都全量重解析一遍 DOM 也是纯开销。
+    const allElements = Array.from(container.childNodes);
     const galleryGroups = [];
-    let currentGroup = [];
-    let pendingStyle = null;
     const markersToRemove = [];
+    let currentGroup = []; // [{ img, srcP }]
+    let pendingStyle = null;
 
-    allElements.forEach((node, index) => {
+    const flushGroup = () => {
+      if (currentGroup.length >= 2) {
+        galleryGroups.push({ items: currentGroup, style: pendingStyle });
+      }
+      currentGroup = [];
+      pendingStyle = null;
+    };
+
+    for (let index = 0; index < allElements.length; index++) {
+      const node = allElements[index];
       if (node.nodeName === 'P') {
         if (node.classList && node.classList.contains('gallery-style-marker')) {
-          if (currentGroup.length >= 2) galleryGroups.push({ imgs: [...currentGroup], style: pendingStyle });
-          currentGroup = [];
+          flushGroup();
           pendingStyle = node.getAttribute('data-style') || null;
           markersToRemove.push(node);
-          return;
+          continue;
         }
         const imgs = node.querySelectorAll('img');
         if (imgs.length > 0 && node.textContent.trim() === '') {
-          currentGroup.push(...Array.from(imgs));
+          imgs.forEach(img => currentGroup.push({ img, srcP: node }));
           const nextNode = allElements[index + 1];
           if (!nextNode || nextNode.nodeName !== 'P' || nextNode.querySelectorAll('img').length === 0) {
-            if (currentGroup.length >= 2) galleryGroups.push({ imgs: [...currentGroup], style: pendingStyle });
-            currentGroup = [];
-            pendingStyle = null;
+            flushGroup();
           }
         } else {
-          if (currentGroup.length >= 2) galleryGroups.push({ imgs: [...currentGroup], style: pendingStyle });
-          currentGroup = [];
-          pendingStyle = null;
+          flushGroup();
         }
       } else {
-        if (currentGroup.length >= 2) galleryGroups.push({ imgs: [...currentGroup], style: pendingStyle });
-        currentGroup = [];
-        pendingStyle = null;
+        flushGroup();
       }
-    });
-
-    if (currentGroup.length >= 2) galleryGroups.push({ imgs: [...currentGroup], style: pendingStyle });
+    }
+    flushGroup();
     markersToRemove.forEach(n => n.remove());
 
     galleryGroups.forEach(group => {
-      if (group.imgs.length < 2) return;
-      const firstImg = group.imgs[0];
-      const parentP = firstImg.closest('p');
-      if (!parentP) return;
       const galleryDiv = document.createElement('div');
       galleryDiv.className = 'image-gallery';
       if (group.style) galleryDiv.classList.add(`image-gallery--${group.style}`);
-      group.imgs.forEach(img => galleryDiv.appendChild(img.cloneNode(true)));
-      parentP.replaceWith(galleryDiv);
+      const sourcePs = new Set();
+      group.items.forEach(({ img, srcP }) => {
+        sourcePs.add(srcP);
+        // 节点搬移（非 clone）：onerror 等属性事件随节点保留
+        galleryDiv.appendChild(img);
+      });
+      // 用画廊容器替换首个来源段落，其余空壳段落删除
+      const firstP = group.items[0].srcP;
+      firstP.replaceWith(galleryDiv);
+      sourcePs.forEach(p => { if (p !== firstP) p.remove(); });
     });
-
-    container.innerHTML = tempDiv.innerHTML;
   }
 
   /**
    * 幻灯片自动轮播：为 .image-gallery--slider 创建 track + 指示点
    * @param {HTMLElement} container
    */
-  // 追踪所有轮播定时器：每次新的渲染周期都会先清掉上一轮遗留的 interval，
-  // 防止文档切换后旧轮播（DOM 已脱离）继续空转累积。
-  const sliderTimers = new Set();
+  // 轮播定时器按容器归属（WeakMap）：initSliders 只清本容器上一轮的定时器，
+  // 不会误停其它容器（主文档/分栏对照/编辑器 cell）正在运行的轮播；
+  // 脱离文档的旧轮播在 interval 下一次 tick 自行停止（isConnected 检查）
+  const containerSliderTimers = new WeakMap();
 
   function initSliders(container) {
-    // 上一渲染周期的轮播元素已脱离 DOM，先统一停止其定时器
-    sliderTimers.forEach(id => clearInterval(id));
-    sliderTimers.clear();
+    const prevTimers = containerSliderTimers.get(container);
+    if (prevTimers) prevTimers.forEach(id => clearInterval(id));
+    const sliderTimers = new Set();
+    containerSliderTimers.set(container, sliderTimers);
 
     container.querySelectorAll('.image-gallery--slider').forEach(slider => {
       const imgs = Array.from(slider.querySelectorAll('img'));
@@ -641,7 +674,11 @@
         track.style.transform = `translateX(-${index * 100}%)`;
         dots.querySelectorAll('span').forEach((d, di) => d.classList.toggle('active', di === index));
       }
-      function start() { stop(); timer = setInterval(() => go(index + 1), 4000); sliderTimers.add(timer); }
+      function tick() {
+        if (!slider.isConnected) { stop(); return; } // 脱离文档自动停止
+        go(index + 1);
+      }
+      function start() { stop(); timer = setInterval(tick, 4000); sliderTimers.add(timer); }
       function stop() { if (timer) { clearInterval(timer); sliderTimers.delete(timer); timer = null; } }
       slider.addEventListener('mouseenter', stop);
       slider.addEventListener('mouseleave', start);
@@ -729,6 +766,19 @@
       || document.querySelector('.markdown-body');
   }
 
+  // ===== 渲染器接口约定（备查） =====
+  // 1) 容器：渲染器 render(root) 一律经 resolveRoot 解析作用域，不得直接取
+  //    dom.markdownContent（embedded/pulse 曾绕过约定命中 split-view 空面板）。
+  //    pkt 与 pptx 不在 renderers 注册表，由 embedded.js 以 loadAndRender 工厂
+  //    挂载——有意旁路（预处理产物型渲染器）。
+  // 2) 代码块选择器两套并存（历史约定，改动需全量回归）：
+  //    - pre.code-block[data-lang=xxx]：csv/json/sandbox/http/openapi/graph/
+  //      glossary/sql-erd（含复制按钮与语言标签，由上方 renderer.code 生成）
+  //    - pre code.language-xxx：mermaid/apexcharts/diff/plantuml/geo（marked
+  //      原生类名，loader.js 插件分发也走这一套）
+  // 3) 插件目录：加载器在 iris/js/plugins/，插件本体在 iris/plugins/
+  //    （ES module 动态 import），目录不对称是历史布局，勿混淆。
+
   // ---- 延迟渲染（PERF-1）：重型渲染器滚到附近才初始化 ----
   const lazyObservers = [];
 
@@ -741,6 +791,7 @@
       case 'diff': return pres.filter(p => p.querySelector('code.language-diff'));
       case 'csvtable': return pres.filter(p => p.dataset.lang === 'csv' || p.dataset.lang === 'tsv');
       case 'jsontree': return pres.filter(p => p.dataset.lang === 'json');
+      case 'graph': return pres.filter(p => p.dataset.lang === 'graph');
       default: return [];
     }
   }
@@ -858,7 +909,14 @@
   }
 
   // 延迟渲染白名单（仅当调用方传 opts.lazy 时启用；编辑器 / 对照阅读不传，保持即时渲染）
-  const DEFAULT_LAZY = ['mermaid', 'plantuml', 'apexcharts', 'diff', 'csvtable', 'jsontree'];
+  // pulse 不在此列：它的标记在正文文本节点里（非代码块），走 renderScoped
+  // 的「包容器→渲染→搬回」路径会丢失渲染；波形动画改由渲染器内部的
+  // IntersectionObserver 离屏暂停（见 pulse.js attachAnimIO）。
+  const DEFAULT_LAZY = ['mermaid', 'plantuml', 'apexcharts', 'diff', 'csvtable', 'jsontree', 'graph'];
+
+  // 编辑器 cell / 双屏对照渲染的渲染器子集（消除 editor.js 与 split-view.js
+  // 两处硬编码副本漂移）
+  const CELL_RENDERER_SUBSET = ['mermaid', 'plantuml', 'apexcharts', 'diff', 'katex', 'embedded'];
 
   /**
    * 渲染器统一调度器
@@ -916,11 +974,28 @@
       .replace(/^-|-$/g, '');
   }
 
+  // GitHub Pages 子路径适配（此前 pptx.js / pkt-renderer.js 两份逐字副本）
+  function getBasePath() {
+    return window.location.pathname.includes('/md-preview/') ? '/md-preview/' : '/';
+  }
+
+  // 图表默认调色板（apexcharts/csv-table 图表共用；与站点品牌紫一致）
+  const CHART_PALETTE = ['#8B5CF6', '#D946EF', '#3B82F6', '#10B981', '#F59E0B'];
+
+  // CSV/JSON 树部件共用的当前文档 slug（此前 csv-table/json-tree 两份副本）
+  function docSlug() {
+    const st = window.MarkdownPreview.state;
+    const name = (st && (st.currentFilePath || (st.localDoc && st.localDoc.name))) || '';
+    return String(name).replace(/^.*\//, '').replace(/\.md$/i, '') || '';
+  }
+
   window.MarkdownPreview.mdRender = {
     KNOWN_STYLES,
     DEFAULT_ALERT_TYPES,
     escapeHtml,
     slugify,
+    ensurePurify,
+    sanitizeHtml,
     processGitHubAlerts,
     processSpoilers,
     processRuby,
@@ -938,6 +1013,10 @@
     runRenderers,
     clearLazy,
     DEFAULT_LAZY,
+    CELL_RENDERER_SUBSET,
+    docSlug,
+    getBasePath,
+    CHART_PALETTE,
     resolveRoot,
   };
 })();

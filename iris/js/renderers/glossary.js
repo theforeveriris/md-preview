@@ -143,7 +143,11 @@
     if (cardEl) cardEl.classList.remove('open');
   }
 
+  // 文档级监听只绑一次：render 每次文档导航都会跑，累积绑定会造成泄漏
+  let eventsBound = false;
   function initCardEvents() {
+    if (eventsBound) return;
+    eventsBound = true;
     document.addEventListener('mouseover', (e) => {
       const el = e.target.closest && e.target.closest('.glossary-term');
       if (el) showCard(el);

@@ -13,23 +13,43 @@
   }
   
   function setupScrollProgress() {
+    // passive + rAF 节流：滚动事件每秒可触发数十次，同步做全标题
+    // getBoundingClientRect 会强制布局（抖动）。标题列表在文档渲染时缓存
+    let ticking = false;
     window.addEventListener('scroll', () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-      dom.readingProgressBar.style.width = scrollPercent + '%';
-      dom.progressBar.style.width = scrollPercent + '%';
-      
-      updateActiveHeading();
-    });
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        dom.readingProgressBar.style.width = scrollPercent + '%';
+        dom.progressBar.style.width = scrollPercent + '%';
+
+        updateActiveHeading();
+      });
+    }, { passive: true });
   }
-  
+
+  // 当前文档的标题缓存：renderMarkdown 后由 notifyDocRendered 刷新，
+  // 避免每次滚动都全文档 querySelectorAll
+  let cachedHeadings = [];
+  window.MarkdownPreview.uiRefreshHeadings = function() {
+    // 限定主文档容器：分栏对照窗格与编辑器预览同样带 .markdown-body，
+    // 全局查询会把它们的标题也算进来（滚动高亮会错位）
+    const root = dom.markdownContent;
+    cachedHeadings = root
+      ? Array.from(root.querySelectorAll('h1, h2, h3, h4, h5, h6'))
+      : [];
+  };
+
   function updateActiveHeading() {
-    const headings = document.querySelectorAll('.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6');
+    const headings = cachedHeadings;
     const indexItems = dom.indexTree.querySelectorAll('.index-item');
-    
+
     let activeIndex = -1;
-    
+
     for (let i = headings.length - 1; i >= 0; i--) {
       const heading = headings[i];
       const rect = heading.getBoundingClientRect();
@@ -297,19 +317,6 @@
     if (tagPanel) tagPanel.hidden = mode !== 'tags';
   }
   
-  function copyCodeToClipboard(pre) {
-    const code = pre.querySelector('code');
-    if (code) {
-      navigator.clipboard.writeText(code.textContent).then(() => {
-        const originalText = code.textContent;
-        code.textContent = 'Copied!';
-        setTimeout(() => {
-          code.textContent = originalText;
-        }, 1500);
-      });
-    }
-  }
-
   // 触发行快捷键提示按平台显示（Mac 用 ⌘K，其余用 Ctrl K）
   function initSearchTriggerKbd() {
     if (!dom.searchTriggerKbd) return;
@@ -321,9 +328,7 @@
     updateProgress,
     setupScrollProgress,
     setupEventListeners,
-    switchMode,
-    copyCodeToClipboard,
-    updateActiveHeading,
+    switchMode,    updateActiveHeading,
     openSearchPalette,
     closeSearchPalette,
     isSearchPaletteOpen,

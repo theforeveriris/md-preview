@@ -25,7 +25,6 @@ const ROOT = path.resolve(__dirname, '..', '..');
 const OUT_FILE = path.join(__dirname, 'data', 'pinyin-initials.json');
 const OPENCC_FILE = path.join(ROOT, 'iris', 'vendor', 'opencc', 'opencc.min.js');
 const CJK_RE = /[\u4e00-\u9fff]/g;
-const EXCLUDED_DIRS = new Set(['.git', 'node_modules', 'vendor', '.github', 'dist', 'src-tauri']);
 
 let pinyin;
 try {
@@ -35,15 +34,13 @@ try {
   process.exit(1);
 }
 
+// 目录遍历统一走 lib/docs.js（默认排除清单即本脚本的 EXCLUDED_DIRS）
+const { collectMarkdownFiles } = require('./lib/docs.js');
+
 function collectDocChars(dir, out) {
-  for (const item of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (item.isDirectory()) {
-      if (EXCLUDED_DIRS.has(item.name)) continue;
-      collectDocChars(path.join(dir, item.name), out);
-    } else if (item.isFile() && item.name.endsWith('.md')) {
-      const text = fs.readFileSync(path.join(dir, item.name), 'utf-8');
-      (text.match(CJK_RE) || []).forEach(c => out.add(c));
-    }
+  for (const f of collectMarkdownFiles(dir)) {
+    const text = fs.readFileSync(f.path, 'utf-8');
+    (text.match(CJK_RE) || []).forEach(c => out.add(c));
   }
   return out;
 }

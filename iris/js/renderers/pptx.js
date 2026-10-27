@@ -25,12 +25,7 @@
 
   window.MarkdownPreview = window.MarkdownPreview || {};
 
-  // ============== 工具：GitHub Pages 子路径适配（与 pkt-renderer 同款） ==============
-  function getBasePath() {
-    const path = window.location.pathname;
-    if (path.includes('/md-preview/')) return '/md-preview/';
-    return '/';
-  }
+  const getBasePath = window.MarkdownPreview.mdRender.getBasePath; // 共享副本（曾两处逐字重复）
 
   // ============== 放映模式（全局单例 overlay） ==============
   let slideshowEl = null;
@@ -109,15 +104,22 @@
     document.body.style.overflow = '';
   }
 
+  // slug/title 来自文档与元数据 JSON（可能非受信），拼进 HTML 前必须转义
+  function esc(value) {
+    return window.MarkdownPreview.mdRender.escapeHtml(value);
+  }
+
   // ============== 缩略图网格渲染 ==============
   function renderThumbs(container, { slug, title, pages, ext, images }) {
     const base = getBasePath();
     const extEffective = ext || 'png';
-    // 如果调用方给了预计算的 images（绝对路径数组），优先用；否则按约定拼
+    // 如果调用方给了预计算的 images（绝对路径数组），优先用；否则按约定拼。
+    // slug 统一走 encodeURIComponent（与 loadAndRender 的 safeSlug 口径一致）
     const urls = (images && images.length === pages) ? images
-      : Array.from({ length: pages }, (_, i) => `${base}iris/data/pptx/images/${slug}-${i + 1}.${extEffective}`);
+      : Array.from({ length: pages }, (_, i) => `${base}iris/data/pptx/images/${encodeURIComponent(slug)}-${i + 1}.${encodeURIComponent(extEffective)}`);
 
     // 头部
+    const displayTitle = title || slug;
     const heading = document.createElement('div');
     heading.className = 'pptx-header';
     heading.innerHTML = `
@@ -126,7 +128,7 @@
           <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
           <path d="M3 9h18"></path><path d="M9 21V9"></path>
         </svg>
-        <span>${title || slug}</span>
+        <span>${esc(displayTitle)}</span>
       </div>
       <div class="pptx-header__meta">共 ${pages} 页 · 点击任意页开始放映</div>
     `;
@@ -141,7 +143,7 @@
       card.dataset.pptxThumb = '1';
       card.innerHTML = `
         <div class="pptx-thumb-card__badge">${i + 1}</div>
-        <img loading="lazy" decoding="async" src="${url}" alt="${title || slug} 第 ${i + 1} 页" data-pptx-thumb="1" data-lightbox-disable="1">
+        <img loading="lazy" decoding="async" src="${esc(url)}" alt="${esc(displayTitle)} 第 ${i + 1} 页" data-pptx-thumb="1" data-lightbox-disable="1">
       `;
       card.addEventListener('click', (e) => {
         e.preventDefault();
@@ -204,17 +206,17 @@
               <path d="M12 8v4M12 16h.01"/>
             </svg>
             <div class="pptx-error-title">加载失败</div>
-            <div class="pptx-error-message">${err.message}</div>
+            <div class="pptx-error-message">${esc(err.message)}</div>
             <details class="pptx-error-detail">
               <summary>如何修复？</summary>
               <div>
                 <p>请按以下目录结构准备 pptx 预处理产物（参考 pkt 嵌入模式）：</p>
-<pre style="text-align:left;margin-top:8px;padding:10px;background:rgba(0,0,0,.04);border-radius:6px;overflow-x:auto">iris/data/pptx/json/${slug}.json
+<pre style="text-align:left;margin-top:8px;padding:10px;background:rgba(0,0,0,.04);border-radius:6px;overflow-x:auto">iris/data/pptx/json/${esc(slug)}.json
   → 内容：{"title":"演讲标题","pages":12,"ext":"png"}
-iris/data/pptx/images/${slug}-1.png
-iris/data/pptx/images/${slug}-2.png
+iris/data/pptx/images/${esc(slug)}-1.png
+iris/data/pptx/images/${esc(slug)}-2.png
     ...
-iris/data/pptx/images/${slug}-12.png</pre>
+iris/data/pptx/images/${esc(slug)}-12.png</pre>
               </div>
             </details>
           </div>

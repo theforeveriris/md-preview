@@ -170,6 +170,8 @@
     if (!cachedActions) cachedActions = buildActions();
     return cachedActions;
   }
+  // label 在构建时经 t() 固化：语言切换后失效重建（其他模块同款监听）
+  window.addEventListener('langchange', () => { cachedActions = null; });
 
   // ============== 渲染 ==============
 
@@ -208,11 +210,9 @@
     return el;
   }
 
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
+  // 统一走 md-render 权威实现（search.js 注释声明的全站唯一出处；
+  // DOM 版对引号转义不足，属性插值场景有差异）
+  const escapeHtml = window.MarkdownPreview.mdRender.escapeHtml;
 
   function closePalette() {
     if (window.MarkdownPreview.ui && window.MarkdownPreview.ui.closeSearchPalette) {

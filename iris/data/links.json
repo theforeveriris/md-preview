@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-10-26T17:21:37.369Z",
+  "generatedAt": "2026-10-27T09:47:41.264Z",
   "count": {
-    "nodes": 56,
-    "edges": 96
+    "nodes": 57,
+    "edges": 99
   },
   "nodes": [
     "ARTWORK.md",
@@ -27,6 +27,7 @@
     "docs/examples/gallery-layouts.md",
     "docs/examples/geojson-examples.md",
     "docs/examples/github-alerts-examples.md",
+    "docs/examples/graph-backlinks-demo.md",
     "docs/examples/image-gallery-examples.md",
     "docs/examples/ios-vrp-examples.md",
     "docs/examples/latex-examples.md",
@@ -76,8 +77,8 @@
     "README.md": {
       "docs/shortcuts.md": 2,
       "docs/roadmap.md": 3,
+      "docs/getting-started.md": 2,
       "docs/configuration.md": 2,
-      "docs/getting-started.md": 1,
       "docs/show.md": 1,
       "docs/editor.md": 1,
       "docs/theme-customization.md": 1,
@@ -105,6 +106,10 @@
     },
     "docs/examples/gallery-layouts.md": {
       "docs/examples/image-gallery-examples.md": 1
+    },
+    "docs/examples/graph-backlinks-demo.md": {
+      "docs/show.md": 1,
+      "docs/configuration.md": 2
     },
     "docs/examples/markdown-syntax.md": {
       "docs/getting-started.md": 1
@@ -179,6 +184,7 @@
       "docs/examples/pulse-generator-page.md": 2,
       "docs/shortcuts.md": 2,
       "docs/configuration.md": 4,
+      "docs/examples/graph-backlinks-demo.md": 1,
       "docs/examples/theme-demo.md": 1,
       "docs/examples/native-html-examples.md": 1,
       "docs/examples/geojson-examples.md": 1,

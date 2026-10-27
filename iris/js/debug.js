@@ -161,11 +161,12 @@
   function updatePerformance() {
     setText('dbgFirstScreen', formatMs(performance.now() - debugState.startTime));
 
-    const t = performance.timing;
-    if (t && t.navigationStart > 0) {
-      const domReady = t.domContentLoadedEventEnd - t.navigationStart;
-      const load = t.loadEventEnd - t.navigationStart;
-      const ttfb = t.responseStart - t.navigationStart;
+    // PerformanceNavigationTiming（performance.timing 已废弃，新浏览器可能拿不到）
+    const t = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if (t && t.startTime != null) {
+      const domReady = t.domContentLoadedEventEnd - t.startTime;
+      const load = t.loadEventEnd - t.startTime;
+      const ttfb = t.responseStart - t.startTime;
       setText('dbgDomReady', domReady > 0 ? formatMs(domReady) : '-');
       setText('dbgLoad', load > 0 ? formatMs(load) : '-');
       setText('dbgTtfb', ttfb > 0 ? formatMs(ttfb) : '-');
@@ -286,11 +287,19 @@
     updatePerformance();
   }
 
+  // 统一受控日志：生产路径的调试 console.log 全部改走这里，
+  // 面板未开启（debugState.enabled=false）时静默
+  function debugLog(...args) {
+    if (!debugState.enabled) return;
+    console.log('[dbg]', ...args);
+  }
+
   window.MarkdownPreview.debug = {
     init: initDebug,
     incrementApiCalls,
     incrementCacheHits,
     updateRenderTime,
-    updateAll
+    updateAll,
+    debugLog
   };
 })();

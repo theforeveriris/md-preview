@@ -13,7 +13,8 @@
   // i18n 文案读取：i18n 模块未加载或语言包缺 key 时回退到内置中文
   function t(key, fallback) {
     const i18n = window.MarkdownPreview.i18n;
-    if (i18n && typeof i18n.t === 'function') return i18n.t(key);
+    // fallback 透传：键缺失时回退内置文案，而不是裸键名上屏
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key, fallback);
     return fallback;
   }
 
@@ -668,6 +669,10 @@
   window.MarkdownPreview.interactions = {
     init,
     hideMenu,
-    isMenuOpen: () => menuOpen
+    isMenuOpen: () => menuOpen,
+    // 全站统一复制工具（clipboard API 失败自动降级 execCommand）
+    copyText,
+    // Canvas 文本硬换行（表格 PNG 导出 / 划词截图共用）
+    wrapLine
   };
 })();

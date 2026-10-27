@@ -11,9 +11,9 @@
       return;
     }
 
-    console.log('Checking diff2html libraries...');
-    console.log('  - Diff2Html:', typeof Diff2Html !== 'undefined' ? 'loaded' : 'not loaded');
-    console.log('  - Diff2HtmlUI:', typeof Diff2HtmlUI !== 'undefined' ? 'loaded' : 'not loaded');
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))('Checking diff2html libraries...');
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))('  - Diff2Html:', typeof Diff2Html !== 'undefined' ? 'loaded' : 'not loaded');
+    (window.MarkdownPreview.debug?.debugLog || (() => {}))('  - Diff2HtmlUI:', typeof Diff2HtmlUI !== 'undefined' ? 'loaded' : 'not loaded');
 
     // 按需加载 diff2html JS + CSS
     await Promise.all([
@@ -34,9 +34,11 @@
       const classList = codeElement.className;
       if (!classList || !classList.includes('language-diff')) continue;
       
+      const diffCode = codeElement.textContent.trim();
+      // container 必须在 try 之前创建：catch 里要往里放错误框，
+      // 若在 try 内声明，创建前的异常会让 catch 自己抛 ReferenceError
+      const container = document.createElement('div');
       try {
-        const diffCode = codeElement.textContent.trim();
-        const container = document.createElement('div');
         container.className = 'diff-container';
         container.style.margin = '1.5em 0';
         
@@ -57,17 +59,14 @@
             synchronisedScroll: true,
             highlight: true
           };
-          
-          // 先解析 diff
+
+          // 只 parse 一次：parse + html 各一次就够（旧实现 Diff2HtmlUI 内部
+          // 会对同一段 diff 再 parse 一遍，大 diff 纯浪费）
           const diffJson = Diff2Html.parse(diffCode);
-          // 生成 HTML
           const diffHtml = Diff2Html.html(diffJson, configuration);
-          // 插入 HTML
+          // 插入 HTML。diff 内容的转义完全依赖 diff2html 自身（该库历史上
+          // 出过 XSS），升级此依赖时留意其安全公告
           diffTarget.innerHTML = diffHtml;
-          
-          // 初始化 UI
-          const diff2htmlUi = new Diff2HtmlUI(diffTarget, diffCode, configuration);
-          diff2htmlUi.highlightCode();
         } else {
           console.error('Diff2Html or Diff2HtmlUI library is not loaded');
           const errorDiv = document.createElement('div');
@@ -78,11 +77,23 @@
         }
       } catch (error) {
         console.error('Diff rendering error:', error);
+        // 统一回退约定：错误提示 + 可折叠源码（不丢源码）；错误框写进本次
+        // 渲染的 container（旧实现 append 到 pre.parentNode，pre 已被替换，
+        // 错误框会落到文档末尾）
         const errorDiv = document.createElement('div');
         errorDiv.style.color = '#ff6b6b';
         errorDiv.style.padding = '10px';
         errorDiv.textContent = 'Diff 渲染错误: ' + error.message;
-        pre.parentNode.appendChild(errorDiv);
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+        summary.textContent = '查看源码';
+        const srcPre = document.createElement('pre');
+        srcPre.style.cssText = 'margin-top:8px;white-space:pre-wrap';
+        srcPre.textContent = typeof diffCode === 'string' ? diffCode : '';
+        details.appendChild(summary);
+        details.appendChild(srcPre);
+        errorDiv.appendChild(details);
+        container.appendChild(errorDiv);
       }
     }
   }
