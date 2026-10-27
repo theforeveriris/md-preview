@@ -43,6 +43,16 @@ jobs:
         with:
           workspaces: src-tauri
 
+      # Tauri 的 generate_context!() 在编译期要求 frontendDist（../dist）存在，
+      # 否则报 "The `frontendDist` configuration is set to ../dist but this path doesn't exist"
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '20'
+
+      - name: Build frontend dist (编译期依赖)
+        run: node iris/scripts/build-desktop-dist.js
+
       - name: Install Linux system deps (Tauri v2 webkit)
         run: |
           sudo apt-get update -qq
