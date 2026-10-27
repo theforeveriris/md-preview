@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-27T19:21:56.418Z",
+  "generatedAt": "2026-10-27T19:23:22.571Z",
   "version": 1,
-  "count": 141,
+  "count": 142,
   "urls": [
     "./",
     "./index.html",
@@ -60,6 +60,7 @@
     "./iris/js/figures.js",
     "./iris/js/file-tree.js",
     "./iris/js/find-bar.js",
+    "./iris/js/floating-menu-custom.js",
     "./iris/js/focus-mode.js",
     "./iris/js/gestures.js",
     "./iris/js/git-history.js",
