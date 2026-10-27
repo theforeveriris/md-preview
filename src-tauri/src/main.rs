@@ -157,14 +157,18 @@ async fn pick_and_bind_kb(state: tauri::State<'_, KbRootState>) -> Result<Option
     if !path.is_dir() {
         return Err("not a directory".to_string());
     }
+    // 非 UTF-8 路径无法回传前端：先转换、失败时报错且不动状态
+    // （否则前端把返回的 None 当作取消，保留旧知识库而 Rust 侧已换根）
+    let Some(path_str) = path.to_str().map(|s| s.to_string()) else {
+        return Err("path is not valid UTF-8".to_string());
+    };
     let mut current = state.current.lock().unwrap();
     let mut previous = state.previous.lock().unwrap();
     // 旧 root 存入 previous，供 rollback_kb_root 恢复
     *previous = current.take();
-    *current = Some(path.clone());
-    Ok(path.to_str().map(|s| s.to_string()))
+    *current = Some(path);
+    Ok(Some(path_str))
 }
-
 /// 挂载流程失败时回滚到上一代 root（没有则清空）
 #[tauri::command]
 fn rollback_kb_root(state: tauri::State<KbRootState>) -> Result<(), String> {

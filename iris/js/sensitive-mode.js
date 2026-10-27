@@ -79,7 +79,10 @@
       }
       if (matches.length === 0) return;
 
-      // 逐命中逐节点包裹：命中的偏移区间落到哪些片段就拆哪些节点
+      // 每个原始节点只重建一次：先汇总该节点内的全部命中区间再统一替换。
+      // 逐命中替换会移除原始节点，同一节点的后续命中因 parentNode 为空
+      // 被跳过而漏盖（CWE-200，CodeRabbit review fix）
+      const segsByNode = new Map(); // node -> [{localS, localE}]
       matches.forEach(match => {
         const mStart = match.index;
         const mEnd = mStart + match[0].length;
@@ -87,23 +90,30 @@
           const s = Math.max(part.start, mStart);
           const e = Math.min(part.end, mEnd);
           if (s >= e) return;
-          const node = part.node;
-          if (!node.parentNode) return;
-          const value = node.nodeValue;
-          const localS = s - part.start;
-          const localE = e - part.start;
-          const frag = document.createDocumentFragment();
-          if (localS > 0) frag.appendChild(document.createTextNode(value.slice(0, localS)));
+          if (!part.node.parentNode) return;
+          if (!segsByNode.has(part.node)) segsByNode.set(part.node, []);
+          segsByNode.get(part.node).push({ localS: s - part.start, localE: e - part.start });
+        });
+      });
+      segsByNode.forEach((segs, node) => {
+        const value = node.nodeValue || '';
+        segs.sort((a, b) => a.localS - b.localS);
+        const frag = document.createDocumentFragment();
+        let cursor = 0;
+        segs.forEach(seg => {
+          if (seg.localS < cursor) return; // 区间重叠防御：前一段已覆盖
+          if (seg.localS > cursor) frag.appendChild(document.createTextNode(value.slice(cursor, seg.localS)));
           const span = document.createElement('span');
           span.className = 'sensitive-blur';
-          span.textContent = value.slice(localS, localE);
+          span.textContent = value.slice(seg.localS, seg.localE);
           span.title = t('sensitive.revealHint', '点击临时显示');
           span.addEventListener('click', () => span.classList.toggle('revealed'));
           frag.appendChild(span);
-          if (localE < value.length) frag.appendChild(document.createTextNode(value.slice(localE)));
-          node.parentNode.replaceChild(frag, node);
+          cursor = seg.localE;
           count++;
         });
+        if (cursor < value.length) frag.appendChild(document.createTextNode(value.slice(cursor)));
+        node.parentNode.replaceChild(frag, node);
       });
     });
     return count;

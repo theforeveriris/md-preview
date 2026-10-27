@@ -123,10 +123,11 @@
         let hasHeader = parsed.hasHeader;
         // 已有 table-style 标记 → 初始化预设选择框（否则仅改单元格保存
         // 会把旧样式丢掉）；改选「默认」可清除预设。
-        // 只读紧邻表格的那一行标记（更后面的标记可能属于其他表格）
-        let existingPreset = '';
-        const nextLine = text.split('\n')[span.end] || '';
-        const presetMatch = /<!--\s*table-style:\s*([\w\- ]+?)\s*-->/.exec(nextLine);
+        // 只读紧邻表格的标记（允许中间空行；更后面的标记可能属于其他表格）
+        const srcLines = text.split('\n');
+        let probe = span.end;
+        while (probe < srcLines.length && srcLines[probe].trim() === '') probe++;
+        const presetMatch = /<!--\s*table-style:\s*([\w\- ]+?)\s*-->/.exec(srcLines[probe] || '');
         if (presetMatch) existingPreset = presetMatch[1].trim();
 
         let overlay = document.getElementById('tblEditorOverlay');
@@ -218,9 +219,15 @@
           const lines = text.split('\n');
           // 样式预设（ADJ-TABLE-2）：非默认预设以 HTML 注释标记跟在表格后，
           // 渲染管线（mdRender.applyTablePresets）读标记给表格挂类。
-          // 先移除紧跟表格后的旧标记（span.end 起），避免重复累积。
+          // 先移除紧跟表格后的旧标记（允许中间空行），避免重复累积——
+          // applyTablePresets 的 previousElementSibling 会跳过注释与空白，
+          // 残留的旧标记会给同一表格叠加旧样式类
           let end = span.end;
-          while (end < lines.length && /<!--\s*table-style:/.test(lines[end])) end++;
+          let probe2 = span.end;
+          while (probe2 < lines.length && lines[probe2].trim() === '') probe2++;
+          if (probe2 < lines.length && /<!--\s*table-style:/.test(lines[probe2])) {
+            end = probe2 + 1; // 只删标记行，中间的空行保留
+          }
           const preset = overlay.querySelector('.tbl-preset-sel').value;
           const marker = preset ? '\n<!-- table-style: ' + preset + ' -->' : '';
           const tableText = serializeTable(rows, hasHeader) + marker;
