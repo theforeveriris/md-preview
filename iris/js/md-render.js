@@ -197,18 +197,29 @@
     const knownStyles = opts.knownStyles || KNOWN_STYLES;
     const renderer = new marked.Renderer();
     renderer.code = function({ text, lang }) {
-      const language = lang || '';
+      // fence 信息串解析：首 token 为语言，其余为附加标记（raw/live/rules…），
+      // `{2,5-8}` 形式的 token 是行高亮标记——单独摘到 data-line-hl，
+      // 不污染 data-lang（消费方按 token 精确匹配语言）
+      const tokens = String(lang || '').trim().split(/\s+/).filter(Boolean);
+      let lineHl = '';
+      const markers = [];
+      tokens.forEach((tok, i) => {
+        if (i > 0 && /^\{\d[\d,\s-]*\}$/.test(tok)) lineHl = tok;
+        else markers.push(tok);
+      });
+      const language = markers[0] || '';
       // lang 来自文档内容，必须先转义再拼进 HTML（marked 默认渲染器会转义，自定义 renderer 需要自己处理）
       const escapedLang = escapeHtml(language);
       const languageClass = escapedLang ? ` class="language-${escapedLang}"` : '';
       const langLabel = escapedLang ? `<span class="code-lang-label">${escapedLang}</span>` : '';
+      const dataLang = markers.length ? escapeHtml(markers.join(' ')) : '';
       const escapedText = String(text || '')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
-      return `<pre class="code-block"${escapedLang ? ` data-lang="${escapedLang}"` : ''}><button class="copy-btn" aria-label="复制代码"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>${langLabel}<code${languageClass}>${escapedText}</code></pre>`;
+      return `<pre class="code-block"${dataLang ? ` data-lang="${dataLang}"` : ''}${lineHl ? ` data-line-hl="${escapeHtml(lineHl)}"` : ''}><button class="copy-btn" aria-label="复制代码"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>${langLabel}<code${languageClass}>${escapedText}</code></pre>`;
     };
     renderer.paragraph = function(token) {
       const trimmed = (token && token.text ? token.text : '').trim();

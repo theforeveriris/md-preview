@@ -529,3 +529,20 @@
 }
 .ipcalc-subnets code { margin-right: 6px; }
 .ipcalc-more { color: var(--color-text-muted); font-size: 11px; }
+
+/* ============== 代码行高亮覆盖层（line-highlight.js） ============== */
+.line-hl-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+pre.code-block .line-hl-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: color-mix(in srgb, var(--color-accent-purple) 16%, transparent);
+  border-left: 2px solid var(--color-accent-purple, #8b5cf6);
+  box-sizing: border-box;
+}
+pre.code-block code { position: relative; z-index: 1; }

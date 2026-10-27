@@ -386,6 +386,8 @@
 
     setupClickDelegate();
     mdRender.highlightCodeBlocksProgressive(dom.markdownContent);
+    // 代码行高亮（```js {2,5-8} / [!code highlight]）
+    window.MarkdownPreview.lineHighlight?.apply?.(dom.markdownContent);
 
     interceptLinks(currentPath);
 
