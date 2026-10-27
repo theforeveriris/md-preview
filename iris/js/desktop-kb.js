@@ -457,6 +457,13 @@
         }
       },
       {
+        id: 'kb-editor-window',
+        icon: 'i-code',
+        label: t('kb.editorWindow', '编辑器（独立窗口）'),
+        group: t('kb.group', '桌面端'),
+        run: () => { invoke('open_editor_window').catch(() => {}); }
+      },
+      {
         id: 'kb-export-pdf',
         icon: 'i-download',
         label: t('kb.exportPdf', '批量导出 PDF（合订打印）'),

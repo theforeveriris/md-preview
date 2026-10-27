@@ -91,6 +91,17 @@
     toast.classList.add('show');
   }
 
+  // 编辑器独立窗口：label=editor 的窗口启动即进入编辑器模式（多窗口第六轮）
+  try {
+    const label = window.__TAURI_INTERNALS__ &&
+      window.__TAURI_INTERNALS__.metadata &&
+      window.__TAURI_INTERNALS__.metadata.currentWindow &&
+      window.__TAURI_INTERNALS__.metadata.currentWindow.label;
+    if (label === 'editor' && window.MarkdownPreview && window.MarkdownPreview.enterEditorMode) {
+      window.MarkdownPreview.enterEditorMode();
+    }
+  } catch (e) { /* ignore */ }
+
   // 启动后错峰检查，避免与首屏渲染抢资源
   setTimeout(checkForUpdate, 5000);
 })();

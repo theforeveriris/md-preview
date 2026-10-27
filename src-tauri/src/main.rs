@@ -6,7 +6,7 @@ use std::sync::Mutex;
 use std::time::UNIX_EPOCH;
 
 use serde::Serialize;
-use tauri::Emitter;
+use tauri::{Emitter, Manager};
 // Watcher trait：notify 的 watch()/unwatch() 方法来源
 use notify::Watcher;
 
@@ -327,6 +327,30 @@ async fn install_update(
         .map_err(|e| e.to_string())
 }
 
+// ============== 多窗口：编辑器独立窗口（第六轮） ==============
+//
+// 新开一个 WebviewWindow 加载同一份站点（同一 WebView 数据目录 →
+// IndexedDB 天然共享），窗口 label=editor 时前端自动进入编辑器模式。
+
+#[tauri::command]
+fn open_editor_window(app: tauri::AppHandle) -> Result<(), String> {
+    if let Some(existing) = app.get_webview_window("editor") {
+        let _ = existing.set_focus();
+        return Ok(());
+    }
+    tauri::WebviewWindowBuilder::new(
+        &app,
+        "editor",
+        tauri::WebviewUrl::App("index.html".into()),
+    )
+    .title("md-preview · 编辑器")
+    .inner_size(1240.0, 840.0)
+    .min_inner_size(420.0, 420.0)
+    .build()
+    .map_err(|e| e.to_string())?;
+    Ok(())
+}
+
 fn main() {
     let open_arg = capture_open_file_arg();
     tauri::Builder::default()
@@ -344,7 +368,8 @@ fn main() {
             take_open_file_arg,
             read_open_file,
             check_update,
-            install_update
+            install_update,
+            open_editor_window
         ])
         .run(tauri::generate_context!())
         .expect("error while running md-preview");
