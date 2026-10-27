@@ -41,10 +41,16 @@ runs:
           echo "无变化，跳过提交"
           exit 0
         fi
+        # set +e：脚本顶部为了推送重试关掉了 errexit，提交失败必须显式判定，
+        # 否则后续 push 仍可能成功，脚本还会写 changed=true，调用方误以为已提交
         if [ -n "${{ inputs.body }}" ]; then
           git commit -m "${{ inputs.message }}" -m "${{ inputs.body }}"
         else
           git commit -m "${{ inputs.message }}"
+        fi
+        if [ $? -ne 0 ]; then
+          echo "::error::git commit 失败（暂存区仍有改动）"
+          exit 1
         fi
         # 推送重试：被 non-fast-forward 拒绝时先 rebase 远端再推
         #（此前 build-pkt/build-pptx 连重试都没有，并发下直接失败）

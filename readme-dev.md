@@ -175,6 +175,24 @@ tags: [开发]
 | `cjk-typography-lint.yml` | push / PR 到 `main` 且 `**/*.md` 变化，或每周定时 | 中文文案排版校验（见下节）；main 上自动修复并由机器人提交，PR 上仅提示 |
 | `sync-to-product.yml` | push 到 `main` | 将站点产物同步到 product 分支 |
 
+### 桌面端 CSP 取舍（src-tauri/tauri.conf.json）
+
+`app.security.csp` 从 `null` 收紧为分域白名单，但 `script-src` 保留
+`'unsafe-inline'`，原因：
+
+- **必须保留**：`iris/js/renderers/sandbox.js` 用 `iframe.srcdoc` 做 HTML/JS
+  实时预览，文档内含内联 `<script>`（console 捕获 + 用户代码）。srcdoc 文档会
+  继承父页面的 CSP，`script-src 'self'` 会把这些内联脚本全部拦掉，桌面端的
+  代码预览直接失效。对动态用户代码无法用 hash / nonce 白名单解决。
+- **隔离边界不是 CSP**：用户代码跑在 `sandbox` 属性未开
+  `allow-same-origin` 的 iframe 里，属于不透明源，碰不到主站点 DOM /
+  localStorage / cookie。
+- **已经收紧的部分**：无 `'unsafe-eval'`；`object-src 'none'`；
+  `base-uri 'self'`；远端脚本只允许 `platform.twitter.com`（推文嵌入需要）。
+
+如需进一步收紧，正确方向是把 sandbox 预览改成「外部脚本文件 + postMessage」
+的形式而不是给 CSP 开口子——属于独立改造，未在本轮做。
+
 ### 测试夹具目录 docs/zw/
 
 `docs/zw/` 下 3 篇「排版问题样例」是 `cjk-typography-lint.yml` 的**故意写错样例**

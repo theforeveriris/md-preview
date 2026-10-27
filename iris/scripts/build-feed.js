@@ -153,35 +153,21 @@ function wrapCdata(str) {
 }
 
 // ============== 文件收集 ==============
-function collectFiles(dir, basePath = '') {
-  const files = [];
-  let items = [];
-  try {
-    items = fs.readdirSync(dir, { withFileTypes: true });
-  } catch (e) {
-    return files;
-  }
+// 目录遍历统一走 lib/docs.js：与 file-tree / search-index / sitemap 同一套
+// 排除规则与 .md 大小写判定（此前 feed 自带一份，导致 RSS 与 sitemap 收录
+// 范围不一致：不跳 node_modules/vendor 等目录、且大小写敏感漏掉 .MD）
+const { collectMarkdownFiles } = require('./lib/docs.js');
 
-  for (const item of items) {
-    // docs/zw/ 为中文排版 lint 样例，不进 RSS/sitemap。
-    // 只跳过 DOCS_DIR 直属的 zw：用规范化绝对路径比较，
-    // dir.endsWith('docs') 会误伤 .../mydocs 这类目录
-    if (item.name === 'zw' && path.resolve(dir) === path.resolve(DOCS_DIR)) continue;
-    const fullPath = path.join(dir, item.name);
-    const relPath = basePath ? `${basePath}/${item.name}` : item.name;
-    if (item.isDirectory()) {
-      files.push(...collectFiles(fullPath, relPath));
-    } else if (item.isFile() && item.name.endsWith('.md')) {
-      // 相对仓库根的路径（含 docs/ 前缀），用于 URL
-      const repoRelativePath = 'docs/' + relPath;
-      files.push({
-        repoRelativePath,
-        fullPath,
-        fileName: item.name
-      });
-    }
-  }
-  return files;
+function collectFiles(dir) {
+  return collectMarkdownFiles(dir, {
+    relBase: REPO_ROOT,
+    skipRel: ['docs/zw']
+  }).map(f => ({
+    fullPath: f.path,
+    // 相对仓库根的路径（含 docs/ 前缀），用于 URL
+    repoRelativePath: f.rel,
+    name: f.name
+  }));
 }
 
 // ============== 主流程 ==============

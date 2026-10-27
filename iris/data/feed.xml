@@ -5,20 +5,21 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 27 Oct 2026 09:04:38 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 27 Oct 2026 09:46:49 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>变更日志</title>
       <link>https://theforeveriris.github.io/md-preview/docs/changelog.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/changelog.md</guid>
       <pubDate>Tue, 27 Oct 2026 09:00:44 GMT</pubDate>
-      <description>&gt; 本页由 从 git 历史自动生成，请勿手动编辑。 - fix(review): 修正 CodeRabbit 评审的 11 项问题 — theforeveriris - fix(pulse)+feat(theme): 修复大波形不渲染、恢复默认配色、新增鸢尾花紫主题 — theforeveriris - build: 重新生成数据产物（changelog/feed/file-tree/links</description>
+      <description>&gt; 本页由 从 git 历史自动生成，请勿手动编辑。 - fix(review): 处理 CodeRabbit 的 20 条 minor 与 2 条 nitpick — theforeveriris - fix(review): 修正 CodeRabbit 评审的 11 项问题 — theforeveriris - fix(pulse)+feat(theme): 修复大波形不渲染、恢复默认配色、新</description>
       <content:encoded><![CDATA[<h1>变更日志</h1>
 <blockquote>
 <p>本页由 <code>iris/scripts/build-changelog.js</code> 从 git 历史自动生成，请勿手动编辑。</p>
 </blockquote>
 <h2>2026-10-27</h2>
 <ul>
+<li><code>44c7657</code> fix(review): 处理 CodeRabbit 的 20 条 minor 与 2 条 nitpick — theforeveriris</li>
 <li><code>7f6935e</code> fix(review): 修正 CodeRabbit 评审的 11 项问题 — theforeveriris</li>
 <li><code>f7d8c95</code> fix(pulse)+feat(theme): 修复大波形不渲染、恢复默认配色、新增鸢尾花紫主题 — theforeveriris</li>
 <li><code>7a52e94</code> build: 重新生成数据产物（changelog/feed/file-tree/links/precache/sitemap） — theforeveriris</li>
@@ -217,7 +218,7 @@
 <li><code>4a49e3b</code> Initial commit: Markdown previewer for GitHub Pages — agelaia521</li>
 </ul>
 <blockquote>
-<p>共 130 条（最多展示 200 条）。</p>
+<p>共 131 条（最多展示 200 条）。</p>
 </blockquote>
 ]]></content:encoded>
     </item>

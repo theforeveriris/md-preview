@@ -50,6 +50,10 @@
   function initEditor() {
 
   // ============== 状态 ==============
+  // 恢复/导入是异步的（output_html 净化要 await）：期间 cells 只重建了一部分，
+  // 若自动保存此刻触发，会把「半成品」用同一个 notebook id 覆盖完整记录。
+  // 用计数器覆盖整个生命周期，autosave / beforeunload 检测到就延后/跳过。
+  let restoreDepth = 0;
   let cells = [];
   let cellCounter = 0;
   let activeCellId = null;
@@ -1541,7 +1545,10 @@
     cells.length = 0;
     cellCounter = 0;
     // 创建新 Cell。output_html 来自外部文件（非受信内容，可能是他人分享的
-    // 笔记本），注入前必须经 DOMPurify 净化，防止导入即触发的存储型 XSS
+    // 笔记本），注入前必须经 DOMPurify 净化，防止导入即触发的存储型 XSS。
+    // 净化是 await，期间不能自动保存（会用半成品覆盖原笔记本）
+    restoreDepth++;
+    try {
     for (const s of data.cells) {
       const newCell = createCell(null, s.content || '', { type: s.type === 'plaintext' ? 'plaintext' : 'markdown' });
       if (s.output_html) {
@@ -1557,9 +1564,13 @@
       }
       updateLineNumbers(newCell);
     }
+    } finally {
+      restoreDepth--;
+    }
     if (cells.length === 0) createCell();
     renumberCells();
     updateStatusbar();
+    if (restoreDepth === 0) scheduleAutosave();
     showToast(editorT('editor.importedCells', '已导入 {n} 个 Cell').replace('{n}', data.cells.length));
   }
 
@@ -1980,6 +1991,11 @@
   }
 
   async function autosave() {
+    // 恢复/导入进行中：数据结构不完整，延后到恢复结束（见 restoreDepth）
+    if (restoreDepth > 0) {
+      scheduleAutosave();
+      return;
+    }
     // await 期间用户可能切 tab：捕获发起保存时的 tabId，
     // 完成后只清该 tab 的标记（见 markSaved 的防串扰逻辑）
     const savedTabId = activeTabId;
@@ -2016,6 +2032,16 @@
   }
 
   async function restoreFromData(data) {
+    restoreDepth++;
+    try {
+      return await restoreFromDataInner(data);
+    } finally {
+      restoreDepth--;
+      if (restoreDepth === 0) scheduleAutosave();
+    }
+  }
+
+  async function restoreFromDataInner(data) {
     const cellList = (data && Array.isArray(data.cells)) ? data.cells : [];
     // 旧 cell 即将被销毁：先关双屏，否则 cmHost 残留在双屏 overlay 里
     // 形成死编辑器 + escHandler 泄漏
@@ -2189,6 +2215,7 @@
 
   // 页面卸载前尽力保存（IndexedDB 异步，无法保证完成，但 1.5s 防抖通常已保存）
   window.addEventListener('beforeunload', () => {
+    if (restoreDepth > 0) return; // 恢复中的半成品不得写进兜底快照
     if (isUnsaved) {
       const data = serializeNotebook();
       if (useIndexedDB) {

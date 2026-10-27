@@ -9,6 +9,7 @@ tags: [规划]
 
 ## 2026-10-27
 
+- `e635b5b` merge: 合并 main 的自动生成产物（数据文件冲突取本分支并重新生成） — theforeveriris
 - `44c7657` fix(review): 处理 CodeRabbit 的 20 条 minor 与 2 条 nitpick — theforeveriris
 - `7f6935e` fix(review): 修正 CodeRabbit 评审的 11 项问题 — theforeveriris
 - `f7d8c95` fix(pulse)+feat(theme): 修复大波形不渲染、恢复默认配色、新增鸢尾花紫主题 — theforeveriris
@@ -185,4 +186,4 @@ tags: [规划]
 - `b1eecd4` Add multi-level documentation structure with test files — theforeveriris
 - `4a49e3b` Initial commit: Markdown previewer for GitHub Pages — agelaia521
 
-> 共 131 条（最多展示 200 条）。
+> 共 132 条（最多展示 200 条）。

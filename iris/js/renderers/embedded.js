@@ -170,7 +170,9 @@
       const pathname = parsed.pathname;
       const host = parsed.hostname;
 
-      if (host === 'twitter.com' || host === 'x.com' || host === 'www.twitter.com' || host === 'www.x.com') {
+      // 主机白名单已在 safeHttpUrl 校验过，这里直接复用，避免两处口径不一致
+      //（曾漏掉 mobile.twitter.com，导致旧实现能渲染的链接变成不渲染）
+      if (TWITTER_HOSTS.includes(host)) {
         if (/^\/[A-Za-z0-9_]{1,15}\/status\/\d+/.test(pathname)) {
           embedCode = '<blockquote class="twitter-tweet"><a href="' + safeUrl + '">Loading tweet...</a></blockquote>';
         } else if (/\/(likes|with_replies|media)\b/.test(pathname)) {

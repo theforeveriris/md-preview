@@ -92,9 +92,18 @@ export default {
       const errBox = document.createElement('div');
       errBox.style.cssText = 'padding:12px 16px;border:1px solid #ff6b6b;border-radius:8px;background:#fff0f0;color:#cc0000;font-size:14px';
       if (err && err.message === 'too-long') {
-        errBox.textContent = '二维码内容过长（上限约 ' + window.MarkdownPreview.QREncoder.capacity(eclLocal) + ' 字节），请缩短内容或降低纠错等级（L）';
+        const tFn = (k, fb) => {
+          const i18n = window.MarkdownPreview && window.MarkdownPreview.i18n;
+          return (i18n && typeof i18n.t === 'function') ? i18n.t(k, fb) : fb;
+        };
+        errBox.textContent = tFn('qrcode.tooLong', '二维码内容过长（上限约 {n} 字节），请缩短内容或降低纠错等级（L）')
+          .replace('{n}', window.MarkdownPreview.QREncoder.capacity(eclLocal));
       } else {
-        errBox.textContent = '二维码生成失败：编码器加载失败';
+        const tFn2 = (k, fb) => {
+          const i18n = window.MarkdownPreview && window.MarkdownPreview.i18n;
+          return (i18n && typeof i18n.t === 'function') ? i18n.t(k, fb) : fb;
+        };
+        errBox.textContent = tFn2('qrcode.generateFailed', '二维码生成失败：编码器加载失败');
       }
       qrContainer.appendChild(errBox);
     }

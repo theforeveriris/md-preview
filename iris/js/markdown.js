@@ -1057,7 +1057,12 @@
         renderMarkdown(content, '', sanitizeFn ? { sanitize: sanitizeFn } : {});
       };
       if (opts.sanitize) {
-        return mdRender.ensurePurify().then(() => doRender((html) => DOMPurify.sanitize(html)));
+        return mdRender.ensurePurify()
+          .then(() => doRender((html) => DOMPurify.sanitize(html)))
+          .catch(e => {
+            console.error('[Markdown] sanitize failed for virtual doc:', e);
+            dom.markdownContent.innerHTML = `<div class="welcome-state"><p class="welcome-text">${t('md.loadFailed', '无法加载文件')}</p></div>`;
+          });
       }
       doRender(null);
       return Promise.resolve();
@@ -1072,22 +1077,25 @@
         history.replaceState(null, '', window.location.pathname + window.location.search);
       }
       resetReadingProgress();
-      // 记录本地文档原文，导出 MD / PDF 时直接取用
-      state.localDoc = { name: fileName || 'document.md', content: content };
-      // 更新面包屑为文件名
-      if (fileName) {
-        const bc = document.getElementById('pageBreadcrumbs');
-        const header = document.getElementById('pageHeader');
-        if (bc) bc.textContent = fileName;
-        if (header) header.style.display = 'flex';
-      }
+      // state.localDoc / 面包屑要等净化成功、令牌校验通过后再写：
+      // 否则净化失败时页面还是旧文档，但导出对象和面包屑已经指向新文件
       return mdRender.ensurePurify()
         .then(() => {
           if (seq !== loadSeq) return; // 净化期间已导航，放弃写入
+          // 记录本地文档原文，导出 MD / PDF 时直接取用
+          state.localDoc = { name: fileName || 'document.md', content: content };
+          if (fileName) {
+            const bc = document.getElementById('pageBreadcrumbs');
+            const header = document.getElementById('pageHeader');
+            if (bc) bc.textContent = fileName;
+            if (header) header.style.display = 'flex';
+          }
           renderMarkdown(content, '', { sanitize: (html) => DOMPurify.sanitize(html) });
         })
         .catch(e => {
           console.error('[Markdown] sanitize failed, refusing to render untrusted content:', e);
+          // 不能只写控制台：用户看到的是「什么都没发生」
+          dom.markdownContent.innerHTML = `<div class="welcome-state"><p class="welcome-text">${t('md.loadFailed', '无法加载文件')}</p></div>`;
         });
     },
     interceptLinks,

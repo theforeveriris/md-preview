@@ -23,6 +23,13 @@ function main() {
   const iconPaths = pathsOf(iconSrc);
   const heroPaths = pathsOf(heroSrc);
 
+  // 提取到 0 条说明正则没匹配上（属性引号风格变了 / 文件被清空），
+  // 此时 missing 为空会「假通过」，必须先断言非空
+  if (iconPaths.size === 0 || heroPaths.size === 0) {
+    console.error(`[check-icon-sync] path 提取为空（icon=${iconPaths.size}, hero=${heroPaths.size}），检查逻辑可能已失效`);
+    process.exit(1);
+  }
+
   const missing = [...iconPaths].filter(d => !heroPaths.has(d));
   if (missing.length > 0) {
     console.error(`[check-icon-sync] icon.svg 有 ${missing.length} 条 path 未同步到 hero.svg，鸢尾图形副本已漂移`);
