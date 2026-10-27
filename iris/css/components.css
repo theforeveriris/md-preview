@@ -825,3 +825,124 @@ pre.code-block code { position: relative; z-index: 1; }
 .rt-proto { font-weight: 600; }
 .rt-direct { color: var(--color-text-muted); }
 .rt-widget.p-c .rt-proto { color: #2980b9; }
+
+/* ============== 终端回放块（renderers/terminal.js） ============== */
+.term-replay {
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 14px 0;
+  background: #1e1e2e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.term-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; background: #181825; border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.term-dots { display: inline-flex; gap: 5px; }
+.term-dots i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.term-dots i:nth-child(1) { background: #f38ba8; }
+.term-dots i:nth-child(2) { background: #f9e2af; }
+.term-dots i:nth-child(3) { background: #a6e3a1; }
+.term-title { font-size: 12px; color: #a6adc8; flex: 1 1 auto; }
+.term-controls { display: inline-flex; align-items: center; gap: 6px; }
+.term-speed {
+  background: #313244; color: #cdd6f4; border: none; border-radius: 6px;
+  font-size: 11.5px; padding: 3px 6px;
+}
+.term-play, .term-end {
+  background: #45475a; color: #cdd6f4; border: none; border-radius: 6px;
+  font-size: 11.5px; padding: 3px 10px; cursor: pointer;
+}
+.term-play:hover, .term-end:hover { background: #585b70; }
+.term-body { max-height: 420px; overflow: auto; padding: 14px 16px; }
+.term-screen {
+  font-family: Consolas, Monaco, monospace; font-size: 12.5px; line-height: 1.6;
+  color: #cdd6f4; white-space: pre-wrap; word-break: break-all; display: block;
+}
+.term-cmd { color: #a6e3a1; font-weight: 600; }
+.term-out { color: #9399b2; }
+.term-idle { color: #6c7086; font-style: italic; }
+
+/* ============== 敏感信息遮罩块（renderers/secret.js） ============== */
+.secret-widget {
+  position: relative;
+  margin: 14px 0;
+  border-radius: 10px;
+  border: 1px dashed var(--color-border);
+  overflow: hidden;
+  background: var(--color-surface);
+}
+.secret-widget .secret-content {
+  margin: 0;
+  padding: 14px 16px;
+  background: transparent;
+  transition: filter 0.25s ease;
+  filter: blur(9px);
+  user-select: none;
+  pointer-events: none;
+  max-height: 320px;
+  overflow: hidden;
+}
+.secret-widget.secret-revealed .secret-content {
+  filter: none;
+  user-select: text;
+  pointer-events: auto;
+  max-height: none;
+}
+.secret-widget.secret-revealed .secret-toggle,
+.secret-widget.secret-revealed .secret-mask { display: none; }
+.secret-toggle {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+.secret-eye {
+  background: color-mix(in srgb, var(--color-accent-purple) 88%, black);
+  color: #fff;
+  font-size: 13px;
+  padding: 7px 18px;
+  border-radius: 999px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+}
+.secret-toggle:hover .secret-eye { transform: scale(1.04); }
+.secret-mask {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+}
+.secret-hint { font-size: 13px; color: var(--color-text-muted); }
+.secret-pass-row { display: flex; gap: 6px; }
+.secret-pass-input {
+  padding: 6px 10px; border: 1px solid var(--color-border); border-radius: 7px;
+  background: var(--color-bg); color: var(--color-text); font-size: 13px; width: 160px;
+}
+.secret-error { font-size: 12px; color: #c0392b; }
+.secret-shake { animation: secret-shake 0.35s ease; }
+@keyframes secret-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+/* 导出 PDF / 打印时永远遮罩（无论用户是否已点开） */
+@media print {
+  .secret-widget .secret-content {
+    filter: blur(7px) !important;
+    -webkit-filter: blur(7px) !important;
+    max-height: 200px !important;
+  }
+  .secret-toggle, .secret-mask { display: none !important; }
+}

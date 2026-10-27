@@ -12,12 +12,19 @@
             "type": "file",
             "path": "docs/examples/acl-route-examples.md",
             "wordCount": 38,
-            "created": 0,
-            "modified": 0,
+            "created": 1793127892,
+            "modified": 1793127892,
             "title": "ACL 与路由表分析示例",
             "tags": [
               "网络",
               "工具"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 1
+              }
             ]
           },
           {
@@ -779,6 +786,19 @@
             ]
           },
           {
+            "name": "terminal-secret-examples.md",
+            "type": "file",
+            "path": "docs/examples/terminal-secret-examples.md",
+            "wordCount": 67,
+            "created": 0,
+            "modified": 0,
+            "title": "终端回放与敏感遮罩示例",
+            "tags": [
+              "网络",
+              "工具"
+            ]
+          },
+          {
             "name": "theme-demo.md",
             "type": "file",
             "path": "docs/examples/theme-demo.md",
@@ -837,9 +857,9 @@
             ]
           }
         ],
-        "wordCount": 12830,
+        "wordCount": 12897,
         "created": 1779157467,
-        "modified": 1793127296
+        "modified": 1793127892
       },
       {
         "name": "changelog.md",
@@ -1109,9 +1129,9 @@
         ]
       }
     ],
-    "wordCount": 24907,
+    "wordCount": 24974,
     "created": 1779157467,
-    "modified": 1793127296
+    "modified": 1793127892
   },
   {
     "name": "iris",
