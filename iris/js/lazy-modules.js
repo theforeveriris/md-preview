@@ -55,6 +55,7 @@
       'iris/js/editor/version-snapshots.js',
       'iris/js/editor/mermaid-pip.js',
       'iris/js/editor/table-editor.js',
+      'iris/js/editor/outline.js',
       'iris/js/editor.js'
     ]).then(() => {
       // editor.js 已覆盖本 shim：再调一次命中的就是真实实现

@@ -21,6 +21,8 @@
       let currentKey = '';
       let renderSeq = 0;
       let debounceTimer = null;
+      let lastCell = null;   // 最近活动的 Cell（错误行号跳转目标）
+      let lastFence = null;  // 最近活动围栏 { lang, startLine, content }
 
       function ensurePanel() {
         if (panel) return panel;
@@ -116,11 +118,40 @@
           } catch (e) {
             if (seq !== renderSeq) return;
             stage.innerHTML = '';
+            const msg = e && e.message ? String(e.message).slice(0, 300) : String(e);
+            // 错误行号（ADJ-DIFF-2）：mermaid 报错常带 line N（相对围栏内容行），
+            // 解析出来给「跳到第 N 行」按钮——画图最痛的点
+            const lineMatch = /line\s+(\d+)/i.exec(msg);
             errBox.hidden = false;
-            errBox.textContent = editorT('pip.badSyntax', 'Mermaid 语法有问题：') +
-              (e && e.message ? String(e.message).slice(0, 300) : String(e));
+            errBox.innerHTML = esc(editorT('pip.badSyntax', 'Mermaid 语法有问题：') + msg) +
+              (lineMatch ? ` <button type="button" class="mermaid-pip-jump">${esc(editorT('pip.jumpLine', '跳到第 {n} 行').replace('{n}', lineMatch[1]))}</button>` : '');
+            if (lineMatch) {
+              errBox.querySelector('.mermaid-pip-jump')?.addEventListener('click', () => {
+                jumpToErrorLine(lastCell, lastFence, parseInt(lineMatch[1], 10));
+              });
+            }
           }
         }, 400);
+      }
+
+      // 跳到错误行：光标定位 + 滚动 + 抖动提示
+      function jumpToErrorLine(cell, fence, errLine) {
+        if (!cell || !fence || !Number.isFinite(errLine)) return;
+        const lines = (cell.textarea.value || '').split('\n');
+        const absLine = Math.min(fence.startLine + errLine, lines.length - 1);
+        let offset = 0;
+        for (let i = 0; i < absLine; i++) offset += lines[i].length + 1;
+        try {
+          cell.editor.view.dispatch({
+            selection: { anchor: offset },
+            scrollIntoView: true
+          });
+          cell.editor.focus();
+        } catch (e) { /* ignore */ }
+        cell.div.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        cell.div.classList.remove('cell-line-flash');
+        requestAnimationFrame(() => cell.div.classList.add('cell-line-flash'));
+        setTimeout(() => cell.div.classList.remove('cell-line-flash'), 1500);
       }
 
       // editor.js bindCellEvents 在 input / keyup / click / focus 时调用
@@ -137,6 +168,9 @@
         ensurePanel();
         const key = cell.id + ':' + fence.startLine;
         const src = fence.content.trim();
+        // 供错误行号跳转使用（当前 Cell + 围栏起始行）
+        lastCell = cell;
+        lastFence = fence;
         if (key !== currentKey || stage.dataset.src !== src) {
           currentKey = key;
           if (src) renderFence(src);

@@ -673,6 +673,7 @@
   }
 
   function updateCellMeta(cellData) {
+    outline?.refresh?.();
     const lines = cellData.textarea.value.split('\n').length;
     cellData.linesLabel.textContent = `${lines} 行`;
   }
@@ -2407,6 +2408,14 @@
   const mermaidPipMod = window.MarkdownPreview.editorModules &&
     window.MarkdownPreview.editorModules.mermaidPip;
   const mermaidPip = mermaidPipMod ? mermaidPipMod.init({ editorT }) : null;
+
+  // 笔记本大纲侧栏（各 Cell 标题行 → 点击跳转定位）
+  const outlineMod = window.MarkdownPreview.editorModules &&
+    window.MarkdownPreview.editorModules.outline;
+  const outline = outlineMod ? outlineMod.init({
+    editorT,
+    getCells: () => cells
+  }) : null;
 
   // 可视化表格编辑器（输出区表格「编辑」→ 网格编辑 → 回写 Markdown 源码）
   const tableEditorMod = window.MarkdownPreview.editorModules &&
