@@ -40,6 +40,15 @@
     "targets": ["nsis"],
     "shortDescription": "静态 Markdown 文档站点的桌面端",
     "longDescription": "把 md-preview 静态站点打包为桌面应用：离线可用，外链交给系统浏览器。",
+    "fileAssociations": [
+      {
+        "ext": ["md", "markdown"],
+        "name": "Markdown 文档",
+        "description": "用 md-preview 打开 Markdown 文档",
+        "role": "Editor",
+        "mimeType": "text/markdown"
+      }
+    ],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

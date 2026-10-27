@@ -2,9 +2,13 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::path::{Path, PathBuf};
+use std::sync::Mutex;
 use std::time::UNIX_EPOCH;
 
 use serde::Serialize;
+use tauri::Emitter;
+// Watcher trait：notify 的 watch()/unwatch() 方法来源
+use notify::Watcher;
 
 /// 把外链交给系统默认浏览器。
 ///
@@ -179,13 +183,99 @@ fn read_kb_file(root: String, path: String) -> Result<String, String> {
         .map_err(|e| format!("read failed: {}", e))
 }
 
+// ============== 文件关联 + 实时预览 ==============
+
+/// 挂载目录的文件系统监视器（同一时刻只 watch 一个根，重新挂载即替换）
+struct KbWatchState(Mutex<Option<notify::RecommendedWatcher>>);
+
+/// 双击 .md 打开的文件参数：Rust 启动时从 argv 捕获，前端就绪后取走
+struct OpenFileArg(Mutex<Option<String>>);
+
+fn is_md_path(p: &Path) -> bool {
+    p.extension()
+        .and_then(|e| e.to_str())
+        .map(|e| e.eq_ignore_ascii_case("md") || e.eq_ignore_ascii_case("markdown"))
+        .unwrap_or(false)
+}
+
+/// 监视挂载根目录，.md 变更时向前端发 kb-changed（值为变更文件的绝对路径）
+#[tauri::command]
+fn watch_kb_folder(
+    app: tauri::AppHandle,
+    root: String,
+    state: tauri::State<KbWatchState>,
+) -> Result<(), String> {
+    let root_path = PathBuf::from(&root);
+    if !root_path.is_dir() {
+        return Err("not a directory".to_string());
+    }
+    let mut watcher = notify::recommended_watcher(move |res: Result<notify::Event, notify::Error>| {
+        if let Ok(event) = res {
+            for p in event.paths {
+                if is_md_path(&p) {
+                    let _ = app.emit("kb-changed", p.to_string_lossy().to_string());
+                }
+            }
+        }
+    })
+    .map_err(|e| e.to_string())?;
+    watcher
+        .watch(&root_path, notify::RecursiveMode::Recursive)
+        .map_err(|e| e.to_string())?;
+    *state.0.lock().unwrap() = Some(watcher);
+    Ok(())
+}
+
+/// 卸载知识库时停止监视
+#[tauri::command]
+fn unwatch_kb_folder(state: tauri::State<KbWatchState>) -> Result<(), String> {
+    *state.0.lock().unwrap() = None;
+    Ok(())
+}
+
+/// 前端就绪后取走启动参数里的 .md 路径（一次性；事件先于 JS 监听建立，
+/// 所以用取件箱模式而不是启动期 emit）
+#[tauri::command]
+fn take_open_file_arg(state: tauri::State<OpenFileArg>) -> Result<Option<String>, String> {
+    Ok(state.0.lock().unwrap().take())
+}
+
+/// 读取通过文件关联打开的外部 .md 文件（限 md/markdown 扩展名与大小上限）
+#[tauri::command]
+fn read_open_file(path: String) -> Result<String, String> {
+    let p = PathBuf::from(&path);
+    if !p.is_file() || !is_md_path(&p) {
+        return Err("not a markdown file".to_string());
+    }
+    let meta = p.metadata().map_err(|e| e.to_string())?;
+    if meta.len() > KB_MAX_FILE_BYTES {
+        return Err("file too large".to_string());
+    }
+    std::fs::read_to_string(&p).map_err(|e| format!("read failed: {}", e))
+}
+
+/// 启动参数捕获：Windows 文件关联会把文档路径作为 argv 传入
+fn capture_open_file_arg() -> Option<String> {
+    std::env::args().skip(1).find(|arg| {
+        let p = PathBuf::from(arg);
+        p.is_file() && is_md_path(&p)
+    })
+}
+
 fn main() {
+    let open_arg = capture_open_file_arg();
     tauri::Builder::default()
+        .manage(KbWatchState(Mutex::new(None)))
+        .manage(OpenFileArg(Mutex::new(open_arg)))
         .invoke_handler(tauri::generate_handler![
             open_external,
             pick_folder,
             read_kb_tree,
-            read_kb_file
+            read_kb_file,
+            watch_kb_folder,
+            unwatch_kb_folder,
+            take_open_file_arg,
+            read_open_file
         ])
         .run(tauri::generate_context!())
         .expect("error while running md-preview");

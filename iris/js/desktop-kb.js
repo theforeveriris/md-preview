@@ -181,6 +181,8 @@
 
       const st = window.MarkdownPreview.state;
       st.desktopKb = { root };
+      // 实时预览：监视挂载目录（失败不阻断挂载，只少热更新）
+      invoke('watch_kb_folder', { root }).catch(() => {});
 
       const enriched = enrichTree(JSON.parse(treeJson), docs);
       st.fileTreeData = enriched;
@@ -222,6 +224,7 @@
   async function unmount() {
     const st = window.MarkdownPreview.state;
     if (!st || !st.desktopKb) return;
+    invoke('unwatch_kb_folder').catch(() => {});
     delete st.desktopKb;
     delete st.desktopKbDocs;
     delete st.desktopKbLinks;
@@ -269,6 +272,87 @@
       out.push({ path: rel, text: meta.text });
     });
     return out;
+  }
+
+  // ============== 文件关联 + 实时预览 ==============
+
+  // 双击 .md 打开：argv 路径由 Rust 捕获，前端就绪后取走并渲染
+  async function openExternalDoc(path) {
+    try {
+      const text = await invoke('read_open_file', { path });
+      const name = String(path).replace(/[\\/]+$/, '').split(/[\\/]/).pop() || 'document.md';
+      const markdown = window.MarkdownPreview.markdown;
+      if (markdown && markdown.renderMarkdownDirect) {
+        await markdown.renderMarkdownDirect(text, name);
+        notify(t('kb.openFile', '已打开 {n}').replace('{n}', name));
+      }
+    } catch (e) {
+      notify(t('kb.openFileFailed', '打开文件失败：{m}').replace('{m}', e.message || e));
+    }
+  }
+
+  function takeOpenFileArg() {
+    invoke('take_open_file_arg').then(path => {
+      if (path) openExternalDoc(path);
+    }).catch(() => {});
+  }
+
+  // 归一化：Windows 反斜杠 → 正斜杠（大小写不敏感比较由调用方处理）
+  function normalizeSep(p) {
+    return String(p).replace(/\\/g, '/');
+  }
+
+  // 挂载目录内文件变更 → 刷新缓存/树/索引；当前文档打开着就直接重渲染
+  async function handleKbChanged(absPath) {
+    const st = window.MarkdownPreview.state;
+    if (!st || !st.desktopKb) return;
+    const rootNorm = normalizeSep(st.desktopKb.root).replace(/\/+$/, '').toLowerCase();
+    const norm = normalizeSep(absPath);
+    const normLower = norm.toLowerCase();
+    if (!normLower.startsWith(rootNorm + '/')) return;
+    const rel = norm.slice(rootNorm.length + 1);
+    const kbPath = KB_PREFIX + rel;
+    const name = rel.split('/').pop();
+
+    try {
+      const text = await invoke('read_kb_file', { root: st.desktopKb.root, path: rel });
+      const { frontmatter, content } = parseFrontmatter(text);
+      const docs = st.desktopKbDocs;
+      if (docs) {
+        docs.set(rel, {
+          text,
+          title: frontmatter.title || name.replace(/\.md$/i, ''),
+          tags: parseTags(frontmatter.tags),
+          words: countWords(content),
+          modified: Math.floor(Date.now() / 1000)
+        });
+      }
+      // 文件树上的 modified 时间戳刷新
+      (function bump(nodes) {
+        (nodes || []).forEach(n => {
+          if (n.type === 'folder') bump(n.children);
+          else if (n.path === kbPath) n.modified = Math.floor(Date.now() / 1000);
+        });
+      })(st.fileTreeData);
+      // 正在阅读这篇 → 热重渲染（走 kb/ 读取管线，闪一下即可）
+      if (st.currentFilePath === kbPath) {
+        window.MarkdownPreview.markdown.loadMarkdownFile(kbPath);
+        notify(t('kb.reloaded', '文档已更新，已重新渲染'));
+      } else {
+        notify(t('kb.fileChanged', '{n} 已更新').replace('{n}', name));
+      }
+    } catch (e) {
+      // 文件被删除等场景：从缓存移除，交给用户手动刷新
+      if (st.desktopKbDocs) st.desktopKbDocs.delete(rel);
+    }
+  }
+
+  function setupWatchListener() {
+    const events = window.__TAURI__ && window.__TAURI__.event;
+    if (!events || typeof events.listen !== 'function') return;
+    events.listen('kb-changed', (event) => {
+      handleKbChanged(event.payload);
+    });
   }
 
   // ============== 悬浮球菜单 + 命令面板 ==============
@@ -325,6 +409,8 @@
     if (!isDesktop()) return;
     setupMenu();
     setupPaletteActions();
+    setupWatchListener();
+    takeOpenFileArg(); // 双击 .md 经文件关联启动的场景
   }
 
   window.MarkdownPreview.desktopKb = {
