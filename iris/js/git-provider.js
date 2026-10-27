@@ -105,7 +105,8 @@
         if (data.length < 100) break;
       }
       if (page > MAX_PAGES) {
-        console.warn('[git-provider] GitLab tree 超过安全分页上限，结果可能不完整');
+        // 触顶抛错而不是静默返回残缺树：调用方（挂载流程）会 toast 提示
+        throw new Error('gitlab tree exceeds ' + MAX_PAGES + ' pages (over 10000 entries)');
       }
       return { tree: out };
     }

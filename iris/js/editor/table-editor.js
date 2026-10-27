@@ -106,29 +106,38 @@
 
       function openEditor(cellData, tbl) {
         const text = cellData.textarea.value;
-        // 渲染表格 ↔ 源码块按出现顺序对应
-        const renderedIndex = Array.from(cellData.output.querySelectorAll('table')).indexOf(tbl);
+        // 渲染表格 ↔ 源码块映射：全表指纹（所有单元格文本规范化后拼接）分组
+        // 对齐——marked 按文档序渲染，指纹相同组的第 k 个渲染表格对应第 k 个
+        // 源码块；组大小不一致或指纹对不上（HTML 表格/CSV 组件等非 Markdown
+        // 来源）一律拒绝回写，防止错位覆盖（CodeRabbit review fix）。
+        // 首行比较不足以区分相同表头的两张表格
+        const normRow = arr => arr.join('\u0001').toLowerCase();
+        const tableFp = t2 => normRow(Array.from(t2.rows)
+          .flatMap(r => Array.from(r.cells).map(c => (c.textContent || '').trim())));
+        const allRendered = Array.from(cellData.output.querySelectorAll('table'));
+        const renderedIndex = allRendered.indexOf(tbl);
+        if (renderedIndex < 0) return;
+        const renderedFps = allRendered.map(tableFp);
+        const fp = renderedFps[renderedIndex];
+
         const spans = findSourceTables(text);
-        if (renderedIndex < 0 || renderedIndex >= spans.length) {
+        const srcFps = spans.map(sp => {
+          const parsedFp = parseTableBlock(text.split('\n').slice(sp.start, sp.end));
+          return parsedFp ? normRow(parsedFp.rows.flat()) : null;
+        });
+        // 当前渲染表格在其指纹组内的序号
+        const occ = renderedFps.slice(0, renderedIndex + 1).filter(f => f === fp).length - 1;
+        const srcGroup = [];
+        srcFps.forEach((f, i) => { if (f === fp) srcGroup.push(i); });
+        const renderedGroupSize = renderedFps.filter(f => f === fp).length;
+        if (!fp || renderedGroupSize !== srcGroup.length || occ >= srcGroup.length) {
           showToast(editorT('tbl.locateFail', '无法在源码中定位此表格（可能来自 HTML 或其他语法糖）'));
           return;
         }
-        const span = spans[renderedIndex];
+        const span = spans[srcGroup[occ]];
         const parsed = parseTableBlock(text.split('\n').slice(span.start, span.end));
         if (!parsed) {
           showToast(editorT('tbl.parseFail', '表格解析失败'));
-          return;
-        }
-        // 映射校验：渲染表格与源码块的首行必须一致（合法 Markdown 表格可
-        // 省略首尾竖线，序号对应可能错位）——对不上就不开放回写，防止
-        // 覆盖错误的表格（CodeRabbit review fix）
-        const renderedFirstRow = Array.from(tbl.rows[0]?.cells || [])
-          .map(cell => (cell.textContent || '').trim());
-        const srcFirstRow = parsed.rows[0].map(c2 => (c2 || '').trim());
-        const normRow = arr => arr.join('\u0001').toLowerCase();
-        if (renderedFirstRow.length === 0 ||
-            normRow(renderedFirstRow) !== normRow(srcFirstRow)) {
-          showToast(editorT('tbl.locateFail', '无法在源码中定位此表格（可能来自 HTML 或其他语法糖）'));
           return;
         }
         let rows = parsed.rows.map(r => r.slice());

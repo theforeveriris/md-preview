@@ -142,7 +142,7 @@
       lines.push(`## ${dir === '/' ? t('siteIndex.root', '（根目录）') : dir}`);
       lines.push('');
       list.forEach(f => {
-        const title = f.title || String(f.name || '').replace(/\.md$/i, '');
+        const title = mdText(f.title || String(f.name || '').replace(/\.md$/i, ''));
         const date = fmtDate(f.modified);
         lines.push(`- [${title}](#/${encodeURI(f.path)})${date ? ' — ' + date : ''}`);
       });
@@ -186,10 +186,10 @@
     if (featured.length > 0) {
       lines.push(`<div class="portal-cards">`);
       featured.forEach(f => {
-        const title = mdText(f.title || String(f.name || '').replace(/\.md$/i, ''));
+        const rawTitle = f.title || String(f.name || '').replace(/\.md$/i, '');
         const tags = Array.isArray(f.tags) ? f.tags.slice(0, 3) : [];
         lines.push(`<a class="portal-card" href="#/${encodeURI(f.path)}">
-  <span class="portal-card-title">${esc(title)}</span>
+  <span class="portal-card-title">${esc(rawTitle)}</span>
   ${f.wordCount ? `<span class="portal-card-meta">${esc(t('portal.words', '{n} 词').replace('{n}', f.wordCount))}</span>` : ''}
   ${tags.length ? `<span class="portal-card-tags">${tags.map(x => `<span class="portal-card-tag">${esc(x)}</span>`).join('')}</span>` : ''}
 </a>`);
