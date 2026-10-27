@@ -18,6 +18,13 @@
             "tags": [
               "图表",
               "数据"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 3
+              }
             ]
           },
           {
@@ -30,6 +37,13 @@
             "title": "基础使用教程",
             "tags": [
               "入门"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 3
+              }
             ]
           },
           {
@@ -42,6 +56,13 @@
             "title": "代码选项卡使用示例",
             "tags": [
               "代码高亮"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 4
+              }
             ]
           },
           {
@@ -55,6 +76,18 @@
             "tags": [
               "插件",
               "排版"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 2
+              },
+              {
+                "name": "omajili-manbu",
+                "email": "omajili-manbu@users.noreply.github.com",
+                "count": 1
+              }
             ]
           },
           {
@@ -67,6 +100,13 @@
             "title": "分栏布局使用示例",
             "tags": [
               "排版"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 4
+              }
             ]
           },
           {
@@ -74,12 +114,19 @@
             "type": "file",
             "path": "docs/examples/config-diff-examples.md",
             "wordCount": 39,
-            "created": 0,
-            "modified": 0,
+            "created": 1793127296,
+            "modified": 1793127296,
             "title": "配置语义 diff 示例",
             "tags": [
               "网络",
               "示例"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 1
+              }
             ]
           },
           {
@@ -92,6 +139,18 @@
             "title": "Countdown 插件示例",
             "tags": [
               "插件"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 1
+              },
+              {
+                "name": "omajili-manbu",
+                "email": "omajili-manbu@users.noreply.github.com",
+                "count": 1
+              }
             ]
           },
           {
@@ -105,6 +164,13 @@
             "tags": [
               "数据",
               "表格"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 2
+              }
             ]
           },
           {
@@ -118,6 +184,13 @@
             "tags": [
               "示例",
               "工具"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 2
+              }
             ]
           },
           {
@@ -130,6 +203,13 @@
             "title": "Git Diff 可视化示例",
             "tags": [
               "图表"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 2
+              }
             ]
           },
           {
@@ -142,6 +222,13 @@
             "title": "外部服务嵌入示例",
             "tags": [
               "嵌入"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 13
+              }
             ]
           },
           {
@@ -155,6 +242,18 @@
             "tags": [
               "网络",
               "拓扑"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 2
+              },
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@users.noreply.github.com",
+                "count": 1
+              }
             ]
           },
           {
@@ -164,7 +263,14 @@
             "wordCount": 291,
             "created": 1792401988,
             "modified": 1792401988,
-            "title": "图表编号与交叉引用示例"
+            "title": "图表编号与交叉引用示例",
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 1
+              }
+            ]
           },
           {
             "name": "gallery-layouts.md",
@@ -176,6 +282,13 @@
             "title": "画廊布局样式速查",
             "tags": [
               "画廊"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 8
+              }
             ]
           },
           {
@@ -189,6 +302,13 @@
             "tags": [
               "地图",
               "数据"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 6
+              }
             ]
           },
           {
@@ -201,6 +321,13 @@
             "title": "GitHub Alerts 示例",
             "tags": [
               "排版"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 2
+              }
             ]
           },
           {
@@ -214,6 +341,13 @@
             "tags": [
               "导航",
               "进阶"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 1
+              }
             ]
           },
           {
@@ -226,6 +360,13 @@
             "title": "图片画廊与懒加载示例",
             "tags": [
               "画廊"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 9
+              }
             ]
           },
           {
@@ -239,6 +380,13 @@
             "tags": [
               "网络",
               "配置"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 2
+              }
             ]
           },
           {
@@ -252,6 +400,13 @@
             "tags": [
               "网络",
               "工具"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 1
+              }
             ]
           },
           {
@@ -264,6 +419,13 @@
             "title": "LaTeX 公式示例",
             "tags": [
               "数学"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 5
+              }
             ]
           },
           {
@@ -281,6 +443,13 @@
             "prerequisites": [
               "docs/examples/mermaid-examples.md",
               "docs/examples/graph-backlinks-demo.md"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 1
+              }
             ]
           },
           {
@@ -293,6 +462,13 @@
             "title": "代码行高亮示例",
             "tags": [
               "代码高亮"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 1
+              }
             ]
           },
           {
@@ -306,6 +482,13 @@
             "tags": [
               "图表",
               "数据"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 2
+              }
             ]
           },
           {
@@ -318,6 +501,18 @@
             "title": "Markdown 语法参考",
             "tags": [
               "入门"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 3
+              },
+              {
+                "name": "agelaia521",
+                "email": "agelaia521@gmail.com",
+                "count": 2
+              }
             ]
           },
           {
@@ -330,6 +525,13 @@
             "title": "Mermaid 图表示例",
             "tags": [
               "图表"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 8
+              }
             ]
           },
           {
@@ -342,6 +544,18 @@
             "title": "浏览器原生 HTML 元素与 Web API 示例",
             "tags": [
               "排版"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 2
+              },
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@users.noreply.github.com",
+                "count": 1
+              }
             ]
           },
           {
@@ -355,6 +569,18 @@
             "tags": [
               "网络",
               "拓扑"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 4
+              },
+              {
+                "name": "trae",
+                "email": "trae@local.dev",
+                "count": 1
+              }
             ]
           },
           {
@@ -368,6 +594,13 @@
             "tags": [
               "网络",
               "配置"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 2
+              }
             ]
           },
           {
@@ -380,6 +613,13 @@
             "title": "PlantUML 图表示例",
             "tags": [
               "图表"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 4
+              }
             ]
           },
           {
@@ -392,6 +632,13 @@
             "title": "插件系统示例",
             "tags": [
               "插件"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 2
+              }
             ]
           },
           {
@@ -404,6 +651,13 @@
             "title": "PPTX 演示嵌入示例",
             "tags": [
               "嵌入"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 6
+              }
             ]
           },
           {
@@ -416,6 +670,18 @@
             "title": "Pulse 波形示例",
             "tags": [
               "图表"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 6
+              },
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@users.noreply.github.com",
+                "count": 1
+              }
             ]
           },
           {
@@ -428,6 +694,18 @@
             "title": "郊狼波形批量生成页（特殊页面）",
             "tags": [
               "图表"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 2
+              },
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@users.noreply.github.com",
+                "count": 1
+              }
             ]
           },
           {
@@ -440,6 +718,13 @@
             "title": "二维码插件示例",
             "tags": [
               "插件"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 2
+              }
             ]
           },
           {
@@ -452,6 +737,13 @@
             "title": "遮罩（剧透）语法示例",
             "tags": [
               "排版"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 2
+              }
             ]
           },
           {
@@ -464,6 +756,13 @@
             "title": "表格使用示例",
             "tags": [
               "表格"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 3
+              }
             ]
           },
           {
@@ -476,6 +775,13 @@
             "title": "主题市场演示",
             "tags": [
               "主题"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 3
+              }
             ]
           },
           {
@@ -489,6 +795,13 @@
             "tags": [
               "插件",
               "内容增强"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 1
+              }
             ]
           },
           {
@@ -501,12 +814,19 @@
             "title": "Twitter/X 嵌入示例",
             "tags": [
               "嵌入"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 6
+              }
             ]
           }
         ],
         "wordCount": 12792,
         "created": 1779157467,
-        "modified": 1793127038
+        "modified": 1793127296
       },
       {
         "name": "changelog.md",
@@ -518,6 +838,13 @@
         "title": "变更日志",
         "tags": [
           "规划"
+        ],
+        "contributors": [
+          {
+            "name": "theforeveriris",
+            "email": "theforeveriris@proton.me",
+            "count": 8
+          }
         ]
       },
       {
@@ -531,6 +858,13 @@
         "tags": [
           "主题",
           "代码高亮"
+        ],
+        "contributors": [
+          {
+            "name": "theforeveriris",
+            "email": "theforeveriris@proton.me",
+            "count": 4
+          }
         ]
       },
       {
@@ -543,6 +877,23 @@
         "title": "配置参考",
         "tags": [
           "配置"
+        ],
+        "contributors": [
+          {
+            "name": "theforeveriris",
+            "email": "theforeveriris@proton.me",
+            "count": 13
+          },
+          {
+            "name": "theforeveriris",
+            "email": "theforeveriris@users.noreply.github.com",
+            "count": 1
+          },
+          {
+            "name": "github-actions[bot]",
+            "email": "github-actions[bot]@users.noreply.github.com",
+            "count": 1
+          }
         ]
       },
       {
@@ -555,6 +906,18 @@
         "title": "Markdown 编辑器",
         "tags": [
           "编辑器"
+        ],
+        "contributors": [
+          {
+            "name": "theforeveriris",
+            "email": "theforeveriris@proton.me",
+            "count": 6
+          },
+          {
+            "name": "theforeveriris",
+            "email": "theforeveriris@users.noreply.github.com",
+            "count": 1
+          }
         ]
       },
       {
@@ -567,6 +930,18 @@
         "title": "快速开始",
         "tags": [
           "入门"
+        ],
+        "contributors": [
+          {
+            "name": "theforeveriris",
+            "email": "theforeveriris@proton.me",
+            "count": 10
+          },
+          {
+            "name": "github-actions[bot]",
+            "email": "github-actions[bot]@users.noreply.github.com",
+            "count": 1
+          }
         ]
       },
       {
@@ -579,6 +954,13 @@
         "title": "插件开发指南",
         "tags": [
           "插件"
+        ],
+        "contributors": [
+          {
+            "name": "theforeveriris",
+            "email": "theforeveriris@proton.me",
+            "count": 4
+          }
         ]
       },
       {
@@ -591,6 +973,18 @@
         "title": "需求整理（候选功能）",
         "tags": [
           "规划"
+        ],
+        "contributors": [
+          {
+            "name": "theforeveriris",
+            "email": "theforeveriris@proton.me",
+            "count": 7
+          },
+          {
+            "name": "theforeveriris",
+            "email": "theforeveriris@users.noreply.github.com",
+            "count": 1
+          }
         ]
       },
       {
@@ -603,6 +997,18 @@
         "title": "功能路线图",
         "tags": [
           "规划"
+        ],
+        "contributors": [
+          {
+            "name": "theforeveriris",
+            "email": "theforeveriris@proton.me",
+            "count": 9
+          },
+          {
+            "name": "theforeveriris",
+            "email": "theforeveriris@users.noreply.github.com",
+            "count": 1
+          }
         ]
       },
       {
@@ -616,6 +1022,13 @@
         "tags": [
           "配置",
           "RSS"
+        ],
+        "contributors": [
+          {
+            "name": "theforeveriris",
+            "email": "theforeveriris@proton.me",
+            "count": 4
+          }
         ]
       },
       {
@@ -629,6 +1042,13 @@
         "tags": [
           "入门",
           "快捷键"
+        ],
+        "contributors": [
+          {
+            "name": "theforeveriris",
+            "email": "theforeveriris@proton.me",
+            "count": 8
+          }
         ]
       },
       {
@@ -641,6 +1061,13 @@
         "title": "系统运行时截图",
         "tags": [
           "截图"
+        ],
+        "contributors": [
+          {
+            "name": "theforeveriris",
+            "email": "theforeveriris@proton.me",
+            "count": 9
+          }
         ]
       },
       {
@@ -654,12 +1081,24 @@
         "tags": [
           "主题",
           "配置"
+        ],
+        "contributors": [
+          {
+            "name": "theforeveriris",
+            "email": "theforeveriris@proton.me",
+            "count": 7
+          },
+          {
+            "name": "github-actions[bot]",
+            "email": "github-actions[bot]@users.noreply.github.com",
+            "count": 1
+          }
         ]
       }
     ],
     "wordCount": 24869,
     "created": 1779157467,
-    "modified": 1793127038
+    "modified": 1793127296
   },
   {
     "name": "iris",
@@ -680,7 +1119,14 @@
                 "wordCount": 166,
                 "created": 1783944425,
                 "modified": 1783944425,
-                "title": "Packet Tracer .pkt → JSON 预处理脚本"
+                "title": "Packet Tracer .pkt → JSON 预处理脚本",
+                "contributors": [
+                  {
+                    "name": "theforeveriris",
+                    "email": "theforeveriris@proton.me",
+                    "count": 1
+                  }
+                ]
               }
             ],
             "wordCount": 166,
@@ -708,6 +1154,13 @@
     "tags": [
       "开发",
       "设计"
+    ],
+    "contributors": [
+      {
+        "name": "theforeveriris",
+        "email": "theforeveriris@proton.me",
+        "count": 2
+      }
     ]
   },
   {
@@ -717,7 +1170,19 @@
     "wordCount": 1801,
     "created": 1793029783,
     "modified": 1793046153,
-    "title": "贡献指南"
+    "title": "贡献指南",
+    "contributors": [
+      {
+        "name": "theforeveriris",
+        "email": "theforeveriris@users.noreply.github.com",
+        "count": 2
+      },
+      {
+        "name": "theforeveriris",
+        "email": "theforeveriris@proton.me",
+        "count": 1
+      }
+    ]
   },
   {
     "name": "readme-dev.md",
@@ -729,6 +1194,23 @@
     "title": "Markdown Preview — 开发者文档",
     "tags": [
       "开发"
+    ],
+    "contributors": [
+      {
+        "name": "theforeveriris",
+        "email": "theforeveriris@proton.me",
+        "count": 38
+      },
+      {
+        "name": "theforeveriris",
+        "email": "theforeveriris@users.noreply.github.com",
+        "count": 5
+      },
+      {
+        "name": "github-actions[bot]",
+        "email": "github-actions[bot]@users.noreply.github.com",
+        "count": 1
+      }
     ]
   },
   {
@@ -741,6 +1223,28 @@
     "title": "Markdown Preview",
     "tags": [
       "入门"
+    ],
+    "contributors": [
+      {
+        "name": "theforeveriris",
+        "email": "theforeveriris@proton.me",
+        "count": 65
+      },
+      {
+        "name": "theforeveriris",
+        "email": "theforeveriris@users.noreply.github.com",
+        "count": 3
+      },
+      {
+        "name": "github-actions[bot]",
+        "email": "github-actions[bot]@users.noreply.github.com",
+        "count": 1
+      },
+      {
+        "name": "agelaia521",
+        "email": "agelaia521@gmail.com",
+        "count": 1
+      }
     ]
   }
 ]

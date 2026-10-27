@@ -719,3 +719,40 @@ pre.code-block code { position: relative; z-index: 1; }
 .cfgdiff-del .cfgdiff-sign, .cfgdiff-del code { color: #c0392b; }
 .cfgdiff-sep { color: var(--color-text-muted); }
 .cfgdiff-none { padding: 4px 16px; color: var(--color-text-muted); font-size: 12px; }
+
+/* ============== 贡献者徽标（contributors.js） ============== */
+.contributors-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+.contributors-label { font-size: 12px; color: var(--color-text-muted); }
+.contributors-stack { display: inline-flex; }
+.contributor-chip { position: relative; width: 26px; height: 26px; margin-right: -8px; }
+.contributor-chip .contributor-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--color-surface);
+  object-fit: cover;
+  background: var(--color-surface);
+  position: relative;
+  z-index: 1;
+}
+.contributor-fallback {
+  display: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--color-surface);
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--color-accent-purple, #8b5cf6);
+  position: relative;
+  z-index: 1;
+}
+.contributor-chip:hover { z-index: 2; }

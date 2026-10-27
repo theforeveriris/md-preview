@@ -418,6 +418,8 @@
     window.MarkdownPreview.langLinks?.onDocRendered?.(currentPath, frontmatter);
     // 学习路径（frontmatter prerequisites，文档头「前置阅读」卡片链）
     window.MarkdownPreview.learningPath?.onDocRendered?.(currentPath, frontmatter);
+    // 贡献者徽标（构建期 git 提交历史，文档头头像栈）
+    window.MarkdownPreview.contributors?.onDocRendered?.(currentPath);
     // 查找条：文档已更换，清理旧高亮；查找条开着时自动重跑关键词
     if (window.MarkdownPreview.findBar) {
       window.MarkdownPreview.findBar.onDocRendered();
