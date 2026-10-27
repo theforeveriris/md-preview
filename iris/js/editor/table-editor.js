@@ -121,6 +121,13 @@
         }
         let rows = parsed.rows.map(r => r.slice());
         let hasHeader = parsed.hasHeader;
+        // 已有 table-style 标记 → 初始化预设选择框（否则仅改单元格保存
+        // 会把旧样式丢掉）；改选「默认」可清除预设
+        const existingMarker = text.split('\n').slice(span.end)
+          .find(l => /<!--\s*table-style:\s*([\w\- ]+)/.test(l));
+        const existingPreset = existingMarker
+          ? (/<!--\s*table-style:\s*([\w\- ]+)/.exec(existingMarker)[1] || '').trim()
+          : '';
 
         let overlay = document.getElementById('tblEditorOverlay');
         if (!overlay) {
@@ -203,6 +210,8 @@
           hasHeader = !hasHeader;
           renderGrid();
         });
+        const presetSel = overlay.querySelector('.tbl-preset-sel');
+        if (presetSel && existingPreset) presetSel.value = existingPreset;
         overlay.querySelector('.tbl-editor-close').addEventListener('click', close);
 
         overlay.querySelector('.tbl-save').addEventListener('click', () => {

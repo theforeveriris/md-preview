@@ -55,3 +55,6 @@ __pycache__/
 .cjk-lint-files.txt
 .cjk-lint-mode.txt
 .cr-comments.json
+.cr-*.json
+.fix-*.py
+.reply-review.py

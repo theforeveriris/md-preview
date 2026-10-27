@@ -226,7 +226,9 @@ fn read_kb_file(path: String, state: tauri::State<KbRootState>) -> Result<String
     if meta.len() > KB_MAX_FILE_BYTES {
         return Err("file too large".to_string());
     }
-    std::fs::read_to_string(&target).map_err(|e| format!("read failed: {}", e))
+    // 读取 canonical_target（已校验的路径），避免 target 与校验之间被替换的
+    // TOCTOU 窗口（CWE-367，CodeRabbit review fix）
+    std::fs::read_to_string(&canonical_target).map_err(|e| format!("read failed: {}", e))
 }
 
 // ============== 文件关联 + 实时预览 ==============

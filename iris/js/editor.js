@@ -1863,12 +1863,12 @@
     try { await storage.saveNotebook(data); } catch (e) {}
   }
 
-  let pendingTabId = null;
+  let pendingTab = null;
   async function activateTab(id, opts) {
     opts = opts || {};
     const tab = getTabById(id);
     if (!tab) return;
-    if (isSwitching) { pendingTabId = id; return; } // 排队而非静默丢弃
+    if (isSwitching) { pendingTab = { id, opts }; return; } // 排队而非静默丢弃（opts 含 initData，重试时传回）
     isSwitching = true;
     try {
       // 1) 保存当前 notebook 数据（先序列化，不动 DOM）
@@ -1900,12 +1900,12 @@
     } finally {
       isSwitching = false;
       // 处理切换期间排队的请求（跳过中间态，直达最后点击的 tab）
-      if (pendingTabId && pendingTabId !== activeTabId) {
-        const next = pendingTabId;
-        pendingTabId = null;
-        activateTab(next);
+      if (pendingTab && pendingTab.id !== activeTabId) {
+        const next = pendingTab;
+        pendingTab = null;
+        activateTab(next.id, next.opts);
       } else {
-        pendingTabId = null;
+        pendingTab = null;
       }
     }
   }
