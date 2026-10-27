@@ -1200,3 +1200,14 @@ pre.code-block code { position: relative; z-index: 1; }
 .bits-note-name { font-weight: 600; color: var(--color-accent-purple-deep, var(--color-accent-purple)); flex: 0 0 auto; }
 .bits-note-desc { color: var(--color-text-muted); }
 .bits-none { font-size: 12px; color: var(--color-text-muted); }
+
+/* ============== 命令面板内联计算器（search.js SPOT-1） ============== */
+.palette-calc-item { cursor: copy; }
+.palette-calc-value {
+  font-size: 17px;
+  font-weight: 700;
+  font-family: var(--font-mono, monospace);
+  color: var(--color-accent-purple-deep, var(--color-accent-purple));
+}
+.palette-calc-eq { color: var(--color-text-muted); margin-left: 2px; }
+.palette-calc-sub { font-size: 12px; color: var(--color-text-muted); font-family: var(--font-mono, monospace); }
