@@ -177,7 +177,7 @@
             "name": "csv-examples.md",
             "type": "file",
             "path": "docs/examples/csv-examples.md",
-            "wordCount": 72,
+            "wordCount": 83,
             "created": 1790831276,
             "modified": 1791170289,
             "title": "CSV / TSV 交互表格示例",
@@ -790,12 +790,19 @@
             "type": "file",
             "path": "docs/examples/terminal-secret-examples.md",
             "wordCount": 67,
-            "created": 0,
-            "modified": 0,
+            "created": 1793128062,
+            "modified": 1793128062,
             "title": "终端回放与敏感遮罩示例",
             "tags": [
               "网络",
               "工具"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 1
+              }
             ]
           },
           {
@@ -857,9 +864,9 @@
             ]
           }
         ],
-        "wordCount": 12897,
+        "wordCount": 12908,
         "created": 1779157467,
-        "modified": 1793127892
+        "modified": 1793128062
       },
       {
         "name": "changelog.md",
@@ -1129,9 +1136,9 @@
         ]
       }
     ],
-    "wordCount": 24974,
+    "wordCount": 24985,
     "created": 1779157467,
-    "modified": 1793127892
+    "modified": 1793128062
   },
   {
     "name": "iris",

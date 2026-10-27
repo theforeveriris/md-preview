@@ -800,7 +800,10 @@
       case 'plantuml': return pres.filter(p => p.querySelector('code.language-plantuml'));
       case 'apexcharts': return pres.filter(p => p.querySelector('code.language-apexcharts'));
       case 'diff': return pres.filter(p => p.querySelector('code.language-diff'));
-      case 'csvtable': return pres.filter(p => p.dataset.lang === 'csv' || p.dataset.lang === 'tsv');
+      case 'csvtable': return pres.filter(p => {
+        const lang = String(p.dataset.lang || '').trim().split(/\s+/)[0];
+        return lang === 'csv' || lang === 'tsv';
+      });
       case 'jsontree': return pres.filter(p => p.dataset.lang === 'json');
       case 'graph': return pres.filter(p => p.dataset.lang === 'graph');
       default: return [];
