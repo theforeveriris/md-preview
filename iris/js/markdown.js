@@ -59,6 +59,10 @@
     if (window.MarkdownPreview.history?.onDocRendered) {
       window.MarkdownPreview.history.onDocRendered(path, st.docTitle);
     }
+    // 未读更新：打开即记为已读
+    if (window.MarkdownPreview.unread?.onDocRendered) {
+      window.MarkdownPreview.unread.onDocRendered(path);
+    }
     if (window.MarkdownPreview.hoverPreview?.onDocRendered) {
       window.MarkdownPreview.hoverPreview.onDocRendered();
     }

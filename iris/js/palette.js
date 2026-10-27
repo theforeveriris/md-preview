@@ -155,6 +155,19 @@
         run: () => { window.location.hash = '#/graph'; }
       },
       {
+        id: 'open-unread',
+        icon: 'i-zap',
+        // 动态文案：buildItem 支持 label 为函数，取值时再算未读数
+        label: () => {
+          const n = (window.MarkdownPreview.unread && window.MarkdownPreview.unread.getUnread) ?
+            window.MarkdownPreview.unread.getUnread().length : 0;
+          return t('unread.paletteAction', '未读更新（{n} 篇）').replace('{n}', n);
+        },
+        run: () => {
+          if (window.MarkdownPreview.unread) window.MarkdownPreview.unread.openUnreadPage();
+        }
+      },
+      {
         id: 'open-editor',
         icon: 'i-code',
         label: t('cmd.openEditor', '打开编辑器'),
@@ -179,20 +192,22 @@
     const q = (query || '').toLowerCase().trim();
     const list = actions();
     if (!q) return list;
-    return list.filter(a =>
-      a.label.toLowerCase().includes(q) ||
-      (a.group || '').toLowerCase().includes(q) ||
-      a.id.includes(q)
-    );
+    return list.filter(a => {
+      const label = (typeof a.label === 'function' ? a.label() : a.label) || '';
+      return label.toLowerCase().includes(q) ||
+        (a.group || '').toLowerCase().includes(q) ||
+        a.id.includes(q);
+    });
   }
 
   function buildItem(action) {
     const item = document.createElement('div');
     item.className = 'search-result-item palette-command-item';
+    const label = typeof action.label === 'function' ? action.label() : action.label;
     item.innerHTML = `
       <span class="palette-command-icon">${icon(action.icon, 15)}</span>
       <div class="palette-command-body">
-        <div class="search-result-title">${escapeHtml(action.label)}</div>
+        <div class="search-result-title">${escapeHtml(label)}</div>
       </div>
       <span class="palette-command-group">${escapeHtml(action.group || t('cmd.groupAction', '命令'))}</span>
     `;
