@@ -57,6 +57,10 @@
     if (window.MarkdownPreview.tags && window.MarkdownPreview.tags.init) {
       window.MarkdownPreview.tags.init();
     }
+    // 未读更新（侧边栏药丸 + 命令面板动作 + #/unread 聚合视图）
+    if (window.MarkdownPreview.unread && window.MarkdownPreview.unread.init) {
+      window.MarkdownPreview.unread.init();
+    }
     // 反向链接与相关文档（文末区块；语言切换后重渲染）
     if (window.MarkdownPreview.backlinks && window.MarkdownPreview.backlinks.init) {
       window.MarkdownPreview.backlinks.init();

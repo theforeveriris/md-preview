@@ -193,7 +193,8 @@
   }
 
   window.MarkdownPreview.renderers.mermaid = {
-    render
+    render,
+    ensureMermaid // 编辑器 mermaid 画中画（mermaid-pip.js）复用同一份库加载与主题配置
   };
 
   (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Mermaid] Renderer module loaded and registered');

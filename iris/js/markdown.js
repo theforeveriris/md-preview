@@ -59,6 +59,10 @@
     if (window.MarkdownPreview.history?.onDocRendered) {
       window.MarkdownPreview.history.onDocRendered(path, st.docTitle);
     }
+    // 未读更新：打开即记为已读
+    if (window.MarkdownPreview.unread?.onDocRendered) {
+      window.MarkdownPreview.unread.onDocRendered(path);
+    }
     if (window.MarkdownPreview.hoverPreview?.onDocRendered) {
       window.MarkdownPreview.hoverPreview.onDocRendered();
     }
@@ -79,26 +83,41 @@
 
       resetReadingProgress();
       window.MarkdownPreview.ui.updateProgress(30);
-      const response = await fetch(path, { cache: 'no-store' });
-      if (seq !== loadSeq) return; // 已有更新的导航，丢弃本次结果
 
-      if (window.MarkdownPreview.debug && window.MarkdownPreview.debug.incrementApiCalls) {
-        window.MarkdownPreview.debug.incrementApiCalls();
-      }
+      // 桌面端本地知识库：kb/ 前缀路径经 Tauri 桥读取，不走站点 fetch。
+      // 本地目录内容视同不可信来源：先确保 DOMPurify 就绪再渲染（与
+      // renderMarkdownDirect 同策略，CodeRabbit review fix）
+      const kb = window.MarkdownPreview.desktopKb;
+      let markdown;
+      let kbSanitize = false;
+      if (kb && kb.isActive && kb.isActive() && path.startsWith('kb/')) {
+        markdown = await kb.readFile(path);
+        if (seq !== loadSeq) return; // 已有更新的导航，丢弃本次结果
+        kbSanitize = true;
+        await window.MarkdownPreview.mdRender.ensurePurify();
+        if (seq !== loadSeq) return;
+      } else {
+        const response = await fetch(path, { cache: 'no-store' });
+        if (seq !== loadSeq) return; // 已有更新的导航，丢弃本次结果
 
-      if (!response.ok) {
-        throw new Error('Failed to load markdown file');
+        if (window.MarkdownPreview.debug && window.MarkdownPreview.debug.incrementApiCalls) {
+          window.MarkdownPreview.debug.incrementApiCalls();
+        }
+
+        if (!response.ok) {
+          throw new Error('Failed to load markdown file');
+        }
+        window.MarkdownPreview.ui.updateProgress(60);
+        markdown = await response.text();
+        if (seq !== loadSeq) return; // 二次校验：text() 期间可能又切了文档
       }
-      window.MarkdownPreview.ui.updateProgress(60);
-      const markdown = await response.text();
-      if (seq !== loadSeq) return; // 二次校验：text() 期间可能又切了文档
       window.MarkdownPreview.ui.updateProgress(100);
       state.currentFilePath = path;
       // 加载仓库内文档后清除本地文档记录，导出功能随之切回仓库文件
       state.localDoc = null;
       // 本地文件列表保留（可随时切回），仅清除其选中高亮
       window.MarkdownPreview.localDocs?.clearActive();
-      renderMarkdown(markdown, path);
+      renderMarkdown(markdown, path, kbSanitize ? { sanitize: (html) => DOMPurify.sanitize(html) } : {});
       extractAndRenderIndex();
       updateEditButton(path);
       updateBreadcrumbs(path);
@@ -349,7 +368,50 @@
 
     const plainText = content.replace(/[#*`\[\]()_{}]/g, '').replace(/\n+/g, ' ').trim();
     const readingTime = calculateReadingTime(plainText);
-    const readingTimeHtml = `<div class="reading-time">${t('md.readingTime', '预计阅读 {n} 分钟').replace('{n}', readingTime)}</div>`;
+
+    // 统一文档 meta 信息头（DOC-META）：作者 / 日期 / 标签 chips / 阅读时长，
+    // 贡献者徽标（contributors.js）也是它的成员之一，插在同一行区域
+    const escHtml = (s) => mdRender.escapeHtml(s == null ? '' : String(s));
+    const metaBits = [];
+    if (frontmatter.author) metaBits.push(`<span class="doc-meta-author">👤 ${escHtml(frontmatter.author)}</span>`);
+    const dateStr = frontmatter.date ||
+      (() => {
+        // 无 frontmatter date 时回退文件树的最初创建时间
+        let created = 0;
+        (function findCreated(items) {
+          (items || []).forEach(item => {
+            if (created) return;
+            if (item.type === 'folder') findCreated(item.children);
+            else if (item.path === currentPath && item.created) created = item.created;
+          });
+        })(state.fileTreeData);
+        return created ? new Date(created * 1000).toISOString().slice(0, 10) : '';
+      })();
+    if (dateStr) metaBits.push(`<span class="doc-meta-date">🗓 ${escHtml(String(dateStr).slice(0, 10))}</span>`);
+    // 标签 chips：frontmatter 优先，回退文件树；链接到标签聚合页
+    const tagList = (() => {
+      const raw = frontmatter.tags;
+      if (raw) {
+        let s = String(raw).trim();
+        if (s.startsWith('[') && s.endsWith(']')) s = s.slice(1, -1);
+        return s.split(/[,，]/).map(x => x.trim().replace(/^['"]|['"]$/g, '')).filter(Boolean);
+      }
+      let tags = null;
+      (function findTags(items) {
+        (items || []).forEach(item => {
+          if (tags) return;
+          if (item.type === 'folder') findTags(item.children);
+          else if (item.path === currentPath && Array.isArray(item.tags)) tags = item.tags;
+        });
+      })(state.fileTreeData);
+      return tags || [];
+    })();
+    if (tagList.length > 0) {
+      metaBits.push(`<span class="doc-meta-tags">${tagList.slice(0, 6).map(tag =>
+        `<a class="doc-meta-tag" href="#/tag/${encodeURIComponent(tag)}">${escHtml(tag)}</a>`).join('')}</span>`);
+    }
+    metaBits.push(`<span class="doc-meta-reading">${t('md.readingTime', '预计阅读 {n} 分钟').replace('{n}', readingTime)}</span>`);
+    const readingTimeHtml = `<div class="reading-time doc-meta-bar">${metaBits.join('<span class="doc-meta-sep">·</span>')}</div>`;
 
     const headingMatch = html.match(/<h1[^>]*>/);
     let finalHtml;
@@ -382,6 +444,8 @@
 
     setupClickDelegate();
     mdRender.highlightCodeBlocksProgressive(dom.markdownContent);
+    // 代码行高亮（```js {2,5-8} / [!code highlight]）
+    window.MarkdownPreview.lineHighlight?.apply?.(dom.markdownContent);
 
     interceptLinks(currentPath);
 
@@ -390,6 +454,8 @@
     mdRender.initSliders(dom.markdownContent);
 
     wrapTables(dom.markdownContent);
+    // 表格样式预设（表格编辑器回写的 table-style 注释标记）
+    window.MarkdownPreview.mdRender.applyTablePresets?.(dom.markdownContent);
 
     mdRender.initCodeTabs(dom.markdownContent);
 
@@ -397,6 +463,14 @@
     if (window.MarkdownPreview.sectionCollapse) {
       window.MarkdownPreview.sectionCollapse.onDocRendered(currentPath);
     }
+    // 任务清单勾选记忆（frontmatter checklist: true 时启用，按路径+序号存 localStorage）
+    window.MarkdownPreview.checklist?.onDocRendered?.(currentPath, frontmatter);
+    // 多语言文档关联（frontmatter lang/en/ja…，文档头语言药丸互跳）
+    window.MarkdownPreview.langLinks?.onDocRendered?.(currentPath, frontmatter);
+    // 学习路径（frontmatter prerequisites，文档头「前置阅读」卡片链）
+    window.MarkdownPreview.learningPath?.onDocRendered?.(currentPath, frontmatter);
+    // 贡献者徽标（构建期 git 提交历史，文档头头像栈）
+    window.MarkdownPreview.contributors?.onDocRendered?.(currentPath);
     // 查找条：文档已更换，清理旧高亮；查找条开着时自动重跑关键词
     if (window.MarkdownPreview.findBar) {
       window.MarkdownPreview.findBar.onDocRendered();
@@ -421,6 +495,8 @@
           window.MarkdownPreview.pkt?.destroyOrphaned?.();
         }
       });
+      // 全文敏感模式开启时对新文档重刷模糊（渲染器可能替换过节点）
+      window.MarkdownPreview.sensitiveMode?.applyIfOn?.();
       (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Markdown] Render cycle complete');
     }, 100);
 
@@ -618,13 +694,22 @@
       return;
     }
 
+    // 桌面端本地知识库文档不在 GitHub 仓库里，编辑此页无意义
+    if (path.startsWith('kb/')) {
+      dom.pageHeader.style.display = 'flex';
+      dom.editPageBtn.style.display = 'none';
+      return;
+    }
+
     dom.pageHeader.style.display = 'flex';
     dom.editPageBtn.style.display = 'flex';
 
-    // 路径逐段编码：含空格/#/中文的文件名不编码会生成坏的 GitHub 链接
-    const encodedPath = path.split('/').map(encodeURIComponent).join('/');
-    const editUrl = `https://github.com/${CONFIG.owner}/${CONFIG.repo}/edit/main/${encodedPath}`;
-    dom.editPageBtn.href = editUrl;
+    // 路径逐段编码：含空格/#/中文的文件名不编码会生成坏链接；
+    // 非 GitHub 托管由 git-provider 按平台拼编辑 URL
+    const gp = window.MarkdownPreview.gitProvider;
+    dom.editPageBtn.href = (gp && gp.cfg().provider !== 'github')
+      ? gp.editUrl(path)
+      : `https://github.com/${CONFIG.owner}/${CONFIG.repo}/edit/main/${path.split('/').map(encodeURIComponent).join('/')}`;
   }
 
   function updateBreadcrumbs(path) {

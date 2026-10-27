@@ -70,6 +70,49 @@
       return;
     }
 
+    // 虚拟路由：孤立文档检测 #/orphan
+    if (path === 'orphan') {
+      if (window.MarkdownPreview.orphan && window.MarkdownPreview.orphan.openOrphanPage) {
+        window.MarkdownPreview.orphan.openOrphanPage();
+      }
+      return;
+    }
+
+    // 虚拟路由：博客流 #/blog（?p= 分页）
+    if (path === 'blog' || path.startsWith('blog?')) {
+      const pages = window.MarkdownPreview.pages;
+      if (pages && pages.openBlogPage) pages.openBlogPage(path.slice(4));
+      return;
+    }
+
+    // 虚拟路由：全局历史页 #/history
+    if (path === 'history') {
+      const pages = window.MarkdownPreview.pages;
+      if (pages && pages.openHistoryPage) pages.openHistoryPage();
+      return;
+    }
+
+    // 虚拟路由：标签云页 #/tags
+    if (path === 'tags') {
+      const pages = window.MarkdownPreview.pages;
+      if (pages && pages.openTagsCloudPage) pages.openTagsCloudPage();
+      return;
+    }
+
+    // 虚拟路由：全站目录页 #/index
+    if (path === 'index') {
+      const pages = window.MarkdownPreview.pages;
+      if (pages && pages.openIndexPage) pages.openIndexPage();
+      return;
+    }
+
+    // 无 hash / 仅站点根：可定制首页（config.homepage，第六扩散 DOC-HOME）
+    if (!path) {
+      if (window.MarkdownPreview.pages && window.MarkdownPreview.pages.openHomepage) {
+        if (window.MarkdownPreview.pages.openHomepage()) return;
+      }
+    }
+
     // 虚拟路由：无部署快照分享 #/s?z=<deflate-base64>
     if (path === 's' || path.startsWith('s?')) {
       if (window.MarkdownPreview.snapshot) {

@@ -155,13 +155,117 @@
         run: () => { window.location.hash = '#/graph'; }
       },
       {
+        id: 'open-unread',
+        icon: 'i-zap',
+        // 动态文案：buildItem 支持 label 为函数，取值时再算未读数
+        label: () => {
+          const n = (window.MarkdownPreview.unread && window.MarkdownPreview.unread.getUnread) ?
+            window.MarkdownPreview.unread.getUnread().length : 0;
+          return t('unread.paletteAction', '未读更新（{n} 篇）').replace('{n}', n);
+        },
+        run: () => {
+          if (window.MarkdownPreview.unread) window.MarkdownPreview.unread.openUnreadPage();
+        }
+      },
+      {
+        id: 'open-blog',
+        icon: 'i-list',
+        label: t('cmd.openBlog', '博客流'),
+        run: () => { window.location.hash = '#/blog'; }
+      },
+      {
+        id: 'open-history-page',
+        icon: 'i-refresh',
+        label: t('cmd.openHistoryPage', '浏览足迹'),
+        run: () => { window.location.hash = '#/history'; }
+      },
+      {
+        id: 'open-tags-cloud',
+        icon: 'i-tag',
+        label: t('cmd.openTagsCloud', '标签云'),
+        run: () => { window.location.hash = '#/tags'; }
+      },
+      {
+        id: 'open-site-index',
+        icon: 'i-graph',
+        label: t('cmd.openSiteIndex', '全站目录'),
+        run: () => { window.location.hash = '#/index'; }
+      },
+      {
+        id: 'open-orphan',
+        icon: 'i-filter',
+        label: t('cmd.openOrphan', '孤立文档检测'),
+        run: () => { window.location.hash = '#/orphan'; }
+      },
+      {
         id: 'open-editor',
         icon: 'i-code',
         label: t('cmd.openEditor', '打开编辑器'),
         run: () => window.MarkdownPreview.enterEditorMode && window.MarkdownPreview.enterEditorMode()
+      },
+      {
+        id: 'edit-current-doc',
+        icon: 'i-code',
+        label: t('cmd.editCurrentDoc', '在编辑器打开当前文档'),
+        run: async () => {
+          const st = window.MarkdownPreview.state;
+          const path = st && st.currentFilePath;
+          if (!path) return;
+          let text;
+          try {
+            const resp = await fetch(path, { cache: 'no-store' });
+            if (!resp.ok) return;
+            text = await resp.text();
+          } catch (e) { return; }
+          const initData = { cells: [{ type: 'markdown', content: text }] };
+          const title = path.split('/').pop().replace(/\.md$/i, '');
+          if (window.MarkdownPreview.editorCreateTab) {
+            const tab = await window.MarkdownPreview.editorCreateTab(initData, title);
+            const map = window.MarkdownPreview.editorRepoPaths =
+              window.MarkdownPreview.editorRepoPaths || new Map();
+            map.set(tab.id, path);
+          } else {
+            window.MarkdownPreview.editorPendingContent = { initData, title, repoPath: path };
+            window.MarkdownPreview.enterEditorMode();
+          }
+        }
+      },
+      {
+        id: 'share-favorites',
+        icon: 'i-star',
+        label: t('cmd.shareFavorites', '收藏夹分享'),
+        run: async (item) => {
+          const snap = window.MarkdownPreview.snapshot;
+          if (!snap || !snap.buildFavoritesShareUrl) return;
+          const result = await snap.buildFavoritesShareUrl();
+          if (!result.ok) { alert(result.reason); return; }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(result.url).catch(() => {});
+          }
+          alert(t('snap.favCopied', '已复制收藏合集链接（含 {n} 篇）')
+            .replace('{n}', result.count) +
+            (result.skipped > 0 ? t('snap.favSkipped', '，{n} 篇因体积未装下').replace('{n}', result.skipped) : ''));
+        }
+      },
+      {
+        id: 'export-html-book',
+        icon: 'i-download',
+        label: t('cmd.exportHtmlBook', '导出整站 HTML 合订本'),
+        run: () => {
+          const bundle = window.MarkdownPreview.exportBundle;
+          if (bundle && bundle.exportSiteHtmlBook) bundle.exportSiteHtmlBook();
+        }
+      },
+      {
+        id: 'new-from-template',
+        icon: 'i-save',
+        label: t('cmd.newFromTemplate', '从模板新建'),
+        run: () => window.MarkdownPreview.docTemplates && window.MarkdownPreview.docTemplates.openPicker()
       }
     ];
     THEME_ACTIONS.forEach(theme => actions.push(themeAction(theme)));
+    // 模块化扩展点：desktop-kb 等功能在运行时注入自己的动作
+    (window.MarkdownPreview.palette.extraActions || []).forEach(a => actions.push(a));
     return actions;
   }
 
@@ -179,20 +283,22 @@
     const q = (query || '').toLowerCase().trim();
     const list = actions();
     if (!q) return list;
-    return list.filter(a =>
-      a.label.toLowerCase().includes(q) ||
-      (a.group || '').toLowerCase().includes(q) ||
-      a.id.includes(q)
-    );
+    return list.filter(a => {
+      const label = (typeof a.label === 'function' ? a.label() : a.label) || '';
+      return label.toLowerCase().includes(q) ||
+        (a.group || '').toLowerCase().includes(q) ||
+        a.id.includes(q);
+    });
   }
 
   function buildItem(action) {
     const item = document.createElement('div');
     item.className = 'search-result-item palette-command-item';
+    const label = typeof action.label === 'function' ? action.label() : action.label;
     item.innerHTML = `
       <span class="palette-command-icon">${icon(action.icon, 15)}</span>
       <div class="palette-command-body">
-        <div class="search-result-title">${escapeHtml(action.label)}</div>
+        <div class="search-result-title">${escapeHtml(label)}</div>
       </div>
       <span class="palette-command-group">${escapeHtml(action.group || t('cmd.groupAction', '命令'))}</span>
     `;

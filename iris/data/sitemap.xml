@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://theforeveriris.github.io/md-preview/</loc>
-    <lastmod>2026-10-27T09:00:44.000Z</lastmod>
+    <lastmod>2026-10-27T19:38:38.000Z</lastmod>
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/changelog.md</loc>
@@ -21,12 +21,20 @@
     <lastmod>2026-10-26T20:22:33.000Z</lastmod>
   </url>
   <url>
+    <loc>https://theforeveriris.github.io/md-preview/docs/examples/acl-route-examples.md</loc>
+    <lastmod>2026-10-27T19:04:52.000Z</lastmod>
+  </url>
+  <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/apexcharts-examples.md</loc>
     <lastmod>2026-10-05T03:18:09.000Z</lastmod>
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/basic-usage.md</loc>
     <lastmod>2026-10-17T15:21:46.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://theforeveriris.github.io/md-preview/docs/examples/bits-examples.md</loc>
+    <lastmod>2026-10-27T19:25:37.000Z</lastmod>
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/code-tabs-examples.md</loc>
@@ -41,12 +49,16 @@
     <lastmod>2026-10-17T15:21:46.000Z</lastmod>
   </url>
   <url>
+    <loc>https://theforeveriris.github.io/md-preview/docs/examples/config-diff-examples.md</loc>
+    <lastmod>2026-10-27T18:54:56.000Z</lastmod>
+  </url>
+  <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/countdown-examples.md</loc>
     <lastmod>2026-10-17T15:21:46.000Z</lastmod>
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/csv-examples.md</loc>
-    <lastmod>2026-10-05T03:18:09.000Z</lastmod>
+    <lastmod>2026-10-27T19:16:18.000Z</lastmod>
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/devtools-examples.md</loc>
@@ -85,6 +97,10 @@
     <lastmod>2026-10-26T20:22:33.000Z</lastmod>
   </url>
   <url>
+    <loc>https://theforeveriris.github.io/md-preview/docs/examples/heatmap-examples.md</loc>
+    <lastmod>2026-10-27T19:22:26.000Z</lastmod>
+  </url>
+  <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/image-gallery-examples.md</loc>
     <lastmod>2026-10-17T15:21:46.000Z</lastmod>
   </url>
@@ -93,8 +109,20 @@
     <lastmod>2026-10-05T03:18:09.000Z</lastmod>
   </url>
   <url>
+    <loc>https://theforeveriris.github.io/md-preview/docs/examples/ipcalc-examples.md</loc>
+    <lastmod>2026-10-27T15:21:42.000Z</lastmod>
+  </url>
+  <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/latex-examples.md</loc>
     <lastmod>2026-10-05T03:18:09.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://theforeveriris.github.io/md-preview/docs/examples/learning-path-examples.md</loc>
+    <lastmod>2026-10-27T18:50:38.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://theforeveriris.github.io/md-preview/docs/examples/line-highlight-examples.md</loc>
+    <lastmod>2026-10-27T15:31:26.000Z</lastmod>
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/live-preview-examples.md</loc>
@@ -149,8 +177,16 @@
     <lastmod>2026-10-17T15:21:46.000Z</lastmod>
   </url>
   <url>
+    <loc>https://theforeveriris.github.io/md-preview/docs/examples/steps-quote-examples.md</loc>
+    <lastmod>2026-10-27T19:20:50.000Z</lastmod>
+  </url>
+  <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/table-examples.md</loc>
     <lastmod>2026-10-17T15:21:46.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://theforeveriris.github.io/md-preview/docs/examples/terminal-secret-examples.md</loc>
+    <lastmod>2026-10-27T19:07:42.000Z</lastmod>
   </url>
   <url>
     <loc>https://theforeveriris.github.io/md-preview/docs/examples/theme-demo.md</loc>

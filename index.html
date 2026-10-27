@@ -121,6 +121,10 @@
         <span class="search-trigger-label" data-i18n="sidebar.searchPlaceholder">搜索文档…</span>
         <kbd class="search-trigger-kbd" id="searchTriggerKbd">⌘K</kbd>
       </button>
+      <button class="unread-pill" id="unreadPill" type="button" hidden>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="unread-pill-text"></span>
+      </button>
       <div class="local-files" id="localFilesPanel" hidden>
         <div class="local-files-header">
           <button class="local-files-toggle" id="localFilesToggle" type="button" aria-expanded="true">
@@ -162,6 +166,13 @@
               <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
             </svg>
             <span class="menu-item-label" data-i18n="menu.openLocal">打开本地文件</span>
+          </button>
+          <button class="menu-item-btn" id="kbMountBtn" title="本地知识库" style="display:none;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+              <path d="M12 11v6M9 14h6"/>
+            </svg>
+            <span class="menu-item-label">本地知识库</span>
           </button>
           <button class="menu-item-btn" id="qrShareBtn" title="扫码续读" data-i18n-title="menu.qrShare">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -724,6 +735,14 @@
                 </div>
               </div>
 
+              <div class="setting-item setting-item-block">
+                <div>
+                  <div class="setting-label">悬浮球菜单</div>
+                  <div class="setting-description">勾选显示哪些按钮、调整排列顺序（设置按钮固定在最后）</div>
+                </div>
+                <div id="floatingMenuCustom" class="setting-control control-grid"></div>
+              </div>
+
               <div class="setting-item">
                 <div>
                   <div class="setting-label" data-i18n="settings.display.contentWidth">内容区宽度</div>
@@ -834,6 +853,15 @@
                 </div>
                 <div class="setting-control">
                   <button id="downloadSiteEpubBtn" class="download-btn" data-i18n="settings.actions.exportSiteEpubBtn">导出合订本</button>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label">整站 HTML 合订本</div>
+                  <div class="setting-description" id="exportSiteHtmlBookDesc">全部文档合订为单文件 HTML（含目录与打印分页样式），双击即可离线翻阅或打印成册</div>
+                </div>
+                <div class="setting-control">
+                  <button id="downloadSiteHtmlBookBtn" class="download-btn">导出合订本</button>
                 </div>
               </div>
               <div class="setting-item">
@@ -1138,6 +1166,7 @@
   <!-- 更新提示 Toast -->
   <div class="update-toast" id="updateToast">
     <span class="update-toast-text" data-i18n="toast.update">有新版本可用</span>
+    <button class="update-toast-btn" id="updateChangelogBtn" hidden data-i18n="toast.viewUpdate">查看本次更新</button>
     <button class="update-toast-btn" id="updateRefreshBtn" data-i18n="toast.refresh">刷新</button>
     <button class="update-toast-close" id="updateDismissBtn" aria-label="关闭" data-i18n-aria="common.close">&times;</button>
   </div>
@@ -1585,6 +1614,8 @@
               <div class="dropdown-group-title">整个笔记本</div>
               <button class="dropdown-item" data-action="download-notebook">导出笔记本 (.mdnb)</button>
               <button class="dropdown-item" data-action="download-all-md">合并导出全部 (.md)</button>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item" data-action="version-snapshots">版本快照…</button>
             </div>
           </div>
         </div>
@@ -1601,11 +1632,15 @@
             <div class="dropdown-group">
               <div class="dropdown-group-title">当前 Cell</div>
               <button class="dropdown-item" data-action="import-md-current">导入 .md 到当前 Cell</button>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item" data-action="new-from-template">从模板新建…</button>
+              <button class="dropdown-item" data-action="diff-vs-head">与 git HEAD 对比</button>
             </div>
           </div>
         </div>
       </div>
       <div class="toolbar-right">
+        <button class="toolbar-icon-btn" id="outlineBtn" title="笔记本大纲"><svg class="ico"><use href="#i-list"/></svg></button>
         <button class="toolbar-icon-btn" id="fontSizeBtn" title="字号调节"><svg class="ico"><use href="#i-font"/></svg></button>
         <button class="toolbar-icon-btn" id="imageUploadBtn" title="图片上传设置"><svg class="ico"><use href="#i-upload"/></svg></button>
         <button class="toolbar-icon-btn" id="searchBtn" title="全局搜索/替换 (Ctrl+F)"><svg class="ico"><use href="#i-search"/></svg></button>
@@ -2046,6 +2081,7 @@
 
   <!-- App Modules -->
   <script defer src="iris/js/config.js"></script>
+  <script defer src="iris/js/git-provider.js"></script>
   <script defer src="iris/js/debug.js"></script>
   <script defer src="iris/js/state.js"></script>
   <script defer src="iris/js/i18n.js"></script>
@@ -2086,6 +2122,19 @@
   <script defer src="iris/js/storage-manager.js"></script>
   <script defer src="iris/js/find-bar.js"></script>
   <script defer src="iris/js/section-collapse.js"></script>
+  <script defer src="iris/js/checklist.js"></script>
+  <script defer src="iris/js/unread.js"></script>
+  <script defer src="iris/js/orphan.js"></script>
+  <script defer src="iris/js/line-highlight.js"></script>
+  <script defer src="iris/js/lang-links.js"></script>
+  <script defer src="iris/js/desktop-kb.js"></script>
+  <script defer src="iris/js/doc-templates.js"></script>
+  <script defer src="iris/js/learning-path.js"></script>
+  <script defer src="iris/js/contributors.js"></script>
+  <script defer src="iris/js/iris-mascot.js"></script>
+  <script defer src="iris/js/floating-menu-custom.js"></script>
+  <script defer src="iris/js/sensitive-mode.js"></script>
+  <script defer src="iris/js/pages.js"></script>
   <script defer src="iris/js/focus-mode.js"></script>
   <script defer src="iris/js/split-view.js"></script>
 
@@ -2097,6 +2146,8 @@
   <!-- Renderers -->
   <!-- color-utils：graph 渲染器与 color 插件共用的颜色解析/对比度工具 -->
   <script defer src="iris/js/color-utils.js"></script>
+  <!-- steps/quote/orgchart 语法糖：orgchart 注入 mermaid 块，必须先于 mermaid.js -->
+  <script defer src="iris/js/renderers/steps.js"></script>
   <script defer src="iris/js/renderers/sql-erd.js"></script>
   <script defer src="iris/js/renderers/mermaid.js"></script>
   <script defer src="iris/js/renderers/plantuml.js"></script>
@@ -2113,6 +2164,14 @@
   <script defer src="iris/js/renderers/openapi.js"></script>
   <script defer src="iris/js/renderers/graph.js"></script>
   <script defer src="iris/js/renderers/glossary.js"></script>
+  <script defer src="iris/js/renderers/ipcalc.js"></script>
+  <script defer src="iris/js/renderers/config-diff.js"></script>
+  <script defer src="iris/js/renderers/acl.js"></script>
+  <script defer src="iris/js/renderers/route-table.js"></script>
+  <script defer src="iris/js/renderers/terminal.js"></script>
+  <script defer src="iris/js/renderers/heatmap.js"></script>
+  <script defer src="iris/js/renderers/bits.js"></script>
+  <script defer src="iris/js/renderers/secret.js"></script>
 
   <!-- Packet Tracer 拓扑渲染器（cytoscape.min.js 已改为按需懒加载，见 pkt-renderer.js#loadAndRender） -->
   <script defer src="iris/js/pkt/pkt-renderer.js"></script>

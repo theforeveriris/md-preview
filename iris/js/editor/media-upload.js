@@ -51,6 +51,59 @@
     });
   }
 
+  // ============== 粘贴图片压缩 ==============
+  // base64 内联图会原样进自动保存序列化与 localStorage 配额，大图必须先压。
+  // Canvas 重采样：最长边压到 MAX_DIMENSION 内；GIF（丢动画）与 SVG（矢量）
+  // 不重编码，保持原样走后续大小检查。
+  const IMAGE_COMPRESS_THRESHOLD = 150 * 1024; // 小图不折腾
+  const IMAGE_MAX_DIMENSION = 1920;
+  const IMAGE_JPEG_QUALITY = 0.85;
+
+  function loadImageElement(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('图片解码失败')); };
+      img.src = url;
+    });
+  }
+
+  // 返回 { file, compressed }；无需/无法压缩时 compressed=false 返回原文件
+  async function compressImageFile(file) {
+    if (!file || !file.type || !file.type.startsWith('image/')) return { file, compressed: false };
+    if (file.type === 'image/gif' || file.type === 'image/svg+xml') return { file, compressed: false };
+    if (file.size <= IMAGE_COMPRESS_THRESHOLD) return { file, compressed: false };
+
+    try {
+      const img = await loadImageElement(file);
+      const scale = Math.min(1, IMAGE_MAX_DIMENSION / Math.max(img.naturalWidth, img.naturalHeight));
+      // 低于阈值且尺寸不超标：重编码收益有限，跳过
+      if (scale === 1 && file.type === 'image/png' && file.size < 512 * 1024) {
+        return { file, compressed: false };
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+      canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+      const ctx2d = canvas.getContext('2d');
+      if (!ctx2d) return { file, compressed: false };
+      ctx2d.drawImage(img, 0, 0, canvas.width, canvas.height);
+      // PNG 保留透明通道维持 PNG；其余（JPEG/WebP）转 JPEG 获得最大压缩比
+      const type = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+      const blob = await new Promise((resolve, reject) => {
+        canvas.toBlob(b => (b ? resolve(b) : reject(new Error('编码失败'))), type,
+          type === 'image/jpeg' ? IMAGE_JPEG_QUALITY : undefined);
+      });
+      if (!blob || blob.size >= file.size) return { file, compressed: false };
+      const name = (file.name || 'image').replace(/\.[^.]+$/, '') +
+        (type === 'image/png' ? '.png' : '.jpg');
+      const out = new File([blob], name, { type });
+      return { file: out, compressed: true };
+    } catch (e) {
+      return { file, compressed: false }; // 压缩失败不阻断插入
+    }
+  }
+
   async function uploadImageToHost(file, config) {
     const formData = new FormData();
     formData.append('file', file, file.name || 'image.png');
@@ -93,29 +146,41 @@
   async function insertImageToCell(cellData, file) {
     if (!cellData || !file) return;
     if (_imageProcessing.has(file)) return;
+    const fileName0 = (file.name || 'image').replace(/[`\[\]()]/g, '').replace(/\.[^.]+$/, '') || 'image';
+
+    // 先压缩再走 base64/图床：修复审查发现的「粘贴图片无上限」——
+    // 超过 base64 上限的图先经 Canvas 缩放重编码，绝大多数能压进限额
+    const { file: maybeCompressed, compressed } = await compressImageFile(file);
+    if (compressed) {
+      showToast(editorT('editor.imageCompressed', '图片已压缩：{a} → {b}')
+        .replace('{a}', (file.size / 1024).toFixed(0) + 'KB')
+        .replace('{b}', (maybeCompressed.size / 1024).toFixed(0) + 'KB'));
+    }
+    const finalFile = maybeCompressed;
+    const fileName = (finalFile.name || fileName0).replace(/[`\[\]()]/g, '').replace(/\.[^.]+$/, '') || 'image';
+
     const config = getImageUploadConfig();
-    const fileName = (file.name || 'image').replace(/[`\[\]()]/g, '').replace(/\.[^.]+$/, '') || 'image';
     ctx.setActiveCellId(cellData.id);
     cellData.textarea.focus();
 
     if (config.mode === 'host' && config.url) {
       showToast(editorT('editor.uploadingImage', '正在上传图片到图床…'));
-      _imageProcessing.add(file);
+      _imageProcessing.add(finalFile);
       try {
-        const url = await uploadImageToHost(file, config);
+        const url = await uploadImageToHost(finalFile, config);
         const md = `![${fileName}](${url})`;
         insertAtCursor(cellData.textarea, md, 0);
         showToast(editorT('editor.imageUploadOk', '图片上传成功'));
         markUnsaved();
       } catch (e) {
         // 上传失败时回退到 base64（超大图无法回退，直接失败）
-        if (file.size > MAX_BASE64_IMAGE_BYTES) {
+        if (finalFile.size > MAX_BASE64_IMAGE_BYTES) {
           showToast(editorT('editor.uploadFailNoFallback', '图床上传失败：{m}；图片超过 2MB，无法回退 base64').replace('{m}', e.message));
           return;
         }
         showToast(editorT('editor.uploadFailFallback', '图床上传失败：{m}，回退到 base64').replace('{m}', e.message));
         try {
-          const dataUrl = await fileToBase64(file);
+          const dataUrl = await fileToBase64(finalFile);
           const md = `![${fileName}](${dataUrl})`;
           insertAtCursor(cellData.textarea, md, 0);
           markUnsaved();
@@ -123,17 +188,17 @@
           showToast(editorT('editor.imageInsertFail', '图片插入失败：{m}').replace('{m}', e2.message));
         }
       } finally {
-        _imageProcessing.delete(file);
+        _imageProcessing.delete(finalFile);
       }
     } else {
       // base64 模式
-      if (file.size > MAX_BASE64_IMAGE_BYTES) {
-        showToast(editorT('editor.imageTooLarge', '图片 {m}MB 超过 base64 模式 2MB 上限，已拒绝；可配置图床后重试').replace('{m}', (file.size / 1024 / 1024).toFixed(1)));
+      if (finalFile.size > MAX_BASE64_IMAGE_BYTES) {
+        showToast(editorT('editor.imageTooLarge', '图片 {m}MB 超过 base64 模式 2MB 上限，已拒绝；可配置图床后重试').replace('{m}', (finalFile.size / 1024 / 1024).toFixed(1)));
         return;
       }
-      _imageProcessing.add(file);
+      _imageProcessing.add(finalFile);
       try {
-        const dataUrl = await fileToBase64(file);
+        const dataUrl = await fileToBase64(finalFile);
         const md = `![${fileName}](${dataUrl})`;
         insertAtCursor(cellData.textarea, md, 0);
         showToast(editorT('editor.imageInsertedBase64', '图片已插入（base64）'));
@@ -141,7 +206,7 @@
       } catch (e) {
         showToast(editorT('editor.imageInsertFail', '图片插入失败：{m}').replace('{m}', e.message));
       } finally {
-        _imageProcessing.delete(file);
+        _imageProcessing.delete(finalFile);
       }
     }
   }
@@ -222,6 +287,9 @@
       }
     });
   }
+
+    // 供 editor.js 粘贴/拖拽路径调用（此前漏挂载，粘贴图片会直接 TypeError）
+    window.MarkdownPreview.editorModules.mediaUpload.insertImageToCell = insertImageToCell;
     }
   };
 })();

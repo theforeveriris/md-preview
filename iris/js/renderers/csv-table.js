@@ -87,7 +87,64 @@
   }
 
   // ============== 表格构建 ==============
-  function buildWidget(pre, rows, isTsv) {
+  // ============== 条件格式（CSV-RULES-1） ==============
+  // lang 写法：```csv rules=CPU>80:red,丢包率>0:orange
+  // 规则：<列(1-based 序号或表头名)><op><值>:<颜色名|#hex>，逗号分隔；
+  // op ∈ > >= < <= = != ；数值列按数值比较，否则按字符串比较。
+  const RULE_COLORS = {
+    red: '#e74c3c', orange: '#f39c12', yellow: '#f1c40f',
+    green: '#27ae60', blue: '#3498db', purple: '#8b5cf6', gray: '#95a5a6'
+  };
+
+  function parseRules(lang) {
+    const token = String(lang || '').split(/\s+/).find(x => x.startsWith('rules='));
+    if (!token) return [];
+    return token.slice('rules='.length).split(',').map(spec => {
+      const m = /^([^><=!]+)(>=|<=|!=|>|<|=)([^:]+):(.+)$/.exec(spec.trim());
+      if (!m) return null;
+      const colorName = m[4].trim();
+      const color = RULE_COLORS[colorName] || (/^#[0-9a-fA-F]{3,8}$/.test(colorName) ? colorName : null);
+      if (!color) return null;
+      return { col: m[1].trim(), op: m[2], value: m[3].trim(), color };
+    }).filter(Boolean);
+  }
+
+  function resolveRuleCol(rule, header) {
+    if (/^\d+$/.test(rule.col)) {
+      const idx = parseInt(rule.col, 10) - 1;
+      return (idx >= 0 && idx < header.length) ? idx : -1;
+    }
+    const idx = header.findIndex(h => h === rule.col);
+    return idx;
+  }
+
+  function ruleMatch(rule, rawValue) {
+    const num = parseFloat(rawValue);
+    const isNum = rawValue.trim() !== '' && Number.isFinite(num);
+    const rNum = parseFloat(rule.value);
+    const rIsNum = Number.isFinite(rNum);
+    if (rule.op === '=') return isNum && rIsNum ? num === rNum : rawValue === rule.value;
+    if (rule.op === '!=') return isNum && rIsNum ? num !== rNum : rawValue !== rule.value;
+    if (!isNum || !rIsNum) return false;
+    switch (rule.op) {
+      case '>': return num > rNum;
+      case '>=': return num >= rNum;
+      case '<': return num < rNum;
+      case '<=': return num <= rNum;
+      default: return false;
+    }
+  }
+
+  function hexToRgba(hex, alpha) {
+    let h = hex.replace('#', '');
+    if (h.length === 3) h = h.split('').map(c => c + c).join('');
+    const n = parseInt(h.slice(0, 6), 16);
+    if (!Number.isFinite(n)) return hex;
+    const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+
+  function buildWidget(pre, rows, isTsv, rules) {
     const header = rows[0].map(c => String(c).trim());
     const colCount = Math.max(header.length, ...rows.slice(1).map(r => r.length));
     for (let i = 0; i < colCount; i++) if (header[i] == null) header[i] = t('csv.untitled', '列') + (i + 1);
@@ -98,6 +155,8 @@
     });
 
     const rawText = pre.querySelector('code')?.textContent ?? '';
+    rules.forEach(rule => { rule._col = resolveRuleCol(rule, header); });
+    const activeRules = rules.filter(rule => rule._col >= 0);
     const state = { q: '', sortCol: -1, sortDir: 1, filters: {} };
 
     const widget = document.createElement('div');
@@ -169,9 +228,19 @@
       const frag = document.createDocumentFragment();
       rowsOut.forEach(r => {
         const tr = document.createElement('tr');
-        r.forEach(cell => {
+        r.forEach((cell, ci) => {
           const td = document.createElement('td');
           td.textContent = cell;
+          // 条件格式：第一条命中的规则生效
+          for (const rule of activeRules) {
+            if (rule._col !== ci) continue;
+            if (ruleMatch(rule, cell)) {
+              td.style.backgroundColor = hexToRgba(rule.color, 0.16);
+              td.style.color = rule.color;
+              td.style.fontWeight = '600';
+              break;
+            }
+          }
           tr.appendChild(td);
         });
         frag.appendChild(tr);
@@ -454,16 +523,18 @@
     // 全局查询会命中空面板——见 md-render.js resolveRoot 注释）
     const scope = window.MarkdownPreview.mdRender.resolveRoot(root);
     if (!scope) return;
-    const blocks = scope.querySelectorAll('pre.code-block[data-lang="csv"], pre.code-block[data-lang="tsv"]');
+    const blocks = scope.querySelectorAll('pre.code-block[data-lang^="csv"], pre.code-block[data-lang^="tsv"]');
     blocks.forEach(pre => {
       if (pre.dataset.csvDone) return;
+      const langFirst = String(pre.dataset.lang || '').trim().split(/\s+/)[0];
+      if (langFirst !== 'csv' && langFirst !== 'tsv') return;
       pre.dataset.csvDone = '1';
-      const isTsv = pre.dataset.lang === 'tsv';
+      const isTsv = langFirst === 'tsv';
       const code = pre.querySelector('code');
       if (!code) return;
       const rows = isTsv ? parseTsv(code.textContent) : parseCsv(code.textContent);
       if (rows.length < 2 || rows[0].length === 0) return; // 无表头/数据行，保留原代码块
-      const widget = buildWidget(pre, rows, isTsv);
+      const widget = buildWidget(pre, rows, isTsv, parseRules(pre.dataset.lang));
       pre.parentNode.replaceChild(widget, pre);
     });
   }

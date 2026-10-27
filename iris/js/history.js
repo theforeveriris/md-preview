@@ -220,6 +220,8 @@
     onDocRendered,
     syncTreeHints,
     isFavorite,
-    toggleFavorite
+    toggleFavorite,
+    getHistory: () => load(HISTORY_KEY), // 全局历史页（pages.js）使用
+    getFavorites: () => load(FAV_KEY)
   };
 })();

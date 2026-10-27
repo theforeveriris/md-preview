@@ -14,6 +14,7 @@ const OUTPUT_FILE = path.join(OUTPUT_DIR, 'file-tree.json');
 
 /** 文档的首次添加 / 最后修改时间：path -> { created, modified }（Unix 秒） */
 let gitTimes = new Map();
+let gitContributors = new Map();
 
 console.log('🔍 开始扫描 Markdown 文件...');
 
@@ -45,7 +46,8 @@ function countWords(content) {
 
 // 提取标题/标签：统一走 lib/frontmatter.js（此前与本仓其他构建脚本各自
 // 手写正则且口径漂移，现收敛到共享库）
-const { extractTitle, extractTags } = require('./lib/frontmatter.js');
+const { extractTitle, extractTags, extractListField } = require('./lib/frontmatter.js');
+const { collectMarkdownContributors } = require('./lib/git-times.js');
 
 /**
  * 汇总一组条目的时间：最早创建 / 最晚修改。
@@ -125,6 +127,19 @@ function buildTreeFromDirectory(dir, basePath = '') {
     };
     if (title) entry.title = title;
     if (tags.length > 0) entry.tags = tags;
+    // 学习路径（KNOW-1）：prerequisites: [docs/a.md] → 图谱有向学习路径边
+    const prerequisites = extractListField(content, 'prerequisites');
+    if (prerequisites.length > 0) entry.prerequisites = prerequisites;
+    // 贡献者徽标（KNOW-6）：按提交次数取前 8 位
+    const authors = gitContributors.get(file.path);
+    if (authors && authors.size > 0) {
+      // 只发布 name/count：原始邮箱进产物会变成可批量采集的
+      // 隐私数据（CWE-359，CodeRabbit review fix）；头像用首字母替代
+      entry.contributors = [...authors.values()]
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 8)
+        .map(a => ({ name: a.name, count: a.count }));
+    }
     result.push(entry);
     totalWords += wordCount;
   });
@@ -136,6 +151,7 @@ try {
   const rootDir = path.join(__dirname, '../..');
   // 采集文档的首次添加 / 最后修改时间（非 git 环境下为空表，排序回退名称序）
   gitTimes = collectMarkdownTimesWithCreated(rootDir);
+  gitContributors = collectMarkdownContributors(rootDir);
 function countFiles(tree) {
   let count = 0;
   tree.forEach(item => {

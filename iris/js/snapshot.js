@@ -62,11 +62,25 @@
     return bytesToBase64url(bytes);
   }
 
+  // 收藏合集 payload：{_v:2, t, docs:[{t,c}]}
+  function encodeDocsPayload(title, docs) {
+    const json = JSON.stringify({ _v: 2, t: title || '', docs });
+    const bytes = pako.deflate(new TextEncoder().encode(json));
+    return bytesToBase64url(bytes);
+  }
+
   async function decodePayload(z) {
     if (!(await ensurePako())) return null;
     try {
       const json = pako.inflate(base64urlToBytes(z), { to: 'string' });
       const data = JSON.parse(json);
+      if (data && Array.isArray(data.docs)) {
+        // 合集：过滤出合法条目
+        const docs = data.docs
+          .filter(d => d && typeof d.c === 'string')
+          .map(d => ({ title: d.t || '', content: d.c }));
+        return { title: data.t || '', docs };
+      }
       if (!data || typeof data.c !== 'string') return null;
       return { title: data.t || '', content: data.c };
     } catch (e) {
@@ -115,6 +129,48 @@
     };
   }
 
+  // ============== 收藏夹合集分享 ==============
+
+  async function buildFavoritesShareUrl() {
+    let favs = [];
+    try { favs = JSON.parse(localStorage.getItem('md-preview-favorites') || '[]'); } catch (e) { /* ignore */ }
+    if (!Array.isArray(favs) || favs.length === 0) {
+      return { ok: false, reason: t('snap.noFavorites', '收藏夹是空的（长按文件树中的文档可收藏）') };
+    }
+    if (!(await ensurePako())) {
+      return { ok: false, reason: t('snap.compressFailed', '压缩组件加载失败') };
+    }
+
+    // 拉取收藏文档内容（最多 20 篇，单篇失败跳过）
+    const docs = [];
+    for (const fav of favs.slice(0, 20)) {
+      if (!fav || !fav.path) continue;
+      try {
+        const resp = await fetch(fav.path, { cache: 'no-cache' });
+        if (!resp.ok) continue;
+        docs.push({ t: fav.title || fav.path, c: await resp.text() });
+      } catch (e) { /* skip */ }
+    }
+    if (docs.length === 0) {
+      return { ok: false, reason: t('snap.favFetchFailed', '收藏文档内容获取失败') };
+    }
+
+    // 贪心装填：逐篇尝试，URL 超过安全阈值即停（装不下的丢弃）
+    const picked = [];
+    let url = '';
+    for (const doc of docs) {
+      const z = encodeDocsPayload(t('snap.favTitle', '收藏合集'), [...picked, doc]);
+      const candidate = `${location.origin}${location.pathname}#/s?z=${z}`;
+      if (candidate.length > URL_SAFE_LIMIT) break;
+      url = candidate;
+      picked.push(doc);
+    }
+    if (picked.length === 0) {
+      return { ok: false, reason: t('snap.favTooLarge', '收藏内容太大，装不进一条链接（可分享单篇）') };
+    }
+    return { ok: true, url, oversize: false, count: picked.length, skipped: docs.length - picked.length };
+  }
+
   // ============== 接收（router 虚拟路由） ==============
 
   function parseHash() {
@@ -141,6 +197,28 @@
       if (markdown) {
         markdown.renderVirtualDoc(`# ${t('snap.badLinkTitle', '快照链接无效')}\n\n${t('snap.badLinkBody', '链接中的快照数据缺失或已损坏。')}`, t('snap.name', '快照'));
       }
+      return;
+    }
+
+    // 收藏合集：目录 + 各篇拼接为一篇长文档
+    if (Array.isArray(data.docs)) {
+      if (data.docs.length === 0) {
+        if (markdown) markdown.renderVirtualDoc(`# ${t('snap.badLinkTitle', '快照链接无效')}`, t('snap.name', '快照'));
+        return;
+      }
+      const lines = [`# ${data.title || t('snap.favTitle', '收藏合集')}（${data.docs.length} 篇）`, ''];
+      data.docs.forEach((d, i) => {
+        lines.push(`${i + 1}. ${d.title || t('snap.name', '快照')}`);
+      });
+      data.docs.forEach((d, i) => {
+        lines.push('', '---', '', `## ${i + 1}. ${d.title || t('snap.name', '快照')}`, '', d.content.trim());
+      });
+      const combined = lines.join('\n');
+      const rendered = markdown
+        ? markdown.renderVirtualDoc(combined, data.title || t('snap.favTitle', '收藏合集'), { sanitize: true })
+        : Promise.resolve();
+      rendered.then(() => mountBanner(combined, data.title || t('snap.favTitle', '收藏合集')))
+        .catch(e => console.error('[Snapshot] sanitize failed:', e));
       return;
     }
 
@@ -233,5 +311,5 @@
     });
   }
 
-  window.MarkdownPreview.snapshot = { handleRoute, buildShareUrlForCurrentDoc, init };
+  window.MarkdownPreview.snapshot = { handleRoute, buildShareUrlForCurrentDoc, buildFavoritesShareUrl, init };
 })();

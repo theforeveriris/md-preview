@@ -5,6 +5,7 @@
   let documents = [];
   let debounceTimer = null;
   let isIndexLoaded = false;
+  let indexGen = 0; // 索引代次：来源切换（桌面 KB 注入 / 回站内）时递增，作废在途构建
   let currentQuery = '';
   let flexIndex = null;
 
@@ -71,7 +72,11 @@
     //（此前 init 无守卫 + file-tree 500ms 后再建，56KB 索引至少拉两次）
     if (isIndexLoaded) return documents.length;
     if (!buildPromise) {
+      const gen = indexGen;
       buildPromise = loadSearchIndex().then(indexData => {
+        // 构建期间来源被切换（injectDocuments / useBuiltinIndex 递增代次）：
+        // 过期结果不得覆盖新索引
+        if (gen !== indexGen) return documents.length;
         initSearchIndex(indexData);
         buildPromise = null;
         return indexData.length;
@@ -192,14 +197,95 @@
     return fallback;
   }
 
+  // ============== 内联计算器（SPOT-1） ==============
+  // 命令面板输入数学表达式或 CIDR 直接出结果（Spotlight 风格，与 ipcalc 联动）
+
+  // 数学表达式：仅允许数字与运算符（无标识符 → 无注入面），^ 幂转 **
+  function calcMath(expr) {
+    const cleaned = expr.replace(/\s+/g, '');
+    if (!cleaned || !/^[0-9+\-*/().^%]+$/.test(cleaned)) return null;
+    if (!/[+\-*/^%]/.test(cleaned)) return null; // 纯数字不当作表达式
+    try {
+      const js = cleaned.replace(/\^/g, '**');
+      const val = Function('"use strict"; return (' + js + ')')();
+      if (typeof val !== 'number' || !isFinite(val)) return null;
+      return { kind: 'math', value: val };
+    } catch (e) { return null; }
+  }
+
+  // CIDR 子网速算：192.168.1.0/26 → 网络/掩码/范围/可用数
+  function calcSubnet(expr) {
+    const m = /^\s*(\d{1,3}(?:\.\d{1,3}){3})\s*\/\s*(\d{1,2})\s*$/.exec(expr);
+    if (!m) return null;
+    const parts = m[1].split('.').map(Number);
+    if (parts.some(n => n > 255)) return null;
+    const prefix = parseInt(m[2], 10);
+    if (prefix > 32) return null;
+    const ip = ((parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8) | parts[3]) >>> 0;
+    const mask = prefix === 0 ? 0 : (0xFFFFFFFF << (32 - prefix)) >>> 0;
+    const network = (ip & mask) >>> 0;
+    const broadcast = (network | (~mask >>> 0)) >>> 0;
+    const int2ip = n => [(n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255].join('.');
+    const usable = prefix >= 31 ? Math.pow(2, 32 - prefix) : Math.pow(2, 32 - prefix) - 2;
+    const range = prefix >= 31
+      ? `${int2ip(network)} — ${int2ip(broadcast)}`
+      : `${int2ip(network + 1)} — ${int2ip(broadcast - 1)}`;
+    return { kind: 'subnet', network: `${int2ip(network)}/${prefix}`, mask: int2ip(mask), range, usable };
+  }
+
+  function inlineCalc(query) {
+    const q = String(query || '').trim();
+    if (!q || q.length > 64) return null;
+    return calcSubnet(q) || calcMath(q);
+  }
+
+  function appendCalcCard(container, expr, result) {
+    const item = document.createElement('div');
+    item.className = 'search-result-item palette-calc-item';
+    const calcIcon = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="11" x2="8" y2="11.01"/><line x1="12" y1="11" x2="12" y2="11.01"/><line x1="16" y1="11" x2="16" y2="11.01"/><line x1="8" y1="15" x2="8" y2="15.01"/><line x1="12" y1="15" x2="12" y2="15.01"/><line x1="16" y1="15" x2="16" y2="15.01"/><line x1="8" y1="19" x2="8" y2="19.01"/><line x1="12" y1="19" x2="12" y2="19.01"/><line x1="16" y1="19" x2="16" y2="19.01"/></svg>';
+    let valueHtml;
+    if (result.kind === 'subnet') {
+      valueHtml = `
+        <div class="palette-calc-value">${escapeHtml(result.network)}</div>
+        <div class="palette-calc-sub">${escapeHtml(t('calc.mask', '掩码'))} ${escapeHtml(result.mask)} ·
+          ${escapeHtml(t('calc.range', '范围'))} ${escapeHtml(result.range)} ·
+          ${escapeHtml(t('calc.usable', '可用 {n}').replace('{n}', result.usable.toLocaleString()))}</div>`;
+    } else {
+      const v = result.value;
+      const shown = Number.isInteger(v) ? v.toLocaleString() : String(Math.round(v * 1e10) / 1e10);
+      valueHtml = `<div class="palette-calc-value">${escapeHtml(shown)}</div>`;
+    }
+    item.innerHTML = `
+      <span class="palette-command-icon">${calcIcon}</span>
+      <div class="palette-command-body">
+        <div class="search-result-title">${escapeHtml(expr)} <span class="palette-calc-eq">=</span></div>
+        ${valueHtml}
+      </div>
+      <span class="palette-command-group">${escapeHtml(t('calc.group', '计算器 · 点击复制'))}</span>`;
+    item.addEventListener('click', () => {
+      const text = result.kind === 'subnet'
+        ? `${result.network} ${result.mask} ${result.range} (${result.usable})`
+        : String(result.value);
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).catch(() => {});
+    });
+    container.appendChild(item);
+  }
+
   function displaySearchResults(results) {
     const { dom, fileTree, markdown } = window.MarkdownPreview;
     const container = dom.searchResults;
     container.innerHTML = '';
     container.classList.add('active');
 
+    // 内联计算器：查询形如 2^16-1 或 192.168.1.0/26 时置顶出结果卡
+    const calc = inlineCalc(currentQuery);
+    if (calc) appendCalcCard(container, currentQuery, calc);
+
     if (!results || results.length === 0) {
-      container.innerHTML = `<div class="search-no-results">${t("search.noResults", "没有找到相关文档")}</div>`;
+      // 已有计算卡时保留（计算式查询本来就不会命中文档），只补命令区
+      if (!container.querySelector('.palette-calc-item')) {
+        container.innerHTML = `<div class="search-no-results">${t("search.noResults", "没有找到相关文档")}</div>`;
+      }
       if (window.MarkdownPreview.palette) {
         window.MarkdownPreview.palette.appendInline(window.MarkdownPreview.palette.stripPrefix(currentQuery), container, 4);
       }
@@ -341,9 +427,38 @@
     }
   }
 
+  // ============== 桌面端本地知识库注入（desktop-kb.js 调用） ==============
+  // injectDocuments：用挂载目录的轻量索引整体替换站内索引；
+  // useBuiltinIndex：卸载后复位标记，下次搜索重新 fetch 站内 search-index.json
+  function injectDocuments(docs) {
+    indexGen++; // 作废在途的站内索引构建
+    documents = Array.isArray(docs) ? docs : [];
+    isIndexLoaded = true;
+    buildPromise = null;
+    if (typeof FlexSearch !== 'undefined') {
+      flexIndex = new FlexSearch.Index({
+        encode: cjkEncode,
+        tokenize: 'forward',
+        resolution: 9,
+        minlength: 1
+      });
+      documents.forEach((doc, i) => {
+        flexIndex.add(i, (doc.title || '') + ' ' + (doc.preview || '') + ' ' + (doc.path || ''));
+      });
+    }
+  }
+
+  function useBuiltinIndex() {
+    indexGen++; // 作废在途构建（可能仍是桌面 KB 注入路径）
+    isIndexLoaded = false;
+    buildPromise = null;
+  }
+
   window.MarkdownPreview.search = {
     init: init,
     buildIndex: buildIndex,
-    reset: reset
+    reset: reset,
+    injectDocuments,
+    useBuiltinIndex
   };
 })();

@@ -197,18 +197,29 @@
     const knownStyles = opts.knownStyles || KNOWN_STYLES;
     const renderer = new marked.Renderer();
     renderer.code = function({ text, lang }) {
-      const language = lang || '';
+      // fence 信息串解析：首 token 为语言，其余为附加标记（raw/live/rules…），
+      // `{2,5-8}` 形式的 token 是行高亮标记——单独摘到 data-line-hl，
+      // 不污染 data-lang（消费方按 token 精确匹配语言）
+      const tokens = String(lang || '').trim().split(/\s+/).filter(Boolean);
+      let lineHl = '';
+      const markers = [];
+      tokens.forEach((tok, i) => {
+        if (i > 0 && /^\{\d[\d,\s-]*\}$/.test(tok)) lineHl = tok;
+        else markers.push(tok);
+      });
+      const language = markers[0] || '';
       // lang 来自文档内容，必须先转义再拼进 HTML（marked 默认渲染器会转义，自定义 renderer 需要自己处理）
       const escapedLang = escapeHtml(language);
       const languageClass = escapedLang ? ` class="language-${escapedLang}"` : '';
       const langLabel = escapedLang ? `<span class="code-lang-label">${escapedLang}</span>` : '';
+      const dataLang = markers.length ? escapeHtml(markers.join(' ')) : '';
       const escapedText = String(text || '')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
-      return `<pre class="code-block"${escapedLang ? ` data-lang="${escapedLang}"` : ''}><button class="copy-btn" aria-label="复制代码"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>${langLabel}<code${languageClass}>${escapedText}</code></pre>`;
+      return `<pre class="code-block"${dataLang ? ` data-lang="${dataLang}"` : ''}${lineHl ? ` data-line-hl="${escapeHtml(lineHl)}"` : ''}><button class="copy-btn" aria-label="复制代码"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>${langLabel}<code${languageClass}>${escapedText}</code></pre>`;
     };
     renderer.paragraph = function(token) {
       const trimmed = (token && token.text ? token.text : '').trim();
@@ -721,6 +732,11 @@
       const end = Math.min(i + 6, rest.length);
       for (; i < end; i++) run(rest[i]);
       if (i < rest.length) schedule(chunk);
+      else {
+        // 全部补齐完成：敏感模式等后处理监听此事件重刷（异步高亮会重写
+        // 代码块文本节点，先前的 blur 包裹会被丢弃）
+        window.dispatchEvent(new CustomEvent('md-hljs-done'));
+      }
     };
     schedule(chunk);
   }
@@ -789,7 +805,10 @@
       case 'plantuml': return pres.filter(p => p.querySelector('code.language-plantuml'));
       case 'apexcharts': return pres.filter(p => p.querySelector('code.language-apexcharts'));
       case 'diff': return pres.filter(p => p.querySelector('code.language-diff'));
-      case 'csvtable': return pres.filter(p => p.dataset.lang === 'csv' || p.dataset.lang === 'tsv');
+      case 'csvtable': return pres.filter(p => {
+        const lang = String(p.dataset.lang || '').trim().split(/\s+/)[0];
+        return lang === 'csv' || lang === 'tsv';
+      });
       case 'jsontree': return pres.filter(p => p.dataset.lang === 'json');
       case 'graph': return pres.filter(p => p.dataset.lang === 'graph');
       default: return [];
@@ -979,6 +998,70 @@
     return window.location.pathname.includes('/md-preview/') ? '/md-preview/' : '/';
   }
 
+  /**
+   * 行级 LCS diff（版本快照 / 与 git HEAD 对比共用）。
+   * 返回 [{ type: 'ctx'|'del'|'add'|'note', text }]；超长截断并给出 note 行。
+   */
+  function diffLines(aText, bText, lineCap) {
+    const cap = lineCap || 2000;
+    const NL = String.fromCharCode(10);
+    let a = String(aText == null ? '' : aText).split(NL);
+    let b = String(bText == null ? '' : bText).split(NL);
+    let aCut = 0, bCut = 0;
+    if (a.length > cap) { aCut = a.length - cap; a = a.slice(0, cap); }
+    if (b.length > cap) { bCut = b.length - cap; b = b.slice(0, cap); }
+    const N = a.length, M = b.length;
+    const ops = [];
+    if (N * M > 4000000) {
+      // 超大文档：降级为整体替换，保证不卡死
+      ops.push({ type: 'del', text: aText.slice(0, 2000) });
+      ops.push({ type: 'add', text: bText.slice(0, 2000) });
+      if (aCut) ops.push({ type: 'note', text: '… 快照侧还有 ' + aCut + ' 行未显示' });
+      if (bCut) ops.push({ type: 'note', text: '… 当前侧还有 ' + bCut + ' 行未显示' });
+      return ops;
+    }
+    const dp = new Uint32Array((N + 1) * (M + 1));
+    const at = (i, j) => i * (M + 1) + j;
+    for (let i = N - 1; i >= 0; i--) {
+      for (let j = M - 1; j >= 0; j--) {
+        dp[at(i, j)] = a[i] === b[j]
+          ? dp[at(i + 1, j + 1)] + 1
+          : Math.max(dp[at(i + 1, j)], dp[at(i, j + 1)]);
+      }
+    }
+    let i = 0, j = 0;
+    while (i < N && j < M) {
+      if (a[i] === b[j]) { ops.push({ type: 'ctx', text: a[i] }); i++; j++; }
+      else if (dp[at(i + 1, j)] >= dp[at(i, j + 1)]) { ops.push({ type: 'del', text: a[i] }); i++; }
+      else { ops.push({ type: 'add', text: b[j] }); j++; }
+    }
+    while (i < N) { ops.push({ type: 'del', text: a[i] }); i++; }
+    while (j < M) { ops.push({ type: 'add', text: b[j] }); j++; }
+    if (aCut) ops.push({ type: 'note', text: '… 还有 ' + aCut + ' 行未显示' });
+    if (bCut) ops.push({ type: 'note', text: '… 还有 ' + bCut + ' 行未显示' });
+    return ops;
+  }
+
+  /**
+   * 表格样式预设（ADJ-TABLE-2）：表格编辑器回写时在表格后跟
+   * `<!-- table-style: md-table-zebra ... -->` 注释标记，本函数扫描容器
+   * 把标记里的类挂到紧邻其前的表格（站点侧含 .table-wrapper 也要穿透）。
+   * 标记保留在文档里，重渲染可重复套用。
+   */
+  function applyTablePresets(container) {
+    if (!container) return;
+    Array.from(container.childNodes).forEach(node => {
+      if (node.nodeType !== Node.COMMENT_NODE) return;
+      const m = /table-style:\s*([\w\- ]+)/.exec(node.nodeValue || '');
+      if (!m) return;
+      let target = node.previousElementSibling;
+      if (!target) return;
+      if (target.classList.contains('table-wrapper')) target = target.querySelector('table') || target;
+      if (target.tagName !== 'TABLE') return;
+      m[1].trim().split(/\s+/).forEach(cls => target.classList.add(cls));
+    });
+  }
+
   // 图表默认调色板（apexcharts/csv-table 图表共用；与站点品牌紫一致）
   const CHART_PALETTE = ['#8B5CF6', '#D946EF', '#3B82F6', '#10B981', '#F59E0B'];
 
@@ -1018,5 +1101,7 @@
     getBasePath,
     CHART_PALETTE,
     resolveRoot,
+    diffLines,
+    applyTablePresets,
   };
 })();

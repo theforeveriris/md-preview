@@ -95,17 +95,33 @@
   }
 
   async function getCommits(path, limit) {
-    if (commitsCache.has(path)) return commitsCache.get(path);
-    const { owner, repo } = cfg();
-    if (!owner || !repo) return [];
-    const url = `https://api.github.com/repos/${owner}/${repo}/commits?path=${encodeURIComponent(path)}&per_page=${limit || 20}`;
-    const data = await api(url);
-    commitsCache.set(path, data);
+    // 缓存 key 带上 limit：openWorkingDiff 只取 1 条的缓存不能污染完整列表
+    const cacheKey = path + '#' + (limit || 20);
+    if (commitsCache.has(cacheKey)) return commitsCache.get(cacheKey);
+    // 非 GitHub 托管：git-provider 适配层归一 commit 形态
+    const gp = window.MarkdownPreview.gitProvider;
+    let data;
+    if (gp && gp.cfg().provider !== 'github') {
+      data = await gp.commits(path, limit);
+    } else {
+      const { owner, repo } = cfg();
+      if (!owner || !repo) return [];
+      const url = `https://api.github.com/repos/${owner}/${repo}/commits?path=${encodeURIComponent(path)}&per_page=${limit || 20}`;
+      data = await api(url);
+    }
+    commitsCache.set(cacheKey, data);
     return data;
   }
 
   async function getCommitDetail(sha) {
     if (detailCache.has(sha)) return detailCache.get(sha);
+    // 非 GitHub 托管：详情读取走 git-provider（归一为 GitHub files 形态）
+    const gp = window.MarkdownPreview.gitProvider;
+    if (gp && gp.cfg().provider !== 'github') {
+      const data = await gp.commitDetail(sha);
+      detailCache.set(sha, data);
+      return data;
+    }
     const { owner, repo } = cfg();
     if (!owner || !repo) return null;
     const url = `https://api.github.com/repos/${owner}/${repo}/commits/${sha}`;
@@ -246,6 +262,70 @@
     if (overlay) overlay.classList.remove('open');
   }
 
+  // ---------- 与 git HEAD 对比（编辑器打开的仓库文档） ----------
+  //
+  // 拉 HEAD 版本内容与编辑器当前文本做行级 diff，生成统一格式 patch
+  // 后走与 showCommit 相同的 hljs language-diff 渲染管线。
+
+  function b64ToUtf8(b64) {
+    const bin = atob(String(b64).replace(/\s/g, ''));
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder('utf-8').decode(bytes);
+  }
+
+  async function getHeadContent(path, sha) {
+    // 非 GitHub 托管：走 git-provider（返回已解码文本）
+    const gp = window.MarkdownPreview.gitProvider;
+    if (gp && gp.cfg().provider !== 'github') {
+      return gp.headContent(path, sha);
+    }
+    const { owner, repo } = cfg();
+    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path.split('/').map(encodeURIComponent).join('/')}?ref=${sha}`;
+    const data = await api(url);
+    if (!data || data.encoding !== 'base64' || typeof data.content !== 'string') {
+      throw new Error('unexpected contents API response');
+    }
+    return b64ToUtf8(data.content);
+  }
+
+  async function openWorkingDiff(path, localText) {
+    if (!path) return;
+    const ov = ensureOverlay();
+    ov.dataset.currentPath = path;
+    ov.querySelector('.git-history-title').textContent = `${path} — ${t('history.diffVsHead', '与上次提交对比')}`;
+    const body = ov.querySelector('.git-history-body');
+    ov.querySelector('.git-watch-btn').style.display = 'none';
+    body.innerHTML = `<div class="git-history-loading">${esc(t('history.loading', '加载中…'))}</div>`;
+    ov.classList.add('open');
+
+    try {
+      const list = await getCommits(path, 1);
+      if (!list.length) throw new Error(t('history.notFound', '未找到该文档的提交（可能是新文件或私有仓库）。'));
+      const headText = await getHeadContent(path, list[0].sha);
+      const ops = window.MarkdownPreview.mdRender.diffLines(headText, String(localText == null ? '' : localText));
+      const patchLines = [`--- a/${path}`, `+++ b/${path}`];
+      ops.forEach(op => {
+        const sign = op.type === 'del' ? '-' : op.type === 'add' ? '+' : op.type === 'note' ? '#' : ' ';
+        (op.text || '').split('\n').forEach(l => patchLines.push(sign + l));
+      });
+      body.innerHTML =
+        `<button type="button" class="download-btn git-back">← ${esc(t('history.back', '返回列表'))}</button>` +
+        `<div class="git-commit-detail-msg">${esc(t('history.diffLegend', 'HEAD {{sha}} → 当前编辑器内容；- 为 HEAD 独有，+ 为编辑器新增').replace('{sha}', list[0].sha.slice(0, 7)))}</div>` +
+        `<div class="git-file"><pre class="git-patch"><code class="language-diff">${esc(patchLines.join('\n'))}</code></pre></div>`;
+      body.querySelector('.git-back').addEventListener('click', () => {
+        ov.querySelector('.git-watch-btn').style.display = '';
+        openHistory(ov.dataset.currentPath || window.MarkdownPreview.state.currentFilePath);
+      });
+      const code = body.querySelector('code.language-diff');
+      if (code && typeof window.hljs !== 'undefined') {
+        try { window.hljs.highlightElement(code); } catch (e) { /* ignore */ }
+      }
+    } catch (err) {
+      body.innerHTML = `<div class="git-history-empty">${esc(errorText(err))}</div>`;
+    }
+  }
+
   // ---------- 变更订阅：文档打开时检查关注项 ----------
   // 限频：同一文档 10 分钟内不重复请求（匿名 60 次/时，每次渲染都查太费）
   const lastWatchCheck = new Map(); // path -> ts
@@ -293,7 +373,7 @@
     }
   }
 
-  window.MarkdownPreview.gitHistory = { openHistory, toggleWatch, isWatched, afterRender };
+  window.MarkdownPreview.gitHistory = { openHistory, openWorkingDiff, toggleWatch, isWatched, afterRender };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

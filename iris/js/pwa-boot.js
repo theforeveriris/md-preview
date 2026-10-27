@@ -101,6 +101,26 @@
     }
     const toast = document.getElementById('updateToast');
     if (!toast) return;
+    // 「查看本次更新」：跳转变更日志最新一段（构建期按日期分节，第一节即本次）
+    const clBtn = document.getElementById('updateChangelogBtn');
+    if (clBtn) {
+      clBtn.hidden = false;
+      clBtn.addEventListener('click', () => {
+        dismissUpdateToast();
+        const markdown = window.MarkdownPreview.markdown;
+        if (!markdown || !markdown.loadMarkdownFile) return;
+        markdown.loadMarkdownFile('docs/changelog.md').then(() => {
+          setTimeout(() => {
+            const h2 = document.querySelector('#markdownContent h2');
+            if (h2) {
+              h2.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              h2.classList.add('changelog-flash');
+              setTimeout(() => h2.classList.remove('changelog-flash'), 2400);
+            }
+          }, 350);
+        });
+      });
+    }
     toast.classList.add('show');
   }
 

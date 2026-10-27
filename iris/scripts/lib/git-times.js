@@ -130,5 +130,46 @@ function collectMarkdownTimesWithCreated(root = ROOT) {
   return times;
 }
 
+/**
+ * 采集每个 .md 的贡献者（贡献者徽标 KNOW-6）
+ *
+ * 复用同一套「单遍 git log 扫描」模式：--format=%x00%an%x1f%ae，
+ * 按提交累计每个文件的作者次数，返回 path -> Map<email, {name, email, count}>。
+ */
+function collectMarkdownContributors(root = ROOT) {
+  const byFile = new Map();
+
+  let out = '';
+  try {
+    out = gitLog(
+      ['--format=%x00%an%x1f%ae', '--name-only', '--no-renames', '--diff-filter=AM', '--', ':(glob)**/*.md'],
+      root
+    );
+  } catch (e) {
+    return byFile;
+  }
+
+  const chunks = out.split(String.fromCharCode(0)).slice(1);
+  for (const chunk of chunks) {
+    const lines = chunk.split(String.fromCharCode(10));
+    if (!lines.length) continue;
+    const sep = String(lines[0]).indexOf(String.fromCharCode(31));
+    if (sep < 0) continue;
+    const name = String(lines[0]).slice(0, sep).trim();
+    const email = String(lines[0]).slice(sep + 1).trim().toLowerCase();
+    if (!email) continue;
+    for (let i = 1; i < lines.length; i++) {
+      const file = lines[i].trim();
+      if (!file) continue;
+      if (!byFile.has(file)) byFile.set(file, new Map());
+      const authors = byFile.get(file);
+      const cur = authors.get(email);
+      if (cur) cur.count += 1;
+      else authors.set(email, { name: name || email, email, count: 1 });
+    }
+  }
+  return byFile;
+}
+
 // 只导出带 created 的版本：collectMarkdownTimes 是它的内部实现
-module.exports = { collectMarkdownTimes, collectMarkdownTimesWithCreated, ROOT };
+module.exports = { collectMarkdownTimes, collectMarkdownTimesWithCreated, collectMarkdownContributors, ROOT };

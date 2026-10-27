@@ -37,6 +37,16 @@
     ]
   },
   {
+    "path": "docs/examples/acl-route-examples.md",
+    "title": "ACL 与路由表分析示例",
+    "preview": "ACL 分析块 acl ios 10 permit tcp 10.1.1.0 0.0.0.255 any eq 443 20 permit tcp 10.1.1.0 0.0.0.255 host 8.8.8.8 eq 53 30 permit udp any host 8.8.8.8 eq 53 40 deny ip any any route-table 粘贴 show ip route 输出：",
+    "searchText": "ACL 与路由表分析示例 网络 工具 ACL 分析块 acl ios 10 permit tcp 10.1.1.0 0.0.0.255 any eq 443 20 permit tcp 10.1.1.0 0.0.0.255 host 8.8.8.8 eq 53 30 permit udp any host 8.8.8.8 eq 53 40 deny ip any any route-table 粘贴 show ip route 输出： docs/examples/acl-route-examples.md ACL 與路由表分析示例 網絡 工具 ylybfxsl wl gj",
+    "tags": [
+      "网络",
+      "工具"
+    ]
+  },
+  {
     "path": "docs/examples/apexcharts-examples.md",
     "title": "ApexCharts 交互式图表示例",
     "preview": "ApexCharts 交互式图表示例 本页面展示 ApexCharts 的各种图表类型和配置方式。 --- 1. 折线图 基础折线图 源码： 渲染效果： --- 多系列折线图 源码： 渲染效果： --- 2. 面积图 基础面积图 源码： 渲染效果： --- 多系列面积图 源码： 渲染效果： --- 3. 柱状图 基础柱状图 源码： 渲染效果： --- 分组柱状图 源码： 渲染效果： --- 4. ",
@@ -53,6 +63,16 @@
     "searchText": "基础使用教程 入门 基础使用教程 学习如何使用 Markdown 预览器的基本功能。 界面概览 侧边栏 - 自动发现并显示所有 .md 文件的树形结构 - 点击文件夹可以展开/折叠 - 点击文件名加载文档 主内容区 - 显示 Markdown 渲染后的内容 - 支持代码高亮 - 支持图片预览 进度指示器 - 顶部：文件加载进度条 - 底部：阅读位置进度条 基本操作 浏览文档 1. 点击侧边栏中的文件名 2. 文档内容 docs/examples/basic-usage.md 基礎使用教程 入門 jcsyjc rm",
     "tags": [
       "入门"
+    ]
+  },
+  {
+    "path": "docs/examples/bits-examples.md",
+    "title": "位标注示例",
+    "preview": "位标注块 bits 0100 0010 0 | SYN | 发起连接 6 | ACK | 确认收到 bits 1111 1111 1111 1111 1111 1111 0000 0000 0 | 网络位开始 23 | 网络位结束 24 | 主机位开始",
+    "searchText": "位标注示例 网络 教学 位标注块 bits 0100 0010 0 | SYN | 发起连接 6 | ACK | 确认收到 bits 1111 1111 1111 1111 1111 1111 0000 0000 0 | 网络位开始 23 | 网络位结束 24 | 主机位开始 docs/examples/bits-examples.md 位標註示例 網絡 教學 wbzsl wl jx",
+    "tags": [
+      "网络",
+      "教学"
     ]
   },
   {
@@ -81,6 +101,16 @@
     "searchText": "分栏布局使用示例 排版 分栏布局使用示例 使用 ::: columns 语法可以在 Markdown 中创建多栏布局，每栏可以包含任意 Markdown 内容。 --- 基础两栏布局 源码： 渲染效果： ::: columns ::: column 左侧标题 这是左侧栏的内容。 - 列表项 1 - 列表项 2 - 列表项 3 ::: ::: column 右侧标题 这是右侧栏的内容。 > 这是一段引用 正常段落文字。 : docs/examples/columns-examples.md 分欄佈局使用示例 排版 flbjsysl pb",
     "tags": [
       "排版"
+    ]
+  },
+  {
+    "path": "docs/examples/config-diff-examples.md",
+    "title": "配置语义 diff 示例",
+    "preview": "配置语义 diff config-diff ios interface GigabitEthernet0/0 ip address 10.1.1.1 255.255.255.0 no shutdown ! interface GigabitEthernet0/1 ip address 10.1.2.1 255.255.255.0 ===变更后 interface GigabitEthernet0/",
+    "searchText": "配置语义 diff 示例 网络 示例 配置语义 diff config-diff ios interface GigabitEthernet0/0 ip address 10.1.1.1 255.255.255.0 no shutdown ! interface GigabitEthernet0/1 ip address 10.1.2.1 255.255.255.0 ===变更后 interface GigabitEthernet0/ docs/examples/config-diff-examples.md 配置語義 diff 示例 網絡 示例 pzyysl wl sl",
+    "tags": [
+      "网络",
+      "示例"
     ]
   },
   {
@@ -185,6 +215,16 @@
     ]
   },
   {
+    "path": "docs/examples/heatmap-examples.md",
+    "title": "日历热图示例",
+    "preview": "日历热图块 heatmap 2025-09-30,9 2025-10-01,9 2025-10-02,8 2025-10-03,0 2025-10-04,9 2025-10-05,3 2025-10-06,11 2025-10-07,10 2025-10-08,1 2025-10-09,9 2025-10-10,0 2025-10-11,3 2025-10-12,8 2025-10-13,0 20",
+    "searchText": "日历热图示例 示例 可视化 日历热图块 heatmap 2025-09-30,9 2025-10-01,9 2025-10-02,8 2025-10-03,0 2025-10-04,9 2025-10-05,3 2025-10-06,11 2025-10-07,10 2025-10-08,1 2025-10-09,9 2025-10-10,0 2025-10-11,3 2025-10-12,8 2025-10-13,0 20 docs/examples/heatmap-examples.md 日曆熱圖示例 示例 可視化 rlrtsl sl ksh",
+    "tags": [
+      "示例",
+      "可视化"
+    ]
+  },
+  {
     "path": "docs/examples/image-gallery-examples.md",
     "title": "图片画廊与懒加载示例",
     "preview": "图片画廊与懒加载示例 本页面展示图片的懒加载、画廊模式（含多种布局样式）、图片灯箱和错误降级功能。 --- 1. 图片懒加载 所有图片都自动添加了 loading=\"lazy\" 属性，会在图片进入视口时才加载。 语法格式： 图片会在滚动到视口时才开始加载，提升页面性能。 --- 2. 画廊模式 当文档中出现连续两张或以上的图片（中间无其他内容）时，会自动包装成画廊布局。 两张图片画廊 以下两张图片",
@@ -204,12 +244,41 @@
     ]
   },
   {
+    "path": "docs/examples/ipcalc-examples.md",
+    "title": "ipcalc 子网计算示例",
+    "preview": "ipcalc 子网计算块 ipcalc 10.1.1.0/24 ipcalc 192.168.1.0/26 172.16.4.130/28 ipcalc 10.20.30.46/22",
+    "searchText": "ipcalc 子网计算示例 网络 工具 ipcalc 子网计算块 ipcalc 10.1.1.0/24 ipcalc 192.168.1.0/26 172.16.4.130/28 ipcalc 10.20.30.46/22 docs/examples/ipcalc-examples.md ipcalc 子網計算示例 網絡 工具 zwjssl wl gj",
+    "tags": [
+      "网络",
+      "工具"
+    ]
+  },
+  {
     "path": "docs/examples/latex-examples.md",
     "title": "LaTeX 公式示例",
     "preview": "LaTeX 公式示例 本文档展示了 KaTeX 支持的各类数学公式及其渲染效果。 --- 1. 行内公式 行内公式使用单个 \\$ 包裹，例如： - 勾股定理：$a^2 + b^2 = c^2$ - 欧拉公式：$e^{i\\pi} + 1 = 0$ - 二次方程根：$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$ - 积分：$\\int{a}^{b} f(x) dx$ -",
     "searchText": "LaTeX 公式示例 数学 LaTeX 公式示例 本文档展示了 KaTeX 支持的各类数学公式及其渲染效果。 --- 1. 行内公式 行内公式使用单个 \\$ 包裹，例如： - 勾股定理：$a^2 + b^2 = c^2$ - 欧拉公式：$e^{i\\pi} + 1 = 0$ - 二次方程根：$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$ - 积分：$\\int{a}^{b} f(x) dx$ - docs/examples/latex-examples.md LaTeX 公式示例 數學 gssl sx",
     "tags": [
       "数学"
+    ]
+  },
+  {
+    "path": "docs/examples/learning-path-examples.md",
+    "title": "学习路径示例",
+    "preview": "学习路径 frontmatter 写 prerequisites: [路径/文件.md]，文档头出现「前置阅读」卡片链 （本篇就是一个活例子）；#/graph 图谱上按同一数据画出虚线强调色的有向 学习路径边——知识库的结构化阅读顺序一眼可辨。 本篇的前置阅读指向两篇示例文档；把 prerequisites 换成你自己的路径即可。",
+    "searchText": "学习路径示例 学习 示例 学习路径 frontmatter 写 prerequisites: [路径/文件.md]，文档头出现「前置阅读」卡片链 （本篇就是一个活例子）；#/graph 图谱上按同一数据画出虚线强调色的有向 学习路径边——知识库的结构化阅读顺序一眼可辨。 本篇的前置阅读指向两篇示例文档；把 prerequisites 换成你自己的路径即可。 docs/examples/learning-path-examples.md 學習路徑示例 學習 示例 xxljsl xx sl",
+    "tags": [
+      "学习",
+      "示例"
+    ]
+  },
+  {
+    "path": "docs/examples/line-highlight-examples.md",
+    "title": "代码行高亮示例",
+    "preview": "代码行高亮 两种标记方式：fence 信息串 {2,5-8}（行号）与代码内 [!code highlight] 注释， 可叠加使用。高亮为覆盖层实现，不影响 hljs 语法着色。 行号标记 注释标记 叠加",
+    "searchText": "代码行高亮示例 代码高亮 代码行高亮 两种标记方式：fence 信息串 {2,5-8}（行号）与代码内 [!code highlight] 注释， 可叠加使用。高亮为覆盖层实现，不影响 hljs 语法着色。 行号标记 注释标记 叠加 docs/examples/line-highlight-examples.md 代碼行高亮示例 代碼高亮 dmxglsl dmgl",
+    "tags": [
+      "代码高亮"
     ]
   },
   {
@@ -333,12 +402,32 @@
     ]
   },
   {
+    "path": "docs/examples/steps-quote-examples.md",
+    "title": "步骤揭示与引用卡片示例",
+    "preview": "步骤揭示块 steps 1 | 确认故障现象 | 影响面、时间线、有无变更 2 | 检查物理层 | 看接口指示灯与光功率 3 | 查控制平面 | ARP/MAC 表 → 路由表 → ACL 4 | 抓包取证 | 镜像口 + Wireshark 过滤五元组 quote ：引文 | 出处，空行分隔多条——带出处署名的卡片式引用。 架构图语法糖 orgchart 网络部 - 核心组 - 骨干交换 - 出",
+    "searchText": "步骤揭示与引用卡片示例 示例 教学 步骤揭示块 steps 1 | 确认故障现象 | 影响面、时间线、有无变更 2 | 检查物理层 | 看接口指示灯与光功率 3 | 查控制平面 | ARP/MAC 表 → 路由表 → ACL 4 | 抓包取证 | 镜像口 + Wireshark 过滤五元组 quote ：引文 | 出处，空行分隔多条——带出处署名的卡片式引用。 架构图语法糖 orgchart 网络部 - 核心组 - 骨干交换 - 出 docs/examples/steps-quote-examples.md 步驟揭示與引用卡片示例 示例 教學 bzjsyyykpsl sl jx",
+    "tags": [
+      "示例",
+      "教学"
+    ]
+  },
+  {
     "path": "docs/examples/table-examples.md",
     "title": "表格使用示例",
     "preview": "表格使用示例 本页面展示各种场景下的表格渲染效果，包括宽表格、长内容表格、多列表格等。 > 💡 提示：表格内容过宽时可左右滑动查看，表头会保持固定可见。 --- 基础表格 标准的 Markdown 表格语法，支持对齐方式设置。 渲染效果： | 左对齐 | 居中对齐 | 右对齐 | | :----- | :------: | -----: | | 内容 1 | 内容 2 | 内容 3 | | 内容",
     "searchText": "表格使用示例 表格 表格使用示例 本页面展示各种场景下的表格渲染效果，包括宽表格、长内容表格、多列表格等。 > 💡 提示：表格内容过宽时可左右滑动查看，表头会保持固定可见。 --- 基础表格 标准的 Markdown 表格语法，支持对齐方式设置。 渲染效果： | 左对齐 | 居中对齐 | 右对齐 | | :----- | :------: | -----: | | 内容 1 | 内容 2 | 内容 3 | | 内容 docs/examples/table-examples.md 表格使用示例 表格 bgsysl bg",
     "tags": [
       "表格"
+    ]
+  },
+  {
+    "path": "docs/examples/terminal-secret-examples.md",
+    "title": "终端回放与敏感遮罩示例",
+    "preview": "终端回放块 terminal $ ssh admin@10.1.1.1 Password: Core-SW> enable Core-SW# show ip interface brief | exclude unassigned Interface IP-Address Status Protocol GigabitEthernet0/0 10.1.1.1 up up GigabitEthern",
+    "searchText": "终端回放与敏感遮罩示例 网络 工具 终端回放块 terminal $ ssh admin@10.1.1.1 Password: Core-SW> enable Core-SW# show ip interface brief | exclude unassigned Interface IP-Address Status Protocol GigabitEthernet0/0 10.1.1.1 up up GigabitEthern docs/examples/terminal-secret-examples.md 終端回放與敏感遮罩示例 網絡 工具 zdhfymgzzsl wl gj",
+    "tags": [
+      "网络",
+      "工具"
     ]
   },
   {

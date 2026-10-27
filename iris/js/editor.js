@@ -353,6 +353,7 @@
       document.querySelectorAll('.cell.cell-active').forEach(c => c.classList.remove('cell-active'));
       div.classList.add('cell-active');
       updateStatusbar();
+      mermaidPip?.onCellActivity?.(cellData);
     });
 
     textarea.addEventListener('input', () => {
@@ -363,16 +364,55 @@
       updateStatusbar();
       // 内容已变，旧偏移的查找匹配失效（外移模块：find-replace.js）
       findReplace.invalidateMatches();
+      mermaidPip?.onCellActivity?.(cellData);
     });
 
     textarea.addEventListener('keydown', onTextareaKeydown);
-    textarea.addEventListener('keyup', () => updateStatusbar());
-    textarea.addEventListener('click', () => updateStatusbar());
+    textarea.addEventListener('keyup', () => { updateStatusbar(); mermaidPip?.onCellActivity?.(cellData); });
+    textarea.addEventListener('click', () => { updateStatusbar(); mermaidPip?.onCellActivity?.(cellData); });
     textarea.addEventListener('select', () => updateSelectionToolbar({ target: textarea }));
     textarea.addEventListener('mouseup', () => updateSelectionToolbar({ target: textarea }));
     textarea.addEventListener('blur', () => {
       setTimeout(hideSelectionToolbar, 150);
       setTimeout(hideAutocomplete, 150);
+    });
+
+    // 拖拽排序：手柄是 cell-number 徽标（编辑区文本拖拽不受影响）
+    const dragHandle = div.querySelector('.cell-number');
+    if (dragHandle) {
+      dragHandle.draggable = true;
+      dragHandle.title = '拖动调整 Cell 顺序';
+      dragHandle.style.cursor = 'grab';
+      dragHandle.addEventListener('dragstart', (e) => {
+        draggingCellId = id;
+        e.dataTransfer.effectAllowed = 'move';
+        try { e.dataTransfer.setData('text/plain', String(id)); } catch (err) { /* ignore */ }
+        requestAnimationFrame(() => div.classList.add('cell-dragging'));
+      });
+      dragHandle.addEventListener('dragend', () => {
+        draggingCellId = null;
+        div.classList.remove('cell-dragging');
+        document.querySelectorAll('.cell-drag-over-top, .cell-drag-over-bottom')
+          .forEach(el => el.classList.remove('cell-drag-over-top', 'cell-drag-over-bottom'));
+      });
+    }
+    div.addEventListener('dragover', (e) => {
+      if (draggingCellId == null || draggingCellId === id) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      const rect = div.getBoundingClientRect();
+      const before = e.clientY < rect.top + rect.height / 2;
+      div.classList.toggle('cell-drag-over-top', before);
+      div.classList.toggle('cell-drag-over-bottom', !before);
+    });
+    div.addEventListener('dragleave', () => {
+      div.classList.remove('cell-drag-over-top', 'cell-drag-over-bottom');
+    });
+    div.addEventListener('drop', (e) => {
+      if (draggingCellId == null || draggingCellId === id) return;
+      e.preventDefault();
+      const rect = div.getBoundingClientRect();
+      moveCellOnto(draggingCellId, id, e.clientY < rect.top + rect.height / 2);
     });
 
     div.querySelector('.cell-run-btn').addEventListener('click', () => runCell(id));
@@ -591,6 +631,25 @@
     cell.textarea.focus();
   }
 
+  // ============== Cell 拖拽排序（RD-1） ==============
+  // 拖拽中单元格 id（DataTransfer 在 dragover 阶段不可读，用模块级变量接力）
+  let draggingCellId = null;
+
+  function moveCellOnto(dragId, targetId, before) {
+    const dragCell = getCell(dragId);
+    const targetCell = getCell(targetId);
+    if (!dragCell || !targetCell || dragId === targetId) return;
+    if (before) targetCell.div.parentNode.insertBefore(dragCell.div, targetCell.div);
+    else targetCell.div.after(dragCell.div);
+    const fromIdx = cells.indexOf(dragCell);
+    cells.splice(fromIdx, 1);
+    const targetIdx = cells.indexOf(targetCell);
+    cells.splice(before ? targetIdx : targetIdx + 1, 0, dragCell);
+    renumberCells();
+    markUnsaved();
+    updateStatusbar();
+  }
+
   function rebuildCellDOMOrder() {
     // 增量移动 DOM 节点（而非 innerHTML='' 重建），保留 CM6 编辑器状态和 undo 栈
     cells.forEach(cell => {
@@ -614,6 +673,7 @@
   }
 
   function updateCellMeta(cellData) {
+    outline?.refresh?.();
     const lines = cellData.textarea.value.split('\n').length;
     cellData.linesLabel.textContent = `${lines} 行`;
   }
@@ -644,6 +704,10 @@
     mdRender.groupGalleries(outputElement);
     mdRender.initSliders(outputElement);
     mdRender.highlightCodeBlocks(outputElement);
+    // 可视化表格编辑器：输出区表格挂「编辑」按钮（外移模块：table-editor.js）
+    tableEditor?.attach?.(outputElement);
+    // 表格样式预设标记套用
+    window.MarkdownPreview.mdRender.applyTablePresets?.(outputElement);
 
     // 渲染器批量调度：runAllCells 时 N 个 cell 各自 setTimeout 会叠 N 批，
     // 收集 roots 合并为一次 200ms 调度
@@ -775,6 +839,10 @@
     });
   });
 
+  // 菜单动作注册表（模块化功能经 ctx.registerMenuAction 挂入）
+  const menuActions = {};
+  function registerMenuAction(name, fn) { menuActions[name] = fn; }
+
   // 下载 / 动态插入按钮点击
   document.querySelectorAll('.dropdown-item[data-action]').forEach(item => {
     item.addEventListener('click', (e) => {
@@ -789,6 +857,7 @@
       else if (action === 'import-mdnb') triggerImport('import-mdnb');
       else if (action === 'import-md-cells') triggerImport('import-md-cells');
       else if (action === 'import-md-current') triggerImport('import-md-current');
+      else if (menuActions[action]) menuActions[action]();
       else if (action.startsWith('insert-')) handleDynamicInsert(action);
       closeAllDropdowns();
     });
@@ -1538,12 +1607,7 @@
       if (!confirm('导入将替换当前所有 Cell，是否继续？')) return;
     }
     // 清空现有 Cell
-    cells.slice().forEach(c => {
-      if (c.textarea && typeof c.textarea.destroy === 'function') c.textarea.destroy();
-      c.div.remove();
-    });
-    cells.length = 0;
-    cellCounter = 0;
+    resetAllCells();
     // 创建新 Cell。output_html 来自外部文件（非受信内容，可能是他人分享的
     // 笔记本），注入前必须经 DOMPurify 净化，防止导入即触发的存储型 XSS。
     // 净化是 await，期间不能自动保存（会用半成品覆盖原笔记本）
@@ -1574,21 +1638,17 @@
     showToast(editorT('editor.importedCells', '已导入 {n} 个 Cell').replace('{n}', data.cells.length));
   }
 
-  function importMdCells(text) {
+  function importMdCells(text, opts) {
     // 优先按显式 cell 边界切分（downloadAllMd 导出格式，正文含 --- 也安全）；
     // 无标记的旧文件/手写文件回退按 --- 切分
     const parts = text.includes(CELL_BOUNDARY)
       ? text.split(/\n?\s*<!-- mdp2:cell -->\s*\n?/)
       : text.split(/\n\s*---\s*\n/);
-    if (cells.some(c => c.textarea.value.trim())) {
+    // 快照回滚等已在调用方确认过的路径传 skipConfirm 免二次打断
+    if (!(opts && opts.skipConfirm) && cells.some(c => c.textarea.value.trim())) {
       if (!confirm('导入将替换当前所有 Cell，是否继续？')) return;
     }
-    cells.slice().forEach(c => {
-      if (c.textarea && typeof c.textarea.destroy === 'function') c.textarea.destroy();
-      c.div.remove();
-    });
-    cells.length = 0;
-    cellCounter = 0;
+    resetAllCells();
     parts.forEach(part => {
       const trimmed = part.trim();
       if (!trimmed) return;
@@ -1793,12 +1853,12 @@
     try { await storage.saveNotebook(data); } catch (e) {}
   }
 
-  let pendingTabId = null;
+  let pendingTab = null;
   async function activateTab(id, opts) {
     opts = opts || {};
     const tab = getTabById(id);
     if (!tab) return;
-    if (isSwitching) { pendingTabId = id; return; } // 排队而非静默丢弃
+    if (isSwitching) { pendingTab = { id, opts }; return; } // 排队而非静默丢弃（opts 含 initData，重试时传回）
     isSwitching = true;
     try {
       // 1) 保存当前 notebook 数据（先序列化，不动 DOM）
@@ -1830,12 +1890,12 @@
     } finally {
       isSwitching = false;
       // 处理切换期间排队的请求（跳过中间态，直达最后点击的 tab）
-      if (pendingTabId && pendingTabId !== activeTabId) {
-        const next = pendingTabId;
-        pendingTabId = null;
-        activateTab(next);
+      if (pendingTab && pendingTab.id !== activeTabId) {
+        const next = pendingTab;
+        pendingTab = null;
+        activateTab(next.id, next.opts);
       } else {
-        pendingTabId = null;
+        pendingTab = null;
       }
     }
   }
@@ -2005,6 +2065,7 @@
       try {
         await storage.saveNotebook(data);
         markSaved(savedTabId, savedRevision);
+        if (versionSnapshots) versionSnapshots.maybeAutoSnapshot();
       } catch (e) {
         // IndexedDB 写入失败，回退 localStorage
         if (autosaveLocalStorage(data)) {
@@ -2021,6 +2082,7 @@
     } else {
       if (autosaveLocalStorage(data)) {
         markSaved(savedTabId, savedRevision);
+        if (versionSnapshots) versionSnapshots.maybeAutoSnapshot();
       } else {
         if (statusSave) {
           statusSave.textContent = '保存失败';
@@ -2041,18 +2103,25 @@
     }
   }
 
-  async function restoreFromDataInner(data) {
-    const cellList = (data && Array.isArray(data.cells)) ? data.cells : [];
-    // 旧 cell 即将被销毁：先关双屏，否则 cmHost 残留在双屏 overlay 里
-    // 形成死编辑器 + escHandler 泄漏
+  // 清空全部 Cell 的统一入口：closeDualPane（cmHost 不残留双屏 overlay）
+  // + findReplace 匹配失效（cellCounter 归零后新 Cell 复用旧 id）。
+  // 此前四处复制、已出现分歧（CodeRabbit review fix）
+  function resetAllCells() {
     closeDualPane();
-    // 清空现有
+    if (findReplace) findReplace.invalidateMatches();
     cells.slice().forEach(c => {
       if (c.textarea && typeof c.textarea.destroy === 'function') c.textarea.destroy();
       c.div.remove();
     });
     cells.length = 0;
     cellCounter = 0;
+  }
+
+  async function restoreFromDataInner(data) {
+    const cellList = (data && Array.isArray(data.cells)) ? data.cells : [];
+    // 旧 cell 即将被销毁：先关双屏，否则 cmHost 残留在双屏 overlay 里
+    // 形成死编辑器 + escHandler 泄漏
+    resetAllCells();
     // output_html 持久化在 IndexedDB / localStorage：旧版本导入的污染数据可能
     // 已入库，统一在注入前净化（导入边界已有一次净化，这里是纵深防御）
     for (const s of cellList) {
@@ -2334,9 +2403,109 @@
     setActiveCellId: (id) => { activeCellId = id; }
   });
 
+  // 版本快照（防手滑删稿的安全网：手动 + 30 分钟定时，可 diff 与回滚）
+  // Mermaid 画中画（光标在 ```mermaid 围栏内时右下角实时预览）
+  const mermaidPipMod = window.MarkdownPreview.editorModules &&
+    window.MarkdownPreview.editorModules.mermaidPip;
+  const mermaidPip = mermaidPipMod ? mermaidPipMod.init({ editorT }) : null;
+
+  // 笔记本大纲侧栏（各 Cell 标题行 → 点击跳转定位）
+  const outlineMod = window.MarkdownPreview.editorModules &&
+    window.MarkdownPreview.editorModules.outline;
+  const outline = outlineMod ? outlineMod.init({
+    editorT,
+    getCells: () => cells
+  }) : null;
+
+  // 可视化表格编辑器（输出区表格「编辑」→ 网格编辑 → 回写 Markdown 源码）
+  const tableEditorMod = window.MarkdownPreview.editorModules &&
+    window.MarkdownPreview.editorModules.tableEditor;
+  const tableEditor = tableEditorMod ? tableEditorMod.init({
+    editorT,
+    showToast,
+    getCells: () => cells,
+    afterSourceEdit: (cellData) => {
+      updateCellMeta(cellData);
+      markModified(cellData);
+      markUnsaved();
+      runCell(cellData.id);
+    }
+  }) : null;
+
+  // 模板脚手架：命令面板 / 「导入」菜单「从模板新建」经此建新笔记本
+  window.MarkdownPreview.editorCreateTab = (initData, title) => {
+    return createTab({ initData, title, skipSaveCurrent: true });
+  };
+  registerMenuAction('new-from-template', () => {
+    window.MarkdownPreview.docTemplates?.openPicker?.();
+  });
+
+  // 仓库文档 → 编辑器 tab 的路径登记（「与 git HEAD 对比」用）
+  const editorRepoPaths = window.MarkdownPreview.editorRepoPaths =
+    window.MarkdownPreview.editorRepoPaths || new Map();
+  registerMenuAction('diff-vs-head', () => {
+    const repoPath = editorRepoPaths.get(activeTabId);
+    if (!repoPath) {
+      showToast(editorT('editor.notFromRepo', '当前笔记本不是从仓库文档打开的（用「在编辑器打开当前文档」试试）'));
+      return;
+    }
+    const text = cells.map(c => c.textarea.value).join(String.fromCharCode(10, 10));
+    window.MarkdownPreview.gitHistory?.openWorkingDiff?.(repoPath, text);
+    window.MarkdownPreview.gitHistory?.openWorkingDiff?.(repoPath, text);
+  });
+
+  const versionSnapshotsMod = window.MarkdownPreview.editorModules &&
+    window.MarkdownPreview.editorModules.versionSnapshots;
+  let versionSnapshots = null;
+  if (versionSnapshotsMod) {
+    versionSnapshots = versionSnapshotsMod.init({
+      editorT,
+      showToast,
+      getNotebookId: () => NOTEBOOK_ID,
+      getCells: () => cells,
+      // 结构化恢复：不经 Markdown 拆分，保留类型/内容/顺序/空 Cell
+      restoreCells: async (cellsData) => {
+        if (!Array.isArray(cellsData)) return;
+        restoreDepth++;
+        try {
+          resetAllCells();
+          for (const sdata of cellsData) {
+            const nc = createCell(null, sdata.content || '', {
+              type: sdata.type === 'plaintext' ? 'plaintext' : 'markdown'
+            });
+            updateLineNumbers(nc);
+          }
+          if (cells.length === 0) createCell();
+          renumberCells();
+          updateStatusbar();
+        } finally {
+          restoreDepth--;
+        }
+        markUnsaved();
+      },
+      registerMenuAction
+    });
+  }
+
+  // 取件箱消费统一延迟到 loadAutosave 之后：否则有历史会话时 tabOrder 恢复
+  // 会覆盖刚建的模板/文档 tab（CodeRabbit review fix）
+  function consumePendingEditorJobs() {
+    // 命令面板「从模板新建」在编辑器加载完成前点的
+    window.MarkdownPreview.docTemplates?.consumePending?.();
+
+    // 命令面板「在编辑器打开当前文档」：登记 repoPath 供 HEAD 对比
+    const pendingDoc = window.MarkdownPreview.editorPendingContent;
+    if (pendingDoc) {
+      window.MarkdownPreview.editorPendingContent = null;
+      createTab({ initData: pendingDoc.initData, title: pendingDoc.title, skipSaveCurrent: true })
+        .then(tab => { if (pendingDoc.repoPath) editorRepoPaths.set(tab.id, pendingDoc.repoPath); });
+    }
+  }
+
   const bootCells = cells.slice(); // 启动时的初始 cell 引用
   bootCellsRef = bootCells;       // 供 loadAutosave 在恢复前判定是否已被输入
   loadAutosave().then(restored => {
+    consumePendingEditorJobs();
     // 判定已下沉到 loadAutosave 的每个恢复分支之前（恢复后再查必然为 false）
     const userTypedFirst = bootCells.some(c => c && (c.textarea.value || '').trim());
     if (!restored && userTypedFirst) {
