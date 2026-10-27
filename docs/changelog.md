@@ -9,6 +9,7 @@ tags: [规划]
 
 ## 2026-10-27
 
+- `f7d8c95` fix(pulse)+feat(theme): 修复大波形不渲染、恢复默认配色、新增鸢尾花紫主题 — theforeveriris
 - `7a52e94` build: 重新生成数据产物（changelog/feed/file-tree/links/precache/sitemap） — theforeveriris
 - `f230013` docs(screenshots): 46 张运行时截图全量重拍（新品牌紫 + 新 UI），show.md 补第六/七节配图 — theforeveriris
 - `ff29fdb` feat(artwork): 站点强调色统一为品牌紫 #8B5CF6 + 图标双源漂移门禁（原暂缓项） — theforeveriris
@@ -182,4 +183,4 @@ tags: [规划]
 - `b1eecd4` Add multi-level documentation structure with test files — theforeveriris
 - `4a49e3b` Initial commit: Markdown previewer for GitHub Pages — agelaia521
 
-> 共 128 条（最多展示 200 条）。
+> 共 129 条（最多展示 200 条）。

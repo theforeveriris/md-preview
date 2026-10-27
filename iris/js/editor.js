@@ -660,13 +660,20 @@
       const roots = pendingRendererRoots;
       pendingRendererRoots = [];
       const subset = mdRender.CELL_RENDERER_SUBSET;
+      // 缓存挂在 cell 对象上（serializeNotebook 读 c._outputHtmlCache），
+      // 这里拿到的是 output DOM 节点，必须回查所属 cell 再失效，
+      // 否则渲染器改动过的输出会一直复用旧缓存
+      const invalidateOutputCache = (outputElement) => {
+        const owner = cells.find(c => c.output === outputElement);
+        if (owner) owner._outputHtmlCache = undefined;
+      };
       roots.forEach(root => {
         try {
           Promise.resolve(mdRender.runRenderers(root, { only: subset })).then(() => {
-            root._outputHtmlCache = undefined; // 渲染器改动过输出，缓存失效
+            invalidateOutputCache(root);
           });
         } catch (e) {
-          root._outputHtmlCache = undefined;
+          invalidateOutputCache(root);
           console.warn('[Editor] Plugin render error:', e);
         }
       });
@@ -1880,6 +1887,7 @@
   });
 
   function markUnsaved() {
+    bumpRevision(activeTabId);
     isUnsaved = true;
     if (statusSave) {
       statusSave.textContent = '未保存 *';
@@ -1896,16 +1904,31 @@
     scheduleAutosave();
   }
 
-  function markSaved(savedTabId) {
+  // 每个 tab 的编辑修订号：保存开始时记录，完成时比对。
+  // 只比 tabId 无法识别「同一 tab 在 await 期间又改了」——旧写入完成会把
+  // 新编辑误标为已保存，closeTab 于是跳过确认导致丢失。
+  const tabRevisions = new Map();
+  function bumpRevision(tabId) {
+    if (!tabId) return;
+    tabRevisions.set(tabId, (tabRevisions.get(tabId) || 0) + 1);
+  }
+
+  function markSaved(savedTabId, savedRevision) {
     // 异步保存完成时若已切到其他 tab：只清发起保存那个 tab 的未保存标记，
     // 不得触碰当前 tab 的 isUnsaved/状态栏（否则当前 tab 未保存的编辑会被
     // closeTab 误判「已保存」而跳过确认，导致丢失）
     if (savedTabId !== undefined && savedTabId !== activeTabId) {
       const t0 = getTabById(savedTabId);
-      if (t0 && t0.unsaved) {
+      const revChanged = savedRevision !== undefined &&
+        (tabRevisions.get(savedTabId) || 0) !== savedRevision;
+      if (t0 && t0.unsaved && !revChanged) {
         t0.unsaved = false;
         renderTabs();
       }
+      return;
+    }
+    // 同 tab：保存期间又产生了新编辑 → 保留未保存状态，等下一轮保存
+    if (savedRevision !== undefined && (tabRevisions.get(savedTabId) || 0) !== savedRevision) {
       return;
     }
     isUnsaved = false;
@@ -1960,15 +1983,16 @@
     // await 期间用户可能切 tab：捕获发起保存时的 tabId，
     // 完成后只清该 tab 的标记（见 markSaved 的防串扰逻辑）
     const savedTabId = activeTabId;
+    const savedRevision = tabRevisions.get(savedTabId) || 0;
     const data = serializeNotebook();
     if (useIndexedDB) {
       try {
         await storage.saveNotebook(data);
-        markSaved(savedTabId);
+        markSaved(savedTabId, savedRevision);
       } catch (e) {
         // IndexedDB 写入失败，回退 localStorage
         if (autosaveLocalStorage(data)) {
-          markSaved(savedTabId);
+          markSaved(savedTabId, savedRevision);
           showToast(editorT('editor.idbFallback', 'IndexedDB 写入失败，已回退到 localStorage'));
         } else {
           if (statusSave) {
@@ -1980,7 +2004,7 @@
       }
     } else {
       if (autosaveLocalStorage(data)) {
-        markSaved();
+        markSaved(savedTabId, savedRevision);
       } else {
         if (statusSave) {
           statusSave.textContent = '保存失败';
@@ -2026,6 +2050,16 @@
     return cellList.length > 0;
   }
 
+  // 启动恢复会销毁初始 cell，所以「用户是否已在初始 cell 输入」必须在
+  // 恢复前判定：恢复之后再拿 cells.includes(bootCell) 恒为 false，
+  // 那个检查等于没做。
+  let bootCellsRef = null;
+  function userTypedInBootCells() {
+    if (!bootCellsRef) return false;
+    return bootCellsRef.some(c => c && c.isConnected !== false &&
+      cells.includes(c) && (c.textarea.value || '').trim());
+  }
+
   async function loadAutosave() {
     // 多标签页模式：从 meta 读取 tab 列表，逐个加载笔记本
     if (useIndexedDB) {
@@ -2051,7 +2085,8 @@
           NOTEBOOK_ID = legacyId;
           renderTabs();
           if (legacyData) {
-            restoreFromData(legacyData);
+            if (userTypedInBootCells()) return false;
+            await restoreFromData(legacyData);
             return true;
           }
           return false;
@@ -2081,12 +2116,14 @@
           try {
             const idbData = await storage.loadNotebook(target);
             if (!idbData || (backup.saved || '') >= (idbData.saved || '')) {
+              if (userTypedInBootCells()) return false;
               activeTabId = null;
               await activateTab(target, { initData: backup });
               return true;
             }
           } catch (e) { /* IDB 读取失败：用快照兜底 */ }
         }
+        if (userTypedInBootCells()) return false;
         activeTabId = null; // 强制 activateTab 走完整加载流程
         await activateTab(target);
         return true;
@@ -2102,7 +2139,8 @@
             activeTabId = 'autosave';
             NOTEBOOK_ID = 'autosave';
             renderTabs();
-            restoreFromData(data);
+            if (userTypedInBootCells()) return false;
+            await restoreFromData(data);
             return true;
           }
         } catch (e2) {}
@@ -2118,7 +2156,8 @@
       activeTabId = 'autosave';
       NOTEBOOK_ID = 'autosave';
       renderTabs();
-      restoreFromData(data);
+      if (userTypedInBootCells()) return false;
+      await restoreFromData(data);
       return true;
     } catch (e) {
       showToast(editorT('editor.restoreFailed', '恢复自动保存失败：数据可能已损坏'));
@@ -2269,10 +2308,11 @@
   });
 
   const bootCells = cells.slice(); // 启动时的初始 cell 引用
+  bootCellsRef = bootCells;       // 供 loadAutosave 在恢复前判定是否已被输入
   loadAutosave().then(restored => {
-    // IDB 读取窗口内用户已在初始 cell 输入：跳过自动恢复，避免无提示覆盖
-    const userTypedFirst = bootCells.some(c => cells.includes(c) && c.textarea.value.trim());
-    if (restored && userTypedFirst) {
+    // 判定已下沉到 loadAutosave 的每个恢复分支之前（恢复后再查必然为 false）
+    const userTypedFirst = bootCells.some(c => c && (c.textarea.value || '').trim());
+    if (!restored && userTypedFirst) {
       showToast(editorT('editor.restoreSkipped', '检测到上次会话，但已有输入，未自动恢复'));
       return;
     }

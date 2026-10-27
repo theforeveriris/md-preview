@@ -183,8 +183,12 @@ async function run() {
 
   console.log('=== 多标签页：autosave 同步 tab 状态 ===');
   assert('markUnsaved 同步 tab.unsaved', /getTabById\(activeTabId\)[\s\S]*?t\.unsaved = true/.test(editorCode));
-  // markSaved(savedTabId)：异步保存完成时只清发起 tab 的未保存标记（防切 tab 串扰）
-  assert('markSaved 同步 tab.unsaved（含异 tab 归属防串扰）', /function markSaved\(savedTabId\)[\s\S]*?t0\.unsaved = false;[\s\S]*?t\.unsaved = false;/.test(editorCode));
+  // markSaved(savedTabId, savedRevision)：异步保存完成时只清发起 tab 的标记；等待期间又有新编辑（修订号变化）则保留未保存状态
+  assert('markSaved 同步 tab.unsaved（异 tab 归属 + 修订号防误清）',
+    /function markSaved\(savedTabId, savedRevision\)/.test(editorCode) &&
+    /t0\.unsaved = false;/.test(editorCode) &&
+    /t\.unsaved = false;/.test(editorCode) &&
+    /tabRevisions\.get\(savedTabId\)/.test(editorCode));
 
   console.log('=== 多标签页：beforeunload 持久化 meta ===');
   assert('beforeunload 保存 tabOrder', /storage\.setMeta\('tabOrder'/.test(editorCode));

@@ -105,6 +105,8 @@
       setupHeadingNavigation();
       notifyDocRendered(path);
     } catch (error) {
+      // 旧请求失败时也已过期：不能把用户刚打开的新文档替换成错误页
+      if (seq !== loadSeq) return;
       console.error('Error loading markdown:', error);
       dom.markdownContent.innerHTML = `<div class="welcome-state"><p class="welcome-text">${t('md.loadFailed', '无法加载文件')}</p></div>`;
       setTimeout(() => window.MarkdownPreview.ui.updateProgress(0), 300);
@@ -1039,7 +1041,11 @@
     // opts.sanitize = true 时先加载 DOMPurify 再渲染（快照等 URL 可控来源必须传），
     // 返回 Promise，注入 DOM 后 resolve —— 调用方的后续 DOM 操作须 await。
     renderVirtualDoc: function(content, fileName, opts = {}) {
+      // 净化是异步的（首次要加载 DOMPurify）：等待期间用户可能已导航到别的
+      // 文档，凭令牌确认仍是当前请求再写 DOM
+      const seq = ++loadSeq;
       const doRender = (sanitizeFn) => {
+        if (sanitizeFn && seq !== loadSeq) return;
         resetReadingProgress();
         state.localDoc = { name: fileName || 'document.md', content: content, virtual: true };
         if (fileName) {
@@ -1060,6 +1066,7 @@
     // 本地文件来源不可信（可能是他人分享的 .md），渲染产物默认经 DOMPurify
     // 净化；返回 Promise，注入 DOM 后 resolve。
     renderMarkdownDirect: function(content, fileName) {
+      const seq = ++loadSeq;
       // 清空 URL hash，避免刷新后仍尝试加载原路径
       if (window.location.hash) {
         history.replaceState(null, '', window.location.pathname + window.location.search);
@@ -1075,7 +1082,10 @@
         if (header) header.style.display = 'flex';
       }
       return mdRender.ensurePurify()
-        .then(() => renderMarkdown(content, '', { sanitize: (html) => DOMPurify.sanitize(html) }))
+        .then(() => {
+          if (seq !== loadSeq) return; // 净化期间已导航，放弃写入
+          renderMarkdown(content, '', { sanitize: (html) => DOMPurify.sanitize(html) });
+        })
         .catch(e => {
           console.error('[Markdown] sanitize failed, refusing to render untrusted content:', e);
         });

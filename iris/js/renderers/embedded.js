@@ -153,26 +153,35 @@
     });
   }
 
+  const TWITTER_HOSTS = ['twitter.com', 'www.twitter.com', 'mobile.twitter.com', 'x.com', 'www.x.com'];
+
   function renderTwitterEmbed(service, url, originalMatch) {
     try {
       let embedCode = '';
 
-      // URL 可能含引号/尖括号（非受信内容），拼进 HTML 前一律转义
-      const safeUrl = escAttr(url);
+      // 先按 URL 语义校验协议与主机：escAttr 只转义 HTML 字符，
+      // 挡不住 `javascript:...//twitter.com/x/status/1` 这类「子串能匹配、
+      // 协议却是脚本」的链接（净化发生在嵌入渲染之前，清不掉这个新链接）。
+      const parsed = safeHttpUrl(url, TWITTER_HOSTS);
+      if (!parsed) return originalMatch;
 
-      const tweetMatch = url.match(/twitter\.com\/\w+\/status\/(\d+)/);
-      if (tweetMatch) {
-        embedCode = '<blockquote class="twitter-tweet"><a href="' + safeUrl + '">Loading tweet...</a></blockquote>';
-      } else if (url.includes('twitter.com') && (url.includes('/likes') || url.includes('/with_replies') || url.includes('/media'))) {
-        embedCode = '<a class="twitter-timeline" href="' + safeUrl + '">Loading Twitter timeline...</a>';
-      } else if (url.includes('twitter.com')) {
-        const handle = url.match(/twitter\.com\/([A-Za-z0-9_]{1,15})/)?.[1];
-        if (handle && !url.includes('/status/')) {
-          const safeHandle = escAttr(handle);
-          embedCode = '<a class="twitter-timeline" href="https://twitter.com/' + safeHandle + '?ref_src=twsrc%5Etfw">Tweets by @' + safeHandle + '</a>';
+      // 归一化后的 URL 再转义（属性值仍要转义，双重防护）
+      const safeUrl = escAttr(parsed.href);
+      const pathname = parsed.pathname;
+      const host = parsed.hostname;
+
+      if (host === 'twitter.com' || host === 'x.com' || host === 'www.twitter.com' || host === 'www.x.com') {
+        if (/^\/[A-Za-z0-9_]{1,15}\/status\/\d+/.test(pathname)) {
+          embedCode = '<blockquote class="twitter-tweet"><a href="' + safeUrl + '">Loading tweet...</a></blockquote>';
+        } else if (/\/(likes|with_replies|media)\b/.test(pathname)) {
+          embedCode = '<a class="twitter-timeline" href="' + safeUrl + '">Loading Twitter timeline...</a>';
+        } else {
+          const handle = pathname.match(/^\/([A-Za-z0-9_]{1,15})\/?$/)?.[1];
+          if (handle) {
+            const safeHandle = escAttr(handle);
+            embedCode = '<a class="twitter-timeline" href="https://twitter.com/' + safeHandle + '?ref_src=twsrc%5Etfw">Tweets by @' + safeHandle + '</a>';
+          }
         }
-      } else if (url.includes('x.com')) {
-        embedCode = '<blockquote class="twitter-tweet"><a href="' + safeUrl + '">Loading tweet...</a></blockquote>';
       }
       
       if (embedCode) {

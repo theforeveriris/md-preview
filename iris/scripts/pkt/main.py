@@ -50,7 +50,7 @@ def detect_pt_version(decrypted_data: bytes) -> str:
     try:
         text = decrypted_data.decode('utf-8', errors='ignore')
         version_values = re.findall(
-            r'<(?:VERSION|VERSIONNUMBER|APP_VERSION|VERSIONSTR)[^>]*>([^<]+)<',
+            r'<(?:VERSION|VERSIONNUMBER|APP_VERSION|VERSIONSTR)\b[^>]*>([^<]+)<',
             text, flags=re.IGNORECASE)
         for value in version_values:
             m = re.search(r'(\d+)\.(\d+)', value)

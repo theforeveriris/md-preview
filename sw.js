@@ -105,8 +105,11 @@ self.addEventListener('install', event => {
     precache()
       .then(() => self.skipWaiting())
       .catch(err => {
-        // 预缓存失败：留在旧版本（不 skipWaiting），旧 SW 继续服务
-        console.error('[SW] Precache failed, staying on old version:', err);
+        // 预缓存失败：让 install 真正失败（重新抛出），旧 SW 继续服务。
+        // 只「不调用 skipWaiting」不够：旧页面全部关闭后浏览器仍会激活新 SW，
+        // 并执行 activate 的旧缓存清理，用户可能失去原有离线内容。
+        console.error('[SW] Precache failed, install aborted, staying on old version:', err);
+        throw err;
       })
   );
 });

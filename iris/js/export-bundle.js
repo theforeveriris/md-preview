@@ -158,9 +158,16 @@ figure { margin: 1em 0; text-align: center; }`;
         const src = m[1];
         if (/^(https?:|data:|#|\/)/i.test(src)) continue;
         // 相对路径解析复用 split-view.resolvePath（与 markdown.js interceptLinks
-        // 同语义；此前是第三份内联副本）
-        const sitePath = decodeURIComponent(
-          window.MarkdownPreview.splitView.resolvePath(chap.path, src));
+        // 同语义；此前是第三份内联副本）。
+        // 解码失败（如 images/100%.png 这类非法百分号转义）只影响这一张图，
+        // 不能让异常冒泡导致整本 EPUB 导出失败——保留原路径交给后续跳过逻辑。
+        const resolved = window.MarkdownPreview.splitView.resolvePath(chap.path, src);
+        let sitePath;
+        try {
+          sitePath = decodeURIComponent(resolved);
+        } catch (e) {
+          sitePath = resolved;
+        }
         if (!wanted.has(sitePath)) wanted.set(sitePath, []);
         wanted.get(sitePath).push({ chap, src });
       }

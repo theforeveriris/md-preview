@@ -55,11 +55,17 @@ function extractPreview(content) {
   return text.substring(0, 200);
 }
 
-// 目录遍历统一走 lib/docs.js（rel 相对仓库根：docs/xxx.md）
+// 目录遍历统一走 lib/docs.js。relBase 传仓库根：rel 必须带 docs/ 前缀，
+// 否则前端 search.js 用 result.path 调 loadMarkdownFile 会 404
+//（relBase 默认取遍历起点 docs/，rel 就丢了前缀——曾因此搜索点击全部失效）。
 const { collectMarkdownFiles } = require('./lib/docs.js');
+const REPO_ROOT = path.resolve(__dirname, '..', '..');
 
 function collectFiles(dir) {
-  return collectMarkdownFiles(dir, { skipRel: ['zw'] }).map(f => ({
+  return collectMarkdownFiles(dir, {
+    relBase: REPO_ROOT,
+    skipRel: ['docs/zw']
+  }).map(f => ({
     path: f.rel,
     fullPath: f.path
   }));

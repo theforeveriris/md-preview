@@ -2,8 +2,13 @@ name: 'Commit with rebase retry'
 description: '提交工作区改动并带 rebase 重试推送（多个回写工作流并发推送 main 时的竞态统一处理）'
 inputs:
   message:
-    description: 'commit message'
+    description: 'commit message（提交标题）'
     required: true
+  body:
+    description: '提交正文（可选，等价于第二个 -m；多段用 
+ 分隔）'
+    required: false
+    default: ''
   files:
     description: '要暂存的文件（git add 参数；留空则暂存全部改动，含中文路径场景）'
     required: false
@@ -36,7 +41,11 @@ runs:
           echo "无变化，跳过提交"
           exit 0
         fi
-        git commit -m "${{ inputs.message }}"
+        if [ -n "${{ inputs.body }}" ]; then
+          git commit -m "${{ inputs.message }}" -m "${{ inputs.body }}"
+        else
+          git commit -m "${{ inputs.message }}"
+        fi
         # 推送重试：被 non-fast-forward 拒绝时先 rebase 远端再推
         #（此前 build-pkt/build-pptx 连重试都没有，并发下直接失败）
         for i in 1 2 3 4 5; do
