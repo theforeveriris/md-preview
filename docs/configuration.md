@@ -73,6 +73,65 @@ PlantUML 图表默认依次尝试官方服务器与 Kroki 公共服务，全部�
 | `type` | `plantuml`（PlantUML 自定义编码）或 `kroki`（标准 base64url 编码） |
 | `base` | 服务基础地址，渲染时自动拼接 `/svg/<编码>` |
 
+### 首页（homepage）
+
+不配置时打开站点显示「选择一个文件开始阅读」空状态；配置 `homepage` 后，打开站点（或点面包屑回首页）会先进入指定的首页形态：
+
+```jsonc
+{
+  // 形态一：直接指定一篇文档作为首页
+  "homepage": "docs/getting-started.md",
+
+  // 形态二：门户页（hero 区 + 精选文档卡片网格 + 快捷链接）
+  "homepage": {
+    "mode": "portal",
+    "title": "我的知识库",
+    "subtitle": "网络 / 运维 / 随手记",
+    "featured": ["docs/getting-started.md", "docs/show.md", "docs/roadmap.md"],
+    "links": [
+      { "text": "GitHub 仓库", "href": "https://github.com/your-name/your-repo" },
+      { "text": "快速上手", "href": "docs/getting-started.md" }
+    ]
+  }
+}
+```
+
+| 字段 | 说明 |
+|------|------|
+| `mode` | 门户页固定为 `portal` |
+| `title` / `subtitle` | Hero 区标题与副标题（缺省取 `repo`） |
+| `featured` | 精选文档路径列表，渲染为卡片网格（取自文件树的标题/词数/标签） |
+| `links` | Hero 下方的快捷链接按钮；站内路径不带 `#/` 前缀，完整 URL 会被识别为外链 |
+
+### 站内虚拟路由
+
+除 `#/文档路径.md` 外，站点内置以下虚拟页面，可直接访问或从命令面板（`Ctrl/⌘+K`）进入：
+
+| 路由 | 说明 |
+|------|------|
+| `#/blog` | 博客流视图：全站文档按更新时间倒序，`#/blog?p=2` 翻页 |
+| `#/history` | 浏览足迹：最近 50 次阅读记录 |
+| `#/tags` | 标签云：字号按文档数缩放，点击进入对应标签聚合页 |
+| `#/index` | 全站目录：按目录分组的完整文档列表（打印友好） |
+| `#/orphan` | 孤立文档检测：无反链 / 无标签 / 超短 / 长期未更新四类清单 |
+| `#/graph` | 文档图谱 |
+
+### 非 GitHub 托管（provider）
+
+默认对接 GitHub API（文件树回退、git 历史、编辑此页链接）。托管在 Gitee / GitLab 时指定 `provider`：
+
+```jsonc
+{
+  "provider": "gitee",          // github（默认）| gitee | gitlab
+  "branch": "main",
+  // 仅 gitlab 需要：
+  "gitlabUrl": "https://gitlab.com",   // 自托管实例改这里
+  "projectId": "group%2Frepo"          // 数字 ID 或 URL 编码的完整路径
+}
+```
+
+私有仓库可在浏览器 `sessionStorage` 写 `md-preview-gitee-token` / `md-preview-gitlab-token` / `md-preview-github-token` 提高限额（标签页生命周期内有效）。
+
 ### 配置加载顺序
 
 1. 内置默认配置
