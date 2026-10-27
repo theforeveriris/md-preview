@@ -8,6 +8,19 @@
         "type": "folder",
         "children": [
           {
+            "name": "acl-route-examples.md",
+            "type": "file",
+            "path": "docs/examples/acl-route-examples.md",
+            "wordCount": 38,
+            "created": 0,
+            "modified": 0,
+            "title": "ACL 与路由表分析示例",
+            "tags": [
+              "网络",
+              "工具"
+            ]
+          },
+          {
             "name": "apexcharts-examples.md",
             "type": "file",
             "path": "docs/examples/apexcharts-examples.md",
@@ -824,7 +837,7 @@
             ]
           }
         ],
-        "wordCount": 12792,
+        "wordCount": 12830,
         "created": 1779157467,
         "modified": 1793127296
       },
@@ -1096,7 +1109,7 @@
         ]
       }
     ],
-    "wordCount": 24869,
+    "wordCount": 24907,
     "created": 1779157467,
     "modified": 1793127296
   },

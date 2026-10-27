@@ -756,3 +756,72 @@ pre.code-block code { position: relative; z-index: 1; }
   z-index: 1;
 }
 .contributor-chip:hover { z-index: 2; }
+
+/* ============== ACL 分析块（renderers/acl.js） ============== */
+.acl-widget {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  margin: 14px 0;
+  background: var(--color-surface);
+  overflow: hidden;
+}
+.acl-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px; border-bottom: 1px solid var(--color-border);
+}
+.acl-flavor {
+  font-size: 11px; font-weight: 700; letter-spacing: 1px; padding: 2px 8px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-accent-purple) 14%, transparent);
+  color: var(--color-accent-purple-deep, var(--color-accent-purple));
+}
+.acl-count { font-size: 12px; color: var(--color-text-muted); }
+.acl-table-wrap { overflow-x: auto; }
+.acl-widget table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.acl-widget th, .acl-widget td { border-bottom: 1px solid var(--color-border); padding: 5px 12px; text-align: left; white-space: nowrap; }
+.acl-widget th { color: var(--color-text-muted); font-weight: 600; font-size: 11.5px; }
+.acl-seq { font-family: var(--font-mono, monospace); color: var(--color-text-muted); }
+.acl-action { font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 999px; }
+.acl-permit { background: rgba(39, 174, 96, 0.14); color: #1e8449; }
+.acl-deny { background: rgba(231, 76, 60, 0.12); color: #c0392b; }
+.acl-hit { background: color-mix(in srgb, var(--color-accent-purple) 12%, transparent) !important; }
+.acl-test { padding: 12px 16px 14px; border-top: 1px dashed var(--color-border); }
+.acl-test-title { font-size: 12px; font-weight: 600; color: var(--color-text-muted); margin-bottom: 8px; }
+.acl-test-form { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.acl-test-form select, .acl-test-form input {
+  padding: 5px 9px; border: 1px solid var(--color-border); border-radius: 7px;
+  background: var(--color-bg); color: var(--color-text); font-size: 12.5px; min-width: 0;
+}
+.acl-test-form input { width: 150px; font-family: var(--font-mono, monospace); }
+.acl-test-result { margin-top: 10px; padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+.acl-result-error { background: rgba(243, 156, 18, 0.12); color: #b9770e; }
+.acl-result-permit { background: rgba(39, 174, 96, 0.1); color: #1e8449; }
+.acl-result-deny { background: rgba(231, 76, 60, 0.1); color: #c0392b; }
+
+/* ============== 路由表分析块（renderers/route-table.js） ============== */
+.rt-widget {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  margin: 14px 0;
+  background: var(--color-surface);
+  overflow: hidden;
+}
+.rt-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 10px 16px; border-bottom: 1px solid var(--color-border); }
+.rt-title { font-weight: 600; font-size: 13px; }
+.rt-dist { display: flex; flex-wrap: wrap; gap: 6px; }
+.rt-dist-chip {
+  font-size: 11px; padding: 2px 9px; border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent-purple) 9%, transparent);
+  color: var(--color-accent-purple-deep, var(--color-accent-purple));
+}
+.rt-dist-chip strong { margin-left: 3px; }
+.rt-table-wrap { overflow-x: auto; }
+.rt-widget table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.rt-widget th, .rt-widget td { border-bottom: 1px solid var(--color-border); padding: 5px 12px; text-align: left; white-space: nowrap; user-select: none; }
+.rt-widget tbody tr:hover { background: color-mix(in srgb, var(--color-accent-purple) 6%, transparent); }
+.rt-widget tbody td, .rt-widget tbody code { user-select: text; }
+.rt-sorted-asc::after { content: ' ↑'; color: var(--color-accent-purple-deep, var(--color-accent-purple)); }
+.rt-sorted-desc::after { content: ' ↓'; color: var(--color-accent-purple-deep, var(--color-accent-purple)); }
+.rt-proto { font-weight: 600; }
+.rt-direct { color: var(--color-text-muted); }
+.rt-widget.p-c .rt-proto { color: #2980b9; }
