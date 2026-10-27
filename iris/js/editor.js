@@ -775,6 +775,10 @@
     });
   });
 
+  // 菜单动作注册表（模块化功能经 ctx.registerMenuAction 挂入）
+  const menuActions = {};
+  function registerMenuAction(name, fn) { menuActions[name] = fn; }
+
   // 下载 / 动态插入按钮点击
   document.querySelectorAll('.dropdown-item[data-action]').forEach(item => {
     item.addEventListener('click', (e) => {
@@ -789,6 +793,7 @@
       else if (action === 'import-mdnb') triggerImport('import-mdnb');
       else if (action === 'import-md-cells') triggerImport('import-md-cells');
       else if (action === 'import-md-current') triggerImport('import-md-current');
+      else if (menuActions[action]) menuActions[action]();
       else if (action.startsWith('insert-')) handleDynamicInsert(action);
       closeAllDropdowns();
     });
@@ -2005,6 +2010,7 @@
       try {
         await storage.saveNotebook(data);
         markSaved(savedTabId, savedRevision);
+        if (versionSnapshots) versionSnapshots.maybeAutoSnapshot();
       } catch (e) {
         // IndexedDB 写入失败，回退 localStorage
         if (autosaveLocalStorage(data)) {
@@ -2021,6 +2027,7 @@
     } else {
       if (autosaveLocalStorage(data)) {
         markSaved(savedTabId, savedRevision);
+        if (versionSnapshots) versionSnapshots.maybeAutoSnapshot();
       } else {
         if (statusSave) {
           statusSave.textContent = '保存失败';
@@ -2333,6 +2340,21 @@
     imageUploadPopover,
     setActiveCellId: (id) => { activeCellId = id; }
   });
+
+  // 版本快照（防手滑删稿的安全网：手动 + 30 分钟定时，可 diff 与回滚）
+  const versionSnapshotsMod = window.MarkdownPreview.editorModules &&
+    window.MarkdownPreview.editorModules.versionSnapshots;
+  let versionSnapshots = null;
+  if (versionSnapshotsMod) {
+    versionSnapshots = versionSnapshotsMod.init({
+      editorT,
+      showToast,
+      getNotebookId: () => NOTEBOOK_ID,
+      getCells: () => cells,
+      importCells: (text) => importMdCells(text),
+      registerMenuAction
+    });
+  }
 
   const bootCells = cells.slice(); // 启动时的初始 cell 引用
   bootCellsRef = bootCells;       // 供 loadAutosave 在恢复前判定是否已被输入

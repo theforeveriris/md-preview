@@ -15,9 +15,10 @@
   window.MarkdownPreview = window.MarkdownPreview || {};
 
   const DB_NAME = 'mdnb-db';
-  const DB_VERSION = 1;
+  const DB_VERSION = 2; // v2: 新增 versions store（笔记本版本快照）
   const STORE_NOTEBOOKS = 'notebooks';
   const STORE_META = 'meta';
+  const STORE_VERSIONS = 'versions'; // 笔记本版本快照（自增 id）
   const AUTOSAVE_KEY = 'autosave'; // 单笔记本模式下的默认 key
 
   let _db = null;
@@ -39,6 +40,10 @@
         }
         if (!db.objectStoreNames.contains(STORE_META)) {
           db.createObjectStore(STORE_META);
+        }
+        if (!db.objectStoreNames.contains(STORE_VERSIONS)) {
+          const v = db.createObjectStore(STORE_VERSIONS, { keyPath: 'id', autoIncrement: true });
+          v.createIndex('by_notebook', 'notebookId', { unique: false });
         }
       };
       req.onsuccess = (e) => {
@@ -110,6 +115,30 @@
     return await reqToPromise(store.getAll());
   }
 
+  // ============== 版本快照（笔记本） ==============
+
+  async function saveVersionSnapshot(entry) {
+    const store = await tx(STORE_VERSIONS, 'readwrite');
+    await reqToPromise(store.add(entry));
+  }
+
+  async function listVersionSnapshots(notebookId) {
+    const db = await openDB();
+    const txv = db.transaction(STORE_VERSIONS, 'readonly');
+    const index = txv.objectStore(STORE_VERSIONS).index('by_notebook');
+    return await reqToPromise(index.getAll(notebookId));
+  }
+
+  async function getVersionSnapshot(id) {
+    const store = await tx(STORE_VERSIONS, 'readonly');
+    return await reqToPromise(store.get(id));
+  }
+
+  async function deleteVersionSnapshot(id) {
+    const store = await tx(STORE_VERSIONS, 'readwrite');
+    await reqToPromise(store.delete(id));
+  }
+
   // ============== 元信息 ==============
 
   async function getMeta(key) {
@@ -169,5 +198,9 @@
     setMeta,
     migrateFromLocalStorage,
     isAvailable,
+    saveVersionSnapshot,
+    listVersionSnapshots,
+    getVersionSnapshot,
+    deleteVersionSnapshot,
   };
 })();
