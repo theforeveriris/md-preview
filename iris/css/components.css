@@ -486,3 +486,46 @@
 .unread-pill:hover { background: color-mix(in srgb, var(--color-accent-purple) 18%, transparent); }
 .unread-pill[hidden] { display: none; }
 .unread-pill-text { font-weight: 500; }
+
+/* ============== ipcalc 子网计算块（renderers/ipcalc.js） ============== */
+.ipcalc-widget {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 14px 0;
+  background: var(--color-surface);
+  overflow-x: auto;
+}
+.ipcalc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.ipcalc-cidr {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: var(--color-accent-purple-deep, var(--color-accent-purple));
+  font-family: var(--font-mono, monospace);
+}
+.ipcalc-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent-purple) 14%, transparent);
+  color: var(--color-accent-purple-deep, var(--color-accent-purple));
+}
+.ipcalc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 6px 20px;
+}
+.ipcalc-field { display: flex; align-items: baseline; gap: 10px; padding: 3px 0; }
+.ipcalc-field-label { flex: 0 0 auto; color: var(--color-text-muted); font-size: 12.5px; }
+.ipcalc-field-value { font-size: 13px; word-break: break-all; }
+.ipcalc-divisions { margin-top: 12px; }
+.ipcalc-divisions-title { font-size: 12.5px; font-weight: 600; color: var(--color-text-muted); margin-bottom: 6px; }
+.ipcalc-divisions table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.ipcalc-divisions th, .ipcalc-divisions td {
+  border: 1px solid var(--color-border);
+  padding: 4px 8px;
+  text-align: left;
+  white-space: nowrap;
+}
+.ipcalc-subnets code { margin-right: 6px; }
+.ipcalc-more { color: var(--color-text-muted); font-size: 11px; }
