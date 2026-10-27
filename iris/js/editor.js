@@ -377,6 +377,44 @@
       setTimeout(hideAutocomplete, 150);
     });
 
+    // 拖拽排序：手柄是 cell-number 徽标（编辑区文本拖拽不受影响）
+    const dragHandle = cellDiv.querySelector('.cell-number');
+    if (dragHandle) {
+      dragHandle.draggable = true;
+      dragHandle.title = '拖动调整 Cell 顺序';
+      dragHandle.style.cursor = 'grab';
+      dragHandle.addEventListener('dragstart', (e) => {
+        draggingCellId = id;
+        e.dataTransfer.effectAllowed = 'move';
+        try { e.dataTransfer.setData('text/plain', String(id)); } catch (err) { /* ignore */ }
+        requestAnimationFrame(() => cellDiv.classList.add('cell-dragging'));
+      });
+      dragHandle.addEventListener('dragend', () => {
+        draggingCellId = null;
+        cellDiv.classList.remove('cell-dragging');
+        document.querySelectorAll('.cell-drag-over-top, .cell-drag-over-bottom')
+          .forEach(el => el.classList.remove('cell-drag-over-top', 'cell-drag-over-bottom'));
+      });
+    }
+    cellDiv.addEventListener('dragover', (e) => {
+      if (draggingCellId == null || draggingCellId === id) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      const rect = cellDiv.getBoundingClientRect();
+      const before = e.clientY < rect.top + rect.height / 2;
+      cellDiv.classList.toggle('cell-drag-over-top', before);
+      cellDiv.classList.toggle('cell-drag-over-bottom', !before);
+    });
+    cellDiv.addEventListener('dragleave', () => {
+      cellDiv.classList.remove('cell-drag-over-top', 'cell-drag-over-bottom');
+    });
+    cellDiv.addEventListener('drop', (e) => {
+      if (draggingCellId == null || draggingCellId === id) return;
+      e.preventDefault();
+      const rect = cellDiv.getBoundingClientRect();
+      moveCellOnto(draggingCellId, id, e.clientY < rect.top + rect.height / 2);
+    });
+
     div.querySelector('.cell-run-btn').addEventListener('click', () => runCell(id));
     div.querySelector('.cell-split-btn').addEventListener('click', () => openDualPane(id));
     div.querySelector('.cell-delete-btn').addEventListener('click', () => deleteCell(id));
@@ -591,6 +629,25 @@
 
     renumberCells();
     cell.textarea.focus();
+  }
+
+  // ============== Cell 拖拽排序（RD-1） ==============
+  // 拖拽中单元格 id（DataTransfer 在 dragover 阶段不可读，用模块级变量接力）
+  let draggingCellId = null;
+
+  function moveCellOnto(dragId, targetId, before) {
+    const dragCell = getCell(dragId);
+    const targetCell = getCell(targetId);
+    if (!dragCell || !targetCell || dragId === targetId) return;
+    if (before) targetCell.div.parentNode.insertBefore(dragCell.div, targetCell.div);
+    else targetCell.div.after(dragCell.div);
+    const fromIdx = cells.indexOf(dragCell);
+    cells.splice(fromIdx, 1);
+    const targetIdx = cells.indexOf(targetCell);
+    cells.splice(before ? targetIdx : targetIdx + 1, 0, dragCell);
+    renumberCells();
+    markUnsaved();
+    updateStatusbar();
   }
 
   function rebuildCellDOMOrder() {

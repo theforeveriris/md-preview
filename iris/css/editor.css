@@ -1752,3 +1752,8 @@ body.editor-dark-mode .cell {
   outline: none;
 }
 .tbl-editor-grid input:focus { background: color-mix(in srgb, var(--nb-accent, #8b5cf6) 8%, transparent); }
+
+/* ============== Cell 拖拽排序（RD-1） ============== */
+.cell-dragging { opacity: 0.4; }
+.cell-drag-over-top { box-shadow: inset 0 3px 0 var(--nb-accent, #8b5cf6); }
+.cell-drag-over-bottom { box-shadow: inset 0 -3px 0 var(--nb-accent, #8b5cf6); }
