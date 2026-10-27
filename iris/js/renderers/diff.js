@@ -35,8 +35,10 @@
       if (!classList || !classList.includes('language-diff')) continue;
       
       const diffCode = codeElement.textContent.trim();
+      // container 必须在 try 之前创建：catch 里要往里放错误框，
+      // 若在 try 内声明，创建前的异常会让 catch 自己抛 ReferenceError
+      const container = document.createElement('div');
       try {
-        const container = document.createElement('div');
         container.className = 'diff-container';
         container.style.margin = '1.5em 0';
         

@@ -36,7 +36,12 @@
   // 避免每次滚动都全文档 querySelectorAll
   let cachedHeadings = [];
   window.MarkdownPreview.uiRefreshHeadings = function() {
-    cachedHeadings = Array.from(document.querySelectorAll('.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6'));
+    // 限定主文档容器：分栏对照窗格与编辑器预览同样带 .markdown-body，
+    // 全局查询会把它们的标题也算进来（滚动高亮会错位）
+    const root = dom.markdownContent;
+    cachedHeadings = root
+      ? Array.from(root.querySelectorAll('h1, h2, h3, h4, h5, h6'))
+      : [];
   };
 
   function updateActiveHeading() {

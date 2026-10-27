@@ -163,8 +163,10 @@ function collectFiles(dir, basePath = '') {
   }
 
   for (const item of items) {
-    // docs/zw/ 为中文排版 lint 样例，不进 RSS/sitemap
-    if (item.name === 'zw' && dir.endsWith('docs')) continue;
+    // docs/zw/ 为中文排版 lint 样例，不进 RSS/sitemap。
+    // 只跳过 DOCS_DIR 直属的 zw：用规范化绝对路径比较，
+    // dir.endsWith('docs') 会误伤 .../mydocs 这类目录
+    if (item.name === 'zw' && path.resolve(dir) === path.resolve(DOCS_DIR)) continue;
     const fullPath = path.join(dir, item.name);
     const relPath = basePath ? `${basePath}/${item.name}` : item.name;
     if (item.isDirectory()) {

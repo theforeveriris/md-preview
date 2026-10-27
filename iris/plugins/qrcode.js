@@ -44,13 +44,15 @@ export default {
 
     let data = code.trim();
     let size = this._config.defaultSize;
+    // 纠错等级按块解析：写回 this._config 会让一个块的设置污染同文档后续块
+    let eclLocal = this._config.ecl || 'M';
 
     // 支持 JSON 配置模式
     try {
       const parsed = JSON.parse(code);
       if (parsed.data) data = parsed.data;
       if (parsed.size) size = parsed.size;
-      if (parsed.ecl) this._config.ecl = parsed.ecl;
+      if (parsed.ecl) eclLocal = parsed.ecl;
     } catch (e) {
       // Not JSON, use as raw text
     }
@@ -78,7 +80,7 @@ export default {
         await window.MarkdownPreview.loadScript('iris/js/qr-encoder.js');
       }
       const enc = window.MarkdownPreview.QREncoder;
-      const svg = enc.toSVG(data, { ecl: this._config.ecl, margin: 2 });
+      const svg = enc.toSVG(data, { ecl: eclLocal, margin: 4 });
       if (!svg) throw new Error('too-long');
       qrContainer.innerHTML = svg;
       const svgEl = qrContainer.firstElementChild;
@@ -90,7 +92,7 @@ export default {
       const errBox = document.createElement('div');
       errBox.style.cssText = 'padding:12px 16px;border:1px solid #ff6b6b;border-radius:8px;background:#fff0f0;color:#cc0000;font-size:14px';
       if (err && err.message === 'too-long') {
-        errBox.textContent = '二维码内容过长（上限约 ' + window.MarkdownPreview.QREncoder.capacity(this._config.ecl) + ' 字节），请缩短内容或降低纠错等级（L）';
+        errBox.textContent = '二维码内容过长（上限约 ' + window.MarkdownPreview.QREncoder.capacity(eclLocal) + ' 字节），请缩短内容或降低纠错等级（L）';
       } else {
         errBox.textContent = '二维码生成失败：编码器加载失败';
       }

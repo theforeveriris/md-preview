@@ -21,14 +21,16 @@ function createRequireJsdom() {
     );
     return requireFromIris('jsdom').JSDOM;
   } catch (e) {
-    console.error('[test-slug-consistency] jsdom 不可用，跳过（npm install 后重试）');
+    // 不能静默通过：jsdom 缺失时 slug 比对根本没执行，报「通过」是假绿
+    console.error('[test-slug-consistency] jsdom 不可用，无法执行比对（在 iris/ 下 npm install）');
+    console.error('[test-slug-consistency] 原始错误:', e && e.message);
     return null;
   }
 }
 
 function main() {
   const JSDOM = createRequireJsdom();
-  if (!JSDOM) process.exit(0);
+  if (!JSDOM) process.exit(1);
 
   const dom = new JSDOM('<!DOCTYPE html><body></body>');
   global.window = dom.window;

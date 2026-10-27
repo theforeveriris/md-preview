@@ -62,7 +62,7 @@ function collectFirstPartyJs() {
 }
 
 function checkSyntax() {
-  console.log('\n[1/5] 语法检查（第一方 JS）');
+  console.log('\n[1/6] 语法检查（第一方 JS）');
   let checked = 0;
   for (const file of collectFirstPartyJs()) {
     const rel = path.relative(ROOT, file);
@@ -119,7 +119,7 @@ const REQUIRED_IDS = [
 const LOCAL_HREF_PREFIXES = ['iris/', '/iris/'];
 
 function checkIndexHtml() {
-  console.log('\n[2/5] index.html 结构与资源引用');
+  console.log('\n[2/6] index.html 结构与资源引用');
 
   let dom;
   try {
@@ -161,7 +161,7 @@ function checkIndexHtml() {
 }
 
 function checkI18nKeys(dom) {
-  console.log('\n[3/5] i18n 语言包完整性');
+  console.log('\n[3/6] i18n 语言包完整性');
 
   const doc = dom.window.document;
   const keys = new Set();
@@ -216,23 +216,31 @@ function checkI18nKeys(dom) {
     return;
   }
   const zhDict = i18n.getDict ? i18n.getDict('zh') : null;
-  const enMissing = [...keys].filter(k => enDict[k] == null);
+  // 空字符串 / 纯空白 / 非字符串都算缺失（enDict[k] == null 挡不住这些）
+  // 少数词条是数组（如 pulse.freqMode 按下标取模式名），数组里有非空项即视为有效
+  const validTranslation = (v) =>
+    (typeof v === 'string' && v.trim() !== '') ||
+    (Array.isArray(v) && v.some(x => typeof x === 'string' && x.trim() !== ''));
+
+  const enMissing = [...keys].filter(k => !validTranslation(enDict[k]));
   if (enMissing.length > 0) {
     fail(`index.html 中 ${enMissing.length} 个 data-i18n key 缺少 en 翻译: ${enMissing.join(', ')}`);
   } else {
     pass(`${keys.size} 个 data-i18n key 全部有 en 翻译`);
   }
-  // zh/en 键集差异（反向漂移：en 有而 zh 没有的键）
+  // zh/en 键集差异，双向检查：zh 有而 en 缺、en 有而 zh 缺都要报
   if (zhDict) {
-    const diff = Object.keys(zhDict).filter(k => enDict[k] == null);
-    if (diff.length > 0) fail(`zh 有而 en 缺失 ${diff.length} 个键: ${diff.slice(0, 8).join(', ')}`);
-    else pass('zh/en 语言包键集一致');
+    const zhOnly = Object.keys(zhDict).filter(k => !validTranslation(enDict[k]));
+    const enOnly = Object.keys(enDict).filter(k => !validTranslation(zhDict[k]));
+    if (zhOnly.length > 0) fail(`zh 有而 en 缺失 ${zhOnly.length} 个键: ${zhOnly.slice(0, 8).join(', ')}`);
+    else if (enOnly.length > 0) fail(`en 有而 zh 缺失 ${enOnly.length} 个键: ${enOnly.slice(0, 8).join(', ')}`);
+    else pass('zh/en 语言包键集一致（双向）');
   }
 }
 
 // ============== 4. 数据产物 ==============
 function checkDataFiles() {
-  console.log('\n[4/5] 数据产物');
+  console.log('\n[4/6] 数据产物');
 
   for (const name of ['file-tree.json', 'search-index.json', 'precache-manifest.json']) {
     const file = path.join(ROOT, 'iris', 'data', name);
@@ -253,13 +261,23 @@ function checkDataFiles() {
     } else {
       const cjkRe = /[一-鿿]/;
       const entries = index.filter(e => e && e.searchText && cjkRe.test(e.title || ''));
-      // 拼音首字母 token：标题含中文的条目，searchText 尾部应出现纯小写
-      // 拉丁字母 token（且不是标题/预览原文里的英文单词）
+      // 拼音首字母 token：用构建期同一张拼音表推导期望值，再断言它真的出现在
+      // searchText 里。旧写法「只要出现一个不在原文里的拉丁 token」会把整词
+      // 拼音（市场→shichang）也算成首字母命中，起不到校验作用。
+      const PINYIN = JSON.parse(fs.readFileSync(path.join(ROOT, 'iris', 'scripts', 'data', 'pinyin-initials.json'), 'utf-8'));
+      const initialsOf = (text) => {
+        let out = '';
+        for (const ch of String(text)) {
+          const c = PINYIN[ch];
+          if (c) out += c;
+        }
+        return out;
+      };
       let pinyinCount = 0;
       for (const e of entries) {
-        const head = ((e.title || '') + (e.preview || '') + (e.path || '')).toLowerCase();
-        const tokens = String(e.searchText).split(/\s+/);
-        if (tokens.some(t => /^[a-z]{2,}$/.test(t) && !head.includes(t))) pinyinCount++;
+        const expected = initialsOf(e.title || '');
+        if (expected.length < 2) continue;
+        if (String(e.searchText).split(/\s+/).includes(expected)) pinyinCount++;
       }
       const expect = Math.max(1, Math.floor(entries.length * 0.6));
       if (entries.length > 0 && pinyinCount < expect) {
@@ -335,7 +353,7 @@ function checkDataFiles() {
 // 回归保护：vendor 组件用纯字典序排序，数字开头的文件名会排错位
 // （10.0 排到 2.0 前面）。本项目用 applyNaturalOrder 兜底，这里跑回归测试。
 function checkFileTreeSort() {
-  console.log('\n[5/5] 文件树自然排序');
+  console.log('\n[5/6] 文件树自然排序');
 
   const testFile = path.join(ROOT, 'iris', 'scripts', 'test-file-tree-sort.js');
   if (!fs.existsSync(testFile)) {
@@ -369,7 +387,7 @@ function main() {
   if (dom) {
     checkI18nKeys(dom);
   } else {
-    console.log('\n[3/5] i18n 语言包完整性 — 跳过（依赖 index.html 解析）');
+    console.log('\n[3/6] i18n 语言包完整性 — 跳过（依赖 index.html 解析）');
   }
   checkDataFiles();
   checkFileTreeSort();

@@ -56,9 +56,14 @@
     if (!all[docPath]) all[docPath] = {};
     if (collapsed) all[docPath][headingId] = 1;
     else delete all[docPath][headingId];
+    // 先把自己挪到末尾（最近写入 = 最新），再做淘汰，
+    // 否则 Object.keys 保持原插入序，刚更新的文档可能恰好排在最前被删掉
+    const entry = all[docPath];
+    delete all[docPath];
+    all[docPath] = entry;
     const keys = Object.keys(all);
     if (keys.length > MAX_COLLAPSE_DOCS) {
-      keys.slice(0, keys.length - MAX_COLLAPSE_DOCS / 2).forEach(k => delete all[k]);
+      keys.slice(0, keys.length - Math.floor(MAX_COLLAPSE_DOCS / 2)).forEach(k => delete all[k]);
     }
     writeStore(all);
   }

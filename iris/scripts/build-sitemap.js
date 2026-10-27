@@ -59,28 +59,18 @@ function getLastmod(fullPath) {
   }
 }
 
-function collectFiles(dir, basePath = '') {
-  const files = [];
-  let items = [];
-  try {
-    items = fs.readdirSync(dir, { withFileTypes: true });
-  } catch (e) {
-    return files;
-  }
+// 目录遍历统一走 lib/docs.js：与 file-tree/search-index 同一套排除规则
+// （docs/zw 是排版 lint 样例，不进 sitemap）
+const { collectMarkdownFiles } = require('./lib/docs.js');
 
-  for (const item of items) {
-    const fullPath = path.join(dir, item.name);
-    const relPath = basePath ? `${basePath}/${item.name}` : item.name;
-    if (item.isDirectory()) {
-      files.push(...collectFiles(fullPath, relPath));
-    } else if (item.isFile() && item.name.endsWith('.md')) {
-      files.push({
-        repoRelativePath: 'docs/' + relPath,
-        fullPath
-      });
-    }
-  }
-  return files;
+function collectFiles(dir) {
+  return collectMarkdownFiles(dir, {
+    relBase: REPO_ROOT,
+    skipRel: ['docs/zw']
+  }).map(f => ({
+    fullPath: f.path,
+    repoRelativePath: f.rel
+  }));
 }
 
 function buildSitemap() {

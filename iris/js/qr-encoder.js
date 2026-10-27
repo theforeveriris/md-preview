@@ -405,13 +405,14 @@
 
   /**
    * @param {string} text
-   * @param {Object} [opts] - { ecl, margin（默认 2 模块）, scale（默认 8）, dark, light }
+   * @param {Object} [opts] - { ecl, margin（默认 4 模块静区）, scale（默认 8）, dark, light }
    */
   function toSVG(text, opts) {
     opts = opts || {};
     const qr = encode(text, opts);
     if (!qr) return null;
-    const margin = opts.margin !== undefined ? opts.margin : 2;
+    // 静区按规范至少 4 个模块（quiet zone），低于该值部分扫码器识别率下降
+    const margin = opts.margin !== undefined ? opts.margin : 4;
     const scale = opts.scale || 8;
     const dark = opts.dark || '#000000';
     const light = opts.light || '#ffffff';

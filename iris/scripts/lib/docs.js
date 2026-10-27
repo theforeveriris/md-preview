@@ -42,7 +42,8 @@ function collectMarkdownFiles(rootDir, opts) {
     const rel = path.relative(base, full).split(path.sep).join('/');
     if (skipRel && skipRel.some(prefix => rel === prefix || rel.startsWith(prefix + '/'))) continue;
     if (entry.isDirectory()) {
-      out.push(...collectMarkdownFiles(full, { skip, relBase: base }));
+      // skipRel 必须继续下传，否则子目录里的排除规则（docs/zw）失效
+      out.push(...collectMarkdownFiles(full, { skip, skipRel, relBase: base }));
     } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.md')) {
       out.push({ path: full, name: entry.name, rel });
     }

@@ -17,7 +17,8 @@ const path = require('path');
 function main() {
   const iconSrc = fs.readFileSync(path.join(__dirname, '..', 'icons', 'icon.svg'), 'utf-8');
   const heroSrc = fs.readFileSync(path.join(__dirname, '..', 'icons', 'hero.svg'), 'utf-8');
-  const pathsOf = (s) => new Set([...s.matchAll(/d="([^"]+)"/g)].map(m => m[1]));
+  // 前面要求空白：否则 `id="..."` 也会被当成路径数据收进来
+  const pathsOf = (s) => new Set([...s.matchAll(/\sd="([^"]+)"/g)].map(m => m[1]));
 
   const iconPaths = pathsOf(iconSrc);
   const heroPaths = pathsOf(heroSrc);

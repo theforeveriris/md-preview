@@ -284,7 +284,7 @@
       case 'googlemaps': {
         const gmUrl = safeHttpUrl(url, ['www.google.com', 'google.com', 'maps.google.com']);
         if (!gmUrl) return null;
-        src = escAttr(gmUrl.href);
+        src = gmUrl.href; // 原样赋给 src，末尾统一转义一次（避免 & 二次转义）
         height = '300';
         break;
       }
@@ -292,7 +292,7 @@
       case 'openstreetmap': {
         const osmUrl = safeHttpUrl(url, ['www.openstreetmap.org', 'openstreetmap.org']);
         if (!osmUrl) return null;
-        src = escAttr(osmUrl.href);
+        src = osmUrl.href; // 原样赋给 src，末尾统一转义一次（避免 & 二次转义）
         height = '300';
         break;
       }
@@ -300,7 +300,7 @@
       case 'googledocs': {
         const gdUrl = safeHttpUrl(url, ['docs.google.com']);
         if (!gdUrl) return null;
-        src = escAttr(gdUrl.href);
+        src = gdUrl.href; // 原样赋给 src，末尾统一转义一次（避免 & 二次转义）
         height = '400';
         break;
       }

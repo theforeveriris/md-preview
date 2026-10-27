@@ -80,6 +80,8 @@ jobs:
           test -f dist/manifest.json
           test -f dist/iris/app.js
           test -f dist/iris/desktop-bridge.js
-          ! test -d dist/iris/node_modules
-          ! test -d dist/iris/scripts
+          # 用 `test ! -d` 而不是 `! test -d`：取反的命令不受 set -e 约束，
+          # 目录真存在时也不会让 job 失败
+          test ! -d dist/iris/node_modules
+          test ! -d dist/iris/scripts
           echo 'dist 产物结构校验通过'

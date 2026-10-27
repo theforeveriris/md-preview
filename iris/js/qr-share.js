@@ -82,7 +82,7 @@
       if (!window.MarkdownPreview.QREncoder) {
         await window.MarkdownPreview.loadScript('iris/js/qr-encoder.js');
       }
-      const svg = window.MarkdownPreview.QREncoder.toSVG(url, { ecl: 'M', margin: 2 });
+      const svg = window.MarkdownPreview.QREncoder.toSVG(url, { ecl: 'M', margin: 4 });
       if (!svg) throw new Error('too-long');
       wrap.innerHTML = svg;
       const svgEl = wrap.firstElementChild;

@@ -177,7 +177,7 @@
           <span class="pkt-statusbar-item">设备 <strong>${jsonData.meta.deviceCount}</strong></span>
           <span class="pkt-statusbar-item">链路 <strong>${jsonData.meta.linkCount}</strong></span>
           <span class="pkt-statusbar-item">配置 <strong>${jsonData.meta.configCount}</strong></span>
-          <span class="pkt-statusbar-item">${jsonData.meta.ptVersion || ''}</span>
+          <span class="pkt-statusbar-item">${esc(jsonData.meta.ptVersion || '')}</span>
         </div>
         <div class="pkt-statusbar-search">
           <input type="search" class="pkt-search-input" placeholder="搜索" />

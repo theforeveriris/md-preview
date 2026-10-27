@@ -719,20 +719,22 @@
 
     // 字号滑杆：input 实时改 CSS 变量（跟手），持久化合并到停顿/change
     //（updateFont 每 input 事件都做 JSON 序列化 + localStorage 写 + 广播）
-    let fontSaveTimer = null;
+    // 每个字号控件独立定时器：共用一个 timer 时，快速拖动两个滑杆会互相
+    // 取消对方的待保存更新（只保留最后一次），先拖的那个值永不落库
+    const fontSaveTimers = new Map();
+    const pxMap = { fontSizeBody: '--font-size-body', fontSizeMd: '--font-size-md',
+      fontSizeH1: '--font-size-h1', fontSizeH2: '--font-size-h2', fontSizeH3: '--font-size-h3' };
     ['fontSizeBody', 'fontSizeMd', 'fontSizeH1', 'fontSizeH2', 'fontSizeH3'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
       el.addEventListener('input', () => {
-        const pxMap = { fontSizeBody: '--font-size-body', fontSizeMd: '--font-size-md',
-          fontSizeH1: '--font-size-h1', fontSizeH2: '--font-size-h2', fontSizeH3: '--font-size-h3' };
         const prop = pxMap[id];
         if (prop) document.documentElement.style.setProperty(prop, el.value + 'px');
-        if (fontSaveTimer) clearTimeout(fontSaveTimer);
-        fontSaveTimer = setTimeout(() => {
-          fontSaveTimer = null;
+        if (fontSaveTimers.has(id)) clearTimeout(fontSaveTimers.get(id));
+        fontSaveTimers.set(id, setTimeout(() => {
+          fontSaveTimers.delete(id);
           updateFont({ [id]: el.value });
-        }, 300);
+        }, 300));
       });
     });
     ['fontWeightBody', 'fontWeightMd', 'fontWeightDisplay',

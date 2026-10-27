@@ -5,20 +5,21 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 27 Oct 2026 08:28:05 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 27 Oct 2026 08:58:11 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>变更日志</title>
       <link>https://theforeveriris.github.io/md-preview/docs/changelog.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/changelog.md</guid>
-      <pubDate>Mon, 26 Oct 2026 22:14:45 GMT</pubDate>
-      <description>&gt; 本页由 从 git 历史自动生成，请勿手动编辑。 - build: 重新生成数据产物（changelog/feed/file-tree/links/precache/sitemap） — theforeveriris - docs(screenshots): 46 张运行时截图全量重拍（新品牌紫 + 新 UI），show.md 补第六/七节配图 — theforeveriris - feat(</description>
+      <pubDate>Tue, 27 Oct 2026 08:35:25 GMT</pubDate>
+      <description>&gt; 本页由 从 git 历史自动生成，请勿手动编辑。 - fix(pulse)+feat(theme): 修复大波形不渲染、恢复默认配色、新增鸢尾花紫主题 — theforeveriris - build: 重新生成数据产物（changelog/feed/file-tree/links/precache/sitemap） — theforeveriris - docs(screenshots): </description>
       <content:encoded><![CDATA[<h1>变更日志</h1>
 <blockquote>
 <p>本页由 <code>iris/scripts/build-changelog.js</code> 从 git 历史自动生成，请勿手动编辑。</p>
 </blockquote>
 <h2>2026-10-27</h2>
 <ul>
+<li><code>f7d8c95</code> fix(pulse)+feat(theme): 修复大波形不渲染、恢复默认配色、新增鸢尾花紫主题 — theforeveriris</li>
 <li><code>7a52e94</code> build: 重新生成数据产物（changelog/feed/file-tree/links/precache/sitemap） — theforeveriris</li>
 <li><code>f230013</code> docs(screenshots): 46 张运行时截图全量重拍（新品牌紫 + 新 UI），show.md 补第六/七节配图 — theforeveriris</li>
 <li><code>ff29fdb</code> feat(artwork): 站点强调色统一为品牌紫 #8B5CF6 + 图标双源漂移门禁（原暂缓项） — theforeveriris</li>
@@ -215,7 +216,7 @@
 <li><code>4a49e3b</code> Initial commit: Markdown previewer for GitHub Pages — agelaia521</li>
 </ul>
 <blockquote>
-<p>共 128 条（最多展示 200 条）。</p>
+<p>共 129 条（最多展示 200 条）。</p>
 </blockquote>
 ]]></content:encoded>
     </item>

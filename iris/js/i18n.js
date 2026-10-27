@@ -88,6 +88,11 @@
     'settings.theme.autoDark.nord': '暗 · Nord',
     'settings.theme.default': '紫粉渐变',
     'settings.theme.iris': '鸢尾花紫',
+    'openapi.colName': '名称',
+    'openapi.colIn': '位置',
+    'openapi.colType': '类型',
+    'openapi.colRequired': '必填',
+    'openapi.colDesc': '说明',
     'settings.theme.autoLight.iris': '亮 · 鸢尾花紫',
 
     // 自定义配色

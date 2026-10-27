@@ -23,6 +23,9 @@
     lang: 'md-preview-lang'
   };
 
+  // 与 theme-manager.js 的 VALID_THEMES 保持一致（'auto' 另计）
+  const VALID_THEMES = ['default', 'iris', 'github-light', 'github-dark', 'notion', 'arc', 'dracula', 'nord'];
+
   function validBackupLang(v) {
     return v === 'auto' || v === 'zh' || v === 'en';
   }
@@ -73,9 +76,23 @@
     }
     const data = payload.data;
     try {
-      // settings 单独校验：必须是可解析的 JSON 对象
-      if (typeof data.settings === 'string') JSON.parse(data.settings);
-      if (data.theme != null && typeof data.theme !== 'string') throw new Error('bad theme');
+      // 备份文件来自外部，逐项校验：
+      //   - 所有键值必须是字符串（曾直接把任意值 String() 后写进 localStorage）
+      //   - settings 非空时必须能解析成「非数组对象」
+      Object.keys(BACKUP_KEYS).forEach(name => {
+        const val = data[name];
+        if (val == null) return;
+        if (typeof val !== 'string') throw new Error('bad value type: ' + name);
+      });
+      if (typeof data.settings === 'string' && data.settings.trim()) {
+        const parsedSettings = JSON.parse(data.settings);
+        if (!parsedSettings || typeof parsedSettings !== 'object' || Array.isArray(parsedSettings)) {
+          throw new Error('bad settings');
+        }
+      }
+      if (data.theme != null && data.theme !== '') {
+        if (!VALID_THEMES.includes(data.theme) && data.theme !== 'auto') throw new Error('bad theme');
+      }
       if (data.lang != null && !validBackupLang(data.lang)) throw new Error('bad lang');
       Object.keys(BACKUP_KEYS).forEach(name => {
         const val = data[name];

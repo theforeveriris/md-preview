@@ -50,7 +50,8 @@
 
   function stripHeightComment(src, lang) {
     const lines = src.split('\n');
-    if (/height\s*[:=]\s*\d{3,4}/i.test(lines[0] || '')) lines.shift();
+    // 与 parseHeight 一致接受 2-4 位，否则 height: 80 的注释不会被剥掉
+    if (/height\s*[:=]\s*\d{2,4}/i.test(lines[0] || '')) lines.shift();
     return lines.join('\n');
   }
 
