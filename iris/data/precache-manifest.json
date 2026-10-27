@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-27T19:15:51.283Z",
+  "generatedAt": "2026-10-27T19:17:57.167Z",
   "version": 1,
-  "count": 138,
+  "count": 139,
   "urls": [
     "./",
     "./index.html",
@@ -69,6 +69,7 @@
     "./iris/js/i18n-en.js",
     "./iris/js/i18n.js",
     "./iris/js/interactions.js",
+    "./iris/js/iris-mascot.js",
     "./iris/js/lang-links.js",
     "./iris/js/langs/net-config.js",
     "./iris/js/lazy-modules.js",
