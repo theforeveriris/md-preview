@@ -179,6 +179,7 @@
     'welcome.text': 'Select a file to start reading',
     'toast.update': 'A new version is available',
     'toast.refresh': 'Refresh',
+    'toast.viewUpdate': "See what's new",
     'palette.placeholder': 'Search docs, or type > for commands...',
     'palette.clear': 'Clear search',
     'palette.dialog': 'Search docs',

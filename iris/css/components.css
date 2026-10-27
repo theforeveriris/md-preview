@@ -946,3 +946,13 @@ pre.code-block code { position: relative; z-index: 1; }
   }
   .secret-toggle, .secret-mask { display: none !important; }
 }
+
+/* ============== 版本更新公告条「查看本次更新」高亮（pwa-boot.js） ============== */
+.changelog-flash {
+  animation: changelog-flash-bg 2.4s ease;
+  border-radius: 6px;
+}
+@keyframes changelog-flash-bg {
+  0%, 60% { background: color-mix(in srgb, var(--color-accent-purple) 16%, transparent); }
+  100% { background: transparent; }
+}

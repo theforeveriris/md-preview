@@ -206,6 +206,7 @@
     'welcome.text': '选择一个文件开始阅读',
     'toast.update': '有新版本可用',
     'toast.refresh': '刷新',
+    'toast.viewUpdate': '查看本次更新',
     'palette.placeholder': '搜索文档，或输入 > 执行命令...',
     'palette.clear': '清空搜索词',
     'palette.dialog': '搜索文档',
