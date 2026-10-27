@@ -168,6 +168,12 @@
         }
       },
       {
+        id: 'open-orphan',
+        icon: 'i-filter',
+        label: t('cmd.openOrphan', '孤立文档检测'),
+        run: () => { window.location.hash = '#/orphan'; }
+      },
+      {
         id: 'open-editor',
         icon: 'i-code',
         label: t('cmd.openEditor', '打开编辑器'),

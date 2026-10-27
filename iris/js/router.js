@@ -70,6 +70,14 @@
       return;
     }
 
+    // 虚拟路由：孤立文档检测 #/orphan
+    if (path === 'orphan') {
+      if (window.MarkdownPreview.orphan && window.MarkdownPreview.orphan.openOrphanPage) {
+        window.MarkdownPreview.orphan.openOrphanPage();
+      }
+      return;
+    }
+
     // 虚拟路由：无部署快照分享 #/s?z=<deflate-base64>
     if (path === 's' || path.startsWith('s?')) {
       if (window.MarkdownPreview.snapshot) {
