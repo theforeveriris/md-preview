@@ -94,8 +94,8 @@ fn walk_kb(dir: &Path, rel_prefix: &str, depth: usize, count: &mut usize) -> Vec
         }
     }
     // 目录在前，同类型按名称排序（前端 name-sort 只对展示排序，这里保证结构稳定）
-    folders.sort_by(|a, b| a.1.to_lowercase().cmp(&b.1.to_lowercase()));
-    files.sort_by(|a, b| a.1.to_lowercase().cmp(&b.1.to_lowercase()));
+    folders.sort_by_key(|a| a.1.to_lowercase());
+    files.sort_by_key(|a| a.1.to_lowercase());
 
     let mut nodes = Vec::new();
     for (path, name) in folders {
