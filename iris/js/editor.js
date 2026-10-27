@@ -2366,6 +2366,14 @@
     }
   }) : null;
 
+  // 模板脚手架：命令面板 / 「导入」菜单「从模板新建」经此建新笔记本
+  window.MarkdownPreview.editorCreateTab = (initData, title) => {
+    createTab({ initData, title, skipSaveCurrent: true });
+  };
+  registerMenuAction('new-from-template', () => {
+    window.MarkdownPreview.docTemplates?.openPicker?.();
+  });
+
   const versionSnapshotsMod = window.MarkdownPreview.editorModules &&
     window.MarkdownPreview.editorModules.versionSnapshots;
   let versionSnapshots = null;
@@ -2379,6 +2387,9 @@
       registerMenuAction
     });
   }
+
+  // 命令面板「从模板新建」在编辑器加载完成前点的：编辑器就绪后消费
+  window.MarkdownPreview.docTemplates?.consumePending?.();
 
   const bootCells = cells.slice(); // 启动时的初始 cell 引用
   bootCellsRef = bootCells;       // 供 loadAutosave 在恢复前判定是否已被输入

@@ -178,6 +178,12 @@
         icon: 'i-code',
         label: t('cmd.openEditor', '打开编辑器'),
         run: () => window.MarkdownPreview.enterEditorMode && window.MarkdownPreview.enterEditorMode()
+      },
+      {
+        id: 'new-from-template',
+        icon: 'i-save',
+        label: t('cmd.newFromTemplate', '从模板新建'),
+        run: () => window.MarkdownPreview.docTemplates && window.MarkdownPreview.docTemplates.openPicker()
       }
     ];
     THEME_ACTIONS.forEach(theme => actions.push(themeAction(theme)));

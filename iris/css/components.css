@@ -570,3 +570,63 @@ pre.code-block code { position: relative; z-index: 1; }
   background: color-mix(in srgb, var(--color-accent-purple) 12%, transparent);
   border-color: var(--color-accent-purple);
 }
+
+/* ============== 文档模板脚手架（doc-templates.js） ============== */
+.templates-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 10100; /* 编辑器 overlay(9999) 之上：编辑器菜单里也能用 */
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.templates-overlay.open { display: flex; }
+.templates-card {
+  background: var(--color-surface);
+  border-radius: 14px;
+  width: min(720px, 94vw);
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+.templates-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--color-border);
+}
+.templates-title { font-weight: 600; }
+.templates-close { border: none; background: none; cursor: pointer; color: inherit; }
+.templates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 10px;
+  padding: 16px 18px;
+  overflow: auto;
+}
+.templates-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.templates-item:hover {
+  border-color: var(--color-accent-purple);
+  background: color-mix(in srgb, var(--color-accent-purple) 7%, transparent);
+}
+.templates-item-icon { color: var(--color-accent-purple-deep, var(--color-accent-purple)); flex: 0 0 auto; margin-top: 2px; }
+.templates-item-body { display: flex; flex-direction: column; gap: 3px; }
+.templates-item-name { font-weight: 600; font-size: 14px; }
+.templates-item-desc { font-size: 12px; color: var(--color-text-muted); }
