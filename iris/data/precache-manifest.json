@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-27T18:33:32.726Z",
+  "generatedAt": "2026-10-27T18:36:24.548Z",
   "version": 1,
-  "count": 127,
+  "count": 128,
   "urls": [
     "./",
     "./index.html",
@@ -51,6 +51,7 @@
     "./iris/js/editor/completions.js",
     "./iris/js/editor/find-replace.js",
     "./iris/js/editor/media-upload.js",
+    "./iris/js/editor/mermaid-pip.js",
     "./iris/js/editor/version-snapshots.js",
     "./iris/js/export-bundle.js",
     "./iris/js/figures.js",

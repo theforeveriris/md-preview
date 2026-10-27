@@ -353,6 +353,7 @@
       document.querySelectorAll('.cell.cell-active').forEach(c => c.classList.remove('cell-active'));
       div.classList.add('cell-active');
       updateStatusbar();
+      mermaidPip?.onCellActivity?.(cellData);
     });
 
     textarea.addEventListener('input', () => {
@@ -363,11 +364,12 @@
       updateStatusbar();
       // 内容已变，旧偏移的查找匹配失效（外移模块：find-replace.js）
       findReplace.invalidateMatches();
+      mermaidPip?.onCellActivity?.(cellData);
     });
 
     textarea.addEventListener('keydown', onTextareaKeydown);
-    textarea.addEventListener('keyup', () => updateStatusbar());
-    textarea.addEventListener('click', () => updateStatusbar());
+    textarea.addEventListener('keyup', () => { updateStatusbar(); mermaidPip?.onCellActivity?.(cellData); });
+    textarea.addEventListener('click', () => { updateStatusbar(); mermaidPip?.onCellActivity?.(cellData); });
     textarea.addEventListener('select', () => updateSelectionToolbar({ target: textarea }));
     textarea.addEventListener('mouseup', () => updateSelectionToolbar({ target: textarea }));
     textarea.addEventListener('blur', () => {
@@ -2342,6 +2344,11 @@
   });
 
   // 版本快照（防手滑删稿的安全网：手动 + 30 分钟定时，可 diff 与回滚）
+  // Mermaid 画中画（光标在 ```mermaid 围栏内时右下角实时预览）
+  const mermaidPipMod = window.MarkdownPreview.editorModules &&
+    window.MarkdownPreview.editorModules.mermaidPip;
+  const mermaidPip = mermaidPipMod ? mermaidPipMod.init({ editorT }) : null;
+
   const versionSnapshotsMod = window.MarkdownPreview.editorModules &&
     window.MarkdownPreview.editorModules.versionSnapshots;
   let versionSnapshots = null;

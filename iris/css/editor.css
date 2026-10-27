@@ -1625,3 +1625,59 @@ body.editor-dark-mode .cell {
 .snap-diff-add { background: rgba(39, 174, 96, 0.08); color: #1e8449; }
 .snap-diff-note { color: var(--nb-text-muted, #888); font-style: italic; }
 .snap-back { margin-bottom: 4px; }
+
+/* ============== Mermaid 画中画（editor/mermaid-pip.js） ============== */
+.mermaid-pip {
+  position: fixed;
+  right: 20px;
+  bottom: 44px;
+  width: min(420px, 42vw);
+  max-height: 46vh;
+  background: var(--nb-editor-bg, #fff);
+  border: 1px solid var(--nb-border, #e5e5e5);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18);
+  z-index: 9300;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+.mermaid-pip.open { display: flex; }
+.mermaid-pip-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--nb-border, #e5e5e5);
+  font-size: 12px;
+  color: var(--nb-text-muted, #888);
+}
+.mermaid-pip-close {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: inherit;
+  font-size: 13px;
+  padding: 2px 6px;
+}
+.mermaid-pip-stage {
+  overflow: auto;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mermaid-pip-stage svg { max-width: 100%; height: auto; }
+.mermaid-pip-error {
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #e74c3c;
+  white-space: pre-wrap;
+  word-break: break-all;
+  border-top: 1px dashed var(--nb-border, #e5e5e5);
+  max-height: 30vh;
+  overflow: auto;
+}
+@media (max-width: 768px) {
+  .mermaid-pip { right: 10px; bottom: 60px; width: 60vw; }
+}
