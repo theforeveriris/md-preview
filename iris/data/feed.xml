@@ -5,169 +5,593 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 27 Oct 2026 19:39:18 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 27 Oct 2026 23:09:06 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>位标注示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/bits-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/bits-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 19:25:37 GMT</pubDate>
-      <description>bits 0100 0010 0 | SYN | 发起连接 6 | ACK | 确认收到 `</description>
-      <content:encoded><![CDATA[<h1>位标注块</h1>
-<p><code>```bits &lt;二进制&gt;</code>（可空格分组）+ 正文标注行 <code>位序 | 名称 | 说明</code>
-（位序自最高位起算）：位条可视化、二/十六/十进制速读、点击位定位标注。</p>
-<h2>TCP 标志位</h2>
-<pre><code class="language-bits">0 | SYN | 发起连接
-6 | ACK | 确认收到
+      <title>配置参考</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
+      <pubDate>Tue, 27 Oct 2026 19:58:03 GMT</pubDate>
+      <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
+      <content:encoded><![CDATA[<h1>配置参考</h1>
+<p>Markdown Preview 的配置分为两层：</p>
+<ol>
+<li><strong>构建/部署配置</strong> — <code>iris/config.json</code>（仓库级，所有访客共享）</li>
+<li><strong>运行时设置</strong> — 浏览器 localStorage（用户级，仅当前浏览器生效）</li>
+</ol>
+<hr>
+<h2>一、<code>iris/config.json</code>（仓库级配置）</h2>
+<p>修改此文件后需推送代码触发重新部署。</p>
+<h3>基础配置</h3>
+<pre><code class="language-json">{
+  &quot;owner&quot;: &quot;your-username&quot;,
+  &quot;repo&quot;: &quot;your-repo-name&quot;
+}
 </code></pre>
-<p>（SYN=1、ACK=1 → 第二次握手的 SYN+ACK 报文，二进制值 0x42。）</p>
-<h2>子网掩码 /24</h2>
-<pre><code class="language-bits">0 | 网络位开始
-23 | 网络位结束
-24 | 主机位开始
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>owner</code></td>
+<td>string</td>
+<td>-</td>
+<td>GitHub 用户名或组织名</td>
+</tr>
+<tr>
+<td><code>repo</code></td>
+<td>string</td>
+<td>-</td>
+<td>仓库名</td>
+</tr>
+</tbody></table>
+<h3>完整配置项</h3>
+<pre><code class="language-json">{
+  &quot;owner&quot;: &quot;&quot;,
+  &quot;repo&quot;: &quot;&quot;,
+  &quot;branch&quot;: &quot;main&quot;,
+  &quot;title&quot;: &quot;Markdown Preview&quot;,
+  &quot;defaultTheme&quot;: &quot;default&quot;,
+  &quot;showEditButton&quot;: true,
+  &quot;showReadingTime&quot;: true,
+  &quot;showBreadcrumbs&quot;: true
+}
 </code></pre>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>日历热图示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/heatmap-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/heatmap-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 19:22:26 GMT</pubDate>
-      <description>heatmap 2025-09-30,9 2025-10-01,9 2025-10-02,8 2025-10-03,0 2025-10-04,9 2025-10-05,3 2025-10-06,11 2025-10-07,10 2025-10-08,1 2025-10-09,9 2025-10-10,0 2025-10-11,3 2025-10-12,8 2025-10-13,0 2025-10-</description>
-      <content:encoded><![CDATA[<h1>日历热图块</h1>
-<p><code>```heatmap</code>：正文每行 <code>YYYY-MM-DD,数值</code>，渲染 GitHub 贡献图样式的
-日历热图（列=周 / 行=星期，强度按最大值分 5 档，悬停看日期与数值）。
-巡检记录、值班统计、健身打卡这类自带数据的一图流。</p>
-<pre><code class="language-heatmap">2025-09-30,9
-2025-10-01,9
-2025-10-02,8
-2025-10-03,0
-2025-10-04,9
-2025-10-05,3
-2025-10-06,11
-2025-10-07,10
-2025-10-08,1
-2025-10-09,9
-2025-10-10,0
-2025-10-11,3
-2025-10-12,8
-2025-10-13,0
-2025-10-14,9
-2025-10-15,8
-2025-10-16,0
-2025-10-17,5
-2025-10-18,0
-2025-10-19,2
-2025-10-20,9
-2025-10-21,0
-2025-10-22,2
-2025-10-23,11
-2025-10-24,7
-2025-10-25,0
-2025-10-26,0
-2025-10-27,9
-2025-10-28,4
-2025-10-29,1
-2025-10-30,7
-2025-10-31,6
-2025-11-01,9
-2025-11-02,9
-2025-11-03,5
-2025-11-04,3
-2025-11-05,6
-2025-11-06,5
-2025-11-07,0
-2025-11-08,0
-2025-11-09,4
-2025-11-10,11
-2025-11-11,0
-2025-11-12,4
-2025-11-13,6
-2025-11-14,1
-2025-11-15,9
-2025-11-16,5
-2025-11-17,5
-2025-11-18,10
-2025-11-19,0
-2025-11-20,0
-2025-11-21,5
-2025-11-22,1
-2025-11-23,0
-2025-11-24,0
-2025-11-25,5
-2025-11-26,9
-2025-11-27,6
-2025-11-28,9
-2025-11-29,3
-2025-11-30,11
-2025-12-01,9
-2025-12-02,0
-2025-12-03,8
-2025-12-04,4
-2025-12-05,6
-2025-12-06,5
-2025-12-07,4
-2025-12-08,0
-2025-12-09,6
-2025-12-10,0
-2025-12-11,8
-2025-12-12,0
-2025-12-13,4
-2025-12-14,10
-2025-12-15,0
-2025-12-16,7
-2025-12-17,7
-2025-12-18,0
-2025-12-19,8
-2025-12-20,7
-2025-12-21,9
-2025-12-22,6
-2025-12-23,7
-2025-12-24,0
-2025-12-25,1
-2025-12-26,5
-2025-12-27,6
-2025-12-28,4
-2025-12-29,9
-2025-12-30,9
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>branch</code></td>
+<td>string</td>
+<td><code>main</code></td>
+<td>文档所在的 Git 分支</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>string</td>
+<td><code>Markdown Preview</code></td>
+<td>站点标题</td>
+</tr>
+<tr>
+<td><code>defaultTheme</code></td>
+<td>string</td>
+<td><code>default</code></td>
+<td>默认主题 ID</td>
+</tr>
+<tr>
+<td><code>showEditButton</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>是否显示&quot;编辑此页&quot;按钮</td>
+</tr>
+<tr>
+<td><code>showReadingTime</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>是否显示阅读时间估算</td>
+</tr>
+<tr>
+<td><code>showBreadcrumbs</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>是否显示面包屑导航</td>
+</tr>
+<tr>
+<td><code>plantumlServers</code></td>
+<td>array</td>
+<td>内置列表</td>
+<td>PlantUML 渲染服务列表，按顺序尝试</td>
+</tr>
+</tbody></table>
+<h4>PlantUML 渲染服务（plantumlServers）</h4>
+<p>PlantUML 图表默认依次尝试官方服务器与 Kroki 公共服务，全部失败时自动降级为源码展示并提供在线编辑器链接。若你自建了 PlantUML 服务或想使用其他镜像，可在 <code>iris/config.json</code> 中覆盖：</p>
+<pre><code class="language-json">{
+  &quot;plantumlServers&quot;: [
+    { &quot;type&quot;: &quot;plantuml&quot;, &quot;base&quot;: &quot;https://your-self-hosted/plantuml&quot; },
+    { &quot;type&quot;: &quot;kroki&quot;, &quot;base&quot;: &quot;https://kroki.io/plantuml&quot; }
+  ]
+}
 </code></pre>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>步骤揭示与引用卡片示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/steps-quote-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/steps-quote-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 19:20:50 GMT</pubDate>
-      <description>steps 1 | 确认故障现象 | 影响面、时间线、有无变更 2 | 检查物理层 | 看接口指示灯与光功率 3 | 查控制平面 | ARP/MAC 表 → 路由表 → ACL 4 | 抓包取证 | 镜像口 + Wireshark 过滤五元组 quote 引文 | 出处 orgchart 网络部 - 核心组 - 骨干交换 - 出口路由 - 接入组 - 安全组</description>
-      <content:encoded><![CDATA[<h1>步骤揭示块</h1>
-<p><code>```steps</code>：<code>序号 | 标题 | 详情</code>，点击逐步展开——排错思路、证明过程
-比 quiz 轻量的教学件。</p>
-<pre><code class="language-steps">1 | 确认故障现象 | 影响面、时间线、有无变更
-2 | 检查物理层 | 看接口指示灯与光功率
-3 | 查控制平面 | ARP/MAC 表 → 路由表 → ACL
-4 | 抓包取证 | 镜像口 + Wireshark 过滤五元组
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>type</code></td>
+<td><code>plantuml</code>（PlantUML 自定义编码）或 <code>kroki</code>（标准 base64url 编码）</td>
+</tr>
+<tr>
+<td><code>base</code></td>
+<td>服务基础地址，渲染时自动拼接 <code>/svg/&lt;编码&gt;</code></td>
+</tr>
+</tbody></table>
+<h3>首页（homepage）</h3>
+<p>不配置时打开站点显示「选择一个文件开始阅读」空状态；配置 <code>homepage</code> 后，打开站点（或点面包屑回首页）会先进入指定的首页形态：</p>
+<pre><code class="language-jsonc">{
+  // 形态一：直接指定一篇文档作为首页
+  &quot;homepage&quot;: &quot;docs/getting-started.md&quot;,
+
+  // 形态二：门户页（hero 区 + 精选文档卡片网格 + 快捷链接）
+  &quot;homepage&quot;: {
+    &quot;mode&quot;: &quot;portal&quot;,
+    &quot;title&quot;: &quot;我的知识库&quot;,
+    &quot;subtitle&quot;: &quot;网络 / 运维 / 随手记&quot;,
+    &quot;featured&quot;: [&quot;docs/getting-started.md&quot;, &quot;docs/show.md&quot;, &quot;docs/roadmap.md&quot;],
+    &quot;links&quot;: [
+      { &quot;text&quot;: &quot;GitHub 仓库&quot;, &quot;href&quot;: &quot;https://github.com/your-name/your-repo&quot; },
+      { &quot;text&quot;: &quot;快速上手&quot;, &quot;href&quot;: &quot;docs/getting-started.md&quot; }
+    ]
+  }
+}
 </code></pre>
-<h1>引用卡片</h1>
-<p><code>```quote</code>：<code>引文 | 出处</code>，空行分隔多条——带出处署名的卡片式引用。</p>
-<pre><code class="language-quote">洞穴喻：被缚者看到的影子不是实物本身。 | 柏拉图《理想国》
-复杂度是分层的：你不理解它，它就一定是魔法。 | 
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>mode</code></td>
+<td>门户页固定为 <code>portal</code></td>
+</tr>
+<tr>
+<td><code>title</code> / <code>subtitle</code></td>
+<td>Hero 区标题与副标题（缺省取 <code>repo</code>）</td>
+</tr>
+<tr>
+<td><code>featured</code></td>
+<td>精选文档路径列表，渲染为卡片网格（取自文件树的标题/词数/标签）</td>
+</tr>
+<tr>
+<td><code>links</code></td>
+<td>Hero 下方的快捷链接按钮；站内路径不带 <code>#/</code> 前缀，完整 URL 会被识别为外链</td>
+</tr>
+</tbody></table>
+<h3>站内虚拟路由</h3>
+<p>除 <code>#/文档路径.md</code> 外，站点内置以下虚拟页面，可直接访问或从命令面板（<code>Ctrl/⌘+K</code>）进入：</p>
+<table>
+<thead>
+<tr>
+<th>路由</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>#/blog</code></td>
+<td>博客流视图：全站文档按更新时间倒序，<code>#/blog?p=2</code> 翻页</td>
+</tr>
+<tr>
+<td><code>#/history</code></td>
+<td>浏览足迹：最近 50 次阅读记录</td>
+</tr>
+<tr>
+<td><code>#/tags</code></td>
+<td>标签云：字号按文档数缩放，点击进入对应标签聚合页</td>
+</tr>
+<tr>
+<td><code>#/index</code></td>
+<td>全站目录：按目录分组的完整文档列表（打印友好）</td>
+</tr>
+<tr>
+<td><code>#/orphan</code></td>
+<td>孤立文档检测：无反链 / 无标签 / 超短 / 长期未更新四类清单</td>
+</tr>
+<tr>
+<td><code>#/graph</code></td>
+<td>文档图谱</td>
+</tr>
+</tbody></table>
+<h3>非 GitHub 托管（provider）</h3>
+<p>默认对接 GitHub API（文件树回退、git 历史、编辑此页链接）。托管在 Gitee / GitLab 时指定 <code>provider</code>：</p>
+<pre><code class="language-jsonc">{
+  &quot;provider&quot;: &quot;gitee&quot;,          // github（默认）| gitee | gitlab
+  &quot;branch&quot;: &quot;main&quot;,
+  // 仅 gitlab 需要：
+  &quot;gitlabUrl&quot;: &quot;https://gitlab.com&quot;,   // 自托管实例改这里
+  &quot;projectId&quot;: &quot;group%2Frepo&quot;          // 数字 ID 或 URL 编码的完整路径
+}
 </code></pre>
-<h1>架构图语法糖</h1>
-<p><code>```orgchart</code>：缩进文本直接变 mermaid 组织架构图，不用手写 graph TD。</p>
-<pre><code class="language-orgchart">网络部
-- 核心组
-  - 骨干交换
-  - 出口路由
-- 接入组
-- 安全组
+<p>私有仓库可在浏览器 <code>sessionStorage</code> 写 <code>md-preview-gitee-token</code> / <code>md-preview-gitlab-token</code> / <code>md-preview-github-token</code> 提高限额（标签页生命周期内有效）。</p>
+<h3>配置加载顺序</h3>
+<ol>
+<li>内置默认配置</li>
+<li><code>iris/config.json</code> 中的配置（覆盖默认值）</li>
+<li>用户本地存储的设置（如主题选择，会覆盖前两者）</li>
+</ol>
+<hr>
+<h2>二、运行时设置（用户级）</h2>
+<p>通过悬浮球菜单 → <strong>设置</strong> 打开设置面板，所有改动保存在浏览器 localStorage，仅对当前浏览器生效。</p>
+<p>设置面板分七个区块：<strong>语言 / 外观 / 字体 / 阅读 / 布局 / 工具与导出 / 存储</strong>（左侧分组导航，点击平滑滚动、滚动时自动同步高亮）。</p>
+<h3>语言</h3>
+<p>设置面板最顶部为「语言」选择：<strong>自动（跟随浏览器）/ 中文 / English</strong>。选择「自动」时按浏览器语言自动判定；切换立即生效并记忆，无需刷新。</p>
+<h3>外观</h3>
+<h4>预设主题</h4>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>auto</code></td>
+<td>自动（跟随系统亮暗）</td>
+</tr>
+<tr>
+<td><code>default</code></td>
+<td>默认（紫粉渐变）</td>
+</tr>
+<tr>
+<td><code>github-light</code></td>
+<td>GitHub Light</td>
+</tr>
+<tr>
+<td><code>github-dark</code></td>
+<td>GitHub Dark</td>
+</tr>
+<tr>
+<td><code>notion</code></td>
+<td>Notion</td>
+</tr>
+<tr>
+<td><code>arc</code></td>
+<td>Arc Dark</td>
+</tr>
+<tr>
+<td><code>dracula</code></td>
+<td>Dracula</td>
+</tr>
+<tr>
+<td><code>nord</code></td>
+<td>Nord</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>选择预设主题会清空自定义配色。</p>
+</blockquote>
+<p><strong>自动主题（auto）</strong>：跟随系统 <code>prefers-color-scheme</code> 实时切换——系统亮色时使用「自动主题配对」中的亮色主题（默认紫粉渐变），暗色时使用暗色主题（默认 GitHub Dark）。配对可在设置面板中自由组合，系统亮暗变化时即时生效（含 PWA 桌面模式）。</p>
+<h4>自定义配色（取色器）</h4>
+<p>无需写 CSS，直接通过取色器调整：</p>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>可调变量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>强调色</strong></td>
+<td><code>--color-accent-purple</code> / <code>--color-accent-pink</code> / <code>--color-accent-purple-deep</code></td>
+<td>主色及派生色</td>
+</tr>
+<tr>
+<td><strong>中性色</strong></td>
+<td><code>--color-bg</code> / <code>--color-surface</code> / <code>--color-border</code> / <code>--color-text</code> / <code>--color-text-muted</code></td>
+<td>背景、表面、文字与边框</td>
+</tr>
+</tbody></table>
+<p>通过中性色调整即可做出亮色或暗色主题。点击「重置」恢复默认值。</p>
+<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/theme-customization.md">主题定制</a>。</p>
+<h4>字体自定义</h4>
+<p>设置面板 → <strong>外观 → 字体</strong>，无需写 CSS 即可精细控制排版：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>远程字体 URL</td>
+<td>填写 Google Fonts 等 CSS URL 即可加载远程字体</td>
+</tr>
+<tr>
+<td>展示字体族</td>
+<td>标题衬线体，独立于正文</td>
+</tr>
+<tr>
+<td>正文字体族</td>
+<td>UI / 正文无衬线体</td>
+</tr>
+<tr>
+<td>字号细调</td>
+<td>UI / 正文 / H1 / H2 / H3 独立设置</td>
+</tr>
+<tr>
+<td>字重细调</td>
+<td>UI / 正文 / 展示体 / H1 / H2 / H3 独立选择（300 ~ 800）</td>
+</tr>
+<tr>
+<td>字色</td>
+<td>正文与次要文字颜色独立取色</td>
+</tr>
+<tr>
+<td>标题数字无衬线</td>
+<td>默认标题数字随标题字体（衬线）；开启后仅数字改用无衬线字形</td>
+</tr>
+<tr>
+<td>重置字体</td>
+<td>一键恢复全部字体默认值</td>
+</tr>
+</tbody></table>
+<h4>代码高亮主题</h4>
+<table>
+<thead>
+<tr>
+<th>主题 ID</th>
+<th>名称</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>github</code></td>
+<td>GitHub Light</td>
+<td>亮色</td>
+</tr>
+<tr>
+<td><code>github-dark</code></td>
+<td>GitHub Dark</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>atom-one-light</code></td>
+<td>Atom One Light</td>
+<td>亮色</td>
+</tr>
+<tr>
+<td><code>atom-one-dark</code></td>
+<td>Atom One Dark</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>monokai</code></td>
+<td>Monokai</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>dracula</code></td>
+<td>Dracula</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>nord</code></td>
+<td>Nord</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>vs2015</code></td>
+<td>VS 2015</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>solarized-light</code></td>
+<td>Solarized Light</td>
+<td>亮色</td>
+</tr>
+<tr>
+<td><code>solarized-dark</code></td>
+<td>Solarized Dark</td>
+<td>暗色</td>
+</tr>
+</tbody></table>
+<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md">代码高亮主题</a>。</p>
+<p>在「外观 → 代码高亮」中还可填写<strong>自定义高亮主题</strong>：加载外部 highlight.js 主题 CSS URL，回车应用（覆盖内置代码主题）。</p>
+<h4>自定义 CSS</h4>
+<p>在「外观 → 自定义 CSS」中填写<strong>外部样式表 URL</strong>，加载外部 CSS 文件进一步定制页面，回车应用。</p>
+<h3>阅读</h3>
+<h4>显示选项</h4>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>显示阅读进度</td>
+<td>控制顶部进度条</td>
+</tr>
+<tr>
+<td>显示字数统计</td>
+<td>控制文件树中每个文件旁的字数显示</td>
+</tr>
+<tr>
+<td>折叠过长文件名</td>
+<td>开启时文件名过长省略号显示，关闭时完整展开（区域可横向滚动，隐藏滚动条）；默认关闭</td>
+</tr>
+<tr>
+<td>侧边栏文件夹默认展开</td>
+<td>开启时文件树中的文件夹全部展开显示；关闭时默认折叠，点击文件夹手动展开</td>
+</tr>
+<tr>
+<td>启用移动端手势</td>
+<td>触屏设备左右滑动正文切换上一篇 / 下一篇，自屏幕左缘右滑呼出侧边栏抽屉</td>
+</tr>
+<tr>
+<td>启用章节折叠</td>
+<td>H2 标题栏右侧出现折叠按钮，折叠状态按文档记忆、重开自动恢复</td>
+</tr>
+<tr>
+<td>对照阅读默认同步滚动</td>
+<td>打开双栏对照阅读时两栏按比例同步滚动（<code>Ctrl/⌘+Alt+S</code> 可随时开关本次会话）</td>
+</tr>
+<tr>
+<td>专注模式</td>
+<td>当前阅读段落保持高亮、其余内容淡化（也可在 <code>Ctrl/⌘+K</code> 命令面板开关）</td>
+</tr>
+</tbody></table>
+<h4>布局</h4>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>侧边栏样式</td>
+<td>经典：贴边通栏、微色差微阴影无边框（默认）；悬浮卡片：四周留缝的圆角卡片（桌面端）</td>
+</tr>
+<tr>
+<td>内容区宽度</td>
+<td>滑杆调整 Markdown 正文最大宽度（600–1400px，默认 720px），拖动即时生效，可一键重置</td>
+</tr>
+<tr>
+<td>正文占满可用宽度</td>
+<td>开启后正文铺满窗口可用宽度，忽略上方宽度设置，适合宽屏显示器</td>
+</tr>
+<tr>
+<td>长表格延伸到右侧空白</td>
+<td>内容宽度设置保持不变，宽表格向右适度越过正文边界、利用右侧空白显示更多列</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>侧边栏折叠：桌面端可通过侧边栏标题栏的汉堡按钮或快捷键 <code>Ctrl/⌘ + B</code> 折叠/展开侧边栏，折叠后左上角浮现展开按钮，状态自动记忆（与移动端抽屉行为一致）。</p>
+<p>以上宽度与侧边栏操作均有键盘快捷键（<code>Ctrl/⌘ + Alt + =/-/0/F</code>、<code>Ctrl/⌘ + B</code>、<code>[</code> / <code>]</code> 等），完整清单见 <a href="https://theforeveriris.github.io/md-preview/docs/shortcuts.md">快捷键</a>。</p>
+</blockquote>
+<h3>工具与导出</h3>
+<h4>工具</h4>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Markdown 编辑器</td>
+<td>在新标签页打开交互式编辑器（<code>?mode=editor</code>），支持语法快速输入和实时渲染</td>
+</tr>
+<tr>
+<td>波形生成器</td>
+<td>可视化生成 DG-LAB 郊狼 <code>.pulse</code> 波形文件（<code>?mode=pulsegen</code>），最多 20 个</td>
+</tr>
+</tbody></table>
+<h4>导出</h4>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>下载 Markdown</td>
+<td>下载当前打开的 <code>.md</code> 源文件</td>
+</tr>
+<tr>
+<td>导出 PDF</td>
+<td>通过浏览器打印对话框导出为 PDF（自动隐藏侧边栏、悬浮球等 UI）</td>
+</tr>
+<tr>
+<td>导出 HTML</td>
+<td>保存为内联当前主题样式与全部本地 CSS 的单文件 HTML，双击即可离线查看</td>
+</tr>
+</tbody></table>
+<h4>离线缓存</h4>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>全量离线缓存</td>
+<td>把文件树覆盖的所有文档拉进 PWA 缓存（带进度反馈），离线也能整站阅读；支持一键清除文档缓存。需 HTTPS 部署访问后可用</td>
+</tr>
+</tbody></table>
+<h3>存储</h3>
+<p>设置面板「存储」区块：<code>navigator.storage.estimate()</code> 用量条（已用 / 配额）、编辑器笔记本列表（逐条删除 / 全部清空，二次确认）、阅读历史与收藏 / 阅读位置的占用与一键清理（<code>iris/js/storage-manager.js</code>，打开面板时自动刷新）。</p>
+<h4>导航增强</h4>
+<ul>
+<li><strong>面包屑目录聚合页</strong>：面包屑与正文同宽对齐；点击中间路径进入该目录的聚合页，集中浏览目录下全部文档</li>
+<li><strong>标签聚合页</strong>：<code>#/tag/&lt;标签&gt;</code> 按标签聚合文档（见「标签系统」）</li>
+</ul>
+<hr>
+<h2>三、悬浮球菜单</h2>
+<p>悬浮球展开后提供 6 个快捷入口：</p>
+<table>
+<thead>
+<tr>
+<th>入口</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>回到顶部</td>
+<td>平滑滚动到文档顶部</td>
+</tr>
+<tr>
+<td>打开本地文件</td>
+<td>点击弹出选择面板：「选择文件…」可一次选中一个或多个本地 <code>.md</code> 文件预览（不写入 URL，刷新后丢失），未打开的文件进入侧边栏「本地文件」会话列表，可切换、移除或清空；「选择文件夹…」整体导入一个目录（File System Access API，旧浏览器回退 <code>webkitdirectory</code>），按目录树展示、文件夹可折叠、内容懒加载；最多收集 500 个文件，单文件 ≤ 10 MB。受浏览器限制，文件与文件夹需在面板中二选一进入</td>
+</tr>
+<tr>
+<td>扫码续读</td>
+<td>生成当前文档 + 阅读位置的二维码，手机扫码接着看</td>
+</tr>
+<tr>
+<td>安装到桌面</td>
+<td>PWA 安装（仅浏览器支持时显示）</td>
+</tr>
+<tr>
+<td>编辑此页</td>
+<td>在新标签页打开 GitHub 编辑界面</td>
+</tr>
+<tr>
+<td>设置</td>
+<td>打开设置面板</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>四、RSS 订阅</h2>
+<p>站点自动生成 RSS feed，订阅地址：</p>
+<pre><code>https://&lt;owner&gt;.github.io/&lt;repo&gt;/iris/data/feed.xml
 </code></pre>
+<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/rss.md">RSS 订阅</a>。</p>
 ]]></content:encoded>
     </item>
     <item>
       <title>CSV / TSV 交互表格示例</title>
       <link>https://theforeveriris.github.io/md-preview/docs/examples/csv-examples.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/csv-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 19:16:18 GMT</pubDate>
+      <pubDate>Tue, 27 Oct 2026 19:48:48 GMT</pubDate>
       <description>/ 代码块会渲染为可排序、可搜索、可按列筛选的交互表格，贴数据不用再截图。 - 点击表头排序：升 → 降 → 恢复原始顺序，数值列按数值比较 - 表头漏斗按钮：按该列的唯一值勾选筛选 - 工具栏搜索框：即时过滤任意单元格命中的行 - 右侧按钮：复制 CSV / 下载 CSV（保留原文） 逗号或换行出现在单元格内时，用双引号包裹（RFC 4180），引号本身写两个： 规则也可用列序号与 hex 色：</description>
       <content:encoded><![CDATA[<h1>CSV / TSV 交互表格示例</h1>
 <p><code>csv</code> / <code>tsv</code> 代码块会渲染为可排序、可搜索、可按列筛选的交互表格，贴数据不用再截图。</p>
@@ -220,7 +644,7 @@ display current-configuration	用户/特权	查看当前配置（VRP）
 10,edge-rtr-02,10.0.5.2,1.1.6.2,Huawei,NE40E,V800R010,GE0/0/0,10000,DC-B,钱七,出口路由器（备）
 </code></pre>
 <h2>条件格式（阈值着色）</h2>
-<p><code>```csv rules=&lt;规则&gt;</code> 在 lang 位写规则：<code>列(序号或表头名)&gt;阈值:颜色名|#hex</code>，
+<p><code>```csv rules=&lt;规则&gt;</code> 在 lang 位写规则：<code>列(序号或表头名)&gt;阈值：颜色名|#hex</code>，
 逗号分隔；支持 <code>&gt; &gt;= &lt; &lt;= = !=</code>。监控报表贴数据一眼看出异常行。</p>
 <pre><code class="language-csv">host,CPU,丢包率
 web-01,45,0
@@ -232,187 +656,31 @@ db-02,95,1.3
 ]]></content:encoded>
     </item>
     <item>
-      <title>终端回放与敏感遮罩示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/terminal-secret-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/terminal-secret-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 19:07:42 GMT</pubDate>
-      <description>terminal $ ssh admin@10.1.1.1 Password: Core-SW&gt; enable Core-SW# show ip interface brief | exclude unassigned Interface IP-Address Status Protocol GigabitEthernet0/0 10.1.1.1 up up GigabitEthernet0/1 </description>
-      <content:encoded><![CDATA[<h1>终端回放块</h1>
-<p><code>```terminal</code>：<code>$</code> / <code>#</code> 开头的行是命令（逐字打字），其余是输出（逐行闪现）。
-播放 / 重播 / 1×-4× 倍速，也可「直接看结果」；跟随系统减动效偏好。</p>
-<pre><code class="language-terminal">$ ssh admin@10.1.1.1
-Password:
-Core-SW&gt; enable
-Core-SW# show ip interface brief | exclude unassigned
-Interface              IP-Address      Status                Protocol
-GigabitEthernet0/0     10.1.1.1        up                    up
-GigabitEthernet0/1     10.1.2.1        up                    up
-Core-SW# copy running-config startup-config
-Destination filename [startup-config]?
-Building configuration...
-[OK]
-</code></pre>
-<h1>敏感信息遮罩块</h1>
-<p><code>```secret</code> 点击揭示；<code>```secret 口令</code> 输对口令才展开。导出 PDF
-（打印）时无论是否已揭示都会保持打码——贴配置藏密码/IP。</p>
-<h2>点击揭示</h2>
-<pre><code class="language-secret">enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0
-username admin privilege 15 secret 5 $1$mERr$3XKc1mYtGQcK0V0eT1ZmL1
-snmp-server community public RO
-</code></pre>
-<h2>口令揭示</h2>
-<pre><code class="language-secret">vpn pre-shared-key hex 2A4F6B8C0D1E3F5A7B9C2D4E6F8A0C2E
-</code></pre>
-<p>口令就是今年年份（演示用）。</p>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>ACL 与路由表分析示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/acl-route-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/acl-route-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 19:04:52 GMT</pubDate>
-      <description>acl ios 10 permit tcp 10.1.1.0 0.0.0.255 any eq 443 20 permit tcp 10.1.1.0 0.0.0.255 host 8.8.8.8 eq 53 30 permit udp any host 8.8.8.8 eq 53 40 deny ip any any route-table show ip route</description>
-      <content:encoded><![CDATA[<h1>ACL 分析块</h1>
-<p><code>```acl</code> 粘贴 IOS/VRP ACL：渲染匹配顺序表 + 五元组命中测试。自上而下
-模拟求值，第一条命中即返回；无命中提示隐式 deny——排查「为什么这条流量
-被拒」不用再肉眼逐条比对了。</p>
-<h2>命名 ACL（序号行）</h2>
-<pre><code class="language-acl">10 permit tcp 10.1.1.0 0.0.0.255 any eq 443
-20 permit tcp 10.1.1.0 0.0.0.255 host 8.8.8.8 eq 53
-30 permit udp any host 8.8.8.8 eq 53
-40 deny ip any any
-</code></pre>
-<p>点「测试」改源/目的/端口试试：<code>10.1.1.8 → 8.8.8.8:53</code> 命中第 2 条；
-<code>10.1.1.8 → 1.1.1.1:80</code> 落入第 4 条显式 deny；换成没写 deny 的 ACL
-则提示隐式 deny。</p>
-<h1>路由表分析块</h1>
-<p><code>```route-table</code> 粘贴 <code>show ip route</code> 输出：可排序表 + 协议分布统计。</p>
-<pre><code class="language-route-table">Codes: L - local, C - connected, S - static, O - OSPF, B - BGP
-
-Gateway of last resort is 10.1.1.254 to network 0.0.0.0
-
-C    10.1.1.0/24 is directly connected, GigabitEthernet0/0
-L    10.1.1.1/32 is directly connected, GigabitEthernet0/0
-O    10.2.0.0/16 [110/20] via 10.1.1.2, 00:12:34, GigabitEthernet0/0
-O E2 192.168.50.0/24 [110/20] via 10.1.1.2, 00:12:34, GigabitEthernet0/0
-S*   0.0.0.0/0 [1/0] via 10.1.1.254
-B    172.16.0.0/16 [200/0] via 10.1.1.3, 00:05:00
-S    10.99.0.0/16 [1/0] via 10.1.1.9
-</code></pre>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>配置语义 diff 示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/config-diff-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/config-diff-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 18:54:56 GMT</pubDate>
-      <description>config-diff ios interface GigabitEthernet0/0 ip address 10.1.1.1 255.255.255.0 no shutdown ! interface GigabitEthernet0/1 ip address 10.1.2.1 255.255.255.0 ===变更后 interface GigabitEthernet0/0 ip addre</description>
-      <content:encoded><![CDATA[<h1>配置语义 diff</h1>
-<p><code>```config-diff ios</code>（或 <code>vrp</code>）代码块渲染两份配置的**语义**对比：
-按缩进层级解析成命令树、以祖先命令链对齐，<code>===</code> 分隔线隔开变更前后。
-同一条命令挪位置不误报；改参数的命令成对呈现 −旧 +新——升配/迁移 review 神器。</p>
-<h2>IOS 接口地址变更</h2>
-<pre><code class="language-config-diff">interface GigabitEthernet0/0
- ip address 10.1.1.1 255.255.255.0
- no shutdown
-!
-interface GigabitEthernet0/1
- ip address 10.1.2.1 255.255.255.0
-===变更后
-interface GigabitEthernet0/0
- ip address 10.1.1.1 255.255.255.252
- no shutdown
-!
-interface GigabitEthernet0/1
- ip address 10.1.2.1 255.255.255.0
- shutdown
-</code></pre>
-<h2>VRP sysname 与 NTP</h2>
-<pre><code class="language-config-diff">sysname CORE-SW
-ntp-service unicast-server 10.10.10.1
-===升配后
-sysname CORE-SW-NEW
-ntp-service unicast-server 10.10.10.1
-ntp-service unicast-server 10.10.10.2
-</code></pre>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>学习路径示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/learning-path-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/learning-path-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 18:50:38 GMT</pubDate>
-      <description>frontmatter 写 ，文档头出现「前置阅读」卡片链 （本篇就是一个活例子）； 图谱上按同一数据画出虚线强调色的有向 学习路径边——知识库的结构化阅读顺序一眼可辨。 本篇的前置阅读指向两篇示例文档；把 换成你自己的路径即可。</description>
-      <content:encoded><![CDATA[<h1>学习路径</h1>
-<p>frontmatter 写 <code>prerequisites: [路径/文件.md]</code>，文档头出现「前置阅读」卡片链
-（本篇就是一个活例子）；<code>#/graph</code> 图谱上按同一数据画出虚线强调色的有向
-学习路径边——知识库的结构化阅读顺序一眼可辨。</p>
-<p>本篇的前置阅读指向两篇示例文档；把 <code>prerequisites</code> 换成你自己的路径即可。</p>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>代码行高亮示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/line-highlight-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/line-highlight-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 15:31:26 GMT</pubDate>
-      <description>两种标记方式：fence 信息串 （行号）与代码内 注释， 可叠加使用。高亮为覆盖层实现，不影响 hljs 语法着色。 `</description>
-      <content:encoded><![CDATA[<h1>代码行高亮</h1>
-<p>两种标记方式：fence 信息串 <code>{2,5-8}</code>（行号）与代码内 <code>[!code highlight]</code> 注释，
-可叠加使用。高亮为覆盖层实现，不影响 hljs 语法着色。</p>
-<h2>行号标记</h2>
-<pre><code class="language-js">const store = new Map();        // ← 高亮第 2 行
-function get(key) {
-  return store.get(key);
-}
-function set(key, value) {      // ← 高亮 5-8 行
-  store.set(key, value);
-  return value;
-}
-</code></pre>
-<h2>注释标记</h2>
-<pre><code class="language-js">const a = 1; // [!code highlight]
-const b = 2;
-const c = a + b; // [!code highlight]
-</code></pre>
-<h2>叠加</h2>
-<pre><code class="language-python">import os # [!code highlight]
-print(os.getcwd())
-</code></pre>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>ipcalc 子网计算示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/ipcalc-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/ipcalc-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 15:21:42 GMT</pubDate>
-      <description></description>
-      <content:encoded><![CDATA[<h1>ipcalc 子网计算块</h1>
-<p><code>```ipcalc &lt;CIDR&gt;</code> 代码块把目标网段渲染为掩码 / 通配符 / 可用范围 / 广播 /
-主机数速查卡，并附子网划分表。纯前端计算，零依赖，贴运维常用网段即得结果。</p>
-<h2>单网段</h2>
-<pre><code class="language-ipcalc">
-</code></pre>
-<h2>多网段（lang 里一个，正文一行一个）</h2>
-<pre><code class="language-ipcalc">172.16.4.130/28
-</code></pre>
-<h2>主机地址自动归网</h2>
-<p>写主机地址也行，渲染时自动对齐到所属网络：</p>
-<pre><code class="language-ipcalc">
-</code></pre>
-]]></content:encoded>
-    </item>
-    <item>
       <title>变更日志</title>
       <link>https://theforeveriris.github.io/md-preview/docs/changelog.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/changelog.md</guid>
-      <pubDate>Tue, 27 Oct 2026 09:49:39 GMT</pubDate>
-      <description>&gt; 本页由 从 git 历史自动生成，请勿手动编辑。 - merge: 合并 main 的自动生成产物（数据文件冲突取本分支并重新生成） — theforeveriris - fix(review): 处理 CodeRabbit 的 20 条 minor 与 2 条 nitpick — theforeveriris - fix(review): 修正 CodeRabbit 评审的 11 项问题 —</description>
+      <pubDate>Tue, 27 Oct 2026 19:40:57 GMT</pubDate>
+      <description>&gt; 本页由 从 git 历史自动生成，请勿手动编辑。 - feat(bits): 位标注块 — theforeveriris - feat(heatmap): 日历热图块 — theforeveriris - feat(steps,quote,orgchart): 步骤揭示 / 引用卡片 / 架构图语法糖三件套 — theforeveriris - feat(csv): 条件格式（阈值着色） — </description>
       <content:encoded><![CDATA[<h1>变更日志</h1>
 <blockquote>
 <p>本页由 <code>iris/scripts/build-changelog.js</code> 从 git 历史自动生成，请勿手动编辑。</p>
 </blockquote>
+<h2>2026-10-28</h2>
+<ul>
+<li><code>5040dec</code> feat(bits): 位标注块 — theforeveriris</li>
+<li><code>4bd0261</code> feat(heatmap): 日历热图块 — theforeveriris</li>
+<li><code>daa17e6</code> feat(steps,quote,orgchart): 步骤揭示 / 引用卡片 / 架构图语法糖三件套 — theforeveriris</li>
+<li><code>bb5456d</code> feat(csv): 条件格式（阈值着色） — theforeveriris</li>
+<li><code>f4c412b</code> feat(terminal,secret): 终端回放块与敏感信息遮罩块 — theforeveriris</li>
+<li><code>a13d12a</code> feat(acl,rt): ACL 分析块与路由表分析块 — theforeveriris</li>
+<li><code>7edfb62</code> feat(config-diff): 配置语义 diff 块 — theforeveriris</li>
+<li><code>0d00fe8</code> feat(learning-path): 学习路径（prerequisites 前置阅读链 + 图谱有向边） — theforeveriris</li>
+</ul>
 <h2>2026-10-27</h2>
 <ul>
+<li><code>76fe67a</code> feat(line-highlight): 代码行高亮 {2,5-8} 与 [!code highlight] — theforeveriris</li>
+<li><code>53ca645</code> feat(ipcalc): ipcalc 子网计算块 — theforeveriris</li>
+<li><code>786f983</code> fix(review): 处理 CodeRabbit 复审的 10 条意见 — theforeveriris</li>
 <li><code>e635b5b</code> merge: 合并 main 的自动生成产物（数据文件冲突取本分支并重新生成） — theforeveriris</li>
 <li><code>44c7657</code> fix(review): 处理 CodeRabbit 的 20 条 minor 与 2 条 nitpick — theforeveriris</li>
 <li><code>7f6935e</code> fix(review): 修正 CodeRabbit 评审的 11 项问题 — theforeveriris</li>
@@ -613,8 +881,334 @@ print(os.getcwd())
 <li><code>4a49e3b</code> Initial commit: Markdown previewer for GitHub Pages — agelaia521</li>
 </ul>
 <blockquote>
-<p>共 132 条（最多展示 200 条）。</p>
+<p>共 143 条（最多展示 200 条）。</p>
 </blockquote>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>位标注示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/bits-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/bits-examples.md</guid>
+      <pubDate>Tue, 27 Oct 2026 19:25:37 GMT</pubDate>
+      <description>bits 0100 0010 0 | SYN | 发起连接 6 | ACK | 确认收到 `</description>
+      <content:encoded><![CDATA[<h1>位标注块</h1>
+<p><code>```bits &lt;二进制&gt;</code>（可空格分组）+ 正文标注行 <code>位序 | 名称 | 说明</code>
+（位序自最高位起算）：位条可视化、二/十六/十进制速读、点击位定位标注。</p>
+<h2>TCP 标志位</h2>
+<pre><code class="language-bits">0 | SYN | 发起连接
+6 | ACK | 确认收到
+</code></pre>
+<p>（SYN=1、ACK=1 → 第二次握手的 SYN+ACK 报文，二进制值 0x42。）</p>
+<h2>子网掩码 /24</h2>
+<pre><code class="language-bits">0 | 网络位开始
+23 | 网络位结束
+24 | 主机位开始
+</code></pre>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>日历热图示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/heatmap-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/heatmap-examples.md</guid>
+      <pubDate>Tue, 27 Oct 2026 19:22:26 GMT</pubDate>
+      <description>heatmap 2025-09-30,9 2025-10-01,9 2025-10-02,8 2025-10-03,0 2025-10-04,9 2025-10-05,3 2025-10-06,11 2025-10-07,10 2025-10-08,1 2025-10-09,9 2025-10-10,0 2025-10-11,3 2025-10-12,8 2025-10-13,0 2025-10-</description>
+      <content:encoded><![CDATA[<h1>日历热图块</h1>
+<p><code>```heatmap</code>：正文每行 <code>YYYY-MM-DD,数值</code>，渲染 GitHub 贡献图样式的
+日历热图（列=周 / 行=星期，强度按最大值分 5 档，悬停看日期与数值）。
+巡检记录、值班统计、健身打卡这类自带数据的一图流。</p>
+<pre><code class="language-heatmap">2025-09-30,9
+2025-10-01,9
+2025-10-02,8
+2025-10-03,0
+2025-10-04,9
+2025-10-05,3
+2025-10-06,11
+2025-10-07,10
+2025-10-08,1
+2025-10-09,9
+2025-10-10,0
+2025-10-11,3
+2025-10-12,8
+2025-10-13,0
+2025-10-14,9
+2025-10-15,8
+2025-10-16,0
+2025-10-17,5
+2025-10-18,0
+2025-10-19,2
+2025-10-20,9
+2025-10-21,0
+2025-10-22,2
+2025-10-23,11
+2025-10-24,7
+2025-10-25,0
+2025-10-26,0
+2025-10-27,9
+2025-10-28,4
+2025-10-29,1
+2025-10-30,7
+2025-10-31,6
+2025-11-01,9
+2025-11-02,9
+2025-11-03,5
+2025-11-04,3
+2025-11-05,6
+2025-11-06,5
+2025-11-07,0
+2025-11-08,0
+2025-11-09,4
+2025-11-10,11
+2025-11-11,0
+2025-11-12,4
+2025-11-13,6
+2025-11-14,1
+2025-11-15,9
+2025-11-16,5
+2025-11-17,5
+2025-11-18,10
+2025-11-19,0
+2025-11-20,0
+2025-11-21,5
+2025-11-22,1
+2025-11-23,0
+2025-11-24,0
+2025-11-25,5
+2025-11-26,9
+2025-11-27,6
+2025-11-28,9
+2025-11-29,3
+2025-11-30,11
+2025-12-01,9
+2025-12-02,0
+2025-12-03,8
+2025-12-04,4
+2025-12-05,6
+2025-12-06,5
+2025-12-07,4
+2025-12-08,0
+2025-12-09,6
+2025-12-10,0
+2025-12-11,8
+2025-12-12,0
+2025-12-13,4
+2025-12-14,10
+2025-12-15,0
+2025-12-16,7
+2025-12-17,7
+2025-12-18,0
+2025-12-19,8
+2025-12-20,7
+2025-12-21,9
+2025-12-22,6
+2025-12-23,7
+2025-12-24,0
+2025-12-25,1
+2025-12-26,5
+2025-12-27,6
+2025-12-28,4
+2025-12-29,9
+2025-12-30,9
+</code></pre>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>步骤揭示与引用卡片示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/steps-quote-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/steps-quote-examples.md</guid>
+      <pubDate>Tue, 27 Oct 2026 19:20:50 GMT</pubDate>
+      <description>steps 1 | 确认故障现象 | 影响面、时间线、有无变更 2 | 检查物理层 | 看接口指示灯与光功率 3 | 查控制平面 | ARP/MAC 表 → 路由表 → ACL 4 | 抓包取证 | 镜像口 + Wireshark 过滤五元组 quote 引文 | 出处 orgchart 网络部 - 核心组 - 骨干交换 - 出口路由 - 接入组 - 安全组</description>
+      <content:encoded><![CDATA[<h1>步骤揭示块</h1>
+<p><code>```steps</code>：<code>序号 | 标题 | 详情</code>，点击逐步展开——排错思路、证明过程
+比 quiz 轻量的教学件。</p>
+<pre><code class="language-steps">1 | 确认故障现象 | 影响面、时间线、有无变更
+2 | 检查物理层 | 看接口指示灯与光功率
+3 | 查控制平面 | ARP/MAC 表 → 路由表 → ACL
+4 | 抓包取证 | 镜像口 + Wireshark 过滤五元组
+</code></pre>
+<h1>引用卡片</h1>
+<p><code>```quote</code>：<code>引文 | 出处</code>，空行分隔多条——带出处署名的卡片式引用。</p>
+<pre><code class="language-quote">洞穴喻：被缚者看到的影子不是实物本身。 | 柏拉图《理想国》
+复杂度是分层的：你不理解它，它就一定是魔法。 | 
+</code></pre>
+<h1>架构图语法糖</h1>
+<p><code>```orgchart</code>：缩进文本直接变 mermaid 组织架构图，不用手写 graph TD。</p>
+<pre><code class="language-orgchart">网络部
+- 核心组
+  - 骨干交换
+  - 出口路由
+- 接入组
+- 安全组
+</code></pre>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>终端回放与敏感遮罩示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/terminal-secret-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/terminal-secret-examples.md</guid>
+      <pubDate>Tue, 27 Oct 2026 19:07:42 GMT</pubDate>
+      <description>terminal $ ssh admin@10.1.1.1 Password: Core-SW&gt; enable Core-SW# show ip interface brief | exclude unassigned Interface IP-Address Status Protocol GigabitEthernet0/0 10.1.1.1 up up GigabitEthernet0/1 </description>
+      <content:encoded><![CDATA[<h1>终端回放块</h1>
+<p><code>```terminal</code>：<code>$</code> / <code>#</code> 开头的行是命令（逐字打字），其余是输出（逐行闪现）。
+播放 / 重播 / 1×-4× 倍速，也可「直接看结果」；跟随系统减动效偏好。</p>
+<pre><code class="language-terminal">$ ssh admin@10.1.1.1
+Password:
+Core-SW&gt; enable
+Core-SW# show ip interface brief | exclude unassigned
+Interface              IP-Address      Status                Protocol
+GigabitEthernet0/0     10.1.1.1        up                    up
+GigabitEthernet0/1     10.1.2.1        up                    up
+Core-SW# copy running-config startup-config
+Destination filename [startup-config]?
+Building configuration...
+[OK]
+</code></pre>
+<h1>敏感信息遮罩块</h1>
+<p><code>```secret</code> 点击揭示；<code>```secret 口令</code> 输对口令才展开。导出 PDF
+（打印）时无论是否已揭示都会保持打码——贴配置藏密码/IP。</p>
+<h2>点击揭示</h2>
+<pre><code class="language-secret">enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0
+username admin privilege 15 secret 5 $1$mERr$3XKc1mYtGQcK0V0eT1ZmL1
+snmp-server community public RO
+</code></pre>
+<h2>口令揭示</h2>
+<pre><code class="language-secret">vpn pre-shared-key hex 2A4F6B8C0D1E3F5A7B9C2D4E6F8A0C2E
+</code></pre>
+<p>口令就是今年年份（演示用）。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>ACL 与路由表分析示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/acl-route-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/acl-route-examples.md</guid>
+      <pubDate>Tue, 27 Oct 2026 19:04:52 GMT</pubDate>
+      <description>acl ios 10 permit tcp 10.1.1.0 0.0.0.255 any eq 443 20 permit tcp 10.1.1.0 0.0.0.255 host 8.8.8.8 eq 53 30 permit udp any host 8.8.8.8 eq 53 40 deny ip any any route-table show ip route</description>
+      <content:encoded><![CDATA[<h1>ACL 分析块</h1>
+<p><code>```acl</code> 粘贴 IOS/VRP ACL：渲染匹配顺序表 + 五元组命中测试。自上而下
+模拟求值，第一条命中即返回；无命中提示隐式 deny——排查「为什么这条流量
+被拒」不用再肉眼逐条比对了。</p>
+<h2>命名 ACL（序号行）</h2>
+<pre><code class="language-acl">10 permit tcp 10.1.1.0 0.0.0.255 any eq 443
+20 permit tcp 10.1.1.0 0.0.0.255 host 8.8.8.8 eq 53
+30 permit udp any host 8.8.8.8 eq 53
+40 deny ip any any
+</code></pre>
+<p>点「测试」改源/目的/端口试试：<code>10.1.1.8 → 8.8.8.8:53</code> 命中第 2 条；
+<code>10.1.1.8 → 1.1.1.1:80</code> 落入第 4 条显式 deny；换成没写 deny 的 ACL
+则提示隐式 deny。</p>
+<h1>路由表分析块</h1>
+<p><code>```route-table</code> 粘贴 <code>show ip route</code> 输出：可排序表 + 协议分布统计。</p>
+<pre><code class="language-route-table">Codes: L - local, C - connected, S - static, O - OSPF, B - BGP
+
+Gateway of last resort is 10.1.1.254 to network 0.0.0.0
+
+C    10.1.1.0/24 is directly connected, GigabitEthernet0/0
+L    10.1.1.1/32 is directly connected, GigabitEthernet0/0
+O    10.2.0.0/16 [110/20] via 10.1.1.2, 00:12:34, GigabitEthernet0/0
+O E2 192.168.50.0/24 [110/20] via 10.1.1.2, 00:12:34, GigabitEthernet0/0
+S*   0.0.0.0/0 [1/0] via 10.1.1.254
+B    172.16.0.0/16 [200/0] via 10.1.1.3, 00:05:00
+S    10.99.0.0/16 [1/0] via 10.1.1.9
+</code></pre>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>配置语义 diff 示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/config-diff-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/config-diff-examples.md</guid>
+      <pubDate>Tue, 27 Oct 2026 18:54:56 GMT</pubDate>
+      <description>config-diff ios interface GigabitEthernet0/0 ip address 10.1.1.1 255.255.255.0 no shutdown ! interface GigabitEthernet0/1 ip address 10.1.2.1 255.255.255.0 ===变更后 interface GigabitEthernet0/0 ip addre</description>
+      <content:encoded><![CDATA[<h1>配置语义 diff</h1>
+<p><code>```config-diff ios</code>（或 <code>vrp</code>）代码块渲染两份配置的**语义**对比：
+按缩进层级解析成命令树、以祖先命令链对齐，<code>===</code> 分隔线隔开变更前后。
+同一条命令挪位置不误报；改参数的命令成对呈现 −旧 +新——升配/迁移 review 神器。</p>
+<h2>IOS 接口地址变更</h2>
+<pre><code class="language-config-diff">interface GigabitEthernet0/0
+ ip address 10.1.1.1 255.255.255.0
+ no shutdown
+!
+interface GigabitEthernet0/1
+ ip address 10.1.2.1 255.255.255.0
+===变更后
+interface GigabitEthernet0/0
+ ip address 10.1.1.1 255.255.255.252
+ no shutdown
+!
+interface GigabitEthernet0/1
+ ip address 10.1.2.1 255.255.255.0
+ shutdown
+</code></pre>
+<h2>VRP sysname 与 NTP</h2>
+<pre><code class="language-config-diff">sysname CORE-SW
+ntp-service unicast-server 10.10.10.1
+===升配后
+sysname CORE-SW-NEW
+ntp-service unicast-server 10.10.10.1
+ntp-service unicast-server 10.10.10.2
+</code></pre>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>学习路径示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/learning-path-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/learning-path-examples.md</guid>
+      <pubDate>Tue, 27 Oct 2026 18:50:38 GMT</pubDate>
+      <description>frontmatter 写 ，文档头出现「前置阅读」卡片链 （本篇就是一个活例子）； 图谱上按同一数据画出虚线强调色的有向 学习路径边——知识库的结构化阅读顺序一眼可辨。 本篇的前置阅读指向两篇示例文档；把 换成你自己的路径即可。</description>
+      <content:encoded><![CDATA[<h1>学习路径</h1>
+<p>frontmatter 写 <code>prerequisites: [路径/文件.md]</code>，文档头出现「前置阅读」卡片链
+（本篇就是一个活例子）；<code>#/graph</code> 图谱上按同一数据画出虚线强调色的有向
+学习路径边——知识库的结构化阅读顺序一眼可辨。</p>
+<p>本篇的前置阅读指向两篇示例文档；把 <code>prerequisites</code> 换成你自己的路径即可。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>代码行高亮示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/line-highlight-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/line-highlight-examples.md</guid>
+      <pubDate>Tue, 27 Oct 2026 15:31:26 GMT</pubDate>
+      <description>两种标记方式：fence 信息串 （行号）与代码内 注释， 可叠加使用。高亮为覆盖层实现，不影响 hljs 语法着色。 `</description>
+      <content:encoded><![CDATA[<h1>代码行高亮</h1>
+<p>两种标记方式：fence 信息串 <code>{2,5-8}</code>（行号）与代码内 <code>[!code highlight]</code> 注释，
+可叠加使用。高亮为覆盖层实现，不影响 hljs 语法着色。</p>
+<h2>行号标记</h2>
+<pre><code class="language-js">const store = new Map();        // ← 高亮第 2 行
+function get(key) {
+  return store.get(key);
+}
+function set(key, value) {      // ← 高亮 5-8 行
+  store.set(key, value);
+  return value;
+}
+</code></pre>
+<h2>注释标记</h2>
+<pre><code class="language-js">const a = 1; // [!code highlight]
+const b = 2;
+const c = a + b; // [!code highlight]
+</code></pre>
+<h2>叠加</h2>
+<pre><code class="language-python">import os # [!code highlight]
+print(os.getcwd())
+</code></pre>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>ipcalc 子网计算示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/ipcalc-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/ipcalc-examples.md</guid>
+      <pubDate>Tue, 27 Oct 2026 15:21:42 GMT</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<h1>ipcalc 子网计算块</h1>
+<p><code>```ipcalc &lt;CIDR&gt;</code> 代码块把目标网段渲染为掩码 / 通配符 / 可用范围 / 广播 /
+主机数速查卡，并附子网划分表。纯前端计算，零依赖，贴运维常用网段即得结果。</p>
+<h2>单网段</h2>
+<pre><code class="language-ipcalc">
+</code></pre>
+<h2>多网段（lang 里一个，正文一行一个）</h2>
+<pre><code class="language-ipcalc">172.16.4.130/28
+</code></pre>
+<h2>主机地址自动归网</h2>
+<p>写主机地址也行，渲染时自动对齐到所属网络：</p>
+<pre><code class="language-ipcalc">
+</code></pre>
 ]]></content:encoded>
     </item>
     <item>
@@ -2014,498 +2608,6 @@ li:hover { color: #b88aad; }
   color: #b58900;
 }
 </code></pre>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>配置参考</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
-      <pubDate>Mon, 26 Oct 2026 20:22:33 GMT</pubDate>
-      <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
-      <content:encoded><![CDATA[<h1>配置参考</h1>
-<p>Markdown Preview 的配置分为两层：</p>
-<ol>
-<li><strong>构建/部署配置</strong> — <code>iris/config.json</code>（仓库级，所有访客共享）</li>
-<li><strong>运行时设置</strong> — 浏览器 localStorage（用户级，仅当前浏览器生效）</li>
-</ol>
-<hr>
-<h2>一、<code>iris/config.json</code>（仓库级配置）</h2>
-<p>修改此文件后需推送代码触发重新部署。</p>
-<h3>基础配置</h3>
-<pre><code class="language-json">{
-  &quot;owner&quot;: &quot;your-username&quot;,
-  &quot;repo&quot;: &quot;your-repo-name&quot;
-}
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>默认值</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>owner</code></td>
-<td>string</td>
-<td>-</td>
-<td>GitHub 用户名或组织名</td>
-</tr>
-<tr>
-<td><code>repo</code></td>
-<td>string</td>
-<td>-</td>
-<td>仓库名</td>
-</tr>
-</tbody></table>
-<h3>完整配置项</h3>
-<pre><code class="language-json">{
-  &quot;owner&quot;: &quot;&quot;,
-  &quot;repo&quot;: &quot;&quot;,
-  &quot;branch&quot;: &quot;main&quot;,
-  &quot;title&quot;: &quot;Markdown Preview&quot;,
-  &quot;defaultTheme&quot;: &quot;default&quot;,
-  &quot;showEditButton&quot;: true,
-  &quot;showReadingTime&quot;: true,
-  &quot;showBreadcrumbs&quot;: true
-}
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>默认值</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>branch</code></td>
-<td>string</td>
-<td><code>main</code></td>
-<td>文档所在的 Git 分支</td>
-</tr>
-<tr>
-<td><code>title</code></td>
-<td>string</td>
-<td><code>Markdown Preview</code></td>
-<td>站点标题</td>
-</tr>
-<tr>
-<td><code>defaultTheme</code></td>
-<td>string</td>
-<td><code>default</code></td>
-<td>默认主题 ID</td>
-</tr>
-<tr>
-<td><code>showEditButton</code></td>
-<td>boolean</td>
-<td><code>true</code></td>
-<td>是否显示&quot;编辑此页&quot;按钮</td>
-</tr>
-<tr>
-<td><code>showReadingTime</code></td>
-<td>boolean</td>
-<td><code>true</code></td>
-<td>是否显示阅读时间估算</td>
-</tr>
-<tr>
-<td><code>showBreadcrumbs</code></td>
-<td>boolean</td>
-<td><code>true</code></td>
-<td>是否显示面包屑导航</td>
-</tr>
-<tr>
-<td><code>plantumlServers</code></td>
-<td>array</td>
-<td>内置列表</td>
-<td>PlantUML 渲染服务列表，按顺序尝试</td>
-</tr>
-</tbody></table>
-<h4>PlantUML 渲染服务（plantumlServers）</h4>
-<p>PlantUML 图表默认依次尝试官方服务器与 Kroki 公共服务，全部失败时自动降级为源码展示并提供在线编辑器链接。若你自建了 PlantUML 服务或想使用其他镜像，可在 <code>iris/config.json</code> 中覆盖：</p>
-<pre><code class="language-json">{
-  &quot;plantumlServers&quot;: [
-    { &quot;type&quot;: &quot;plantuml&quot;, &quot;base&quot;: &quot;https://your-self-hosted/plantuml&quot; },
-    { &quot;type&quot;: &quot;kroki&quot;, &quot;base&quot;: &quot;https://kroki.io/plantuml&quot; }
-  ]
-}
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>type</code></td>
-<td><code>plantuml</code>（PlantUML 自定义编码）或 <code>kroki</code>（标准 base64url 编码）</td>
-</tr>
-<tr>
-<td><code>base</code></td>
-<td>服务基础地址，渲染时自动拼接 <code>/svg/&lt;编码&gt;</code></td>
-</tr>
-</tbody></table>
-<h3>配置加载顺序</h3>
-<ol>
-<li>内置默认配置</li>
-<li><code>iris/config.json</code> 中的配置（覆盖默认值）</li>
-<li>用户本地存储的设置（如主题选择，会覆盖前两者）</li>
-</ol>
-<hr>
-<h2>二、运行时设置（用户级）</h2>
-<p>通过悬浮球菜单 → <strong>设置</strong> 打开设置面板，所有改动保存在浏览器 localStorage，仅对当前浏览器生效。</p>
-<p>设置面板分七个区块：<strong>语言 / 外观 / 字体 / 阅读 / 布局 / 工具与导出 / 存储</strong>（左侧分组导航，点击平滑滚动、滚动时自动同步高亮）。</p>
-<h3>语言</h3>
-<p>设置面板最顶部为「语言」选择：<strong>自动（跟随浏览器）/ 中文 / English</strong>。选择「自动」时按浏览器语言自动判定；切换立即生效并记忆，无需刷新。</p>
-<h3>外观</h3>
-<h4>预设主题</h4>
-<table>
-<thead>
-<tr>
-<th>ID</th>
-<th>名称</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>auto</code></td>
-<td>自动（跟随系统亮暗）</td>
-</tr>
-<tr>
-<td><code>default</code></td>
-<td>默认（紫粉渐变）</td>
-</tr>
-<tr>
-<td><code>github-light</code></td>
-<td>GitHub Light</td>
-</tr>
-<tr>
-<td><code>github-dark</code></td>
-<td>GitHub Dark</td>
-</tr>
-<tr>
-<td><code>notion</code></td>
-<td>Notion</td>
-</tr>
-<tr>
-<td><code>arc</code></td>
-<td>Arc Dark</td>
-</tr>
-<tr>
-<td><code>dracula</code></td>
-<td>Dracula</td>
-</tr>
-<tr>
-<td><code>nord</code></td>
-<td>Nord</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>选择预设主题会清空自定义配色。</p>
-</blockquote>
-<p><strong>自动主题（auto）</strong>：跟随系统 <code>prefers-color-scheme</code> 实时切换——系统亮色时使用「自动主题配对」中的亮色主题（默认紫粉渐变），暗色时使用暗色主题（默认 GitHub Dark）。配对可在设置面板中自由组合，系统亮暗变化时即时生效（含 PWA 桌面模式）。</p>
-<h4>自定义配色（取色器）</h4>
-<p>无需写 CSS，直接通过取色器调整：</p>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>可调变量</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>强调色</strong></td>
-<td><code>--color-accent-purple</code> / <code>--color-accent-pink</code> / <code>--color-accent-purple-deep</code></td>
-<td>主色及派生色</td>
-</tr>
-<tr>
-<td><strong>中性色</strong></td>
-<td><code>--color-bg</code> / <code>--color-surface</code> / <code>--color-border</code> / <code>--color-text</code> / <code>--color-text-muted</code></td>
-<td>背景、表面、文字与边框</td>
-</tr>
-</tbody></table>
-<p>通过中性色调整即可做出亮色或暗色主题。点击「重置」恢复默认值。</p>
-<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/theme-customization.md">主题定制</a>。</p>
-<h4>字体自定义</h4>
-<p>设置面板 → <strong>外观 → 字体</strong>，无需写 CSS 即可精细控制排版：</p>
-<table>
-<thead>
-<tr>
-<th>选项</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>远程字体 URL</td>
-<td>填写 Google Fonts 等 CSS URL 即可加载远程字体</td>
-</tr>
-<tr>
-<td>展示字体族</td>
-<td>标题衬线体，独立于正文</td>
-</tr>
-<tr>
-<td>正文字体族</td>
-<td>UI / 正文无衬线体</td>
-</tr>
-<tr>
-<td>字号细调</td>
-<td>UI / 正文 / H1 / H2 / H3 独立设置</td>
-</tr>
-<tr>
-<td>字重细调</td>
-<td>UI / 正文 / 展示体 / H1 / H2 / H3 独立选择（300 ~ 800）</td>
-</tr>
-<tr>
-<td>字色</td>
-<td>正文与次要文字颜色独立取色</td>
-</tr>
-<tr>
-<td>标题数字无衬线</td>
-<td>默认标题数字随标题字体（衬线）；开启后仅数字改用无衬线字形</td>
-</tr>
-<tr>
-<td>重置字体</td>
-<td>一键恢复全部字体默认值</td>
-</tr>
-</tbody></table>
-<h4>代码高亮主题</h4>
-<table>
-<thead>
-<tr>
-<th>主题 ID</th>
-<th>名称</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>github</code></td>
-<td>GitHub Light</td>
-<td>亮色</td>
-</tr>
-<tr>
-<td><code>github-dark</code></td>
-<td>GitHub Dark</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>atom-one-light</code></td>
-<td>Atom One Light</td>
-<td>亮色</td>
-</tr>
-<tr>
-<td><code>atom-one-dark</code></td>
-<td>Atom One Dark</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>monokai</code></td>
-<td>Monokai</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>dracula</code></td>
-<td>Dracula</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>nord</code></td>
-<td>Nord</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>vs2015</code></td>
-<td>VS 2015</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>solarized-light</code></td>
-<td>Solarized Light</td>
-<td>亮色</td>
-</tr>
-<tr>
-<td><code>solarized-dark</code></td>
-<td>Solarized Dark</td>
-<td>暗色</td>
-</tr>
-</tbody></table>
-<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md">代码高亮主题</a>。</p>
-<p>在「外观 → 代码高亮」中还可填写<strong>自定义高亮主题</strong>：加载外部 highlight.js 主题 CSS URL，回车应用（覆盖内置代码主题）。</p>
-<h4>自定义 CSS</h4>
-<p>在「外观 → 自定义 CSS」中填写<strong>外部样式表 URL</strong>，加载外部 CSS 文件进一步定制页面，回车应用。</p>
-<h3>阅读</h3>
-<h4>显示选项</h4>
-<table>
-<thead>
-<tr>
-<th>选项</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>显示阅读进度</td>
-<td>控制顶部进度条</td>
-</tr>
-<tr>
-<td>显示字数统计</td>
-<td>控制文件树中每个文件旁的字数显示</td>
-</tr>
-<tr>
-<td>折叠过长文件名</td>
-<td>开启时文件名过长省略号显示，关闭时完整展开（区域可横向滚动，隐藏滚动条）；默认关闭</td>
-</tr>
-<tr>
-<td>侧边栏文件夹默认展开</td>
-<td>开启时文件树中的文件夹全部展开显示；关闭时默认折叠，点击文件夹手动展开</td>
-</tr>
-<tr>
-<td>启用移动端手势</td>
-<td>触屏设备左右滑动正文切换上一篇 / 下一篇，自屏幕左缘右滑呼出侧边栏抽屉</td>
-</tr>
-<tr>
-<td>启用章节折叠</td>
-<td>H2 标题栏右侧出现折叠按钮，折叠状态按文档记忆、重开自动恢复</td>
-</tr>
-<tr>
-<td>对照阅读默认同步滚动</td>
-<td>打开双栏对照阅读时两栏按比例同步滚动（<code>Ctrl/⌘+Alt+S</code> 可随时开关本次会话）</td>
-</tr>
-<tr>
-<td>专注模式</td>
-<td>当前阅读段落保持高亮、其余内容淡化（也可在 <code>Ctrl/⌘+K</code> 命令面板开关）</td>
-</tr>
-</tbody></table>
-<h4>布局</h4>
-<table>
-<thead>
-<tr>
-<th>选项</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>侧边栏样式</td>
-<td>经典：贴边通栏、微色差微阴影无边框（默认）；悬浮卡片：四周留缝的圆角卡片（桌面端）</td>
-</tr>
-<tr>
-<td>内容区宽度</td>
-<td>滑杆调整 Markdown 正文最大宽度（600–1400px，默认 720px），拖动即时生效，可一键重置</td>
-</tr>
-<tr>
-<td>正文占满可用宽度</td>
-<td>开启后正文铺满窗口可用宽度，忽略上方宽度设置，适合宽屏显示器</td>
-</tr>
-<tr>
-<td>长表格延伸到右侧空白</td>
-<td>内容宽度设置保持不变，宽表格向右适度越过正文边界、利用右侧空白显示更多列</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>侧边栏折叠：桌面端可通过侧边栏标题栏的汉堡按钮或快捷键 <code>Ctrl/⌘ + B</code> 折叠/展开侧边栏，折叠后左上角浮现展开按钮，状态自动记忆（与移动端抽屉行为一致）。</p>
-<p>以上宽度与侧边栏操作均有键盘快捷键（<code>Ctrl/⌘ + Alt + =/-/0/F</code>、<code>Ctrl/⌘ + B</code>、<code>[</code> / <code>]</code> 等），完整清单见 <a href="https://theforeveriris.github.io/md-preview/docs/shortcuts.md">快捷键</a>。</p>
-</blockquote>
-<h3>工具与导出</h3>
-<h4>工具</h4>
-<table>
-<thead>
-<tr>
-<th>工具</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Markdown 编辑器</td>
-<td>在新标签页打开交互式编辑器（<code>?mode=editor</code>），支持语法快速输入和实时渲染</td>
-</tr>
-<tr>
-<td>波形生成器</td>
-<td>可视化生成 DG-LAB 郊狼 <code>.pulse</code> 波形文件（<code>?mode=pulsegen</code>），最多 20 个</td>
-</tr>
-</tbody></table>
-<h4>导出</h4>
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>下载 Markdown</td>
-<td>下载当前打开的 <code>.md</code> 源文件</td>
-</tr>
-<tr>
-<td>导出 PDF</td>
-<td>通过浏览器打印对话框导出为 PDF（自动隐藏侧边栏、悬浮球等 UI）</td>
-</tr>
-<tr>
-<td>导出 HTML</td>
-<td>保存为内联当前主题样式与全部本地 CSS 的单文件 HTML，双击即可离线查看</td>
-</tr>
-</tbody></table>
-<h4>离线缓存</h4>
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>全量离线缓存</td>
-<td>把文件树覆盖的所有文档拉进 PWA 缓存（带进度反馈），离线也能整站阅读；支持一键清除文档缓存。需 HTTPS 部署访问后可用</td>
-</tr>
-</tbody></table>
-<h3>存储</h3>
-<p>设置面板「存储」区块：<code>navigator.storage.estimate()</code> 用量条（已用 / 配额）、编辑器笔记本列表（逐条删除 / 全部清空，二次确认）、阅读历史与收藏 / 阅读位置的占用与一键清理（<code>iris/js/storage-manager.js</code>，打开面板时自动刷新）。</p>
-<h4>导航增强</h4>
-<ul>
-<li><strong>面包屑目录聚合页</strong>：面包屑与正文同宽对齐；点击中间路径进入该目录的聚合页，集中浏览目录下全部文档</li>
-<li><strong>标签聚合页</strong>：<code>#/tag/&lt;标签&gt;</code> 按标签聚合文档（见「标签系统」）</li>
-</ul>
-<hr>
-<h2>三、悬浮球菜单</h2>
-<p>悬浮球展开后提供 6 个快捷入口：</p>
-<table>
-<thead>
-<tr>
-<th>入口</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>回到顶部</td>
-<td>平滑滚动到文档顶部</td>
-</tr>
-<tr>
-<td>打开本地文件</td>
-<td>点击弹出选择面板：「选择文件…」可一次选中一个或多个本地 <code>.md</code> 文件预览（不写入 URL，刷新后丢失），未打开的文件进入侧边栏「本地文件」会话列表，可切换、移除或清空；「选择文件夹…」整体导入一个目录（File System Access API，旧浏览器回退 <code>webkitdirectory</code>），按目录树展示、文件夹可折叠、内容懒加载；最多收集 500 个文件，单文件 ≤ 10 MB。受浏览器限制，文件与文件夹需在面板中二选一进入</td>
-</tr>
-<tr>
-<td>扫码续读</td>
-<td>生成当前文档 + 阅读位置的二维码，手机扫码接着看</td>
-</tr>
-<tr>
-<td>安装到桌面</td>
-<td>PWA 安装（仅浏览器支持时显示）</td>
-</tr>
-<tr>
-<td>编辑此页</td>
-<td>在新标签页打开 GitHub 编辑界面</td>
-</tr>
-<tr>
-<td>设置</td>
-<td>打开设置面板</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>四、RSS 订阅</h2>
-<p>站点自动生成 RSS feed，订阅地址：</p>
-<pre><code>https://&lt;owner&gt;.github.io/&lt;repo&gt;/iris/data/feed.xml
-</code></pre>
-<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/rss.md">RSS 订阅</a>。</p>
 ]]></content:encoded>
     </item>
     <item>
