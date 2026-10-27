@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-27T19:17:57.167Z",
+  "generatedAt": "2026-10-27T19:20:23.849Z",
   "version": 1,
-  "count": 139,
+  "count": 140,
   "urls": [
     "./",
     "./index.html",
@@ -112,6 +112,7 @@
     "./iris/js/renderers/sandbox.js",
     "./iris/js/renderers/secret.js",
     "./iris/js/renderers/sql-erd.js",
+    "./iris/js/renderers/steps.js",
     "./iris/js/renderers/terminal.js",
     "./iris/js/router.js",
     "./iris/js/search.js",

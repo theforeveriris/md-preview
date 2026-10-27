@@ -179,7 +179,7 @@
             "path": "docs/examples/csv-examples.md",
             "wordCount": 83,
             "created": 1790831276,
-            "modified": 1791170289,
+            "modified": 1793128578,
             "title": "CSV / TSV 交互表格示例",
             "tags": [
               "数据",
@@ -189,7 +189,7 @@
               {
                 "name": "theforeveriris",
                 "email": "theforeveriris@proton.me",
-                "count": 2
+                "count": 3
               }
             ]
           },
@@ -767,6 +767,19 @@
             ]
           },
           {
+            "name": "steps-quote-examples.md",
+            "type": "file",
+            "path": "docs/examples/steps-quote-examples.md",
+            "wordCount": 90,
+            "created": 0,
+            "modified": 0,
+            "title": "步骤揭示与引用卡片示例",
+            "tags": [
+              "示例",
+              "教学"
+            ]
+          },
+          {
             "name": "table-examples.md",
             "type": "file",
             "path": "docs/examples/table-examples.md",
@@ -864,9 +877,9 @@
             ]
           }
         ],
-        "wordCount": 12908,
+        "wordCount": 12998,
         "created": 1779157467,
-        "modified": 1793128062
+        "modified": 1793128578
       },
       {
         "name": "changelog.md",
@@ -1136,9 +1149,9 @@
         ]
       }
     ],
-    "wordCount": 24985,
+    "wordCount": 25075,
     "created": 1779157467,
-    "modified": 1793128062
+    "modified": 1793128578
   },
   {
     "name": "iris",
