@@ -119,11 +119,24 @@
           showToast(editorT('tbl.parseFail', '表格解析失败'));
           return;
         }
+        // 映射校验：渲染表格与源码块的首行必须一致（合法 Markdown 表格可
+        // 省略首尾竖线，序号对应可能错位）——对不上就不开放回写，防止
+        // 覆盖错误的表格（CodeRabbit review fix）
+        const renderedFirstRow = Array.from(tbl.rows[0]?.cells || [])
+          .map(cell => (cell.textContent || '').trim());
+        const srcFirstRow = parsed.rows[0].map(c2 => (c2 || '').trim());
+        const normRow = arr => arr.join('\u0001').toLowerCase();
+        if (renderedFirstRow.length === 0 ||
+            normRow(renderedFirstRow) !== normRow(srcFirstRow)) {
+          showToast(editorT('tbl.locateFail', '无法在源码中定位此表格（可能来自 HTML 或其他语法糖）'));
+          return;
+        }
         let rows = parsed.rows.map(r => r.slice());
         let hasHeader = parsed.hasHeader;
         // 已有 table-style 标记 → 初始化预设选择框（否则仅改单元格保存
         // 会把旧样式丢掉）；改选「默认」可清除预设。
         // 只读紧邻表格的标记（允许中间空行；更后面的标记可能属于其他表格）
+        let existingPreset = '';
         const srcLines = text.split('\n');
         let probe = span.end;
         while (probe < srcLines.length && srcLines[probe].trim() === '') probe++;

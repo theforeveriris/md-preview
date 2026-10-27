@@ -5,6 +5,7 @@
   let documents = [];
   let debounceTimer = null;
   let isIndexLoaded = false;
+  let indexGen = 0; // 索引代次：来源切换（桌面 KB 注入 / 回站内）时递增，作废在途构建
   let currentQuery = '';
   let flexIndex = null;
 
@@ -71,7 +72,11 @@
     //（此前 init 无守卫 + file-tree 500ms 后再建，56KB 索引至少拉两次）
     if (isIndexLoaded) return documents.length;
     if (!buildPromise) {
+      const gen = indexGen;
       buildPromise = loadSearchIndex().then(indexData => {
+        // 构建期间来源被切换（injectDocuments / useBuiltinIndex 递增代次）：
+        // 过期结果不得覆盖新索引
+        if (gen !== indexGen) return documents.length;
         initSearchIndex(indexData);
         buildPromise = null;
         return indexData.length;
@@ -277,7 +282,10 @@
     if (calc) appendCalcCard(container, currentQuery, calc);
 
     if (!results || results.length === 0) {
-      container.innerHTML = `<div class="search-no-results">${t("search.noResults", "没有找到相关文档")}</div>`;
+      // 已有计算卡时保留（计算式查询本来就不会命中文档），只补命令区
+      if (!container.querySelector('.palette-calc-item')) {
+        container.innerHTML = `<div class="search-no-results">${t("search.noResults", "没有找到相关文档")}</div>`;
+      }
       if (window.MarkdownPreview.palette) {
         window.MarkdownPreview.palette.appendInline(window.MarkdownPreview.palette.stripPrefix(currentQuery), container, 4);
       }
@@ -423,6 +431,7 @@
   // injectDocuments：用挂载目录的轻量索引整体替换站内索引；
   // useBuiltinIndex：卸载后复位标记，下次搜索重新 fetch 站内 search-index.json
   function injectDocuments(docs) {
+    indexGen++; // 作废在途的站内索引构建
     documents = Array.isArray(docs) ? docs : [];
     isIndexLoaded = true;
     buildPromise = null;
@@ -440,6 +449,7 @@
   }
 
   function useBuiltinIndex() {
+    indexGen++; // 作废在途构建（可能仍是桌面 KB 注入路径）
     isIndexLoaded = false;
     buildPromise = null;
   }

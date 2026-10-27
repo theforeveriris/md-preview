@@ -730,18 +730,8 @@ pre.code-block code { position: relative; z-index: 1; }
 .contributors-label { font-size: 12px; color: var(--color-text-muted); }
 .contributors-stack { display: inline-flex; }
 .contributor-chip { position: relative; width: 26px; height: 26px; margin-right: -8px; }
-.contributor-chip .contributor-avatar {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  border: 2px solid var(--color-surface);
-  object-fit: cover;
-  background: var(--color-surface);
-  position: relative;
-  z-index: 1;
-}
 .contributor-fallback {
-  display: none;
+  display: inline-flex;
   width: 26px;
   height: 26px;
   border-radius: 50%;

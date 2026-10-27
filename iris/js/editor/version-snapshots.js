@@ -165,7 +165,9 @@
               } else if (act === 'rollback') {
                 if (!confirm(editorT('snap.rollbackConfirm', '回滚将用该快照替换当前全部 Cell（可先对当前内容另存快照），继续？'))) return;
                 await snapshot(editorT('snap.beforeRollback', '回滚前自动快照'));
-                ctx.importCells(cellsToText(snap.cells));
+                // 结构化恢复：快照的 cells 数组原样还原（cellsToText 经
+                // Markdown 拆分会把含 --- 的单 Cell 错拆、丢空 Cell）
+                await ctx.restoreCells(snap.cells);
                 close();
               }
             });

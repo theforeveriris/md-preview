@@ -115,6 +115,13 @@
 
   async function getCommitDetail(sha) {
     if (detailCache.has(sha)) return detailCache.get(sha);
+    // 非 GitHub 托管：详情读取走 git-provider（归一为 GitHub files 形态）
+    const gp = window.MarkdownPreview.gitProvider;
+    if (gp && gp.cfg().provider !== 'github') {
+      const data = await gp.commitDetail(sha);
+      detailCache.set(sha, data);
+      return data;
+    }
     const { owner, repo } = cfg();
     if (!owner || !repo) return null;
     const url = `https://api.github.com/repos/${owner}/${repo}/commits/${sha}`;

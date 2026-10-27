@@ -11,6 +11,11 @@
   const t = window.MarkdownPreview.t;
   const esc = (...a) => window.MarkdownPreview.mdRender.escapeHtml(...a);
 
+  // Markdown 链接文本安全化：HTML 转义 + 方括号转义——标题里的标记
+  // 字符/HTML 不破坏链接结构也不直通渲染（CodeRabbit review fix）
+  const mdText = (raw) => esc(String(raw == null ? '' : raw))
+    .replace(/\[/g, '&#91;').replace(/\]/g, '&#93;');
+
   function walkFiles(items, out) {
     (items || []).forEach(item => {
       if (item.type === 'folder' && item.children) walkFiles(item.children, out);
@@ -56,7 +61,7 @@
       .replace('{n}', files.length).replace('{p}', page).replace('{total}', totalPages)}`);
     lines.push('');
     slice.forEach(f => {
-      const title = f.title || String(f.name || '').replace(/\.md$/i, '');
+      const title = mdText(f.title || String(f.name || '').replace(/\.md$/i, ''));
       const date = fmtDate(f.modified);
       lines.push(`- [${title}](#/${encodeURI(f.path)})`);
       lines.push('  ' + [date, f.path ? `\`${f.path}\`` : ''].filter(Boolean).join(' · '));
@@ -81,7 +86,7 @@
     entries.forEach(item => {
       const when = new Date(item.ts || Date.now());
       const dateStr = isNaN(when) ? '' : when.toISOString().slice(0, 10);
-      lines.push(`- [${item.title || item.path}](#/${encodeURI(item.path)})`);
+      lines.push(`- [${mdText(item.title || item.path)}](#/${encodeURI(item.path)})`);
       lines.push('  ' + [dateStr, `\`${item.path}\``].filter(Boolean).join(' · '));
     });
     if (entries.length === 0) {
@@ -181,7 +186,7 @@
     if (featured.length > 0) {
       lines.push(`<div class="portal-cards">`);
       featured.forEach(f => {
-        const title = f.title || String(f.name || '').replace(/\.md$/i, '');
+        const title = mdText(f.title || String(f.name || '').replace(/\.md$/i, ''));
         const tags = Array.isArray(f.tags) ? f.tags.slice(0, 3) : [];
         lines.push(`<a class="portal-card" href="#/${encodeURI(f.path)}">
   <span class="portal-card-title">${esc(title)}</span>

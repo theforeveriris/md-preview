@@ -92,15 +92,20 @@
       if (!projectId) throw new Error('gitlab provider requires config.projectId');
       const out = [];
       let page = 1;
-      // 分页拉全（GitLab tree 每页默认 20/上限 100）
-      for (; page <= 30; page++) {
-        const url = `${gitlabUrl}/api/v4/projects/${encodeURIComponent(projectId)}/repository/tree?recursive=true&per_page=100&page=${page}&ref=${encodeURIComponent(ref)}`;
+      // 分页拉全：空页或不足一页即结束；安全上限只防接口异常死循环
+      //（CodeRabbit review fix：固定 30 页会静默截断大树）
+      const MAX_PAGES = 100;
+      for (; page <= MAX_PAGES; page++) {
+        const url = `${gitlabUrl}/api/v4/projects/${projectId}/repository/tree?recursive=true&per_page=100&page=${page}&ref=${encodeURIComponent(ref)}`;
         const data = await api(url);
         if (!Array.isArray(data) || data.length === 0) break;
         data.forEach(item => {
           out.push({ path: item.path, type: item.type === 'tree' ? 'tree' : 'blob' });
         });
         if (data.length < 100) break;
+      }
+      if (page > MAX_PAGES) {
+        console.warn('[git-provider] GitLab tree 超过安全分页上限，结果可能不完整');
       }
       return { tree: out };
     }
@@ -125,7 +130,7 @@
 
     if (provider === 'gitlab') {
       if (!projectId) return [];
-      const url = `${gitlabUrl}/api/v4/projects/${encodeURIComponent(projectId)}/repository/commits?path=${encPath}&ref_name=${encodeURIComponent(cfg().branch)}&per_page=${perPage}`;
+      const url = `${gitlabUrl}/api/v4/projects/${projectId}/repository/commits?path=${encPath}&ref_name=${encodeURIComponent(cfg().branch)}&per_page=${perPage}`;
       const data = await api(url);
       return (Array.isArray(data) ? data : []).map(c => ({
         sha: c.id || '',
@@ -148,7 +153,7 @@
 
     if (provider === 'gitlab') {
       if (!projectId) throw new Error('gitlab provider requires config.projectId');
-      const url = `${gitlabUrl}/api/v4/projects/${encodeURIComponent(projectId)}/repository/files/${encPath}?ref=${encodeURIComponent(ref || cfg().branch)}`;
+      const url = `${gitlabUrl}/api/v4/projects/${projectId}/repository/files/${encPath}?ref=${encodeURIComponent(ref || cfg().branch)}`;
       const data = await api(url);
       return decodeBase64Utf8(data.content || '');
     }
@@ -185,5 +190,44 @@
     return `https://github.com/${owner}/${repo}/edit/${cfg().branch}/${encPath}`;
   }
 
-  window.MarkdownPreview.gitProvider = { listFiles, commits, headContent, editUrl, cfg, token };
+  /// 提交详情（非 GitHub）：归一为 GitHub { commit, files } 形态，
+  /// 供 git-history 的 showCommit 直接渲染
+  async function commitDetail(sha) {
+    const { provider, owner, repo, gitlabUrl, projectId } = cfg();
+
+    if (provider === 'gitee') {
+      // gitee v5 与 GitHub v3 形态一致（含 files[].patch）
+      const url = withQueryAuth(`https://gitee.com/api/v5/repos/${owner}/${repo}/commits/${encodeURIComponent(sha)}`);
+      return api(url);
+    }
+
+    if (provider === 'gitlab') {
+      if (!projectId) return null;
+      const base = `${gitlabUrl}/api/v4/projects/${projectId}/repository/commits/${encodeURIComponent(sha)}`;
+      const meta = await api(base);
+      const diffs = await api(base + '/diff').catch(() => []);
+      const files = (Array.isArray(diffs) ? diffs : []).map(d => {
+        const patch = d.diff || '';
+        const lines = patch.split('\n');
+        return {
+          filename: d.new_path || d.old_path || '',
+          patch,
+          additions: lines.filter(l => l.startsWith('+') && !l.startsWith('+++')).length,
+          deletions: lines.filter(l => l.startsWith('-') && !l.startsWith('---')).length
+        };
+      });
+      return {
+        sha: meta.id || sha,
+        commit: {
+          message: meta.message || '',
+          author: { name: meta.author_name || '', date: meta.committed_date || meta.created_at || '' }
+        },
+        files
+      };
+    }
+
+    return null;
+  }
+
+  window.MarkdownPreview.gitProvider = { listFiles, commits, commitDetail, headContent, editUrl, cfg, token };
 })();

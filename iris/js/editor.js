@@ -2466,7 +2466,31 @@
       showToast,
       getNotebookId: () => NOTEBOOK_ID,
       getCells: () => cells,
-      importCells: (text) => { importMdCells(text, { skipConfirm: true }); markUnsaved(); },
+      // 结构化恢复：不经 Markdown 拆分，保留类型/内容/顺序/空 Cell
+      restoreCells: async (cellsData) => {
+        if (!Array.isArray(cellsData)) return;
+        restoreDepth++;
+        try {
+          cells.slice().forEach(c => {
+            if (c.textarea && typeof c.textarea.destroy === 'function') c.textarea.destroy();
+            c.div.remove();
+          });
+          cells.length = 0;
+          cellCounter = 0;
+          for (const sdata of cellsData) {
+            const nc = createCell(null, sdata.content || '', {
+              type: sdata.type === 'plaintext' ? 'plaintext' : 'markdown'
+            });
+            updateLineNumbers(nc);
+          }
+          if (cells.length === 0) createCell();
+          renumberCells();
+          updateStatusbar();
+        } finally {
+          restoreDepth--;
+        }
+        markUnsaved();
+      },
       registerMenuAction
     });
   }
