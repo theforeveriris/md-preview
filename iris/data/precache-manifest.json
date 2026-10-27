@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-27T19:34:42.919Z",
+  "generatedAt": "2026-10-27T19:37:57.789Z",
   "version": 1,
-  "count": 145,
+  "count": 146,
   "urls": [
     "./",
     "./index.html",
@@ -83,6 +83,7 @@
     "./iris/js/name-sort.js",
     "./iris/js/offline.js",
     "./iris/js/orphan.js",
+    "./iris/js/pages.js",
     "./iris/js/palette.js",
     "./iris/js/pkt/pkt-renderer.js",
     "./iris/js/plugins/loader.js",

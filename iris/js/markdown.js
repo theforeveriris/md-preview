@@ -362,7 +362,50 @@
 
     const plainText = content.replace(/[#*`\[\]()_{}]/g, '').replace(/\n+/g, ' ').trim();
     const readingTime = calculateReadingTime(plainText);
-    const readingTimeHtml = `<div class="reading-time">${t('md.readingTime', '预计阅读 {n} 分钟').replace('{n}', readingTime)}</div>`;
+
+    // 统一文档 meta 信息头（DOC-META）：作者 / 日期 / 标签 chips / 阅读时长，
+    // 贡献者徽标（contributors.js）也是它的成员之一，插在同一行区域
+    const escHtml = (s) => mdRender.escapeHtml(s == null ? '' : String(s));
+    const metaBits = [];
+    if (frontmatter.author) metaBits.push(`<span class="doc-meta-author">👤 ${escHtml(frontmatter.author)}</span>`);
+    const dateStr = frontmatter.date ||
+      (() => {
+        // 无 frontmatter date 时回退文件树的最初创建时间
+        let created = 0;
+        (function findCreated(items) {
+          (items || []).forEach(item => {
+            if (created) return;
+            if (item.type === 'folder') findCreated(item.children);
+            else if (item.path === currentPath && item.created) created = item.created;
+          });
+        })(state.fileTreeData);
+        return created ? new Date(created * 1000).toISOString().slice(0, 10) : '';
+      })();
+    if (dateStr) metaBits.push(`<span class="doc-meta-date">🗓 ${escHtml(String(dateStr).slice(0, 10))}</span>`);
+    // 标签 chips：frontmatter 优先，回退文件树；链接到标签聚合页
+    const tagList = (() => {
+      const raw = frontmatter.tags;
+      if (raw) {
+        let s = String(raw).trim();
+        if (s.startsWith('[') && s.endsWith(']')) s = s.slice(1, -1);
+        return s.split(/[,，]/).map(x => x.trim().replace(/^['"]|['"]$/g, '')).filter(Boolean);
+      }
+      let tags = null;
+      (function findTags(items) {
+        (items || []).forEach(item => {
+          if (tags) return;
+          if (item.type === 'folder') findTags(item.children);
+          else if (item.path === currentPath && Array.isArray(item.tags)) tags = item.tags;
+        });
+      })(state.fileTreeData);
+      return tags || [];
+    })();
+    if (tagList.length > 0) {
+      metaBits.push(`<span class="doc-meta-tags">${tagList.slice(0, 6).map(tag =>
+        `<a class="doc-meta-tag" href="#/tag/${encodeURIComponent(tag)}">${escHtml(tag)}</a>`).join('')}</span>`);
+    }
+    metaBits.push(`<span class="doc-meta-reading">${t('md.readingTime', '预计阅读 {n} 分钟').replace('{n}', readingTime)}</span>`);
+    const readingTimeHtml = `<div class="reading-time doc-meta-bar">${metaBits.join('<span class="doc-meta-sep">·</span>')}</div>`;
 
     const headingMatch = html.match(/<h1[^>]*>/);
     let finalHtml;

@@ -1230,3 +1230,67 @@ table.md-table-accent-header thead th {
 }
 .sensitive-blur:hover { filter: blur(4px); }
 .sensitive-blur.revealed { filter: none; }
+
+/* ============== 文档 meta 信息头（markdown.js DOC-META） ============== */
+.doc-meta-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.doc-meta-sep { color: var(--color-border); }
+.doc-meta-author, .doc-meta-date { font-size: 12.5px; color: var(--color-text-muted); }
+.doc-meta-tags { display: inline-flex; gap: 5px; flex-wrap: wrap; }
+.doc-meta-tag {
+  font-size: 11.5px; padding: 1px 9px; border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent-purple) 11%, transparent);
+  color: var(--color-accent-purple-deep, var(--color-accent-purple));
+  text-decoration: none;
+}
+.doc-meta-tag:hover { background: color-mix(in srgb, var(--color-accent-purple) 20%, transparent); }
+
+/* ============== 门户首页 / 标签云页 / 博客流（pages.js） ============== */
+.portal-hero { text-align: center; padding: 34px 0 22px; }
+.portal-title { font-size: 2.2em; margin: 0 0 8px; }
+.portal-subtitle { color: var(--color-text-muted); font-size: 1.05em; margin: 0; }
+.portal-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 18px 0;
+}
+.portal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  text-decoration: none;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.portal-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-accent-purple);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-accent-purple) 14%, transparent);
+}
+.portal-card-title { font-weight: 600; font-size: 14.5px; color: var(--color-text); }
+.portal-card-meta { font-size: 12px; color: var(--color-text-muted); }
+.portal-card-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.portal-card-tag {
+  font-size: 10.5px; padding: 1px 8px; border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent);
+  color: var(--color-accent-purple-deep, var(--color-accent-purple));
+}
+.portal-links { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 12px 0; }
+.portal-link {
+  padding: 7px 16px; border: 1px solid var(--color-border); border-radius: 999px;
+  font-size: 13.5px; color: var(--color-accent-purple-deep, var(--color-accent-purple));
+  text-decoration: none;
+}
+.portal-link:hover { border-color: var(--color-accent-purple); }
+
+/* 标签云页（虚拟文档内的 HTML 块） */
+.tags-cloud-page { display: flex; flex-wrap: wrap; gap: 14px 18px; align-items: baseline; padding: 8px 0; }
+.tags-cloud-item {
+  color: var(--color-accent-purple-deep, var(--color-accent-purple));
+  text-decoration: none; line-height: 1.5;
+}
+.tags-cloud-item:hover { text-decoration: underline; }
+.tags-cloud-item sup { color: var(--color-text-muted); font-size: 0.62em; }

@@ -218,6 +218,7 @@
     renderPanel,
     openTagPage,
     extractTagFilters,
-    docHasTags
+    docHasTags,
+    getIndex: buildIndex // 标签云页（pages.js）使用
   };
 })();

@@ -168,6 +168,30 @@
         }
       },
       {
+        id: 'open-blog',
+        icon: 'i-list',
+        label: t('cmd.openBlog', '博客流'),
+        run: () => { window.location.hash = '#/blog'; }
+      },
+      {
+        id: 'open-history-page',
+        icon: 'i-refresh',
+        label: t('cmd.openHistoryPage', '浏览足迹'),
+        run: () => { window.location.hash = '#/history'; }
+      },
+      {
+        id: 'open-tags-cloud',
+        icon: 'i-tag',
+        label: t('cmd.openTagsCloud', '标签云'),
+        run: () => { window.location.hash = '#/tags'; }
+      },
+      {
+        id: 'open-site-index',
+        icon: 'i-graph',
+        label: t('cmd.openSiteIndex', '全站目录'),
+        run: () => { window.location.hash = '#/index'; }
+      },
+      {
         id: 'open-orphan',
         icon: 'i-filter',
         label: t('cmd.openOrphan', '孤立文档检测'),
