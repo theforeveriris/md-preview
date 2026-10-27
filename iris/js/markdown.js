@@ -397,6 +397,8 @@
     if (window.MarkdownPreview.sectionCollapse) {
       window.MarkdownPreview.sectionCollapse.onDocRendered(currentPath);
     }
+    // 任务清单勾选记忆（frontmatter checklist: true 时启用，按路径+序号存 localStorage）
+    window.MarkdownPreview.checklist?.onDocRendered?.(currentPath, frontmatter);
     // 查找条：文档已更换，清理旧高亮；查找条开着时自动重跑关键词
     if (window.MarkdownPreview.findBar) {
       window.MarkdownPreview.findBar.onDocRendered();

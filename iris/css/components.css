@@ -450,3 +450,20 @@
   }
 }
 
+
+/* ============== 任务清单勾选记忆（checklist.js） ============== */
+.markdown-body li.task-list-interactive {
+  list-style: none;
+  margin-left: -1.4em;
+  cursor: pointer;
+}
+.markdown-body li.task-list-interactive input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: var(--color-accent-purple, #8b5cf6);
+  margin-right: 0.4em;
+}
+.markdown-body li.task-list-done > *:not(input) {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--color-border);
+}
