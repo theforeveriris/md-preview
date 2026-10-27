@@ -67,6 +67,19 @@
             ]
           },
           {
+            "name": "bits-examples.md",
+            "type": "file",
+            "path": "docs/examples/bits-examples.md",
+            "wordCount": 22,
+            "created": 0,
+            "modified": 0,
+            "title": "位标注示例",
+            "tags": [
+              "网络",
+              "教学"
+            ]
+          },
+          {
             "name": "code-tabs-examples.md",
             "type": "file",
             "path": "docs/examples/code-tabs-examples.md",
@@ -375,12 +388,19 @@
             "type": "file",
             "path": "docs/examples/heatmap-examples.md",
             "wordCount": 14,
-            "created": 0,
-            "modified": 0,
+            "created": 1793128946,
+            "modified": 1793128946,
             "title": "日历热图示例",
             "tags": [
               "示例",
               "可视化"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 1
+              }
             ]
           },
           {
@@ -897,9 +917,9 @@
             ]
           }
         ],
-        "wordCount": 13012,
+        "wordCount": 13034,
         "created": 1779157467,
-        "modified": 1793128850
+        "modified": 1793128946
       },
       {
         "name": "changelog.md",
@@ -1169,9 +1189,9 @@
         ]
       }
     ],
-    "wordCount": 25089,
+    "wordCount": 25111,
     "created": 1779157467,
-    "modified": 1793128850
+    "modified": 1793128946
   },
   {
     "name": "iris",
