@@ -207,6 +207,32 @@
         }
       },
       {
+        id: 'share-favorites',
+        icon: 'i-star',
+        label: t('cmd.shareFavorites', '收藏夹分享'),
+        run: async (item) => {
+          const snap = window.MarkdownPreview.snapshot;
+          if (!snap || !snap.buildFavoritesShareUrl) return;
+          const result = await snap.buildFavoritesShareUrl();
+          if (!result.ok) { alert(result.reason); return; }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(result.url).catch(() => {});
+          }
+          alert(t('snap.favCopied', '已复制收藏合集链接（含 {n} 篇）')
+            .replace('{n}', result.count) +
+            (result.skipped > 0 ? t('snap.favSkipped', '，{n} 篇因体积未装下').replace('{n}', result.skipped) : ''));
+        }
+      },
+      {
+        id: 'export-html-book',
+        icon: 'i-download',
+        label: t('cmd.exportHtmlBook', '导出整站 HTML 合订本'),
+        run: () => {
+          const bundle = window.MarkdownPreview.exportBundle;
+          if (bundle && bundle.exportSiteHtmlBook) bundle.exportSiteHtmlBook();
+        }
+      },
+      {
         id: 'new-from-template',
         icon: 'i-save',
         label: t('cmd.newFromTemplate', '从模板新建'),

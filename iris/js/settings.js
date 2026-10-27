@@ -1182,7 +1182,8 @@
     const bundleButtons = [
       { btn: 'downloadEpubBtn', desc: 'exportEpubDesc', scope: 'doc' },
       { btn: 'downloadSiteEpubBtn', desc: 'exportSiteEpubDesc', scope: 'site' },
-      { btn: 'downloadSiteMdBtn', desc: 'exportSiteMdDesc', scope: 'md' }
+      { btn: 'downloadSiteMdBtn', desc: 'exportSiteMdDesc', scope: 'md' },
+      { btn: 'downloadSiteHtmlBookBtn', desc: 'exportSiteHtmlBookDesc', scope: 'htmlbook' }
     ];
     bundleButtons.forEach(({ btn, desc, scope }) => {
       const btnEl = document.getElementById(btn);
@@ -1202,6 +1203,7 @@
         };
         try {
           if (scope === 'md') await bundle.exportSiteMdZip(onProgress);
+          else if (scope === 'htmlbook') await bundle.exportSiteHtmlBook(onProgress);
           else await bundle.exportEpub(scope, onProgress);
           if (descEl) descEl.textContent = t('settings.export.done', '已导出');
         } catch (e) {
