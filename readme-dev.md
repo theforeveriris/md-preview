@@ -496,6 +496,22 @@ npm run desktop:build  # 编译 + 打包（会先跑 desktop:dist）
 
 前置条件：Rust（MSVC 工具链）与 WebView2（Win10/11 自带）。`npx tauri info` 可一次性体检。
 
+### 桌面端功能一览（dev 分支新增）
+
+- **本地知识库**：悬浮球「本地知识库」选目录 → `pick_folder` / `read_kb_tree` /
+  `read_kb_file`（Rust）挂载为 `kb/` 命名空间，复用侧边栏/搜索/反链/图谱；
+  notify 监视变更实时重渲染；双击 `.md`（文件关联）直接打开。
+- **自动更新**：tauri-plugin-updater，端点指向 GitHub Releases 的
+  `latest.json`。**发布前必须生成签名密钥**：
+  `npx tauri signer generate -w ~/.tauri/md-preview.key`，把公钥填进
+  `src-tauri/tauri.conf.json` 的 `plugins.updater.pubkey`（当前为占位值，
+  未配置时检查更新静默失败），私钥 `TAURI_SIGNING_PRIVATE_KEY` 配到
+  Release CI 环境变量用于产出签名产物。
+- **批量导出**：知识库挂载后，设置面板「整站 EPUB / MD ZIP / HTML 合订本」
+  与命令面板导出动作自动作用于挂载目录。
+- **多窗口**：命令面板「编辑器（独立窗口）」开新 WebviewWindow
+  （label=editor 自动进编辑器模式，IndexedDB 天然共享）。
+
 ### `desktop:dist` 做了什么（`iris/scripts/build-desktop-dist.js`）
 
 站点没有打包步骤，Tauri 需要的是一个「能直接当站点根」的目录，所以脚本把运行时文件挑进 `dist/`：

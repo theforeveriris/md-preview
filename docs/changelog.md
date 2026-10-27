@@ -7,8 +7,21 @@ tags: [规划]
 
 > 本页由 `iris/scripts/build-changelog.js` 从 git 历史自动生成，请勿手动编辑。
 
+## 2026-10-28
+
+- `5040dec` feat(bits): 位标注块 — theforeveriris
+- `4bd0261` feat(heatmap): 日历热图块 — theforeveriris
+- `daa17e6` feat(steps,quote,orgchart): 步骤揭示 / 引用卡片 / 架构图语法糖三件套 — theforeveriris
+- `bb5456d` feat(csv): 条件格式（阈值着色） — theforeveriris
+- `f4c412b` feat(terminal,secret): 终端回放块与敏感信息遮罩块 — theforeveriris
+- `a13d12a` feat(acl,rt): ACL 分析块与路由表分析块 — theforeveriris
+- `7edfb62` feat(config-diff): 配置语义 diff 块 — theforeveriris
+- `0d00fe8` feat(learning-path): 学习路径（prerequisites 前置阅读链 + 图谱有向边） — theforeveriris
 ## 2026-10-27
 
+- `76fe67a` feat(line-highlight): 代码行高亮 {2,5-8} 与 [!code highlight] — theforeveriris
+- `53ca645` feat(ipcalc): ipcalc 子网计算块 — theforeveriris
+- `786f983` fix(review): 处理 CodeRabbit 复审的 10 条意见 — theforeveriris
 - `e635b5b` merge: 合并 main 的自动生成产物（数据文件冲突取本分支并重新生成） — theforeveriris
 - `44c7657` fix(review): 处理 CodeRabbit 的 20 条 minor 与 2 条 nitpick — theforeveriris
 - `7f6935e` fix(review): 修正 CodeRabbit 评审的 11 项问题 — theforeveriris
@@ -186,4 +199,4 @@ tags: [规划]
 - `b1eecd4` Add multi-level documentation structure with test files — theforeveriris
 - `4a49e3b` Initial commit: Markdown previewer for GitHub Pages — agelaia521
 
-> 共 132 条（最多展示 200 条）。
+> 共 143 条（最多展示 200 条）。

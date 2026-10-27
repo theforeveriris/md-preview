@@ -71,12 +71,19 @@
             "type": "file",
             "path": "docs/examples/bits-examples.md",
             "wordCount": 22,
-            "created": 0,
-            "modified": 0,
+            "created": 1793129137,
+            "modified": 1793129137,
             "title": "位标注示例",
             "tags": [
               "网络",
               "教学"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 1
+              }
             ]
           },
           {
@@ -919,7 +926,7 @@
         ],
         "wordCount": 13034,
         "created": 1779157467,
-        "modified": 1793128946
+        "modified": 1793129137
       },
       {
         "name": "changelog.md",
@@ -1191,7 +1198,7 @@
     ],
     "wordCount": 25111,
     "created": 1779157467,
-    "modified": 1793128946
+    "modified": 1793129137
   },
   {
     "name": "iris",
