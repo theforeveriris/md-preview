@@ -55,4 +55,42 @@
     }
     return nativeOpen.apply(window, [url, ...rest]);
   };
+
+  // ============== 桌面端自动更新 ==============
+  // 复用站点的 #updateToast 横幅（桌面端 SW 已禁用，不冲突）。
+  // 更新端点与签名公钥在 src-tauri/tauri.conf.json 的 plugins.updater 配置。
+  async function checkForUpdate() {
+    if (!document.getElementById('updateToast')) return;
+    let info;
+    try {
+      info = await invoke('check_update');
+    } catch (err) {
+      return; // 端点未配置 / 离线 / 公钥未配置：静默跳过
+    }
+    if (!info) return;
+
+    const toast = document.getElementById('updateToast');
+    const refreshBtn = document.getElementById('updateRefreshBtn');
+    const text = toast.querySelector('.update-toast-text');
+    if (text) {
+      text.textContent = '桌面端新版本 v' + info.version + ' 可用，点击「更新」安装';
+    }
+    if (refreshBtn) {
+      refreshBtn.textContent = '更新';
+      refreshBtn.onclick = async () => {
+        if (text) text.textContent = '正在下载更新…';
+        try {
+          await invoke('install_update');
+          // Windows 上 install 完成会自动退出重启；到这里通常已经不在了
+          if (text) text.textContent = '更新完成，即将重启…';
+        } catch (err) {
+          if (text) text.textContent = '更新失败：' + (err && err.message || err);
+        }
+      };
+    }
+    toast.classList.add('show');
+  }
+
+  // 启动后错峰检查，避免与首屏渲染抢资源
+  setTimeout(checkForUpdate, 5000);
 })();

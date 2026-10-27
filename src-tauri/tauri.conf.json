@@ -61,6 +61,15 @@
         "languages": ["SimpChinese", "English"],
         "installMode": "currentUser"
       }
+    },
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://github.com/theforeveriris/md-preview/releases/latest/download/latest.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6c2lnbmF0dXJlCi0tLQpMQVVUSCBVUERBVEVSIFBVQktFWTo="
     }
   }
 }

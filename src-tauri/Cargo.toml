@@ -21,6 +21,8 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 # 实时预览：挂载目录的文件系统监视
 notify = "6"
+# 桌面端自动更新（GitHub Releases；前端走本 crate 包装的 check_update/install_update）
+tauri-plugin-updater = "2"
 
 # Tauri 官方模板的发布配置：体积优先
 [profile.release]

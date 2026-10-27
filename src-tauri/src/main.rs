@@ -262,11 +262,78 @@ fn capture_open_file_arg() -> Option<String> {
     })
 }
 
+// ============== 桌面端自动更新 ==============
+//
+// 前端不直接调 updater 插件的 IPC 命令（资源句柄协议需要官方 JS 绑定配合），
+// 而是用本 crate 包装两个命令：check_update 返回版本信息，install_update
+// 从状态里取回 Update 对象下载安装（Windows 上安装完自动重启）。
+
+use tauri_plugin_updater::UpdaterExt;
+
+/// check_update 暂存的待安装更新，install_update 消费
+struct PendingUpdate(Mutex<Option<tauri_plugin_updater::Update>>);
+
+#[derive(Serialize)]
+struct UpdateInfo {
+    version: String,
+    notes: String,
+}
+
+#[tauri::command(async)]
+async fn check_update(
+    app: tauri::AppHandle,
+    pending: tauri::State<'_, PendingUpdate>,
+) -> Result<Option<UpdateInfo>, String> {
+    let update = app
+        .updater()
+        .map_err(|e| e.to_string())?
+        .check()
+        .await
+        .map_err(|e| e.to_string())?;
+    let Some(update) = update else {
+        *pending.0.lock().unwrap() = None;
+        return Ok(None);
+    };
+    let info = UpdateInfo {
+        version: update.version.clone(),
+        notes: update.body.clone().unwrap_or_default(),
+    };
+    *pending.0.lock().unwrap() = Some(update);
+    Ok(Some(info))
+}
+
+/// 下载并安装待更新（进度经 updater-progress 事件通知前端；完成后应用自动重启）
+#[tauri::command(async)]
+async fn install_update(
+    app: tauri::AppHandle,
+    pending: tauri::State<'_, PendingUpdate>,
+) -> Result<(), String> {
+    let update = pending
+        .0
+        .lock()
+        .unwrap()
+        .take()
+        .ok_or("no pending update")?;
+    update
+        .download_and_install(
+            |chunk, total| {
+                let _ = app.emit("updater-progress", (chunk, total));
+            },
+            || {
+                let _ = app.emit("updater-downloaded", ());
+            },
+        )
+        .await
+        .map_err(|e| e.to_string())
+}
+
 fn main() {
     let open_arg = capture_open_file_arg();
     tauri::Builder::default()
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .manage(KbWatchState(Mutex::new(None)))
         .manage(OpenFileArg(Mutex::new(open_arg)))
+        .manage(PendingUpdate(Mutex::new(None)))
         .invoke_handler(tauri::generate_handler![
             open_external,
             pick_folder,
@@ -275,7 +342,9 @@ fn main() {
             watch_kb_folder,
             unwatch_kb_folder,
             take_open_file_arg,
-            read_open_file
+            read_open_file,
+            check_update,
+            install_update
         ])
         .run(tauri::generate_context!())
         .expect("error while running md-preview");
