@@ -187,6 +187,23 @@
         },
       }));
 
+    // 学习路径（KNOW-1）：frontmatter prerequisites → 有向学习路径边
+    docs.forEach(d => {
+      (d.prerequisites || []).forEach(pre => {
+        if (!known.has(pre) || pre === d.path) return;
+        elements.push({
+          classes: 'prereq-edge',
+          data: {
+            id: `prereq:${pre}→${d.path}`,
+            source: pre,
+            target: d.path,
+            weight: 1,
+            width: 2.4,
+          },
+        });
+      });
+    });
+
     // 出现次数多的标签排在前面，拿到阶梯里对比度最强的一档
     const tags = Array.from(tagCount.entries())
       .map(([name, count], order) => ({ name, count, order }))
@@ -253,6 +270,7 @@
     // 边用中性灰而不是边框色：边框色在浅色底上对比度太低，几乎看不见；
     // 用文字的弱化色则深浅主题都自适应，也不会和 10+ 档节点色相打架
     const edgeColor = rgbToCss(resolveColor(muted, '#8a8a8a'));
+    const prereqColor = cssVar('--color-accent-purple', '#8b5cf6');
     const matchedRing = cssVar('--color-accent-pink', '#EC4899');
     const fallbackColor = colors[0] || '#94A3B8';
 
@@ -308,6 +326,21 @@
           'arrow-scale': 0.9,
           'curve-style': 'bezier',
           opacity: 0.75,
+        },
+      },
+      {
+        // 学习路径（KNOW-1）：prerequisites 前置关系边，虚线强调色与普通
+        // 引用边区分——知识库的结构化阅读顺序在图谱上可辨
+        selector: 'edge.prereq-edge',
+        style: {
+          width: 2.4,
+          'line-style': 'dashed',
+          'line-color': prereqColor,
+          'target-arrow-color': prereqColor,
+          'target-arrow-shape': 'triangle',
+          'arrow-scale': 1.1,
+          'curve-style': 'bezier',
+          opacity: 0.95,
         },
       },
       {

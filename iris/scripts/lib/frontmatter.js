@@ -71,10 +71,31 @@ function extractTags(content) {
     .slice(0, 20);
 }
 
+/**
+ * 通用列表字段提取（tags / prerequisites / lang 链接等同构语法）：
+ * `key: [a, b]` 内联数组或逗号分隔，去引号去空，上限 cap。
+ */
+function extractListField(content, key, cap) {
+  const { frontmatter } = parseFrontmatter(content);
+  const raw = frontmatter[key];
+  if (!raw) return [];
+  let list;
+  if (raw.startsWith('[')) {
+    list = raw.replace(/^\[/, '').replace(/\]$/, '').split(',');
+  } else {
+    list = raw.split(/[,，]/);
+  }
+  return list
+    .map(s => stripQuotes(s.trim()))
+    .filter(Boolean)
+    .slice(0, cap || 20);
+}
+
 module.exports = {
   FRONTMATTER_RE,
   splitFrontmatter,
   parseFrontmatter,
   extractTitle,
-  extractTags
+  extractTags,
+  extractListField
 };

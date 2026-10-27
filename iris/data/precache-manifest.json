@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-27T18:46:16.676Z",
+  "generatedAt": "2026-10-27T18:50:11.217Z",
   "version": 1,
-  "count": 130,
+  "count": 131,
   "urls": [
     "./",
     "./index.html",
@@ -70,6 +70,7 @@
     "./iris/js/lang-links.js",
     "./iris/js/langs/net-config.js",
     "./iris/js/lazy-modules.js",
+    "./iris/js/learning-path.js",
     "./iris/js/line-highlight.js",
     "./iris/js/local-docs.js",
     "./iris/js/markdown.js",

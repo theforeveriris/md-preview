@@ -229,6 +229,19 @@
             ]
           },
           {
+            "name": "ipcalc-examples.md",
+            "type": "file",
+            "path": "docs/examples/ipcalc-examples.md",
+            "wordCount": 13,
+            "created": 1793114502,
+            "modified": 1793114502,
+            "title": "ipcalc 子网计算示例",
+            "tags": [
+              "网络",
+              "工具"
+            ]
+          },
+          {
             "name": "latex-examples.md",
             "type": "file",
             "path": "docs/examples/latex-examples.md",
@@ -238,6 +251,35 @@
             "title": "LaTeX 公式示例",
             "tags": [
               "数学"
+            ]
+          },
+          {
+            "name": "learning-path-examples.md",
+            "type": "file",
+            "path": "docs/examples/learning-path-examples.md",
+            "wordCount": 102,
+            "created": 0,
+            "modified": 0,
+            "title": "学习路径示例",
+            "tags": [
+              "学习",
+              "示例"
+            ],
+            "prerequisites": [
+              "docs/examples/mermaid-examples.md",
+              "docs/examples/graph-backlinks-demo.md"
+            ]
+          },
+          {
+            "name": "line-highlight-examples.md",
+            "type": "file",
+            "path": "docs/examples/line-highlight-examples.md",
+            "wordCount": 52,
+            "created": 1793115086,
+            "modified": 1793115086,
+            "title": "代码行高亮示例",
+            "tags": [
+              "代码高亮"
             ]
           },
           {
@@ -449,9 +491,9 @@
             ]
           }
         ],
-        "wordCount": 12586,
+        "wordCount": 12753,
         "created": 1779157467,
-        "modified": 1793052885
+        "modified": 1793115086
       },
       {
         "name": "changelog.md",
@@ -459,7 +501,7 @@
         "path": "docs/changelog.md",
         "wordCount": 8,
         "created": 1792355917,
-        "modified": 1793091644,
+        "modified": 1793094579,
         "title": "变更日志",
         "tags": [
           "规划"
@@ -602,9 +644,9 @@
         ]
       }
     ],
-    "wordCount": 24663,
+    "wordCount": 24830,
     "created": 1779157467,
-    "modified": 1793091644
+    "modified": 1793115086
   },
   {
     "name": "iris",
@@ -670,7 +712,7 @@
     "path": "readme-dev.md",
     "wordCount": 1305,
     "created": 1779253703,
-    "modified": 1793052885,
+    "modified": 1793094579,
     "title": "Markdown Preview — 开发者文档",
     "tags": [
       "开发"

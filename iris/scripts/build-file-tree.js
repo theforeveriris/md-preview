@@ -45,7 +45,7 @@ function countWords(content) {
 
 // 提取标题/标签：统一走 lib/frontmatter.js（此前与本仓其他构建脚本各自
 // 手写正则且口径漂移，现收敛到共享库）
-const { extractTitle, extractTags } = require('./lib/frontmatter.js');
+const { extractTitle, extractTags, extractListField } = require('./lib/frontmatter.js');
 
 /**
  * 汇总一组条目的时间：最早创建 / 最晚修改。
@@ -125,6 +125,9 @@ function buildTreeFromDirectory(dir, basePath = '') {
     };
     if (title) entry.title = title;
     if (tags.length > 0) entry.tags = tags;
+    // 学习路径（KNOW-1）：prerequisites: [docs/a.md] → 图谱有向学习路径边
+    const prerequisites = extractListField(content, 'prerequisites');
+    if (prerequisites.length > 0) entry.prerequisites = prerequisites;
     result.push(entry);
     totalWords += wordCount;
   });
