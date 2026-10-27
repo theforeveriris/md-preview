@@ -149,6 +149,10 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg>
             <span class="pkt-btn-label">网段</span>
           </button>
+          <button class="pkt-btn" data-action="toggle-traffic" title="模拟流量：边上跑光点动画">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2L4.5 13.5H11L9.5 22 19 9.5h-6.5L13 2z"/></svg>
+            <span class="pkt-btn-label">流量</span>
+          </button>
           <button class="pkt-btn" data-action="fit" title="适应屏幕">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6"/></svg>
             <span class="pkt-btn-label">复位</span>
@@ -554,6 +558,42 @@
 
     // 初始默认显示接口名和网段（因为上面样式里留空了，需要主动调一次填充）
     applyEdgeLabels();
+
+    // ============== 模拟流量动画（KNOW-3） ==============
+    // Cytoscape 不支持沿边动画：用 RAF 周期性推进 line-dash-offset，
+    // 虚线段沿边流动 = 光点跑包。tick 自检 cy 销毁/容器离场，自动停表。
+    let trafficRaf = null;
+    let trafficOffset = 0;
+
+    function stopTraffic() {
+      if (trafficRaf) { cancelAnimationFrame(trafficRaf); trafficRaf = null; }
+      try { cy.edges().removeStyle('line-dash-offset'); } catch (e) { /* ignore */ }
+    }
+
+    function startTraffic() {
+      const tick = () => {
+        if (!wrapper.isConnected) { trafficRaf = null; return; }
+        try {
+          if (cy.destroyed()) { trafficRaf = null; return; }
+        } catch (e) { trafficRaf = null; return; }
+        trafficOffset = (trafficOffset + 0.55) % 40;
+        try { cy.edges().style('line-dash-offset', trafficOffset); } catch (e) { trafficRaf = null; return; }
+        trafficRaf = requestAnimationFrame(tick);
+      };
+      trafficRaf = requestAnimationFrame(tick);
+    }
+
+    wrapper.querySelector('[data-action="toggle-traffic"]').addEventListener('click', () => {
+      const btn = wrapper.querySelector('[data-action="toggle-traffic"]');
+      if (trafficRaf) {
+        stopTraffic();
+        btn.classList.remove('active');
+      } else {
+        cy.edges().style('line-dash-pattern', [7, 13]);
+        startTraffic();
+        btn.classList.add('active');
+      }
+    });
 
     wrapper.querySelector('[data-action="fit"]').addEventListener('click', () => {
       const fitEls = computeFitElements(cy, jsonData);
