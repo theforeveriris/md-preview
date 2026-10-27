@@ -36,42 +36,75 @@
   }
 
   function blurMatches(root) {
+    // 按块级容器分组收集文本节点：hljs 等会把一段赋值拆进多个 span，
+    // 单节点匹配会漏——把同一块内的连续文本拼接后再匹配（CodeRabbit
+    // review fix：跨节点匹配），命中部分逐节点拆分包裹。
+    const groups = new Map(); // blockEl -> [textNode]
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
       acceptNode: (n) => {
-        if (!n.nodeValue || n.nodeValue.trim().length < 7) return NodeFilter.FILTER_REJECT;
+        if (!n.nodeValue || !n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
         if (n.parentElement && n.parentElement.closest('.sensitive-blur')) return NodeFilter.FILTER_REJECT;
         return NodeFilter.FILTER_ACCEPT;
       }
     });
-    const nodes = [];
+    let scanned = 0;
     while (walker.nextNode()) {
-      nodes.push(walker.currentNode);
-      if (nodes.length >= MAX_NODES) break;
+      if (scanned >= MAX_NODES) break;
+      const node = walker.currentNode;
+      const block = node.parentElement
+        ? node.parentElement.closest('p, li, td, th, h1, h2, h3, h4, h5, h6, pre, blockquote, dt, dd, figcaption, div')
+        : null;
+      const key = block || root;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(node);
+      scanned++;
     }
+
     let count = 0;
-    nodes.forEach(node => {
+    groups.forEach(nodes => {
       if (count >= MAX_BLURS) return;
-      const text = node.nodeValue;
+      // 拼接块内文本，记录每个片段到节点的映射
+      const parts = []; // { node, start, end }（在拼接串中的偏移）
+      let joined = '';
+      nodes.forEach(node => {
+        parts.push({ node, start: joined.length, end: joined.length + node.nodeValue.length });
+        joined += node.nodeValue;
+      });
       SENSITIVE_RE.lastIndex = 0;
-      if (!SENSITIVE_RE.test(text)) return;
-      SENSITIVE_RE.lastIndex = 0;
-      const frag = document.createDocumentFragment();
-      let last = 0;
+      const matches = [];
       let m;
-      while ((m = SENSITIVE_RE.exec(text)) !== null) {
-        if (count >= MAX_BLURS) break;
-        if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
-        const span = document.createElement('span');
-        span.className = 'sensitive-blur';
-        span.textContent = m[0];
-        span.title = t('sensitive.revealHint', '点击临时显示');
-        span.addEventListener('click', () => span.classList.toggle('revealed'));
-        frag.appendChild(span);
-        last = m.index + m[0].length;
-        count++;
+      while ((m = SENSITIVE_RE.exec(joined)) !== null && matches.length < MAX_BLURS - count) {
+        matches.push(m);
+        if (m[0].length === 0) SENSITIVE_RE.lastIndex++;
       }
-      if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
-      if (node.parentNode) node.parentNode.replaceChild(frag, node);
+      if (matches.length === 0) return;
+
+      // 逐命中逐节点包裹：命中的偏移区间落到哪些片段就拆哪些节点
+      matches.forEach(match => {
+        const mStart = match.index;
+        const mEnd = mStart + match[0].length;
+        parts.forEach(part => {
+          const s = Math.max(part.start, mStart);
+          const e = Math.min(part.end, mEnd);
+          if (s >= e) return;
+          const node = part.node;
+          if (!node.parentNode) return;
+          const value = node.nodeValue;
+          const localS = s - part.start;
+          const localE = e - part.start;
+          const frag = document.createDocumentFragment();
+          if (localS > 0) frag.appendChild(document.createTextNode(value.slice(0, localS)));
+          const span = document.createElement('span');
+          span.className = 'sensitive-blur';
+          span.textContent = value.slice(localS, localE);
+          span.title = t('sensitive.revealHint', '点击临时显示');
+          span.addEventListener('click', () => span.classList.toggle('revealed'));
+          frag.appendChild(span);
+          if (localE < value.length) frag.appendChild(document.createTextNode(value.slice(localE)));
+          node.parentNode.replaceChild(frag, node);
+          count++;
+        });
+      });
     });
     return count;
   }

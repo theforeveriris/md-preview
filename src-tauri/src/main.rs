@@ -134,27 +134,43 @@ fn walk_kb(dir: &Path, rel_prefix: &str, depth: usize, count: &mut usize) -> Vec
     nodes
 }
 
-/// 弹出系统目录选择框（AsyncFileDialog 内部自行派发到正确的平台线程）
+/// 知识库根目录：current = 当前挂载；previous = 上一次挂载（切换失败时回滚用）。
+/// 根目录只在 Rust 侧通过系统目录对话框设置——前端无法指定任意路径
+/// （CodeRabbit review fix：bind 由 pick_and_bind 一体完成，杜绝伪造）。
+struct KbRootState {
+    current: Mutex<Option<PathBuf>>,
+    previous: Mutex<Option<PathBuf>>,
+}
+
+/// 弹出系统目录选择框并直接绑定为知识库根（一步完成，root 不经前端转手）。
+/// 取消时返回 None 且不改动任何状态。
 #[tauri::command(async)]
-async fn pick_folder() -> Result<Option<String>, String> {
+async fn pick_and_bind_kb(state: tauri::State<'_, KbRootState>) -> Result<Option<String>, String> {
     let picked = rfd::AsyncFileDialog::new()
         .set_title("选择要挂载为知识库的文件夹")
         .pick_folder()
         .await;
-    Ok(picked.and_then(|handle| handle.path().to_str().map(|s| s.to_string())))
-}
-
-/// 挂载根目录保存在 Rust 侧（State）：读取/遍历/监视命令不再从前端传 root，
-/// WebView 内脚本无法借道读取任意路径（CodeRabbit review fix）
-struct KbRootState(Mutex<Option<PathBuf>>);
-
-#[tauri::command]
-fn bind_kb_root(root: String, state: tauri::State<KbRootState>) -> Result<(), String> {
-    let root_path = PathBuf::from(&root);
-    if !root_path.is_dir() {
+    let Some(handle) = picked else {
+        return Ok(None);
+    };
+    let path = handle.path().to_path_buf();
+    if !path.is_dir() {
         return Err("not a directory".to_string());
     }
-    *state.0.lock().unwrap() = Some(root_path);
+    let mut current = state.current.lock().unwrap();
+    let mut previous = state.previous.lock().unwrap();
+    // 旧 root 存入 previous，供 rollback_kb_root 恢复
+    *previous = current.take();
+    *current = Some(path.clone());
+    Ok(path.to_str().map(|s| s.to_string()))
+}
+
+/// 挂载流程失败时回滚到上一代 root（没有则清空）
+#[tauri::command]
+fn rollback_kb_root(state: tauri::State<KbRootState>) -> Result<(), String> {
+    let mut current = state.current.lock().unwrap();
+    let mut previous = state.previous.lock().unwrap();
+    *current = previous.take();
     Ok(())
 }
 
@@ -163,14 +179,15 @@ fn unbind_kb_root(
     state: tauri::State<KbRootState>,
     watch: tauri::State<KbWatchState>,
 ) -> Result<(), String> {
-    *state.0.lock().unwrap() = None;
+    *state.current.lock().unwrap() = None;
+    *state.previous.lock().unwrap() = None;
     *watch.0.lock().unwrap() = None;
     Ok(())
 }
 
 fn kb_root(state: &tauri::State<KbRootState>) -> Result<PathBuf, String> {
     state
-        .0
+        .current
         .lock()
         .unwrap()
         .clone()
@@ -395,14 +412,17 @@ fn main() {
     let open_arg = capture_open_file_arg();
     tauri::Builder::default()
         .plugin(tauri_plugin_updater::Builder::new().build())
-        .manage(KbRootState(Mutex::new(None)))
+        .manage(KbRootState {
+            current: Mutex::new(None),
+            previous: Mutex::new(None),
+        })
         .manage(KbWatchState(Mutex::new(None)))
         .manage(OpenFileArg(Mutex::new(open_arg)))
         .manage(PendingUpdate(Mutex::new(None)))
         .invoke_handler(tauri::generate_handler![
             open_external,
-            pick_folder,
-            bind_kb_root,
+            pick_and_bind_kb,
+            rollback_kb_root,
             unbind_kb_root,
             read_kb_tree,
             read_kb_file,

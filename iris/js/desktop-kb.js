@@ -168,19 +168,14 @@
     if (!isDesktop()) return;
     if (mounting) return;
     mounting = true;
-    // Rust 侧 root 的回滚保护：bind 之后任何一步失败/取消，都把 root 恢复
-    // 成挂载前的状态（否则 A 已挂载、Rust 侧却指向 B，事件与读取全部错位）
-    const prevRoot = window.MarkdownPreview.state.desktopKb &&
-      window.MarkdownPreview.state.desktopKb.root;
+    // 选目录与绑定在 Rust 侧一步完成：root 不经前端转手、无法伪造，
+    // 读取/遍历/监视命令也都以 Rust 侧 State 为准
     let bound = false;
     let committed = false;
     try {
-      const root = await invoke('pick_folder');
-      if (!root) return; // 用户取消
+      const root = await invoke('pick_and_bind_kb');
+      if (!root) return; // 用户取消（Rust 侧状态未动）
       notify(t('kb.scanning', '正在扫描本地知识库…'));
-      // 根目录绑定在 Rust 侧（State）：读取/遍历/监视命令不再从前端传 root，
-      // WebView 内脚本无法借道读取任意路径（CodeRabbit review fix）
-      await invoke('bind_kb_root', { root });
       bound = true;
       const treeJson = await invoke('read_kb_tree');
       const docs = await readAllDocs(root, treeJson);
@@ -234,9 +229,8 @@
       notify(t('kb.mountFailed', '挂载失败：{m}').replace('{m}', e.message || e));
     } finally {
       if (bound && !committed) {
-        // 失败/空目录/中途异常：Rust 侧 root 回到挂载前状态
-        if (prevRoot) invoke('bind_kb_root', { root: prevRoot }).catch(() => {});
-        else invoke('unbind_kb_root').catch(() => {});
+        // 失败/空目录/中途异常：Rust 侧回滚到上一代 root（没有则清空）
+        invoke('rollback_kb_root').catch(() => {});
       }
       mounting = false;
     }

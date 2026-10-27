@@ -122,12 +122,12 @@
         let rows = parsed.rows.map(r => r.slice());
         let hasHeader = parsed.hasHeader;
         // 已有 table-style 标记 → 初始化预设选择框（否则仅改单元格保存
-        // 会把旧样式丢掉）；改选「默认」可清除预设
-        const existingMarker = text.split('\n').slice(span.end)
-          .find(l => /<!--\s*table-style:\s*([\w\- ]+)/.test(l));
-        const existingPreset = existingMarker
-          ? (/<!--\s*table-style:\s*([\w\- ]+)/.exec(existingMarker)[1] || '').trim()
-          : '';
+        // 会把旧样式丢掉）；改选「默认」可清除预设。
+        // 只读紧邻表格的那一行标记（更后面的标记可能属于其他表格）
+        let existingPreset = '';
+        const nextLine = text.split('\n')[span.end] || '';
+        const presetMatch = /<!--\s*table-style:\s*([\w\- ]+?)\s*-->/.exec(nextLine);
+        if (presetMatch) existingPreset = presetMatch[1].trim();
 
         let overlay = document.getElementById('tblEditorOverlay');
         if (!overlay) {
