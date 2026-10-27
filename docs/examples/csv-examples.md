@@ -72,7 +72,7 @@ display current-configuration	用户/特权	查看当前配置（VRP）
 
 ## 条件格式（阈值着色）
 
-` ```csv rules=<规则> ` 在 lang 位写规则：`列(序号或表头名)>阈值:颜色名|#hex`，
+` ```csv rules=<规则> ` 在 lang 位写规则：`列(序号或表头名)>阈值：颜色名|#hex`，
 逗号分隔；支持 `> >= < <= = !=`。监控报表贴数据一眼看出异常行。
 
 ```csv rules=CPU>80:red,丢包率>0:orange
