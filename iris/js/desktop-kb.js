@@ -355,6 +355,40 @@
     });
   }
 
+  // ============== 批量导出 ==============
+
+  function requireKb() {
+    if (isActive()) return true;
+    notify(t('kb.needMount', '请先挂载本地知识库'));
+    return false;
+  }
+
+  // 整库合订成一篇虚拟文档后走打印对话框导出 PDF
+  async function printKbCompilation() {
+    if (!requireKb()) return;
+    const st = window.MarkdownPreview.state;
+    const paths = [];
+    (function walk(nodes) {
+      (nodes || []).forEach(n => {
+        if (n.type === 'folder') walk(n.children);
+        else if (n.path) paths.push(n.path);
+      });
+    })(st.fileTreeData);
+
+    const lines = [`# ${t('kb.compilationTitle', '知识库合订本')}`];
+    paths.forEach(p => {
+      const meta = st.desktopKbDocs && st.desktopKbDocs.get(p.slice(KB_PREFIX.length));
+      if (!meta) return;
+      const body = meta.text.replace(/^---\s*\n[\s\S]*?\n---\s*/, '');
+      lines.push('', '---', '', body.trim());
+    });
+
+    const markdown = window.MarkdownPreview.markdown;
+    if (!markdown || !markdown.renderVirtualDoc) return;
+    await markdown.renderVirtualDoc(lines.join('\n'), t('kb.compilationTitle', '知识库合订本'));
+    setTimeout(() => window.print(), 800); // 等渲染管线起完
+  }
+
   // ============== 悬浮球菜单 + 命令面板 ==============
 
   function updateMenuLabel() {
@@ -401,6 +435,33 @@
         label: t('kb.unmount', '卸载本地知识库'),
         group: t('kb.group', '桌面端'),
         run: () => unmount()
+      },
+      {
+        id: 'kb-export-epub',
+        icon: 'i-download',
+        label: t('kb.exportEpub', '批量导出 EPUB（知识库合订本）'),
+        group: t('kb.group', '桌面端'),
+        run: () => {
+          if (!requireKb()) return;
+          window.MarkdownPreview.exportBundle?.exportEpub('site');
+        }
+      },
+      {
+        id: 'kb-export-mdzip',
+        icon: 'i-download',
+        label: t('kb.exportMd', '批量导出 MD ZIP（按目录结构）'),
+        group: t('kb.group', '桌面端'),
+        run: () => {
+          if (!requireKb()) return;
+          window.MarkdownPreview.exportBundle?.exportSiteMdZip();
+        }
+      },
+      {
+        id: 'kb-export-pdf',
+        icon: 'i-download',
+        label: t('kb.exportPdf', '批量导出 PDF（合订打印）'),
+        group: t('kb.group', '桌面端'),
+        run: () => printKbCompilation()
       }
     );
   }

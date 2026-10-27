@@ -73,6 +73,13 @@
 
   // 并发拉取全部文档文本
   async function fetchAllDocs(onProgress) {
+    // 桌面端本地知识库：文档已在挂载时读入内存，直接取用（批量导出基础）
+    const kb = window.MarkdownPreview.desktopKb;
+    if (kb && kb.isActive && kb.isActive() && kb.getDocsForExport) {
+      const docs = kb.getDocsForExport();
+      if (onProgress) onProgress(docs.length, docs.length);
+      return docs;
+    }
     const offline = window.MarkdownPreview.offline;
     const paths = offline ? offline.docPaths() : [];
     if (paths.length === 0) return [];
