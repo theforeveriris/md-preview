@@ -54,3 +54,4 @@ __pycache__/
 # 中文排版 CI 临时文件
 .cjk-lint-files.txt
 .cjk-lint-mode.txt
+.cr-comments.json
