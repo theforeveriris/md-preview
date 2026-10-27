@@ -197,7 +197,11 @@
 
         overlay.querySelector('.tbl-save').addEventListener('click', () => {
           const lines = text.split('\n');
-          const tableText = serializeTable(rows, hasHeader);
+          // 样式预设（ADJ-TABLE-2）：非默认预设以 HTML 注释标记跟在表格后，
+          // 渲染管线（mdRender.applyTablePresets）读标记给表格挂类
+          const preset = overlay.querySelector('.tbl-preset-sel').value;
+          const marker = preset ? '\n<!-- table-style: ' + preset + ' -->' : '';
+          const tableText = serializeTable(rows, hasHeader) + marker;
           const newText = lines.slice(0, span.start)
             .concat([tableText], lines.slice(span.end))
             .join('\n');

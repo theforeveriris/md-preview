@@ -706,6 +706,8 @@
     mdRender.highlightCodeBlocks(outputElement);
     // 可视化表格编辑器：输出区表格挂「编辑」按钮（外移模块：table-editor.js）
     tableEditor?.attach?.(outputElement);
+    // 表格样式预设标记套用
+    window.MarkdownPreview.mdRender.applyTablePresets?.(outputElement);
 
     // 渲染器批量调度：runAllCells 时 N 个 cell 各自 setTimeout 会叠 N 批，
     // 收集 roots 合并为一次 200ms 调度

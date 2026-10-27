@@ -1211,3 +1211,22 @@ pre.code-block code { position: relative; z-index: 1; }
 }
 .palette-calc-eq { color: var(--color-text-muted); margin-left: 2px; }
 .palette-calc-sub { font-size: 12px; color: var(--color-text-muted); font-family: var(--font-mono, monospace); }
+
+/* ============== 表格样式预设（mdRender.applyTablePresets） ============== */
+table.md-table-zebra tbody tr:nth-child(even) { background: color-mix(in srgb, var(--color-accent-purple) 6%, transparent); }
+table.md-table-compact td, table.md-table-compact th { padding: 3px 8px !important; font-size: 0.92em; }
+table.md-table-accent-header thead th {
+  background: color-mix(in srgb, var(--color-accent-purple) 14%, transparent);
+  color: var(--color-accent-purple-deep, var(--color-accent-purple));
+}
+
+/* ============== 全文敏感模式（sensitive-mode.js） ============== */
+.sensitive-blur {
+  filter: blur(6px);
+  cursor: pointer;
+  border-radius: 3px;
+  transition: filter 0.15s ease;
+  display: inline-block;
+}
+.sensitive-blur:hover { filter: blur(4px); }
+.sensitive-blur.revealed { filter: none; }

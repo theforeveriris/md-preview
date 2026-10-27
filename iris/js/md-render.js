@@ -1037,6 +1037,26 @@
     return ops;
   }
 
+  /**
+   * 表格样式预设（ADJ-TABLE-2）：表格编辑器回写时在表格后跟
+   * `<!-- table-style: md-table-zebra ... -->` 注释标记，本函数扫描容器
+   * 把标记里的类挂到紧邻其前的表格（站点侧含 .table-wrapper 也要穿透）。
+   * 标记保留在文档里，重渲染可重复套用。
+   */
+  function applyTablePresets(container) {
+    if (!container) return;
+    Array.from(container.childNodes).forEach(node => {
+      if (node.nodeType !== Node.COMMENT_NODE) return;
+      const m = /table-style:\s*([\w\- ]+)/.exec(node.nodeValue || '');
+      if (!m) return;
+      let target = node.previousElementSibling;
+      if (!target) return;
+      if (target.classList.contains('table-wrapper')) target = target.querySelector('table') || target;
+      if (target.tagName !== 'TABLE') return;
+      m[1].trim().split(/\s+/).forEach(cls => target.classList.add(cls));
+    });
+  }
+
   // 图表默认调色板（apexcharts/csv-table 图表共用；与站点品牌紫一致）
   const CHART_PALETTE = ['#8B5CF6', '#D946EF', '#3B82F6', '#10B981', '#F59E0B'];
 
@@ -1077,5 +1097,6 @@
     CHART_PALETTE,
     resolveRoot,
     diffLines,
+    applyTablePresets,
   };
 })();

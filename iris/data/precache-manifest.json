@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-27T19:32:02.139Z",
+  "generatedAt": "2026-10-27T19:34:42.919Z",
   "version": 1,
-  "count": 144,
+  "count": 145,
   "urls": [
     "./",
     "./index.html",
@@ -122,6 +122,7 @@
     "./iris/js/search.js",
     "./iris/js/section-collapse.js",
     "./iris/js/selection-tools.js",
+    "./iris/js/sensitive-mode.js",
     "./iris/js/settings-backup.js",
     "./iris/js/settings.js",
     "./iris/js/sidebar-resize.js",

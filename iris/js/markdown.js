@@ -405,6 +405,8 @@
     mdRender.initSliders(dom.markdownContent);
 
     wrapTables(dom.markdownContent);
+    // 表格样式预设（表格编辑器回写的 table-style 注释标记）
+    window.MarkdownPreview.mdRender.applyTablePresets?.(dom.markdownContent);
 
     mdRender.initCodeTabs(dom.markdownContent);
 
@@ -444,6 +446,8 @@
           window.MarkdownPreview.pkt?.destroyOrphaned?.();
         }
       });
+      // 全文敏感模式开启时对新文档重刷模糊（渲染器可能替换过节点）
+      window.MarkdownPreview.sensitiveMode?.applyIfOn?.();
       (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Markdown] Render cycle complete');
     }, 100);
 
