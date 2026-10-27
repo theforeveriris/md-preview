@@ -79,6 +79,11 @@
   }
 
   function loadLinks() {
+    // 桌面端本地知识库：链接关系在挂载时扫描，替代站内 links.json
+    const kb = window.MarkdownPreview.desktopKb;
+    if (kb && kb.isActive && kb.isActive() && kb.getLinksData) {
+      return Promise.resolve(kb.getLinksData());
+    }
     if (linksCache) return Promise.resolve(linksCache);
     if (!linksPromise) {
       linksPromise = fetch(LINKS_URL, { cache: 'no-cache' })

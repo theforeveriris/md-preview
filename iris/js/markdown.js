@@ -83,19 +83,28 @@
 
       resetReadingProgress();
       window.MarkdownPreview.ui.updateProgress(30);
-      const response = await fetch(path, { cache: 'no-store' });
-      if (seq !== loadSeq) return; // 已有更新的导航，丢弃本次结果
 
-      if (window.MarkdownPreview.debug && window.MarkdownPreview.debug.incrementApiCalls) {
-        window.MarkdownPreview.debug.incrementApiCalls();
-      }
+      // 桌面端本地知识库：kb/ 前缀路径经 Tauri 桥读取，不走站点 fetch
+      const kb = window.MarkdownPreview.desktopKb;
+      let markdown;
+      if (kb && kb.isActive && kb.isActive() && path.startsWith('kb/')) {
+        markdown = await kb.readFile(path);
+        if (seq !== loadSeq) return; // 已有更新的导航，丢弃本次结果
+      } else {
+        const response = await fetch(path, { cache: 'no-store' });
+        if (seq !== loadSeq) return; // 已有更新的导航，丢弃本次结果
 
-      if (!response.ok) {
-        throw new Error('Failed to load markdown file');
+        if (window.MarkdownPreview.debug && window.MarkdownPreview.debug.incrementApiCalls) {
+          window.MarkdownPreview.debug.incrementApiCalls();
+        }
+
+        if (!response.ok) {
+          throw new Error('Failed to load markdown file');
+        }
+        window.MarkdownPreview.ui.updateProgress(60);
+        markdown = await response.text();
+        if (seq !== loadSeq) return; // 二次校验：text() 期间可能又切了文档
       }
-      window.MarkdownPreview.ui.updateProgress(60);
-      const markdown = await response.text();
-      if (seq !== loadSeq) return; // 二次校验：text() 期间可能又切了文档
       window.MarkdownPreview.ui.updateProgress(100);
       state.currentFilePath = path;
       // 加载仓库内文档后清除本地文档记录，导出功能随之切回仓库文件
@@ -624,6 +633,13 @@
 
     if (!path) {
       dom.pageHeader.style.display = 'none';
+      dom.editPageBtn.style.display = 'none';
+      return;
+    }
+
+    // 桌面端本地知识库文档不在 GitHub 仓库里，编辑此页无意义
+    if (path.startsWith('kb/')) {
+      dom.pageHeader.style.display = 'flex';
       dom.editPageBtn.style.display = 'none';
       return;
     }

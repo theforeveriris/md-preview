@@ -181,6 +181,8 @@
       }
     ];
     THEME_ACTIONS.forEach(theme => actions.push(themeAction(theme)));
+    // 模块化扩展点：desktop-kb 等功能在运行时注入自己的动作
+    (window.MarkdownPreview.palette.extraActions || []).forEach(a => actions.push(a));
     return actions;
   }
 

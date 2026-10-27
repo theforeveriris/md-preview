@@ -341,9 +341,36 @@
     }
   }
 
+  // ============== 桌面端本地知识库注入（desktop-kb.js 调用） ==============
+  // injectDocuments：用挂载目录的轻量索引整体替换站内索引；
+  // useBuiltinIndex：卸载后复位标记，下次搜索重新 fetch 站内 search-index.json
+  function injectDocuments(docs) {
+    documents = Array.isArray(docs) ? docs : [];
+    isIndexLoaded = true;
+    buildPromise = null;
+    if (typeof FlexSearch !== 'undefined') {
+      flexIndex = new FlexSearch.Index({
+        encode: cjkEncode,
+        tokenize: 'forward',
+        resolution: 9,
+        minlength: 1
+      });
+      documents.forEach((doc, i) => {
+        flexIndex.add(i, (doc.title || '') + ' ' + (doc.preview || '') + ' ' + (doc.path || ''));
+      });
+    }
+  }
+
+  function useBuiltinIndex() {
+    isIndexLoaded = false;
+    buildPromise = null;
+  }
+
   window.MarkdownPreview.search = {
     init: init,
     buildIndex: buildIndex,
-    reset: reset
+    reset: reset,
+    injectDocuments,
+    useBuiltinIndex
   };
 })();
