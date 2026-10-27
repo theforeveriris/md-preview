@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-27T19:20:23.849Z",
+  "generatedAt": "2026-10-27T19:21:56.418Z",
   "version": 1,
-  "count": 140,
+  "count": 141,
   "urls": [
     "./",
     "./index.html",
@@ -99,6 +99,7 @@
     "./iris/js/renderers/geo.js",
     "./iris/js/renderers/glossary.js",
     "./iris/js/renderers/graph.js",
+    "./iris/js/renderers/heatmap.js",
     "./iris/js/renderers/http-request.js",
     "./iris/js/renderers/ipcalc.js",
     "./iris/js/renderers/json-tree.js",

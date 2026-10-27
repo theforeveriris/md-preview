@@ -371,6 +371,19 @@
             ]
           },
           {
+            "name": "heatmap-examples.md",
+            "type": "file",
+            "path": "docs/examples/heatmap-examples.md",
+            "wordCount": 14,
+            "created": 0,
+            "modified": 0,
+            "title": "日历热图示例",
+            "tags": [
+              "示例",
+              "可视化"
+            ]
+          },
+          {
             "name": "image-gallery-examples.md",
             "type": "file",
             "path": "docs/examples/image-gallery-examples.md",
@@ -771,12 +784,19 @@
             "type": "file",
             "path": "docs/examples/steps-quote-examples.md",
             "wordCount": 90,
-            "created": 0,
-            "modified": 0,
+            "created": 1793128850,
+            "modified": 1793128850,
             "title": "步骤揭示与引用卡片示例",
             "tags": [
               "示例",
               "教学"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "email": "theforeveriris@proton.me",
+                "count": 1
+              }
             ]
           },
           {
@@ -877,9 +897,9 @@
             ]
           }
         ],
-        "wordCount": 12998,
+        "wordCount": 13012,
         "created": 1779157467,
-        "modified": 1793128578
+        "modified": 1793128850
       },
       {
         "name": "changelog.md",
@@ -1149,9 +1169,9 @@
         ]
       }
     ],
-    "wordCount": 25075,
+    "wordCount": 25089,
     "created": 1779157467,
-    "modified": 1793128578
+    "modified": 1793128850
   },
   {
     "name": "iris",
