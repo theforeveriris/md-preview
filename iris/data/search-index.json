@@ -2,8 +2,8 @@
   {
     "path": "docs/changelog.md",
     "title": "变更日志",
-    "preview": "变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-27 - f7d8c95 fix(pulse)+feat(theme): 修复大波形不渲染、恢复默认配色、新增鸢尾花紫主题 — theforeveriris - 7a52e94 build: 重新生成数据产物（changelog/feed/file-tre",
-    "searchText": "变更日志 规划 变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-27 - f7d8c95 fix(pulse)+feat(theme): 修复大波形不渲染、恢复默认配色、新增鸢尾花紫主题 — theforeveriris - 7a52e94 build: 重新生成数据产物（changelog/feed/file-tre docs/changelog.md 變更日誌 規劃 bgrz gh",
+    "preview": "变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-27 - 7f6935e fix(review): 修正 CodeRabbit 评审的 11 项问题 — theforeveriris - f7d8c95 fix(pulse)+feat(theme): 修复大波形不渲染、恢复默认配色、新增鸢尾花紫主题 —",
+    "searchText": "变更日志 规划 变更日志 > 本页由 iris/scripts/build-changelog.js 从 git 历史自动生成，请勿手动编辑。 2026-10-27 - 7f6935e fix(review): 修正 CodeRabbit 评审的 11 项问题 — theforeveriris - f7d8c95 fix(pulse)+feat(theme): 修复大波形不渲染、恢复默认配色、新增鸢尾花紫主题 — docs/changelog.md 變更日誌 規劃 bgrz gh",
     "tags": [
       "规划"
     ]
