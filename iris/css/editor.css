@@ -1681,3 +1681,74 @@ body.editor-dark-mode .cell {
 @media (max-width: 768px) {
   .mermaid-pip { right: 10px; bottom: 60px; width: 60vw; }
 }
+
+/* ============== 可视化表格编辑器（editor/table-editor.js） ============== */
+.cell-table-wrap { position: relative; }
+.cell-table-edit-btn {
+  position: absolute;
+  top: -10px;
+  right: 4px;
+  padding: 2px 10px;
+  font-size: 11px;
+  border: 1px solid var(--nb-border, #e5e5e5);
+  border-radius: 999px;
+  background: var(--nb-editor-bg, #fff);
+  color: var(--nb-text-muted, #888);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 3;
+}
+.cell-table-wrap:hover .cell-table-edit-btn,
+.cell-table-edit-btn:focus-visible { opacity: 1; }
+.cell-table-edit-btn:hover { color: var(--nb-accent, #8b5cf6); border-color: var(--nb-accent, #8b5cf6); }
+
+.tbl-editor-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 10060;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.tbl-editor-overlay.open { display: flex; }
+.tbl-editor-card {
+  background: var(--nb-editor-bg, #fff);
+  border-radius: 14px;
+  width: min(900px, 94vw);
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+.tbl-editor-head, .tbl-editor-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--nb-border, #eee);
+}
+.tbl-editor-foot { border-bottom: none; border-top: 1px solid var(--nb-border, #eee); }
+.tbl-editor-title { font-weight: 600; }
+.tbl-editor-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.tbl-editor-close { border: none; background: none; cursor: pointer; color: inherit; }
+.tbl-editor-body { padding: 14px 18px; overflow: auto; }
+.tbl-editor-hint { font-size: 12px; color: var(--nb-text-muted, #888); }
+.tbl-editor-grid { border-collapse: collapse; width: 100%; }
+.tbl-editor-grid td { border: 1px solid var(--nb-border, #e5e5e5); padding: 0; }
+.tbl-editor-grid td.tbl-head-cell { background: color-mix(in srgb, var(--nb-accent, #8b5cf6) 8%, transparent); }
+.tbl-editor-grid input {
+  width: 100%;
+  min-width: 90px;
+  border: none;
+  background: transparent;
+  padding: 6px 8px;
+  font: inherit;
+  color: inherit;
+  outline: none;
+}
+.tbl-editor-grid input:focus { background: color-mix(in srgb, var(--nb-accent, #8b5cf6) 8%, transparent); }

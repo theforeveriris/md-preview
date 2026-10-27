@@ -646,6 +646,8 @@
     mdRender.groupGalleries(outputElement);
     mdRender.initSliders(outputElement);
     mdRender.highlightCodeBlocks(outputElement);
+    // 可视化表格编辑器：输出区表格挂「编辑」按钮（外移模块：table-editor.js）
+    tableEditor?.attach?.(outputElement);
 
     // 渲染器批量调度：runAllCells 时 N 个 cell 各自 setTimeout 会叠 N 批，
     // 收集 roots 合并为一次 200ms 调度
@@ -2348,6 +2350,21 @@
   const mermaidPipMod = window.MarkdownPreview.editorModules &&
     window.MarkdownPreview.editorModules.mermaidPip;
   const mermaidPip = mermaidPipMod ? mermaidPipMod.init({ editorT }) : null;
+
+  // 可视化表格编辑器（输出区表格「编辑」→ 网格编辑 → 回写 Markdown 源码）
+  const tableEditorMod = window.MarkdownPreview.editorModules &&
+    window.MarkdownPreview.editorModules.tableEditor;
+  const tableEditor = tableEditorMod ? tableEditorMod.init({
+    editorT,
+    showToast,
+    getCells: () => cells,
+    afterSourceEdit: (cellData) => {
+      updateCellMeta(cellData);
+      markModified(cellData);
+      markUnsaved();
+      runCell(cellData.id);
+    }
+  }) : null;
 
   const versionSnapshotsMod = window.MarkdownPreview.editorModules &&
     window.MarkdownPreview.editorModules.versionSnapshots;
