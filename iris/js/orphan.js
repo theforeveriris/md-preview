@@ -46,6 +46,9 @@
     return inbound;
   }
 
+  // 标题图标走内置 SVG sprite，避免在 Markdown 里堆 emoji
+  const headingIcon = (id) => `<svg class="ico orphan-heading-icon" aria-hidden="true"><use href="#${id}"/></svg>`;
+
   function section(lines, title, docs, emptyText, note) {
     lines.push(`## ${title} (${docs.length})`);
     lines.push('');
@@ -107,21 +110,21 @@
       lines.push(`> ${t('orphan.intro', '四类「空洞文档」巡检：无反链 / 无标签 / 超短 / 长期未更新。补上链接、标签或内容，让知识库没有孤岛。')}`);
       lines.push('');
       section(lines,
-        t('orphan.noBacklink', '🔗 无反向链接'),
+        `${headingIcon('i-link')} ${t('orphan.noBacklink', '无反向链接')}`,
         noBacklink,
         t('orphan.noBacklinkEmpty', '每篇文档都有人引用，很健康'),
         t('orphan.noBacklinkNote', '这些文档没有被站内任何一篇引用——新读者顺链接浏览时永远不会遇到它们'));
       section(lines,
-        t('orphan.noTags', '🏷️ 无标签'),
+        `${headingIcon('i-tag')} ${t('orphan.noTags', '无标签')}`,
         noTags,
         t('orphan.noTagsEmpty', '全部文档都有标签'));
       section(lines,
-        t('orphan.tooShort', '✂️ 超短文档（<100 词）'),
+        `${headingIcon('i-scissors')} ${t('orphan.tooShort', '超短文档（<100 词）')}`,
         tooShort,
         t('orphan.tooShortEmpty', '没有超短文档'),
         t('orphan.tooShortNote', '可能是占位文件或没写完，考虑扩充或合并'));
       section(lines,
-        t('orphan.stale', '🕐 长期未更新（>1 年）'),
+        `${headingIcon('i-clock')} ${t('orphan.stale', '长期未更新（>1 年）')}`,
         stale,
         t('orphan.staleEmpty', '最近一年内全部文档都有更新'),
         t('orphan.staleNote', '内容可能已过时，适合复查一轮'));
