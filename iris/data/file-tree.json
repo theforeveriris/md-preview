@@ -489,7 +489,7 @@
             "path": "docs/examples/line-highlight-examples.md",
             "wordCount": 100,
             "created": 1793115086,
-            "modified": 1793115086,
+            "modified": 1793178599,
             "title": "代码行高亮示例",
             "tags": [
               "代码高亮"
@@ -497,7 +497,7 @@
             "contributors": [
               {
                 "name": "theforeveriris",
-                "count": 1
+                "count": 2
               }
             ]
           },
@@ -576,6 +576,19 @@
                 "name": "theforeveriris",
                 "count": 3
               }
+            ]
+          },
+          {
+            "name": "orgchart-examples.md",
+            "type": "file",
+            "path": "docs/examples/orgchart-examples.md",
+            "wordCount": 17,
+            "created": 0,
+            "modified": 0,
+            "title": "组织架构图语法糖示例",
+            "tags": [
+              "示例",
+              "教学"
             ]
           },
           {
@@ -750,7 +763,7 @@
             "name": "steps-quote-examples.md",
             "type": "file",
             "path": "docs/examples/steps-quote-examples.md",
-            "wordCount": 90,
+            "wordCount": 80,
             "created": 1793128850,
             "modified": 1793128850,
             "title": "步骤揭示与引用卡片示例",
@@ -858,9 +871,9 @@
             ]
           }
         ],
-        "wordCount": 13161,
+        "wordCount": 13168,
         "created": 1779157467,
-        "modified": 1793176817
+        "modified": 1793178599
       },
       {
         "name": "changelog.md",
@@ -1095,9 +1108,9 @@
         ]
       }
     ],
-    "wordCount": 25542,
+    "wordCount": 25549,
     "created": 1779157467,
-    "modified": 1793176817
+    "modified": 1793178599
   },
   {
     "name": "iris",
