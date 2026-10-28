@@ -53,11 +53,11 @@
         <span class="lp-card-title">${esc(p.split('/').pop())}</span>
         <span class="lp-card-path">${esc(p)}</span>
       </span>`;
-    }).join('<span class="lp-arrow">→</span>');
+    }).join('<span class="lp-arrow" aria-hidden="true"><svg class="ico ico-xs"><use href="#i-chevron-right"/></svg></span>');
 
     const bar = document.createElement('div');
     bar.className = 'learning-path-bar';
-    bar.innerHTML = `<span class="lp-label">📚 ${esc(t('lp.prerequisites', '前置阅读'))}</span><div class="lp-cards">${cards}</div>`;
+    bar.innerHTML = `<span class="lp-label"><svg class="ico ico-xs" aria-hidden="true"><use href="#i-book-open"/></svg>${esc(t('lp.prerequisites', '前置阅读'))}</span><div class="lp-cards">${cards}</div>`;
     const anchor = container.querySelector('.reading-time');
     if (anchor) anchor.parentNode.insertBefore(bar, anchor);
     else container.insertBefore(bar, container.firstChild);

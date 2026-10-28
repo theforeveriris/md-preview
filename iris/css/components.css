@@ -653,18 +653,41 @@ pre.code-block code { position: relative; z-index: 1; }
 .learning-path-bar {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 10px;
   margin: 12px 0;
   padding: 10px 14px;
   border: 1px solid var(--color-border);
   border-radius: 10px;
   background: color-mix(in srgb, var(--color-accent-purple) 5%, transparent);
+  overflow: hidden;
 }
-.lp-label { font-size: 12.5px; font-weight: 600; color: var(--color-text-muted); flex: 0 0 auto; }
-.lp-cards { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.lp-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  flex: 0 0 auto;
+}
+.lp-label .ico { width: 13px; height: 13px; }
+.lp-cards {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 6px;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.lp-cards::-webkit-scrollbar { display: none; }
 .lp-card {
   display: flex;
+  flex: 0 0 auto;
   flex-direction: column;
   gap: 1px;
   padding: 5px 12px;
@@ -679,7 +702,8 @@ pre.code-block code { position: relative; z-index: 1; }
 .lp-card-path { font-size: 10.5px; color: var(--color-text-muted); word-break: break-all; }
 .lp-card-missing { opacity: 0.55; }
 .lp-card-missing .lp-card-title { color: var(--color-text-muted); text-decoration: line-through; }
-.lp-arrow { color: var(--color-text-muted); }
+.lp-arrow { display: inline-flex; align-items: center; flex: 0 0 auto; color: var(--color-text-muted); }
+.lp-arrow .ico { width: 12px; height: 12px; }
 
 /* ============== 配置语义 diff（renderers/config-diff.js） ============== */
 .cfgdiff-widget {

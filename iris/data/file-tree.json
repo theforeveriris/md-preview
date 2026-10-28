@@ -426,7 +426,7 @@
             "path": "docs/examples/ipcalc-examples.md",
             "wordCount": 17,
             "created": 1793114502,
-            "modified": 1793114502,
+            "modified": 1793175602,
             "title": "ipcalc 子网计算示例",
             "tags": [
               "网络",
@@ -435,7 +435,7 @@
             "contributors": [
               {
                 "name": "theforeveriris",
-                "count": 1
+                "count": 2
               }
             ]
           },
@@ -461,7 +461,7 @@
             "name": "learning-path-examples.md",
             "type": "file",
             "path": "docs/examples/learning-path-examples.md",
-            "wordCount": 102,
+            "wordCount": 121,
             "created": 1793127038,
             "modified": 1793127038,
             "title": "学习路径示例",
@@ -470,6 +470,9 @@
               "示例"
             ],
             "prerequisites": [
+              "docs/examples/markdown-syntax.md",
+              "docs/examples/basic-usage.md",
+              "docs/examples/table-examples.md",
               "docs/examples/mermaid-examples.md",
               "docs/examples/graph-backlinks-demo.md"
             ],
@@ -855,9 +858,9 @@
             ]
           }
         ],
-        "wordCount": 13094,
+        "wordCount": 13113,
         "created": 1779157467,
-        "modified": 1793175263
+        "modified": 1793175602
       },
       {
         "name": "changelog.md",
@@ -1092,9 +1095,9 @@
         ]
       }
     ],
-    "wordCount": 25475,
+    "wordCount": 25494,
     "created": 1779157467,
-    "modified": 1793175263
+    "modified": 1793175602
   },
   {
     "name": "iris",
