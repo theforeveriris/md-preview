@@ -81,9 +81,9 @@
           if (!el) return '';
           const isPinned = PINNED.includes(id);
           return `<div class="fm-row" data-id="${esc(id)}">
-            <button type="button" class="fm-btn" data-act="up" ${isPinned ? 'disabled' : ''} aria-label="上移">↑</button>
-            <button type="button" class="fm-btn" data-act="down" ${isPinned ? 'disabled' : ''} aria-label="下移">↓</button>
-            <span class="fm-label">${esc(labelFor(el))}${isPinned ? ' 🔒' : ''}</span>
+            <button type="button" class="fm-btn" data-act="up" ${isPinned ? 'disabled' : ''} aria-label="上移"><svg class="ico ico-xs" aria-hidden="true"><use href="#i-arrow-up"/></svg></button>
+            <button type="button" class="fm-btn" data-act="down" ${isPinned ? 'disabled' : ''} aria-label="下移"><svg class="ico ico-xs" aria-hidden="true"><use href="#i-arrow-down"/></svg></button>
+            <span class="fm-label">${esc(labelFor(el))}${isPinned ? '<svg class="ico ico-xs fm-pinned" role="img" aria-label="固定项"><use href="#i-lock"/></svg>' : ''}</span>
             <label class="switch">
               <input type="checkbox" data-act="toggle" ${hidden.includes(id) ? '' : 'checked'} ${isPinned ? 'disabled' : ''}>
               <span class="switch-slider"></span>

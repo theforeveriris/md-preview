@@ -1160,6 +1160,9 @@ pre.code-block code { position: relative; z-index: 1; }
 }
 .fm-row:hover { background: color-mix(in srgb, var(--color-accent-purple) 6%, transparent); }
 .fm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex: 0 0 24px;
   width: 24px;
   height: 24px;
@@ -1173,7 +1176,14 @@ pre.code-block code { position: relative; z-index: 1; }
 }
 .fm-btn:hover:not(:disabled) { color: var(--color-accent-purple-deep, var(--color-accent-purple)); border-color: var(--color-accent-purple); }
 .fm-btn:disabled { opacity: 0.3; cursor: default; }
-.fm-label { flex: 1 1 auto; font-size: 13px; }
+.fm-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: 1 1 auto;
+  font-size: 13px;
+}
+.fm-label .fm-pinned { color: var(--color-text-muted); }
 
 /* ============== 位标注块（renderers/bits.js） ============== */
 .bits-widget {

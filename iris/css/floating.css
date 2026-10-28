@@ -268,11 +268,13 @@ body[data-theme="nord"] .menu-trigger {
   box-shadow: 4px 0 12px rgba(0, 0, 0, 0.03);
   font-weight: var(--font-weight-body, 400);
   overflow-y: auto;
+  /* 导航本身很窄：滚动条会贴着内容区，看起来像一条粉色边框；保留滚轮
+     滚动，仅隐藏滚动条，分组边界交给上面的微色差与微阴影。 */
+  scrollbar-width: none;
 }
 
-/* 右侧内容区与导航之间：淡灰虚线分隔（所有主题统一处理） */
-.settings-nav + .settings-content {
-  border-left: 1px dashed color-mix(in srgb, var(--color-border) 80%, transparent);
+.settings-nav::-webkit-scrollbar {
+  display: none;
 }
 
 .settings-nav-item {
