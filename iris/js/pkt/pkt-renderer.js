@@ -567,7 +567,12 @@
 
     function stopTraffic() {
       if (trafficRaf) { cancelAnimationFrame(trafficRaf); trafficRaf = null; }
-      try { cy.edges().removeStyle('line-dash-offset'); } catch (e) { /* ignore */ }
+      try {
+        cy.edges()
+          .removeStyle('line-dash-offset')
+          .removeStyle('line-dash-pattern')
+          .removeStyle('line-style');
+      } catch (e) { /* ignore */ }
     }
 
     function startTraffic() {
@@ -589,7 +594,12 @@
         stopTraffic();
         btn.classList.remove('active');
       } else {
-        cy.edges().style('line-dash-pattern', [7, 13]);
+        // 光点动画依赖虚线的 dash-offset：必须显式切成 dashed，
+        // 否则默认实线忽略 line-dash-offset，看起来像没反应。
+        cy.edges().style({
+          'line-style': 'dashed',
+          'line-dash-pattern': [7, 13],
+        });
         startTraffic();
         btn.classList.add('active');
       }
