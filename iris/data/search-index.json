@@ -246,8 +246,8 @@
   {
     "path": "docs/examples/ipcalc-examples.md",
     "title": "ipcalc 子网计算示例",
-    "preview": "ipcalc 子网计算块 ipcalc 10.1.1.0/24 ipcalc 192.168.1.0/26 172.16.4.130/28 ipcalc 10.20.30.46/22",
-    "searchText": "ipcalc 子网计算示例 网络 工具 ipcalc 子网计算块 ipcalc 10.1.1.0/24 ipcalc 192.168.1.0/26 172.16.4.130/28 ipcalc 10.20.30.46/22 docs/examples/ipcalc-examples.md ipcalc 子網計算示例 網絡 工具 zwjssl wl gj",
+    "preview": "ipcalc 子网计算块 markdown ipcalc 10.1.1.0/24 markdown ipcalc 192.168.1.0/26 172.16.4.130/28 markdown ipcalc 10.20.30.46/22",
+    "searchText": "ipcalc 子网计算示例 网络 工具 ipcalc 子网计算块 markdown ipcalc 10.1.1.0/24 markdown ipcalc 192.168.1.0/26 172.16.4.130/28 markdown ipcalc 10.20.30.46/22 docs/examples/ipcalc-examples.md ipcalc 子網計算示例 網絡 工具 zwjssl wl gj",
     "tags": [
       "网络",
       "工具"
