@@ -67,8 +67,8 @@
       <span class="mascot-flower mascot-sway" title="${t('mascot.pet', '点点我')}">${flowerSvg(84, 'mascot-svg')}</span>
       <span class="mascot-bubble" role="status"></span>
       <span class="mascot-caption">${isError
-        ? t('mascot.errorCaption', '花瓣抖了抖——这个地址可能不存在或暂时取不到')
-        : t('mascot.welcomeCaption', '花园已开垦，从左侧挑一篇开始读吧')}</span>`;
+        ? t('mascot.errorCaption', '无法加载文件，请检查文件是否存在')
+        : t('mascot.welcomeCaption', '从左侧打开侧边栏，选择文件开始阅读')}</span>`;
     welcome.insertBefore(wrap, welcome.firstChild);
     bindSpeech(wrap.querySelector('.mascot-flower'), wrap.querySelector('.mascot-bubble'));
   }

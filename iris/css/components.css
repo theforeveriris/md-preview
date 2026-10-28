@@ -765,12 +765,20 @@ pre.code-block code { position: relative; z-index: 1; }
   border: 2px solid var(--color-surface);
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  font-weight: 600;
-  color: #fff;
-  background: var(--color-accent-purple, #8b5cf6);
+  background: color-mix(in srgb, var(--color-accent-purple) 12%, var(--color-surface));
   position: relative;
   z-index: 1;
+}
+.contributor-fallback .contributor-brand {
+  display: block;
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  object-fit: contain;
+  cursor: default;
+  pointer-events: none;
 }
 .contributor-chip:hover { z-index: 2; }
 
