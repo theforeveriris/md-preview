@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-27T23:09:04.846Z",
+  "generatedAt": "2026-10-28T10:09:46.832Z",
   "count": {
-    "nodes": 66,
+    "nodes": 67,
     "edges": 99
   },
   "nodes": [
@@ -42,6 +42,7 @@
     "docs/examples/markdown-syntax.md",
     "docs/examples/mermaid-examples.md",
     "docs/examples/native-html-examples.md",
+    "docs/examples/orgchart-examples.md",
     "docs/examples/pkt-examples.md",
     "docs/examples/pkt-huawei-vrp-解析示例.md",
     "docs/examples/plantuml-examples.md",
