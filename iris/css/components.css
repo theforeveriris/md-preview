@@ -939,10 +939,12 @@ pre.code-block code { position: relative; z-index: 1; }
   position: relative;
   margin: 14px 0;
   border-radius: 10px;
-  border: 1px dashed var(--color-border);
+  border: 1px solid var(--color-border);
   overflow: hidden;
   background: var(--color-surface);
 }
+/* 口令模式未解锁时不叠在模糊内容上，直接展示一块完整的解锁面板 */
+.secret-widget.secret-needs-pass:not(.secret-revealed) .secret-content { display: none; }
 .secret-widget .secret-content {
   margin: 0;
   padding: 14px 16px;
@@ -976,6 +978,9 @@ pre.code-block code { position: relative; z-index: 1; }
   z-index: 2;
 }
 .secret-eye {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: color-mix(in srgb, var(--color-accent-purple) 88%, black);
   color: #fff;
   font-size: 13px;
@@ -983,23 +988,42 @@ pre.code-block code { position: relative; z-index: 1; }
   border-radius: 999px;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
 }
+.secret-eye .ico { width: 14px; height: 14px; }
 .secret-toggle:hover .secret-eye { transform: scale(1.04); }
 .secret-mask {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
   gap: 10px;
-  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+  padding: 18px 20px;
+  background: color-mix(in srgb, var(--color-accent-purple) 5%, var(--color-surface));
 }
-.secret-hint { font-size: 13px; color: var(--color-text-muted); }
-.secret-pass-row { display: flex; gap: 6px; }
+.secret-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.secret-hint .ico {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+  color: var(--color-accent-purple);
+}
+.secret-pass-row { display: flex; gap: 8px; width: 100%; max-width: 360px; }
 .secret-pass-input {
-  padding: 6px 10px; border: 1px solid var(--color-border); border-radius: 7px;
-  background: var(--color-bg); color: var(--color-text); font-size: 13px; width: 160px;
+  flex: 1;
+  min-width: 0;
+  padding: 7px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 13px;
 }
 .secret-error { font-size: 12px; color: #c0392b; }
 .secret-shake { animation: secret-shake 0.35s ease; }
@@ -1011,6 +1035,7 @@ pre.code-block code { position: relative; z-index: 1; }
 /* 导出 PDF / 打印时永远遮罩（无论用户是否已点开） */
 @media print {
   .secret-widget .secret-content {
+    display: block !important;
     filter: blur(7px) !important;
     -webkit-filter: blur(7px) !important;
     max-height: 200px !important;

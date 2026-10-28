@@ -771,7 +771,7 @@
             "path": "docs/examples/steps-quote-examples.md",
             "wordCount": 80,
             "created": 1793128850,
-            "modified": 1793179462,
+            "modified": 1793180529,
             "title": "步骤揭示与引用卡片示例",
             "tags": [
               "示例",
@@ -780,7 +780,7 @@
             "contributors": [
               {
                 "name": "theforeveriris",
-                "count": 2
+                "count": 3
               }
             ]
           },
@@ -806,7 +806,7 @@
             "name": "terminal-secret-examples.md",
             "type": "file",
             "path": "docs/examples/terminal-secret-examples.md",
-            "wordCount": 67,
+            "wordCount": 35,
             "created": 1793128062,
             "modified": 1793128062,
             "title": "终端回放与敏感遮罩示例",
@@ -877,9 +877,9 @@
             ]
           }
         ],
-        "wordCount": 13168,
+        "wordCount": 13136,
         "created": 1779157467,
-        "modified": 1793179462
+        "modified": 1793180529
       },
       {
         "name": "changelog.md",
@@ -1114,9 +1114,9 @@
         ]
       }
     ],
-    "wordCount": 25549,
+    "wordCount": 25517,
     "created": 1779157467,
-    "modified": 1793179462
+    "modified": 1793180529
   },
   {
     "name": "iris",

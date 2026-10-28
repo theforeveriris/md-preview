@@ -433,8 +433,8 @@
   {
     "path": "docs/examples/terminal-secret-examples.md",
     "title": "终端回放与敏感遮罩示例",
-    "preview": "终端回放块 terminal $ ssh admin@10.1.1.1 Password: Core-SW> enable Core-SW# show ip interface brief | exclude unassigned Interface IP-Address Status Protocol GigabitEthernet0/0 10.1.1.1 up up GigabitEthern",
-    "searchText": "终端回放与敏感遮罩示例 网络 工具 终端回放块 terminal $ ssh admin@10.1.1.1 Password: Core-SW> enable Core-SW# show ip interface brief | exclude unassigned Interface IP-Address Status Protocol GigabitEthernet0/0 10.1.1.1 up up GigabitEthern docs/examples/terminal-secret-examples.md 終端回放與敏感遮罩示例 網絡 工具 zdhfymgzzsl wl gj",
+    "preview": "终端回放块 markdown terminal $ ssh admin@10.1.1.1 Password: Core-SW> enable Core-SW# show ip interface brief | exclude unassigned Interface IP-Address Status Protocol GigabitEthernet0/0 10.1.1.1 up up Giga",
+    "searchText": "终端回放与敏感遮罩示例 网络 工具 终端回放块 markdown terminal $ ssh admin@10.1.1.1 Password: Core-SW> enable Core-SW# show ip interface brief | exclude unassigned Interface IP-Address Status Protocol GigabitEthernet0/0 10.1.1.1 up up Giga docs/examples/terminal-secret-examples.md 終端回放與敏感遮罩示例 網絡 工具 zdhfymgzzsl wl gj",
     "tags": [
       "网络",
       "工具"
