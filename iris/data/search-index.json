@@ -106,8 +106,8 @@
   {
     "path": "docs/examples/config-diff-examples.md",
     "title": "配置语义 diff 示例",
-    "preview": "配置语义 diff config-diff ios interface GigabitEthernet0/0 ip address 10.1.1.1 255.255.255.0 no shutdown ! interface GigabitEthernet0/1 ip address 10.1.2.1 255.255.255.0 ===变更后 interface GigabitEthernet0/",
-    "searchText": "配置语义 diff 示例 网络 示例 配置语义 diff config-diff ios interface GigabitEthernet0/0 ip address 10.1.1.1 255.255.255.0 no shutdown ! interface GigabitEthernet0/1 ip address 10.1.2.1 255.255.255.0 ===变更后 interface GigabitEthernet0/ docs/examples/config-diff-examples.md 配置語義 diff 示例 網絡 示例 pzyysl wl sl",
+    "preview": "配置语义 diff markdown config-diff ios interface GigabitEthernet0/0 ip address 10.1.1.1 255.255.255.0 no shutdown ! interface GigabitEthernet0/1 ip address 10.1.2.1 255.255.255.0 ===变更后 interface GigabitE",
+    "searchText": "配置语义 diff 示例 网络 示例 配置语义 diff markdown config-diff ios interface GigabitEthernet0/0 ip address 10.1.1.1 255.255.255.0 no shutdown ! interface GigabitEthernet0/1 ip address 10.1.2.1 255.255.255.0 ===变更后 interface GigabitE docs/examples/config-diff-examples.md 配置語義 diff 示例 網絡 示例 pzyysl wl sl",
     "tags": [
       "网络",
       "示例"

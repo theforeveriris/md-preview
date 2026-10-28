@@ -710,7 +710,11 @@ pre.code-block code { position: relative; z-index: 1; }
   padding: 2px 16px;
   font-size: 12.5px;
   overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+.cfgdiff-entry::-webkit-scrollbar { display: none; }
 .cfgdiff-entry code { font-size: 12px; white-space: pre; }
 .cfgdiff-sign { flex: 0 0 10px; font-family: var(--font-mono, monospace); font-weight: 700; }
 .cfgdiff-add { background: rgba(39, 174, 96, 0.06); }

@@ -69,7 +69,7 @@
             "path": "docs/examples/bits-examples.md",
             "wordCount": 29,
             "created": 1793129137,
-            "modified": 1793167596,
+            "modified": 1793171412,
             "title": "位标注示例",
             "tags": [
               "网络",
@@ -78,7 +78,7 @@
             "contributors": [
               {
                 "name": "theforeveriris",
-                "count": 2
+                "count": 3
               }
             ]
           },
@@ -145,7 +145,7 @@
             "name": "config-diff-examples.md",
             "type": "file",
             "path": "docs/examples/config-diff-examples.md",
-            "wordCount": 39,
+            "wordCount": 15,
             "created": 1793127296,
             "modified": 1793127296,
             "title": "配置语义 diff 示例",
@@ -855,9 +855,9 @@
             ]
           }
         ],
-        "wordCount": 13076,
+        "wordCount": 13052,
         "created": 1779157467,
-        "modified": 1793167596
+        "modified": 1793171412
       },
       {
         "name": "changelog.md",
@@ -1092,9 +1092,9 @@
         ]
       }
     ],
-    "wordCount": 25457,
+    "wordCount": 25433,
     "created": 1779157467,
-    "modified": 1793167596
+    "modified": 1793171412
   },
   {
     "name": "iris",
