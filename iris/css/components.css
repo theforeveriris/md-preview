@@ -1200,13 +1200,23 @@ pre.code-block code { position: relative; z-index: 1; }
   margin: 14px 0;
   padding: 12px 16px 8px;
   background: var(--color-surface);
-  overflow-x: auto;
+  /* 头部与标注固定，只有中间的位条可横向滚动 */
+  overflow: hidden;
 }
 .bits-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
 .bits-num code { font-size: 16px; letter-spacing: 2px; font-weight: 600; }
 .bits-bases { font-size: 12px; color: var(--color-text-muted); font-family: var(--font-mono, monospace); }
-.bits-strip { display: inline-flex; gap: 3px; min-width: min-content; }
+.bits-strip {
+  display: flex;
+  gap: 3px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.bits-strip::-webkit-scrollbar { display: none; }
 .bits-cell {
+  flex: 0 0 30px;
   width: 30px;
   display: flex;
   flex-direction: column;
