@@ -134,7 +134,9 @@ function collectMarkdownTimesWithCreated(root = ROOT) {
  * 采集每个 .md 的贡献者（贡献者徽标 KNOW-6）
  *
  * 复用同一套「单遍 git log 扫描」模式：--format=%x00%an%x1f%ae，
- * 按提交累计每个文件的作者次数，返回 path -> Map<email, {name, email, count}>。
+ * 按提交累计每个文件的作者次数，返回 path -> Map<归一化显示名, {name, count}>。
+ * 同一开发者可能用「已验证邮箱」和「本地邮箱」提交，故先按邮箱聚合，
+ * 再按显示名合并不同邮箱，避免同一人被算成两位贡献者。
  */
 function collectMarkdownContributors(root = ROOT) {
   const byFile = new Map();
@@ -167,6 +169,21 @@ function collectMarkdownContributors(root = ROOT) {
       if (cur) cur.count += 1;
       else authors.set(email, { name: name || email, email, count: 1 });
     }
+  }
+
+  // 同一邮箱可能关联多个显示名（Iris / 鸢尾 / theforeveriris），上一步已按
+  // 邮箱聚成一条；这里再把「显示名相同、邮箱不同」的条目合并，覆盖已验证
+  // 邮箱与本地邮箱各提交一次的情况。
+  for (const [file, authors] of byFile) {
+    const merged = new Map();
+    for (const a of authors.values()) {
+      const name = (a.name || a.email).trim();
+      const key = name.toLowerCase() || a.email;
+      const cur = merged.get(key);
+      if (cur) cur.count += a.count;
+      else merged.set(key, { name, count: a.count });
+    }
+    byFile.set(file, merged);
   }
   return byFile;
 }
