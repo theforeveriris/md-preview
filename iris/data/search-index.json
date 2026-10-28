@@ -38,9 +38,9 @@
   },
   {
     "path": "docs/examples/acl-route-examples.md",
-    "title": "ACL 与路由表分析示例",
-    "preview": "ACL 分析块 acl ios 10 permit tcp 10.1.1.0 0.0.0.255 any eq 443 20 permit tcp 10.1.1.0 0.0.0.255 host 8.8.8.8 eq 53 30 permit udp any host 8.8.8.8 eq 53 40 deny ip any any route-table 粘贴 show ip route 输出：",
-    "searchText": "ACL 与路由表分析示例 网络 工具 ACL 分析块 acl ios 10 permit tcp 10.1.1.0 0.0.0.255 any eq 443 20 permit tcp 10.1.1.0 0.0.0.255 host 8.8.8.8 eq 53 30 permit udp any host 8.8.8.8 eq 53 40 deny ip any any route-table 粘贴 show ip route 输出： docs/examples/acl-route-examples.md ACL 與路由表分析示例 網絡 工具 ylybfxsl wl gj",
+    "title": "ACL 与路由表分析块",
+    "preview": "ACL 与路由表分析块 markdown acl ios 10 permit tcp 10.1.1.0 0.0.0.255 any eq 443 20 permit tcp 10.1.1.0 0.0.0.255 host 8.8.8.8 eq 53 30 permit udp any host 8.8.8.8 eq 53 40 deny ip any any route-table 粘贴 show",
+    "searchText": "ACL 与路由表分析块 网络 工具 ACL 与路由表分析块 markdown acl ios 10 permit tcp 10.1.1.0 0.0.0.255 any eq 443 20 permit tcp 10.1.1.0 0.0.0.255 host 8.8.8.8 eq 53 30 permit udp any host 8.8.8.8 eq 53 40 deny ip any any route-table 粘贴 show docs/examples/acl-route-examples.md ACL 與路由表分析塊 網絡 工具 ylybfxk wl gj",
     "tags": [
       "网络",
       "工具"
