@@ -45,6 +45,10 @@
         node.nodeValue = node.nodeValue.split(MARKER).join('');
       }
     });
+    // 标记被剔除后，末尾常只剩空的 // 或 # 注释壳，一并清掉
+    codeEl.querySelectorAll('.hljs-comment').forEach(el => {
+      if (!el.textContent.replace(/[\/#\s]/g, '')) el.remove();
+    });
   }
 
   function buildOverlay(pre, code, lineSet) {
@@ -61,7 +65,8 @@
     let lh = parseFloat(cs.lineHeight);
     if (!isFinite(lh) || lh <= 0) lh = parseFloat(cs.fontSize) * 1.6 || 21;
 
-    const baseTop = code.offsetTop; // offsetParent 为 pre（见下方 position:relative）
+    // code 自身有内边距时，offsetTop 只到 code 外框；高亮条从内容区首行起算
+    const baseTop = code.offsetTop + (parseFloat(cs.paddingTop) || 0); // offsetParent 为 pre（见下方 position:relative）
     const lines = [...lineSet].sort((a, b) => a - b);
     lines.forEach(no => {
       const bar = document.createElement('div');
@@ -77,13 +82,15 @@
       document.querySelector('.markdown-body');
     if (!scope) return;
 
-    scope.querySelectorAll('pre.code-block[data-line-hl]').forEach(pre => {
+    // 不能只看 [data-line-hl]：仅用 [!code highlight] 注释的代码块没有该属性
+    scope.querySelectorAll('pre.code-block').forEach(pre => {
       const code = pre.querySelector('code');
       if (!code || pre.dataset.lineHlInit) return;
-      pre.dataset.lineHlInit = '1';
-      pre.classList.add('has-line-hl');
-      // overlay 的定位锚：确保 offsetParent 是 pre
-      if (getComputedStyle(pre).position === 'static') pre.style.position = 'relative';
+
+      // 本文档会用 ```markdown 展示源码；里面的 [!code highlight] 是示例
+      // 文本，不能真的被剥离或高亮。
+      const lang = String(pre.dataset.lang || '').trim().split(/\s+/)[0].toLowerCase();
+      if (lang === 'markdown' || lang === 'md') return;
 
       const lineSet = parseSpec(pre.dataset.lineHl);
 
@@ -97,9 +104,13 @@
           hasMarker = true;
         }
       });
+      if (lineSet.size === 0) return;
       if (hasMarker) stripMarkers(code);
 
-      if (lineSet.size === 0) return;
+      pre.dataset.lineHlInit = '1';
+      pre.classList.add('has-line-hl');
+      // overlay 的定位锚：确保 offsetParent 是 pre
+      if (getComputedStyle(pre).position === 'static') pre.style.position = 'relative';
 
       const position = () => {
         if (!pre.isConnected) { ro.disconnect(); return; }

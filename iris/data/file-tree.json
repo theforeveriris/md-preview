@@ -463,7 +463,7 @@
             "path": "docs/examples/learning-path-examples.md",
             "wordCount": 121,
             "created": 1793127038,
-            "modified": 1793127038,
+            "modified": 1793176817,
             "title": "学习路径示例",
             "tags": [
               "学习",
@@ -479,7 +479,7 @@
             "contributors": [
               {
                 "name": "theforeveriris",
-                "count": 1
+                "count": 2
               }
             ]
           },
@@ -487,7 +487,7 @@
             "name": "line-highlight-examples.md",
             "type": "file",
             "path": "docs/examples/line-highlight-examples.md",
-            "wordCount": 52,
+            "wordCount": 100,
             "created": 1793115086,
             "modified": 1793115086,
             "title": "代码行高亮示例",
@@ -858,9 +858,9 @@
             ]
           }
         ],
-        "wordCount": 13113,
+        "wordCount": 13161,
         "created": 1779157467,
-        "modified": 1793175602
+        "modified": 1793176817
       },
       {
         "name": "changelog.md",
@@ -1095,9 +1095,9 @@
         ]
       }
     ],
-    "wordCount": 25494,
+    "wordCount": 25542,
     "created": 1779157467,
-    "modified": 1793175602
+    "modified": 1793176817
   },
   {
     "name": "iris",

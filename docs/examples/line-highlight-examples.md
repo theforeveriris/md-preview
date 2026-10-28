@@ -10,6 +10,23 @@ tags: [代码高亮]
 
 ## 行号标记
 
+**源码**
+
+````markdown
+```js {2,5-8}
+const store = new Map();        // ← 高亮第 2 行
+function get(key) {
+  return store.get(key);
+}
+function set(key, value) {      // ← 高亮 5-8 行
+  store.set(key, value);
+  return value;
+}
+```
+````
+
+**渲染效果**
+
 ````js {2,5-8}
 const store = new Map();        // ← 高亮第 2 行
 function get(key) {
@@ -23,6 +40,18 @@ function set(key, value) {      // ← 高亮 5-8 行
 
 ## 注释标记
 
+**源码**
+
+````markdown
+```js
+const a = 1; // [!code highlight]
+const b = 2;
+const c = a + b; // [!code highlight]
+```
+````
+
+**渲染效果**
+
 ````js
 const a = 1; // [!code highlight]
 const b = 2;
@@ -31,7 +60,18 @@ const c = a + b; // [!code highlight]
 
 ## 叠加
 
-````python {1} 
+**源码**
+
+````markdown
+```python {1}
+import os # [!code highlight]
+print(os.getcwd())
+```
+````
+
+**渲染效果**
+
+````python {1}
 import os # [!code highlight]
 print(os.getcwd())
 ````
