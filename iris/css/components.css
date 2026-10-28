@@ -1148,25 +1148,30 @@ pre.code-block code { position: relative; z-index: 1; }
 /* ============== 引用卡片（renderers/quote） ============== */
 .quote-cards { margin: 14px 0; display: flex; flex-direction: column; gap: 12px; }
 .quote-card {
-  position: relative;
   margin: 0;
-  padding: 20px 24px 14px 52px;
+  padding: 14px 18px;
+  text-align: left;
   border: 1px solid var(--color-border);
-  border-left: 4px solid var(--color-accent-purple, #8b5cf6);
-  border-radius: 10px;
+  border-left: 3px solid var(--color-accent-purple, #8b5cf6);
+  border-radius: 8px;
   background: color-mix(in srgb, var(--color-accent-purple) 4%, var(--color-surface));
 }
-.quote-card .quote-mark {
-  position: absolute;
-  left: 14px;
-  top: 6px;
-  font-size: 44px;
-  line-height: 1;
-  color: color-mix(in srgb, var(--color-accent-purple) 45%, transparent);
-  font-family: Georgia, serif;
+.markdown-body .quote-card { text-align: left; }
+.quote-card blockquote {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--color-text);
 }
-.quote-card blockquote { margin: 0; font-size: 15px; }
-.quote-card figcaption { margin-top: 8px; font-size: 12.5px; color: var(--color-text-muted); text-align: right; }
+.quote-card figcaption {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-align: right;
+}
 
 /* ============== 日历热图块（renderers/heatmap.js） ============== */
 .hm-widget {

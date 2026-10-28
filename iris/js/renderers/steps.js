@@ -63,7 +63,6 @@
       const text = parts[0].trim();
       const author = parts.length > 1 ? parts.slice(1).join('|').trim() : '';
       return `<figure class="quote-card">
-        <span class="quote-mark">“</span>
         <blockquote>${esc(text)}</blockquote>
         ${author ? `<figcaption>— ${esc(author)}</figcaption>` : ''}
       </figure>`;

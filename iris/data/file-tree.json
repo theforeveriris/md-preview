@@ -583,12 +583,18 @@
             "type": "file",
             "path": "docs/examples/orgchart-examples.md",
             "wordCount": 17,
-            "created": 0,
-            "modified": 0,
+            "created": 1793179462,
+            "modified": 1793179462,
             "title": "组织架构图语法糖示例",
             "tags": [
               "示例",
               "教学"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "count": 1
+              }
             ]
           },
           {
@@ -765,7 +771,7 @@
             "path": "docs/examples/steps-quote-examples.md",
             "wordCount": 80,
             "created": 1793128850,
-            "modified": 1793128850,
+            "modified": 1793179462,
             "title": "步骤揭示与引用卡片示例",
             "tags": [
               "示例",
@@ -774,7 +780,7 @@
             "contributors": [
               {
                 "name": "theforeveriris",
-                "count": 1
+                "count": 2
               }
             ]
           },
@@ -873,7 +879,7 @@
         ],
         "wordCount": 13168,
         "created": 1779157467,
-        "modified": 1793178599
+        "modified": 1793179462
       },
       {
         "name": "changelog.md",
@@ -1110,7 +1116,7 @@
     ],
     "wordCount": 25549,
     "created": 1779157467,
-    "modified": 1793178599
+    "modified": 1793179462
   },
   {
     "name": "iris",
