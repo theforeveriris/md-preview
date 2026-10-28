@@ -494,7 +494,7 @@
   padding: 14px 16px;
   margin: 14px 0;
   background: var(--color-surface);
-  overflow-x: auto;
+  overflow: hidden;
 }
 .ipcalc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .ipcalc-cidr {
@@ -518,9 +518,27 @@
 .ipcalc-field { display: flex; align-items: baseline; gap: 10px; padding: 3px 0; }
 .ipcalc-field-label { flex: 0 0 auto; color: var(--color-text-muted); font-size: 12.5px; }
 .ipcalc-field-value { font-size: 13px; word-break: break-all; }
-.ipcalc-divisions { margin-top: 12px; }
+.ipcalc-divisions {
+  margin-top: 12px;
+  max-width: 100%;
+}
+.ipcalc-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.ipcalc-table-scroll::-webkit-scrollbar { display: none; }
 .ipcalc-divisions-title { font-size: 12.5px; font-weight: 600; color: var(--color-text-muted); margin-bottom: 6px; }
-.ipcalc-divisions table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.ipcalc-divisions table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
 .ipcalc-divisions th, .ipcalc-divisions td {
   border: 1px solid var(--color-border);
   padding: 4px 8px;

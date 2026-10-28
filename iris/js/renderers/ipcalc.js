@@ -114,15 +114,17 @@
       wrap.className = 'ipcalc-divisions';
       wrap.innerHTML = `
         <div class="ipcalc-divisions-title">${esc(t('ipcalc.divisions', '子网划分'))}</div>
-        <table>
-          <thead><tr>
-            <th>${esc(t('ipcalc.prefix', '前缀'))}</th>
-            <th>${esc(t('ipcalc.mask', '子网掩码'))}</th>
-            <th>${esc(t('ipcalc.subnetCount', '子网数'))}</th>
-            <th>${esc(t('ipcalc.subnetList', '子网（前 8 个）'))}</th>
-          </tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
+        <div class="ipcalc-table-scroll">
+          <table>
+            <thead><tr>
+              <th>${esc(t('ipcalc.prefix', '前缀'))}</th>
+              <th>${esc(t('ipcalc.mask', '子网掩码'))}</th>
+              <th>${esc(t('ipcalc.subnetCount', '子网数'))}</th>
+              <th>${esc(t('ipcalc.subnetList', '子网（前 8 个）'))}</th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
       `;
       w.appendChild(wrap);
     }
