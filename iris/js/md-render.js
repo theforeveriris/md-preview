@@ -111,6 +111,62 @@
   }
 
   /**
+   * 占位保护代码段，避免后续文本处理误伤：
+   *   - 围栏块只在行首（最多 3 个空格缩进）识别，且闭合围栏必须同字符、
+   *     长度不小于开围栏——行内代码里的 ``` 不会被当成新围栏；
+   *   - 围栏块之外的 `行内代码` 再单独占位；
+   *   - 返回 restore()，调用方处理完文本后按原样还原。
+   * @param {string} text
+   * @param {string} prefix - 占位符前缀（只含字母/下划线，避免正则元字符）
+   * @returns {{ text: string, restore: (value: string) => string }}
+   */
+  function holdCodeSegments(text, prefix) {
+    const segments = [];
+    const lines = String(text == null ? '' : text).split('\n');
+    const out = [];
+    const openRe = /^[ \t]{0,3}(`{3,}|~{3,})(.*)$/;
+
+    let i = 0;
+    while (i < lines.length) {
+      const open = openRe.exec(lines[i]);
+      if (!open) {
+        out.push(lines[i]);
+        i += 1;
+        continue;
+      }
+      const marker = open[1];
+      const fenceChar = marker[0] === '`' ? '`' : '~';
+      const fenceLen = marker.length;
+      const start = i;
+      i += 1;
+      while (i < lines.length) {
+        const closeRe = new RegExp('^[ \\t]{0,3}' + fenceChar + '{' + fenceLen + ',}[ \\t]*$');
+        const isClose = closeRe.test(lines[i]);
+        i += 1;
+        if (isClose) break;
+      }
+      segments.push(lines.slice(start, i).join('\n'));
+      out.push(`${prefix}_${segments.length - 1}_HOLD`);
+    }
+
+    const withInlineHeld = out.join('\n').replace(/`[^`\n]*`/g, (match) => {
+      segments.push(match);
+      return `${prefix}_${segments.length - 1}_HOLD`;
+    });
+
+    const restoreRe = new RegExp(prefix + '_(\\d+)_HOLD', 'g');
+    return {
+      text: withInlineHeld,
+      restore(value) {
+        return String(value == null ? '' : value).replace(restoreRe, (match, idx) => {
+          const seg = segments[parseInt(idx, 10)];
+          return seg == null ? match : seg;
+        });
+      },
+    };
+  }
+
+  /**
    * 保护 LaTeX 公式，避免被 marked 误处理：
    *   1) $$...$$ 块级公式（原有逻辑）
    *   2) $...$ 行内公式（Pandoc 规则：$ 后不能是空白，闭合 $ 前不能是空白）；
@@ -126,14 +182,9 @@
     const blocks = [];
     const inline = [];
     // 先占位代码段（围栏/行内代码），公式提取只作用于非代码文本
-    const codeSegments = [];
-    const codeSafe = text.replace(/(```[\s\S]*?(?:```|$)|~~~[\s\S]*?(?:~~~|$)|`[^`\n]*`)/g, (m) => {
-      const idx = codeSegments.length;
-      codeSegments.push(m);
-      return `LATEXCODESEG_${idx}_HOLD`;
-    });
+    const codeHeld = holdCodeSegments(text, 'LATEXCODESEG');
 
-    const extracted = codeSafe
+    const extracted = codeHeld.text
       // $$...$$ 块
       .replace(/\$\$[\s\S]*?\$\$/g, (match) => {
         const idx = blocks.length;
@@ -156,7 +207,7 @@
       });
 
     // 公式提取完毕，代码段立即还原为原始 Markdown（单趟替换，还原内容不会被重扫）
-    const processed = extracted.replace(/LATEXCODESEG_(\d+)_HOLD/g, (m, idx) => codeSegments[parseInt(idx)] ?? m);
+    const processed = codeHeld.restore(extracted);
     return { processed, blocks, inline };
   }
 
@@ -507,34 +558,15 @@
    * @returns {string} 处理后的文本
    */
   function processSpoilers(text) {
-    const codeBlocks = [];
-    let protectedText = text;
+    // 行内代码里的 ``` 不能当成围栏（例如文档里用 ` ```acl ` 展示语法）
+    const codeHeld = holdCodeSegments(text, 'SPOILERCODESEG');
 
-    protectedText = protectedText.replace(/```[\s\S]*?```/g, function(match) {
-      const idx = codeBlocks.length;
-      codeBlocks.push(match);
-      return `SPOILERCODEBLOCK_${idx}_`;
-    });
-
-    protectedText = protectedText.replace(/`[^`\n]+`/g, function(match) {
-      const idx = codeBlocks.length;
-      codeBlocks.push(match);
-      return `SPOILERINLINECODE_${idx}_`;
-    });
-
-    protectedText = protectedText.replace(/\|\|([^\|\n]+?)\|\|/g, function(match, content) {
+    const protectedText = codeHeld.text.replace(/\|\|([^\|\n]+?)\|\|/g, function(match, content) {
       // 内容在 marked 解析前就插入了 <span> 原始 HTML，必须转义防止注入
       return '<span class="spoiler" tabindex="0">' + escapeHtml(content) + '</span>';
     });
 
-    protectedText = protectedText.replace(/SPOILERCODEBLOCK_(\d+)_/g, function(m, idx) {
-      return codeBlocks[parseInt(idx)];
-    });
-    protectedText = protectedText.replace(/SPOILERINLINECODE_(\d+)_/g, function(m, idx) {
-      return codeBlocks[parseInt(idx)];
-    });
-
-    return protectedText;
+    return codeHeld.restore(protectedText);
   }
 
   /**
@@ -544,17 +576,12 @@
    * @returns {string}
    */
   function processRuby(text) {
-    const codeSegments = [];
-    const protectedText = text.replace(/(```[\s\S]*?(?:```|$)|~~~[\s\S]*?(?:~~~|$)|`[^`\n]*`)/g, (m) => {
-      const idx = codeSegments.length;
-      codeSegments.push(m);
-      return `RUBYCODESEG_${idx}_HOLD`;
-    });
-    const replaced = protectedText.replace(/\\?\{([^{}|\n]{1,60})\|([^{}|\n]{1,120})\}/g, (match, base, rt) => {
+    const codeHeld = holdCodeSegments(text, 'RUBYCODESEG');
+    const replaced = codeHeld.text.replace(/\\?\{([^{}|\n]{1,60})\|([^{}|\n]{1,120})\}/g, (match, base, rt) => {
       if (match.charAt(0) === '\\') return match.slice(1); // \{ 转义为字面 {
       return `<ruby>${escapeHtml(base)}<rt>${escapeHtml(rt)}</rt></ruby>`;
     });
-    return replaced.replace(/RUBYCODESEG_(\d+)_HOLD/g, (m, idx) => codeSegments[parseInt(idx)] ?? m);
+    return codeHeld.restore(replaced);
   }
 
   /**

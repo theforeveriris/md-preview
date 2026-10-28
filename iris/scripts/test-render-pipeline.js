@@ -77,7 +77,36 @@ window.MarkdownPreview.loadStyle = async () => {};
   const paneRendered = splitPane ? splitPane.querySelectorAll('.katex').length : 0;
   console.log('split-pane 不含误渲染:', paneRendered === 0 ? 'PASS' : 'FAIL (' + paneRendered + ')');
 
-  const pass = katexLoaded && renderedBlocks.length > 0 && renderedInline.length > 0 && paneRendered === 0;
+  // 回归：行内代码里的 ``` 不能被当成围栏，四反引号 ACL/route-table 块必须正常交给渲染器
+  const fence = '````';
+  const fenceMd = [
+    '# 围栏回归',
+    '',
+    '` ```acl ` 是行内代码，不应开启代码围栏。',
+    '',
+    fence + 'acl ios',
+    '10 permit tcp 10.1.1.0 0.0.0.255 any eq 443',
+    '20 deny ip any any',
+    fence,
+    '',
+    fence + 'route-table',
+    'C    10.1.1.0/24 is directly connected, GigabitEthernet0/0',
+    'S*   0.0.0.0/0 [1/0] via 10.1.1.254',
+    fence,
+  ].join('\n');
+  window.MarkdownPreview.markdown.renderMarkdownDirect(fenceMd, 'test-fence.md');
+  await new Promise(r => setTimeout(r, 1500));
+
+  const fenceRoot = doc.querySelector('#markdownContent');
+  const leakedPlaceholder = /SPOILERCODEBLOCK|LATEXCODESEG|RUBYCODESEG/.test(fenceRoot.innerHTML);
+  const aclWidget = fenceRoot.querySelector('.acl-widget');
+  const routeWidget = fenceRoot.querySelector('.rt-widget');
+  console.log('多反引号围栏占位符泄漏:', leakedPlaceholder ? 'FAIL' : 'PASS');
+  console.log('ACL 渲染器接管四反引号块:', aclWidget ? 'PASS' : 'FAIL');
+  console.log('route-table 未被吞进 ACL:', routeWidget ? 'PASS' : 'FAIL');
+
+  const pass = katexLoaded && renderedBlocks.length > 0 && renderedInline.length > 0 && paneRendered === 0 &&
+    !leakedPlaceholder && !!aclWidget && !!routeWidget;
   console.log(pass ? '\nALL PASS' : '\nFAILED');
   process.exit(pass ? 0 : 1);
 })();
