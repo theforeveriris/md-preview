@@ -5,8 +5,674 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 27 Oct 2026 23:09:06 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 28 Oct 2026 10:09:46 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>终端回放与敏感遮罩示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/terminal-secret-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/terminal-secret-examples.md</guid>
+      <pubDate>Wed, 28 Oct 2026 10:04:15 GMT</pubDate>
+      <description>markdown 点击揭示；markdown markdown ` 口令就是今年年份（演示用）。</description>
+      <content:encoded><![CDATA[<h1>终端回放块</h1>
+<p><code>```terminal</code>：<code>$</code> / <code>#</code> 开头的行是命令（逐字打字），其余是输出（逐行闪现）。
+播放 / 重播 / 1×-4× 倍速，也可「直接看结果」；跟随系统减动效偏好。</p>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```terminal
+$ ssh admin@10.1.1.1
+Password:
+Core-SW&gt; enable
+Core-SW# show ip interface brief | exclude unassigned
+Interface              IP-Address      Status                Protocol
+GigabitEthernet0/0     10.1.1.1        up                    up
+GigabitEthernet0/1     10.1.2.1        up                    up
+Core-SW# copy running-config startup-config
+Destination filename [startup-config]?
+Building configuration...
+[OK]
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-terminal">$ ssh admin@10.1.1.1
+Password:
+Core-SW&gt; enable
+Core-SW# show ip interface brief | exclude unassigned
+Interface              IP-Address      Status                Protocol
+GigabitEthernet0/0     10.1.1.1        up                    up
+GigabitEthernet0/1     10.1.2.1        up                    up
+Core-SW# copy running-config startup-config
+Destination filename [startup-config]?
+Building configuration...
+[OK]
+</code></pre>
+<h1>敏感信息遮罩块</h1>
+<p><code>```secret</code> 点击揭示；<code>```secret 口令</code> 输对口令才展开。导出 PDF
+（打印）时无论是否已揭示都会保持打码——贴配置藏密码/IP。</p>
+<h2>点击揭示</h2>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```secret
+enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0
+username admin privilege 15 secret 5 $1$mERr$3XKc1mYtGQcK0V0eT1ZmL1
+snmp-server community public RO
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-secret">enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0
+username admin privilege 15 secret 5 $1$mERr$3XKc1mYtGQcK0V0eT1ZmL1
+snmp-server community public RO
+</code></pre>
+<h2>口令揭示</h2>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```secret 2024
+vpn pre-shared-key hex 2A4F6B8C0D1E3F5A7B9C2D4E6F8A0C2E
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-secret">vpn pre-shared-key hex 2A4F6B8C0D1E3F5A7B9C2D4E6F8A0C2E
+</code></pre>
+<p>口令就是今年年份（演示用）。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>步骤揭示与引用卡片示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/steps-quote-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/steps-quote-examples.md</guid>
+      <pubDate>Wed, 28 Oct 2026 09:42:09 GMT</pubDate>
+      <description>markdown ：，空行分隔多条——带出处署名的卡片式引用。 源码 quote 洞穴喻：被缚者看到的影子不是实物本身。 | 柏拉图《理想国》 复杂度是分层的：你不理解它，它就一定是魔法。 |</description>
+      <content:encoded><![CDATA[<h1>步骤揭示块</h1>
+<p><code>```steps</code>：<code>序号 | 标题 | 详情</code>，点击逐步展开——排错思路、证明过程
+比 quiz 轻量的教学件。</p>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```steps
+1 | 确认故障现象 | 影响面、时间线、有无变更
+2 | 检查物理层 | 看接口指示灯与光功率
+3 | 查控制平面 | ARP/MAC 表 → 路由表 → ACL
+4 | 抓包取证 | 镜像口 + Wireshark 过滤五元组
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-steps">1 | 确认故障现象 | 影响面、时间线、有无变更
+2 | 检查物理层 | 看接口指示灯与光功率
+3 | 查控制平面 | ARP/MAC 表 → 路由表 → ACL
+4 | 抓包取证 | 镜像口 + Wireshark 过滤五元组
+</code></pre>
+<h1>引用卡片</h1>
+<p><code>```quote</code>：<code>引文 | 出处</code>，空行分隔多条——带出处署名的卡片式引用。</p>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```quote
+洞穴喻：被缚者看到的影子不是实物本身。 | 柏拉图《理想国》
+
+复杂度是分层的：你不理解它，它就一定是魔法。 | 
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-quote">洞穴喻：被缚者看到的影子不是实物本身。 | 柏拉图《理想国》
+
+复杂度是分层的：你不理解它，它就一定是魔法。 | 
+</code></pre>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>组织架构图语法糖示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/orgchart-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/orgchart-examples.md</guid>
+      <pubDate>Wed, 28 Oct 2026 09:24:22 GMT</pubDate>
+      <description>markdown `</description>
+      <content:encoded><![CDATA[<h1>组织架构图语法糖</h1>
+<p><code>```orgchart</code>：缩进文本直接变 mermaid 组织架构图，不用手写 graph TD。</p>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```orgchart
+网络部
+- 核心组
+  - 骨干交换
+  - 出口路由
+- 接入组
+- 安全组
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-orgchart">网络部
+- 核心组
+  - 骨干交换
+  - 出口路由
+- 接入组
+- 安全组
+</code></pre>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>代码行高亮示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/line-highlight-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/line-highlight-examples.md</guid>
+      <pubDate>Wed, 28 Oct 2026 09:09:59 GMT</pubDate>
+      <description>两种标记方式：fence 信息串 （行号）与代码内 注释， 可叠加使用。高亮为覆盖层实现，不影响 hljs 语法着色。 源码 js {2,5-8} const store = new Map(); // ← 高亮第 2 行 function get(key) { return store.get(key); } function set(key, value) { // ← 高亮 5-8 行 st</description>
+      <content:encoded><![CDATA[<h1>代码行高亮</h1>
+<p>两种标记方式：fence 信息串 <code>{2,5-8}</code>（行号）与代码内 <code>[!code highlight]</code> 注释，
+可叠加使用。高亮为覆盖层实现，不影响 hljs 语法着色。</p>
+<h2>行号标记</h2>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```js {2,5-8}
+const store = new Map();        // ← 高亮第 2 行
+function get(key) {
+  return store.get(key);
+}
+function set(key, value) {      // ← 高亮 5-8 行
+  store.set(key, value);
+  return value;
+}
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-js">const store = new Map();        // ← 高亮第 2 行
+function get(key) {
+  return store.get(key);
+}
+function set(key, value) {      // ← 高亮 5-8 行
+  store.set(key, value);
+  return value;
+}
+</code></pre>
+<h2>注释标记</h2>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```js
+const a = 1; // [!code highlight]
+const b = 2;
+const c = a + b; // [!code highlight]
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-js">const a = 1; // [!code highlight]
+const b = 2;
+const c = a + b; // [!code highlight]
+</code></pre>
+<h2>叠加</h2>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```python {1}
+import os # [!code highlight]
+print(os.getcwd())
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-python">import os # [!code highlight]
+print(os.getcwd())
+</code></pre>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>学习路径示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/learning-path-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/learning-path-examples.md</guid>
+      <pubDate>Wed, 28 Oct 2026 08:40:17 GMT</pubDate>
+      <description>frontmatter 写 ，文档头出现「前置阅读」卡片链 （本篇就是一个活例子）； 图谱上按同一数据画出虚线强调色的有向 学习路径边——知识库的结构化阅读顺序一眼可辨。 本篇的前置阅读指向多篇示例文档；卡片链过长时在条内左右滚动，不换行。把 换成你自己的路径即可。</description>
+      <content:encoded><![CDATA[<h1>学习路径</h1>
+<p>frontmatter 写 <code>prerequisites: [路径/文件.md]</code>，文档头出现「前置阅读」卡片链
+（本篇就是一个活例子）；<code>#/graph</code> 图谱上按同一数据画出虚线强调色的有向
+学习路径边——知识库的结构化阅读顺序一眼可辨。</p>
+<p>本篇的前置阅读指向多篇示例文档；卡片链过长时在条内左右滚动，不换行。把 <code>prerequisites</code> 换成你自己的路径即可。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>ipcalc 子网计算示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/ipcalc-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/ipcalc-examples.md</guid>
+      <pubDate>Wed, 28 Oct 2026 08:20:02 GMT</pubDate>
+      <description>markdown ipcalc 10.1.1.0/24 markdown ipcalc 10.20.30.46/22 `</description>
+      <content:encoded><![CDATA[<h1>ipcalc 子网计算块</h1>
+<p><code>```ipcalc &lt;CIDR&gt;</code> 代码块把目标网段渲染为掩码 / 通配符 / 可用范围 / 广播 /
+主机数速查卡，并附子网划分表。纯前端计算，零依赖，贴运维常用网段即得结果。</p>
+<h2>单网段</h2>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```ipcalc 10.1.1.0/24
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-ipcalc">
+</code></pre>
+<h2>多网段（lang 里一个，正文一行一个）</h2>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```ipcalc 192.168.1.0/26
+172.16.4.130/28
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-ipcalc">172.16.4.130/28
+</code></pre>
+<h2>主机地址自动归网</h2>
+<p>写主机地址也行，渲染时自动对齐到所属网络：</p>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```ipcalc 10.20.30.46/22
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-ipcalc">
+</code></pre>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>日历热图示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/heatmap-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/heatmap-examples.md</guid>
+      <pubDate>Wed, 28 Oct 2026 08:14:23 GMT</pubDate>
+      <description>markdown markdown markdown ` 多年数据同样通过顶部年份选择框切换，每次只展示一个完整年份，避免横向拉得过长。</description>
+      <content:encoded><![CDATA[<h1>日历热图块</h1>
+<p><code>```heatmap</code>：正文每行 <code>YYYY-MM-DD,数值</code>，渲染 GitHub 贡献图样式的
+日历热图（列=周 / 行=星期，强度按最大值分 5 档，悬停看日期与数值）。
+巡检记录、值班统计、健身打卡这类自带数据的一图流。</p>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```heatmap
+2025-09-30,9
+2025-10-01,9
+2025-10-02,8
+2025-10-03,0
+2025-10-04,9
+2025-10-05,3
+2025-10-06,11
+2025-10-07,10
+2025-10-08,1
+2025-10-09,9
+2025-10-10,0
+2025-10-11,3
+2025-10-12,8
+2025-10-13,0
+2025-10-14,9
+2025-10-15,8
+2025-10-16,0
+2025-10-17,5
+2025-10-18,0
+2025-10-19,2
+2025-10-20,9
+2025-10-21,0
+2025-10-22,2
+2025-10-23,11
+2025-10-24,7
+2025-10-25,0
+2025-10-26,0
+2025-10-27,9
+2025-10-28,4
+2025-10-29,1
+2025-10-30,7
+2025-10-31,6
+2025-11-01,9
+2025-11-02,9
+2025-11-03,5
+2025-11-04,3
+2025-11-05,6
+2025-11-06,5
+2025-11-07,0
+2025-11-08,0
+2025-11-09,4
+2025-11-10,11
+2025-11-11,0
+2025-11-12,4
+2025-11-13,6
+2025-11-14,1
+2025-11-15,9
+2025-11-16,5
+2025-11-17,5
+2025-11-18,10
+2025-11-19,0
+2025-11-20,0
+2025-11-21,5
+2025-11-22,1
+2025-11-23,0
+2025-11-24,0
+2025-11-25,5
+2025-11-26,9
+2025-11-27,6
+2025-11-28,9
+2025-11-29,3
+2025-11-30,11
+2025-12-01,9
+2025-12-02,0
+2025-12-03,8
+2025-12-04,4
+2025-12-05,6
+2025-12-06,5
+2025-12-07,4
+2025-12-08,0
+2025-12-09,6
+2025-12-10,0
+2025-12-11,8
+2025-12-12,0
+2025-12-13,4
+2025-12-14,10
+2025-12-15,0
+2025-12-16,7
+2025-12-17,7
+2025-12-18,0
+2025-12-19,8
+2025-12-20,7
+2025-12-21,9
+2025-12-22,6
+2025-12-23,7
+2025-12-24,0
+2025-12-25,1
+2025-12-26,5
+2025-12-27,6
+2025-12-28,4
+2025-12-29,9
+2025-12-30,9
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-heatmap">2025-09-30,9
+2025-10-01,9
+2025-10-02,8
+2025-10-03,0
+2025-10-04,9
+2025-10-05,3
+2025-10-06,11
+2025-10-07,10
+2025-10-08,1
+2025-10-09,9
+2025-10-10,0
+2025-10-11,3
+2025-10-12,8
+2025-10-13,0
+2025-10-14,9
+2025-10-15,8
+2025-10-16,0
+2025-10-17,5
+2025-10-18,0
+2025-10-19,2
+2025-10-20,9
+2025-10-21,0
+2025-10-22,2
+2025-10-23,11
+2025-10-24,7
+2025-10-25,0
+2025-10-26,0
+2025-10-27,9
+2025-10-28,4
+2025-10-29,1
+2025-10-30,7
+2025-10-31,6
+2025-11-01,9
+2025-11-02,9
+2025-11-03,5
+2025-11-04,3
+2025-11-05,6
+2025-11-06,5
+2025-11-07,0
+2025-11-08,0
+2025-11-09,4
+2025-11-10,11
+2025-11-11,0
+2025-11-12,4
+2025-11-13,6
+2025-11-14,1
+2025-11-15,9
+2025-11-16,5
+2025-11-17,5
+2025-11-18,10
+2025-11-19,0
+2025-11-20,0
+2025-11-21,5
+2025-11-22,1
+2025-11-23,0
+2025-11-24,0
+2025-11-25,5
+2025-11-26,9
+2025-11-27,6
+2025-11-28,9
+2025-11-29,3
+2025-11-30,11
+2025-12-01,9
+2025-12-02,0
+2025-12-03,8
+2025-12-04,4
+2025-12-05,6
+2025-12-06,5
+2025-12-07,4
+2025-12-08,0
+2025-12-09,6
+2025-12-10,0
+2025-12-11,8
+2025-12-12,0
+2025-12-13,4
+2025-12-14,10
+2025-12-15,0
+2025-12-16,7
+2025-12-17,7
+2025-12-18,0
+2025-12-19,8
+2025-12-20,7
+2025-12-21,9
+2025-12-22,6
+2025-12-23,7
+2025-12-24,0
+2025-12-25,1
+2025-12-26,5
+2025-12-27,6
+2025-12-28,4
+2025-12-29,9
+2025-12-30,9
+</code></pre>
+<h2>跨越相邻两年</h2>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```heatmap
+2025-12-28,4
+2025-12-29,7
+2025-12-30,9
+2025-12-31,5
+2026-01-01,6
+2026-01-02,8
+2026-01-03,3
+2026-01-04,7
+2026-01-05,9
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-heatmap">2025-12-28,4
+2025-12-29,7
+2025-12-30,9
+2025-12-31,5
+2026-01-01,6
+2026-01-02,8
+2026-01-03,3
+2026-01-04,7
+2026-01-05,9
+</code></pre>
+<p>跨年数据会在组件顶部显示年份选择框，默认展示最新年份；切换年份即可查看对应年度，不必把两年硬拼成一条长轴。</p>
+<h2>跨越多年</h2>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```heatmap
+2023-01-01,3
+2023-06-15,8
+2024-01-01,5
+2024-07-04,9
+2025-01-01,4
+2025-08-08,7
+2026-01-01,6
+2026-09-30,10
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-heatmap">2023-01-01,3
+2023-06-15,8
+2024-01-01,5
+2024-07-04,9
+2025-01-01,4
+2025-08-08,7
+2026-01-01,6
+2026-09-30,10
+</code></pre>
+<p>多年数据同样通过顶部年份选择框切换，每次只展示一个完整年份，避免横向拉得过长。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>配置语义 diff 示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/config-diff-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/config-diff-examples.md</guid>
+      <pubDate>Wed, 28 Oct 2026 07:16:56 GMT</pubDate>
+      <description>markdown markdown `</description>
+      <content:encoded><![CDATA[<h1>配置语义 diff</h1>
+<p><code>```config-diff ios</code>（或 <code>vrp</code>）代码块渲染两份配置的**语义**对比：
+按缩进层级解析成命令树、以祖先命令链对齐，<code>===</code> 分隔线隔开变更前后。
+同一条命令挪位置不误报；改参数的命令成对呈现 −旧 +新——升配/迁移 review 神器。</p>
+<h2>IOS 接口地址变更</h2>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```config-diff ios
+interface GigabitEthernet0/0
+ ip address 10.1.1.1 255.255.255.0
+ no shutdown
+!
+interface GigabitEthernet0/1
+ ip address 10.1.2.1 255.255.255.0
+===变更后
+interface GigabitEthernet0/0
+ ip address 10.1.1.1 255.255.255.252
+ no shutdown
+!
+interface GigabitEthernet0/1
+ ip address 10.1.2.1 255.255.255.0
+ shutdown
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-config-diff">interface GigabitEthernet0/0
+ ip address 10.1.1.1 255.255.255.0
+ no shutdown
+!
+interface GigabitEthernet0/1
+ ip address 10.1.2.1 255.255.255.0
+===变更后
+interface GigabitEthernet0/0
+ ip address 10.1.1.1 255.255.255.252
+ no shutdown
+!
+interface GigabitEthernet0/1
+ ip address 10.1.2.1 255.255.255.0
+ shutdown
+</code></pre>
+<h2>VRP sysname 与 NTP</h2>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```config-diff vrp
+sysname CORE-SW
+ntp-service unicast-server 10.10.10.1
+===升配后
+sysname CORE-SW-NEW
+ntp-service unicast-server 10.10.10.1
+ntp-service unicast-server 10.10.10.2
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-config-diff">sysname CORE-SW
+ntp-service unicast-server 10.10.10.1
+===升配后
+sysname CORE-SW-NEW
+ntp-service unicast-server 10.10.10.1
+ntp-service unicast-server 10.10.10.2
+</code></pre>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>位标注示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/bits-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/bits-examples.md</guid>
+      <pubDate>Wed, 28 Oct 2026 07:10:12 GMT</pubDate>
+      <description>markdown markdown markdown ...` 省略；完整位串仍显示在下方位条中。</description>
+      <content:encoded><![CDATA[<h1>位标注块</h1>
+<p><code>```bits &lt;二进制&gt;</code>（可空格分组）+ 正文标注行 <code>位序 | 名称 | 说明</code>
+（位序自最高位起算）：位条可视化、二/十六/十进制速读、点击位定位标注。</p>
+<h2>TCP 标志位</h2>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```bits 0100 0010
+0 | SYN | 发起连接
+6 | ACK | 确认收到
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-bits">0 | SYN | 发起连接
+6 | ACK | 确认收到
+</code></pre>
+<p>（SYN=1、ACK=1 → 第二次握手的 SYN+ACK 报文，二进制值 0x42。）</p>
+<h2>子网掩码 /24</h2>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```bits 1111 1111 1111 1111 1111 1111 0000 0000
+0 | 网络位开始
+23 | 网络位结束
+24 | 主机位开始
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-bits">0 | 网络位开始
+23 | 网络位结束
+24 | 主机位开始
+</code></pre>
+<h2>超长位串（32 位）</h2>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```bits 1111 0000 1010 0101 1100 0011 1001 0110
+0 | 起始位 | 最高位
+31 | 结束位 | 最低位
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-bits">0 | 起始位 | 最高位
+31 | 结束位 | 最低位
+</code></pre>
+<p>位串过长时，组件头部只保留前后各两组二进制，中间用 <code>...</code> 省略；完整位串仍显示在下方位条中。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>ACL 与路由表分析块</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/acl-route-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/acl-route-examples.md</guid>
+      <pubDate>Wed, 28 Oct 2026 05:58:58 GMT</pubDate>
+      <description>markdown 粘贴 输出：可排序表 + 协议分布统计。 源码 route-table Codes: L - local, C - connected, S - static, O - OSPF, B - BGP Gateway of last resort is 10.1.1.254 to network 0.0.0.0 C 10.1.1.0/24 is directly connected,</description>
+      <content:encoded><![CDATA[<h1>ACL 与路由表分析块</h1>
+<p><code>```acl</code> 粘贴 IOS/VRP ACL：渲染匹配顺序表 + 五元组命中测试。自上而下
+模拟求值，第一条命中即返回；无命中提示隐式 deny——排查「为什么这条流量
+被拒」不用再肉眼逐条比对了。</p>
+<h2>命名 ACL（序号行）</h2>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```acl ios
+10 permit tcp 10.1.1.0 0.0.0.255 any eq 443
+20 permit tcp 10.1.1.0 0.0.0.255 host 8.8.8.8 eq 53
+30 permit udp any host 8.8.8.8 eq 53
+40 deny ip any any
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-acl">10 permit tcp 10.1.1.0 0.0.0.255 any eq 443
+20 permit tcp 10.1.1.0 0.0.0.255 host 8.8.8.8 eq 53
+30 permit udp any host 8.8.8.8 eq 53
+40 deny ip any any
+</code></pre>
+<p>点「测试」改源/目的/端口试试：<code>10.1.1.8 → 8.8.8.8:53</code> 命中第 2 条；
+<code>10.1.1.8 → 1.1.1.1:80</code> 落入第 4 条显式 deny；换成没写 deny 的 ACL
+则提示隐式 deny。</p>
+<h2>路由表分析块</h2>
+<p><code>```route-table</code> 粘贴 <code>show ip route</code> 输出：可排序表 + 协议分布统计。</p>
+<p><strong>源码</strong></p>
+<pre><code class="language-markdown">```route-table
+Codes: L - local, C - connected, S - static, O - OSPF, B - BGP
+
+Gateway of last resort is 10.1.1.254 to network 0.0.0.0
+
+C    10.1.1.0/24 is directly connected, GigabitEthernet0/0
+L    10.1.1.1/32 is directly connected, GigabitEthernet0/0
+O    10.2.0.0/16 [110/20] via 10.1.1.2, 00:12:34, GigabitEthernet0/0
+O E2 192.168.50.0/24 [110/20] via 10.1.1.2, 00:12:34, GigabitEthernet0/0
+S*   0.0.0.0/0 [1/0] via 10.1.1.254
+B    172.16.0.0/16 [200/0] via 10.1.1.3, 00:05:00
+S    10.99.0.0/16 [1/0] via 10.1.1.9
+```
+</code></pre>
+<p><strong>渲染效果</strong></p>
+<pre><code class="language-route-table">Codes: L - local, C - connected, S - static, O - OSPF, B - BGP
+
+Gateway of last resort is 10.1.1.254 to network 0.0.0.0
+
+C    10.1.1.0/24 is directly connected, GigabitEthernet0/0
+L    10.1.1.1/32 is directly connected, GigabitEthernet0/0
+O    10.2.0.0/16 [110/20] via 10.1.1.2, 00:12:34, GigabitEthernet0/0
+O E2 192.168.50.0/24 [110/20] via 10.1.1.2, 00:12:34, GigabitEthernet0/0
+S*   0.0.0.0/0 [1/0] via 10.1.1.254
+B    172.16.0.0/16 [200/0] via 10.1.1.3, 00:05:00
+S    10.99.0.0/16 [1/0] via 10.1.1.9
+</code></pre>
+]]></content:encoded>
+    </item>
     <item>
       <title>配置参考</title>
       <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
@@ -883,332 +1549,6 @@ db-02,95,1.3
 <blockquote>
 <p>共 143 条（最多展示 200 条）。</p>
 </blockquote>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>位标注示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/bits-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/bits-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 19:25:37 GMT</pubDate>
-      <description>bits 0100 0010 0 | SYN | 发起连接 6 | ACK | 确认收到 `</description>
-      <content:encoded><![CDATA[<h1>位标注块</h1>
-<p><code>```bits &lt;二进制&gt;</code>（可空格分组）+ 正文标注行 <code>位序 | 名称 | 说明</code>
-（位序自最高位起算）：位条可视化、二/十六/十进制速读、点击位定位标注。</p>
-<h2>TCP 标志位</h2>
-<pre><code class="language-bits">0 | SYN | 发起连接
-6 | ACK | 确认收到
-</code></pre>
-<p>（SYN=1、ACK=1 → 第二次握手的 SYN+ACK 报文，二进制值 0x42。）</p>
-<h2>子网掩码 /24</h2>
-<pre><code class="language-bits">0 | 网络位开始
-23 | 网络位结束
-24 | 主机位开始
-</code></pre>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>日历热图示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/heatmap-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/heatmap-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 19:22:26 GMT</pubDate>
-      <description>heatmap 2025-09-30,9 2025-10-01,9 2025-10-02,8 2025-10-03,0 2025-10-04,9 2025-10-05,3 2025-10-06,11 2025-10-07,10 2025-10-08,1 2025-10-09,9 2025-10-10,0 2025-10-11,3 2025-10-12,8 2025-10-13,0 2025-10-</description>
-      <content:encoded><![CDATA[<h1>日历热图块</h1>
-<p><code>```heatmap</code>：正文每行 <code>YYYY-MM-DD,数值</code>，渲染 GitHub 贡献图样式的
-日历热图（列=周 / 行=星期，强度按最大值分 5 档，悬停看日期与数值）。
-巡检记录、值班统计、健身打卡这类自带数据的一图流。</p>
-<pre><code class="language-heatmap">2025-09-30,9
-2025-10-01,9
-2025-10-02,8
-2025-10-03,0
-2025-10-04,9
-2025-10-05,3
-2025-10-06,11
-2025-10-07,10
-2025-10-08,1
-2025-10-09,9
-2025-10-10,0
-2025-10-11,3
-2025-10-12,8
-2025-10-13,0
-2025-10-14,9
-2025-10-15,8
-2025-10-16,0
-2025-10-17,5
-2025-10-18,0
-2025-10-19,2
-2025-10-20,9
-2025-10-21,0
-2025-10-22,2
-2025-10-23,11
-2025-10-24,7
-2025-10-25,0
-2025-10-26,0
-2025-10-27,9
-2025-10-28,4
-2025-10-29,1
-2025-10-30,7
-2025-10-31,6
-2025-11-01,9
-2025-11-02,9
-2025-11-03,5
-2025-11-04,3
-2025-11-05,6
-2025-11-06,5
-2025-11-07,0
-2025-11-08,0
-2025-11-09,4
-2025-11-10,11
-2025-11-11,0
-2025-11-12,4
-2025-11-13,6
-2025-11-14,1
-2025-11-15,9
-2025-11-16,5
-2025-11-17,5
-2025-11-18,10
-2025-11-19,0
-2025-11-20,0
-2025-11-21,5
-2025-11-22,1
-2025-11-23,0
-2025-11-24,0
-2025-11-25,5
-2025-11-26,9
-2025-11-27,6
-2025-11-28,9
-2025-11-29,3
-2025-11-30,11
-2025-12-01,9
-2025-12-02,0
-2025-12-03,8
-2025-12-04,4
-2025-12-05,6
-2025-12-06,5
-2025-12-07,4
-2025-12-08,0
-2025-12-09,6
-2025-12-10,0
-2025-12-11,8
-2025-12-12,0
-2025-12-13,4
-2025-12-14,10
-2025-12-15,0
-2025-12-16,7
-2025-12-17,7
-2025-12-18,0
-2025-12-19,8
-2025-12-20,7
-2025-12-21,9
-2025-12-22,6
-2025-12-23,7
-2025-12-24,0
-2025-12-25,1
-2025-12-26,5
-2025-12-27,6
-2025-12-28,4
-2025-12-29,9
-2025-12-30,9
-</code></pre>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>步骤揭示与引用卡片示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/steps-quote-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/steps-quote-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 19:20:50 GMT</pubDate>
-      <description>steps 1 | 确认故障现象 | 影响面、时间线、有无变更 2 | 检查物理层 | 看接口指示灯与光功率 3 | 查控制平面 | ARP/MAC 表 → 路由表 → ACL 4 | 抓包取证 | 镜像口 + Wireshark 过滤五元组 quote 引文 | 出处 orgchart 网络部 - 核心组 - 骨干交换 - 出口路由 - 接入组 - 安全组</description>
-      <content:encoded><![CDATA[<h1>步骤揭示块</h1>
-<p><code>```steps</code>：<code>序号 | 标题 | 详情</code>，点击逐步展开——排错思路、证明过程
-比 quiz 轻量的教学件。</p>
-<pre><code class="language-steps">1 | 确认故障现象 | 影响面、时间线、有无变更
-2 | 检查物理层 | 看接口指示灯与光功率
-3 | 查控制平面 | ARP/MAC 表 → 路由表 → ACL
-4 | 抓包取证 | 镜像口 + Wireshark 过滤五元组
-</code></pre>
-<h1>引用卡片</h1>
-<p><code>```quote</code>：<code>引文 | 出处</code>，空行分隔多条——带出处署名的卡片式引用。</p>
-<pre><code class="language-quote">洞穴喻：被缚者看到的影子不是实物本身。 | 柏拉图《理想国》
-复杂度是分层的：你不理解它，它就一定是魔法。 | 
-</code></pre>
-<h1>架构图语法糖</h1>
-<p><code>```orgchart</code>：缩进文本直接变 mermaid 组织架构图，不用手写 graph TD。</p>
-<pre><code class="language-orgchart">网络部
-- 核心组
-  - 骨干交换
-  - 出口路由
-- 接入组
-- 安全组
-</code></pre>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>终端回放与敏感遮罩示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/terminal-secret-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/terminal-secret-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 19:07:42 GMT</pubDate>
-      <description>terminal $ ssh admin@10.1.1.1 Password: Core-SW&gt; enable Core-SW# show ip interface brief | exclude unassigned Interface IP-Address Status Protocol GigabitEthernet0/0 10.1.1.1 up up GigabitEthernet0/1 </description>
-      <content:encoded><![CDATA[<h1>终端回放块</h1>
-<p><code>```terminal</code>：<code>$</code> / <code>#</code> 开头的行是命令（逐字打字），其余是输出（逐行闪现）。
-播放 / 重播 / 1×-4× 倍速，也可「直接看结果」；跟随系统减动效偏好。</p>
-<pre><code class="language-terminal">$ ssh admin@10.1.1.1
-Password:
-Core-SW&gt; enable
-Core-SW# show ip interface brief | exclude unassigned
-Interface              IP-Address      Status                Protocol
-GigabitEthernet0/0     10.1.1.1        up                    up
-GigabitEthernet0/1     10.1.2.1        up                    up
-Core-SW# copy running-config startup-config
-Destination filename [startup-config]?
-Building configuration...
-[OK]
-</code></pre>
-<h1>敏感信息遮罩块</h1>
-<p><code>```secret</code> 点击揭示；<code>```secret 口令</code> 输对口令才展开。导出 PDF
-（打印）时无论是否已揭示都会保持打码——贴配置藏密码/IP。</p>
-<h2>点击揭示</h2>
-<pre><code class="language-secret">enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0
-username admin privilege 15 secret 5 $1$mERr$3XKc1mYtGQcK0V0eT1ZmL1
-snmp-server community public RO
-</code></pre>
-<h2>口令揭示</h2>
-<pre><code class="language-secret">vpn pre-shared-key hex 2A4F6B8C0D1E3F5A7B9C2D4E6F8A0C2E
-</code></pre>
-<p>口令就是今年年份（演示用）。</p>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>ACL 与路由表分析示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/acl-route-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/acl-route-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 19:04:52 GMT</pubDate>
-      <description>acl ios 10 permit tcp 10.1.1.0 0.0.0.255 any eq 443 20 permit tcp 10.1.1.0 0.0.0.255 host 8.8.8.8 eq 53 30 permit udp any host 8.8.8.8 eq 53 40 deny ip any any route-table show ip route</description>
-      <content:encoded><![CDATA[<h1>ACL 分析块</h1>
-<p><code>```acl</code> 粘贴 IOS/VRP ACL：渲染匹配顺序表 + 五元组命中测试。自上而下
-模拟求值，第一条命中即返回；无命中提示隐式 deny——排查「为什么这条流量
-被拒」不用再肉眼逐条比对了。</p>
-<h2>命名 ACL（序号行）</h2>
-<pre><code class="language-acl">10 permit tcp 10.1.1.0 0.0.0.255 any eq 443
-20 permit tcp 10.1.1.0 0.0.0.255 host 8.8.8.8 eq 53
-30 permit udp any host 8.8.8.8 eq 53
-40 deny ip any any
-</code></pre>
-<p>点「测试」改源/目的/端口试试：<code>10.1.1.8 → 8.8.8.8:53</code> 命中第 2 条；
-<code>10.1.1.8 → 1.1.1.1:80</code> 落入第 4 条显式 deny；换成没写 deny 的 ACL
-则提示隐式 deny。</p>
-<h1>路由表分析块</h1>
-<p><code>```route-table</code> 粘贴 <code>show ip route</code> 输出：可排序表 + 协议分布统计。</p>
-<pre><code class="language-route-table">Codes: L - local, C - connected, S - static, O - OSPF, B - BGP
-
-Gateway of last resort is 10.1.1.254 to network 0.0.0.0
-
-C    10.1.1.0/24 is directly connected, GigabitEthernet0/0
-L    10.1.1.1/32 is directly connected, GigabitEthernet0/0
-O    10.2.0.0/16 [110/20] via 10.1.1.2, 00:12:34, GigabitEthernet0/0
-O E2 192.168.50.0/24 [110/20] via 10.1.1.2, 00:12:34, GigabitEthernet0/0
-S*   0.0.0.0/0 [1/0] via 10.1.1.254
-B    172.16.0.0/16 [200/0] via 10.1.1.3, 00:05:00
-S    10.99.0.0/16 [1/0] via 10.1.1.9
-</code></pre>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>配置语义 diff 示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/config-diff-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/config-diff-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 18:54:56 GMT</pubDate>
-      <description>config-diff ios interface GigabitEthernet0/0 ip address 10.1.1.1 255.255.255.0 no shutdown ! interface GigabitEthernet0/1 ip address 10.1.2.1 255.255.255.0 ===变更后 interface GigabitEthernet0/0 ip addre</description>
-      <content:encoded><![CDATA[<h1>配置语义 diff</h1>
-<p><code>```config-diff ios</code>（或 <code>vrp</code>）代码块渲染两份配置的**语义**对比：
-按缩进层级解析成命令树、以祖先命令链对齐，<code>===</code> 分隔线隔开变更前后。
-同一条命令挪位置不误报；改参数的命令成对呈现 −旧 +新——升配/迁移 review 神器。</p>
-<h2>IOS 接口地址变更</h2>
-<pre><code class="language-config-diff">interface GigabitEthernet0/0
- ip address 10.1.1.1 255.255.255.0
- no shutdown
-!
-interface GigabitEthernet0/1
- ip address 10.1.2.1 255.255.255.0
-===变更后
-interface GigabitEthernet0/0
- ip address 10.1.1.1 255.255.255.252
- no shutdown
-!
-interface GigabitEthernet0/1
- ip address 10.1.2.1 255.255.255.0
- shutdown
-</code></pre>
-<h2>VRP sysname 与 NTP</h2>
-<pre><code class="language-config-diff">sysname CORE-SW
-ntp-service unicast-server 10.10.10.1
-===升配后
-sysname CORE-SW-NEW
-ntp-service unicast-server 10.10.10.1
-ntp-service unicast-server 10.10.10.2
-</code></pre>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>学习路径示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/learning-path-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/learning-path-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 18:50:38 GMT</pubDate>
-      <description>frontmatter 写 ，文档头出现「前置阅读」卡片链 （本篇就是一个活例子）； 图谱上按同一数据画出虚线强调色的有向 学习路径边——知识库的结构化阅读顺序一眼可辨。 本篇的前置阅读指向两篇示例文档；把 换成你自己的路径即可。</description>
-      <content:encoded><![CDATA[<h1>学习路径</h1>
-<p>frontmatter 写 <code>prerequisites: [路径/文件.md]</code>，文档头出现「前置阅读」卡片链
-（本篇就是一个活例子）；<code>#/graph</code> 图谱上按同一数据画出虚线强调色的有向
-学习路径边——知识库的结构化阅读顺序一眼可辨。</p>
-<p>本篇的前置阅读指向两篇示例文档；把 <code>prerequisites</code> 换成你自己的路径即可。</p>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>代码行高亮示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/line-highlight-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/line-highlight-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 15:31:26 GMT</pubDate>
-      <description>两种标记方式：fence 信息串 （行号）与代码内 注释， 可叠加使用。高亮为覆盖层实现，不影响 hljs 语法着色。 `</description>
-      <content:encoded><![CDATA[<h1>代码行高亮</h1>
-<p>两种标记方式：fence 信息串 <code>{2,5-8}</code>（行号）与代码内 <code>[!code highlight]</code> 注释，
-可叠加使用。高亮为覆盖层实现，不影响 hljs 语法着色。</p>
-<h2>行号标记</h2>
-<pre><code class="language-js">const store = new Map();        // ← 高亮第 2 行
-function get(key) {
-  return store.get(key);
-}
-function set(key, value) {      // ← 高亮 5-8 行
-  store.set(key, value);
-  return value;
-}
-</code></pre>
-<h2>注释标记</h2>
-<pre><code class="language-js">const a = 1; // [!code highlight]
-const b = 2;
-const c = a + b; // [!code highlight]
-</code></pre>
-<h2>叠加</h2>
-<pre><code class="language-python">import os # [!code highlight]
-print(os.getcwd())
-</code></pre>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>ipcalc 子网计算示例</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/ipcalc-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/ipcalc-examples.md</guid>
-      <pubDate>Tue, 27 Oct 2026 15:21:42 GMT</pubDate>
-      <description></description>
-      <content:encoded><![CDATA[<h1>ipcalc 子网计算块</h1>
-<p><code>```ipcalc &lt;CIDR&gt;</code> 代码块把目标网段渲染为掩码 / 通配符 / 可用范围 / 广播 /
-主机数速查卡，并附子网划分表。纯前端计算，零依赖，贴运维常用网段即得结果。</p>
-<h2>单网段</h2>
-<pre><code class="language-ipcalc">
-</code></pre>
-<h2>多网段（lang 里一个，正文一行一个）</h2>
-<pre><code class="language-ipcalc">172.16.4.130/28
-</code></pre>
-<h2>主机地址自动归网</h2>
-<p>写主机地址也行，渲染时自动对齐到所属网络：</p>
-<pre><code class="language-ipcalc">
-</code></pre>
 ]]></content:encoded>
     </item>
     <item>
