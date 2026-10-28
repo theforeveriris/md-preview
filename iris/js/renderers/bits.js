@@ -50,6 +50,11 @@
       widget.className = 'bits-widget';
       const groups = [];
       for (let i = 0; i < bin.length; i += 4) groups.push(bin.slice(i, i + 4));
+      // 头部只保留前后各两组，中间用 ... 省略；完整值放在 title 与下方位条中
+      const fullLabel = groups.join(' ');
+      const compactLabel = groups.length > 4
+        ? [groups[0], groups[1], '...', groups[groups.length - 2], groups[groups.length - 1]].join(' ')
+        : fullLabel;
       const bitCells = bin.split('').map((bit, i) => {
         const a = annotations.get(i);
         return `<button type="button" class="bits-cell ${bit === '1' ? 'is-one' : ''} ${a ? 'has-note' : ''}" data-i="${i}" title="${esc(a ? a.name : '')}">
@@ -60,7 +65,7 @@
 
       widget.innerHTML = `
         <div class="bits-head">
-          <span class="bits-num"><code>${esc(groups.join(' '))}</code></span>
+          <span class="bits-num" title="${esc(fullLabel)}"><code>${esc(compactLabel)}</code></span>
           <span class="bits-bases">${esc(hex)} · ${esc(String(value))}</span>
         </div>
         <div class="bits-strip" style="--bits:${width}">${bitCells}</div>

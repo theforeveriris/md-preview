@@ -1204,7 +1204,7 @@ pre.code-block code { position: relative; z-index: 1; }
   overflow: hidden;
 }
 .bits-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
-.bits-num code { font-size: 16px; letter-spacing: 2px; font-weight: 600; }
+.bits-num code { font-size: 16px; letter-spacing: 2px; font-weight: 600; white-space: nowrap; }
 .bits-bases { font-size: 12px; color: var(--color-text-muted); font-family: var(--font-mono, monospace); }
 .bits-strip {
   display: flex;

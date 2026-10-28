@@ -67,9 +67,9 @@
             "name": "bits-examples.md",
             "type": "file",
             "path": "docs/examples/bits-examples.md",
-            "wordCount": 13,
+            "wordCount": 29,
             "created": 1793129137,
-            "modified": 1793129137,
+            "modified": 1793167596,
             "title": "位标注示例",
             "tags": [
               "网络",
@@ -78,7 +78,7 @@
             "contributors": [
               {
                 "name": "theforeveriris",
-                "count": 1
+                "count": 2
               }
             ]
           },
@@ -855,9 +855,9 @@
             ]
           }
         ],
-        "wordCount": 13060,
+        "wordCount": 13076,
         "created": 1779157467,
-        "modified": 1793167138
+        "modified": 1793167596
       },
       {
         "name": "changelog.md",
@@ -1092,9 +1092,9 @@
         ]
       }
     ],
-    "wordCount": 25441,
+    "wordCount": 25457,
     "created": 1779157467,
-    "modified": 1793167138
+    "modified": 1793167596
   },
   {
     "name": "iris",

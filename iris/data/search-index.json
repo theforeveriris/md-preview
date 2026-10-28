@@ -68,8 +68,8 @@
   {
     "path": "docs/examples/bits-examples.md",
     "title": "位标注示例",
-    "preview": "位标注块 markdown bits 0100 0010 0 | SYN | 发起连接 6 | ACK | 确认收到 markdown bits 1111 1111 1111 1111 1111 1111 0000 0000 0 | 网络位开始 23 | 网络位结束 24 | 主机位开始",
-    "searchText": "位标注示例 网络 教学 位标注块 markdown bits 0100 0010 0 | SYN | 发起连接 6 | ACK | 确认收到 markdown bits 1111 1111 1111 1111 1111 1111 0000 0000 0 | 网络位开始 23 | 网络位结束 24 | 主机位开始 docs/examples/bits-examples.md 位標註示例 網絡 教學 wbzsl wl jx",
+    "preview": "位标注块 markdown bits 0100 0010 0 | SYN | 发起连接 6 | ACK | 确认收到 markdown bits 1111 1111 1111 1111 1111 1111 0000 0000 0 | 网络位开始 23 | 网络位结束 24 | 主机位开始 markdown bits 1111 0000 1010 0101 1100 0011 1001 0110 0",
+    "searchText": "位标注示例 网络 教学 位标注块 markdown bits 0100 0010 0 | SYN | 发起连接 6 | ACK | 确认收到 markdown bits 1111 1111 1111 1111 1111 1111 0000 0000 0 | 网络位开始 23 | 网络位结束 24 | 主机位开始 markdown bits 1111 0000 1010 0101 1100 0011 1001 0110 0 docs/examples/bits-examples.md 位標註示例 網絡 教學 wbzsl wl jx",
     "tags": [
       "网络",
       "教学"
