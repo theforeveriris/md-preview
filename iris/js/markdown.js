@@ -373,7 +373,7 @@
     // 贡献者徽标（contributors.js）也是它的成员之一，插在同一行区域
     const escHtml = (s) => mdRender.escapeHtml(s == null ? '' : String(s));
     const metaBits = [];
-    if (frontmatter.author) metaBits.push(`<span class="doc-meta-author">👤 ${escHtml(frontmatter.author)}</span>`);
+    if (frontmatter.author) metaBits.push(`<span class="doc-meta-author"><svg class="ico ico-xs" aria-hidden="true"><use href="#i-user"/></svg>${escHtml(frontmatter.author)}</span>`);
     const dateStr = frontmatter.date ||
       (() => {
         // 无 frontmatter date 时回退文件树的最初创建时间
@@ -387,7 +387,7 @@
         })(state.fileTreeData);
         return created ? new Date(created * 1000).toISOString().slice(0, 10) : '';
       })();
-    if (dateStr) metaBits.push(`<span class="doc-meta-date">🗓 ${escHtml(String(dateStr).slice(0, 10))}</span>`);
+    if (dateStr) metaBits.push(`<span class="doc-meta-date"><svg class="ico ico-xs" aria-hidden="true"><use href="#i-calendar"/></svg>${escHtml(String(dateStr).slice(0, 10))}</span>`);
     // 标签 chips：frontmatter 优先，回退文件树；链接到标签聚合页
     const tagList = (() => {
       const raw = frontmatter.tags;

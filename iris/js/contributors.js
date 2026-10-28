@@ -2,8 +2,8 @@
  * contributors - 贡献者徽标
  *
  * 构建期 git-times 已扫提交历史（build-file-tree 采集 contributors 字段），
- * 文档头显示贡献者 GitHub 头像栈（github.com/<email>.png 会重定向到该
- * 邮箱关联账号的头像；无关联账号时回退为首字母圆章）。
+ * 文档头显示贡献者头像栈：已登记公开 GitHub 登录名时显示头像，否则回退为
+ * 首字母圆章。产物与请求均不含邮箱（CWE-359）。
  */
 (function() {
   'use strict';
@@ -35,7 +35,18 @@
 
     const bar = document.createElement('div');
     bar.className = 'contributors-bar';
-    // 隐私：产物不含邮箱（CWE-359），头像用首字母章 + 由名字派生的色相
+    // 隐私：产物不含邮箱（CWE-359）；只对显式登记的公开 GitHub 登录名取头像，
+    // 其余作者仍用首字母章（色相由名字派生），避免用显示名误配到他人账号。
+    const GITHUB_LOGINS = Object.freeze({
+      theforeveriris: 'theforeveriris',
+      agelaia521: 'agelaia521',
+      'omajili-manbu': 'omajili-manbu',
+    });
+    const avatarFor = (name) => {
+      const login = GITHUB_LOGINS[name];
+      if (!login || !/^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,38})$/.test(login)) return '';
+      return `https://github.com/${encodeURIComponent(login)}.png?size=52`;
+    };
     const hueFor = (name) => {
       let h = 0;
       for (let i = 0; i < String(name).length; i++) h = (h * 31 + String(name).charCodeAt(i)) % 360;
@@ -44,11 +55,20 @@
     const chips = list.map((a, i) => {
       const title = `${a.name} · ${t('contributors.commits', '{n} 次提交').replace('{n}', a.count)}`;
       const hue = hueFor(a.name || '?');
+      const avatar = avatarFor(a.name);
+      const avatarImg = avatar
+        ? `<img class="contributor-avatar" src="${esc(avatar)}" alt="" width="26" height="26" decoding="async" referrerpolicy="no-referrer">`
+        : '';
       return `<span class="contributor-chip" title="${esc(title)}" data-order="${i}">
-        <span class="contributor-fallback" style="background:hsl(${hue}, 62%, 52%)">${esc((a.name || '?')[0].toUpperCase())}</span>
+        ${avatarImg}<span class="contributor-fallback" style="background:hsl(${hue}, 62%, 52%)">${esc((a.name || '?')[0].toUpperCase())}</span>
       </span>`;
     }).join('');
-    bar.innerHTML = `<span class="contributors-label">👥 ${esc(t('contributors.label', '贡献者'))}</span><span class="contributors-stack">${chips}</span>`;
+    bar.innerHTML = `<span class="contributors-label"><svg class="ico ico-xs" aria-hidden="true"><use href="#i-users"/></svg>${esc(t('contributors.label', '贡献者'))}</span><span class="contributors-stack">${chips}</span>`;
+
+    // 头像 404 / 网络失败时移除图片，露出底下的首字母章
+    bar.querySelectorAll('.contributor-avatar').forEach(img => {
+      img.addEventListener('error', () => img.remove(), { once: true });
+    });
 
     const anchor = container.querySelector('.reading-time');
     if (anchor) anchor.parentNode.insertBefore(bar, anchor);
