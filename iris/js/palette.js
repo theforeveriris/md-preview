@@ -26,12 +26,30 @@
   const THEME_ACTIONS = [
     { id: 'auto', labelKey: 'settings.theme.auto', fallback: '自动（跟随系统）' },
     { id: 'default', labelKey: 'settings.theme.default', fallback: '紫粉渐变' },
+    { id: 'iris', labelKey: 'settings.theme.iris', fallback: '鸢尾花紫' },
     { id: 'github-light', label: 'GitHub Light' },
     { id: 'github-dark', label: 'GitHub Dark' },
     { id: 'notion', label: 'Notion' },
     { id: 'arc', label: 'Arc Dark' },
     { id: 'dracula', label: 'Dracula' },
-    { id: 'nord', label: 'Nord' }
+    { id: 'nord', label: 'Nord' },
+    { id: 'print', labelKey: 'settings.theme.print', fallback: '铅字印刷' },
+    { id: 'newsprint', labelKey: 'settings.theme.newsprint', fallback: '报纸版式' },
+    { id: 'swiss', labelKey: 'settings.theme.swiss', fallback: '瑞士极简' },
+    { id: 'watercolor', labelKey: 'settings.theme.watercolor', fallback: '水彩手帐' },
+    { id: 'blueprint', labelKey: 'settings.theme.blueprint', fallback: '蓝图工程' },
+    { id: 'terminal', labelKey: 'settings.theme.terminal', fallback: '终端单色' },
+    { id: 'neon', labelKey: 'settings.theme.neon', fallback: '霓虹夜色' },
+    { id: 'sepia', labelKey: 'settings.theme.sepia', fallback: '暖夜' },
+    { id: 'graphite', labelKey: 'settings.theme.graphite', fallback: '极简产品风' },
+    { id: 'notebook', labelKey: 'settings.theme.notebook', fallback: '手写笔记' },
+    { id: 'museum', labelKey: 'settings.theme.museum', fallback: '莫兰迪' },
+    { id: 'editorial', labelKey: 'settings.theme.editorial', fallback: '时尚刊' },
+    { id: 'aurora', labelKey: 'settings.theme.aurora', fallback: '极光' },
+    { id: 'typewriter', labelKey: 'settings.theme.typewriter', fallback: '打字机' },
+    { id: 'blackboard', labelKey: 'settings.theme.blackboard', fallback: '黑板' },
+    { id: 'parcel', labelKey: 'settings.theme.parcel', fallback: '邮政包裹' },
+    { id: 'aaa', labelKey: 'settings.theme.aaa', fallback: '高对比 AAA' }
   ];
 
   function themeAction(theme) {
@@ -48,7 +66,7 @@
     };
   }
 
-  const DARKISH = new Set(['github-dark', 'arc', 'dracula', 'nord']);
+  const DARKISH = new Set(['github-dark', 'arc', 'dracula', 'nord', 'blueprint', 'terminal', 'neon', 'sepia', 'graphite', 'aurora', 'blackboard']);
 
   function focusModeRun() {
     const on = window.MarkdownPreview.focusMode ? window.MarkdownPreview.focusMode.toggle() : false;

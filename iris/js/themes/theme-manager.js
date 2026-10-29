@@ -7,9 +7,9 @@
   const AUTO_LIGHT_KEY = 'md-preview-theme-light';
   const AUTO_DARK_KEY = 'md-preview-theme-dark';
 
-  const VALID_THEMES = ['default', 'iris', 'github-light', 'github-dark', 'notion', 'arc', 'dracula', 'nord'];
-  const DARK_THEMES = ['github-dark', 'arc', 'dracula', 'nord'];
-  const LIGHT_THEMES = ['default', 'iris', 'github-light', 'notion'];
+  const VALID_THEMES = ['default', 'iris', 'github-light', 'github-dark', 'notion', 'arc', 'dracula', 'nord', 'print', 'blueprint', 'newsprint', 'swiss', 'terminal', 'neon', 'sepia', 'watercolor', 'graphite', 'notebook', 'museum', 'editorial', 'aurora', 'typewriter', 'blackboard', 'parcel', 'aaa'];
+  const DARK_THEMES = ['github-dark', 'arc', 'dracula', 'nord', 'blueprint', 'terminal', 'neon', 'sepia', 'graphite', 'aurora', 'blackboard'];
+  const LIGHT_THEMES = ['default', 'iris', 'github-light', 'notion', 'print', 'newsprint', 'swiss', 'watercolor', 'notebook', 'museum', 'editorial', 'typewriter', 'parcel', 'aaa'];
   const DEFAULT_AUTO_LIGHT = 'default';
   const DEFAULT_AUTO_DARK = 'github-dark';
 

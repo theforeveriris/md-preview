@@ -24,7 +24,7 @@
   };
 
   // 与 theme-manager.js 的 VALID_THEMES 保持一致（'auto' 另计）
-  const VALID_THEMES = ['default', 'iris', 'github-light', 'github-dark', 'notion', 'arc', 'dracula', 'nord'];
+  const VALID_THEMES = ['default', 'iris', 'github-light', 'github-dark', 'notion', 'arc', 'dracula', 'nord', 'print', 'blueprint', 'newsprint', 'swiss', 'terminal', 'neon', 'sepia', 'watercolor', 'graphite', 'notebook', 'museum', 'editorial', 'aurora', 'typewriter', 'blackboard', 'parcel', 'aaa'];
 
   function validBackupLang(v) {
     return v === 'auto' || v === 'zh' || v === 'en';
