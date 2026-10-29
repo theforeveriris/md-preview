@@ -1774,3 +1774,18 @@ body[data-sidebar-style="floating"] {
 [data-theme="neon"] { --radius-control: 12px; }
 [data-theme="aurora"] { --radius-control: 12px; }
 [data-theme="watercolor"] { --radius-control: 14px; }
+
+/* ==================================================================
+   侧栏标题基准字号（--sidebar-title-size）
+   展示字体偏宽的主题（等宽、手写体）天生占地方，先给一个略小的基准，
+   剩下的由 sidebar-title-fit.js 按实际可用宽度缩。
+   ================================================================== */
+[data-theme="typewriter"] { --sidebar-title-size: 1rem; }
+[data-theme="terminal"] { --sidebar-title-size: 1rem; }
+[data-theme="blackboard"] { --sidebar-title-size: 1.05rem; }
+[data-theme="notebook"] { --sidebar-title-size: 1.05rem; }
+[data-theme="watercolor"] { --sidebar-title-size: 1.05rem; }
+[data-theme="print"],
+[data-theme="newsprint"],
+[data-theme="editorial"],
+[data-theme="museum"] { --sidebar-title-size: 1.05rem; }
