@@ -5,8 +5,432 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 28 Oct 2026 10:09:46 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 29 Oct 2026 15:32:53 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>主题定制</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/theme-customization.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/theme-customization.md</guid>
+      <pubDate>Thu, 29 Oct 2026 15:31:01 GMT</pubDate>
+      <description>Markdown Preview 提供三种层级的外观定制方式，由易到难： 1. 预设主题 — 内置 8 套配色，一键切换 2. 可视化取色器 — 拖动色块即可调整主题色，无需写 CSS 3. 自定义 CSS — 加载外部 CSS 文件，完全控制样式 --- | ID | 名称 | 说明 | |----|------|------| | | 默认 | 浅紫浅粉渐变风格 | | | 鸢尾花紫 | 亮色</description>
+      <content:encoded><![CDATA[<h1>主题定制</h1>
+<p>Markdown Preview 提供三种层级的外观定制方式，由易到难：</p>
+<ol>
+<li><strong>预设主题</strong> — 内置 8 套配色，一键切换</li>
+<li><strong>可视化取色器</strong> — 拖动色块即可调整主题色，无需写 CSS</li>
+<li><strong>自定义 CSS</strong> — 加载外部 CSS 文件，完全控制样式</li>
+</ol>
+<hr>
+<h2>一、内置主题</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>default</code></td>
+<td>默认</td>
+<td>浅紫浅粉渐变风格</td>
+</tr>
+<tr>
+<td><code>iris</code></td>
+<td>鸢尾花紫</td>
+<td>亮色；淡紫底（<code>#f6f2fd</code>）+ 鸢尾品牌紫强调色（<code>#8B5CF6</code>），链接用更深的 <code>#6d3fd4</code> 保证对比度</td>
+</tr>
+<tr>
+<td><code>github-light</code></td>
+<td>GitHub Light</td>
+<td>GitHub 明亮风格</td>
+</tr>
+<tr>
+<td><code>github-dark</code></td>
+<td>GitHub Dark</td>
+<td>GitHub 深色风格</td>
+</tr>
+<tr>
+<td><code>notion</code></td>
+<td>Notion</td>
+<td>Notion 暖灰风格</td>
+</tr>
+<tr>
+<td><code>arc</code></td>
+<td>Arc Dark</td>
+<td>Arc 浏览器彩虹紫风格</td>
+</tr>
+<tr>
+<td><code>dracula</code></td>
+<td>Dracula</td>
+<td>Dracula 经典配色</td>
+</tr>
+<tr>
+<td><code>nord</code></td>
+<td>Nord</td>
+<td>北极光配色</td>
+</tr>
+</tbody></table>
+<p>在悬浮球菜单中点击设置图标 → <strong>外观 → 预设主题</strong> 即可切换。</p>
+<blockquote>
+<p><strong>注意</strong>：选择预设主题会清空自定义配色，恢复为该主题的默认变量值。</p>
+</blockquote>
+<h3>自动主题（跟随系统亮暗）</h3>
+<p>预设主题支持 <code>auto</code> 档位：跟随系统 <code>prefers-color-scheme</code> 实时切换——系统亮色时使用「亮色配对」主题（默认紫粉渐变），暗色时使用「暗色配对」主题（默认 GitHub Dark）。</p>
+<ul>
+<li>亮 / 暗配对可在设置面板中自由组合；</li>
+<li>系统亮暗变化时即时生效，无需刷新（含 PWA 桌面模式）；</li>
+<li>深层实现：<code>themechange</code> 事件携带的始终是解析后的实际主题 ID，自定义 CSS / 代码高亮联动不受影响。</li>
+</ul>
+<hr>
+<h2>二、可视化取色器（推荐）</h2>
+<p>无需写 CSS，直接通过取色器调整 CSS 变量。设置面板 → <strong>外观 → 自定义配色</strong>。</p>
+<h3>强调色</h3>
+<table>
+<thead>
+<tr>
+<th>色块</th>
+<th>CSS 变量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主色</td>
+<td><code>--color-accent-purple</code></td>
+<td>主要强调色</td>
+</tr>
+<tr>
+<td>粉色</td>
+<td><code>--color-accent-pink</code></td>
+<td>渐变派生色</td>
+</tr>
+<tr>
+<td>深色</td>
+<td><code>--color-accent-purple-deep</code></td>
+<td>深色派生</td>
+</tr>
+</tbody></table>
+<h3>中性色</h3>
+<p>通过中性色组合可做出亮色或暗色主题：</p>
+<table>
+<thead>
+<tr>
+<th>色块</th>
+<th>CSS 变量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>背景</td>
+<td><code>--color-bg</code></td>
+<td>页面背景</td>
+</tr>
+<tr>
+<td>表面</td>
+<td><code>--color-surface</code></td>
+<td>卡片、面板表面</td>
+</tr>
+<tr>
+<td>边框</td>
+<td><code>--color-border</code></td>
+<td>分隔线、边框</td>
+</tr>
+<tr>
+<td>文字</td>
+<td><code>--color-text</code></td>
+<td>主文字</td>
+</tr>
+<tr>
+<td>次要</td>
+<td><code>--color-text-muted</code></td>
+<td>次要文字</td>
+</tr>
+</tbody></table>
+<h3>暗色主题示例</h3>
+<p>将中性色调整为：</p>
+<ul>
+<li>背景 <code>#1a1a1a</code></li>
+<li>表面 <code>#2d2d2d</code></li>
+<li>边框 <code>#3a3a3a</code></li>
+<li>文字 <code>#e0e0e0</code></li>
+<li>次要 <code>#999999</code></li>
+</ul>
+<p>即可得到暗色主题。</p>
+<h3>重置</h3>
+<p>点击「重置」按钮可恢复所有取色器为默认值。</p>
+<blockquote>
+<p>取色器仅调整颜色变量，不会改变布局或字体。所有改动保存在浏览器 localStorage 中。</p>
+</blockquote>
+<hr>
+<h2>三、自定义 CSS</h2>
+<p>适合需要深度定制（布局、字体、间距等）的用户。</p>
+<h3>使用方法</h3>
+<ol>
+<li>准备一份 CSS 文件（可托管在 GitHub raw、CDN、或任意可公开访问的位置）</li>
+<li>设置面板 → <strong>外观 → 高级 → 自定义 CSS</strong></li>
+<li>填入 CSS 文件 URL，回车应用</li>
+</ol>
+<h3>自定义主题 CSS 结构</h3>
+<p>自定义 CSS 可以定义以下 CSS 变量（参考 <code>iris/css/base.css</code> 的 <code>:root</code>）：</p>
+<pre><code class="language-css">:root {
+  /* 背景与表面 */
+  --color-bg: #fafafa;
+  --color-surface: #ffffff;
+  
+  /* 边框与分隔 */
+  --color-border: #f0f0f0;
+  
+  /* 文字颜色 */
+  --color-text: #2d2d2d;
+  --color-text-muted: #999999;
+  
+  /* 主题色 */
+  --color-accent-purple: #8B5CF6;
+  --color-accent-pink: #f2c4ce;
+  --color-accent-purple-deep: #b88aad;
+  
+  /* 其他 */
+  --color-shadow: rgba(0, 0, 0, 0.04);
+  --color-overlay: rgba(255, 255, 255, 0.85);
+
+  /* 控件圆角：自绘下拉（下拉框、设置面板里的选择器）会用它 */
+  --radius-control: 6px;
+}
+</code></pre>
+<p>下拉框是自绘的（原生 <code>&lt;select&gt;</code> 只作为取值镜像保留），样式全部走上面这些变量，
+所以自定义主题后下拉框也会跟着变；<code>--radius-control</code> 决定它的圆角。</p>
+<p>也可以覆盖任意选择器的样式，例如修改正文字号：</p>
+<pre><code class="language-css">.markdown-body {
+  font-size: 17px;
+  line-height: 1.8;
+}
+</code></pre>
+<blockquote>
+<p><strong>提示</strong>：你可以复制 <code>iris/css/themes/themes.css</code> 中任意一个主题的变量定义作为起点，修改颜色值即可。</p>
+</blockquote>
+<h3>清除自定义 CSS</h3>
+<p>清空输入框回车，或直接删除 localStorage 中的 <code>md-preview-custom-css</code> 键。</p>
+<hr>
+<h2>四、代码高亮主题</h2>
+<p>代码块的颜色方案独立于界面主题，详见 <a href="https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md">代码高亮主题</a>。</p>
+<p>支持 10 种内置方案 + 加载外部 highlight.js 主题 CSS。</p>
+<hr>
+<h2>主题持久化</h2>
+<p>所有主题相关设置保存在浏览器 localStorage：</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>md-preview-theme</code></td>
+<td>当前预设主题 ID（选自动主题时为 <code>auto</code>）</td>
+</tr>
+<tr>
+<td><code>md-preview-theme-light</code></td>
+<td>自动主题的亮色配对主题 ID</td>
+</tr>
+<tr>
+<td><code>md-preview-theme-dark</code></td>
+<td>自动主题的暗色配对主题 ID</td>
+</tr>
+<tr>
+<td><code>md-preview-settings</code></td>
+<td>自定义配色（取色器值）</td>
+</tr>
+<tr>
+<td><code>md-preview-custom-css</code></td>
+<td>自定义 CSS URL</td>
+</tr>
+<tr>
+<td><code>md-preview-custom-hljs</code></td>
+<td>自定义 highlight.js 主题 URL</td>
+</tr>
+</tbody></table>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>主题市场演示</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/theme-demo.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/theme-demo.md</guid>
+      <pubDate>Thu, 29 Oct 2026 15:28:37 GMT</pubDate>
+      <description>这是一个展示主题系统的示例文档。点击左下角的调色盘图标可以切换不同的主题。 | 主题名称 | 描述 | |---------|------| | 🌸 紫粉渐变 | 默认的浅紫浅粉渐变主题 | | 💜 鸢尾花紫 | 亮色淡紫底 + 鸢尾品牌紫强调色 | | ⚡ GitHub Light | 仿 GitHub 明亮主题 | | 🌙 GitHub Dark | 仿 GitHub 深色主题 | | </description>
+      <content:encoded><![CDATA[<h1>主题市场演示</h1>
+<p>这是一个展示主题系统的示例文档。点击左下角的调色盘图标可以切换不同的主题。</p>
+<h2>可用主题</h2>
+<table>
+<thead>
+<tr>
+<th>主题名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>🌸 紫粉渐变</td>
+<td>默认的浅紫浅粉渐变主题</td>
+</tr>
+<tr>
+<td>💜 鸢尾花紫</td>
+<td>亮色淡紫底 + 鸢尾品牌紫强调色</td>
+</tr>
+<tr>
+<td>⚡ GitHub Light</td>
+<td>仿 GitHub 明亮主题</td>
+</tr>
+<tr>
+<td>🌙 GitHub Dark</td>
+<td>仿 GitHub 深色主题</td>
+</tr>
+<tr>
+<td>📝 Notion</td>
+<td>仿 Notion 暖灰主题</td>
+</tr>
+<tr>
+<td>🌈 Arc Dark</td>
+<td>仿 Arc 浏览器彩虹紫主题</td>
+</tr>
+<tr>
+<td>🧛 Dracula</td>
+<td>经典的 Dracula 配色</td>
+</tr>
+<tr>
+<td>❄️ Nord</td>
+<td>北极光配色主题</td>
+</tr>
+<tr>
+<td>📖 铅字印刷</td>
+<td>纸感底 + 衬线大标题 + 首字下沉，卡片方角墨线，像书页</td>
+</tr>
+<tr>
+<td>🗞️ 报纸版式</td>
+<td>密排正文 + 上下压线的报头标题 + 全大写小标题，像报纸版面</td>
+</tr>
+<tr>
+<td>🧭 瑞士极简</td>
+<td>纯白纯黑 + 唯一一抹瑞士红，超大无衬线标题，把克制推到极致</td>
+</tr>
+<tr>
+<td>🖌️ 水彩手帐</td>
+<td>米白纸底叠淡彩晕染 + 楷体标题 + 大圆角柔和投影</td>
+</tr>
+<tr>
+<td>📐 蓝图工程</td>
+<td>深靛蓝 + 网格底纹 + 青色线条，标题带图框标记，像工程图纸</td>
+</tr>
+<tr>
+<td>💻 终端单色</td>
+<td>近黑绿底 + 荧光苔绿单色 + 等宽字体 + 扫描线，CRT 终端风</td>
+</tr>
+<tr>
+<td>🌃 霓虹夜色</td>
+<td>纯黑底 + 粉青双色外发光，标题与卡片边框带辉光</td>
+</tr>
+<tr>
+<td>🕯️ 暖夜</td>
+<td>深棕黑 + 米色字，全站去冷色，护眼向的琥珀滤镜</td>
+</tr>
+<tr>
+<td>⬛ 极简产品风</td>
+<td>纯黑 + 石墨灰层次 + 单一蓝色强调，Vercel / Linear 那种产品界面</td>
+</tr>
+<tr>
+<td>✏️ 手写笔记</td>
+<td>横线纸底 + 红色页边线 + 蓝墨水字 + 荧光笔，像写在练习本上</td>
+</tr>
+<tr>
+<td>🖼️ 莫兰迪</td>
+<td>灰粉灰绿的极低饱和 + 大留白，安静得像美术馆展签</td>
+</tr>
+<tr>
+<td>👗 时尚刊</td>
+<td>巨号细衬线标题 + 发丝线 + 洋红点缀，杂志跨页的排版节奏</td>
+</tr>
+<tr>
+<td>🌌 极光</td>
+<td>深色底上缓慢漂移的青紫光带，标题渐变字（尊重减少动态偏好）</td>
+</tr>
+<tr>
+<td>⌨️ 打字机</td>
+<td>米色连续纸 + 全等宽字 + 标题下压一道墨带</td>
+</tr>
+<tr>
+<td>🧑‍🏫 黑板</td>
+<td>炭黑板面 + 粉笔白字 + 粉尘颗粒，标题像板书</td>
+</tr>
+<tr>
+<td>📦 邮政包裹</td>
+<td>牛皮纸底 + 折痕虚线 + 邮戳红，表格像快递面单</td>
+</tr>
+<tr>
+<td>🔲 高对比 AAA</td>
+<td>纯黑白、对比 7:1 以上、粗边框粗焦点环，无障碍优先</td>
+</tr>
+</tbody></table>
+<h2>自定义 CSS</h2>
+<p>除了内置主题外，你还可以通过配置文件注入自定义 CSS：</p>
+<pre><code class="language-json">{
+  &quot;customCSS&quot;: &quot;https://example.com/my-theme.css&quot;
+}
+</code></pre>
+<p>自定义 CSS 中的变量会覆盖内置主题的默认值。</p>
+<h2>示例代码</h2>
+<pre><code class="language-javascript">// 切换主题
+MarkdownPreview.themes.setTheme(&#39;github-dark&#39;);
+
+// 获取当前主题
+const current = MarkdownPreview.themes.getCurrentTheme();
+
+// 获取所有主题列表
+const themes = MarkdownPreview.themes.getAllThemes();
+</code></pre>
+<h2>链接示例</h2>
+<ul>
+<li><a href="https://github.com">GitHub</a></li>
+<li><a href="https://www.markdownguide.org">Markdown Guide</a></li>
+</ul>
+<h2>列表示例</h2>
+<h3>有序列表</h3>
+<ol>
+<li>第一项</li>
+<li>第二项</li>
+<li>第三项</li>
+</ol>
+<h3>无序列表</h3>
+<ul>
+<li>苹果</li>
+<li>香蕉</li>
+<li>橙子</li>
+</ul>
+<h2>引用示例</h2>
+<blockquote>
+<p>这是一个引用块示例。
+可以包含多行文字。</p>
+</blockquote>
+<h2>表格示例</h2>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主题切换</td>
+<td>✅ 已实现</td>
+</tr>
+<tr>
+<td>自定义 CSS</td>
+<td>✅ 已实现</td>
+</tr>
+<tr>
+<td>主题持久化</td>
+<td>✅ 已实现</td>
+</tr>
+</tbody></table>
+]]></content:encoded>
+    </item>
     <item>
       <title>终端回放与敏感遮罩示例</title>
       <link>https://theforeveriris.github.io/md-preview/docs/examples/terminal-secret-examples.md</link>
@@ -1552,118 +1976,6 @@ db-02,95,1.3
 ]]></content:encoded>
     </item>
     <item>
-      <title>主题市场演示</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/theme-demo.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/theme-demo.md</guid>
-      <pubDate>Mon, 26 Oct 2026 22:14:45 GMT</pubDate>
-      <description>这是一个展示主题系统的示例文档。点击左下角的调色盘图标可以切换不同的主题。 | 主题名称 | 描述 | |---------|------| | 🌸 紫粉渐变 | 默认的浅紫浅粉渐变主题 | | 💜 鸢尾花紫 | 亮色淡紫底 + 鸢尾品牌紫强调色 | | ⚡ GitHub Light | 仿 GitHub 明亮主题 | | 🌙 GitHub Dark | 仿 GitHub 深色主题 | | </description>
-      <content:encoded><![CDATA[<h1>主题市场演示</h1>
-<p>这是一个展示主题系统的示例文档。点击左下角的调色盘图标可以切换不同的主题。</p>
-<h2>可用主题</h2>
-<table>
-<thead>
-<tr>
-<th>主题名称</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>🌸 紫粉渐变</td>
-<td>默认的浅紫浅粉渐变主题</td>
-</tr>
-<tr>
-<td>💜 鸢尾花紫</td>
-<td>亮色淡紫底 + 鸢尾品牌紫强调色</td>
-</tr>
-<tr>
-<td>⚡ GitHub Light</td>
-<td>仿 GitHub 明亮主题</td>
-</tr>
-<tr>
-<td>🌙 GitHub Dark</td>
-<td>仿 GitHub 深色主题</td>
-</tr>
-<tr>
-<td>📝 Notion</td>
-<td>仿 Notion 暖灰主题</td>
-</tr>
-<tr>
-<td>🌈 Arc Dark</td>
-<td>仿 Arc 浏览器彩虹紫主题</td>
-</tr>
-<tr>
-<td>🧛 Dracula</td>
-<td>经典的 Dracula 配色</td>
-</tr>
-<tr>
-<td>❄️ Nord</td>
-<td>北极光配色主题</td>
-</tr>
-</tbody></table>
-<h2>自定义 CSS</h2>
-<p>除了内置主题外，你还可以通过配置文件注入自定义 CSS：</p>
-<pre><code class="language-json">{
-  &quot;customCSS&quot;: &quot;https://example.com/my-theme.css&quot;
-}
-</code></pre>
-<p>自定义 CSS 中的变量会覆盖内置主题的默认值。</p>
-<h2>示例代码</h2>
-<pre><code class="language-javascript">// 切换主题
-MarkdownPreview.themes.setTheme(&#39;github-dark&#39;);
-
-// 获取当前主题
-const current = MarkdownPreview.themes.getCurrentTheme();
-
-// 获取所有主题列表
-const themes = MarkdownPreview.themes.getAllThemes();
-</code></pre>
-<h2>链接示例</h2>
-<ul>
-<li><a href="https://github.com">GitHub</a></li>
-<li><a href="https://www.markdownguide.org">Markdown Guide</a></li>
-</ul>
-<h2>列表示例</h2>
-<h3>有序列表</h3>
-<ol>
-<li>第一项</li>
-<li>第二项</li>
-<li>第三项</li>
-</ol>
-<h3>无序列表</h3>
-<ul>
-<li>苹果</li>
-<li>香蕉</li>
-<li>橙子</li>
-</ul>
-<h2>引用示例</h2>
-<blockquote>
-<p>这是一个引用块示例。
-可以包含多行文字。</p>
-</blockquote>
-<h2>表格示例</h2>
-<table>
-<thead>
-<tr>
-<th>功能</th>
-<th>状态</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>主题切换</td>
-<td>✅ 已实现</td>
-</tr>
-<tr>
-<td>自定义 CSS</td>
-<td>✅ 已实现</td>
-</tr>
-<tr>
-<td>主题持久化</td>
-<td>✅ 已实现</td>
-</tr>
-</tbody></table>
-]]></content:encoded>
-    </item>
-    <item>
       <title>系统运行时截图</title>
       <link>https://theforeveriris.github.io/md-preview/docs/show.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/show.md</guid>
@@ -2046,245 +2358,6 @@ Pulse 格式与示例：<a href="https://theforeveriris.github.io/md-preview/doc
 <tr>
 <td>插件系统演示</td>
 <td><a href="https://theforeveriris.github.io/md-preview/docs/examples/plugin-demo.md">plugin-demo.md</a></td>
-</tr>
-</tbody></table>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>主题定制</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/theme-customization.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/theme-customization.md</guid>
-      <pubDate>Mon, 26 Oct 2026 22:14:45 GMT</pubDate>
-      <description>Markdown Preview 提供三种层级的外观定制方式，由易到难： 1. 预设主题 — 内置 8 套配色，一键切换 2. 可视化取色器 — 拖动色块即可调整主题色，无需写 CSS 3. 自定义 CSS — 加载外部 CSS 文件，完全控制样式 --- | ID | 名称 | 说明 | |----|------|------| | | 默认 | 浅紫浅粉渐变风格 | | | 鸢尾花紫 | 亮色</description>
-      <content:encoded><![CDATA[<h1>主题定制</h1>
-<p>Markdown Preview 提供三种层级的外观定制方式，由易到难：</p>
-<ol>
-<li><strong>预设主题</strong> — 内置 8 套配色，一键切换</li>
-<li><strong>可视化取色器</strong> — 拖动色块即可调整主题色，无需写 CSS</li>
-<li><strong>自定义 CSS</strong> — 加载外部 CSS 文件，完全控制样式</li>
-</ol>
-<hr>
-<h2>一、内置主题</h2>
-<table>
-<thead>
-<tr>
-<th>ID</th>
-<th>名称</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>default</code></td>
-<td>默认</td>
-<td>浅紫浅粉渐变风格</td>
-</tr>
-<tr>
-<td><code>iris</code></td>
-<td>鸢尾花紫</td>
-<td>亮色；淡紫底（<code>#f6f2fd</code>）+ 鸢尾品牌紫强调色（<code>#8B5CF6</code>），链接用更深的 <code>#6d3fd4</code> 保证对比度</td>
-</tr>
-<tr>
-<td><code>github-light</code></td>
-<td>GitHub Light</td>
-<td>GitHub 明亮风格</td>
-</tr>
-<tr>
-<td><code>github-dark</code></td>
-<td>GitHub Dark</td>
-<td>GitHub 深色风格</td>
-</tr>
-<tr>
-<td><code>notion</code></td>
-<td>Notion</td>
-<td>Notion 暖灰风格</td>
-</tr>
-<tr>
-<td><code>arc</code></td>
-<td>Arc Dark</td>
-<td>Arc 浏览器彩虹紫风格</td>
-</tr>
-<tr>
-<td><code>dracula</code></td>
-<td>Dracula</td>
-<td>Dracula 经典配色</td>
-</tr>
-<tr>
-<td><code>nord</code></td>
-<td>Nord</td>
-<td>北极光配色</td>
-</tr>
-</tbody></table>
-<p>在悬浮球菜单中点击设置图标 → <strong>外观 → 预设主题</strong> 即可切换。</p>
-<blockquote>
-<p><strong>注意</strong>：选择预设主题会清空自定义配色，恢复为该主题的默认变量值。</p>
-</blockquote>
-<h3>自动主题（跟随系统亮暗）</h3>
-<p>预设主题支持 <code>auto</code> 档位：跟随系统 <code>prefers-color-scheme</code> 实时切换——系统亮色时使用「亮色配对」主题（默认紫粉渐变），暗色时使用「暗色配对」主题（默认 GitHub Dark）。</p>
-<ul>
-<li>亮 / 暗配对可在设置面板中自由组合；</li>
-<li>系统亮暗变化时即时生效，无需刷新（含 PWA 桌面模式）；</li>
-<li>深层实现：<code>themechange</code> 事件携带的始终是解析后的实际主题 ID，自定义 CSS / 代码高亮联动不受影响。</li>
-</ul>
-<hr>
-<h2>二、可视化取色器（推荐）</h2>
-<p>无需写 CSS，直接通过取色器调整 CSS 变量。设置面板 → <strong>外观 → 自定义配色</strong>。</p>
-<h3>强调色</h3>
-<table>
-<thead>
-<tr>
-<th>色块</th>
-<th>CSS 变量</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>主色</td>
-<td><code>--color-accent-purple</code></td>
-<td>主要强调色</td>
-</tr>
-<tr>
-<td>粉色</td>
-<td><code>--color-accent-pink</code></td>
-<td>渐变派生色</td>
-</tr>
-<tr>
-<td>深色</td>
-<td><code>--color-accent-purple-deep</code></td>
-<td>深色派生</td>
-</tr>
-</tbody></table>
-<h3>中性色</h3>
-<p>通过中性色组合可做出亮色或暗色主题：</p>
-<table>
-<thead>
-<tr>
-<th>色块</th>
-<th>CSS 变量</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>背景</td>
-<td><code>--color-bg</code></td>
-<td>页面背景</td>
-</tr>
-<tr>
-<td>表面</td>
-<td><code>--color-surface</code></td>
-<td>卡片、面板表面</td>
-</tr>
-<tr>
-<td>边框</td>
-<td><code>--color-border</code></td>
-<td>分隔线、边框</td>
-</tr>
-<tr>
-<td>文字</td>
-<td><code>--color-text</code></td>
-<td>主文字</td>
-</tr>
-<tr>
-<td>次要</td>
-<td><code>--color-text-muted</code></td>
-<td>次要文字</td>
-</tr>
-</tbody></table>
-<h3>暗色主题示例</h3>
-<p>将中性色调整为：</p>
-<ul>
-<li>背景 <code>#1a1a1a</code></li>
-<li>表面 <code>#2d2d2d</code></li>
-<li>边框 <code>#3a3a3a</code></li>
-<li>文字 <code>#e0e0e0</code></li>
-<li>次要 <code>#999999</code></li>
-</ul>
-<p>即可得到暗色主题。</p>
-<h3>重置</h3>
-<p>点击「重置」按钮可恢复所有取色器为默认值。</p>
-<blockquote>
-<p>取色器仅调整颜色变量，不会改变布局或字体。所有改动保存在浏览器 localStorage 中。</p>
-</blockquote>
-<hr>
-<h2>三、自定义 CSS</h2>
-<p>适合需要深度定制（布局、字体、间距等）的用户。</p>
-<h3>使用方法</h3>
-<ol>
-<li>准备一份 CSS 文件（可托管在 GitHub raw、CDN、或任意可公开访问的位置）</li>
-<li>设置面板 → <strong>外观 → 高级 → 自定义 CSS</strong></li>
-<li>填入 CSS 文件 URL，回车应用</li>
-</ol>
-<h3>自定义主题 CSS 结构</h3>
-<p>自定义 CSS 可以定义以下 CSS 变量（参考 <code>iris/css/base.css</code> 的 <code>:root</code>）：</p>
-<pre><code class="language-css">:root {
-  /* 背景与表面 */
-  --color-bg: #fafafa;
-  --color-surface: #ffffff;
-  
-  /* 边框与分隔 */
-  --color-border: #f0f0f0;
-  
-  /* 文字颜色 */
-  --color-text: #2d2d2d;
-  --color-text-muted: #999999;
-  
-  /* 主题色 */
-  --color-accent-purple: #8B5CF6;
-  --color-accent-pink: #f2c4ce;
-  --color-accent-purple-deep: #b88aad;
-  
-  /* 其他 */
-  --color-shadow: rgba(0, 0, 0, 0.04);
-  --color-overlay: rgba(255, 255, 255, 0.85);
-}
-</code></pre>
-<p>也可以覆盖任意选择器的样式，例如修改正文字号：</p>
-<pre><code class="language-css">.markdown-body {
-  font-size: 17px;
-  line-height: 1.8;
-}
-</code></pre>
-<blockquote>
-<p><strong>提示</strong>：你可以复制 <code>iris/css/themes/themes.css</code> 中任意一个主题的变量定义作为起点，修改颜色值即可。</p>
-</blockquote>
-<h3>清除自定义 CSS</h3>
-<p>清空输入框回车，或直接删除 localStorage 中的 <code>md-preview-custom-css</code> 键。</p>
-<hr>
-<h2>四、代码高亮主题</h2>
-<p>代码块的颜色方案独立于界面主题，详见 <a href="https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md">代码高亮主题</a>。</p>
-<p>支持 10 种内置方案 + 加载外部 highlight.js 主题 CSS。</p>
-<hr>
-<h2>主题持久化</h2>
-<p>所有主题相关设置保存在浏览器 localStorage：</p>
-<table>
-<thead>
-<tr>
-<th>Key</th>
-<th>内容</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>md-preview-theme</code></td>
-<td>当前预设主题 ID（选自动主题时为 <code>auto</code>）</td>
-</tr>
-<tr>
-<td><code>md-preview-theme-light</code></td>
-<td>自动主题的亮色配对主题 ID</td>
-</tr>
-<tr>
-<td><code>md-preview-theme-dark</code></td>
-<td>自动主题的暗色配对主题 ID</td>
-</tr>
-<tr>
-<td><code>md-preview-settings</code></td>
-<td>自定义配色（取色器值）</td>
-</tr>
-<tr>
-<td><code>md-preview-custom-css</code></td>
-<td>自定义 CSS URL</td>
-</tr>
-<tr>
-<td><code>md-preview-custom-hljs</code></td>
-<td>自定义 highlight.js 主题 URL</td>
 </tr>
 </tbody></table>
 ]]></content:encoded>
