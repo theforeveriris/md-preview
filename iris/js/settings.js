@@ -16,6 +16,7 @@
     treeSort: 'smart',         // 侧边栏排序：smart | createdDesc/Asc | modifiedDesc/Asc
     sidebarStyle: 'classic',   // classic = 贴边经典样式（默认）；floating = 悬浮卡片
     codeTheme: 'github',
+    codeThemeExplicit: false,   // 用户是否主动改过高亮主题（否则跟随预设主题）
     customColors: {},
     fontConfig: {},
     sidebarOpen: false,
@@ -115,6 +116,7 @@
           treeSort: normalizeTreeSort(parsed.treeSort),
           sidebarStyle: parsed.sidebarStyle === 'floating' ? 'floating' : 'classic',
           codeTheme: parsed.codeTheme ?? defaultSettings.codeTheme,
+          codeThemeExplicit: parsed.codeThemeExplicit === true,
           customColors: (parsed.customColors && typeof parsed.customColors === 'object') ? parsed.customColors : {},
           fontConfig: normalizeFontConfig(parsed.fontConfig),
           sidebarOpen: parsed.sidebarOpen === true,
@@ -425,6 +427,7 @@
     codeThemeSelect?.addEventListener('change', (e) => {
       const settings = loadSettings();
       settings.codeTheme = e.target.value;
+      settings.codeThemeExplicit = true;
       saveSettings(settings);
       applyCodeTheme(settings.codeTheme);
     });
@@ -583,17 +586,48 @@
     return CU.luminance(CU.resolveColor(CU.getThemeVar('--color-bg', '#ffffff'), '#ffffff')) < 0.4;
   }
 
+  // 几套新预设主题有自己的气质，硬套 github 系的语法色会很跳
+  // （比如终端主题配蓝色代码）。用户没主动改过高亮主题时，
+  // 这里给每套主题挑一个同气质的。
+  const SITE_CODE_THEME = {
+    'print': 'atom-one-light',
+    'newsprint': 'github',
+    'swiss': 'github',
+    'watercolor': 'atom-one-light',
+    'blueprint': 'vs2015',
+    'terminal': 'monokai',
+    'neon': 'dracula',
+    'sepia': 'atom-one-dark',
+    'graphite': 'vs2015',
+    'notebook': 'atom-one-light',
+    'museum': 'solarized-light',   // 莫兰迪要的是低饱和，github 的亮蓝跳得很
+    'editorial': 'github',
+    'aurora': 'solarized-dark',
+    'typewriter': 'solarized-light',
+    'blackboard': 'atom-one-dark',
+    'parcel': 'github',
+    'aaa': 'github'
+  };
+
   function resolveCodeTheme(theme) {
-    const dark = siteIsDark();
-    if (dark) return CODE_THEME_TWINS[theme] || theme;
+    const settings = loadSettings();
+    const site = document.documentElement.getAttribute('data-theme') || '';
+    if (!settings.codeThemeExplicit && theme === defaultSettings.codeTheme && SITE_CODE_THEME[site]) {
+      return SITE_CODE_THEME[site];
+    }
+    if (siteIsDark()) return CODE_THEME_TWINS[theme] || theme;
     return CODE_THEME_TWINS_INVERSE[theme] || theme;
   }
 
   function applyCodeTheme(theme) {
     const link = document.getElementById('hljs-theme');
+    const resolved = resolveCodeTheme(theme);
     if (link) {
-      link.href = `iris/vendor/highlight.js/styles/${resolveCodeTheme(theme)}.css`;
+      link.href = `iris/vendor/highlight.js/styles/${resolved}.css`;
     }
+    // 下拉框显示实际生效的高亮主题，避免「选着 GitHub 却是别的配色」
+    const select = document.getElementById('codeThemeSelect');
+    if (select && select.value !== resolved) select.value = resolved;
   }
 
   // 主题切换后重新解析高亮主题（配对关系依赖当前界面明暗）
@@ -663,39 +697,40 @@
     // 1) 远程字体 CSS
     applyRemoteFont(cfg.remoteFontUrl);
 
-    // 2) font-family
-    if (cfg.fontFamilyDisplay) root.style.setProperty('--font-display', cfg.fontFamilyDisplay);
-    else root.style.removeProperty('--font-display');
-    if (cfg.fontFamilyBody) root.style.setProperty('--font-body', cfg.fontFamilyBody);
-    else root.style.removeProperty('--font-body');
+    // 2) font-family：等于默认值时不写内联，把字族交还给主题。
+    //    normalizeFontConfig 会把默认值填满，若一律写内联，
+    //    print / terminal / swiss 这类主题自带的字族会被永久盖掉。
+    setOrDefaultProp(root, '--font-display', cfg.fontFamilyDisplay, defaultFontConfig.fontFamilyDisplay);
+    setOrDefaultProp(root, '--font-body', cfg.fontFamilyBody, defaultFontConfig.fontFamilyBody);
 
     // 3) font-size（带 px 单位，H1~H3 直接 px 绝对尺寸，避免受 body 字号放大再缩放）
-    setPxProp(root, '--font-size-body', cfg.fontSizeBody);
-    setPxProp(root, '--font-size-md', cfg.fontSizeMd);
-    setPxProp(root, '--font-size-h1', cfg.fontSizeH1);
-    setPxProp(root, '--font-size-h2', cfg.fontSizeH2);
-    setPxProp(root, '--font-size-h3', cfg.fontSizeH3);
+    setPxPropOrDefault(root, '--font-size-body', cfg.fontSizeBody, defaultFontConfig.fontSizeBody);
+    setPxPropOrDefault(root, '--font-size-md', cfg.fontSizeMd, defaultFontConfig.fontSizeMd);
+    setPxPropOrDefault(root, '--font-size-h1', cfg.fontSizeH1, defaultFontConfig.fontSizeH1);
+    setPxPropOrDefault(root, '--font-size-h2', cfg.fontSizeH2, defaultFontConfig.fontSizeH2);
+    setPxPropOrDefault(root, '--font-size-h3', cfg.fontSizeH3, defaultFontConfig.fontSizeH3);
 
     // 4) font-weight
-    setProp(root, '--font-weight-body', cfg.fontWeightBody);
-    setProp(root, '--font-weight-md', cfg.fontWeightMd);
-    setProp(root, '--font-weight-display', cfg.fontWeightDisplay);
-    setProp(root, '--font-weight-h1', cfg.fontWeightH1);
-    setProp(root, '--font-weight-h2', cfg.fontWeightH2);
-    setProp(root, '--font-weight-h3', cfg.fontWeightH3);
+    setOrDefaultProp(root, '--font-weight-body', cfg.fontWeightBody, defaultFontConfig.fontWeightBody);
+    setOrDefaultProp(root, '--font-weight-md', cfg.fontWeightMd, defaultFontConfig.fontWeightMd);
+    setOrDefaultProp(root, '--font-weight-display', cfg.fontWeightDisplay, defaultFontConfig.fontWeightDisplay);
+    setOrDefaultProp(root, '--font-weight-h1', cfg.fontWeightH1, defaultFontConfig.fontWeightH1);
+    setOrDefaultProp(root, '--font-weight-h2', cfg.fontWeightH2, defaultFontConfig.fontWeightH2);
+    setOrDefaultProp(root, '--font-weight-h3', cfg.fontWeightH3, defaultFontConfig.fontWeightH3);
   }
 
-  function setPxProp(root, varName, val) {
-    const n = Number(val);
-    if (Number.isFinite(n) && n > 0) {
-      root.style.setProperty(varName, `${n}px`);
+  function setOrDefaultProp(root, varName, val, defaultVal) {
+    if (val != null && val !== '' && String(val) !== String(defaultVal)) {
+      root.style.setProperty(varName, String(val));
     } else {
       root.style.removeProperty(varName);
     }
   }
-  function setProp(root, varName, val) {
-    if (val != null && val !== '') {
-      root.style.setProperty(varName, String(val));
+
+  function setPxPropOrDefault(root, varName, val, defaultVal) {
+    const n = Number(val);
+    if (Number.isFinite(n) && n > 0 && n !== Number(defaultVal)) {
+      root.style.setProperty(varName, `${n}px`);
     } else {
       root.style.removeProperty(varName);
     }
@@ -1541,7 +1576,7 @@ body { margin: 0; }
     if (expandFoldersToggle) expandFoldersToggle.checked = settings.expandFolders !== false;
     if (treeSortSelect) treeSortSelect.value = normalizeTreeSort(settings.treeSort);
     if (sidebarStyleSelect) sidebarStyleSelect.value = settings.sidebarStyle === 'floating' ? 'floating' : 'classic';
-    if (codeThemeSelect) codeThemeSelect.value = settings.codeTheme;
+    if (codeThemeSelect) codeThemeSelect.value = resolveCodeTheme(settings.codeTheme);
     if (tableBleedToggle) tableBleedToggle.checked = settings.tableBleed === true;
     if (sansHeadingDigitsToggle) sansHeadingDigitsToggle.checked = settings.sansHeadingDigits === true;
     if (mobileGesturesToggle) mobileGesturesToggle.checked = settings.mobileGestures !== false;
