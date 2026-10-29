@@ -1753,3 +1753,24 @@ body[data-sidebar-style="floating"] {
   border: 3px solid #000000;
   border-radius: 0;
 }
+
+/* ==================================================================
+   控件圆角（--radius-control）
+   自绘下拉的按钮与弹层按主题气质取圆角：印刷派直角、
+   工程派近乎直角、柔和派大圆角。
+   ================================================================== */
+[data-theme="print"],
+[data-theme="newsprint"],
+[data-theme="swiss"],
+[data-theme="aaa"],
+[data-theme="typewriter"],
+[data-theme="terminal"] { --radius-control: 0px; }
+
+[data-theme="blueprint"] { --radius-control: 2px; }
+[data-theme="parcel"] { --radius-control: 3px; }
+[data-theme="notebook"] { --radius-control: 3px; }
+[data-theme="museum"] { --radius-control: 4px; }
+[data-theme="blackboard"] { --radius-control: 8px; }
+[data-theme="neon"] { --radius-control: 12px; }
+[data-theme="aurora"] { --radius-control: 12px; }
+[data-theme="watercolor"] { --radius-control: 14px; }

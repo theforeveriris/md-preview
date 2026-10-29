@@ -42,6 +42,7 @@
   <link rel="preload" href="iris/data/file-tree.json" as="fetch" crossorigin>
   <link rel="stylesheet" href="iris/styles.css">
   <link rel="stylesheet" href="iris/css/themes/themes.css">
+  <link rel="stylesheet" href="iris/css/custom-select.css">
   <!-- leaflet.css / katex.min.css / diff2html.min.css 改为按需加载，见 dom.js loadStyle -->
   <link rel="stylesheet" href="iris/vendor/highlight.js/styles/github.css" id="hljs-theme">
   <link rel="stylesheet" href="iris/css/editor.css">
@@ -2127,6 +2128,7 @@
   <script defer src="iris/js/state.js"></script>
   <script defer src="iris/js/i18n.js"></script>
   <script defer src="iris/js/dom.js"></script>
+  <script defer src="iris/js/custom-select.js"></script>
   <!-- md-render.js 为共享渲染工具层（escapeHtml/slugify/parseMarkdown/runRenderers），
        必须先于所有在 IIFE 顶层引用 mdRender 的模块（search/tags/renderers 等）加载 -->
   <script defer src="iris/js/md-render.js"></script>

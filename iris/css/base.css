@@ -30,6 +30,8 @@
   --sidebar-max-width: 420px;/* 拖拽调宽上限 */
   --content-width: 720px;    /* Markdown 正文区最大宽度，可在设置面板调整 */
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* 控件圆角（自绘下拉等）：各主题可在 themes.css 里覆盖 */
+  --radius-control: 6px;
 }
 
 * {
