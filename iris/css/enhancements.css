@@ -935,10 +935,9 @@
   transition: height .2s;
 }
 
-body[data-theme="dracula"] .sandbox-stage,
-body[data-theme="arc-dark"] .sandbox-stage,
-body[data-theme="nord"] .sandbox-stage,
-body[data-theme="github-dark"] .sandbox-stage { background: #fff; }
+/* sandbox 里的 HTML 是作者按白底写的，暗色主题下也保持白底，
+   不做主题化（原来的 body[data-theme=...] 选择器写在 body 上，
+   主题属性实际落在 <html>，从未生效，且漏了内置的 arc 主题）。 */
 
 .sandbox-frame {
   display: block;

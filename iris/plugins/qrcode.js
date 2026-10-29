@@ -90,7 +90,7 @@ export default {
     } catch (err) {
       qrContainer.innerHTML = '';
       const errBox = document.createElement('div');
-      errBox.style.cssText = 'padding:12px 16px;border:1px solid #ff6b6b;border-radius:8px;background:#fff0f0;color:#cc0000;font-size:14px';
+      errBox.style.cssText = 'padding:12px 16px;border:1px solid #ff6b6b;border-radius:8px;background:rgba(255,107,107,0.12);color:#ff6b6b;font-size:14px';
       if (err && err.message === 'too-long') {
         const tFn = (k, fb) => {
           const i18n = window.MarkdownPreview && window.MarkdownPreview.i18n;

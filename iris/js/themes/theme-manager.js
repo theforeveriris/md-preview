@@ -52,6 +52,10 @@
   function applyResolved(themeId, save) {
     currentTheme = themeId;
     document.documentElement.setAttribute('data-theme', themeId);
+    // 明暗是主题的派生属性，单独暴露成 data-mode：组件样式统一写
+    // [data-mode="dark"]，不必在 CSS 里重复主题 id 列表，也不会再出现
+    // 把主题属性写到 body 上、或写错 arc-dark 之类永远不生效的选择器。
+    document.documentElement.setAttribute('data-mode', DARK_THEMES.includes(themeId) ? 'dark' : 'light');
     // 移动端地址栏 / 系统 UI 的 theme-color 跟随主题（原本写死默认主题色）
     try {
       const bg = getComputedStyle(document.documentElement).getPropertyValue('--color-bg').trim();

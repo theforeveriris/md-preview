@@ -9,17 +9,18 @@
   margin: 1.5rem 0;
   border-radius: 12px;
   overflow: hidden;
-  background: var(--bg, #fff);
-  border: 1px solid var(--border, #e5e7eb);
+  background: var(--bg, var(--color-surface));
+  border: 1px solid var(--border, var(--color-border));
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-@media (prefers-color-scheme: dark) {
-  .pptx-embed,
-  .pptx-container {
-    background: var(--bg-dark, #1e1e2e);
-    border-color: var(--border-dark, #2d2d44);
-  }
+/* 明暗跟站点主题走，而不是 prefers-color-scheme：
+   用户可以在浅色系统里选暗色站点主题，媒体查询会判断错。
+   幻灯片本身白底不动，只有外框与缩略图网格换深色。 */
+[data-mode="dark"] .pptx-embed,
+[data-mode="dark"] .pptx-container {
+  background: var(--bg-dark, var(--color-surface));
+  border-color: var(--border-dark, var(--color-border));
 }
 
 /* ---------- 加载中 / 错误卡片（与 pkt 的视觉风格一致） ---------- */
@@ -126,7 +127,11 @@
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 14px;
   padding: 16px 20px 20px;
-  background: var(--bg-grid, #fafafc);
+  background: var(--bg-grid, var(--color-bg));
+}
+
+[data-mode="dark"] .pptx-thumb-grid {
+  background: var(--bg-grid-dark, var(--color-bg));
 }
 
 @media (max-width: 520px) {
@@ -157,7 +162,7 @@
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 1px rgba(0, 0, 0, 0.04);
-  border: 1px solid var(--border, #ececf1);
+  border: 1px solid var(--border, var(--color-border));
   transition: transform 0.18s ease, box-shadow 0.18s ease;
   background: #fff;
   /* 标准 16:9 比例，匹配 PowerPoint 默认宽屏 */
@@ -185,7 +190,9 @@
   height: 100%;
   display: block;
   object-fit: contain;
-  background: #f9f9fb;
+  /* 幻灯片留白（letterbox）区域跟随主题，
+     否则深色下每页周围都是一圈浅灰 */
+  background: var(--color-bg);
 }
 .pptx-thumb-card__badge {
   position: absolute;

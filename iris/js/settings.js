@@ -563,12 +563,44 @@
     bindFontControls();
   }
 
+  // 代码高亮主题的明暗配对：界面是暗色主题时，若选中的是浅色高亮主题，
+  // 自动换成同族暗色版本。否则 github 这类的深色语法色（如 #032f62 的字符串）
+  // 会落在深色代码块上，对比度不到 1.5:1，几乎看不见。
+  const CODE_THEME_TWINS = {
+    'github': 'github-dark',
+    'atom-one-light': 'atom-one-dark',
+    'solarized-light': 'solarized-dark'
+  };
+  const CODE_THEME_TWINS_INVERSE = {
+    'github-dark': 'github',
+    'atom-one-dark': 'atom-one-light',
+    'solarized-dark': 'solarized-light'
+  };
+
+  function siteIsDark() {
+    const CU = window.MarkdownPreview.ColorUtils;
+    if (!CU) return false;
+    return CU.luminance(CU.resolveColor(CU.getThemeVar('--color-bg', '#ffffff'), '#ffffff')) < 0.4;
+  }
+
+  function resolveCodeTheme(theme) {
+    const dark = siteIsDark();
+    if (dark) return CODE_THEME_TWINS[theme] || theme;
+    return CODE_THEME_TWINS_INVERSE[theme] || theme;
+  }
+
   function applyCodeTheme(theme) {
     const link = document.getElementById('hljs-theme');
     if (link) {
-      link.href = `iris/vendor/highlight.js/styles/${theme}.css`;
+      link.href = `iris/vendor/highlight.js/styles/${resolveCodeTheme(theme)}.css`;
     }
   }
+
+  // 主题切换后重新解析高亮主题（配对关系依赖当前界面明暗）
+  window.addEventListener('themechange', () => {
+    const settings = loadSettings();
+    applyCodeTheme(settings.codeTheme || defaultSettings.codeTheme);
+  });
 
   // 应用自定义主题色到 :root，覆盖 base.css 默认值
   function applyCustomColors(colors) {
@@ -581,6 +613,11 @@
         root.style.removeProperty(varName);
       }
     });
+    // 自定义底色可能把主题「翻」成另一种明暗，data-mode 要跟着实际底色走，
+    // 否则 diff / pptx / 代码高亮会和图表各说各话。
+    if (defaultColors['--color-bg'] || colors && colors['--color-bg']) {
+      root.setAttribute('data-mode', siteIsDark() ? 'dark' : 'light');
+    }
   }
 
   // 重置自定义主题色，恢复 base.css 默认值

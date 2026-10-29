@@ -23,6 +23,68 @@
     }
   }
 
+  // ApexCharts 自带明/暗两套坐标轴、图例、tooltip 配色，也有自己的
+  // svg 背景色（默认白）。暗色主题下不切换就会在深色页面里贴一张白卡。
+  function isDarkTheme() {
+    const CU = window.MarkdownPreview.ColorUtils;
+    const bg = CU.getThemeVar('--color-bg', '#ffffff');
+    return CU.luminance(CU.resolveColor(bg, '#ffffff')) < 0.4;
+  }
+
+  function themeVarColors() {
+    const CU = window.MarkdownPreview.ColorUtils;
+    return {
+      accent: CU.getThemeVar('--color-accent-purple', '#8B5CF6'),
+      pink: CU.getThemeVar('--color-accent-pink', '#D946EF'),
+      link: CU.getThemeVar('--color-link', '#3B82F6'),
+      success: CU.getThemeVar('--color-success', '#10B981'),
+      warning: CU.getThemeVar('--color-warning', '#F59E0B'),
+      border: CU.getThemeVar('--color-border', '#e5e7eb')
+    };
+  }
+
+  function themedConfig(chartConfig, chartId) {
+    const mode = isDarkTheme() ? 'dark' : 'light';
+    const c = themeVarColors();
+    const userTheme = chartConfig.theme || {};
+    return {
+      ...chartConfig,
+      chart: {
+        ...chartConfig.chart,
+        id: chartId || chartConfig.chart && chartConfig.chart.id,
+        toolbar: { show: true, ...(chartConfig.chart && chartConfig.chart.toolbar) },
+        // 卡片的底色由 .apex-chart 容器（--color-surface）提供，
+        // 图表自身背景透明才不会盖出一块白底
+        background: 'transparent'
+      },
+      colors: chartConfig.colors || [c.accent, c.pink, c.link, c.success, c.warning],
+      theme: { ...userTheme, mode: userTheme.mode || mode },
+      // 网格线用主题边框色：ApexCharts 暗色主题默认的浅灰在深底上偏刺眼
+      grid: { borderColor: c.border, ...(chartConfig.grid || {}) },
+      tooltip: { theme: mode, ...(chartConfig.tooltip || {}) }
+    };
+  }
+
+  // 已挂载的图表：主题切换后需要重建，否则会一直留在旧配色上
+  const mounted = [];
+  let themeListenerBound = false;
+  function bindThemeChange() {
+    if (themeListenerBound) return;
+    themeListenerBound = true;
+    window.addEventListener('themechange', () => {
+      if (typeof ApexCharts === 'undefined') return;
+      mounted.forEach((item) => {
+        if (!item.el.isConnected) return;
+        try { item.chart.destroy(); } catch (e) { /* 已销毁 */ }
+        try {
+          const next = new ApexCharts(item.el, themedConfig(item.config, item.id));
+          next.render();
+          item.chart = next;
+        } catch (e) { console.warn('[ApexCharts] 主题切换重建失败:', e && e.message); }
+      });
+    });
+  }
+
   async function render(root) {
     const markdownBody = window.MarkdownPreview.mdRender.resolveRoot(root);
     if (!markdownBody) return;
@@ -39,6 +101,7 @@
       console.error('ApexCharts library failed to load');
       return;
     }
+    bindThemeChange();
 
     const allPres = Array.from(markdownBody.querySelectorAll('pre'));
 
@@ -62,16 +125,7 @@
         container.className = 'apex-chart';
         container.style.minHeight = '400px';
 
-        const mergedConfig = {
-          ...chartConfig,
-          chart: {
-            ...chartConfig.chart,
-            id: chartId,
-            toolbar: { show: true }
-          },
-          colors: chartConfig.colors || ['#8B5CF6', '#D946EF', '#3B82F6', '#10B981', '#F59E0B'],
-          theme: { mode: 'light' }
-        };
+        const mergedConfig = themedConfig(chartConfig, chartId);
 
         pre.parentNode.replaceChild(container, pre);
 
@@ -81,6 +135,7 @@
           try {
             const chart = new ApexCharts(chartElement, mergedConfig);
             chart.render();
+            mounted.push({ el: chartElement, chart, config: chartConfig, id: chartId });
           } catch (e) {
             console.error('ApexCharts initialization error:', e);
             renderFailure(chartElement, e.message, sourceHtml);

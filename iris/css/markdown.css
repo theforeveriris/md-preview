@@ -250,6 +250,18 @@ body.sans-heading-digits .markdown-body h6 {
   height: auto;
 }
 
+/* mermaid 的 C4 渲染器把关系标签的填充写死成 #444（presentation attribute，
+   不吃 themeVariables），暗色主题下几乎与背景同色。展示属性可被 CSS 覆盖。 */
+.mermaid-diagram svg text[fill="#444444"] {
+  fill: var(--color-text);
+}
+
+/* 甘特图/XY 图的刻度线 mermaid 用前景色描边，深色主题下是一排刺眼的亮线，
+   换成主题边框色即可与网格融为一体。 */
+.mermaid-diagram svg .tick line {
+  stroke: var(--color-border);
+}
+
 .plantuml-diagram {
   margin: 1.5em 0;
   padding: 1.5em;
@@ -263,6 +275,14 @@ body.sans-heading-digits .markdown-body h6 {
 .plantuml-diagram img {
   max-width: 100%;
   height: auto;
+}
+
+/* PlantUML 是外部服务渲染的图片，底色与字体色都写死在图里，
+   暗色主题下没法跟随。与其让白图飘在深色卡片里，不如整块当白纸。
+   想真正暗色化就用服务器端的 !theme dark 指令。 */
+[data-mode="dark"] .plantuml-diagram {
+  background: #ffffff;
+  border: 1px solid var(--color-border);
 }
 
 /* PlantUML 渲染服务全部失败时的源码降级展示 */
@@ -292,6 +312,34 @@ body.sans-heading-digits .markdown-body h6 {
 
 .plantuml-fallback pre {
   margin: 0;
+}
+
+/* diff2html：它用 --d2h-* 变量取色，默认整套是浅色。
+   这里把变量接到主题词表上，并用它自带的 .d2h-dark-color-scheme
+   承接暗色主题（renderers/diff.js 在暗色下会加上这个类）。 */
+.diff-container {
+  --d2h-bg-color: var(--color-surface);
+  --d2h-border-color: var(--color-border);
+  --d2h-line-border-color: var(--color-border);
+  --d2h-file-header-bg-color: var(--color-bg);
+  --d2h-file-header-border-color: var(--color-border);
+  --d2h-empty-placeholder-bg-color: var(--color-bg);
+  --d2h-empty-placeholder-border-color: var(--color-border);
+  --d2h-dim-color: var(--color-text-muted);
+}
+
+.diff-container.d2h-dark-color-scheme {
+  --d2h-dark-bg-color: var(--color-surface);
+  --d2h-dark-border-color: var(--color-border);
+  --d2h-dark-line-border-color: var(--color-border);
+  --d2h-dark-file-header-bg-color: var(--color-bg);
+  --d2h-dark-file-header-border-color: var(--color-border);
+  --d2h-dark-dim-color: var(--color-text-muted);
+}
+
+.diff-container .d2h-file-wrapper {
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .markdown-body blockquote {

@@ -388,10 +388,15 @@
       panel.innerHTML = '';
       const mount = document.createElement('div');
       panel.appendChild(mount);
+      // 与 apexcharts 渲染器一致：图表自身背景透明、明暗跟随当前主题，
+      // 否则暗色主题下会在深色面板里贴一张白卡
+      const CU = window.MarkdownPreview.ColorUtils;
+      const darkMode = CU.luminance(CU.resolveColor(CU.getThemeVar('--color-bg', '#ffffff'), '#ffffff')) < 0.4;
       const cfg = {
         ...baseCfg,
         colors: ['#8B5CF6', '#D946EF', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'],
-        chart: { ...baseCfg.chart, height: 320, toolbar: { show: false } },
+        chart: { ...baseCfg.chart, height: 320, toolbar: { show: false }, background: 'transparent' },
+        theme: { mode: darkMode ? 'dark' : 'light' },
         dataLabels: { enabled: false },
         legend: { position: 'bottom' }
       };

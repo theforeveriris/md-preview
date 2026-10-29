@@ -259,9 +259,16 @@ function createCard(color, cfg) {
     card.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
   });
 
-  // 文字色根据亮度自适应
-  const textColor = color.luminance > 0.5 ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.95)';
-  const subColor = color.luminance > 0.5 ? 'rgba(0,0,0,0.55)' : 'rgba(255,255,255,0.7)';
+  // 文字色按对比度挑选：只看「明度 > 0.5」会把 #4ECDC4 这类中间亮度色
+  // 判成深底，白字压上去只有 1.9:1。
+  const contrastWith = (lum) => {
+    const hi = Math.max(lum, color.luminance) + 0.05;
+    const lo = Math.min(lum, color.luminance) + 0.05;
+    return hi / lo;
+  };
+  const useDarkText = contrastWith(0.0) >= contrastWith(1.0);
+  const textColor = useDarkText ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.95)';
+  const subColor = useDarkText ? 'rgba(0,0,0,0.55)' : 'rgba(255,255,255,0.7)';
 
   // 信息层
   const info = document.createElement('div');
@@ -346,7 +353,8 @@ function showToast(card, message, isError) {
 
 function renderError(container, message) {
   container.className = 'colorcard-container colorcard-error';
-  container.style.cssText = 'padding:12px 16px;border:1px solid #ff6b6b;border-radius:8px;background:#fff0f0;color:#cc0000;font-size:14px';
+  // 半透明红底 + 红字：深浅主题下都能看清，不用写死 #fff0f0
+  container.style.cssText = 'padding:12px 16px;border:1px solid #ff6b6b;border-radius:8px;background:rgba(255,107,107,0.12);color:#ff6b6b;font-size:14px';
   container.innerHTML = '<strong>颜色卡片渲染错误：</strong>';
   // message 含用户输入（如日期原文），以文本节点追加避免 HTML 注入
   container.appendChild(document.createTextNode(message));

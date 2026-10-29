@@ -377,8 +377,8 @@
             padding: 12px 16px;
             border: 1px solid #ff6b6b;
             border-radius: 8px;
-            background: #fff0f0;
-            color: #cc0000;
+            background: rgba(255, 107, 107, 0.12);
+            color: #ff6b6b;
             font-family: system-ui, sans-serif;
             font-size: 14px;
           ">

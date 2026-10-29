@@ -40,10 +40,7 @@
 }
 
 /* 暗色主题：渐变加深一档，柔光投影更沉 */
-body[data-theme="github-dark"] .menu-trigger,
-body[data-theme="arc"] .menu-trigger,
-body[data-theme="dracula"] .menu-trigger,
-body[data-theme="nord"] .menu-trigger {
+[data-mode="dark"] .menu-trigger {
   --fab-glow: rgba(0, 0, 0, 0.5);
 }
 

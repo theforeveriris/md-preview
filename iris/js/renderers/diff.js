@@ -2,6 +2,25 @@
   window.MarkdownPreview = window.MarkdownPreview || {};
   window.MarkdownPreview.renderers = window.MarkdownPreview.renderers || {};
   
+  // 暗色主题判定（与其它渲染器一致：读主题变量里的 --color-bg 明度）
+  function isDarkTheme() {
+    const CU = window.MarkdownPreview.ColorUtils;
+    return CU.luminance(CU.resolveColor(CU.getThemeVar('--color-bg', '#ffffff'), '#ffffff')) < 0.4;
+  }
+
+  // 主题切换后就地切换 diff 的明暗配色（不重渲染，diff 内容与展开状态都保留）
+  let themeListenerBound = false;
+  function bindThemeChange() {
+    if (themeListenerBound) return;
+    themeListenerBound = true;
+    window.addEventListener('themechange', () => {
+      const dark = isDarkTheme();
+      document.querySelectorAll('.diff-container').forEach((el) => {
+        el.classList.toggle('d2h-dark-color-scheme', dark);
+      });
+    });
+  }
+
   async function render(root) {
     const markdownBody = window.MarkdownPreview.mdRender.resolveRoot(root);
     if (!markdownBody) return;
@@ -21,6 +40,7 @@
       window.MarkdownPreview.loadScript('iris/vendor/diff2html/js/diff2html.min.js'),
       window.MarkdownPreview.loadScript('iris/vendor/diff2html/js/diff2html-ui.min.js'),
     ]);
+    bindThemeChange();
 
     const allPres = Array.from(markdownBody.querySelectorAll('pre'));
 
@@ -40,6 +60,9 @@
       const container = document.createElement('div');
       try {
         container.className = 'diff-container';
+        // diff2html 自带 .d2h-dark-color-scheme（配套 --d2h-dark-* 变量），
+        // 暗色主题下套上它，否则整个 diff 会是一张浅色卡片
+        if (isDarkTheme()) container.classList.add('d2h-dark-color-scheme');
         container.style.margin = '1.5em 0';
         
         // 创建 diff 渲染的目标元素
