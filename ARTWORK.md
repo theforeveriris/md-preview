@@ -344,6 +344,39 @@ border / text / text-muted / accent-purple / accent-pink`），25 套主题自�
 - 字体走站点正文字体栈（`cardFont()` 取 `.markdown-body` 计算样式），
   代码卡用系统等宽栈，生成前等待 `document.fonts.ready`。
 
+### 6.4 原图预览
+
+四张示例均为运行时真实生成（浅色主题、默认粉紫强调色），存于
+`docs/image/`——按 §3.3 约定，`docs/image/` 只放运行时演示产物，
+不作为美术源资产维护。
+
+<div align="center" style="border-radius:12px;overflow:hidden;margin:1em 0;">
+  <img src="docs/image/share-card-quote.png" alt="引言横版分享卡片" width="80%">
+</div>
+
+引言 · 横版（1200×630）：品牌头 + 大花水印 + 引号摘录 + 页脚双圆点。
+
+<div align="center" style="border-radius:12px;overflow:hidden;margin:1em 0;">
+  <img src="docs/image/share-card-quote-v.png" alt="引言竖版分享卡片" width="60%">
+</div>
+
+引言 · 竖版（1200×1600，3:4）：上下双渐变条封边，右上 / 左下对角双水印，
+长摘录自动铺满、截断带省略号。
+
+<div align="center" style="border-radius:12px;overflow:hidden;margin:1em 0;">
+  <img src="docs/image/share-card-code.png" alt="代码卡片" width="80%">
+</div>
+
+代码卡片（1200×630）：固定深色编辑器窗口风，标题栏右侧鸢尾标记，
+行号淡色装饰，超行截断带省略号。
+
+<div align="center" style="border-radius:12px;overflow:hidden;margin:1em 0;">
+  <img src="docs/image/share-card-table.png" alt="表格卡片" width="80%">
+</div>
+
+表格卡片（1200×630）：按主题重绘表格（表头强调色底、斑马纹），
+单元格超宽截断带省略号。
+
 ---
 
 ## 七、接入点清单
