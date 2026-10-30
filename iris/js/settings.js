@@ -109,6 +109,10 @@
         const parsed = JSON.parse(saved);
         return {
           ...defaultSettings,
+          // 保留 parsed 里的其余字段：像 floatingMenu（悬浮球菜单自定义）
+          // 这类由独立模块写入的键不在下面的规范化清单里，逐字段重建时漏掉
+          // 会让「设置里改了不生效」——读回来永远是默认值。
+          ...parsed,
           showReadingProgress: parsed.showReadingProgress ?? defaultSettings.showReadingProgress,
           showWordCount: parsed.showWordCount ?? defaultSettings.showWordCount,
           truncateFileNames: parsed.truncateFileNames ?? defaultSettings.truncateFileNames,
@@ -134,7 +138,11 @@
           typographyTextSpacing: parsed.typographyTextSpacing === true,
           perfContentVisibility: parsed.perfContentVisibility !== false,
           prefetchAdjacent: parsed.prefetchAdjacent !== false,
-          verticalText: parsed.verticalText === true
+          verticalText: parsed.verticalText === true,
+          // 悬浮球菜单自定义（显示哪些项 / 排列顺序），由 floating-menu-custom.js 写入
+          floatingMenu: (parsed.floatingMenu && typeof parsed.floatingMenu === 'object')
+            ? parsed.floatingMenu
+            : null
         };
       }
     } catch (e) {
@@ -248,8 +256,13 @@
 
     const parkFab = () => {
       if (fabParked) return;
-      // 展开的菜单一并收起，避免菜单悬空
-      if (menuItems.classList.contains('open')) closeMenu();
+      // 菜单展开时不贴边收起：用户多半正看着菜单、准备点某一项，
+      // 此时收起会把菜单一起滑出屏幕，那一项就再也点不中了。
+      // 改为推迟到菜单关闭后再收起。
+      if (menuItems.classList.contains('open')) {
+        scheduleFabIdle();
+        return;
+      }
       fabParked = true;
       floatingMenu.classList.add('fab-parked');
     };
@@ -274,6 +287,15 @@
       const vw = document.documentElement.clientWidth;
       if (vw - e.clientX <= FAB_PROXIMITY) wakeFab();
     }, { passive: true });
+    // 贴边状态下点那根细柄：球体是滑回来的，抬手时元素已经移走，
+    // 这个 click 往往落空，表现为「点了没反应」。这里记住意图，
+    // 球体滑回后直接把菜单展开。
+    floatingMenu.addEventListener('pointerdown', (e) => {
+      if (!fabParked) return;
+      e.preventDefault();   // 避免抬手时点到下层内容
+      wakeFab();
+      setTimeout(() => openMenu(), 420);
+    });
     // 触屏：贴边细柄仍可点按召回
     menuTrigger.addEventListener('touchstart', wakeFab, { passive: true });
     // 键盘可达性：focus 召回

@@ -251,6 +251,9 @@
     state.currentFilePath = '';
     // 清除文件树高亮：当前展示的是本地文档
     window.MarkdownPreview.fileTree?.setActiveFile('');
+    // 本地文件不在仓库里，「编辑此页」没有对应页面：收起按钮，
+    // 否则会残留上一份仓库文档的 GitHub 编辑链接（点进去改的是别的文件）
+    window.MarkdownPreview.markdown.updateEditButton?.('');
     window.MarkdownPreview.markdown.renderMarkdownDirect(content, file.name);
     renderPanel();
   }
