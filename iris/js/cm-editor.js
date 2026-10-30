@@ -100,15 +100,13 @@
             }
           }
         }),
-        // DOM 事件：keydown / keyup / click / mouseup
-        // 注意：keydown/keyup 需要与 input/click 等事件一样把 target 设为编辑器包装对象，
+        // DOM 事件：keyup / click / mouseup
+        // 注意：事件需要把 target 设为编辑器包装对象，
         // 否则 editor.js 通过 e.target.dataset.cellId 定位 cell 会拿到 CM6 的 .cm-content 节点而失效。
+        // keydown 不走 domEventHandlers：本构建的 CM 内部 input handler 会对
+        // keydown 短路 runHandlers，这里永远收不到（补全导航/回车应用/
+        // Ctrl+Enter 因此全数失效）——改由下方捕获阶段监听接管。
         EditorView.domEventHandlers({
-          keydown: (event) => {
-            if (this._onKeyDown) this._onKeyDown(event);
-            this._dispatchEvent('keydown', this._wrapKeyEvent(event));
-            return false; // 不阻止默认行为，让 CM6 keymap 优先处理
-          },
           keyup: (event) => {
             if (this._onKeyUp) this._onKeyUp(event);
             this._dispatchEvent('keyup', this._wrapKeyEvent(event));
@@ -133,6 +131,18 @@
         }),
         parent: parentEl,
       });
+
+      this._parentEl = parentEl;
+      // keydown 捕获监听（宿主元素上，先于 CM 在 contentDOM 的处理器执行）：
+      // editor.js 的补全导航 / 快捷键调用 preventDefault 后，这里以
+      // stopPropagation 拦下事件，CM 不再处理（否则 Enter 会先插换行、
+      // 破坏补全上下文）
+      this._captureKeydown = (event) => {
+        if (this._onKeyDown) this._onKeyDown(event);
+        this._dispatchEvent('keydown', this._wrapKeyEvent(event));
+        if (event.defaultPrevented) event.stopPropagation();
+      };
+      parentEl.addEventListener('keydown', this._captureKeydown, true);
 
       // CM6 的 contentDOM 相当于 textarea
       this._contentDOM = this.view.contentDOM;
@@ -448,6 +458,9 @@
      * 销毁编辑器
      */
     destroy() {
+      if (this._parentEl && this._captureKeydown) {
+        this._parentEl.removeEventListener('keydown', this._captureKeydown, true);
+      }
       this.view.destroy();
       this._listeners = {};
     }
