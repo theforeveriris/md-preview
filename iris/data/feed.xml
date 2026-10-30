@@ -5,8 +5,671 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 30 Oct 2026 01:36:49 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 30 Oct 2026 18:33:11 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Markdown 编辑器</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/editor.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/editor.md</guid>
+      <pubDate>Fri, 30 Oct 2026 16:52:20 GMT</pubDate>
+      <description>Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可在浏览器内即时编写、运行、预览 Markdown，并支持自动保存、搜索替换、导入导出等能力。 编辑器以全屏覆盖层的形式叠加在文档站之上，复用站点已有的渲染管线（marked.js + 各扩展渲染器与插件），渲染结果与文档站一致；唯一例外是 graph ┌───────────────────</description>
+      <content:encoded><![CDATA[<h1>Markdown 编辑器</h1>
+<p>Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可在浏览器内即时编写、运行、预览 Markdown，并支持自动保存、搜索替换、导入导出等能力。</p>
+<p>编辑器以全屏覆盖层的形式叠加在文档站之上，复用站点已有的渲染管线（marked.js + 各扩展渲染器与插件），渲染结果与文档站一致；唯一例外是 <code>```graph</code> 文档图谱挂载点——它依赖构建期生成的全站 links.json，仅在文档站渲染，编辑器预览中保持代码块原样。</p>
+<hr>
+<h2>一、入口与退出</h2>
+<h3>进入编辑器</h3>
+<p>三种方式任选其一：</p>
+<ol>
+<li><strong>URL 参数</strong>：在站点任意 URL 后追加 <code>?mode=editor</code>，例如 <code>https://theforeveriris.github.io/md-preview/?mode=editor</code></li>
+<li><strong>设置面板</strong>：右上角悬浮球 → 设置 → 操作 → 「打开编辑器」</li>
+<li><strong>JS 调用</strong>：在控制台或代码中执行 <code>window.MarkdownPreview.enterEditorMode()</code></li>
+</ol>
+<h3>退出编辑器</h3>
+<ul>
+<li>工具栏左上角「文档站」按钮</li>
+<li>调用 <code>window.MarkdownPreview.exitEditorMode()</code></li>
+</ul>
+<p>退出后 URL 上的 <code>mode=editor</code> 参数会被移除，回到文档浏览模式。</p>
+<hr>
+<h2>二、界面布局</h2>
+<p>编辑器为单页全屏结构，自上而下分为五个区域：</p>
+<pre><code>┌─────────────────────────────────────────────────────┐
+│  顶部工具栏 (editor-toolbar)                          │
+│  左：返回文档站 / 标题 / Cell 计数                     │
+│  中：8 个下拉菜单（Markdown / HTML / 私有语法 /        │
+│      工具渲染 / 插入 / 嵌入 / 下载 / 导入）             │
+│  右：字号 / 搜索 / 主题 / 清空 / 全部运行 / 运行       │
+├─────────────────────────────────────────────────────┤
+│  搜索/替换面板 (search-panel，按需展开)                │
+├─────────────────────────────────────────────────────┤
+│  Cell 容器 (editor-main，可滚动)                      │
+│    ┌───────────────────────────────────────────┐    │
+│    │  Cell 1                                    │    │
+│    │  ┌─────────────────────────────────────┐  │    │
+│    │  │ 编辑区 (textarea + 行号)             │  │    │
+│    │  └─────────────────────────────────────┘  │    │
+│    │  ┌─────────────────────────────────────┐  │    │
+│    │  │ 渲染输出区 (.cell-output)            │  │    │
+│    │  └─────────────────────────────────────┘  │    │
+│    └───────────────────────────────────────────┘    │
+│    ┌───────────────────────────────────────────┐    │
+│    │  Cell 2 ...                                │    │
+│    └───────────────────────────────────────────┘    │
+│    ┌─ + 新建 Cell (全局按钮，仅最后一个 Cell 下方) ─┐  │
+├─────────────────────────────────────────────────────┤
+│  底部状态栏 (editor-statusbar)                        │
+│  左：Cell 数 / 运行统计 / 字数 / 行数 / 当前 Cell 字数 │
+│  右：光标位置 / 活跃 Cell / 保存状态                  │
+└─────────────────────────────────────────────────────┘
+</code></pre>
+<p>此外还有三个浮动元素：</p>
+<ul>
+<li><strong>选中文字浮动工具栏</strong>：在 textarea 中选中文字时浮现，提供 B/I/S/code/H1~H3/link/quote/ul 快速格式化</li>
+<li><strong>Cell 右键菜单</strong>：右键任意 Cell 弹出，2 列布局共 17 项操作</li>
+<li><strong>自动补全列表</strong>：输入触发字符时浮现，按 ↑↓ 选择、Enter/Tab 确认</li>
+</ul>
+<hr>
+<h2>三、Cell 模型</h2>
+<h3>Cell 类型</h3>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>标识</th>
+<th>行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>markdown</code></td>
+<td>MD</td>
+<td>内容经过完整渲染管线（Mermaid / KaTeX / 代码高亮等）</td>
+</tr>
+<tr>
+<td><code>plaintext</code></td>
+<td>TXT</td>
+<td>纯文本，不渲染，原样显示在输出区</td>
+</tr>
+</tbody></table>
+<p>通过右键菜单「切换类型」或导入时的 <code>---</code> 分隔符切换。</p>
+<h3>Cell 结构</h3>
+<p>每个 Cell 由以下部分组成：</p>
+<ul>
+<li><strong>头部 (cell-header)</strong>：Cell 编号、状态点（灰=未运行 / 绿=已运行 / 橙=已修改）、类型徽章、行数；右侧 6 个操作按钮（运行 / 折叠 / 上移 / 下移 / 复制 / 删除）</li>
+<li><strong>编辑区 (cell-editor-wrap)</strong>：行号栏 + textarea，支持 Tab 缩进、Shift+Tab 反缩进</li>
+<li><strong>输出区 (cell-output)</strong>：运行后显示渲染结果，未运行时隐藏</li>
+<li><strong>输出工具栏 (cell-output-toolbar)</strong>：运行后浮现，提供「复制 HTML / 清空输出 / 折叠输出 / 导出此 Cell」四项操作</li>
+</ul>
+<h3>新建 Cell</h3>
+<ul>
+<li><strong>全局按钮</strong>：在最后一个 Cell 下方有且仅有一个「+ 新建 Cell」虚线按钮</li>
+<li><strong>快捷键</strong>：<code>Ctrl+Shift+N</code> 在当前 Cell 下方新建</li>
+<li><strong>右键菜单</strong>：「上方插入 Cell」/「下方插入 Cell」</li>
+</ul>
+<h3>运行 Cell</h3>
+<ul>
+<li><strong>运行当前</strong>：工具栏「运行」按钮 / Cell 头部播放按钮 / <code>Ctrl+Enter</code></li>
+<li><strong>运行全部</strong>：工具栏「全部运行」按钮 / <code>Ctrl+Shift+Enter</code></li>
+<li><strong>运行此 Cell 及下方</strong>：右键菜单</li>
+<li>运行后状态点变绿；编辑后变橙（已修改，需重新运行）</li>
+</ul>
+<h3>双屏编辑模式</h3>
+<p>每个 Cell 头部有「双屏编辑」按钮（分栏图标），点击进入全屏双屏 overlay：</p>
+<ul>
+<li><strong>布局</strong>：左侧为该 Cell 的编辑器（保留原实例与撤销栈），右侧为该 Cell 内容的实时预览；</li>
+<li><strong>实时渲染</strong>：输入 250 ms 防抖后自动重渲染，渲染管线与文档站一致；</li>
+<li><strong>分隔条拖拽</strong>：拖动中间分隔条调整左右宽度；</li>
+<li><strong>同步滚动</strong>：可在开关控制下让编辑区与预览区滚动联动；</li>
+<li><strong>退出</strong>：<code>Esc</code> 或右上角退出按钮，CodeMirror 宿主移回原 Cell，其它 Cell 完全不受影响。</li>
+</ul>
+<hr>
+<h2>四、顶部工具栏菜单</h2>
+<p>工具栏中央有 8 个下拉菜单，覆盖 Markdown 写作所需的全部能力。</p>
+<h3>1. Markdown</h3>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>标题</td>
+<td>H1 ~ H6</td>
+</tr>
+<tr>
+<td>格式</td>
+<td>粗体 / 斜体 / 粗斜体 / 删除线 / 行内代码</td>
+</tr>
+<tr>
+<td>列表</td>
+<td>无序 / 有序 / 任务 / 已完成任务</td>
+</tr>
+<tr>
+<td>插入</td>
+<td>链接 / 带标题链接 / 图片 / 带尺寸图片 / 代码块 / 引用 / 分隔线</td>
+</tr>
+<tr>
+<td>表格</td>
+<td>2 / 3 / 4 列表格</td>
+</tr>
+<tr>
+<td>脚注 / 引用</td>
+<td>脚注定义 / 脚注引用 / 引用式链接定义</td>
+</tr>
+</tbody></table>
+<h3>2. HTML</h3>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>文本样式</td>
+<td>mark / u / small / sub / sup / kbd / abbr / time / del+ins / cite / var / samp / dfn / q / wbr</td>
+</tr>
+<tr>
+<td>结构与布局</td>
+<td>details 折叠面板 / 居中对齐 / dl 定义列表 / figure 图文组合 / ruby 注音 / address / br / hr</td>
+</tr>
+<tr>
+<td>交互组件</td>
+<td>dialog 模态对话框 / popover 原生弹出层 / contenteditable 可编辑区域 / template 模板</td>
+</tr>
+<tr>
+<td>表单与控件</td>
+<td>meter 仪表盘 / progress 进度条 / datalist 自动补全 / output 计算表单 / fieldset 分组</td>
+</tr>
+<tr>
+<td>多媒体与绘图</td>
+<td>内联 SVG / Canvas 画布 / iframe srcdoc 内联框架</td>
+</tr>
+<tr>
+<td>颜色与注释</td>
+<td>红 / 蓝 / 绿 / 橙 / 紫彩色文字 / 背景高亮 / HTML 注释</td>
+</tr>
+</tbody></table>
+<h3>3. 私有语法</h3>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>画廊样式</td>
+<td>17 种：grid / cardstack / filmstrip / polaroid / stack / mosaic / scattered / hexagon / coverflow / tape / duotone / frame / arch / masonry / slider / ticket / panorama</td>
+</tr>
+<tr>
+<td>GitHub 提示框</td>
+<td>NOTE / IMPORTANT / WARNING / TIP / CAUTION</td>
+</tr>
+<tr>
+<td>多栏与遮罩</td>
+<td>代码选项卡 code-tabs / 多列布局 columns / 剧透遮罩 spoiler / Pulse 波形 <code>[pulse]...[/pulse]</code></td>
+</tr>
+<tr>
+<td>文档结构</td>
+<td>Frontmatter 头信息 / 目录 TOC</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>画廊样式详细说明见 <a href="https://theforeveriris.github.io/md-preview/docs/examples/gallery-layouts.md">图片画廊布局</a> 与 <a href="https://theforeveriris.github.io/md-preview/docs/examples/image-gallery-examples.md">图片画廊示例</a>。</p>
+</blockquote>
+<h3>4. 工具渲染</h3>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mermaid 图表（15 种）</td>
+<td>flowchart / sequenceDiagram / classDiagram / stateDiagram-v2 / erDiagram / gantt / pie / journey / mindmap / timeline / quadrantChart / gitGraph / block / C4Context / xychart-beta</td>
+</tr>
+<tr>
+<td>PlantUML（12 种）</td>
+<td>时序图 / 类图 / 用例图 / 活动图 / 状态图 / 组件图 / 部署图 / 思维导图 / WBS / JSON 数据图 / ER 实体关系图 / 线框图 salt</td>
+</tr>
+<tr>
+<td>ApexCharts（13 种）</td>
+<td>折线 / 面积 / 柱状（分组）/ 堆叠柱状 / 条形（水平）/ 饼图 / 环形 donut / 雷达 / 散点 scatter / 气泡 bubble / 极坐标 polarArea / 范围区域 rangeArea / 烛台 candlestick</td>
+</tr>
+<tr>
+<td>代码与数学</td>
+<td>Diff 差异 / KaTeX 公式块 / 行内公式 / 矩阵 pmatrix / 方程组 cases / 求和与极限 / 二维码 / 二维码（自定义尺寸）</td>
+</tr>
+<tr>
+<td>插件渲染</td>
+<td>ColorCard 颜色卡片 / Countdown 倒计时（日期或相对时长）</td>
+</tr>
+<tr>
+<td>地理</td>
+<td>GeoJSON 多点 / GeoJSON 线 / GeoJSON 多边形 / TopoJSON</td>
+</tr>
+</tbody></table>
+<h3>5. 插入</h3>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>日期时间</td>
+<td>当前日期 / 当前时间 / 日期时间 / Unix 时间戳</td>
+</tr>
+<tr>
+<td>占位图片</td>
+<td>300×200 / 600×400 / 1200×600 横幅 / 500×500 方图</td>
+</tr>
+<tr>
+<td>颜色色块</td>
+<td>红 / 橙 / 黄 / 绿 / 蓝 / 紫（HTML 色点，非 emoji）</td>
+</tr>
+<tr>
+<td>分隔线样式</td>
+<td><code>---</code> / <code>***</code> / <code>___</code></td>
+</tr>
+<tr>
+<td>徽章</td>
+<td>Shields.io / Badgen</td>
+</tr>
+</tbody></table>
+<h3>6. 嵌入</h3>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>视频</td>
+<td>YouTube / Bilibili / Vimeo</td>
+</tr>
+<tr>
+<td>社交</td>
+<td>Twitter 推文 / Twitter 用户时间线 / GitHub Gist</td>
+</tr>
+<tr>
+<td>代码演示</td>
+<td>CodePen / JSFiddle / StackBlitz / Replit</td>
+</tr>
+<tr>
+<td>设计稿</td>
+<td>Figma</td>
+</tr>
+<tr>
+<td>地图</td>
+<td>Google Maps / OpenStreetMap</td>
+</tr>
+<tr>
+<td>办公文档</td>
+<td>Google Docs</td>
+</tr>
+<tr>
+<td>网络拓扑</td>
+<td>eNSP 拓扑（<code>```pkt</code> 包裹 <code>@[ensp](slug)</code>）</td>
+</tr>
+</tbody></table>
+<h3>7. 下载</h3>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>当前 Cell</td>
+<td>下载源文件 (.md) / 下载渲染结果 (.html) / 导出离线 HTML（内联 CSS）/ 导出 PDF</td>
+</tr>
+<tr>
+<td>整个笔记本</td>
+<td>导出笔记本 (.mdnb) / 合并导出全部 (.md)</td>
+</tr>
+</tbody></table>
+<h3>8. 导入</h3>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>笔记本</td>
+<td>导入 .mdnb 笔记本 / 导入 .md（按 <code>---</code> 切分为 Cell）</td>
+</tr>
+<tr>
+<td>当前 Cell</td>
+<td>导入 .md 到当前 Cell</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>五、自动补全</h2>
+<p>在编辑区输入触发字符即弹出补全列表，支持 ↑↓ 选择、Enter / Tab 确认、Esc 关闭。共 16 类触发字符，160+ 条目，覆盖文档站全部渲染语法（含插件围栏）。</p>
+<table>
+<thead>
+<tr>
+<th>触发字符</th>
+<th>补全内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@</code></td>
+<td>17 种画廊样式 + <code>@tab</code> 选项卡分隔（嵌入服务速记已并入 <code>```</code> 组）</td>
+</tr>
+<tr>
+<td><code>```</code></td>
+<td>Mermaid 15 种 + PlantUML 12 种 + ApexCharts 11 种 + 本站全部自定义围栏（steps / quote / orgchart / glossary / timeline / terminal / secret / bits / heatmap / ipcalc / acl / route-table / config-diff / csv / tsv / json 树 / http / openapi / sql ddl / erd / live 沙箱 / graph）+ 插件围栏（regex / cron / time / jwt / hash / color）+ 嵌入围栏（embed / twitter / ensp 及 bilibili、vimeo 速记）+ geojson / topojson / qrcode / diff + 23 种编程语言</td>
+</tr>
+<tr>
+<td><code>&gt; [!</code></td>
+<td>5 种 GitHub Alerts</td>
+</tr>
+<tr>
+<td><code>#</code></td>
+<td>6 级标题</td>
+</tr>
+<tr>
+<td><code>-</code></td>
+<td>无序列表 / 任务列表</td>
+</tr>
+<tr>
+<td><code>|</code></td>
+<td>2 / 3 / 4 列表格</td>
+</tr>
+<tr>
+<td><code>||</code></td>
+<td>剧透遮罩 spoiler</td>
+</tr>
+<tr>
+<td><code>:::</code></td>
+<td>容器语法：code-tabs 代码选项卡 / columns 多列布局</td>
+</tr>
+<tr>
+<td><code>---</code></td>
+<td>水平分割线 / Frontmatter</td>
+</tr>
+<tr>
+<td><code>&gt;</code></td>
+<td>普通引用</td>
+</tr>
+<tr>
+<td><code>$$</code></td>
+<td>KaTeX 公式块</td>
+</tr>
+<tr>
+<td><code>![</code></td>
+<td>图片 / 带标题图片</td>
+</tr>
+<tr>
+<td><code>[</code></td>
+<td>链接 / 带标题链接 / 引用式链接</td>
+</tr>
+<tr>
+<td><code>[^</code></td>
+<td>脚注引用 / 脚注定义</td>
+</tr>
+<tr>
+<td><code>&lt;!--</code></td>
+<td>图表编号注释 <code>#fig:</code> / <code>#tbl:</code>、表格样式预设 <code>table-style:</code></td>
+</tr>
+<tr>
+<td><code>[pulse</code></td>
+<td>DG-LAB 波形 <code>[pulse]...[/pulse]</code> 与迷你波形 <code>[pulsemini]</code></td>
+</tr>
+</tbody></table>
+<p>围栏类模板统一把光标落到闭合围栏之前的块内；含 <code>$$</code> 公式块在内，确认后可直接输入内容。</p>
+<hr>
+<h2>六、右键菜单</h2>
+<p>右键任意 Cell 弹出 2 列布局菜单，左列「运行与插入」7 项，右列「编辑与清理」10 项，共 17 项操作。菜单位置自动检测视口边界，避免溢出；窄屏自动回退为单列。</p>
+<h3>运行与插入（左列）</h3>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>运行此 Cell</td>
+<td>等同 Ctrl+Enter</td>
+</tr>
+<tr>
+<td>运行此 Cell 及下方</td>
+<td>顺序执行当前及下方所有 Cell</td>
+</tr>
+<tr>
+<td>上方插入 Cell</td>
+<td>在当前 Cell 上方新建空 Cell</td>
+</tr>
+<tr>
+<td>下方插入 Cell</td>
+<td>在当前 Cell 下方新建空 Cell</td>
+</tr>
+<tr>
+<td>上移</td>
+<td>与上一个 Cell 交换位置</td>
+</tr>
+<tr>
+<td>下移</td>
+<td>与下一个 Cell 交换位置</td>
+</tr>
+<tr>
+<td>复制 Cell</td>
+<td>在下方复制一份内容相同的 Cell</td>
+</tr>
+</tbody></table>
+<h3>编辑与清理（右列）</h3>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>切换类型</td>
+<td>markdown ↔ plaintext</td>
+</tr>
+<tr>
+<td>折叠编辑器</td>
+<td>隐藏编辑区，仅保留输出</td>
+</tr>
+<tr>
+<td>折叠输出</td>
+<td>隐藏输出区</td>
+</tr>
+<tr>
+<td>复制输出 HTML</td>
+<td>将渲染后的 HTML 复制到剪贴板</td>
+</tr>
+<tr>
+<td>导出此 Cell</td>
+<td>单独导出当前 Cell</td>
+</tr>
+<tr>
+<td>折叠全部</td>
+<td>折叠所有 Cell 的编辑器</td>
+</tr>
+<tr>
+<td>展开全部</td>
+<td>展开所有 Cell</td>
+</tr>
+<tr>
+<td>清空输出</td>
+<td>清除当前 Cell 的渲染结果</td>
+</tr>
+<tr>
+<td>清空内容</td>
+<td>清空当前 Cell 的编辑区文字</td>
+</tr>
+<tr>
+<td>删除 Cell</td>
+<td>删除当前 Cell（危险操作，红色高亮）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>七、快捷键</h2>
+<table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Ctrl/Cmd + Enter</code></td>
+<td>运行当前 Cell</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + Shift + Enter</code></td>
+<td>运行全部 Cell</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + Shift + N</code></td>
+<td>当前 Cell 下方新建</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + F</code></td>
+<td>打开搜索面板</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + H</code></td>
+<td>打开替换面板</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + B</code></td>
+<td>粗体</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + I</code></td>
+<td>斜体</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + K</code></td>
+<td>链接</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + </code> `</td>
+<td>行内代码</td>
+</tr>
+<tr>
+<td><code>Tab</code></td>
+<td>缩进 2 空格</td>
+</tr>
+<tr>
+<td><code>Shift + Tab</code></td>
+<td>移除行首 2 空格</td>
+</tr>
+<tr>
+<td><code>F3</code> / <code>Shift + F3</code></td>
+<td>搜索下一个 / 上一个</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + Alt + T</code></td>
+<td>新建编辑器标签</td>
+</tr>
+<tr>
+<td><code>Ctrl/Cmd + Tab</code></td>
+<td>切换编辑器标签</td>
+</tr>
+<tr>
+<td><code>Esc</code></td>
+<td>关闭右键菜单 / 补全 / 搜索面板；双屏编辑模式中退出双屏</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>八、搜索与替换</h2>
+<p>工具栏右侧搜索图标（或 <code>Ctrl+F</code> / <code>Ctrl+H</code>）打开搜索面板：</p>
+<ul>
+<li><strong>查找</strong>：跨所有 Cell 的 textarea 内容搜索</li>
+<li><strong>替换</strong>：替换当前匹配 / 全部替换</li>
+<li><strong>导航</strong>：<code>F3</code> 下一个、<code>Shift+F3</code> 上一个，或点击 ↑↓ 按钮</li>
+<li><strong>状态信息</strong>：底部显示「N 个匹配 / 当前第 M 个」</li>
+<li><code>Esc</code> 关闭面板</li>
+</ul>
+<hr>
+<h2>九、自动保存</h2>
+<p>编辑器启用自动保存，<strong>无需手动保存</strong>，存储层为 IndexedDB（<code>iris/js/storage.js</code>），突破 localStorage 5 MB 容量限制并支持多笔记本（多标签）：</p>
+<ul>
+<li><strong>触发</strong>：内容变更后 1.5 秒防抖写入</li>
+<li><strong>保存内容</strong>：每个 Cell 的 <code>id</code> / <code>type</code> / <code>content</code> / <code>output_html</code></li>
+<li><strong>多标签</strong>：每个编辑器标签对应一个独立笔记本（IndexedDB <code>notebooks</code> 对象存储），标签顺序与激活项记录在 <code>meta</code> 对象存储</li>
+<li><strong>恢复</strong>：再次进入编辑器时自动加载当前笔记本，重建所有 Cell</li>
+<li><strong>状态指示</strong>：底部状态栏右侧显示「未保存 *」（橙色）/「已保存 ✓」（绿色）/「保存失败」（红色）</li>
+<li><strong>旧数据迁移</strong>：首次加载时若 IndexedDB 无数据而 localStorage 存在旧版自动保存数据（键 <code>mdnb_autosave_v2</code>），自动迁移到 IndexedDB 并清除旧键</li>
+</ul>
+<p>其他持久化设置（localStorage）：</p>
+<table>
+<thead>
+<tr>
+<th>键</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>mdnb_fontsize</code></td>
+<td>编辑区字号（12 / 14 / 16 / 18）</td>
+</tr>
+<tr>
+<td><code>mdnb_theme</code></td>
+<td>编辑器明暗会话内覆盖（sessionStorage，light / dark）</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>自动保存仅写入浏览器本地存储，不会同步到仓库。如需持久分享，请使用「下载」菜单导出 <code>.mdnb</code> 笔记本或合并 <code>.md</code> 文件。存储层细节见 <a href="https://theforeveriris.github.io/md-preview/readme-dev.md">开发者文档</a>。</p>
+</blockquote>
+<hr>
+<h2>十、字号与主题</h2>
+<ul>
+<li><strong>字号调节</strong>：工具栏字号图标，可选 12 / 14 / 16 / 18 px，默认 14 px</li>
+<li><strong>主题切换</strong>：编辑器明暗跟随站点主题（含 25 套预设主题的明暗派生）自动变化；工具栏主题图标只做本次会话内的临时反转（sessionStorage），关闭标签页后恢复跟随。编辑器画布、快照面板、表格编辑器等全部通过主题 CSS 变量取色，任何主题下与站点观感一致</li>
+</ul>
+<hr>
+<h2>十一、笔记本文件格式 (.mdnb)</h2>
+<p><code>.mdnb</code> 是编辑器导出的笔记本格式，本质为 JSON：</p>
+<pre><code class="language-json">{
+  &quot;version&quot;: 2,
+  &quot;type&quot;: &quot;mdnb-autosave&quot;,
+  &quot;saved&quot;: &quot;2026-07-13T12:00:00.000Z&quot;,
+  &quot;cells&quot;: [
+    {
+      &quot;id&quot;: 1,
+      &quot;type&quot;: &quot;markdown&quot;,
+      &quot;content&quot;: &quot;# 标题\n\n正文&quot;,
+      &quot;output_html&quot;: &quot;&lt;h1&gt;标题&lt;/h1&gt;&lt;p&gt;正文&lt;/p&gt;&quot;
+    },
+    {
+      &quot;id&quot;: 2,
+      &quot;type&quot;: &quot;plaintext&quot;,
+      &quot;content&quot;: &quot;纯文本内容&quot;,
+      &quot;output_html&quot;: &quot;&quot;
+    }
+  ]
+}
+</code></pre>
+<p>通过「导入」菜单可重新加载 <code>.mdnb</code> 文件，完整还原 Cell 结构、类型与渲染结果。</p>
+<hr>
+<h2>相关文档</h2>
+<ul>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/getting-started.md">快速开始</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/show.md">系统运行时截图</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/gallery-layouts.md">图片画廊布局</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/mermaid-examples.md">Mermaid 示例</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/latex-examples.md">LaTeX 示例</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/readme-dev.md">开发者文档</a></li>
+</ul>
+]]></content:encoded>
+    </item>
     <item>
       <title>配置参考</title>
       <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
@@ -3536,660 +4199,6 @@ li:hover { color: #b88aad; }
   color: #b58900;
 }
 </code></pre>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>Markdown 编辑器</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/editor.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/editor.md</guid>
-      <pubDate>Mon, 26 Oct 2026 20:22:33 GMT</pubDate>
-      <description>Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可在浏览器内即时编写、运行、预览 Markdown，并支持自动保存、搜索替换、导入导出等能力。 编辑器以全屏覆盖层的形式叠加在文档站之上，复用站点已有的渲染管线（marked.js + 各扩展渲染器），所有渲染结果与文档站完全一致。 --- 三种方式任选其一： 1. URL 参数：在站点任意 </description>
-      <content:encoded><![CDATA[<h1>Markdown 编辑器</h1>
-<p>Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可在浏览器内即时编写、运行、预览 Markdown，并支持自动保存、搜索替换、导入导出等能力。</p>
-<p>编辑器以全屏覆盖层的形式叠加在文档站之上，复用站点已有的渲染管线（marked.js + 各扩展渲染器），所有渲染结果与文档站完全一致。</p>
-<hr>
-<h2>一、入口与退出</h2>
-<h3>进入编辑器</h3>
-<p>三种方式任选其一：</p>
-<ol>
-<li><strong>URL 参数</strong>：在站点任意 URL 后追加 <code>?mode=editor</code>，例如 <code>https://theforeveriris.github.io/md-preview/?mode=editor</code></li>
-<li><strong>设置面板</strong>：右上角悬浮球 → 设置 → 操作 → 「打开编辑器」</li>
-<li><strong>JS 调用</strong>：在控制台或代码中执行 <code>window.MarkdownPreview.enterEditorMode()</code></li>
-</ol>
-<h3>退出编辑器</h3>
-<ul>
-<li>工具栏左上角「文档站」按钮</li>
-<li>调用 <code>window.MarkdownPreview.exitEditorMode()</code></li>
-</ul>
-<p>退出后 URL 上的 <code>mode=editor</code> 参数会被移除，回到文档浏览模式。</p>
-<hr>
-<h2>二、界面布局</h2>
-<p>编辑器为单页全屏结构，自上而下分为五个区域：</p>
-<pre><code>┌─────────────────────────────────────────────────────┐
-│  顶部工具栏 (editor-toolbar)                          │
-│  左：返回文档站 / 标题 / Cell 计数                     │
-│  中：8 个下拉菜单（Markdown / HTML / 私有语法 /        │
-│      工具渲染 / 插入 / 嵌入 / 下载 / 导入）             │
-│  右：字号 / 搜索 / 主题 / 清空 / 全部运行 / 运行       │
-├─────────────────────────────────────────────────────┤
-│  搜索/替换面板 (search-panel，按需展开)                │
-├─────────────────────────────────────────────────────┤
-│  Cell 容器 (editor-main，可滚动)                      │
-│    ┌───────────────────────────────────────────┐    │
-│    │  Cell 1                                    │    │
-│    │  ┌─────────────────────────────────────┐  │    │
-│    │  │ 编辑区 (textarea + 行号)             │  │    │
-│    │  └─────────────────────────────────────┘  │    │
-│    │  ┌─────────────────────────────────────┐  │    │
-│    │  │ 渲染输出区 (.cell-output)            │  │    │
-│    │  └─────────────────────────────────────┘  │    │
-│    └───────────────────────────────────────────┘    │
-│    ┌───────────────────────────────────────────┐    │
-│    │  Cell 2 ...                                │    │
-│    └───────────────────────────────────────────┘    │
-│    ┌─ + 新建 Cell (全局按钮，仅最后一个 Cell 下方) ─┐  │
-├─────────────────────────────────────────────────────┤
-│  底部状态栏 (editor-statusbar)                        │
-│  左：Cell 数 / 运行统计 / 字数 / 行数 / 当前 Cell 字数 │
-│  右：光标位置 / 活跃 Cell / 保存状态                  │
-└─────────────────────────────────────────────────────┘
-</code></pre>
-<p>此外还有三个浮动元素：</p>
-<ul>
-<li><strong>选中文字浮动工具栏</strong>：在 textarea 中选中文字时浮现，提供 B/I/S/code/H1~H3/link/quote/ul 快速格式化</li>
-<li><strong>Cell 右键菜单</strong>：右键任意 Cell 弹出，2 列布局共 17 项操作</li>
-<li><strong>自动补全列表</strong>：输入触发字符时浮现，按 ↑↓ 选择、Enter/Tab 确认</li>
-</ul>
-<hr>
-<h2>三、Cell 模型</h2>
-<h3>Cell 类型</h3>
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th>标识</th>
-<th>行为</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>markdown</code></td>
-<td>MD</td>
-<td>内容经过完整渲染管线（Mermaid / KaTeX / 代码高亮等）</td>
-</tr>
-<tr>
-<td><code>plaintext</code></td>
-<td>TXT</td>
-<td>纯文本，不渲染，原样显示在输出区</td>
-</tr>
-</tbody></table>
-<p>通过右键菜单「切换类型」或导入时的 <code>---</code> 分隔符切换。</p>
-<h3>Cell 结构</h3>
-<p>每个 Cell 由以下部分组成：</p>
-<ul>
-<li><strong>头部 (cell-header)</strong>：Cell 编号、状态点（灰=未运行 / 绿=已运行 / 橙=已修改）、类型徽章、行数；右侧 6 个操作按钮（运行 / 折叠 / 上移 / 下移 / 复制 / 删除）</li>
-<li><strong>编辑区 (cell-editor-wrap)</strong>：行号栏 + textarea，支持 Tab 缩进、Shift+Tab 反缩进</li>
-<li><strong>输出区 (cell-output)</strong>：运行后显示渲染结果，未运行时隐藏</li>
-<li><strong>输出工具栏 (cell-output-toolbar)</strong>：运行后浮现，提供「复制 HTML / 清空输出 / 折叠输出 / 导出此 Cell」四项操作</li>
-</ul>
-<h3>新建 Cell</h3>
-<ul>
-<li><strong>全局按钮</strong>：在最后一个 Cell 下方有且仅有一个「+ 新建 Cell」虚线按钮</li>
-<li><strong>快捷键</strong>：<code>Ctrl+Shift+N</code> 在当前 Cell 下方新建</li>
-<li><strong>右键菜单</strong>：「上方插入 Cell」/「下方插入 Cell」</li>
-</ul>
-<h3>运行 Cell</h3>
-<ul>
-<li><strong>运行当前</strong>：工具栏「运行」按钮 / Cell 头部播放按钮 / <code>Ctrl+Enter</code></li>
-<li><strong>运行全部</strong>：工具栏「全部运行」按钮 / <code>Ctrl+Shift+Enter</code></li>
-<li><strong>运行此 Cell 及下方</strong>：右键菜单</li>
-<li>运行后状态点变绿；编辑后变橙（已修改，需重新运行）</li>
-</ul>
-<h3>双屏编辑模式</h3>
-<p>每个 Cell 头部有「双屏编辑」按钮（分栏图标），点击进入全屏双屏 overlay：</p>
-<ul>
-<li><strong>布局</strong>：左侧为该 Cell 的编辑器（保留原实例与撤销栈），右侧为该 Cell 内容的实时预览；</li>
-<li><strong>实时渲染</strong>：输入 250 ms 防抖后自动重渲染，渲染管线与文档站一致；</li>
-<li><strong>分隔条拖拽</strong>：拖动中间分隔条调整左右宽度；</li>
-<li><strong>同步滚动</strong>：可在开关控制下让编辑区与预览区滚动联动；</li>
-<li><strong>退出</strong>：<code>Esc</code> 或右上角退出按钮，CodeMirror 宿主移回原 Cell，其它 Cell 完全不受影响。</li>
-</ul>
-<hr>
-<h2>四、顶部工具栏菜单</h2>
-<p>工具栏中央有 8 个下拉菜单，覆盖 Markdown 写作所需的全部能力。</p>
-<h3>1. Markdown</h3>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>项</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>标题</td>
-<td>H1 ~ H6</td>
-</tr>
-<tr>
-<td>格式</td>
-<td>粗体 / 斜体 / 粗斜体 / 删除线 / 行内代码</td>
-</tr>
-<tr>
-<td>列表</td>
-<td>无序 / 有序 / 任务 / 已完成任务</td>
-</tr>
-<tr>
-<td>插入</td>
-<td>链接 / 带标题链接 / 图片 / 带尺寸图片 / 代码块 / 引用 / 分隔线</td>
-</tr>
-<tr>
-<td>表格</td>
-<td>2 / 3 / 4 列表格</td>
-</tr>
-<tr>
-<td>脚注 / 引用</td>
-<td>脚注定义 / 脚注引用 / 引用式链接定义</td>
-</tr>
-</tbody></table>
-<h3>2. HTML</h3>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>项</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>文本样式</td>
-<td>mark / u / small / sub / sup / kbd / abbr / time / del+ins / cite / var / samp / dfn / q / wbr</td>
-</tr>
-<tr>
-<td>结构与布局</td>
-<td>details 折叠面板 / 居中对齐 / dl 定义列表 / figure 图文组合 / ruby 注音 / address / br / hr</td>
-</tr>
-<tr>
-<td>交互组件</td>
-<td>dialog 模态对话框 / popover 原生弹出层 / contenteditable 可编辑区域 / template 模板</td>
-</tr>
-<tr>
-<td>表单与控件</td>
-<td>meter 仪表盘 / progress 进度条 / datalist 自动补全 / output 计算表单 / fieldset 分组</td>
-</tr>
-<tr>
-<td>多媒体与绘图</td>
-<td>内联 SVG / Canvas 画布 / iframe srcdoc 内联框架</td>
-</tr>
-<tr>
-<td>颜色与注释</td>
-<td>红 / 蓝 / 绿 / 橙 / 紫彩色文字 / 背景高亮 / HTML 注释</td>
-</tr>
-</tbody></table>
-<h3>3. 私有语法</h3>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>项</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>画廊样式</td>
-<td>17 种：grid / cardstack / filmstrip / polaroid / stack / mosaic / scattered / hexagon / coverflow / tape / duotone / frame / arch / masonry / slider / ticket / panorama</td>
-</tr>
-<tr>
-<td>GitHub 提示框</td>
-<td>NOTE / IMPORTANT / WARNING / TIP / CAUTION</td>
-</tr>
-<tr>
-<td>多栏与遮罩</td>
-<td>代码选项卡 code-tabs / 多列布局 columns / 剧透遮罩 spoiler / Pulse 波形 <code>[pulse]...[/pulse]</code></td>
-</tr>
-<tr>
-<td>文档结构</td>
-<td>Frontmatter 头信息 / 目录 TOC</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>画廊样式详细说明见 <a href="https://theforeveriris.github.io/md-preview/docs/examples/gallery-layouts.md">图片画廊布局</a> 与 <a href="https://theforeveriris.github.io/md-preview/docs/examples/image-gallery-examples.md">图片画廊示例</a>。</p>
-</blockquote>
-<h3>4. 工具渲染</h3>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>项</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Mermaid 图表（15 种）</td>
-<td>flowchart / sequenceDiagram / classDiagram / stateDiagram-v2 / erDiagram / gantt / pie / journey / mindmap / timeline / quadrantChart / gitGraph / block / C4Context / xychart-beta</td>
-</tr>
-<tr>
-<td>PlantUML（12 种）</td>
-<td>时序图 / 类图 / 用例图 / 活动图 / 状态图 / 组件图 / 部署图 / 思维导图 / WBS / JSON 数据图 / ER 实体关系图 / 线框图 salt</td>
-</tr>
-<tr>
-<td>ApexCharts（13 种）</td>
-<td>折线 / 面积 / 柱状（分组）/ 堆叠柱状 / 条形（水平）/ 饼图 / 环形 donut / 雷达 / 散点 scatter / 气泡 bubble / 极坐标 polarArea / 范围区域 rangeArea / 烛台 candlestick</td>
-</tr>
-<tr>
-<td>代码与数学</td>
-<td>Diff 差异 / KaTeX 公式块 / 行内公式 / 矩阵 pmatrix / 方程组 cases / 求和与极限 / 二维码 / 二维码（自定义尺寸）</td>
-</tr>
-<tr>
-<td>插件渲染</td>
-<td>ColorCard 颜色卡片 / Countdown 倒计时（日期或相对时长）</td>
-</tr>
-<tr>
-<td>地理</td>
-<td>坐标地图（北京 / 上海）/ GeoJSON 多点 / GeoJSON 线 / GeoJSON 多边形 / TopoJSON</td>
-</tr>
-</tbody></table>
-<h3>5. 插入</h3>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>项</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>日期时间</td>
-<td>当前日期 / 当前时间 / 日期时间 / Unix 时间戳</td>
-</tr>
-<tr>
-<td>占位图片</td>
-<td>300×200 / 600×400 / 1200×600 横幅 / 500×500 方图</td>
-</tr>
-<tr>
-<td>颜色色块</td>
-<td>红 / 橙 / 黄 / 绿 / 蓝 / 紫（HTML 色点，非 emoji）</td>
-</tr>
-<tr>
-<td>分隔线样式</td>
-<td><code>---</code> / <code>***</code> / <code>___</code></td>
-</tr>
-<tr>
-<td>徽章</td>
-<td>Shields.io / Badgen</td>
-</tr>
-</tbody></table>
-<h3>6. 嵌入</h3>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>项</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>视频</td>
-<td>YouTube / Bilibili / Vimeo</td>
-</tr>
-<tr>
-<td>社交</td>
-<td>Twitter 推文 / Twitter 用户时间线 / GitHub Gist</td>
-</tr>
-<tr>
-<td>代码演示</td>
-<td>CodePen / JSFiddle / StackBlitz / Replit</td>
-</tr>
-<tr>
-<td>设计稿</td>
-<td>Figma</td>
-</tr>
-<tr>
-<td>地图</td>
-<td>Google Maps / OpenStreetMap</td>
-</tr>
-<tr>
-<td>办公文档</td>
-<td>Google Docs</td>
-</tr>
-<tr>
-<td>网络拓扑</td>
-<td>eNSP 拓扑（<code>```pkt</code> 包裹 <code>@[ensp](slug)</code>）</td>
-</tr>
-</tbody></table>
-<h3>7. 下载</h3>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>项</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>当前 Cell</td>
-<td>下载源文件 (.md) / 下载渲染结果 (.html) / 导出离线 HTML（内联 CSS）/ 导出 PDF</td>
-</tr>
-<tr>
-<td>整个笔记本</td>
-<td>导出笔记本 (.mdnb) / 合并导出全部 (.md)</td>
-</tr>
-</tbody></table>
-<h3>8. 导入</h3>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>项</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>笔记本</td>
-<td>导入 .mdnb 笔记本 / 导入 .md（按 <code>---</code> 切分为 Cell）</td>
-</tr>
-<tr>
-<td>当前 Cell</td>
-<td>导入 .md 到当前 Cell</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>五、自动补全</h2>
-<p>在编辑区输入触发字符即弹出补全列表，支持 ↑↓ 选择、Enter / Tab 确认、Esc 关闭。共 14 类触发字符，120+ 条目。</p>
-<table>
-<thead>
-<tr>
-<th>触发字符</th>
-<th>补全内容</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>@</code></td>
-<td>17 种画廊样式 + 13 种嵌入服务（YouTube / Bilibili / Vimeo / Twitter / Gist / CodePen / JSFiddle / StackBlitz / Replit / Figma / Google Maps / OpenStreetMap / Google Docs）+ <code>@tab</code> 选项卡分隔</td>
-</tr>
-<tr>
-<td><code>```</code></td>
-<td>Mermaid 12 种 + PlantUML 10 种 + ApexCharts 9 种 + geo / geojson / topojson / qrcode / diff + 19 种编程语言</td>
-</tr>
-<tr>
-<td><code>&gt; [!</code></td>
-<td>5 种 GitHub Alerts</td>
-</tr>
-<tr>
-<td><code>#</code></td>
-<td>6 级标题</td>
-</tr>
-<tr>
-<td><code>-</code></td>
-<td>无序列表 / 任务列表</td>
-</tr>
-<tr>
-<td><code>|</code></td>
-<td>2 / 3 / 4 列表格</td>
-</tr>
-<tr>
-<td><code>||</code></td>
-<td>剧透遮罩 spoiler</td>
-</tr>
-<tr>
-<td><code>:::</code></td>
-<td>容器语法：code-tabs 代码选项卡 / columns 多列布局</td>
-</tr>
-<tr>
-<td><code>---</code></td>
-<td>水平分割线 / Frontmatter</td>
-</tr>
-<tr>
-<td><code>&gt;</code></td>
-<td>普通引用</td>
-</tr>
-<tr>
-<td><code>$$</code></td>
-<td>KaTeX 公式块</td>
-</tr>
-<tr>
-<td><code>![</code></td>
-<td>图片 / 带标题图片</td>
-</tr>
-<tr>
-<td><code>[</code></td>
-<td>链接 / 带标题链接 / 引用式链接</td>
-</tr>
-<tr>
-<td><code>[pulse</code></td>
-<td>DG-LAB 波形 <code>[pulse]...[/pulse]</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h2>六、右键菜单</h2>
-<p>右键任意 Cell 弹出 2 列布局菜单，左列「运行与插入」7 项，右列「编辑与清理」10 项，共 17 项操作。菜单位置自动检测视口边界，避免溢出；窄屏自动回退为单列。</p>
-<h3>运行与插入（左列）</h3>
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>运行此 Cell</td>
-<td>等同 Ctrl+Enter</td>
-</tr>
-<tr>
-<td>运行此 Cell 及下方</td>
-<td>顺序执行当前及下方所有 Cell</td>
-</tr>
-<tr>
-<td>上方插入 Cell</td>
-<td>在当前 Cell 上方新建空 Cell</td>
-</tr>
-<tr>
-<td>下方插入 Cell</td>
-<td>在当前 Cell 下方新建空 Cell</td>
-</tr>
-<tr>
-<td>上移</td>
-<td>与上一个 Cell 交换位置</td>
-</tr>
-<tr>
-<td>下移</td>
-<td>与下一个 Cell 交换位置</td>
-</tr>
-<tr>
-<td>复制 Cell</td>
-<td>在下方复制一份内容相同的 Cell</td>
-</tr>
-</tbody></table>
-<h3>编辑与清理（右列）</h3>
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>切换类型</td>
-<td>markdown ↔ plaintext</td>
-</tr>
-<tr>
-<td>折叠编辑器</td>
-<td>隐藏编辑区，仅保留输出</td>
-</tr>
-<tr>
-<td>折叠输出</td>
-<td>隐藏输出区</td>
-</tr>
-<tr>
-<td>复制输出 HTML</td>
-<td>将渲染后的 HTML 复制到剪贴板</td>
-</tr>
-<tr>
-<td>导出此 Cell</td>
-<td>单独导出当前 Cell</td>
-</tr>
-<tr>
-<td>折叠全部</td>
-<td>折叠所有 Cell 的编辑器</td>
-</tr>
-<tr>
-<td>展开全部</td>
-<td>展开所有 Cell</td>
-</tr>
-<tr>
-<td>清空输出</td>
-<td>清除当前 Cell 的渲染结果</td>
-</tr>
-<tr>
-<td>清空内容</td>
-<td>清空当前 Cell 的编辑区文字</td>
-</tr>
-<tr>
-<td>删除 Cell</td>
-<td>删除当前 Cell（危险操作，红色高亮）</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>七、快捷键</h2>
-<table>
-<thead>
-<tr>
-<th>快捷键</th>
-<th>功能</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>Ctrl/Cmd + Enter</code></td>
-<td>运行当前 Cell</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + Shift + Enter</code></td>
-<td>运行全部 Cell</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + Shift + N</code></td>
-<td>当前 Cell 下方新建</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + F</code></td>
-<td>打开搜索面板</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + H</code></td>
-<td>打开替换面板</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + B</code></td>
-<td>粗体</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + I</code></td>
-<td>斜体</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + K</code></td>
-<td>链接</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + </code> `</td>
-<td>行内代码</td>
-</tr>
-<tr>
-<td><code>Tab</code></td>
-<td>缩进 2 空格</td>
-</tr>
-<tr>
-<td><code>Shift + Tab</code></td>
-<td>移除行首 2 空格</td>
-</tr>
-<tr>
-<td><code>F3</code> / <code>Shift + F3</code></td>
-<td>搜索下一个 / 上一个</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + Alt + T</code></td>
-<td>新建编辑器标签</td>
-</tr>
-<tr>
-<td><code>Ctrl/Cmd + Tab</code></td>
-<td>切换编辑器标签</td>
-</tr>
-<tr>
-<td><code>Esc</code></td>
-<td>关闭右键菜单 / 补全 / 搜索面板；双屏编辑模式中退出双屏</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>八、搜索与替换</h2>
-<p>工具栏右侧搜索图标（或 <code>Ctrl+F</code> / <code>Ctrl+H</code>）打开搜索面板：</p>
-<ul>
-<li><strong>查找</strong>：跨所有 Cell 的 textarea 内容搜索</li>
-<li><strong>替换</strong>：替换当前匹配 / 全部替换</li>
-<li><strong>导航</strong>：<code>F3</code> 下一个、<code>Shift+F3</code> 上一个，或点击 ↑↓ 按钮</li>
-<li><strong>状态信息</strong>：底部显示「N 个匹配 / 当前第 M 个」</li>
-<li><code>Esc</code> 关闭面板</li>
-</ul>
-<hr>
-<h2>九、自动保存</h2>
-<p>编辑器启用自动保存，<strong>无需手动保存</strong>，存储层为 IndexedDB（<code>iris/js/storage.js</code>），突破 localStorage 5 MB 容量限制并支持多笔记本（多标签）：</p>
-<ul>
-<li><strong>触发</strong>：内容变更后 1.5 秒防抖写入</li>
-<li><strong>保存内容</strong>：每个 Cell 的 <code>id</code> / <code>type</code> / <code>content</code> / <code>output_html</code></li>
-<li><strong>多标签</strong>：每个编辑器标签对应一个独立笔记本（IndexedDB <code>notebooks</code> 对象存储），标签顺序与激活项记录在 <code>meta</code> 对象存储</li>
-<li><strong>恢复</strong>：再次进入编辑器时自动加载当前笔记本，重建所有 Cell</li>
-<li><strong>状态指示</strong>：底部状态栏右侧显示「未保存 *」（橙色）/「已保存 ✓」（绿色）/「保存失败」（红色）</li>
-<li><strong>旧数据迁移</strong>：首次加载时若 IndexedDB 无数据而 localStorage 存在旧版自动保存数据（键 <code>mdnb_autosave_v2</code>），自动迁移到 IndexedDB 并清除旧键</li>
-</ul>
-<p>其他持久化设置（localStorage）：</p>
-<table>
-<thead>
-<tr>
-<th>键</th>
-<th>内容</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>mdnb_fontsize</code></td>
-<td>编辑区字号（12 / 14 / 16 / 18）</td>
-</tr>
-<tr>
-<td><code>mdnb_theme</code></td>
-<td>编辑器主题（light / dark）</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>自动保存仅写入浏览器本地存储，不会同步到仓库。如需持久分享，请使用「下载」菜单导出 <code>.mdnb</code> 笔记本或合并 <code>.md</code> 文件。存储层细节见 <a href="https://theforeveriris.github.io/md-preview/readme-dev.md">开发者文档</a>。</p>
-</blockquote>
-<hr>
-<h2>十、字号与主题</h2>
-<ul>
-<li><strong>字号调节</strong>：工具栏字号图标，可选 12 / 14 / 16 / 18 px，默认 14 px</li>
-<li><strong>主题切换</strong>：工具栏主题图标，在亮色 / 暗色间切换，独立于文档站主题</li>
-</ul>
-<hr>
-<h2>十一、笔记本文件格式 (.mdnb)</h2>
-<p><code>.mdnb</code> 是编辑器导出的笔记本格式，本质为 JSON：</p>
-<pre><code class="language-json">{
-  &quot;version&quot;: 2,
-  &quot;type&quot;: &quot;mdnb-autosave&quot;,
-  &quot;saved&quot;: &quot;2026-07-13T12:00:00.000Z&quot;,
-  &quot;cells&quot;: [
-    {
-      &quot;id&quot;: 1,
-      &quot;type&quot;: &quot;markdown&quot;,
-      &quot;content&quot;: &quot;# 标题\n\n正文&quot;,
-      &quot;output_html&quot;: &quot;&lt;h1&gt;标题&lt;/h1&gt;&lt;p&gt;正文&lt;/p&gt;&quot;
-    },
-    {
-      &quot;id&quot;: 2,
-      &quot;type&quot;: &quot;plaintext&quot;,
-      &quot;content&quot;: &quot;纯文本内容&quot;,
-      &quot;output_html&quot;: &quot;&quot;
-    }
-  ]
-}
-</code></pre>
-<p>通过「导入」菜单可重新加载 <code>.mdnb</code> 文件，完整还原 Cell 结构、类型与渲染结果。</p>
-<hr>
-<h2>相关文档</h2>
-<ul>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/getting-started.md">快速开始</a></li>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/show.md">系统运行时截图</a></li>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/gallery-layouts.md">图片画廊布局</a></li>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/mermaid-examples.md">Mermaid 示例</a></li>
-<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/latex-examples.md">LaTeX 示例</a></li>
-<li><a href="https://theforeveriris.github.io/md-preview/readme-dev.md">开发者文档</a></li>
-</ul>
 ]]></content:encoded>
     </item>
     <item>
