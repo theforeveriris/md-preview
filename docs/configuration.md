@@ -306,3 +306,24 @@ https://<owner>.github.io/<repo>/iris/data/feed.xml
 ```
 
 详见 [RSS 订阅](rss.md)。
+
+## 五、鸢尾花台词库（`iris/js/mascot-copy.js`）
+
+站点守护花「鸢尾 iris」的气泡台词（点击花朵轮换展示）集中在 `iris/js/mascot-copy.js`，独立于逻辑代码，直接编辑即可自定义，刷新生效。
+
+```js
+window.MarkdownPreview.mascotCopy = {
+  lines: [
+    '按 Ctrl + K 打开命令面板，直达任意文档和常用操作。',
+    '把 .md 文件或整个文件夹拖进页面，本地直接打开，不经过服务器。',
+    // 按需增删改，点击时按数组顺序轮换展示
+  ]
+};
+```
+
+约定：
+
+- `lines` 为空或文件缺失时，`iris-mascot.js` 会退回内置兜底台词，站点不受影响；
+- 单条建议不超过 30 个字（气泡最宽 240px，约两行半）；
+- 台词保持纯文本、不带 emoji，与站点文案规范一致；
+- 该文件已纳入 Service Worker 预缓存清单（`iris/data/precache-manifest.json`），修改后离线缓存需刷新一次才会更新。

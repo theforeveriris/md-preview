@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-30T06:44:37.296Z",
+  "generatedAt": "2026-10-30T19:01:15.110Z",
   "version": 1,
-  "count": 150,
+  "count": 151,
   "urls": [
     "./",
     "./404.html",
@@ -82,6 +82,7 @@
     "./iris/js/line-highlight.js",
     "./iris/js/local-docs.js",
     "./iris/js/markdown.js",
+    "./iris/js/mascot-copy.js",
     "./iris/js/md-render.js",
     "./iris/js/name-sort.js",
     "./iris/js/offline.js",

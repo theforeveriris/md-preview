@@ -85,6 +85,7 @@ tags: [开发]
 | Split View | `iris/js/split-view.js` | 双栏对照阅读（悬浮球入口，全屏浮层）：编辑器 Cell 同款渲染管线独立渲染两栏、比例同步滚动、内置文档选择器与栏内链接跟读 |
 | i18n | `iris/js/i18n.js` | zh/en 语言包；静态文案用 `data-i18n` 系列属性标记，动态文案走 `t(key, fallback)`；语言选择存 `localStorage('md-preview-lang')`，切换后广播 `langchange` 事件 |
 | App | `iris/app.js` | Hash 路由、编辑器模式 (`?mode=editor`)、Pulse 生成器 (`?mode=pulsegen`) |
+| Iris Mascot | `iris/js/iris-mascot.js` | 站点守护花（空状态 / 加载失败 / 设置页眉装饰 + 点击轮换台词）；台词库外置在 `iris/js/mascot-copy.js`（用户可配置，读取 `window.MarkdownPreview.mascotCopy.lines`，缺失时退回内置兜底） |
 
 ### 渲染器（Renderer）
 
