@@ -294,6 +294,24 @@
     return lines;
   }
 
+  // OG 社交图同款背景图案：右上角超大鸢尾花水印（低透明度、出血裁切，
+  // 见 iris/icons/og-image.png）。clip 在内框圆角内，随主题强调色着色。
+  function drawWatermark(ctx, W, H, dark) {
+    const paths = window.MarkdownPreview.irisMascot && window.MarkdownPreview.irisMascot.IRIS_PATHS;
+    if (!paths || !paths.length) return;
+    const accent = cssVar('--color-accent-purple', '#d4a5c9');
+    const size = W * 0.33;
+    ctx.save();
+    roundRectPath(ctx, 28, 28, W - 56, H - 56, 20);
+    ctx.clip();
+    ctx.globalAlpha = dark ? 0.09 : 0.13;
+    ctx.translate(W - size * 0.76, 34);
+    ctx.scale(size / 512, size / 512);
+    ctx.fillStyle = accent;
+    paths.forEach(d => ctx.fill(new Path2D(d)));
+    ctx.restore();
+  }
+
   function drawCardFrame(ctx, W, H, opts) {
     const bg = cssVar('--color-bg', '#fafafa');
     const surface = cssVar('--color-surface', '#ffffff');
@@ -306,6 +324,8 @@
     roundRectPath(ctx, 28, 28, W - 56, H - 56, 20);
     ctx.fillStyle = opts.dark ? '#252533' : surface;
     ctx.fill();
+    // 背景水印画在内框上、边框与渐变条之下
+    drawWatermark(ctx, W, H, opts.dark);
     ctx.strokeStyle = opts.dark ? '#3a3a4c' : border;
     ctx.lineWidth = 1;
     ctx.stroke();
