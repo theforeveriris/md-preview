@@ -33,7 +33,7 @@
   gap: 16px;
   margin: 16px 0;
   padding: 16px;
-  background: rgba(212, 165, 201, 0.05);
+  background: color-mix(in srgb, var(--color-accent-purple) 5%, transparent);
   border-radius: 12px;
   border: 1px solid var(--color-border);
 }
@@ -49,7 +49,7 @@
 
 .image-gallery img:hover {
   transform: scale(1.02);
-  box-shadow: 0 8px 24px rgba(212, 165, 201, 0.2);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-accent-purple) 20%, transparent);
 }
 
 @media (max-width: 768px) {
@@ -237,7 +237,7 @@
   gap: 24px;
   padding: 32px 16px;
   margin: 16px 0;
-  background: linear-gradient(135deg, rgba(212, 165, 201, 0.08), rgba(242, 196, 206, 0.05));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent-purple) 8%, transparent), color-mix(in srgb, var(--color-accent-pink) 5%, transparent));
   border-radius: 12px;
   border: 1px solid var(--color-border);
 }
@@ -379,7 +379,7 @@
   gap: 8px;
   padding: 8px;
   margin: 16px 0;
-  background: rgba(212, 165, 201, 0.05);
+  background: color-mix(in srgb, var(--color-accent-purple) 5%, transparent);
   border-radius: 12px;
   border: 1px solid var(--color-border);
   min-height: 320px;
@@ -482,7 +482,7 @@
   min-height: 420px;
   padding: 24px;
   margin: 16px 0;
-  background: linear-gradient(135deg, rgba(242, 196, 206, 0.08), rgba(212, 165, 201, 0.05));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent-pink) 8%, transparent), color-mix(in srgb, var(--color-accent-purple) 5%, transparent));
   border-radius: 12px;
   border: 1px solid var(--color-border);
   overflow: hidden;
@@ -603,7 +603,7 @@
   gap: 4px;
   padding: 24px;
   margin: 16px 0;
-  background: radial-gradient(ellipse at center, rgba(212, 165, 201, 0.1), transparent 75%);
+  background: radial-gradient(ellipse at center, color-mix(in srgb, var(--color-accent-purple) 10%, transparent), transparent 75%);
   border-radius: 12px;
   border: 1px solid var(--color-border);
 }
@@ -665,7 +665,7 @@
   height: 340px;
   padding: 0;
   margin: 24px 0;
-  background: linear-gradient(180deg, transparent 0%, rgba(212, 165, 201, 0.06) 50%, transparent 100%);
+  background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--color-accent-purple) 6%, transparent) 50%, transparent 100%);
   border: none;
   border-radius: 0;
   overflow: hidden;
@@ -837,7 +837,7 @@
       rgba(255, 255, 255, 0.15) 3px,
       rgba(255, 255, 255, 0.15) 4px
     ),
-    rgba(242, 196, 206, 0.7);
+    color-mix(in srgb, var(--color-accent-pink) 70%, transparent);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   z-index: 2;
 }
@@ -858,7 +858,7 @@
       rgba(255, 255, 255, 0.15) 3px,
       rgba(255, 255, 255, 0.15) 4px
     ),
-    rgba(212, 165, 201, 0.7);
+    color-mix(in srgb, var(--color-accent-purple) 70%, transparent);
 }
 
 /* 交错胶带配色：偶数张换色 */
@@ -1003,13 +1003,13 @@
    这里改用 box-shadow inset 叠加主题色（克制实现） */
 .image-gallery--duotone img {
   box-shadow:
-    inset 0 0 0 1000px rgba(184, 138, 173, 0.45);
+    inset 0 0 0 1000px color-mix(in srgb, var(--color-accent-purple-deep) 45%, transparent);
 }
 
 /* 交错色调：偶数张用粉色叠加 */
 .image-gallery--duotone img:nth-child(even) {
   box-shadow:
-    inset 0 0 0 1000px rgba(242, 196, 206, 0.4);
+    inset 0 0 0 1000px color-mix(in srgb, var(--color-accent-pink) 40%, transparent);
 }
 
 .image-gallery--duotone img:hover {
@@ -1113,7 +1113,7 @@
   padding: 32px 20px;
   margin: 16px 0;
   background:
-    linear-gradient(180deg, rgba(212, 165, 201, 0.06), rgba(242, 196, 206, 0.03));
+    linear-gradient(180deg, color-mix(in srgb, var(--color-accent-purple) 6%, transparent), color-mix(in srgb, var(--color-accent-pink) 3%, transparent));
   border-radius: 12px;
   border: 1px solid var(--color-border);
 }
@@ -1173,7 +1173,7 @@
   column-gap: 16px;
   padding: 16px;
   margin: 16px 0;
-  background: rgba(212, 165, 201, 0.04);
+  background: color-mix(in srgb, var(--color-accent-purple) 4%, transparent);
   border-radius: 12px;
   border: 1px solid var(--color-border);
 }
@@ -1192,7 +1192,7 @@
 
 .image-gallery--masonry img:hover {
   transform: scale(1.02);
-  box-shadow: 0 10px 28px rgba(212, 165, 201, 0.25);
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--color-accent-purple) 25%, transparent);
   filter: saturate(1.08);
   z-index: 2;
   position: relative;

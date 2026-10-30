@@ -2019,7 +2019,7 @@
     isUnsaved = true;
     if (statusSave) {
       statusSave.textContent = '未保存 *';
-      statusSave.style.color = '#f39c12';
+      statusSave.style.color = 'var(--color-warning)';
     }
     // 同步 tab 状态
     const t = getTabById(activeTabId);
@@ -2062,7 +2062,7 @@
     isUnsaved = false;
     if (statusSave) {
       statusSave.textContent = '已保存 ✓';
-      statusSave.style.color = '#27ae60';
+      statusSave.style.color = 'var(--color-success)';
     }
     // 同步 tab 状态
     const t = getTabById(activeTabId);
@@ -2131,7 +2131,7 @@
         } else {
           if (statusSave) {
             statusSave.textContent = '保存失败';
-            statusSave.style.color = '#e74c3c';
+            statusSave.style.color = 'var(--color-error)';
           }
           showToast(editorT('editor.autosaveFull', '自动保存失败：存储空间可能已满'));
         }
@@ -2143,7 +2143,7 @@
       } else {
         if (statusSave) {
           statusSave.textContent = '保存失败';
-          statusSave.style.color = '#e74c3c';
+          statusSave.style.color = 'var(--color-error)';
         }
         showToast(editorT('editor.autosaveFull', '自动保存失败：存储空间可能已满'));
       }

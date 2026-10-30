@@ -348,11 +348,12 @@
             // 这里留空，由 applyEdgeLabels() 在初始化和切换时统一设置
             'label': '',
             'font-size': '9px',
-            'color': '#666',
+            'color': getCSSVar('--color-text-muted', '#666'),
             'text-valign': 'center',
             'text-halign': 'center',
-            'text-background-color': 'rgba(255,255,255,0.8)',
-            'text-background-opacity': 1,
+            // 标签底随主题 surface（暗色主题下白底残留即此因），透明度单独给
+            'text-background-color': getCSSVar('--color-surface', '#ffffff'),
+            'text-background-opacity': 0.85,
             'text-background-padding': '2px',
             'text-background-shape': 'round-rectangle',
             // 源端接口名常驻标注（简化后，如 Fa0/0）
@@ -3096,7 +3097,7 @@
         font-family: inherit;
         font-size: 13px;
       `;
-      item.onmouseenter = () => item.style.background = 'rgba(212, 165, 201, 0.12)';
+      item.onmouseenter = () => item.style.background = 'var(--color-hover)';
       item.onmouseleave = () => item.style.background = 'none';
       item.addEventListener('click', () => {
         action();

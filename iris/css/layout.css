@@ -115,12 +115,12 @@ body.sidebar-resizing .sidebar {
 }
 
 .mode-toggle:hover {
-  background: rgba(212, 165, 201, 0.1);
+  background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent);
 }
 
 .mode-toggle.active {
   font-weight: 600;
-  background: rgba(212, 165, 201, 0.15);
+  background: color-mix(in srgb, var(--color-accent-purple) 15%, transparent);
   color: var(--color-accent-purple-deep);
 }
 
@@ -135,7 +135,7 @@ body.sidebar-resizing .sidebar {
 }
 
 .sidebar-toggle:hover {
-  background: rgba(212, 165, 201, 0.1);
+  background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent);
 }
 
 .file-tree,

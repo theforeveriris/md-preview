@@ -26,6 +26,12 @@
   --shadow-sidebar: 0 8px 28px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.06);
   --shadow-sidebar-floating: 0 8px 28px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.06);
   --shadow-sidebar-classic: 6px 0 20px rgba(0, 0, 0, 0.05), 1px 0 4px rgba(0, 0, 0, 0.03);
+  /* 弹层阴影两档：菜单/下拉/补全用 popover，模态/大面板用 modal；
+     深色模式下黑系阴影在深底上不可见，改为细描边 + 深投影（同 sidebar 做法） */
+  --shadow-popover: 0 12px 40px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-modal: 0 20px 60px rgba(0, 0, 0, 0.25), 0 4px 16px rgba(0, 0, 0, 0.10);
+  /* 卡片/挂件微阴影（enhancements.css csv 面板等引用） */
+  --color-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 /* 经典贴边模式下浅色主题改用右向扩散投影 */
@@ -210,6 +216,8 @@ body[data-sidebar-style="classic"] {
   --shadow-sidebar-floating: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 8px 28px rgba(0, 0, 0, 0.35);
   --shadow-sidebar-classic: 6px 0 20px rgba(0, 0, 0, 0.3), 1px 0 4px rgba(0, 0, 0, 0.25);
   --shadow-sidebar: var(--shadow-sidebar-classic);
+  --shadow-popover: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 12px 40px rgba(0, 0, 0, 0.5);
+  --shadow-modal: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 20px 60px rgba(0, 0, 0, 0.55);
 }
 
 /* 悬浮卡片模式下深浅主题都换用悬浮投影 */

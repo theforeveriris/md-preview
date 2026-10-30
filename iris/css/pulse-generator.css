@@ -107,7 +107,7 @@
 .pulse-gen-select-wrap select:focus {
   outline: none;
   border-color: var(--color-accent-purple);
-  box-shadow: 0 0 0 3px rgba(212, 165, 201, 0.15);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent-purple) 25%, transparent);
 }
 
 .pulse-gen-checkbox-grid {
@@ -239,11 +239,11 @@
   justify-content: center;
   gap: 8px;
   transition: transform 0.15s, box-shadow 0.2s;
-  box-shadow: 0 2px 8px rgba(212, 165, 201, 0.3);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-accent-purple) 30%, transparent);
 }
 .pulse-gen-generate-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(212, 165, 201, 0.4);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-accent-purple) 40%, transparent);
 }
 .pulse-gen-generate-btn:active {
   transform: translateY(0);
