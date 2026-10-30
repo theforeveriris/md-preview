@@ -5,8 +5,9 @@
  *   - 空状态（选择一个文件开始阅读）
  *   - 加载失败 / 404（无法加载文件）
  *   - 设置面板页眉
- *   - 彩蛋对话：点花说话，台词轮换
+ *   - 功能提示对话：点花说话，台词轮换
  * 插画全部内联 SVG（icon.svg 六瓣剪影），随主题强调色着色。
+ * 台词库外置在 iris/js/mascot-copy.js（用户可配置），本文件只留兜底。
  */
 (function() {
   'use strict';
@@ -29,16 +30,19 @@
     return `<svg class="${cls || ''}" width="${size}" height="${size}" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">${paths}</svg>`;
   }
 
-  // ============== 彩蛋对话 ==============
+  // ============== 功能提示对话 ==============
 
-  const LINES = () => [
-    t('mascot.line1', '我是鸢尾 iris，这个站点的守护花 🌸'),
-    t('mascot.line2', '文档像花园，链接是花间小径——顺着文末「相关文档」逛逛？'),
-    t('mascot.line3', '长按侧边栏的文件可以收藏，我帮你记住。'),
-    t('mascot.line4', '按 Ctrl + K，我带你去任何地方。'),
-    t('mascot.line5', '今天也辛苦啦，记得喝水 💧'),
-    t('mascot.line6', '悄悄说：连续点我会有彩蛋——好吧这就是彩蛋。')
+  // 台词全部来自 iris/js/mascot-copy.js（用户可配置；加载顺序由 index.html
+  // 保证在本文件之前）。这里只留文件缺失时的兜底，避免台词库被删后无话可说。
+  const FALLBACK_LINES = [
+    '按 Ctrl + K 打开命令面板，直达任意文档。',
+    '把 .md 文件拖进页面，本地直接打开。'
   ];
+
+  const LINES = () => {
+    const lines = window.MarkdownPreview.mascotCopy && window.MarkdownPreview.mascotCopy.lines;
+    return (Array.isArray(lines) && lines.length) ? lines : FALLBACK_LINES;
+  };
 
   let lineIndex = 0;
 
@@ -108,7 +112,7 @@
     }
   }
 
-  window.MarkdownPreview.irisMascot = { init, flowerSvg };
+  window.MarkdownPreview.irisMascot = { init, flowerSvg, IRIS_PATHS };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

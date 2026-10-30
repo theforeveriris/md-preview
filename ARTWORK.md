@@ -221,7 +221,9 @@ maskable 版采用「紫底 + 白鸢尾」反色方案，避免系统在裁切�
 </div>
 
 `iris/icons/og-image.png`（1200×630 PNG RGB）——Open Graph / Twitter Card 分享图。
-左上角为鸢尾标记，右上角为放大淡紫水印。
+左上角为鸢尾标记，右上角为放大淡紫水印。站点内另有运行时分享卡片系统
+（见 [六、运行时分享卡片](#六运行时分享卡片selection-tools)），构图语言与本图一致
+（左上花标 / 右上大花水印 / 强调色渐变条）。
 
 ### 4.6 桌面端图标
 
@@ -304,7 +306,47 @@ npm run desktop:icon
 
 ---
 
-## 六、接入点清单
+## 六、运行时分享卡片（selection-tools）
+
+站点内划选正文文字 → 浮动工具栏 → 「分享卡片」，可生成四种模板的 PNG
+（Canvas 手绘，不依赖 html2canvas）。实现于 `iris/js/selection-tools.js`，
+对外暴露 `window.MarkdownPreview.selectionTools.exportShareCard(content, opts)`。
+
+与 §五 的静态产物不同，分享卡片是**运行时按当前主题即时绘制**的美术资产：
+鸢尾图形来自 `IRIS_PATHS`（`icon.svg` 同源六瓣 path，经 `iris-mascot.js` 导出，
+Path2D 重绘），颜色全部运行时读取主题 CSS 变量（`--color-bg / surface /
+border / text / text-muted / accent-purple / accent-pink`），25 套主题自动适配。
+
+### 6.1 模板清单
+
+| 模板 | 尺寸 | 用途与风格 |
+|------|------|-----------|
+| 引言 · 横版 | 1200×630 | 经典分享卡：品牌头 + 文档标题 + 引文摘录 + 引号装饰 |
+| 引言 · 竖版 | 1200×1600（3:4） | 朋友圈 / 小红书等竖版场景，海报式对角构图 |
+| 代码卡片 | 1200×630 | 深色编辑器窗口风格（mac 三圆点 + 行号 + 等宽排版），**刻意固定深色**，不随主题 |
+| 表格卡片 | 1200×630 | 选区落在表格内可用，按当前主题重绘表格（表头强调色底、斑马纹、列宽按内容自适应） |
+
+### 6.2 品牌规范
+
+| 元素 | 规则 |
+|------|------|
+| 品牌头 | 左上角「鸢尾花 + 站名（`CONFIG.repo`）」签名位；花为 34px `IRIS_PATHS` 重绘，按主题强调色渐变（`accent-purple → accent-pink`）填充；站名 24px 半粗 `--color-text-muted` |
+| 背景水印 | 右上角超大鸢尾水印，宽约 **1/3 卡宽**、透明度浅色 0.13 / 深色 0.09，出血部分由内框圆角裁切——与 `og-image.png` 同一构图语言 |
+| 顶部渐变条 | `accent-purple → accent-pink` 横向渐变，10px 圆角条压内框上缘 |
+| 页脚 | 右下角双圆点（accent 双色）装饰；站名在品牌头，不重复出现 |
+| 竖版专属 | 底部对称渐变条 + 左下角镜像水印（对角呼应），填补海报下半留白 |
+
+### 6.3 排版规则
+
+- 文本硬换行复用 `interactions.wrapLine`（CJK 逐字拆分，长词再按字符切）；
+- 摘录行数按剩余高度**动态计算**（页脚区预留 130px），标题行数不影响
+  摘录溢出；任何截断一律带「…」（含表格单元格多行截断）；
+- 字体走站点正文字体栈（`cardFont()` 取 `.markdown-body` 计算样式），
+  代码卡用系统等宽栈，生成前等待 `document.fonts.ready`。
+
+---
+
+## 七、接入点清单
 
 改动图标时需同步检查以下位置：
 
@@ -314,11 +356,13 @@ npm run desktop:icon
 | `manifest.json` | `theme_color`、`icons` 数组、`shortcuts` 图标 |
 | `package.json` | `desktop:icon` 脚本的源文件路径 |
 | `src-tauri/tauri.conf.json` | `bundle.icon` 数组 |
+| `iris/js/iris-mascot.js` | `IRIS_PATHS` 导出（icon.svg 同源 path 的运行时消费方） |
+| `iris/js/selection-tools.js` | 运行时分享卡片（品牌头 / 水印 / 渐变条均重绘鸢尾图形，见 §六） |
 | `README.md` | 顶部横幅 `hero.png` |
 
 ---
 
-## 七、命名约定
+## 八、命名约定
 
 | 前缀 / 后缀 | 含义 |
 |-------------|------|
@@ -334,7 +378,7 @@ npm run desktop:icon
 
 ---
 
-## 八、待办与已知问题
+## 九、待办与已知问题
 
 - [ ] 站点主题强调色仍是旧的粉紫 `#d4a5c9`（`iris/css/base.css` 的 `--color-accent-purple`），与鸢尾紫 `#8B5CF6` 未统一。该变量被 Mermaid、郊狼波形、分享卡片、文档图谱等渲染器引用，改动需回归测试
 - [ ] `hero.svg` 与 `icon.svg` 中的鸢尾 path 目前是两处独立副本，未做单一来源同步

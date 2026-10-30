@@ -240,11 +240,80 @@
     ctx.closePath();
   }
 
+  // 鸢尾花品牌标识：icon.svg 同源六瓣（iris-mascot.js 导出），Path2D 按主题
+  // 强调色渐变填充；路径缺失时退回双圆点（与页脚一致）
+  function drawIris(ctx, x, y, size) {
+    const accent1 = cssVar('--color-accent-purple', '#d4a5c9');
+    const accent2 = cssVar('--color-accent-pink', '#f2c4ce');
+    const paths = window.MarkdownPreview.irisMascot && window.MarkdownPreview.irisMascot.IRIS_PATHS;
+    if (paths && paths.length) {
+      const grad = ctx.createLinearGradient(x, y, x + size, y + size);
+      grad.addColorStop(0, accent1);
+      grad.addColorStop(1, accent2);
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(size / 512, size / 512);
+      ctx.fillStyle = grad;
+      paths.forEach(d => ctx.fill(new Path2D(d)));
+      ctx.restore();
+    } else {
+      ctx.fillStyle = accent2;
+      ctx.beginPath(); ctx.arc(x + size * 0.3, y + size * 0.5, size * 0.26, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = accent1;
+      ctx.beginPath(); ctx.arc(x + size * 0.72, y + size * 0.5, size * 0.26, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  function repoName() {
+    return (window.MarkdownPreview.CONFIG && window.MarkdownPreview.CONFIG.repo) ||
+      (window.MarkdownPreview.config && window.MarkdownPreview.config.repo) || 'Markdown Preview';
+  }
+
+  // 品牌头：鸢尾花 + 站名（各模板卡片左上角统一签名位）
+  function drawBrand(ctx, dark) {
+    const muted = dark ? 'rgba(235,235,245,.6)' : cssVar('--color-text-muted', '#999999');
+    const size = 34;
+    const x = 64, y = 54;
+    drawIris(ctx, x, y, size);
+    ctx.fillStyle = muted;
+    ctx.font = `600 24px ${cardFont(false)}`;
+    ctx.fillText(repoName(), x + size + 16, y + 25);
+  }
+
   function truncateTail(lines, fullText) {
     if (lines.length && fullText && fullText.length > lines.join('').length) {
-      lines[lines.length - 1] = lines[lines.length - 1].replace(/\s*\S*$/, '') + '…';
+      const last = lines[lines.length - 1];
+      // CJK 无空格分词，\s*\S*$ 会把整行清空导致省略号独占一行：
+      // 保留末行前半截再接省略号，截断观感更自然
+      const kept = last.replace(/\s*\S*$/, '');
+      const base = kept.length >= last.length / 2
+        ? kept
+        : last.slice(0, Math.max(0, last.length - 4));
+      lines[lines.length - 1] = base + '…';
     }
     return lines;
+  }
+
+  // OG 社交图同款背景图案：超大鸢尾花水印（icon.svg 同源六瓣路径，低透明度，
+  // 出血后由内框圆角裁切，见 iris/icons/og-image.png）。随主题强调色着色。
+  function drawIrisWatermark(ctx, W, H, x, y, size, alpha) {
+    const paths = window.MarkdownPreview.irisMascot && window.MarkdownPreview.irisMascot.IRIS_PATHS;
+    if (!paths || !paths.length) return;
+    const accent = cssVar('--color-accent-purple', '#d4a5c9');
+    ctx.save();
+    roundRectPath(ctx, 28, 28, W - 56, H - 56, 20);
+    ctx.clip();
+    ctx.globalAlpha = alpha;
+    ctx.translate(x, y);
+    ctx.scale(size / 512, size / 512);
+    ctx.fillStyle = accent;
+    paths.forEach(d => ctx.fill(new Path2D(d)));
+    ctx.restore();
+  }
+
+  function drawWatermark(ctx, W, H, dark) {
+    const size = W * 0.33;
+    drawIrisWatermark(ctx, W, H, W - size * 0.76, 34, size, dark ? 0.09 : 0.13);
   }
 
   function drawCardFrame(ctx, W, H, opts) {
@@ -259,6 +328,8 @@
     roundRectPath(ctx, 28, 28, W - 56, H - 56, 20);
     ctx.fillStyle = opts.dark ? '#252533' : surface;
     ctx.fill();
+    // 背景水印画在内框上、边框与渐变条之下
+    drawWatermark(ctx, W, H, opts.dark);
     ctx.strokeStyle = opts.dark ? '#3a3a4c' : border;
     ctx.lineWidth = 1;
     ctx.stroke();
@@ -270,18 +341,22 @@
     ctx.fillStyle = grad;
     roundRectPath(ctx, 28, 28, W - 56, 10, 5);
     ctx.fill();
+
+    // 竖版（3:4 海报式构图）：底部对称渐变条 + 左下镜像水印，
+    // 填补下半张的空白，避免头重脚轻
+    if (H > W) {
+      ctx.fillStyle = grad;
+      roundRectPath(ctx, 28, H - 38, W - 56, 10, 5);
+      ctx.fill();
+      const wmSize = W * 0.33;
+      drawIrisWatermark(ctx, W, H, 28 - wmSize * 0.24, H - 28 - wmSize * 0.76, wmSize, opts.dark ? 0.07 : 0.10);
+    }
   }
 
   function drawFooter(ctx, W, H, dark) {
-    const muted = dark ? 'rgba(235,235,245,.55)' : cssVar('--color-text-muted', '#999999');
     const accent1 = cssVar('--color-accent-purple', '#d4a5c9');
     const accent2 = cssVar('--color-accent-pink', '#f2c4ce');
-    const bodyFont = cardFont(false);
-    const repo = (window.MarkdownPreview.CONFIG && window.MarkdownPreview.CONFIG.repo) ||
-      (window.MarkdownPreview.config && window.MarkdownPreview.config.repo) || 'Markdown Preview';
-    ctx.fillStyle = muted;
-    ctx.font = `22px ${bodyFont}`;
-    ctx.fillText(repo, 80, H - 72);
+    // 站名已上移到品牌头（drawBrand），页脚只留双圆点装饰
     ctx.fillStyle = accent2;
     ctx.beginPath();
     ctx.arc(W - 100, H - 80, 10, 0, Math.PI * 2);
@@ -303,27 +378,34 @@
     const accent1 = cssVar('--color-accent-purple', '#d4a5c9');
     const vertical = H > W;
     const bodyFont = cardFont(true);
-    const titleSize = vertical ? 56 : 46;
-    const excerptSize = vertical ? 32 : 28;
-    const lineHeight = vertical ? 50 : 44;
+    const titleSize = vertical ? 58 : 46;
+    const excerptSize = vertical ? 34 : 28;
+    const lineHeight = vertical ? 54 : 44;
     const maxTitleLines = vertical ? 3 : 2;
-    const maxExcerptLines = vertical ? 22 : 8;
 
     drawCardFrame(ctx, W, H, {});
+    drawBrand(ctx, false);
 
     ctx.textBaseline = 'alphabetic';
     ctx.fillStyle = text;
     ctx.font = `600 ${titleSize}px ${bodyFont}`;
+    const titleTop = 150;
     let titleLines = wrapLine(ctx, content.title || '', W - 160);
     if (titleLines.length > maxTitleLines) {
       titleLines = titleLines.slice(0, maxTitleLines);
       titleLines[titleLines.length - 1] = titleLines[titleLines.length - 1].replace(/\s*\S*$/, '') + '…';
     }
-    titleLines.forEach((line, i) => ctx.fillText(line, 80, 130 + i * (titleSize + 12)));
+    titleLines.forEach((line, i) => ctx.fillText(line, 80, titleTop + i * (titleSize + 12)));
 
-    const excerptTop = 150 + titleLines.length * (titleSize + 12);
+    const excerptTop = titleTop + titleLines.length * (titleSize + 12);
     ctx.fillStyle = text;
     ctx.font = `${excerptSize}px ${bodyFont}`;
+    // 摘录行数按剩余高度动态计算（页脚区预留 130px），
+    // 固定行数在两行标题时会画到卡片内底之外并压住页脚
+    const maxExcerptLines = Math.min(
+      vertical ? 22 : 8,
+      Math.max(1, Math.floor((H - 130 - excerptTop) / lineHeight))
+    );
     const excerptLines = [];
     (content.excerpt || '').split('\n').some(seg => {
       const wrapped = wrapLine(ctx, seg.trim(), W - 160);
@@ -363,6 +445,8 @@
     ctx.fillStyle = 'rgba(235,235,245,.75)';
     ctx.font = `20px ${mono}`;
     ctx.fillText((content.title || 'code').slice(0, 70), 170, 72);
+    // 标题栏右侧放鸢尾花品牌标识
+    drawIris(ctx, W - 128, 48, 32);
 
     // 代码正文
     ctx.fillStyle = '#e8e8f0';
@@ -390,6 +474,7 @@
   // 表格卡片：把选区所在表格按当前主题重绘
   function drawTableCard(ctx, W, H, content, tableEl) {
     drawCardFrame(ctx, W, H, {});
+    drawBrand(ctx, false);
     const text = cssVar('--color-text', '#2d2d2d');
     const muted = cssVar('--color-text-muted', '#999999');
     const accent1 = cssVar('--color-accent-purple', '#d4a5c9');
@@ -435,7 +520,9 @@
         if (c >= colCount) return;
         const avail = widths[c] - 20;
         const lines = wrapLine(ctx, cell, avail);
-        ctx.fillText(lines[0].slice(0, 40) + (lines[0].length > 40 ? '…' : ''), x + 10, y + rowH / 2 + 8);
+        // 单元格一行放不下时截断并带省略号（此前静默丢弃后续行，文字缺失不可感知）
+        const shown = lines[0].slice(0, 40) + (lines[0].length > 40 || lines.length > 1 ? '…' : '');
+        ctx.fillText(shown, x + 10, y + rowH / 2 + 8);
         x += widths[c];
         if (c < colCount - 1) {
           ctx.strokeStyle = 'rgba(128,128,128,.25)';

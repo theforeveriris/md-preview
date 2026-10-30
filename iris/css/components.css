@@ -1081,6 +1081,11 @@ pre.code-block code { position: relative; z-index: 1; }
   position: absolute;
   top: -6px;
   left: calc(50% + 52px);
+  /* 显式宽度：绝对定位的 shrink-to-fit 会被「包含块宽 − left」钳制，
+     定位上下文（.mascot-welcome 是 flex 纵列）收缩到 ~200px 时可用空间
+     只剩几十像素，气泡被挤成一字竖排；max-content 摆脱该钳制，
+     max-width: 240px 才能真正生效 */
+  width: max-content;
   max-width: 240px;
   padding: 8px 12px;
   border-radius: 12px 12px 12px 3px;
@@ -1095,6 +1100,11 @@ pre.code-block code { position: relative; z-index: 1; }
   z-index: 5;
 }
 .mascot-bubble.show { opacity: 1; transform: translateY(0); }
+/* 窄屏：气泡左缘恒在「视口中线 + 52px」（welcome 区恒居中），按视口钳制
+   max-width，避免 240px 宽气泡被视口右缘截断 */
+@media (max-width: 600px) {
+  .mascot-bubble { max-width: calc(50vw - 60px); }
+}
 .mascot-settings {
   position: sticky;
   top: 0;
