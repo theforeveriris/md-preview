@@ -121,16 +121,25 @@
   }
 
   // 与 editor.js renderCellMarkdown 相同的渲染器编排（全局扫描，幂等）
-  function runRenderers(container) {
+  function runRenderers(container, docPath) {
     setTimeout(() => {
-      const renderers = window.MarkdownPreview && window.MarkdownPreview.renderers;
-      if (renderers) {
-        // 统一调度器（md-render.js: runRenderers）：范围与 editor.js 共用
-        // mdRender.CELL_RENDERER_EXCLUDED（默认全量注册表，新渲染器自动生效）。
-        // mdRender 必须在本函数内取：模块里其它函数各自的局部 const 不共享作用域
-        const mdRender = window.MarkdownPreview.mdRender;
-        mdRender.runRenderers(container, { except: mdRender.CELL_RENDERER_EXCLUDED });
-      }
+      // 插件围栏（```qrcode/countdown/...）先于渲染器调度，与文档站编排一致；
+      // scoped 渲染按容器追踪资源，重新打开同一篇文档时自动清理上一轮资源
+      const plugins = window.MarkdownPreview.plugins;
+      const pluginPass = plugins && typeof plugins.render === 'function'
+        ? Promise.resolve(plugins.render({ root: container, documentPath: docPath || '' }))
+            .catch(e => console.warn('[SplitView] Plugin render error:', e))
+        : Promise.resolve();
+      pluginPass.then(() => {
+        const renderers = window.MarkdownPreview && window.MarkdownPreview.renderers;
+        if (renderers) {
+          // 统一调度器（md-render.js: runRenderers）：范围与 editor.js 共用
+          // mdRender.CELL_RENDERER_EXCLUDED（默认全量注册表，新渲染器自动生效）。
+          // mdRender 必须在本函数内取：模块里其它函数各自的局部 const 不共享作用域
+          const mdRender = window.MarkdownPreview.mdRender;
+          mdRender.runRenderers(container, { except: mdRender.CELL_RENDERER_EXCLUDED });
+        }
+      });
     }, 150);
   }
 
@@ -159,7 +168,7 @@
 
     fixImagePaths(bodyEl, path);
     interceptLinks(bodyEl, path, (target) => renderInto(bodyEl, titleEl, target).catch(showLoadError));
-    runRenderers(bodyEl);
+    runRenderers(bodyEl, path);
   }
 
   async function renderInto(bodyEl, titleEl, path) {

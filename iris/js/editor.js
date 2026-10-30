@@ -600,6 +600,8 @@
     }
     cell.div.remove();
     cells.splice(idx, 1);
+    // 插件资源（倒计时定时器等）按 output 容器追踪，cell 删除时定向清理
+    window.MarkdownPreview.plugins?.dispose?.(cell.output);
     // pkt 等渲染器持有全局注册表：清理已脱离 DOM 的孤儿实例（对照 split-view.js）
     window.MarkdownPreview.pkt?.destroyOrphaned?.();
     if (activeCellId === id) {
@@ -745,9 +747,22 @@
       };
       roots.forEach(root => {
         try {
-          Promise.resolve(mdRender.runRenderers(root, { except: excluded })).then(() => {
-            invalidateOutputCache(root);
-          });
+          // 插件围栏（```qrcode/countdown/regex/...）先于渲染器调度，与文档站
+          // 编排一致（markdown.js 先 plugins.render 后 runRenderers）。
+          // scoped 渲染按容器追踪资源，重复运行同一 cell 自动清理上一轮定时器
+          const plugins = window.MarkdownPreview.plugins;
+          const pluginPass = plugins && typeof plugins.render === 'function'
+            ? Promise.resolve(plugins.render({ root, documentPath: '' })).catch(e => {
+                console.warn('[Editor] Plugin render error:', e);
+              })
+            : Promise.resolve();
+          pluginPass
+            .then(() => mdRender.runRenderers(root, { except: excluded }))
+            .then(() => invalidateOutputCache(root))
+            .catch(e => {
+              invalidateOutputCache(root);
+              console.warn('[Editor] Renderer render error:', e);
+            });
         } catch (e) {
           invalidateOutputCache(root);
           console.warn('[Editor] Renderer render error:', e);
