@@ -12,6 +12,13 @@
     // 所以要自己把用户在站点里选的主题 / 自定义配色搬过来，
     // 否则会出现「站内是暗色，跳到 404 变成亮色」的割裂感。
     (function () {
+      // 站点根路径：与站点内部 getBasePath() 用同一套判定（子路径仓库
+      // 部署在 /md-preview/ 下）。404 页可能被服务在任意缺失路径上，
+      // 静态 <link> 的相对路径在二级以上深度的缺失路径会解析错误，
+      // 因此这里算好 base 挂到 window，供下方样式表修正与主体脚本共用。
+      var path = location.pathname;
+      var base = path.indexOf('/md-preview/') >= 0 ? '/md-preview/' : '/';
+      window.__nfBase = base;
       var DARK = ['github-dark', 'arc', 'dracula', 'nord', 'blueprint',
         'terminal', 'neon', 'sepia', 'graphite', 'aurora', 'blackboard'];
       var t = '';
@@ -56,6 +63,20 @@
        后加载的才生效，顺序反了主题变量会被 base.css 的默认值盖掉。 -->
   <link rel="stylesheet" href="iris/styles.css" id="site-css">
   <link rel="stylesheet" href="iris/css/themes/themes.css" id="theme-css">
+  <script>
+    // GH Pages 把 404.html 的内容服务在「缺失路径本身」的 URL 上，相对
+    // 资源路径会跟随该 URL 的目录解析：二级以上深度的缺失路径（如
+    // /md-preview/docs/foo/bar）下 iris/styles.css 会解析成
+    // /md-preview/docs/foo/iris/... → 404，整页裸奔到 window.load 的
+    // 逐级上探才恢复。base 已由上方脚本算出，这里在首帧前改为绝对路径
+    // （根路径部署同样受益——相对解析的问题与部署深度无关）。
+    (function () {
+      var b = window.__nfBase;
+      if (!b) return;
+      document.getElementById('site-css').href = b + 'iris/styles.css';
+      document.getElementById('theme-css').href = b + 'iris/css/themes/themes.css';
+    })();
+  </script>
   <style>
     /* 404 页自有布局：只用站点的 CSS 变量，所以跟着主题走 */
     :root { color-scheme: light dark; }
@@ -216,9 +237,9 @@
   <script>
     (function () {
       // 站点根路径：与站点内部 getBasePath() 用同一套判定；
-      // 404 页可能被服务在任意缺失路径下，再兜一层逐级探测。
+      // base 已由 head 首个脚本算出挂到 window.__nfBase，这里兜底重算。
       var path = location.pathname;
-      var base = path.indexOf('/md-preview/') >= 0 ? '/md-preview/' : '/';
+      var base = window.__nfBase || (path.indexOf('/md-preview/') >= 0 ? '/md-preview/' : '/');
 
       function withBase(rel) { return base + rel; }
 
