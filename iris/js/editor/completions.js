@@ -68,7 +68,6 @@
     { trigger: '```', label: '```pkt (ensp)', desc: '嵌入 eNSP 拓扑', insert: '```pkt\n@[ensp](example)\n```', replaceLength: 3 },
     { trigger: '```', label: '```embed', desc: '外部内容嵌入', insert: '```embed\n@[youtube](dQw4w9WgXcQ)\n```', replaceLength: 3 },
     { trigger: '```', label: '```diff', desc: 'Diff 差异', insert: '```diff\n+ 新增\n- 删除\n```', replaceLength: 3 },
-    { trigger: '```', label: '```geo', desc: '坐标地图', insert: '```geo\n{"lat":39.9042,"lng":116.4074,"zoom":12}\n```', replaceLength: 3 },
     { trigger: '```', label: '```geojson', desc: 'GeoJSON 地图', insert: '```geojson\n{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"name":"点"},"geometry":{"type":"Point","coordinates":[116.4,39.9]}}]}\n```', replaceLength: 3 },
     { trigger: '```', label: '```topojson', desc: 'TopoJSON 地图', insert: '```topojson\n{"type":"Topology","objects":{},"arcs":[]}\n```', replaceLength: 3 },
     { trigger: '```', label: '```qrcode', desc: '二维码', insert: '```qrcode\nhttps://github.com\n```', replaceLength: 3 },

@@ -164,7 +164,7 @@ Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可�
 | ApexCharts（13 种） | 折线 / 面积 / 柱状（分组）/ 堆叠柱状 / 条形（水平）/ 饼图 / 环形 donut / 雷达 / 散点 scatter / 气泡 bubble / 极坐标 polarArea / 范围区域 rangeArea / 烛台 candlestick |
 | 代码与数学 | Diff 差异 / KaTeX 公式块 / 行内公式 / 矩阵 pmatrix / 方程组 cases / 求和与极限 / 二维码 / 二维码（自定义尺寸） |
 | 插件渲染 | ColorCard 颜色卡片 / Countdown 倒计时（日期或相对时长） |
-| 地理 | 坐标地图（北京 / 上海）/ GeoJSON 多点 / GeoJSON 线 / GeoJSON 多边形 / TopoJSON |
+| 地理 | GeoJSON 多点 / GeoJSON 线 / GeoJSON 多边形 / TopoJSON |
 
 ### 5. 插入
 

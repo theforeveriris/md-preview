@@ -1194,8 +1194,15 @@
     acTextarea = null;
   }
 
+  // CM6 closeBrackets 会在输入 opener（如 [）时自动补出配对闭符，该闭符位于
+  // 被替换前缀之后；补全展开后紧邻插入文本的配对闭符需一并吞掉，
+  // 否则 [](https://) 之后会残留一个 ]（旧 textarea 时代无此问题）
+  const PAIRED_CLOSERS = { '[': ']', '(': ')', '{': '}', '"': '"', "'": "'", '`': '`' };
+
   function applyAutocomplete(editor, item, lineStart, replaceLength) {
-    editor.replaceAtLineStart(replaceLength, item.insert);
+    const prefix = editor.value.substring(lineStart, lineStart + replaceLength);
+    const closer = PAIRED_CLOSERS[prefix.slice(-1)] || null;
+    editor.replaceAtLineStart(replaceLength, item.insert, closer);
     hideAutocomplete();
     editor.focus();
     updateCellMeta(getCell(parseInt(editor.dataset.cellId)));
@@ -1210,7 +1217,7 @@
     // ``` 代码块语言触发（先检查多字符前缀）
     if (lineBeforeCursor.match(/^```[\w-]*$/)) {
       const filter = lineBeforeCursor.substring(3);
-      showAutocomplete(editor, filter, '```', lineStart, 3);
+      showAutocomplete(editor, filter, '```', lineStart, lineBeforeCursor.length);
     }
     // > [! GitHub Alert 触发（比 > 更具体，先检查）
     else if (lineBeforeCursor.match(/^> \[!?[\w]*$/)) {
@@ -1266,7 +1273,7 @@
     // @ 画廊样式触发
     else if (lineBeforeCursor.match(/^@\w*$/)) {
       const filter = lineBeforeCursor.substring(1);
-      showAutocomplete(editor, filter, '@', lineStart, 1);
+      showAutocomplete(editor, filter, '@', lineStart, lineBeforeCursor.length);
     }
     else {
       hideAutocomplete();

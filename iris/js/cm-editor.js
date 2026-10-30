@@ -404,11 +404,21 @@
 
     /**
      * 替换行首的指定长度文本（用于自动补全）
+     * @param {number} replaceLength - 替换前缀长度
+     * @param {string} newText - 插入文本
+     * @param {string} [swallowCloser] - 若插入点紧邻该配对闭符则一并删除
+     *   （closeBrackets 自动补出的 `]` 等会残留在补全结果之后）
      */
-    replaceAtLineStart(replaceLength, newText) {
-      const lineStart = this.getLineStart();
+    replaceAtLineStart(replaceLength, newText, swallowCloser) {
+      const state = this.view.state;
+      const lineStart = state.doc.lineAt(state.selection.main.head).from;
+      const prefixEnd = lineStart + replaceLength;
+      const changes = [{ from: lineStart, to: prefixEnd, insert: newText }];
+      if (swallowCloser && state.doc.sliceString(prefixEnd, prefixEnd + 1) === swallowCloser) {
+        changes.push({ from: prefixEnd, to: prefixEnd + 1, insert: '' });
+      }
       this.view.dispatch({
-        changes: { from: lineStart, to: lineStart + replaceLength, insert: newText },
+        changes,
         selection: EditorSelection.cursor(lineStart + newText.length),
         scrollIntoView: true,
       });
