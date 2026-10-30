@@ -258,7 +258,7 @@
     'local.readFailed': ' (failed to read)',
     'local.listFull': ' (list is full, 20 max)',
     'local.skippedFiles': 'These files were not added:\n',
-    'local.folderEmpty': 'No .md files found in this folder',
+    'local.folderEmpty': 'No .md or .txt files found in this folder',
     'local.folderFull': ' (exceeds the 500-file limit)',
     'local.folderReplaceConfirm': 'Opening a new folder will replace the current local file list. Continue?',
     'local.folderUnsupported': 'This browser cannot open folders; please pick multiple files instead',

@@ -27,6 +27,8 @@ function collectMarkdownFiles(rootDir, opts) {
   // 不进公开站点的目录树 / 搜索索引 / RSS（见 readme-dev.md「测试夹具目录」）
   const skipRel = o.skipRel || null;
   const base = o.relBase || rootDir;
+  // 收录哪些扩展名：默认只有 .md；.txt 作为纯文本文档由调用方显式加入
+  const exts = (o.exts || ['.md']).map(e => e.toLowerCase());
   const out = [];
 
   let entries;
@@ -43,8 +45,8 @@ function collectMarkdownFiles(rootDir, opts) {
     if (skipRel && skipRel.some(prefix => rel === prefix || rel.startsWith(prefix + '/'))) continue;
     if (entry.isDirectory()) {
       // skipRel 必须继续下传，否则子目录里的排除规则（docs/zw）失效
-      out.push(...collectMarkdownFiles(full, { skip, skipRel, relBase: base }));
-    } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.md')) {
+      out.push(...collectMarkdownFiles(full, { skip, skipRel, relBase: base, exts }));
+    } else if (entry.isFile() && exts.includes(path.extname(entry.name).toLowerCase())) {
       out.push({ path: full, name: entry.name, rel });
     }
   }

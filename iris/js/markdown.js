@@ -335,7 +335,12 @@
     // #/graph 会在渲染完成后由 graph.openPage() 重新打上 —— 这样「离开图谱页」
     // 不需要在每个导航入口单独清理。
     document.body.classList.remove('graph-page');
-    const { frontmatter, content } = parseFrontmatter(markdown);
+    // .txt 按「无特殊格式的纯文本」处理：不解析 frontmatter，
+    // 首行恰好是 --- 时也不该被当成元数据吃掉
+    const isPlainText = opts.plainText || /\.txt$/i.test(currentPath || '');
+    const { frontmatter, content } = isPlainText
+      ? { frontmatter: {}, content: markdown }
+      : parseFrontmatter(markdown);
 
     if (frontmatter.title) {
       document.title = frontmatter.title + ' | ' + (CONFIG.repo || 'Markdown Preview');
@@ -343,6 +348,10 @@
       const titleMatch = content.match(/^#\s+(.+)$/m);
       if (titleMatch) {
         document.title = titleMatch[1] + ' | ' + (CONFIG.repo || 'Markdown Preview');
+      } else if (isPlainText && currentPath) {
+        // 纯文本没有 frontmatter 也没有一级标题时，用文件名当标题
+        const base = String(currentPath).split('/').pop().replace(/\.(md|txt)$/i, '');
+        document.title = base + ' | ' + (CONFIG.repo || 'Markdown Preview');
       } else {
         document.title = CONFIG.repo || 'Markdown Preview';
       }
@@ -1175,7 +1184,11 @@
             if (bc) bc.textContent = fileName;
             if (header) header.style.display = 'flex';
           }
-          renderMarkdown(content, '', { sanitize: (html) => DOMPurify.sanitize(html) });
+          renderMarkdown(content, '', {
+            sanitize: (html) => DOMPurify.sanitize(html),
+            // 本地 .txt 同样按纯文本渲染
+            plainText: /\.txt$/i.test(fileName || '')
+          });
         })
         .catch(e => {
           console.error('[Markdown] sanitize failed, refusing to render untrusted content:', e);

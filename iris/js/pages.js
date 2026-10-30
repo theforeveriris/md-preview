@@ -19,7 +19,7 @@
   function walkFiles(items, out) {
     (items || []).forEach(item => {
       if (item.type === 'folder' && item.children) walkFiles(item.children, out);
-      else if (item.type === 'file' && item.path && item.path.endsWith('.md')) out.push(item);
+      else if (item.type === 'file' && item.path && /\.(md|txt)$/i.test(item.path)) out.push(item);
     });
     return out;
   }
@@ -61,7 +61,7 @@
       .replace('{n}', files.length).replace('{p}', page).replace('{total}', totalPages)}`);
     lines.push('');
     slice.forEach(f => {
-      const title = mdText(f.title || String(f.name || '').replace(/\.md$/i, ''));
+      const title = mdText(f.title || String(f.name || '').replace(/\.(md|txt)$/i, ''));
       const date = fmtDate(f.modified);
       lines.push(`- [${title}](#/${encodeURI(f.path)})`);
       lines.push('  ' + [date, f.path ? `\`${f.path}\`` : ''].filter(Boolean).join(' · '));
@@ -142,7 +142,7 @@
       lines.push(`## ${dir === '/' ? t('siteIndex.root', '（根目录）') : dir}`);
       lines.push('');
       list.forEach(f => {
-        const title = mdText(f.title || String(f.name || '').replace(/\.md$/i, ''));
+        const title = mdText(f.title || String(f.name || '').replace(/\.(md|txt)$/i, ''));
         const date = fmtDate(f.modified);
         lines.push(`- [${title}](#/${encodeURI(f.path)})${date ? ' — ' + date : ''}`);
       });

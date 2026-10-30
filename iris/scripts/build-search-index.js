@@ -64,7 +64,9 @@ const REPO_ROOT = path.resolve(__dirname, '..', '..');
 function collectFiles(dir) {
   return collectMarkdownFiles(dir, {
     relBase: REPO_ROOT,
-    skipRel: ['docs/zw']
+    skipRel: ['docs/zw'],
+    // .txt 也当纯文本文档收录，能被搜到
+    exts: ['.md', '.txt']
   }).map(f => ({
     path: f.rel,
     fullPath: f.path
@@ -85,7 +87,7 @@ async function buildIndex() {
   for (const file of files) {
     try {
       const content = fs.readFileSync(file.fullPath, 'utf-8');
-      const title = extractTitle(content) || file.path.replace('.md', '');
+      const title = extractTitle(content) || file.path.replace(/\.(md|txt)$/i, '');
       const preview = extractPreview(content);
       
       const tags = extractTags(content);

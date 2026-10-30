@@ -84,7 +84,11 @@ function buildTreeFromDirectory(dir, basePath = '') {
 
     if (item.isDirectory()) {
       folders.push({ name: item.name, path: itemPath, fullPath });
-    } else if (item.isFile() && item.name.endsWith('.md')) {
+    } else if (item.isFile() &&
+               (/\.md$/i.test(item.name) ||
+                // .txt 只收 docs/ 下的：仓库根目录的 robots.txt、
+                // iris/data 里的数据文件不是文档
+                (/\.txt$/i.test(item.name) && itemPath.startsWith('docs/')))) {
       files.push({ name: item.name, path: itemPath, fullPath });
     }
   });
@@ -113,7 +117,9 @@ function buildTreeFromDirectory(dir, basePath = '') {
   files.forEach(file => {
     const content = fs.readFileSync(file.fullPath, 'utf-8');
     const wordCount = countWords(content);
-    const title = extractTitle(content);
+    // .txt 没有 frontmatter，标题取文件名（去扩展名）；.md 维持原样
+    const title = extractTitle(content) ||
+      (/\.txt$/i.test(file.name) ? file.name.replace(/\.txt$/i, '') : '');
     const tags = extractTags(content);
     const t = gitTimes.get(file.path) || { created: 0, modified: 0 };
     const entry = {
@@ -170,7 +176,7 @@ function countFiles(tree) {
 
   console.log(`✅ 文件树构建成功！`);
   console.log(`📍 输出文件: ${OUTPUT_FILE}`);
-  console.log(`📁 共找到 ${countFiles(fileTreeData)} 个 Markdown 文件`);
+  console.log(`📁 共找到 ${countFiles(fileTreeData)} 个文档文件（.md / .txt）`);
   console.log(`🕒 采集到 ${gitTimes.size} 个文档的提交时间`);
 
 } catch (error) {

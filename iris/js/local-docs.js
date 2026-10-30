@@ -76,8 +76,14 @@
     return en + cjk;
   }
 
-  // 共享 file-tree 的 formatWordCount（曾逐字副本）
-  const formatWordCount = window.MarkdownPreview.formatWordCount;
+  // 共享 file-tree 的 formatWordCount（曾逐字副本）。
+  // 注意：local-docs.js 比 file-tree.js 先加载，模块顶层取值只能拿到
+  // undefined，渲染词数时会抛 "formatWordCount is not a function"，
+  // 连带把整个本地文件面板的渲染打断 —— 所以改成调用时再取。
+  function formatWordCount(count) {
+    const fn = window.MarkdownPreview.formatWordCount;
+    return fn ? fn(count) : String(count);
+  }
 
   // ============== 面板渲染 ==============
   // 表头（文件夹行样式）在 init 中只构建一次，这里更新计数与列表
@@ -265,7 +271,8 @@
   // 将文本内容加入本地会话列表并打开（快照分享「存入本地会话」用）
   function addTextDoc(name, content) {
     const state = getState();
-    const fileName = /\.md$/i.test(name || '') ? name : `${name || 'snapshot'}.md`;
+    // .txt 保持原扩展名（按纯文本渲染），其余仍补 .md
+    const fileName = /\.(md|markdown|txt)$/i.test(name || '') ? name : `${name || 'snapshot'}.md`;
     const existing = state.localFiles.find(f => f.name === fileName);
     let id;
     if (existing) {
@@ -403,7 +410,7 @@
 
   // webkitdirectory 回退路径：从 File.webkitRelativePath 还原目录结构
   async function handlePickedFolder(fileList) {
-    const picked = Array.from(fileList || []).filter(f => /\.(md|markdown)$/i.test(f.name));
+    const picked = Array.from(fileList || []).filter(f => /\.(md|markdown|txt)$/i.test(f.name));
     if (picked.length === 0) {
       alert(t('local.folderEmpty', '该文件夹内没有找到 .md 文件'));
       return;
@@ -445,7 +452,7 @@
       if (entry.kind === 'directory') {
         if (SKIP_DIRS.has(entry.name) || entry.name.startsWith('.')) continue;
         await walkDirectory(entry, prefix ? prefix + '/' + entry.name : entry.name, out);
-      } else if (/\.(md|markdown)$/i.test(entry.name)) {
+      } else if (/\.(md|markdown|txt)$/i.test(entry.name)) {
         if (out.length >= MAX_FOLDER_FILES) return;
         out.push({
           id: makeId(),
@@ -514,7 +521,7 @@
   async function walkDroppedEntry(entry, prefix, out, skipped) {
     if (out.length >= MAX_FOLDER_FILES) return;
     if (entry.isFile) {
-      if (!/\.(md|markdown)$/i.test(entry.name)) return;
+      if (!/\.(md|markdown|txt)$/i.test(entry.name)) return;
       let file;
       try {
         file = await new Promise((resolve, reject) => entry.file(resolve, reject));
@@ -560,7 +567,7 @@
     // 纯文件拖入：过滤 .md 后走多选文件同一管线
     if (!hasDirectory) {
       const files = Array.from((dataTransfer && dataTransfer.files) || [])
-        .filter(f => /\.(md|markdown)$/i.test(f.name));
+        .filter(f => /\.(md|markdown|txt)$/i.test(f.name));
       if (files.length === 0) {
         alert(t('local.folderEmpty', '该文件夹内没有找到 .md 文件'));
         return;

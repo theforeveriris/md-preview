@@ -111,7 +111,8 @@
     const map = {};
     
     tree.forEach(item => {
-      if (item.type === 'blob' && item.path.endsWith('.md')) {
+      // .txt 纯文本文档同样进树
+      if (item.type === 'blob' && /\.(md|txt)$/i.test(item.path)) {
         const parts = item.path.split('/');
         let currentLevel = root;
         let pathSoFar = '';
@@ -255,7 +256,7 @@
             addItems(folder, item.children);
           }
           parent.append(folder);
-        } else if (item.type === 'file' && item.name.endsWith('.md')) {
+        } else if (item.type === 'file' && /\.(md|txt)$/i.test(item.name)) {
           const file = new File([], item.name);
           file._path = item.path;
           parent.append(file);
@@ -396,7 +397,7 @@
         var displayName = titleMap.get(decodedPath);
         if (!displayName) {
           var baseName = decodedPath.split('/').pop() || '';
-          displayName = safeDecode(baseName).replace(/\.md$/i, '');
+          displayName = safeDecode(baseName).replace(/\.(md|txt)$/i, '');
         }
 
         // 将文件名文本节点包裹在 span 中，实现截断
@@ -584,8 +585,8 @@
     
     function traverse(items) {
       for (const item of items) {
-        if (item.type === 'file' && item.name.endsWith('.md')) {
-          result.push({ name: item.name.replace('.md', ''), path: item.path });
+        if (item.type === 'file' && /\.(md|txt)$/i.test(item.name)) {
+          result.push({ name: item.name.replace(/\.(md|txt)$/i, ''), path: item.path });
         } else if (item.type === 'folder' && item.children) {
           traverse(item.children);
         }

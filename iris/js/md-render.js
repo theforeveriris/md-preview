@@ -1096,7 +1096,7 @@
   function docSlug() {
     const st = window.MarkdownPreview.state;
     const name = (st && (st.currentFilePath || (st.localDoc && st.localDoc.name))) || '';
-    return String(name).replace(/^.*\//, '').replace(/\.md$/i, '') || '';
+    return String(name).replace(/^.*\//, '').replace(/\.(md|txt)$/i, '') || '';
   }
 
   window.MarkdownPreview.mdRender = {

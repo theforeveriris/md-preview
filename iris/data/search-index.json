@@ -349,6 +349,12 @@
     ]
   },
   {
+    "path": "docs/examples/plaintext-example.txt",
+    "title": "docs/examples/plaintext-example",
+    "preview": "纯文本示例（.txt） 这是一个纯文本文件，没有 frontmatter、没有特殊标记。 站点把它当作普通 Markdown 渲染：标题、列表、引用、表格、代码块都能用， 但不会去解析元数据，也不会给它套代码块的样式。 下面是一些普通的 Markdown 写法： - 列表项一 - 列表项二 - 嵌套项 - 列表项三 一段引用： > 纯文本也能当文档读。 一个小表格： | 字段 | 说明 | |--",
+    "searchText": "docs/examples/plaintext-example 纯文本示例（.txt） 这是一个纯文本文件，没有 frontmatter、没有特殊标记。 站点把它当作普通 Markdown 渲染：标题、列表、引用、表格、代码块都能用， 但不会去解析元数据，也不会给它套代码块的样式。 下面是一些普通的 Markdown 写法： - 列表项一 - 列表项二 - 嵌套项 - 列表项三 一段引用： > 纯文本也能当文档读。 一个小表格： | 字段 | 说明 | |-- docs/examples/plaintext-example.txt docs/examples/plaintext-example"
+  },
+  {
     "path": "docs/examples/plantuml-examples.md",
     "title": "PlantUML 图表示例",
     "preview": "PlantUML 图表示例 本文档展示了 PlantUML 支持的各类图表及其渲染效果。 --- 1. 类图 (Class Diagram) 基础类图 渲染效果： --- 2. 顺序图 (Sequence Diagram) 基础顺序图 渲染效果： 带循环的顺序图 渲染效果： --- 3. 用例图 (Use Case Diagram) 电商系统用例图 渲染效果： --- 4. 活动图 (Activi",

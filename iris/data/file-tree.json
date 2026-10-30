@@ -640,6 +640,15 @@
             ]
           },
           {
+            "name": "plaintext-example.txt",
+            "type": "file",
+            "path": "docs/examples/plaintext-example.txt",
+            "wordCount": 174,
+            "created": 0,
+            "modified": 0,
+            "title": "plaintext-example"
+          },
+          {
             "name": "plantuml-examples.md",
             "type": "file",
             "path": "docs/examples/plantuml-examples.md",
@@ -808,7 +817,7 @@
             "path": "docs/examples/terminal-secret-examples.md",
             "wordCount": 35,
             "created": 1793128062,
-            "modified": 1793128062,
+            "modified": 1793181855,
             "title": "终端回放与敏感遮罩示例",
             "tags": [
               "网络",
@@ -817,7 +826,7 @@
             "contributors": [
               {
                 "name": "theforeveriris",
-                "count": 1
+                "count": 2
               }
             ]
           },
@@ -825,9 +834,9 @@
             "name": "theme-demo.md",
             "type": "file",
             "path": "docs/examples/theme-demo.md",
-            "wordCount": 210,
+            "wordCount": 628,
             "created": 1779598601,
-            "modified": 1793052885,
+            "modified": 1793287717,
             "title": "主题市场演示",
             "tags": [
               "主题"
@@ -835,7 +844,7 @@
             "contributors": [
               {
                 "name": "theforeveriris",
-                "count": 3
+                "count": 4
               }
             ]
           },
@@ -877,9 +886,9 @@
             ]
           }
         ],
-        "wordCount": 13136,
+        "wordCount": 13728,
         "created": 1779157467,
-        "modified": 1793180529
+        "modified": 1793287717
       },
       {
         "name": "changelog.md",
@@ -922,7 +931,7 @@
         "name": "configuration.md",
         "type": "file",
         "path": "docs/configuration.md",
-        "wordCount": 2134,
+        "wordCount": 2158,
         "created": 1779600314,
         "modified": 1793131083,
         "title": "配置参考",
@@ -1002,7 +1011,7 @@
         "name": "requirements.md",
         "type": "file",
         "path": "docs/requirements.md",
-        "wordCount": 1894,
+        "wordCount": 1908,
         "created": 1792355917,
         "modified": 1793046153,
         "title": "需求整理（候选功能）",
@@ -1094,9 +1103,9 @@
         "name": "theme-customization.md",
         "type": "file",
         "path": "docs/theme-customization.md",
-        "wordCount": 614,
+        "wordCount": 665,
         "created": 1779600314,
-        "modified": 1793052885,
+        "modified": 1793287861,
         "title": "主题定制",
         "tags": [
           "主题",
@@ -1105,7 +1114,7 @@
         "contributors": [
           {
             "name": "theforeveriris",
-            "count": 7
+            "count": 8
           },
           {
             "name": "github-actions[bot]",
@@ -1114,9 +1123,9 @@
         ]
       }
     ],
-    "wordCount": 25517,
+    "wordCount": 26198,
     "created": 1779157467,
-    "modified": 1793180529
+    "modified": 1793287861
   },
   {
     "name": "iris",

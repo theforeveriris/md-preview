@@ -290,7 +290,7 @@
     'local.readFailed': '（读取失败）',
     'local.listFull': '（列表已满 20 个）',
     'local.skippedFiles': '以下文件未加入列表：\n',
-    'local.folderEmpty': '该文件夹内没有找到 .md 文件',
+    'local.folderEmpty': '该文件夹内没有找到 .md 或 .txt 文件',
     'local.folderFull': '（超出 500 个文件上限）',
     'local.folderReplaceConfirm': '打开新文件夹将替换当前本地文件列表，是否继续？',
     'local.folderUnsupported': '当前浏览器不支持打开文件夹，请使用多选文件的方式',

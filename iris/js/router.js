@@ -121,7 +121,8 @@
       return;
     }
 
-    if (path && path.endsWith('.md')) {
+    // .txt 纯文本文档也走同一条加载路径
+    if (path && /\.(md|txt)$/i.test(path)) {
       const { markdown, fileTree } = window.MarkdownPreview;
       markdown.loadMarkdownFile(path).then(() => {
         if (anchor) {
