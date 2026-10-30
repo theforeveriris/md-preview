@@ -192,7 +192,9 @@
       originalHostParent.appendChild(cmHost);
     }
 
-    // 清空预览区，避免残留渲染器实例/监听
+    // 清空预览区，避免残留渲染器实例/监听；双屏预览是独立渲染根，
+    // 插件资源（倒计时定时器等）先按容器定向清理
+    window.MarkdownPreview.plugins?.dispose?.(dualPanePreview);
     dualPanePreview.innerHTML = '';
 
     dualPaneOverlay.classList.remove('visible');
@@ -600,6 +602,9 @@
     }
     cell.div.remove();
     cells.splice(idx, 1);
+    // 200ms 调度窗口内删除：把该输出从待渲染队列移除（否则 detached 容器
+    // 仍会被插件渲染并登记无人清理的资源）
+    pendingRendererRoots = pendingRendererRoots.filter(r => r !== cell.output);
     // 插件资源（倒计时定时器等）按 output 容器追踪，cell 删除时定向清理
     window.MarkdownPreview.plugins?.dispose?.(cell.output);
     // pkt 等渲染器持有全局注册表：清理已脱离 DOM 的孤儿实例（对照 split-view.js）
@@ -714,9 +719,16 @@
     tableEditor?.attach?.(outputElement);
     // 表格样式预设标记套用
     window.MarkdownPreview.mdRender.applyTablePresets?.(outputElement);
-    // 标题锚点 id（与文档站 markdown.js 同规则；跨 cell 重名仅影响跨 cell 跳转）
+    // 标题锚点 id（与文档站 markdown.js 同规则）；同一 cell 内重复 slug
+    // 追加序号保证唯一，锚点才能定位到第二个同名标题
+    const seenSlugs = new Set();
     outputElement.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(h => {
-      h.id = mdRender.slugify(h.textContent);
+      const base = mdRender.slugify(h.textContent) || 'section';
+      let id = base;
+      let n = 2;
+      while (seenSlugs.has(id)) id = `${base}-${n++}`;
+      seenSlugs.add(id);
+      h.id = id;
     });
 
     // 渲染器批量调度：runAllCells 时 N 个 cell 各自 setTimeout 会叠 N 批，
@@ -737,7 +749,6 @@
       rendererScheduleTimer = null;
       const roots = pendingRendererRoots;
       pendingRendererRoots = [];
-      const excluded = mdRender.CELL_RENDERER_EXCLUDED;
       // 缓存挂在 cell 对象上（serializeNotebook 读 c._outputHtmlCache），
       // 这里拿到的是 output DOM 节点，必须回查所属 cell 再失效，
       // 否则渲染器改动过的输出会一直复用旧缓存
@@ -745,7 +756,10 @@
         const owner = cells.find(c => c.output === outputElement);
         if (owner) owner._outputHtmlCache = undefined;
       };
-      roots.forEach(root => {
+      // 200ms 窗口内 cell 可能已被删除：脱离 DOM 的容器不再渲染，
+      // 否则插件会把定时器登记到无人清理的 detached 容器上
+      const excluded = mdRender.CELL_RENDERER_EXCLUDED;
+      roots.filter(root => root.isConnected).forEach(root => {
         try {
           // 插件围栏（```qrcode/countdown/regex/...）先于渲染器调度，与文档站
           // 编排一致（markdown.js 先 plugins.render 后 runRenderers）。
@@ -2167,6 +2181,9 @@
     closeDualPane();
     if (findReplace) findReplace.invalidateMatches();
     cells.slice().forEach(c => {
+      // 插件资源（倒计时定时器等）按 output 容器追踪，容器销毁前定向清理
+      window.MarkdownPreview.plugins?.dispose?.(c.output);
+      pendingRendererRoots = pendingRendererRoots.filter(r => r !== c.output);
       if (c.textarea && typeof c.textarea.destroy === 'function') c.textarea.destroy();
       c.div.remove();
     });

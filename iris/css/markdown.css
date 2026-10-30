@@ -926,8 +926,10 @@ body[data-sidebar-style="floating"] .reading-progress {
   border-left-color: var(--color-warning);
 }
 
+/* 标题文字与边框/底色区分：语义色原值按「色块」调校（如 #ff9800），
+   直接作浅底上的正文对比度不足；混入文字色自适应加深/提亮，保证可读 */
 .alert-warning .alert-title {
-  color: var(--color-warning);
+  color: color-mix(in srgb, var(--color-warning) 68%, var(--color-text));
 }
 
 .alert-tip {
@@ -936,7 +938,7 @@ body[data-sidebar-style="floating"] .reading-progress {
 }
 
 .alert-tip .alert-title {
-  color: var(--color-success);
+  color: color-mix(in srgb, var(--color-success) 68%, var(--color-text));
 }
 
 .alert-caution {
@@ -945,7 +947,7 @@ body[data-sidebar-style="floating"] .reading-progress {
 }
 
 .alert-caution .alert-title {
-  color: var(--color-error);
+  color: color-mix(in srgb, var(--color-error) 68%, var(--color-text));
 }
 
 .image-placeholder {

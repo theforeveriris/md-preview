@@ -348,7 +348,9 @@
             // 这里留空，由 applyEdgeLabels() 在初始化和切换时统一设置
             'label': '',
             'font-size': '9px',
-            'color': getCSSVar('--color-text-muted', '#666'),
+            // 标签文字用正文色（--color-text-muted 在浅色标签底上对比度不足，
+            // 9px 小字更难读）
+            'color': getCSSVar('--color-text', '#666'),
             'text-valign': 'center',
             'text-halign': 'center',
             // 标签底随主题 surface（暗色主题下白底残留即此因），透明度单独给
@@ -640,6 +642,8 @@
     cy._pktContainer = container;
     container._pktCy = cy;
     liveInstances.add(cy);
+    // 首个实例创建时挂上主题切换监听（同步现有实例的标签配色）
+    bindThemeChangeListener();
 
     return cy;
   }
@@ -756,6 +760,30 @@
         destroyCyInstance(cy);
       }
     }
+  }
+
+  // 主题切换后同步现有实例的标签配色：标签色在创建时读一次 CSS 变量，
+  // 不重建实例则旧配色一直停留（暗色切换后仍残留亮色标签底）
+  function applyThemeToLiveInstances() {
+    const textColor = getCSSVar('--color-text', '#333');
+    const surface = getCSSVar('--color-surface', '#ffffff');
+    for (const cy of [...liveInstances]) {
+      try {
+        cy.batch(() => {
+          cy.edges().style({
+            'color': textColor,
+            'text-background-color': surface,
+          });
+          cy.nodes().style({ 'color': textColor });
+        });
+      } catch (e) { /* 单实例失败不影响其它 */ }
+    }
+  }
+  let themeListenerBound = false;
+  function bindThemeChangeListener() {
+    if (themeListenerBound) return;
+    themeListenerBound = true;
+    window.addEventListener('themechange', applyThemeToLiveInstances);
   }
 
   // ============== Tooltip ==============

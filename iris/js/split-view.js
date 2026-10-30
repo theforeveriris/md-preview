@@ -323,6 +323,13 @@
     overlay.classList.remove('open');
     overlay.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('split-view-mode');
+    // 清空前释放两栏的插件资源（time 等插件按 pane body 追踪定时器，
+    // pane 会被 ensure() 复用，不 dispose 的话定时器继续更新脱离 DOM 的元素）
+    const plugins = window.MarkdownPreview.plugins;
+    if (plugins && typeof plugins.dispose === 'function') {
+      plugins.dispose(leftBody);
+      plugins.dispose(rightBody);
+    }
     leftBody.innerHTML = '';
     rightBody.innerHTML = '';
     closePicker();
