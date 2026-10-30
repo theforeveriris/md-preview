@@ -5,8 +5,1103 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 29 Oct 2026 15:32:53 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 30 Oct 2026 01:05:54 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>配置参考</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
+      <pubDate>Fri, 30 Oct 2026 01:05:36 GMT</pubDate>
+      <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
+      <content:encoded><![CDATA[<h1>配置参考</h1>
+<p>Markdown Preview 的配置分为两层：</p>
+<ol>
+<li><strong>构建/部署配置</strong> — <code>iris/config.json</code>（仓库级，所有访客共享）</li>
+<li><strong>运行时设置</strong> — 浏览器 localStorage（用户级，仅当前浏览器生效）</li>
+</ol>
+<hr>
+<h2>一、<code>iris/config.json</code>（仓库级配置）</h2>
+<p>修改此文件后需推送代码触发重新部署。</p>
+<h3>基础配置</h3>
+<pre><code class="language-json">{
+  &quot;owner&quot;: &quot;your-username&quot;,
+  &quot;repo&quot;: &quot;your-repo-name&quot;
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>owner</code></td>
+<td>string</td>
+<td>-</td>
+<td>GitHub 用户名或组织名</td>
+</tr>
+<tr>
+<td><code>repo</code></td>
+<td>string</td>
+<td>-</td>
+<td>仓库名</td>
+</tr>
+</tbody></table>
+<h3>完整配置项</h3>
+<pre><code class="language-json">{
+  &quot;owner&quot;: &quot;&quot;,
+  &quot;repo&quot;: &quot;&quot;,
+  &quot;branch&quot;: &quot;main&quot;,
+  &quot;title&quot;: &quot;Markdown Preview&quot;,
+  &quot;defaultTheme&quot;: &quot;default&quot;,
+  &quot;showEditButton&quot;: true,
+  &quot;showReadingTime&quot;: true,
+  &quot;showBreadcrumbs&quot;: true
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>branch</code></td>
+<td>string</td>
+<td><code>main</code></td>
+<td>文档所在的 Git 分支</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>string</td>
+<td><code>Markdown Preview</code></td>
+<td>站点标题</td>
+</tr>
+<tr>
+<td><code>defaultTheme</code></td>
+<td>string</td>
+<td><code>default</code></td>
+<td>默认主题 ID</td>
+</tr>
+<tr>
+<td><code>showEditButton</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>是否显示&quot;编辑此页&quot;按钮</td>
+</tr>
+<tr>
+<td><code>showReadingTime</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>是否显示阅读时间估算</td>
+</tr>
+<tr>
+<td><code>showBreadcrumbs</code></td>
+<td>boolean</td>
+<td><code>true</code></td>
+<td>是否显示面包屑导航</td>
+</tr>
+<tr>
+<td><code>plantumlServers</code></td>
+<td>array</td>
+<td>内置列表</td>
+<td>PlantUML 渲染服务列表，按顺序尝试</td>
+</tr>
+</tbody></table>
+<h4>PlantUML 渲染服务（plantumlServers）</h4>
+<p>PlantUML 图表默认依次尝试官方服务器与 Kroki 公共服务，全部失败时自动降级为源码展示并提供在线编辑器链接。若你自建了 PlantUML 服务或想使用其他镜像，可在 <code>iris/config.json</code> 中覆盖：</p>
+<pre><code class="language-json">{
+  &quot;plantumlServers&quot;: [
+    { &quot;type&quot;: &quot;plantuml&quot;, &quot;base&quot;: &quot;https://your-self-hosted/plantuml&quot; },
+    { &quot;type&quot;: &quot;kroki&quot;, &quot;base&quot;: &quot;https://kroki.io/plantuml&quot; }
+  ]
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>type</code></td>
+<td><code>plantuml</code>（PlantUML 自定义编码）或 <code>kroki</code>（标准 base64url 编码）</td>
+</tr>
+<tr>
+<td><code>base</code></td>
+<td>服务基础地址，渲染时自动拼接 <code>/svg/&lt;编码&gt;</code></td>
+</tr>
+</tbody></table>
+<h3>首页（homepage）</h3>
+<p>不配置时打开站点显示「选择一个文件开始阅读」空状态；配置 <code>homepage</code> 后，打开站点（或点面包屑回首页）会先进入指定的首页形态：</p>
+<pre><code class="language-jsonc">{
+  // 形态一：直接指定一篇文档作为首页
+  &quot;homepage&quot;: &quot;docs/getting-started.md&quot;,
+
+  // 形态二：门户页（hero 区 + 精选文档卡片网格 + 快捷链接）
+  &quot;homepage&quot;: {
+    &quot;mode&quot;: &quot;portal&quot;,
+    &quot;title&quot;: &quot;我的知识库&quot;,
+    &quot;subtitle&quot;: &quot;网络 / 运维 / 随手记&quot;,
+    &quot;featured&quot;: [&quot;docs/getting-started.md&quot;, &quot;docs/show.md&quot;, &quot;docs/roadmap.md&quot;],
+    &quot;links&quot;: [
+      { &quot;text&quot;: &quot;GitHub 仓库&quot;, &quot;href&quot;: &quot;https://github.com/your-name/your-repo&quot; },
+      { &quot;text&quot;: &quot;快速上手&quot;, &quot;href&quot;: &quot;docs/getting-started.md&quot; }
+    ]
+  }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>mode</code></td>
+<td>门户页固定为 <code>portal</code></td>
+</tr>
+<tr>
+<td><code>title</code> / <code>subtitle</code></td>
+<td>Hero 区标题与副标题（缺省取 <code>repo</code>）</td>
+</tr>
+<tr>
+<td><code>featured</code></td>
+<td>精选文档路径列表，渲染为卡片网格（取自文件树的标题/词数/标签）</td>
+</tr>
+<tr>
+<td><code>links</code></td>
+<td>Hero 下方的快捷链接按钮；站内路径不带 <code>#/</code> 前缀，完整 URL 会被识别为外链</td>
+</tr>
+</tbody></table>
+<h3>站内虚拟路由</h3>
+<p>除 <code>#/文档路径.md</code> 外，站点内置以下虚拟页面，可直接访问或从命令面板（<code>Ctrl/⌘+K</code>）进入：</p>
+<table>
+<thead>
+<tr>
+<th>路由</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>#/blog</code></td>
+<td>博客流视图：全站文档按更新时间倒序，<code>#/blog?p=2</code> 翻页</td>
+</tr>
+<tr>
+<td><code>#/history</code></td>
+<td>浏览足迹：最近 50 次阅读记录</td>
+</tr>
+<tr>
+<td><code>#/tags</code></td>
+<td>标签云：字号按文档数缩放，点击进入对应标签聚合页</td>
+</tr>
+<tr>
+<td><code>#/index</code></td>
+<td>全站目录：按目录分组的完整文档列表（打印友好）</td>
+</tr>
+<tr>
+<td><code>#/orphan</code></td>
+<td>孤立文档检测：无反链 / 无标签 / 超短 / 长期未更新四类清单</td>
+</tr>
+<tr>
+<td><code>#/graph</code></td>
+<td>文档图谱</td>
+</tr>
+</tbody></table>
+<h3>非 GitHub 托管（provider）</h3>
+<p>默认对接 GitHub API（文件树回退、git 历史、编辑此页链接）。托管在 Gitee / GitLab 时指定 <code>provider</code>：</p>
+<pre><code class="language-jsonc">{
+  &quot;provider&quot;: &quot;gitee&quot;,          // github（默认）| gitee | gitlab
+  &quot;branch&quot;: &quot;main&quot;,
+  // 仅 gitlab 需要：
+  &quot;gitlabUrl&quot;: &quot;https://gitlab.com&quot;,   // 自托管实例改这里
+  &quot;projectId&quot;: &quot;group%2Frepo&quot;          // 数字 ID 或 URL 编码的完整路径
+}
+</code></pre>
+<p>私有仓库可在浏览器 <code>sessionStorage</code> 写 <code>md-preview-gitee-token</code> / <code>md-preview-gitlab-token</code> / <code>md-preview-github-token</code> 提高限额（标签页生命周期内有效）。</p>
+<h3>配置加载顺序</h3>
+<ol>
+<li>内置默认配置</li>
+<li><code>iris/config.json</code> 中的配置（覆盖默认值）</li>
+<li>用户本地存储的设置（如主题选择，会覆盖前两者）</li>
+</ol>
+<hr>
+<h2>二、运行时设置（用户级）</h2>
+<p>通过悬浮球菜单 → <strong>设置</strong> 打开设置面板，所有改动保存在浏览器 localStorage，仅对当前浏览器生效。</p>
+<p>设置面板分七个区块：<strong>语言 / 外观 / 字体 / 阅读 / 布局 / 工具与导出 / 存储</strong>（左侧分组导航，点击平滑滚动、滚动时自动同步高亮）。</p>
+<h3>语言</h3>
+<p>设置面板最顶部为「语言」选择：<strong>自动（跟随浏览器）/ 中文 / English</strong>。选择「自动」时按浏览器语言自动判定；切换立即生效并记忆，无需刷新。</p>
+<h3>外观</h3>
+<h4>预设主题</h4>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>auto</code></td>
+<td>自动（跟随系统亮暗）</td>
+</tr>
+<tr>
+<td><code>default</code></td>
+<td>默认（紫粉渐变）</td>
+</tr>
+<tr>
+<td><code>github-light</code></td>
+<td>GitHub Light</td>
+</tr>
+<tr>
+<td><code>github-dark</code></td>
+<td>GitHub Dark</td>
+</tr>
+<tr>
+<td><code>notion</code></td>
+<td>Notion</td>
+</tr>
+<tr>
+<td><code>arc</code></td>
+<td>Arc Dark</td>
+</tr>
+<tr>
+<td><code>dracula</code></td>
+<td>Dracula</td>
+</tr>
+<tr>
+<td><code>nord</code></td>
+<td>Nord</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>选择预设主题会清空自定义配色。</p>
+</blockquote>
+<p><strong>自动主题（auto）</strong>：跟随系统 <code>prefers-color-scheme</code> 实时切换——系统亮色时使用「自动主题配对」中的亮色主题（默认紫粉渐变），暗色时使用暗色主题（默认 GitHub Dark）。配对可在设置面板中自由组合，系统亮暗变化时即时生效（含 PWA 桌面模式）。</p>
+<h4>自定义配色（取色器）</h4>
+<p>无需写 CSS，直接通过取色器调整：</p>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>可调变量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>强调色</strong></td>
+<td><code>--color-accent-purple</code> / <code>--color-accent-pink</code> / <code>--color-accent-purple-deep</code></td>
+<td>主色及派生色</td>
+</tr>
+<tr>
+<td><strong>中性色</strong></td>
+<td><code>--color-bg</code> / <code>--color-surface</code> / <code>--color-border</code> / <code>--color-text</code> / <code>--color-text-muted</code></td>
+<td>背景、表面、文字与边框</td>
+</tr>
+</tbody></table>
+<p>通过中性色调整即可做出亮色或暗色主题。点击「重置」恢复默认值。</p>
+<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/theme-customization.md">主题定制</a>。</p>
+<h4>字体自定义</h4>
+<p>设置面板 → <strong>外观 → 字体</strong>，无需写 CSS 即可精细控制排版：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>远程字体 URL</td>
+<td>填写 Google Fonts 等 CSS URL 即可加载远程字体</td>
+</tr>
+<tr>
+<td>展示字体族</td>
+<td>标题衬线体，独立于正文</td>
+</tr>
+<tr>
+<td>正文字体族</td>
+<td>UI / 正文无衬线体</td>
+</tr>
+<tr>
+<td>字号细调</td>
+<td>UI / 正文 / H1 / H2 / H3 独立设置</td>
+</tr>
+<tr>
+<td>字重细调</td>
+<td>UI / 正文 / 展示体 / H1 / H2 / H3 独立选择（300 ~ 800）</td>
+</tr>
+<tr>
+<td>字色</td>
+<td>正文与次要文字颜色独立取色</td>
+</tr>
+<tr>
+<td>标题数字无衬线</td>
+<td>默认标题数字随标题字体（衬线）；开启后仅数字改用无衬线字形</td>
+</tr>
+<tr>
+<td>重置字体</td>
+<td>一键恢复全部字体默认值</td>
+</tr>
+</tbody></table>
+<h4>代码高亮主题</h4>
+<table>
+<thead>
+<tr>
+<th>主题 ID</th>
+<th>名称</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>github</code></td>
+<td>GitHub Light</td>
+<td>亮色</td>
+</tr>
+<tr>
+<td><code>github-dark</code></td>
+<td>GitHub Dark</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>atom-one-light</code></td>
+<td>Atom One Light</td>
+<td>亮色</td>
+</tr>
+<tr>
+<td><code>atom-one-dark</code></td>
+<td>Atom One Dark</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>monokai</code></td>
+<td>Monokai</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>dracula</code></td>
+<td>Dracula</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>nord</code></td>
+<td>Nord</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>vs2015</code></td>
+<td>VS 2015</td>
+<td>暗色</td>
+</tr>
+<tr>
+<td><code>solarized-light</code></td>
+<td>Solarized Light</td>
+<td>亮色</td>
+</tr>
+<tr>
+<td><code>solarized-dark</code></td>
+<td>Solarized Dark</td>
+<td>暗色</td>
+</tr>
+</tbody></table>
+<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md">代码高亮主题</a>。</p>
+<p>在「外观 → 代码高亮」中还可填写<strong>自定义高亮主题</strong>：加载外部 highlight.js 主题 CSS URL，回车应用（覆盖内置代码主题）。</p>
+<h4>自定义 CSS</h4>
+<p>在「外观 → 自定义 CSS」中填写<strong>外部样式表 URL</strong>，加载外部 CSS 文件进一步定制页面，回车应用。</p>
+<h3>阅读</h3>
+<h4>显示选项</h4>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>显示阅读进度</td>
+<td>控制顶部进度条</td>
+</tr>
+<tr>
+<td>显示字数统计</td>
+<td>控制文件树中每个文件旁的字数显示</td>
+</tr>
+<tr>
+<td>折叠过长文件名</td>
+<td>开启时文件名过长省略号显示，关闭时完整展开（区域可横向滚动，隐藏滚动条）；默认关闭</td>
+</tr>
+<tr>
+<td>侧边栏文件夹默认展开</td>
+<td>开启时文件树中的文件夹全部展开显示；关闭时默认折叠，点击文件夹手动展开</td>
+</tr>
+<tr>
+<td>启用移动端手势</td>
+<td>触屏设备左右滑动正文切换上一篇 / 下一篇，自屏幕左缘右滑呼出侧边栏抽屉</td>
+</tr>
+<tr>
+<td>启用章节折叠</td>
+<td>H2 标题栏右侧出现折叠按钮，折叠状态按文档记忆、重开自动恢复</td>
+</tr>
+<tr>
+<td>对照阅读默认同步滚动</td>
+<td>打开双栏对照阅读时两栏按比例同步滚动（<code>Ctrl/⌘+Alt+S</code> 可随时开关本次会话）</td>
+</tr>
+<tr>
+<td>专注模式</td>
+<td>当前阅读段落保持高亮、其余内容淡化（也可在 <code>Ctrl/⌘+K</code> 命令面板开关）</td>
+</tr>
+</tbody></table>
+<h4>布局</h4>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>侧边栏样式</td>
+<td>经典：贴边通栏、微色差微阴影无边框（默认）；悬浮卡片：四周留缝的圆角卡片（桌面端）</td>
+</tr>
+<tr>
+<td>内容区宽度</td>
+<td>滑杆调整 Markdown 正文最大宽度（600–1400px，默认 720px），拖动即时生效，可一键重置</td>
+</tr>
+<tr>
+<td>正文占满可用宽度</td>
+<td>开启后正文铺满窗口可用宽度，忽略上方宽度设置，适合宽屏显示器</td>
+</tr>
+<tr>
+<td>长表格延伸到右侧空白</td>
+<td>内容宽度设置保持不变，宽表格向右适度越过正文边界、利用右侧空白显示更多列</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>侧边栏折叠：桌面端可通过侧边栏标题栏的汉堡按钮或快捷键 <code>Ctrl/⌘ + B</code> 折叠/展开侧边栏，折叠后左上角浮现展开按钮，状态自动记忆（与移动端抽屉行为一致）。</p>
+<p>以上宽度与侧边栏操作均有键盘快捷键（<code>Ctrl/⌘ + Alt + =/-/0/F</code>、<code>Ctrl/⌘ + B</code>、<code>[</code> / <code>]</code> 等），完整清单见 <a href="https://theforeveriris.github.io/md-preview/docs/shortcuts.md">快捷键</a>。</p>
+</blockquote>
+<h3>工具与导出</h3>
+<h4>工具</h4>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Markdown 编辑器</td>
+<td>在新标签页打开交互式编辑器（<code>?mode=editor</code>），支持语法快速输入和实时渲染</td>
+</tr>
+<tr>
+<td>波形生成器</td>
+<td>可视化生成 DG-LAB 郊狼 <code>.pulse</code> 波形文件（<code>?mode=pulsegen</code>），最多 20 个</td>
+</tr>
+</tbody></table>
+<h4>导出</h4>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>下载 Markdown</td>
+<td>下载当前打开的 <code>.md</code> 源文件</td>
+</tr>
+<tr>
+<td>导出 PDF</td>
+<td>通过浏览器打印对话框导出为 PDF（自动隐藏侧边栏、悬浮球等 UI）</td>
+</tr>
+<tr>
+<td>导出 HTML</td>
+<td>保存为内联当前主题样式与全部本地 CSS 的单文件 HTML，双击即可离线查看</td>
+</tr>
+</tbody></table>
+<h4>离线缓存</h4>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>全量离线缓存</td>
+<td>把文件树覆盖的所有文档拉进 PWA 缓存（带进度反馈），离线也能整站阅读；支持一键清除文档缓存。需 HTTPS 部署访问后可用</td>
+</tr>
+</tbody></table>
+<h3>存储</h3>
+<p>设置面板「存储」区块：<code>navigator.storage.estimate()</code> 用量条（已用 / 配额）、编辑器笔记本列表（逐条删除 / 全部清空，二次确认）、阅读历史与收藏 / 阅读位置的占用与一键清理（<code>iris/js/storage-manager.js</code>，打开面板时自动刷新）。</p>
+<h4>导航增强</h4>
+<ul>
+<li><strong>面包屑目录聚合页</strong>：面包屑与正文同宽对齐；点击中间路径进入该目录的聚合页，集中浏览目录下全部文档</li>
+<li><strong>标签聚合页</strong>：<code>#/tag/&lt;标签&gt;</code> 按标签聚合文档（见「标签系统」）</li>
+</ul>
+<hr>
+<h2>三、悬浮球菜单</h2>
+<p>悬浮球展开后提供 6 个快捷入口：</p>
+<table>
+<thead>
+<tr>
+<th>入口</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>回到顶部</td>
+<td>平滑滚动到文档顶部</td>
+</tr>
+<tr>
+<td>打开本地文件</td>
+<td>点击弹出选择面板：「选择文件…」可一次选中一个或多个本地 <code>.md</code> / <code>.txt</code> 文件预览（不写入 URL，刷新后丢失），未打开的文件进入侧边栏「本地文件」会话列表，可切换、移除或清空；「选择文件夹…」整体导入一个目录（File System Access API，旧浏览器回退 <code>webkitdirectory</code>），按目录树展示、文件夹可折叠、内容懒加载；最多收集 500 个文件，单文件 ≤ 10 MB。受浏览器限制，文件与文件夹需在面板中二选一进入。<code>.txt</code> 按「无特殊格式的纯文本」处理：不解析 frontmatter，正文照常按 Markdown 渲染</td>
+</tr>
+<tr>
+<td>扫码续读</td>
+<td>生成当前文档 + 阅读位置的二维码，手机扫码接着看</td>
+</tr>
+<tr>
+<td>安装到桌面</td>
+<td>PWA 安装（仅浏览器支持时显示）</td>
+</tr>
+<tr>
+<td>编辑此页</td>
+<td>在新标签页打开 GitHub 编辑界面</td>
+</tr>
+<tr>
+<td>设置</td>
+<td>打开设置面板</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>四、RSS 订阅</h2>
+<p>站点自动生成 RSS feed，订阅地址：</p>
+<pre><code>https://&lt;owner&gt;.github.io/&lt;repo&gt;/iris/data/feed.xml
+</code></pre>
+<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/rss.md">RSS 订阅</a>。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>需求整理（候选功能）</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/requirements.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/requirements.md</guid>
+      <pubDate>Fri, 30 Oct 2026 01:05:36 GMT</pubDate>
+      <description>本文整理自一轮功能头脑风暴中筛选出的候选需求，作为排期参考。 与 功能路线图 的分工：roadmap 是维护者已确认的正式规划，本文是待评估的候选池；某项落地后，请移入 roadmap / README 特性清单，并从本表移除。 约定：优先级 P0（低风险快赢）→ P1（体感/内容增强）→ P2（攻坚）；工作量 小（≤ 半天）→ 中（13 天）→ 大（多日）。 --- 以下 26 项已全部落地（按</description>
+      <content:encoded><![CDATA[<h1>需求整理（候选功能）</h1>
+<p>本文整理自一轮功能头脑风暴中筛选出的候选需求，作为<strong>排期参考</strong>。</p>
+<p>与 <a href="https://theforeveriris.github.io/md-preview/docs/roadmap.md">功能路线图</a> 的分工：roadmap 是维护者已确认的正式规划，本文是<strong>待评估的候选池</strong>；某项落地后，请移入 roadmap / README 特性清单，并从本表移除。</p>
+<p>约定：<strong>优先级</strong> P0（低风险快赢）→ P1（体感/内容增强）→ P2（攻坚）；<strong>工作量</strong> 小（≤ 半天）→ 中（1~3 天）→ 大（多日）。</p>
+<hr>
+<h2>总览</h2>
+<p>以下 26 项<strong>已全部落地</strong>（按本文件开头的自我约定，落地后应移入 roadmap/README 并从本表移除；为保留追溯性暂整表保留，状态改为已完成）：</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>名称</th>
+<th>分组</th>
+<th>优先级</th>
+<th>工作量</th>
+<th>主要复用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PERF-1</td>
+<td>可见即渲染（图表延迟初始化）</td>
+<td>性能与阅读体验</td>
+<td>P1</td>
+<td>中</td>
+<td><code>md-render.js</code> 调度器、<code>dom.js</code> 懒加载</td>
+</tr>
+<tr>
+<td>PERF-2</td>
+<td>屏外内容跳过布局（<code>content-visibility</code>）</td>
+<td>性能与阅读体验</td>
+<td>P1</td>
+<td>小</td>
+<td><code>markdown.css</code></td>
+</tr>
+<tr>
+<td>PERF-3</td>
+<td>长文档渐进渲染</td>
+<td>性能与阅读体验</td>
+<td>P2</td>
+<td>中</td>
+<td><code>markdown.js</code> 渲染管线</td>
+</tr>
+<tr>
+<td>PERF-4</td>
+<td>相邻文档预取</td>
+<td>性能与阅读体验</td>
+<td>P0</td>
+<td>小</td>
+<td><code>hover-preview.js</code>、<code>file-tree.js</code></td>
+</tr>
+<tr>
+<td>DATA-1</td>
+<td>CSV / TSV → 图表联动</td>
+<td>内容增强</td>
+<td>P0</td>
+<td>中</td>
+<td><code>csv-table.js</code>、<code>apexcharts.js</code></td>
+</tr>
+<tr>
+<td>CONTENT-1</td>
+<td>术语表悬浮解释</td>
+<td>内容增强</td>
+<td>P1</td>
+<td>中</td>
+<td><code>hover-preview.js</code>、frontmatter</td>
+</tr>
+<tr>
+<td>TOOL-1</td>
+<td>OpenAPI 交互文档</td>
+<td>API / 开发者工具</td>
+<td>P2</td>
+<td>中</td>
+<td>渲染器注册、<code>sandbox.js</code></td>
+</tr>
+<tr>
+<td>TOOL-2</td>
+<td><code>::: http</code> 实时请求块</td>
+<td>API / 开发者工具</td>
+<td>P1</td>
+<td>小</td>
+<td><code>json-tree.js</code>、highlight</td>
+</tr>
+<tr>
+<td>TOOL-3</td>
+<td>SQL DDL → ER 图</td>
+<td>API / 开发者工具</td>
+<td>P0</td>
+<td>小</td>
+<td><code>mermaid.js</code></td>
+</tr>
+<tr>
+<td>TOOL-4</td>
+<td>开发者小工具家族</td>
+<td>API / 开发者工具</td>
+<td>P0</td>
+<td>小</td>
+<td><code>plugins/loader.js</code></td>
+</tr>
+<tr>
+<td>CJK-1</td>
+<td>繁简一键切换</td>
+<td>中文与东亚特化</td>
+<td>P0</td>
+<td>小</td>
+<td><code>settings.js</code>、i18n</td>
+</tr>
+<tr>
+<td>CJK-2</td>
+<td>拼音注音（ruby）</td>
+<td>中文与东亚特化</td>
+<td>P1</td>
+<td>小</td>
+<td>渲染管线、<code>settings.js</code></td>
+</tr>
+<tr>
+<td>CJK-3</td>
+<td>竖排模式</td>
+<td>中文与东亚特化</td>
+<td>P2</td>
+<td>中</td>
+<td><code>markdown.css</code>、<code>theme-manager.js</code></td>
+</tr>
+<tr>
+<td>CJK-4</td>
+<td>CJK 排版渲染选项</td>
+<td>中文与东亚特化</td>
+<td>P1</td>
+<td>小</td>
+<td><code>settings.js</code>、<code>markdown.css</code></td>
+</tr>
+<tr>
+<td>BUILD-1</td>
+<td>中文排版 lint（构建期）</td>
+<td>构建与工程</td>
+<td>P0</td>
+<td>中</td>
+<td><code>build-*.js</code>、<code>smoke-test.yml</code></td>
+</tr>
+<tr>
+<td>GIT-1</td>
+<td>单篇文档历史 / blame</td>
+<td>Git 与协作</td>
+<td>P1</td>
+<td>中</td>
+<td>GitHub API、<code>diff.js</code></td>
+</tr>
+<tr>
+<td>GIT-2</td>
+<td>自动变更日志页</td>
+<td>Git 与协作</td>
+<td>P0</td>
+<td>小</td>
+<td><code>build-sitemap.js</code> 的 git 用法</td>
+</tr>
+<tr>
+<td>GIT-3</td>
+<td>文档变更订阅</td>
+<td>Git 与协作</td>
+<td>P2</td>
+<td>中</td>
+<td>GIT-1、<code>feed.xml</code> <code>lastmod</code></td>
+</tr>
+<tr>
+<td>NAV-1</td>
+<td>文档图谱 <code>#/graph</code></td>
+<td>导航与关系</td>
+<td>P1</td>
+<td>中</td>
+<td><code>build-links.js</code>、Cytoscape.js（已 vendor）</td>
+</tr>
+<tr>
+<td>NAV-2</td>
+<td>反向链接 + 相关文档</td>
+<td>导航与关系</td>
+<td>P1</td>
+<td>中</td>
+<td><code>links.json</code>、<code>hover-preview.js</code></td>
+</tr>
+<tr>
+<td>SEARCH-1</td>
+<td>繁简互通 + 拼音首字母</td>
+<td>搜索</td>
+<td>P1</td>
+<td>中</td>
+<td><code>build-search-index.js</code>、opencc、静态拼音表</td>
+</tr>
+<tr>
+<td>TYPE-1</td>
+<td>图 / 表自动编号 + 交叉引用</td>
+<td>排版</td>
+<td>P1</td>
+<td>中</td>
+<td>渲染管线、<code>section-collapse.js</code> 的锚点交互</td>
+</tr>
+<tr>
+<td>CONTENT-2</td>
+<td>时间线组件</td>
+<td>内容增强</td>
+<td>P0</td>
+<td>小</td>
+<td>插件系统</td>
+</tr>
+<tr>
+<td>UI-1</td>
+<td>脚注悬浮预览</td>
+<td>阅读体验</td>
+<td>P0</td>
+<td>小</td>
+<td><code>hover-preview.js</code>、<code>marked-footnote</code></td>
+</tr>
+<tr>
+<td>UI-2</td>
+<td>设置项搜索</td>
+<td>设置面板</td>
+<td>P0</td>
+<td>小</td>
+<td><code>settings.js</code>、<code>floating.css</code></td>
+</tr>
+<tr>
+<td>DOC-1</td>
+<td>纯文本 <code>.txt</code> 文档支持</td>
+<td>内容增强</td>
+<td>P1</td>
+<td>小</td>
+<td><code>build-file-tree.js</code>、<code>local-docs.js</code>、<code>markdown.js</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>落地进度</h2>
+<ul>
+<li><strong>批次 1（已完成）</strong>：PERF-4 相邻文档预取、PERF-2 屏外内容跳过布局、DATA-1 CSV→图表联动、TOOL-3 SQL DDL→ER 图、CJK-1 繁简切换、CJK-4 中文排版渲染选项、GIT-2 自动变更日志页。</li>
+<li><strong>批次 2（已完成）</strong>：PERF-1 可见即渲染（重型渲染器延迟初始化）、CONTENT-1 术语表悬浮、TOOL-2 <code>::: http</code> 实时请求块、TOOL-4 开发者小工具家族（regex / cron / time / color / hash / jwt）、BUILD-1 中文排版 lint、CJK-2 拼音注音（<code>{汉字|hán zì}</code>）。</li>
+<li><strong>批次 3（已完成）</strong>：PERF-3 长文档渐进渲染（渐进式代码高亮 + 屏外跳过布局）、TOOL-1 OpenAPI 交互文档、CJK-3 竖排模式、GIT-1 单篇历史 / blame、GIT-3 文档变更订阅。</li>
+</ul>
+<h2>候选池：本轮已落地</h2>
+<p>以下候选需求已实现，说明见 <a href="https://theforeveriris.github.io/md-preview/README.md#%E7%89%B9%E6%80%A7">README 特性清单</a> 与对应示例文档：</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NAV-1</td>
+<td>文档图谱 <code>#/graph</code></td>
+<td>入口=命令面板「文档图谱」；独立沉浸式整屏画布（无侧边栏按钮 / 标题栏）：节点=文档、边=站内链接、颜色=标签色相轮（出现 ≥3 次的标签各占一档色相、低频标签合并中性灰）、大小=被引用数、布局=concentric 同心圆（按连接数分层）；点击节点打开文档 / 被引 top-10 常显标题 / 悬停出该节点与邻居标签 / 搜索定位居中 / 标签高亮子图；左下角功能区=退回文档站·缩放·适配·重置·全屏·无链接文档显隐（默认隐藏）</td>
+</tr>
+<tr>
+<td>NAV-2</td>
+<td>反向链接与相关文档</td>
+<td>文末「被 N 篇引用」+「相关文档」（共享标签 × 互链加权，5 条可展开）</td>
+</tr>
+<tr>
+<td>SEARCH-1</td>
+<td>繁简互通 + 拼音首字母</td>
+<td>构建期写入 <code>searchText</code>，运行时零新增体积</td>
+</tr>
+<tr>
+<td>TYPE-1</td>
+<td>图 / 表自动编号与交叉引用</td>
+<td>连续编号、<code>&lt;!-- #fig:别名 --&gt;</code>、空链接自动填充、题注可复制锚点</td>
+</tr>
+<tr>
+<td>CONTENT-2</td>
+<td>时间线组件</td>
+<td><code>timeline</code> 代码块，状态色 + 今日标记线</td>
+</tr>
+<tr>
+<td>UI-1</td>
+<td>脚注悬浮预览</td>
+<td>悬停 / 聚焦角标浮出脚注原文</td>
+</tr>
+<tr>
+<td>UI-2</td>
+<td>设置项搜索</td>
+<td>行级过滤 + 隐藏空分组 + 唯一命中自动跳转</td>
+</tr>
+</tbody></table>
+<h2>一、性能与阅读体验</h2>
+<h3>PERF-1 可见即渲染（图表延迟初始化）</h3>
+<p><strong>目标</strong>：打开文档时不再一次性初始化全部重型渲染器；含 30 个 Mermaid 的文档首屏不再卡顿。</p>
+<p><strong>现状</strong>：<code>iris/js/md-render.js</code> 的 <code>runRenderers()</code> 会在文档注入后<strong>顺序 await 全部渲染器</strong>，每个渲染器自行查询 DOM、命中即加载 vendor 并初始化。</p>
+<p><strong>交互 / 验收</strong>：滚动到图表附近（预留 <code>rootMargin</code> 约 300px）才初始化；未初始化区显示轻量占位骨架（高度稳定，避免抖动）；滚动到含图区域时肉眼无可感延迟；一篇 30 图文档的 DOM 注入耗时显著下降。</p>
+<p><strong>实现要点</strong>：</p>
+<ul>
+<li>引入「可延迟渲染器」清单（mermaid / plantuml / apexcharts / katex / diff / geo / pkt / pptx / csv / json）。</li>
+<li>需要小改 <code>runRenderers</code>：支持<strong>按块调度</strong>（对每个命中的代码块容器注册 IntersectionObserver，进入视野后再调用对应渲染器并限定作用域），而非仅按渲染器整体执行。</li>
+<li>保持现有「单渲染器失败隔离」「顺序 await（避免 innerHTML 竞态）」语义。</li>
+</ul>
+<p><strong>依赖与风险</strong>：部分渲染器会整体重写容器 innerHTML（<code>embedded.js</code>），需确认延迟执行不影响其清理时序；打印（<code>Ctrl/⌘+P</code>）与「导出 PDF」前需强制初始化全部未渲染块。</p>
+<h3>PERF-2 屏外内容跳过布局（<code>content-visibility</code>）</h3>
+<p><strong>目标</strong>：长文档屏外区块跳过布局与绘制，滚动更顺滑。</p>
+<p><strong>实现要点</strong>：正文顶层区块加 <code>content-visibility: auto</code> + <code>contain-intrinsic-size</code>（给估算高度，减少滚动条跳动）。仅作用于 <code>.markdown-body</code> 下的块级子节点。</p>
+<p><strong>依赖与风险</strong>：会改变滚动高度估算，需回归「阅读位置续读」百分比、章节折叠、查找条（<code>find-bar.js</code>，TreeWalker 不依赖布局，影响小）与锚点跳转定位；<code>contain-intrinsic-size</code> 需实测调参。</p>
+<h3>PERF-3 长文档渐进渲染</h3>
+<p><strong>目标</strong>：超长文档先渲染首屏前 N 块，其余在空闲时补齐，首屏更快可见。</p>
+<p><strong>实现要点</strong>：<code>marked.parse</code> 产出整段 HTML 后，按顶层块切片：首屏块立即插入，剩余块用 <code>requestIdleCallback</code>（降级 <code>setTimeout</code>）分批插入，或先插入但依赖 PERF-2 的 <code>content-visibility</code> 推迟布局。</p>
+<p><strong>依赖与风险</strong>：与 PERF-1 / PERF-2 方案有重叠，<strong>建议三者合并为一个「渲染调度」改造</strong>统一设计，避免三套机制互相打架；需保证文档切换时取消上一轮未完成的空闲任务。</p>
+<h3>PERF-4 相邻文档预取</h3>
+<p><strong>目标</strong>：<code>[</code> / <code>]</code>、悬浮球上/下一篇、侧边栏点击时切换「瞬时」。</p>
+<p><strong>交互 / 验收</strong>：悬停文件树条目、空闲、或当前文档渲染完成后，预取上一/下一篇的 <code>.md</code>；切换时命中缓存直达。</p>
+<p><strong>实现要点</strong>：复用 <code>hover-preview.js</code> 的 fetch + 内存缓存思路；预取由 Service Worker 拦截入库，顺带提升离线命中。见上/下一篇顺序来源 <code>file-tree.js</code>（DFS）。</p>
+<p><strong>依赖与风险</strong>：注意并发上限与移动端流量；仅预取相邻 1~2 篇，不做全量。</p>
+<hr>
+<h2>二、内容增强</h2>
+<h3>DATA-1 CSV / TSV → 图表联动</h3>
+<p><strong>目标</strong>：交互表格上加「画成图」，一键生成 ApexCharts，免手写图表配置。</p>
+<p><strong>交互 / 验收</strong>：<code>```csv</code> 表格右上角新增「画成图」按钮 → 弹出图表类型选择（折线/柱状/饼/散点）→ 按列语义自动推断 X 轴与系列 → 内联渲染图表；另提供「复制为 <code>```apexcharts</code> 配置」，便于回写文档源码。</p>
+<p><strong>实现要点</strong>：<code>iris/js/renderers/csv-table.js</code> 已将数据解析到内存，直接构造 ApexCharts options；按需 <code>loadScriptOnce</code> 加载 apexcharts（复用 <code>renderers/apexcharts.js</code> 的加载方式）；类型推断：数值列 → 系列，首个非数值或时间列 → 类别轴。</p>
+<p><strong>复用</strong>：<code>csv-table.js</code>、<code>apexcharts.js</code>、<code>dom.js</code>。</p>
+<p><strong>依赖与风险</strong>：列类型误判需允许用户手动改；大数据表限制系列/点数。</p>
+<h3>CONTENT-1 术语表悬浮解释</h3>
+<p><strong>目标</strong>：frontmatter 声明术语，正文首次出现自动高亮并可悬浮查看解释。</p>
+<p><strong>交互 / 验收</strong>：frontmatter 写 <code>glossary: { OSPF: 开放最短路径优先… }</code>（或以独立术语文件提供）；正文命中术语加细下划线样式，鼠标悬浮弹出解释卡片（触屏长按）。</p>
+<p><strong>实现要点</strong>：渲染后对正文做一趟 TreeWalker 文本扫描（<strong>跳过</strong> <code>code</code> / <code>pre</code> / 链接 / 标题锚点 / 已处理节点），仅高亮<strong>首次</strong>出现，控制每篇命中上限以保证性能；卡片定位复用 <code>hover-preview.js</code> 的边界规避逻辑。</p>
+<p><strong>依赖与风险</strong>：文本节点切分会干扰其它后处理（锚点、查找条高亮），需确定执行顺序；术语过多时性能与视觉噪音需设置开关。</p>
+<hr>
+<h2>三、API / 开发者工具块</h2>
+<blockquote>
+<p>说明：本站定位为文档站，迟早要写 API / 开发者文档，目前<strong>完全没有工具类组件</strong>。本组为「文档语法糖 + 交互组件」，均为渲染器或插件形态。</p>
+</blockquote>
+<h3>TOOL-1 OpenAPI 交互文档</h3>
+<p><strong>目标</strong>：贴 <code>swagger.json</code> / <code>openapi.yaml</code> → 渲染接口文档 + 在线「Try it」发请求看响应。</p>
+<p><strong>交互 / 验收</strong>：<code>```openapi</code> 块解析为按 tag 分组的接口列表（路径、方法、参数、请求体、响应码/示例），每接口带「试一下」按钮，填参后显示状态码、响应头与响应体。</p>
+<p><strong>实现要点</strong>：新增渲染器 <code>renderers/openapi.js</code>；YAML 解析按需加载 <code>js-yaml</code>（mermaid vendor 内已含，但不对外暴露，需独立引入并按需加载）；请求体与响应体复用 <code>json-tree.js</code> 展示；「Try it」用 <code>fetch</code>。</p>
+<p><strong>依赖与风险</strong>：跨域（CORS）会导致部分接口无法直连，需明示「仅支持允许跨域的端点」；鉴权参数如何传递（header/query）需设计；不做自动执行，默认点击才发请求。</p>
+<h3>TOOL-2 <code>::: http</code> 实时请求块</h3>
+<p><strong>目标</strong>：文档内贴一个请求，读者点一下看真实返回。</p>
+<p><strong>交互 / 验收</strong>：<code>::: http GET https://… :::</code> 渲染为请求卡片（方法 + URL + 「发送」按钮）→ 展示状态码、耗时、响应头、响应体（JSON 走折叠树，其它走高亮）。</p>
+<p><strong>实现要点</strong>：新块语法 + 渲染器；默认方法 GET；响应展示复用 <code>json-tree.js</code> 与 highlight；与 TOOL-1 共用请求/展示组件。</p>
+<p><strong>依赖与风险</strong>：CORS 同上；默认仅 GET，避免危险方法误触发。</p>
+<h3>TOOL-3 SQL DDL → ER 图</h3>
+<p><strong>目标</strong>：贴建表语句自动生成 ER 图。</p>
+<p><strong>交互 / 验收</strong>：<code>```sql ddl</code>（或 <code>```erd</code>）解析 <code>CREATE TABLE</code> + 外键 → 生成 Mermaid <code>erDiagram</code> 源码 → 复用 mermaid 渲染器出图；解析失败回退普通 SQL 高亮。</p>
+<p><strong>实现要点</strong>：正则解析表名、字段（类型/主键/非空）、<code>FOREIGN KEY</code> / <code>REFERENCES</code> 关系 → 拼 <code>erDiagram</code> 文本 → 交给 <code>renderers/mermaid.js</code>；提供「复制 Mermaid 源码」。</p>
+<p><strong>复用</strong>：<code>mermaid.js</code>（按需加载已有）。</p>
+<p><strong>依赖与风险</strong>：复杂 DDL（复合键、约束、方言）解析有限，需明确回退。</p>
+<h3>TOOL-4 开发者小工具家族</h3>
+<p><strong>目标</strong>：攒一批零依赖、即插即用的文档内小工具。</p>
+<p><strong>清单</strong>（可分批落地）：</p>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>语法</th>
+<th>说明</th>
+<th>实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>正则测试</td>
+<td><code>::: regex</code></td>
+<td>输入正则 + 样本，实时高亮匹配、捕获组</td>
+<td>原生 RegExp</td>
+</tr>
+<tr>
+<td>Cron 解释</td>
+<td><code>::: cron</code></td>
+<td><code>*/5 * * * *</code> → 人类可读描述</td>
+<td>轻量解析表</td>
+</tr>
+<tr>
+<td>时间戳/时区</td>
+<td><code>::: time</code></td>
+<td>时间戳 ↔ 各时区对照，实时刷新</td>
+<td><code>Intl.DateTimeFormat</code></td>
+</tr>
+<tr>
+<td>JWT 解析</td>
+<td><code>::: jwt</code></td>
+<td>解码 header/payload，标注过期</td>
+<td>base64 + JSON</td>
+</tr>
+<tr>
+<td>哈希</td>
+<td><code>::: hash</code></td>
+<td>文本 → MD5/SHA-1/SHA-256</td>
+<td><code>crypto.subtle</code></td>
+</tr>
+<tr>
+<td>色板/对比度</td>
+<td><code>::: color</code></td>
+<td>色值 → 色板 + WCAG 对比度检查</td>
+<td>原生计算</td>
+</tr>
+</tbody></table>
+<p><strong>实现要点</strong>：走<strong>插件系统</strong>（<code>iris/plugins/loader.js</code>，参考 qrcode / countdown / colorcard 插件），每个工具一个插件文件，零新依赖优先。</p>
+<p><strong>依赖与风险</strong>：MD5 需自实现或引入（<code>crypto.subtle</code> 不含 MD5）；工具语义都应可在文档静态阅读（不可用时降级为普通代码块）。</p>
+<hr>
+<h2>四、中文与东亚特化</h2>
+<blockquote>
+<p>说明：本项目为<strong>中文优先</strong>文档站，但缺少中文/东亚特有的阅读与排版能力。本组是相对其他文档站最具辨识度的方向。</p>
+</blockquote>
+<h3>CJK-1 繁简一键切换</h3>
+<p><strong>目标</strong>：正文繁体 ↔ 简体切换（阅读向，不改源文件）。</p>
+<p><strong>交互 / 验收</strong>：设置面板「阅读」区块加开关；切换后正文即时转换并记忆偏好；代码块、URL、<code>code</code> 内容<strong>不转换</strong>。</p>
+<p><strong>实现要点</strong>：引入 <code>opencc-js</code>（按需加载、可 vendor），对渲染后正文文本节点做转换，跳过 <code>code</code> / <code>pre</code> / <code>script</code> / 链接 URL；随主题同款持久化（<code>localStorage</code>）。</p>
+<p><strong>依赖与风险</strong>：字典体积需评估（懒加载）；是否同时转换 UI 文案需决策（建议仅正文）。</p>
+<h3>CJK-2 拼音注音（ruby）</h3>
+<p><strong>目标</strong>：为生僻字 / 学习类内容提供注音。</p>
+<p><strong>交互 / 验收</strong>：支持作者手写注音语法（如 <code>{漢字|hàn zì}</code> 或复用既有语法约定）渲染为 <code>&lt;ruby&gt;</code>；可选「自动注音」对正文汉字加拼音。</p>
+<p><strong>实现要点</strong>：作者语法零依赖，优先实现；自动注音需拼音数据（如 pinyin-pro），体量大，按需加载并仅对指定区块启用。</p>
+<p><strong>依赖与风险</strong>：自动注音体积与多音字准确度；默认关闭，避免全站注音噪音。</p>
+<h3>CJK-3 竖排模式</h3>
+<p><strong>目标</strong>：正文竖排阅读，服务于文言/诗词/排版展示场景。</p>
+<p><strong>交互 / 验收</strong>：设置面板或悬浮球提供「竖排」开关；正文 <code>writing-mode: vertical-rl</code>，滚动方向随之变化；代码块、表格、图表保持横向容器。</p>
+<p><strong>实现要点</strong>：作用于 <code>.markdown-body</code> 的 CSS；<code>theme-manager.js</code> / <code>settings.js</code> 记忆状态；处理滚动进度、锚点定位、灯箱与图表在竖排下的布局。</p>
+<p><strong>依赖与风险</strong>：滚动方向改变会影响「阅读位置续读」「上/下一篇手势」；<code>vertical</code> 与部分组件兼容性需逐一回归。观感独特，属高辨识度彩蛋级功能。</p>
+<h3>CJK-4 CJK 排版渲染选项</h3>
+<p><strong>目标</strong>：把「中文排版讲究」做成可开关的渲染选项。</p>
+<p><strong>清单</strong>：中西文自动间距、标点悬挂（<code>hanging-punctuation</code>）、行首/行尾禁则（避免行首出现 <code>，。」</code> 等）、首行缩进、标点挤压。</p>
+<p><strong>实现要点</strong>：多数为 <code>.markdown-body</code> 上的 CSS 变量/类；<code>text-spacing</code> 等新属性支持度有限时，用轻量 JS 在标点后插入零宽间距降级；统一挂到设置面板新增的「排版」区块，状态持久化。</p>
+<p><strong>复用</strong>：<code>settings.js</code>、<code>markdown.css</code>、i18n。</p>
+<hr>
+<h2>五、构建与工程</h2>
+<h3>BUILD-1 中文排版 lint（构建期）</h3>
+<p><strong>目标</strong>：中文文档的排版规范检查与自动修复，CI 可卡门禁；后续可复用于编辑器实时提示。</p>
+<p><strong>检查规则</strong>：</p>
+<ul>
+<li>中英文 / 中文与数字之间缺少空格；</li>
+<li>全角 / 半角标点混用、中文用 <code>“”</code> 而非 <code>&quot;&quot;</code>、单引号 <code>‘’</code>；</li>
+<li>行首禁则（行首不出现 <code>，。！？、）」』</code> 等）；</li>
+<li>中英混排括号配对与嵌套。</li>
+</ul>
+<p><strong>交互 / 验收</strong>：新增 <code>iris/scripts/lint-cjk.js</code>，默认<strong>只报告不修改</strong>；<code>--fix</code> 显式自动修复；由独立工作流 <code>cjk-typography-lint.yml</code> 接入 CI（首次全量、之后增量，main 上自动修复并由机器人提交，PR 上仅提示）。<code>smoke-test.yml</code> 中保留一条告警级调用。</p>
+<p><strong>实现要点</strong>：扫描仓库内全部 Markdown（<code>git ls-files &#39;*.md&#39;</code> 为准，与 <code>link-check.js</code> 同构）；<strong>必须跳过</strong>代码围栏、行内代码、URL、frontmatter、HTML 注释（复用 <code>link-check.js</code> 的围栏/转义处理思路）；修复逐条可定位（文件：行：列）。</p>
+<p><strong>依赖与风险</strong>：自动修复会产生大范围 diff，故默认关闭 <code>--fix</code>；规则需可配置白名单豁免（如刻意保留的半角括号）。</p>
+<hr>
+<h2>六、Git 与协作</h2>
+<blockquote>
+<p>说明：<code>lastmod</code> 已从 git 提取（<code>build-sitemap.js</code>），但界面上完全不可见。</p>
+</blockquote>
+<h3>GIT-1 单篇文档历史 / blame</h3>
+<p><strong>目标</strong>：文档页可查看「谁最后改的、改了什么」，内嵌 diff。</p>
+<p><strong>交互 / 验收</strong>：文档标题区或悬浮球加「历史」入口 → 列出该文件的提交时间线（作者、时间、信息）→ 点条目显示该次提交的 diff 视图。</p>
+<p><strong>实现要点</strong>：GitHub API <code>GET /repos/{owner}/{repo}/commits?path=&lt;path&gt;</code> 与 <code>/commits/{sha}</code>；<code>owner</code>/<code>repo</code> 来自 <code>iris/config.js</code>；diff 展示复用 <code>renderers/diff.js</code>（diff2html）；结果内存缓存。</p>
+<p><strong>依赖与风险</strong>：未鉴权 API 限流（60 次/时）→ 需缓存 + 可选填 GitHub Token；私有仓库必须带 Token；离线 / API 不可用时静默降级隐藏入口。</p>
+<h3>GIT-2 自动变更日志页</h3>
+<p><strong>目标</strong>：从 git log 生成站点变更日志页。</p>
+<p><strong>交互 / 验收</strong>：构建后生成变更日志（如 <code>docs/changelog.md</code> 或 <code>iris/data/changelog.json</code> + <code>#/changelog</code> 路由），按时间倒序列出变更。</p>
+<p><strong>实现要点</strong>：新增 <code>iris/scripts/build-changelog.js</code>，取 git log（复用 <code>build-sitemap.js</code> 的 git 调用）；可只收录 <code>docs/**</code> 变更；接入 CI（参考 <code>build-feed.yml</code>：产物有变化才提交回仓库）。</p>
+<p><strong>复用</strong>：<code>build-sitemap.js</code>、<code>build-feed.yml</code> 工作流模式。</p>
+<h3>GIT-3 文档变更订阅</h3>
+<p><strong>目标</strong>：关注某篇文档，它有更新时在界面提示并可看新旧 diff（「watch this doc」）。</p>
+<p><strong>交互 / 验收</strong>：文档页「关注」按钮；关注列表存本地；打开站点时检查关注文档的最新提交/更新时间，有更新则显示标记，点击查看变更。</p>
+<p><strong>实现要点</strong>：本地存 <code>{ path: lastSeenCommit }</code>；检查优先用 <code>file-tree.json</code> / <code>sitemap</code> 的 <code>lastmod</code>（离线可用），需要 diff 时再走 GIT-1 的 API。</p>
+<p><strong>依赖与风险</strong>：依赖 GIT-1；限流与离线降级同 GIT-1。</p>
+<hr>
+<h2>建议落地批次</h2>
+<table>
+<thead>
+<tr>
+<th>批次</th>
+<th>目标</th>
+<th>需求</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>批次 1</td>
+<td>低风险快赢</td>
+<td>PERF-4、PERF-2、DATA-1、TOOL-3、CJK-1、CJK-4、GIT-2</td>
+<td>改动面小、几乎零新依赖，受众感知强</td>
+</tr>
+<tr>
+<td>批次 2</td>
+<td>体感与内容</td>
+<td>PERF-1、CONTENT-1、TOOL-2、TOOL-4、BUILD-1、CJK-2</td>
+<td>体感提升最大的性能项 + 内容增强</td>
+</tr>
+<tr>
+<td>批次 3</td>
+<td>攻坚</td>
+<td>PERF-3、TOOL-1、CJK-3、GIT-1、GIT-3</td>
+<td>需重构 / 外部依赖 / 更多边界回归</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>横切要求（每条需求都要满足）</h2>
+<ul>
+<li><strong>i18n</strong>：新增 UI 文案一律进 <code>iris/js/i18n.js</code>（zh/en 双份），静态文案用 <code>data-i18n*</code>，动态走 <code>t(key, fallback)</code>。</li>
+<li><strong>无障碍</strong>：新组件需可键盘操作、选区/焦点合理、必要处加 <code>aria-*</code>。</li>
+<li><strong>冒烟测试</strong>：新增渲染器 / 插件 / 构建脚本 / i18n key 需同步更新 <code>iris/scripts/smoke-test.js</code> 与 <code>index.html</code>，避免 CI 失败。</li>
+<li><strong>懒加载与 PWA</strong>：新增 vendor 库必须走 <code>dom.js</code> 的 <code>loadScriptOnce</code> / <code>loadStyleOnce</code>，并纳入 <code>precache-manifest</code> 与 SW 策略，不得拖累首屏。</li>
+<li><strong>渲染器 / 插件约定</strong>：渲染器注册到 <code>window.MarkdownPreview.renderers.&lt;id&gt;</code> 并在 <code>index.html</code> 按序引入；文档级工具优先走插件系统。</li>
+<li><strong>性能预算</strong>：首屏体积与主线程占用不得劣化（现为约 1 MB / 按需加载），改渲染管线时以 Debug Panel（<code>?debug=1</code>）实测为准。</li>
+</ul>
+<hr>
+<h2>待确认 / 决策点（均已随功能落地有答案）</h2>
+<ol>
+<li><del><strong>渲染调度合并</strong></del> ✅ 已定：PERF-1 以 md-render.js 的 <code>runRenderers</code> 统一调度 +
+IntersectionObserver 懒加载实现（PERF-3 渐进渲染经 <code>highlightCodeBlocksProgressive</code>
+同款思路覆盖）；未再合并为单次重构。</li>
+<li><del><strong>跨域请求类组件</strong></del> ✅ 已定：不内置代理；在示例文档（devtools-examples）与
+requirements 正文中向读者解释「仅支持允许跨域的端点」（见产品已知限制）。</li>
+<li><del><strong>GitHub API 鉴权</strong></del> ✅ 已定：git-history 支持 Token（sessionStorage 存储，
+不再明文存 localStorage）；匿名 60 次/时配额靠 ETag 条件请求 + 10 分钟限频缓解；
+私有仓库由用户自行配 Token。</li>
+<li><del><strong>繁简范围</strong></del> ✅ 已定：正文 + 文件树标题等 UI 同步切换（cjk.js afterRender 覆盖
+主文档；搜索索引构建期繁简双 token）。</li>
+<li><del><strong>CJK lint 门禁</strong></del> ✅ 已定：advisory（smoke-test 中 continue-on-error 预跑 +
+专用工作流 main 上自动修复、PR 仅提示），<code>--fix</code> 已在 cjk-typography-lint.yml。</li>
+<li><del><strong>术语表来源</strong></del> ✅ 已定：frontmatter 内联（glossary 渲染器直接解析
+pre.code-block 代码块内容，无需独立术语文件）。</li>
+</ol>
+]]></content:encoded>
+    </item>
     <item>
       <title>主题定制</title>
       <link>https://theforeveriris.github.io/md-preview/docs/theme-customization.md</link>
@@ -1095,586 +2190,6 @@ S*   0.0.0.0/0 [1/0] via 10.1.1.254
 B    172.16.0.0/16 [200/0] via 10.1.1.3, 00:05:00
 S    10.99.0.0/16 [1/0] via 10.1.1.9
 </code></pre>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>配置参考</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
-      <pubDate>Tue, 27 Oct 2026 19:58:03 GMT</pubDate>
-      <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
-      <content:encoded><![CDATA[<h1>配置参考</h1>
-<p>Markdown Preview 的配置分为两层：</p>
-<ol>
-<li><strong>构建/部署配置</strong> — <code>iris/config.json</code>（仓库级，所有访客共享）</li>
-<li><strong>运行时设置</strong> — 浏览器 localStorage（用户级，仅当前浏览器生效）</li>
-</ol>
-<hr>
-<h2>一、<code>iris/config.json</code>（仓库级配置）</h2>
-<p>修改此文件后需推送代码触发重新部署。</p>
-<h3>基础配置</h3>
-<pre><code class="language-json">{
-  &quot;owner&quot;: &quot;your-username&quot;,
-  &quot;repo&quot;: &quot;your-repo-name&quot;
-}
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>默认值</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>owner</code></td>
-<td>string</td>
-<td>-</td>
-<td>GitHub 用户名或组织名</td>
-</tr>
-<tr>
-<td><code>repo</code></td>
-<td>string</td>
-<td>-</td>
-<td>仓库名</td>
-</tr>
-</tbody></table>
-<h3>完整配置项</h3>
-<pre><code class="language-json">{
-  &quot;owner&quot;: &quot;&quot;,
-  &quot;repo&quot;: &quot;&quot;,
-  &quot;branch&quot;: &quot;main&quot;,
-  &quot;title&quot;: &quot;Markdown Preview&quot;,
-  &quot;defaultTheme&quot;: &quot;default&quot;,
-  &quot;showEditButton&quot;: true,
-  &quot;showReadingTime&quot;: true,
-  &quot;showBreadcrumbs&quot;: true
-}
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>默认值</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>branch</code></td>
-<td>string</td>
-<td><code>main</code></td>
-<td>文档所在的 Git 分支</td>
-</tr>
-<tr>
-<td><code>title</code></td>
-<td>string</td>
-<td><code>Markdown Preview</code></td>
-<td>站点标题</td>
-</tr>
-<tr>
-<td><code>defaultTheme</code></td>
-<td>string</td>
-<td><code>default</code></td>
-<td>默认主题 ID</td>
-</tr>
-<tr>
-<td><code>showEditButton</code></td>
-<td>boolean</td>
-<td><code>true</code></td>
-<td>是否显示&quot;编辑此页&quot;按钮</td>
-</tr>
-<tr>
-<td><code>showReadingTime</code></td>
-<td>boolean</td>
-<td><code>true</code></td>
-<td>是否显示阅读时间估算</td>
-</tr>
-<tr>
-<td><code>showBreadcrumbs</code></td>
-<td>boolean</td>
-<td><code>true</code></td>
-<td>是否显示面包屑导航</td>
-</tr>
-<tr>
-<td><code>plantumlServers</code></td>
-<td>array</td>
-<td>内置列表</td>
-<td>PlantUML 渲染服务列表，按顺序尝试</td>
-</tr>
-</tbody></table>
-<h4>PlantUML 渲染服务（plantumlServers）</h4>
-<p>PlantUML 图表默认依次尝试官方服务器与 Kroki 公共服务，全部失败时自动降级为源码展示并提供在线编辑器链接。若你自建了 PlantUML 服务或想使用其他镜像，可在 <code>iris/config.json</code> 中覆盖：</p>
-<pre><code class="language-json">{
-  &quot;plantumlServers&quot;: [
-    { &quot;type&quot;: &quot;plantuml&quot;, &quot;base&quot;: &quot;https://your-self-hosted/plantuml&quot; },
-    { &quot;type&quot;: &quot;kroki&quot;, &quot;base&quot;: &quot;https://kroki.io/plantuml&quot; }
-  ]
-}
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>type</code></td>
-<td><code>plantuml</code>（PlantUML 自定义编码）或 <code>kroki</code>（标准 base64url 编码）</td>
-</tr>
-<tr>
-<td><code>base</code></td>
-<td>服务基础地址，渲染时自动拼接 <code>/svg/&lt;编码&gt;</code></td>
-</tr>
-</tbody></table>
-<h3>首页（homepage）</h3>
-<p>不配置时打开站点显示「选择一个文件开始阅读」空状态；配置 <code>homepage</code> 后，打开站点（或点面包屑回首页）会先进入指定的首页形态：</p>
-<pre><code class="language-jsonc">{
-  // 形态一：直接指定一篇文档作为首页
-  &quot;homepage&quot;: &quot;docs/getting-started.md&quot;,
-
-  // 形态二：门户页（hero 区 + 精选文档卡片网格 + 快捷链接）
-  &quot;homepage&quot;: {
-    &quot;mode&quot;: &quot;portal&quot;,
-    &quot;title&quot;: &quot;我的知识库&quot;,
-    &quot;subtitle&quot;: &quot;网络 / 运维 / 随手记&quot;,
-    &quot;featured&quot;: [&quot;docs/getting-started.md&quot;, &quot;docs/show.md&quot;, &quot;docs/roadmap.md&quot;],
-    &quot;links&quot;: [
-      { &quot;text&quot;: &quot;GitHub 仓库&quot;, &quot;href&quot;: &quot;https://github.com/your-name/your-repo&quot; },
-      { &quot;text&quot;: &quot;快速上手&quot;, &quot;href&quot;: &quot;docs/getting-started.md&quot; }
-    ]
-  }
-}
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>mode</code></td>
-<td>门户页固定为 <code>portal</code></td>
-</tr>
-<tr>
-<td><code>title</code> / <code>subtitle</code></td>
-<td>Hero 区标题与副标题（缺省取 <code>repo</code>）</td>
-</tr>
-<tr>
-<td><code>featured</code></td>
-<td>精选文档路径列表，渲染为卡片网格（取自文件树的标题/词数/标签）</td>
-</tr>
-<tr>
-<td><code>links</code></td>
-<td>Hero 下方的快捷链接按钮；站内路径不带 <code>#/</code> 前缀，完整 URL 会被识别为外链</td>
-</tr>
-</tbody></table>
-<h3>站内虚拟路由</h3>
-<p>除 <code>#/文档路径.md</code> 外，站点内置以下虚拟页面，可直接访问或从命令面板（<code>Ctrl/⌘+K</code>）进入：</p>
-<table>
-<thead>
-<tr>
-<th>路由</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>#/blog</code></td>
-<td>博客流视图：全站文档按更新时间倒序，<code>#/blog?p=2</code> 翻页</td>
-</tr>
-<tr>
-<td><code>#/history</code></td>
-<td>浏览足迹：最近 50 次阅读记录</td>
-</tr>
-<tr>
-<td><code>#/tags</code></td>
-<td>标签云：字号按文档数缩放，点击进入对应标签聚合页</td>
-</tr>
-<tr>
-<td><code>#/index</code></td>
-<td>全站目录：按目录分组的完整文档列表（打印友好）</td>
-</tr>
-<tr>
-<td><code>#/orphan</code></td>
-<td>孤立文档检测：无反链 / 无标签 / 超短 / 长期未更新四类清单</td>
-</tr>
-<tr>
-<td><code>#/graph</code></td>
-<td>文档图谱</td>
-</tr>
-</tbody></table>
-<h3>非 GitHub 托管（provider）</h3>
-<p>默认对接 GitHub API（文件树回退、git 历史、编辑此页链接）。托管在 Gitee / GitLab 时指定 <code>provider</code>：</p>
-<pre><code class="language-jsonc">{
-  &quot;provider&quot;: &quot;gitee&quot;,          // github（默认）| gitee | gitlab
-  &quot;branch&quot;: &quot;main&quot;,
-  // 仅 gitlab 需要：
-  &quot;gitlabUrl&quot;: &quot;https://gitlab.com&quot;,   // 自托管实例改这里
-  &quot;projectId&quot;: &quot;group%2Frepo&quot;          // 数字 ID 或 URL 编码的完整路径
-}
-</code></pre>
-<p>私有仓库可在浏览器 <code>sessionStorage</code> 写 <code>md-preview-gitee-token</code> / <code>md-preview-gitlab-token</code> / <code>md-preview-github-token</code> 提高限额（标签页生命周期内有效）。</p>
-<h3>配置加载顺序</h3>
-<ol>
-<li>内置默认配置</li>
-<li><code>iris/config.json</code> 中的配置（覆盖默认值）</li>
-<li>用户本地存储的设置（如主题选择，会覆盖前两者）</li>
-</ol>
-<hr>
-<h2>二、运行时设置（用户级）</h2>
-<p>通过悬浮球菜单 → <strong>设置</strong> 打开设置面板，所有改动保存在浏览器 localStorage，仅对当前浏览器生效。</p>
-<p>设置面板分七个区块：<strong>语言 / 外观 / 字体 / 阅读 / 布局 / 工具与导出 / 存储</strong>（左侧分组导航，点击平滑滚动、滚动时自动同步高亮）。</p>
-<h3>语言</h3>
-<p>设置面板最顶部为「语言」选择：<strong>自动（跟随浏览器）/ 中文 / English</strong>。选择「自动」时按浏览器语言自动判定；切换立即生效并记忆，无需刷新。</p>
-<h3>外观</h3>
-<h4>预设主题</h4>
-<table>
-<thead>
-<tr>
-<th>ID</th>
-<th>名称</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>auto</code></td>
-<td>自动（跟随系统亮暗）</td>
-</tr>
-<tr>
-<td><code>default</code></td>
-<td>默认（紫粉渐变）</td>
-</tr>
-<tr>
-<td><code>github-light</code></td>
-<td>GitHub Light</td>
-</tr>
-<tr>
-<td><code>github-dark</code></td>
-<td>GitHub Dark</td>
-</tr>
-<tr>
-<td><code>notion</code></td>
-<td>Notion</td>
-</tr>
-<tr>
-<td><code>arc</code></td>
-<td>Arc Dark</td>
-</tr>
-<tr>
-<td><code>dracula</code></td>
-<td>Dracula</td>
-</tr>
-<tr>
-<td><code>nord</code></td>
-<td>Nord</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>选择预设主题会清空自定义配色。</p>
-</blockquote>
-<p><strong>自动主题（auto）</strong>：跟随系统 <code>prefers-color-scheme</code> 实时切换——系统亮色时使用「自动主题配对」中的亮色主题（默认紫粉渐变），暗色时使用暗色主题（默认 GitHub Dark）。配对可在设置面板中自由组合，系统亮暗变化时即时生效（含 PWA 桌面模式）。</p>
-<h4>自定义配色（取色器）</h4>
-<p>无需写 CSS，直接通过取色器调整：</p>
-<table>
-<thead>
-<tr>
-<th>分组</th>
-<th>可调变量</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>强调色</strong></td>
-<td><code>--color-accent-purple</code> / <code>--color-accent-pink</code> / <code>--color-accent-purple-deep</code></td>
-<td>主色及派生色</td>
-</tr>
-<tr>
-<td><strong>中性色</strong></td>
-<td><code>--color-bg</code> / <code>--color-surface</code> / <code>--color-border</code> / <code>--color-text</code> / <code>--color-text-muted</code></td>
-<td>背景、表面、文字与边框</td>
-</tr>
-</tbody></table>
-<p>通过中性色调整即可做出亮色或暗色主题。点击「重置」恢复默认值。</p>
-<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/theme-customization.md">主题定制</a>。</p>
-<h4>字体自定义</h4>
-<p>设置面板 → <strong>外观 → 字体</strong>，无需写 CSS 即可精细控制排版：</p>
-<table>
-<thead>
-<tr>
-<th>选项</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>远程字体 URL</td>
-<td>填写 Google Fonts 等 CSS URL 即可加载远程字体</td>
-</tr>
-<tr>
-<td>展示字体族</td>
-<td>标题衬线体，独立于正文</td>
-</tr>
-<tr>
-<td>正文字体族</td>
-<td>UI / 正文无衬线体</td>
-</tr>
-<tr>
-<td>字号细调</td>
-<td>UI / 正文 / H1 / H2 / H3 独立设置</td>
-</tr>
-<tr>
-<td>字重细调</td>
-<td>UI / 正文 / 展示体 / H1 / H2 / H3 独立选择（300 ~ 800）</td>
-</tr>
-<tr>
-<td>字色</td>
-<td>正文与次要文字颜色独立取色</td>
-</tr>
-<tr>
-<td>标题数字无衬线</td>
-<td>默认标题数字随标题字体（衬线）；开启后仅数字改用无衬线字形</td>
-</tr>
-<tr>
-<td>重置字体</td>
-<td>一键恢复全部字体默认值</td>
-</tr>
-</tbody></table>
-<h4>代码高亮主题</h4>
-<table>
-<thead>
-<tr>
-<th>主题 ID</th>
-<th>名称</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>github</code></td>
-<td>GitHub Light</td>
-<td>亮色</td>
-</tr>
-<tr>
-<td><code>github-dark</code></td>
-<td>GitHub Dark</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>atom-one-light</code></td>
-<td>Atom One Light</td>
-<td>亮色</td>
-</tr>
-<tr>
-<td><code>atom-one-dark</code></td>
-<td>Atom One Dark</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>monokai</code></td>
-<td>Monokai</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>dracula</code></td>
-<td>Dracula</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>nord</code></td>
-<td>Nord</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>vs2015</code></td>
-<td>VS 2015</td>
-<td>暗色</td>
-</tr>
-<tr>
-<td><code>solarized-light</code></td>
-<td>Solarized Light</td>
-<td>亮色</td>
-</tr>
-<tr>
-<td><code>solarized-dark</code></td>
-<td>Solarized Dark</td>
-<td>暗色</td>
-</tr>
-</tbody></table>
-<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md">代码高亮主题</a>。</p>
-<p>在「外观 → 代码高亮」中还可填写<strong>自定义高亮主题</strong>：加载外部 highlight.js 主题 CSS URL，回车应用（覆盖内置代码主题）。</p>
-<h4>自定义 CSS</h4>
-<p>在「外观 → 自定义 CSS」中填写<strong>外部样式表 URL</strong>，加载外部 CSS 文件进一步定制页面，回车应用。</p>
-<h3>阅读</h3>
-<h4>显示选项</h4>
-<table>
-<thead>
-<tr>
-<th>选项</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>显示阅读进度</td>
-<td>控制顶部进度条</td>
-</tr>
-<tr>
-<td>显示字数统计</td>
-<td>控制文件树中每个文件旁的字数显示</td>
-</tr>
-<tr>
-<td>折叠过长文件名</td>
-<td>开启时文件名过长省略号显示，关闭时完整展开（区域可横向滚动，隐藏滚动条）；默认关闭</td>
-</tr>
-<tr>
-<td>侧边栏文件夹默认展开</td>
-<td>开启时文件树中的文件夹全部展开显示；关闭时默认折叠，点击文件夹手动展开</td>
-</tr>
-<tr>
-<td>启用移动端手势</td>
-<td>触屏设备左右滑动正文切换上一篇 / 下一篇，自屏幕左缘右滑呼出侧边栏抽屉</td>
-</tr>
-<tr>
-<td>启用章节折叠</td>
-<td>H2 标题栏右侧出现折叠按钮，折叠状态按文档记忆、重开自动恢复</td>
-</tr>
-<tr>
-<td>对照阅读默认同步滚动</td>
-<td>打开双栏对照阅读时两栏按比例同步滚动（<code>Ctrl/⌘+Alt+S</code> 可随时开关本次会话）</td>
-</tr>
-<tr>
-<td>专注模式</td>
-<td>当前阅读段落保持高亮、其余内容淡化（也可在 <code>Ctrl/⌘+K</code> 命令面板开关）</td>
-</tr>
-</tbody></table>
-<h4>布局</h4>
-<table>
-<thead>
-<tr>
-<th>选项</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>侧边栏样式</td>
-<td>经典：贴边通栏、微色差微阴影无边框（默认）；悬浮卡片：四周留缝的圆角卡片（桌面端）</td>
-</tr>
-<tr>
-<td>内容区宽度</td>
-<td>滑杆调整 Markdown 正文最大宽度（600–1400px，默认 720px），拖动即时生效，可一键重置</td>
-</tr>
-<tr>
-<td>正文占满可用宽度</td>
-<td>开启后正文铺满窗口可用宽度，忽略上方宽度设置，适合宽屏显示器</td>
-</tr>
-<tr>
-<td>长表格延伸到右侧空白</td>
-<td>内容宽度设置保持不变，宽表格向右适度越过正文边界、利用右侧空白显示更多列</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>侧边栏折叠：桌面端可通过侧边栏标题栏的汉堡按钮或快捷键 <code>Ctrl/⌘ + B</code> 折叠/展开侧边栏，折叠后左上角浮现展开按钮，状态自动记忆（与移动端抽屉行为一致）。</p>
-<p>以上宽度与侧边栏操作均有键盘快捷键（<code>Ctrl/⌘ + Alt + =/-/0/F</code>、<code>Ctrl/⌘ + B</code>、<code>[</code> / <code>]</code> 等），完整清单见 <a href="https://theforeveriris.github.io/md-preview/docs/shortcuts.md">快捷键</a>。</p>
-</blockquote>
-<h3>工具与导出</h3>
-<h4>工具</h4>
-<table>
-<thead>
-<tr>
-<th>工具</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Markdown 编辑器</td>
-<td>在新标签页打开交互式编辑器（<code>?mode=editor</code>），支持语法快速输入和实时渲染</td>
-</tr>
-<tr>
-<td>波形生成器</td>
-<td>可视化生成 DG-LAB 郊狼 <code>.pulse</code> 波形文件（<code>?mode=pulsegen</code>），最多 20 个</td>
-</tr>
-</tbody></table>
-<h4>导出</h4>
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>下载 Markdown</td>
-<td>下载当前打开的 <code>.md</code> 源文件</td>
-</tr>
-<tr>
-<td>导出 PDF</td>
-<td>通过浏览器打印对话框导出为 PDF（自动隐藏侧边栏、悬浮球等 UI）</td>
-</tr>
-<tr>
-<td>导出 HTML</td>
-<td>保存为内联当前主题样式与全部本地 CSS 的单文件 HTML，双击即可离线查看</td>
-</tr>
-</tbody></table>
-<h4>离线缓存</h4>
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>全量离线缓存</td>
-<td>把文件树覆盖的所有文档拉进 PWA 缓存（带进度反馈），离线也能整站阅读；支持一键清除文档缓存。需 HTTPS 部署访问后可用</td>
-</tr>
-</tbody></table>
-<h3>存储</h3>
-<p>设置面板「存储」区块：<code>navigator.storage.estimate()</code> 用量条（已用 / 配额）、编辑器笔记本列表（逐条删除 / 全部清空，二次确认）、阅读历史与收藏 / 阅读位置的占用与一键清理（<code>iris/js/storage-manager.js</code>，打开面板时自动刷新）。</p>
-<h4>导航增强</h4>
-<ul>
-<li><strong>面包屑目录聚合页</strong>：面包屑与正文同宽对齐；点击中间路径进入该目录的聚合页，集中浏览目录下全部文档</li>
-<li><strong>标签聚合页</strong>：<code>#/tag/&lt;标签&gt;</code> 按标签聚合文档（见「标签系统」）</li>
-</ul>
-<hr>
-<h2>三、悬浮球菜单</h2>
-<p>悬浮球展开后提供 6 个快捷入口：</p>
-<table>
-<thead>
-<tr>
-<th>入口</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>回到顶部</td>
-<td>平滑滚动到文档顶部</td>
-</tr>
-<tr>
-<td>打开本地文件</td>
-<td>点击弹出选择面板：「选择文件…」可一次选中一个或多个本地 <code>.md</code> 文件预览（不写入 URL，刷新后丢失），未打开的文件进入侧边栏「本地文件」会话列表，可切换、移除或清空；「选择文件夹…」整体导入一个目录（File System Access API，旧浏览器回退 <code>webkitdirectory</code>），按目录树展示、文件夹可折叠、内容懒加载；最多收集 500 个文件，单文件 ≤ 10 MB。受浏览器限制，文件与文件夹需在面板中二选一进入</td>
-</tr>
-<tr>
-<td>扫码续读</td>
-<td>生成当前文档 + 阅读位置的二维码，手机扫码接着看</td>
-</tr>
-<tr>
-<td>安装到桌面</td>
-<td>PWA 安装（仅浏览器支持时显示）</td>
-</tr>
-<tr>
-<td>编辑此页</td>
-<td>在新标签页打开 GitHub 编辑界面</td>
-</tr>
-<tr>
-<td>设置</td>
-<td>打开设置面板</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>四、RSS 订阅</h2>
-<p>站点自动生成 RSS feed，订阅地址：</p>
-<pre><code>https://&lt;owner&gt;.github.io/&lt;repo&gt;/iris/data/feed.xml
-</code></pre>
-<p>详见 <a href="https://theforeveriris.github.io/md-preview/docs/rss.md">RSS 订阅</a>。</p>
 ]]></content:encoded>
     </item>
     <item>
@@ -3812,513 +4327,6 @@ python3 iris/scripts/pptx/main.py
 <li>浏览 <a href="https://theforeveriris.github.io/md-preview/docs/show.md">系统运行时截图</a> 了解完整界面效果</li>
 <li>浏览 <a href="https://theforeveriris.github.io/md-preview/docs/examples/">examples/</a> 目录查看所有支持的渲染功能</li>
 </ul>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>需求整理（候选功能）</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/requirements.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/requirements.md</guid>
-      <pubDate>Mon, 26 Oct 2026 20:22:33 GMT</pubDate>
-      <description>本文整理自一轮功能头脑风暴中筛选出的候选需求，作为排期参考。 与 功能路线图 的分工：roadmap 是维护者已确认的正式规划，本文是待评估的候选池；某项落地后，请移入 roadmap / README 特性清单，并从本表移除。 约定：优先级 P0（低风险快赢）→ P1（体感/内容增强）→ P2（攻坚）；工作量 小（≤ 半天）→ 中（13 天）→ 大（多日）。 --- 以下 25 项已全部落地（按</description>
-      <content:encoded><![CDATA[<h1>需求整理（候选功能）</h1>
-<p>本文整理自一轮功能头脑风暴中筛选出的候选需求，作为<strong>排期参考</strong>。</p>
-<p>与 <a href="https://theforeveriris.github.io/md-preview/docs/roadmap.md">功能路线图</a> 的分工：roadmap 是维护者已确认的正式规划，本文是<strong>待评估的候选池</strong>；某项落地后，请移入 roadmap / README 特性清单，并从本表移除。</p>
-<p>约定：<strong>优先级</strong> P0（低风险快赢）→ P1（体感/内容增强）→ P2（攻坚）；<strong>工作量</strong> 小（≤ 半天）→ 中（1~3 天）→ 大（多日）。</p>
-<hr>
-<h2>总览</h2>
-<p>以下 25 项<strong>已全部落地</strong>（按本文件开头的自我约定，落地后应移入 roadmap/README 并从本表移除；为保留追溯性暂整表保留，状态改为已完成）：</p>
-<table>
-<thead>
-<tr>
-<th>ID</th>
-<th>名称</th>
-<th>分组</th>
-<th>优先级</th>
-<th>工作量</th>
-<th>主要复用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>PERF-1</td>
-<td>可见即渲染（图表延迟初始化）</td>
-<td>性能与阅读体验</td>
-<td>P1</td>
-<td>中</td>
-<td><code>md-render.js</code> 调度器、<code>dom.js</code> 懒加载</td>
-</tr>
-<tr>
-<td>PERF-2</td>
-<td>屏外内容跳过布局（<code>content-visibility</code>）</td>
-<td>性能与阅读体验</td>
-<td>P1</td>
-<td>小</td>
-<td><code>markdown.css</code></td>
-</tr>
-<tr>
-<td>PERF-3</td>
-<td>长文档渐进渲染</td>
-<td>性能与阅读体验</td>
-<td>P2</td>
-<td>中</td>
-<td><code>markdown.js</code> 渲染管线</td>
-</tr>
-<tr>
-<td>PERF-4</td>
-<td>相邻文档预取</td>
-<td>性能与阅读体验</td>
-<td>P0</td>
-<td>小</td>
-<td><code>hover-preview.js</code>、<code>file-tree.js</code></td>
-</tr>
-<tr>
-<td>DATA-1</td>
-<td>CSV / TSV → 图表联动</td>
-<td>内容增强</td>
-<td>P0</td>
-<td>中</td>
-<td><code>csv-table.js</code>、<code>apexcharts.js</code></td>
-</tr>
-<tr>
-<td>CONTENT-1</td>
-<td>术语表悬浮解释</td>
-<td>内容增强</td>
-<td>P1</td>
-<td>中</td>
-<td><code>hover-preview.js</code>、frontmatter</td>
-</tr>
-<tr>
-<td>TOOL-1</td>
-<td>OpenAPI 交互文档</td>
-<td>API / 开发者工具</td>
-<td>P2</td>
-<td>中</td>
-<td>渲染器注册、<code>sandbox.js</code></td>
-</tr>
-<tr>
-<td>TOOL-2</td>
-<td><code>::: http</code> 实时请求块</td>
-<td>API / 开发者工具</td>
-<td>P1</td>
-<td>小</td>
-<td><code>json-tree.js</code>、highlight</td>
-</tr>
-<tr>
-<td>TOOL-3</td>
-<td>SQL DDL → ER 图</td>
-<td>API / 开发者工具</td>
-<td>P0</td>
-<td>小</td>
-<td><code>mermaid.js</code></td>
-</tr>
-<tr>
-<td>TOOL-4</td>
-<td>开发者小工具家族</td>
-<td>API / 开发者工具</td>
-<td>P0</td>
-<td>小</td>
-<td><code>plugins/loader.js</code></td>
-</tr>
-<tr>
-<td>CJK-1</td>
-<td>繁简一键切换</td>
-<td>中文与东亚特化</td>
-<td>P0</td>
-<td>小</td>
-<td><code>settings.js</code>、i18n</td>
-</tr>
-<tr>
-<td>CJK-2</td>
-<td>拼音注音（ruby）</td>
-<td>中文与东亚特化</td>
-<td>P1</td>
-<td>小</td>
-<td>渲染管线、<code>settings.js</code></td>
-</tr>
-<tr>
-<td>CJK-3</td>
-<td>竖排模式</td>
-<td>中文与东亚特化</td>
-<td>P2</td>
-<td>中</td>
-<td><code>markdown.css</code>、<code>theme-manager.js</code></td>
-</tr>
-<tr>
-<td>CJK-4</td>
-<td>CJK 排版渲染选项</td>
-<td>中文与东亚特化</td>
-<td>P1</td>
-<td>小</td>
-<td><code>settings.js</code>、<code>markdown.css</code></td>
-</tr>
-<tr>
-<td>BUILD-1</td>
-<td>中文排版 lint（构建期）</td>
-<td>构建与工程</td>
-<td>P0</td>
-<td>中</td>
-<td><code>build-*.js</code>、<code>smoke-test.yml</code></td>
-</tr>
-<tr>
-<td>GIT-1</td>
-<td>单篇文档历史 / blame</td>
-<td>Git 与协作</td>
-<td>P1</td>
-<td>中</td>
-<td>GitHub API、<code>diff.js</code></td>
-</tr>
-<tr>
-<td>GIT-2</td>
-<td>自动变更日志页</td>
-<td>Git 与协作</td>
-<td>P0</td>
-<td>小</td>
-<td><code>build-sitemap.js</code> 的 git 用法</td>
-</tr>
-<tr>
-<td>GIT-3</td>
-<td>文档变更订阅</td>
-<td>Git 与协作</td>
-<td>P2</td>
-<td>中</td>
-<td>GIT-1、<code>feed.xml</code> <code>lastmod</code></td>
-</tr>
-<tr>
-<td>NAV-1</td>
-<td>文档图谱 <code>#/graph</code></td>
-<td>导航与关系</td>
-<td>P1</td>
-<td>中</td>
-<td><code>build-links.js</code>、Cytoscape.js（已 vendor）</td>
-</tr>
-<tr>
-<td>NAV-2</td>
-<td>反向链接 + 相关文档</td>
-<td>导航与关系</td>
-<td>P1</td>
-<td>中</td>
-<td><code>links.json</code>、<code>hover-preview.js</code></td>
-</tr>
-<tr>
-<td>SEARCH-1</td>
-<td>繁简互通 + 拼音首字母</td>
-<td>搜索</td>
-<td>P1</td>
-<td>中</td>
-<td><code>build-search-index.js</code>、opencc、静态拼音表</td>
-</tr>
-<tr>
-<td>TYPE-1</td>
-<td>图 / 表自动编号 + 交叉引用</td>
-<td>排版</td>
-<td>P1</td>
-<td>中</td>
-<td>渲染管线、<code>section-collapse.js</code> 的锚点交互</td>
-</tr>
-<tr>
-<td>CONTENT-2</td>
-<td>时间线组件</td>
-<td>内容增强</td>
-<td>P0</td>
-<td>小</td>
-<td>插件系统</td>
-</tr>
-<tr>
-<td>UI-1</td>
-<td>脚注悬浮预览</td>
-<td>阅读体验</td>
-<td>P0</td>
-<td>小</td>
-<td><code>hover-preview.js</code>、<code>marked-footnote</code></td>
-</tr>
-<tr>
-<td>UI-2</td>
-<td>设置项搜索</td>
-<td>设置面板</td>
-<td>P0</td>
-<td>小</td>
-<td><code>settings.js</code>、<code>floating.css</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h2>落地进度</h2>
-<ul>
-<li><strong>批次 1（已完成）</strong>：PERF-4 相邻文档预取、PERF-2 屏外内容跳过布局、DATA-1 CSV→图表联动、TOOL-3 SQL DDL→ER 图、CJK-1 繁简切换、CJK-4 中文排版渲染选项、GIT-2 自动变更日志页。</li>
-<li><strong>批次 2（已完成）</strong>：PERF-1 可见即渲染（重型渲染器延迟初始化）、CONTENT-1 术语表悬浮、TOOL-2 <code>::: http</code> 实时请求块、TOOL-4 开发者小工具家族（regex / cron / time / color / hash / jwt）、BUILD-1 中文排版 lint、CJK-2 拼音注音（<code>{汉字|hán zì}</code>）。</li>
-<li><strong>批次 3（已完成）</strong>：PERF-3 长文档渐进渲染（渐进式代码高亮 + 屏外跳过布局）、TOOL-1 OpenAPI 交互文档、CJK-3 竖排模式、GIT-1 单篇历史 / blame、GIT-3 文档变更订阅。</li>
-</ul>
-<h2>候选池：本轮已落地</h2>
-<p>以下候选需求已实现，说明见 <a href="https://theforeveriris.github.io/md-preview/README.md#%E7%89%B9%E6%80%A7">README 特性清单</a> 与对应示例文档：</p>
-<table>
-<thead>
-<tr>
-<th>ID</th>
-<th>名称</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>NAV-1</td>
-<td>文档图谱 <code>#/graph</code></td>
-<td>入口=命令面板「文档图谱」；独立沉浸式整屏画布（无侧边栏按钮 / 标题栏）：节点=文档、边=站内链接、颜色=标签色相轮（出现 ≥3 次的标签各占一档色相、低频标签合并中性灰）、大小=被引用数、布局=concentric 同心圆（按连接数分层）；点击节点打开文档 / 被引 top-10 常显标题 / 悬停出该节点与邻居标签 / 搜索定位居中 / 标签高亮子图；左下角功能区=退回文档站·缩放·适配·重置·全屏·无链接文档显隐（默认隐藏）</td>
-</tr>
-<tr>
-<td>NAV-2</td>
-<td>反向链接与相关文档</td>
-<td>文末「被 N 篇引用」+「相关文档」（共享标签 × 互链加权，5 条可展开）</td>
-</tr>
-<tr>
-<td>SEARCH-1</td>
-<td>繁简互通 + 拼音首字母</td>
-<td>构建期写入 <code>searchText</code>，运行时零新增体积</td>
-</tr>
-<tr>
-<td>TYPE-1</td>
-<td>图 / 表自动编号与交叉引用</td>
-<td>连续编号、<code>&lt;!-- #fig:别名 --&gt;</code>、空链接自动填充、题注可复制锚点</td>
-</tr>
-<tr>
-<td>CONTENT-2</td>
-<td>时间线组件</td>
-<td><code>timeline</code> 代码块，状态色 + 今日标记线</td>
-</tr>
-<tr>
-<td>UI-1</td>
-<td>脚注悬浮预览</td>
-<td>悬停 / 聚焦角标浮出脚注原文</td>
-</tr>
-<tr>
-<td>UI-2</td>
-<td>设置项搜索</td>
-<td>行级过滤 + 隐藏空分组 + 唯一命中自动跳转</td>
-</tr>
-</tbody></table>
-<h2>一、性能与阅读体验</h2>
-<h3>PERF-1 可见即渲染（图表延迟初始化）</h3>
-<p><strong>目标</strong>：打开文档时不再一次性初始化全部重型渲染器；含 30 个 Mermaid 的文档首屏不再卡顿。</p>
-<p><strong>现状</strong>：<code>iris/js/md-render.js</code> 的 <code>runRenderers()</code> 会在文档注入后<strong>顺序 await 全部渲染器</strong>，每个渲染器自行查询 DOM、命中即加载 vendor 并初始化。</p>
-<p><strong>交互 / 验收</strong>：滚动到图表附近（预留 <code>rootMargin</code> 约 300px）才初始化；未初始化区显示轻量占位骨架（高度稳定，避免抖动）；滚动到含图区域时肉眼无可感延迟；一篇 30 图文档的 DOM 注入耗时显著下降。</p>
-<p><strong>实现要点</strong>：</p>
-<ul>
-<li>引入「可延迟渲染器」清单（mermaid / plantuml / apexcharts / katex / diff / geo / pkt / pptx / csv / json）。</li>
-<li>需要小改 <code>runRenderers</code>：支持<strong>按块调度</strong>（对每个命中的代码块容器注册 IntersectionObserver，进入视野后再调用对应渲染器并限定作用域），而非仅按渲染器整体执行。</li>
-<li>保持现有「单渲染器失败隔离」「顺序 await（避免 innerHTML 竞态）」语义。</li>
-</ul>
-<p><strong>依赖与风险</strong>：部分渲染器会整体重写容器 innerHTML（<code>embedded.js</code>），需确认延迟执行不影响其清理时序；打印（<code>Ctrl/⌘+P</code>）与「导出 PDF」前需强制初始化全部未渲染块。</p>
-<h3>PERF-2 屏外内容跳过布局（<code>content-visibility</code>）</h3>
-<p><strong>目标</strong>：长文档屏外区块跳过布局与绘制，滚动更顺滑。</p>
-<p><strong>实现要点</strong>：正文顶层区块加 <code>content-visibility: auto</code> + <code>contain-intrinsic-size</code>（给估算高度，减少滚动条跳动）。仅作用于 <code>.markdown-body</code> 下的块级子节点。</p>
-<p><strong>依赖与风险</strong>：会改变滚动高度估算，需回归「阅读位置续读」百分比、章节折叠、查找条（<code>find-bar.js</code>，TreeWalker 不依赖布局，影响小）与锚点跳转定位；<code>contain-intrinsic-size</code> 需实测调参。</p>
-<h3>PERF-3 长文档渐进渲染</h3>
-<p><strong>目标</strong>：超长文档先渲染首屏前 N 块，其余在空闲时补齐，首屏更快可见。</p>
-<p><strong>实现要点</strong>：<code>marked.parse</code> 产出整段 HTML 后，按顶层块切片：首屏块立即插入，剩余块用 <code>requestIdleCallback</code>（降级 <code>setTimeout</code>）分批插入，或先插入但依赖 PERF-2 的 <code>content-visibility</code> 推迟布局。</p>
-<p><strong>依赖与风险</strong>：与 PERF-1 / PERF-2 方案有重叠，<strong>建议三者合并为一个「渲染调度」改造</strong>统一设计，避免三套机制互相打架；需保证文档切换时取消上一轮未完成的空闲任务。</p>
-<h3>PERF-4 相邻文档预取</h3>
-<p><strong>目标</strong>：<code>[</code> / <code>]</code>、悬浮球上/下一篇、侧边栏点击时切换「瞬时」。</p>
-<p><strong>交互 / 验收</strong>：悬停文件树条目、空闲、或当前文档渲染完成后，预取上一/下一篇的 <code>.md</code>；切换时命中缓存直达。</p>
-<p><strong>实现要点</strong>：复用 <code>hover-preview.js</code> 的 fetch + 内存缓存思路；预取由 Service Worker 拦截入库，顺带提升离线命中。见上/下一篇顺序来源 <code>file-tree.js</code>（DFS）。</p>
-<p><strong>依赖与风险</strong>：注意并发上限与移动端流量；仅预取相邻 1~2 篇，不做全量。</p>
-<hr>
-<h2>二、内容增强</h2>
-<h3>DATA-1 CSV / TSV → 图表联动</h3>
-<p><strong>目标</strong>：交互表格上加「画成图」，一键生成 ApexCharts，免手写图表配置。</p>
-<p><strong>交互 / 验收</strong>：<code>```csv</code> 表格右上角新增「画成图」按钮 → 弹出图表类型选择（折线/柱状/饼/散点）→ 按列语义自动推断 X 轴与系列 → 内联渲染图表；另提供「复制为 <code>```apexcharts</code> 配置」，便于回写文档源码。</p>
-<p><strong>实现要点</strong>：<code>iris/js/renderers/csv-table.js</code> 已将数据解析到内存，直接构造 ApexCharts options；按需 <code>loadScriptOnce</code> 加载 apexcharts（复用 <code>renderers/apexcharts.js</code> 的加载方式）；类型推断：数值列 → 系列，首个非数值或时间列 → 类别轴。</p>
-<p><strong>复用</strong>：<code>csv-table.js</code>、<code>apexcharts.js</code>、<code>dom.js</code>。</p>
-<p><strong>依赖与风险</strong>：列类型误判需允许用户手动改；大数据表限制系列/点数。</p>
-<h3>CONTENT-1 术语表悬浮解释</h3>
-<p><strong>目标</strong>：frontmatter 声明术语，正文首次出现自动高亮并可悬浮查看解释。</p>
-<p><strong>交互 / 验收</strong>：frontmatter 写 <code>glossary: { OSPF: 开放最短路径优先… }</code>（或以独立术语文件提供）；正文命中术语加细下划线样式，鼠标悬浮弹出解释卡片（触屏长按）。</p>
-<p><strong>实现要点</strong>：渲染后对正文做一趟 TreeWalker 文本扫描（<strong>跳过</strong> <code>code</code> / <code>pre</code> / 链接 / 标题锚点 / 已处理节点），仅高亮<strong>首次</strong>出现，控制每篇命中上限以保证性能；卡片定位复用 <code>hover-preview.js</code> 的边界规避逻辑。</p>
-<p><strong>依赖与风险</strong>：文本节点切分会干扰其它后处理（锚点、查找条高亮），需确定执行顺序；术语过多时性能与视觉噪音需设置开关。</p>
-<hr>
-<h2>三、API / 开发者工具块</h2>
-<blockquote>
-<p>说明：本站定位为文档站，迟早要写 API / 开发者文档，目前<strong>完全没有工具类组件</strong>。本组为「文档语法糖 + 交互组件」，均为渲染器或插件形态。</p>
-</blockquote>
-<h3>TOOL-1 OpenAPI 交互文档</h3>
-<p><strong>目标</strong>：贴 <code>swagger.json</code> / <code>openapi.yaml</code> → 渲染接口文档 + 在线「Try it」发请求看响应。</p>
-<p><strong>交互 / 验收</strong>：<code>```openapi</code> 块解析为按 tag 分组的接口列表（路径、方法、参数、请求体、响应码/示例），每接口带「试一下」按钮，填参后显示状态码、响应头与响应体。</p>
-<p><strong>实现要点</strong>：新增渲染器 <code>renderers/openapi.js</code>；YAML 解析按需加载 <code>js-yaml</code>（mermaid vendor 内已含，但不对外暴露，需独立引入并按需加载）；请求体与响应体复用 <code>json-tree.js</code> 展示；「Try it」用 <code>fetch</code>。</p>
-<p><strong>依赖与风险</strong>：跨域（CORS）会导致部分接口无法直连，需明示「仅支持允许跨域的端点」；鉴权参数如何传递（header/query）需设计；不做自动执行，默认点击才发请求。</p>
-<h3>TOOL-2 <code>::: http</code> 实时请求块</h3>
-<p><strong>目标</strong>：文档内贴一个请求，读者点一下看真实返回。</p>
-<p><strong>交互 / 验收</strong>：<code>::: http GET https://… :::</code> 渲染为请求卡片（方法 + URL + 「发送」按钮）→ 展示状态码、耗时、响应头、响应体（JSON 走折叠树，其它走高亮）。</p>
-<p><strong>实现要点</strong>：新块语法 + 渲染器；默认方法 GET；响应展示复用 <code>json-tree.js</code> 与 highlight；与 TOOL-1 共用请求/展示组件。</p>
-<p><strong>依赖与风险</strong>：CORS 同上；默认仅 GET，避免危险方法误触发。</p>
-<h3>TOOL-3 SQL DDL → ER 图</h3>
-<p><strong>目标</strong>：贴建表语句自动生成 ER 图。</p>
-<p><strong>交互 / 验收</strong>：<code>```sql ddl</code>（或 <code>```erd</code>）解析 <code>CREATE TABLE</code> + 外键 → 生成 Mermaid <code>erDiagram</code> 源码 → 复用 mermaid 渲染器出图；解析失败回退普通 SQL 高亮。</p>
-<p><strong>实现要点</strong>：正则解析表名、字段（类型/主键/非空）、<code>FOREIGN KEY</code> / <code>REFERENCES</code> 关系 → 拼 <code>erDiagram</code> 文本 → 交给 <code>renderers/mermaid.js</code>；提供「复制 Mermaid 源码」。</p>
-<p><strong>复用</strong>：<code>mermaid.js</code>（按需加载已有）。</p>
-<p><strong>依赖与风险</strong>：复杂 DDL（复合键、约束、方言）解析有限，需明确回退。</p>
-<h3>TOOL-4 开发者小工具家族</h3>
-<p><strong>目标</strong>：攒一批零依赖、即插即用的文档内小工具。</p>
-<p><strong>清单</strong>（可分批落地）：</p>
-<table>
-<thead>
-<tr>
-<th>工具</th>
-<th>语法</th>
-<th>说明</th>
-<th>实现</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>正则测试</td>
-<td><code>::: regex</code></td>
-<td>输入正则 + 样本，实时高亮匹配、捕获组</td>
-<td>原生 RegExp</td>
-</tr>
-<tr>
-<td>Cron 解释</td>
-<td><code>::: cron</code></td>
-<td><code>*/5 * * * *</code> → 人类可读描述</td>
-<td>轻量解析表</td>
-</tr>
-<tr>
-<td>时间戳/时区</td>
-<td><code>::: time</code></td>
-<td>时间戳 ↔ 各时区对照，实时刷新</td>
-<td><code>Intl.DateTimeFormat</code></td>
-</tr>
-<tr>
-<td>JWT 解析</td>
-<td><code>::: jwt</code></td>
-<td>解码 header/payload，标注过期</td>
-<td>base64 + JSON</td>
-</tr>
-<tr>
-<td>哈希</td>
-<td><code>::: hash</code></td>
-<td>文本 → MD5/SHA-1/SHA-256</td>
-<td><code>crypto.subtle</code></td>
-</tr>
-<tr>
-<td>色板/对比度</td>
-<td><code>::: color</code></td>
-<td>色值 → 色板 + WCAG 对比度检查</td>
-<td>原生计算</td>
-</tr>
-</tbody></table>
-<p><strong>实现要点</strong>：走<strong>插件系统</strong>（<code>iris/plugins/loader.js</code>，参考 qrcode / countdown / colorcard 插件），每个工具一个插件文件，零新依赖优先。</p>
-<p><strong>依赖与风险</strong>：MD5 需自实现或引入（<code>crypto.subtle</code> 不含 MD5）；工具语义都应可在文档静态阅读（不可用时降级为普通代码块）。</p>
-<hr>
-<h2>四、中文与东亚特化</h2>
-<blockquote>
-<p>说明：本项目为<strong>中文优先</strong>文档站，但缺少中文/东亚特有的阅读与排版能力。本组是相对其他文档站最具辨识度的方向。</p>
-</blockquote>
-<h3>CJK-1 繁简一键切换</h3>
-<p><strong>目标</strong>：正文繁体 ↔ 简体切换（阅读向，不改源文件）。</p>
-<p><strong>交互 / 验收</strong>：设置面板「阅读」区块加开关；切换后正文即时转换并记忆偏好；代码块、URL、<code>code</code> 内容<strong>不转换</strong>。</p>
-<p><strong>实现要点</strong>：引入 <code>opencc-js</code>（按需加载、可 vendor），对渲染后正文文本节点做转换，跳过 <code>code</code> / <code>pre</code> / <code>script</code> / 链接 URL；随主题同款持久化（<code>localStorage</code>）。</p>
-<p><strong>依赖与风险</strong>：字典体积需评估（懒加载）；是否同时转换 UI 文案需决策（建议仅正文）。</p>
-<h3>CJK-2 拼音注音（ruby）</h3>
-<p><strong>目标</strong>：为生僻字 / 学习类内容提供注音。</p>
-<p><strong>交互 / 验收</strong>：支持作者手写注音语法（如 <code>{漢字|hàn zì}</code> 或复用既有语法约定）渲染为 <code>&lt;ruby&gt;</code>；可选「自动注音」对正文汉字加拼音。</p>
-<p><strong>实现要点</strong>：作者语法零依赖，优先实现；自动注音需拼音数据（如 pinyin-pro），体量大，按需加载并仅对指定区块启用。</p>
-<p><strong>依赖与风险</strong>：自动注音体积与多音字准确度；默认关闭，避免全站注音噪音。</p>
-<h3>CJK-3 竖排模式</h3>
-<p><strong>目标</strong>：正文竖排阅读，服务于文言/诗词/排版展示场景。</p>
-<p><strong>交互 / 验收</strong>：设置面板或悬浮球提供「竖排」开关；正文 <code>writing-mode: vertical-rl</code>，滚动方向随之变化；代码块、表格、图表保持横向容器。</p>
-<p><strong>实现要点</strong>：作用于 <code>.markdown-body</code> 的 CSS；<code>theme-manager.js</code> / <code>settings.js</code> 记忆状态；处理滚动进度、锚点定位、灯箱与图表在竖排下的布局。</p>
-<p><strong>依赖与风险</strong>：滚动方向改变会影响「阅读位置续读」「上/下一篇手势」；<code>vertical</code> 与部分组件兼容性需逐一回归。观感独特，属高辨识度彩蛋级功能。</p>
-<h3>CJK-4 CJK 排版渲染选项</h3>
-<p><strong>目标</strong>：把「中文排版讲究」做成可开关的渲染选项。</p>
-<p><strong>清单</strong>：中西文自动间距、标点悬挂（<code>hanging-punctuation</code>）、行首/行尾禁则（避免行首出现 <code>，。」</code> 等）、首行缩进、标点挤压。</p>
-<p><strong>实现要点</strong>：多数为 <code>.markdown-body</code> 上的 CSS 变量/类；<code>text-spacing</code> 等新属性支持度有限时，用轻量 JS 在标点后插入零宽间距降级；统一挂到设置面板新增的「排版」区块，状态持久化。</p>
-<p><strong>复用</strong>：<code>settings.js</code>、<code>markdown.css</code>、i18n。</p>
-<hr>
-<h2>五、构建与工程</h2>
-<h3>BUILD-1 中文排版 lint（构建期）</h3>
-<p><strong>目标</strong>：中文文档的排版规范检查与自动修复，CI 可卡门禁；后续可复用于编辑器实时提示。</p>
-<p><strong>检查规则</strong>：</p>
-<ul>
-<li>中英文 / 中文与数字之间缺少空格；</li>
-<li>全角 / 半角标点混用、中文用 <code>“”</code> 而非 <code>&quot;&quot;</code>、单引号 <code>‘’</code>；</li>
-<li>行首禁则（行首不出现 <code>，。！？、）」』</code> 等）；</li>
-<li>中英混排括号配对与嵌套。</li>
-</ul>
-<p><strong>交互 / 验收</strong>：新增 <code>iris/scripts/lint-cjk.js</code>，默认<strong>只报告不修改</strong>；<code>--fix</code> 显式自动修复；由独立工作流 <code>cjk-typography-lint.yml</code> 接入 CI（首次全量、之后增量，main 上自动修复并由机器人提交，PR 上仅提示）。<code>smoke-test.yml</code> 中保留一条告警级调用。</p>
-<p><strong>实现要点</strong>：扫描仓库内全部 Markdown（<code>git ls-files &#39;*.md&#39;</code> 为准，与 <code>link-check.js</code> 同构）；<strong>必须跳过</strong>代码围栏、行内代码、URL、frontmatter、HTML 注释（复用 <code>link-check.js</code> 的围栏/转义处理思路）；修复逐条可定位（文件：行：列）。</p>
-<p><strong>依赖与风险</strong>：自动修复会产生大范围 diff，故默认关闭 <code>--fix</code>；规则需可配置白名单豁免（如刻意保留的半角括号）。</p>
-<hr>
-<h2>六、Git 与协作</h2>
-<blockquote>
-<p>说明：<code>lastmod</code> 已从 git 提取（<code>build-sitemap.js</code>），但界面上完全不可见。</p>
-</blockquote>
-<h3>GIT-1 单篇文档历史 / blame</h3>
-<p><strong>目标</strong>：文档页可查看「谁最后改的、改了什么」，内嵌 diff。</p>
-<p><strong>交互 / 验收</strong>：文档标题区或悬浮球加「历史」入口 → 列出该文件的提交时间线（作者、时间、信息）→ 点条目显示该次提交的 diff 视图。</p>
-<p><strong>实现要点</strong>：GitHub API <code>GET /repos/{owner}/{repo}/commits?path=&lt;path&gt;</code> 与 <code>/commits/{sha}</code>；<code>owner</code>/<code>repo</code> 来自 <code>iris/config.js</code>；diff 展示复用 <code>renderers/diff.js</code>（diff2html）；结果内存缓存。</p>
-<p><strong>依赖与风险</strong>：未鉴权 API 限流（60 次/时）→ 需缓存 + 可选填 GitHub Token；私有仓库必须带 Token；离线 / API 不可用时静默降级隐藏入口。</p>
-<h3>GIT-2 自动变更日志页</h3>
-<p><strong>目标</strong>：从 git log 生成站点变更日志页。</p>
-<p><strong>交互 / 验收</strong>：构建后生成变更日志（如 <code>docs/changelog.md</code> 或 <code>iris/data/changelog.json</code> + <code>#/changelog</code> 路由），按时间倒序列出变更。</p>
-<p><strong>实现要点</strong>：新增 <code>iris/scripts/build-changelog.js</code>，取 git log（复用 <code>build-sitemap.js</code> 的 git 调用）；可只收录 <code>docs/**</code> 变更；接入 CI（参考 <code>build-feed.yml</code>：产物有变化才提交回仓库）。</p>
-<p><strong>复用</strong>：<code>build-sitemap.js</code>、<code>build-feed.yml</code> 工作流模式。</p>
-<h3>GIT-3 文档变更订阅</h3>
-<p><strong>目标</strong>：关注某篇文档，它有更新时在界面提示并可看新旧 diff（「watch this doc」）。</p>
-<p><strong>交互 / 验收</strong>：文档页「关注」按钮；关注列表存本地；打开站点时检查关注文档的最新提交/更新时间，有更新则显示标记，点击查看变更。</p>
-<p><strong>实现要点</strong>：本地存 <code>{ path: lastSeenCommit }</code>；检查优先用 <code>file-tree.json</code> / <code>sitemap</code> 的 <code>lastmod</code>（离线可用），需要 diff 时再走 GIT-1 的 API。</p>
-<p><strong>依赖与风险</strong>：依赖 GIT-1；限流与离线降级同 GIT-1。</p>
-<hr>
-<h2>建议落地批次</h2>
-<table>
-<thead>
-<tr>
-<th>批次</th>
-<th>目标</th>
-<th>需求</th>
-<th>理由</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>批次 1</td>
-<td>低风险快赢</td>
-<td>PERF-4、PERF-2、DATA-1、TOOL-3、CJK-1、CJK-4、GIT-2</td>
-<td>改动面小、几乎零新依赖，受众感知强</td>
-</tr>
-<tr>
-<td>批次 2</td>
-<td>体感与内容</td>
-<td>PERF-1、CONTENT-1、TOOL-2、TOOL-4、BUILD-1、CJK-2</td>
-<td>体感提升最大的性能项 + 内容增强</td>
-</tr>
-<tr>
-<td>批次 3</td>
-<td>攻坚</td>
-<td>PERF-3、TOOL-1、CJK-3、GIT-1、GIT-3</td>
-<td>需重构 / 外部依赖 / 更多边界回归</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>横切要求（每条需求都要满足）</h2>
-<ul>
-<li><strong>i18n</strong>：新增 UI 文案一律进 <code>iris/js/i18n.js</code>（zh/en 双份），静态文案用 <code>data-i18n*</code>，动态走 <code>t(key, fallback)</code>。</li>
-<li><strong>无障碍</strong>：新组件需可键盘操作、选区/焦点合理、必要处加 <code>aria-*</code>。</li>
-<li><strong>冒烟测试</strong>：新增渲染器 / 插件 / 构建脚本 / i18n key 需同步更新 <code>iris/scripts/smoke-test.js</code> 与 <code>index.html</code>，避免 CI 失败。</li>
-<li><strong>懒加载与 PWA</strong>：新增 vendor 库必须走 <code>dom.js</code> 的 <code>loadScriptOnce</code> / <code>loadStyleOnce</code>，并纳入 <code>precache-manifest</code> 与 SW 策略，不得拖累首屏。</li>
-<li><strong>渲染器 / 插件约定</strong>：渲染器注册到 <code>window.MarkdownPreview.renderers.&lt;id&gt;</code> 并在 <code>index.html</code> 按序引入；文档级工具优先走插件系统。</li>
-<li><strong>性能预算</strong>：首屏体积与主线程占用不得劣化（现为约 1 MB / 按需加载），改渲染管线时以 Debug Panel（<code>?debug=1</code>）实测为准。</li>
-</ul>
-<hr>
-<h2>待确认 / 决策点（均已随功能落地有答案）</h2>
-<ol>
-<li><del><strong>渲染调度合并</strong></del> ✅ 已定：PERF-1 以 md-render.js 的 <code>runRenderers</code> 统一调度 +
-IntersectionObserver 懒加载实现（PERF-3 渐进渲染经 <code>highlightCodeBlocksProgressive</code>
-同款思路覆盖）；未再合并为单次重构。</li>
-<li><del><strong>跨域请求类组件</strong></del> ✅ 已定：不内置代理；在示例文档（devtools-examples）与
-requirements 正文中向读者解释「仅支持允许跨域的端点」（见产品已知限制）。</li>
-<li><del><strong>GitHub API 鉴权</strong></del> ✅ 已定：git-history 支持 Token（sessionStorage 存储，
-不再明文存 localStorage）；匿名 60 次/时配额靠 ETag 条件请求 + 10 分钟限频缓解；
-私有仓库由用户自行配 Token。</li>
-<li><del><strong>繁简范围</strong></del> ✅ 已定：正文 + 文件树标题等 UI 同步切换（cjk.js afterRender 覆盖
-主文档；搜索索引构建期繁简双 token）。</li>
-<li><del><strong>CJK lint 门禁</strong></del> ✅ 已定：advisory（smoke-test 中 continue-on-error 预跑 +
-专用工作流 main 上自动修复、PR 仅提示），<code>--fix</code> 已在 cjk-typography-lint.yml。</li>
-<li><del><strong>术语表来源</strong></del> ✅ 已定：frontmatter 内联（glossary 渲染器直接解析
-pre.code-block 代码块内容，无需独立术语文件）。</li>
-</ol>
 ]]></content:encoded>
     </item>
     <item>
