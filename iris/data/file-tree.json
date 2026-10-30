@@ -83,6 +83,15 @@
             ]
           },
           {
+            "name": "chinese-classics-example.txt",
+            "type": "file",
+            "path": "docs/examples/chinese-classics-example.txt",
+            "wordCount": 929,
+            "created": 0,
+            "modified": 0,
+            "title": "chinese-classics-example"
+          },
+          {
             "name": "code-tabs-examples.md",
             "type": "file",
             "path": "docs/examples/code-tabs-examples.md",
@@ -640,15 +649,6 @@
             ]
           },
           {
-            "name": "plaintext-example.txt",
-            "type": "file",
-            "path": "docs/examples/plaintext-example.txt",
-            "wordCount": 174,
-            "created": 0,
-            "modified": 0,
-            "title": "plaintext-example"
-          },
-          {
             "name": "plantuml-examples.md",
             "type": "file",
             "path": "docs/examples/plantuml-examples.md",
@@ -886,7 +886,7 @@
             ]
           }
         ],
-        "wordCount": 13728,
+        "wordCount": 14483,
         "created": 1779157467,
         "modified": 1793287717
       },
@@ -933,7 +933,7 @@
         "path": "docs/configuration.md",
         "wordCount": 2158,
         "created": 1779600314,
-        "modified": 1793131083,
+        "modified": 1793322336,
         "title": "配置参考",
         "tags": [
           "配置"
@@ -941,7 +941,7 @@
         "contributors": [
           {
             "name": "theforeveriris",
-            "count": 15
+            "count": 16
           },
           {
             "name": "github-actions[bot]",
@@ -1013,7 +1013,7 @@
         "path": "docs/requirements.md",
         "wordCount": 1908,
         "created": 1792355917,
-        "modified": 1793046153,
+        "modified": 1793322336,
         "title": "需求整理（候选功能）",
         "tags": [
           "规划"
@@ -1021,7 +1021,7 @@
         "contributors": [
           {
             "name": "theforeveriris",
-            "count": 8
+            "count": 9
           }
         ]
       },
@@ -1123,9 +1123,9 @@
         ]
       }
     ],
-    "wordCount": 26198,
+    "wordCount": 26953,
     "created": 1779157467,
-    "modified": 1793287861
+    "modified": 1793322336
   },
   {
     "name": "iris",

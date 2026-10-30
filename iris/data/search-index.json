@@ -76,6 +76,12 @@
     ]
   },
   {
+    "path": "docs/examples/chinese-classics-example.txt",
+    "title": "docs/examples/chinese-classics-example",
+    "preview": "《桃花源记》 晋·陶渊明 晋太元中，武陵人捕鱼为业。缘溪行，忘路之远近。忽逢桃花林，夹岸数百步，中无杂树，芳草鲜美，落英缤纷。渔人甚异之。复前行，欲穷其林。 林尽水源，便得一山，山有小口，仿佛若有光。便舍船，从口入。初极狭，才通人。复行数十步，豁然开朗。土地平旷，屋舍俨然，有良田、美池、桑竹之属。阡陌交通，鸡犬相闻。其中往来种作，男女衣着，悉如外人。黄发垂髫，并怡然自乐。 见渔人，乃大惊，问所从来",
+    "searchText": "docs/examples/chinese-classics-example 《桃花源记》 晋·陶渊明 晋太元中，武陵人捕鱼为业。缘溪行，忘路之远近。忽逢桃花林，夹岸数百步，中无杂树，芳草鲜美，落英缤纷。渔人甚异之。复前行，欲穷其林。 林尽水源，便得一山，山有小口，仿佛若有光。便舍船，从口入。初极狭，才通人。复行数十步，豁然开朗。土地平旷，屋舍俨然，有良田、美池、桑竹之属。阡陌交通，鸡犬相闻。其中往来种作，男女衣着，悉如外人。黄发垂髫，并怡然自乐。 见渔人，乃大惊，问所从来 docs/examples/chinese-classics-example.txt docs/examples/chinese-classics-example"
+  },
+  {
     "path": "docs/examples/code-tabs-examples.md",
     "title": "代码选项卡使用示例",
     "preview": "代码选项卡使用示例 使用 ::: code-tabs 语法可以创建多语言代码选项卡，点击顶部标签切换不同语言的代码示例。 --- 基础用法 源码： js function greet(name) { return Hello, ${name}!; } console.log(greet('World')); python def greet(name): return f\"Hello, {name",
@@ -347,12 +353,6 @@
       "网络",
       "配置"
     ]
-  },
-  {
-    "path": "docs/examples/plaintext-example.txt",
-    "title": "docs/examples/plaintext-example",
-    "preview": "纯文本示例（.txt） 这是一个纯文本文件，没有 frontmatter、没有特殊标记。 站点把它当作普通 Markdown 渲染：标题、列表、引用、表格、代码块都能用， 但不会去解析元数据，也不会给它套代码块的样式。 下面是一些普通的 Markdown 写法： - 列表项一 - 列表项二 - 嵌套项 - 列表项三 一段引用： > 纯文本也能当文档读。 一个小表格： | 字段 | 说明 | |--",
-    "searchText": "docs/examples/plaintext-example 纯文本示例（.txt） 这是一个纯文本文件，没有 frontmatter、没有特殊标记。 站点把它当作普通 Markdown 渲染：标题、列表、引用、表格、代码块都能用， 但不会去解析元数据，也不会给它套代码块的样式。 下面是一些普通的 Markdown 写法： - 列表项一 - 列表项二 - 嵌套项 - 列表项三 一段引用： > 纯文本也能当文档读。 一个小表格： | 字段 | 说明 | |-- docs/examples/plaintext-example.txt docs/examples/plaintext-example"
   },
   {
     "path": "docs/examples/plantuml-examples.md",
