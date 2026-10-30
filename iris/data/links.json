@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-30T18:33:09.714Z",
+  "generatedAt": "2026-10-30T20:03:38.845Z",
   "count": {
     "nodes": 67,
     "edges": 99
@@ -88,7 +88,7 @@
       "docs/shortcuts.md": 2,
       "docs/roadmap.md": 3,
       "docs/getting-started.md": 2,
-      "docs/configuration.md": 2,
+      "docs/configuration.md": 3,
       "docs/show.md": 1,
       "docs/editor.md": 1,
       "docs/theme-customization.md": 1,
