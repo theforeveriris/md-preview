@@ -14,7 +14,7 @@
  *     file-tree/prod.js, codemirror/, cytoscape/, highlight.js/highlight.min.js,
  *     highlight.js/styles/github.css
  *   - iris/{styles.css, app.js, config.json}
- *   - 根目录：./, ./index.html, ./manifest.json
+ *   - 根目录：./, ./index.html, ./404.html, ./manifest.json
  *
  * 排除规则（不预缓存，按需加载）：
  *   - iris/scripts/         构建脚本
@@ -153,6 +153,7 @@ function buildManifest() {
   const rootUrls = [
     './',
     './index.html',
+    './404.html',
     './manifest.json',
   ];
 

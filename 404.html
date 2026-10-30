@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="default" data-mode="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 · 页面走丢了 | Markdown Preview</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="iris/icons/icon.svg" id="favicon">
+
+  <script>
+    // 主题同步：404 页是独立页面（GitHub Pages 对任何不存在的路径都返回它），
+    // 所以要自己把用户在站点里选的主题 / 自定义配色搬过来，
+    // 否则会出现「站内是暗色，跳到 404 变成亮色」的割裂感。
+    (function () {
+      var DARK = ['github-dark', 'arc', 'dracula', 'nord', 'blueprint',
+        'terminal', 'neon', 'sepia', 'graphite', 'aurora', 'blackboard'];
+      var t = '';
+      try { t = localStorage.getItem('md-preview-theme') || ''; } catch (e) { /* 隐私模式 */ }
+      if (t === 'auto') {
+        var l = 'default', d = 'github-dark';
+        try {
+          l = localStorage.getItem('md-preview-theme-light') || l;
+          d = localStorage.getItem('md-preview-theme-dark') || d;
+        } catch (e) { /* ignore */ }
+        var dark = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
+        t = dark ? d : l;
+      }
+      if (!t) t = 'default';
+      document.documentElement.setAttribute('data-theme', t);
+      document.documentElement.setAttribute('data-mode', DARK.indexOf(t) >= 0 ? 'dark' : 'light');
+
+      // 自定义配色（设置面板「自定义配色」）
+      try {
+        var s = JSON.parse(localStorage.getItem('md-preview-settings') || '{}');
+        var colors = (s && s.customColors) || {};
+        Object.keys(colors).forEach(function (k) {
+          if (colors[k]) document.documentElement.style.setProperty(k, colors[k]);
+        });
+      } catch (e) { /* ignore */ }
+
+      // 自定义 CSS
+      try {
+        var css = localStorage.getItem('md-preview-custom-css');
+        if (css) {
+          var link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = css;
+          document.head.appendChild(link);
+        }
+      } catch (e) { /* ignore */ }
+    })();
+  </script>
+
+  <!-- 顺序与 index.html 保持一致：先站点基础样式，再主题变量。
+       两者特异度相同（:root 与 [data-theme] 都是 0,1,0），
+       后加载的才生效，顺序反了主题变量会被 base.css 的默认值盖掉。 -->
+  <link rel="stylesheet" href="iris/styles.css" id="site-css">
+  <link rel="stylesheet" href="iris/css/themes/themes.css" id="theme-css">
+  <style>
+    /* 404 页自有布局：只用站点的 CSS 变量，所以跟着主题走 */
+    :root { color-scheme: light dark; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      font-family: var(--font-body, 'IBM Plex Sans', -apple-system, sans-serif);
+      background: var(--color-bg, #fafafa);
+      color: var(--color-text, #2d2d2d);
+      line-height: 1.7;
+    }
+    .nf-wrap { width: 100%; max-width: 620px; }
+    .nf-head { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+    .nf-head img { width: 34px; height: 34px; display: block; }
+    .nf-brand {
+      font-family: var(--font-display, Georgia, serif);
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: .02em;
+    }
+    .nf-code {
+      font-family: var(--font-display, Georgia, serif);
+      font-size: clamp(4rem, 18vw, 7.5rem);
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--color-accent-purple, #8B5CF6);
+      margin: 0;
+    }
+    .nf-title {
+      font-family: var(--font-display, Georgia, serif);
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 12px 0 8px;
+    }
+    .nf-desc { color: var(--color-text-muted, #999); margin: 0 0 24px; font-size: .95rem; }
+    .nf-desc code {
+      font-family: 'SF Mono', Consolas, monospace;
+      background: color-mix(in srgb, var(--color-accent-purple, #8B5CF6) 12%, transparent);
+      padding: .1em .4em;
+      border-radius: 4px;
+      font-size: .85em;
+      color: var(--color-text, #2d2d2d);
+    }
+    .nf-search { position: relative; margin-bottom: 22px; }
+    .nf-search input {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 1rem;
+      font-family: inherit;
+      color: var(--color-text, #2d2d2d);
+      background: var(--color-surface, #fff);
+      border: 1px solid var(--color-border, #e0e0e0);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+    .nf-search input:focus {
+      border-color: var(--color-accent-purple, #8B5CF6);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent-purple, #8B5CF6) 20%, transparent);
+    }
+    .nf-results { list-style: none; margin: 10px 0 0; padding: 0; }
+    .nf-results li { margin-bottom: 4px; }
+    .nf-results a {
+      display: block;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--color-border, #e0e0e0);
+      background: var(--color-surface, #fff);
+      color: var(--color-text, #2d2d2d);
+      text-decoration: none;
+      font-size: .9rem;
+      transition: border-color .15s ease, background .15s ease;
+    }
+    .nf-results a:hover {
+      border-color: var(--color-accent-purple, #8B5CF6);
+      background: var(--color-hover, rgba(139,92,246,.08));
+    }
+    .nf-results .nf-path {
+      display: block;
+      font-size: .75rem;
+      color: var(--color-text-muted, #999);
+      font-family: 'SF Mono', Consolas, monospace;
+    }
+    .nf-empty { color: var(--color-text-muted, #999); font-size: .85rem; padding: 6px 2px; }
+    .nf-links { display: flex; flex-wrap: wrap; gap: 10px; }
+    .nf-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--color-border, #e0e0e0);
+      background: var(--color-surface, #fff);
+      color: var(--color-text, #2d2d2d);
+      text-decoration: none;
+      font-size: .88rem;
+      transition: border-color .15s ease, transform .15s ease;
+    }
+    .nf-links a:hover {
+      border-color: var(--color-accent-purple, #8B5CF6);
+      transform: translateY(-1px);
+    }
+    .nf-foot {
+      margin-top: 30px;
+      padding-top: 16px;
+      border-top: 1px solid var(--color-border, #e0e0e0);
+      color: var(--color-text-muted, #999);
+      font-size: .8rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      justify-content: space-between;
+    }
+    @media (max-width: 520px) {
+      .nf-code { font-size: 4.5rem; }
+      .nf-links a { flex: 1 1 calc(50% - 10px); justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <main class="nf-wrap">
+    <div class="nf-head">
+      <img src="iris/icons/icon.svg" alt="" width="34" height="34">
+      <span class="nf-brand">Markdown Preview</span>
+    </div>
+
+    <p class="nf-code">404</p>
+    <h1 class="nf-title">这一页走丢了</h1>
+    <p class="nf-desc">
+      找不到 <code id="nf-path"></code>。它可能已经被改名、删除，或者链接里多了几个字符。
+      下面可以搜文档，或者从这些入口重新出发。
+    </p>
+
+    <div class="nf-search">
+      <input id="nf-input" type="search" placeholder="搜索文档标题或文件名…" autocomplete="off" aria-label="搜索文档">
+      <ul class="nf-results" id="nf-results"></ul>
+    </div>
+
+    <nav class="nf-links" id="nf-links">
+      <a href="./" data-link="home">回到首页</a>
+      <a href="./index.html#/index" data-link="index">全站目录</a>
+      <a href="./index.html#/graph" data-link="graph">文档图谱</a>
+      <a href="./index.html#/tags" data-link="tags">标签云</a>
+      <a href="./index.html#/orphan" data-link="orphan">孤立文档</a>
+    </nav>
+
+    <footer class="nf-foot">
+      <span id="nf-last"></span>
+      <span>Markdown Preview · 静态文档站</span>
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      // 站点根路径：与站点内部 getBasePath() 用同一套判定；
+      // 404 页可能被服务在任意缺失路径下，再兜一层逐级探测。
+      var path = location.pathname;
+      var base = path.indexOf('/md-preview/') >= 0 ? '/md-preview/' : '/';
+
+      function withBase(rel) { return base + rel; }
+
+      var input = document.getElementById('nf-input');
+      var results = document.getElementById('nf-results');
+      var docs = null;
+
+      // 把缺失路径回显出来（去掉结尾斜杠，路径太长时截断）
+      var el = document.getElementById('nf-path');
+      var shown = decodeURIComponent(path).replace(/\/$/, '');
+      el.textContent = shown.length > 60 ? '…' + shown.slice(-57) : (shown || '/');
+
+      // 首页 / 目录等入口要指向站点根
+      document.querySelectorAll('[data-link]').forEach(function (a) {
+        a.setAttribute('href', withBase(a.getAttribute('href').replace(/^\.\//, '')));
+      });
+      var fav = document.getElementById('favicon');
+      if (fav) fav.setAttribute('href', withBase('iris/icons/icon.svg'));
+      var logo = document.querySelector('.nf-head img');
+      if (logo) logo.setAttribute('src', withBase('iris/icons/icon.svg'));
+
+      // 文档清单：来自站点自己的文件树数据
+      function loadDocs() {
+        if (docs) return Promise.resolve(docs);
+        return fetch(withBase('iris/data/file-tree.json'), { cache: 'no-store' })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (data) {
+            docs = [];
+            (function walk(items, prefix) {
+              (items || []).forEach(function (it) {
+                var p = prefix ? prefix + '/' + it.name : it.name;
+                if (it.type === 'file') {
+                  docs.push({ path: it.path, name: it.name, title: it.title || '' });
+                } else if (it.children) {
+                  walk(it.children, p);
+                }
+              });
+            })(data, '');
+            return docs;
+          })
+          .catch(function () { docs = []; return docs; });
+      }
+
+      function render(list) {
+        results.innerHTML = '';
+        if (!list.length) {
+          var empty = document.createElement('li');
+          empty.className = 'nf-empty';
+          empty.textContent = '没有匹配的文档';
+          results.appendChild(empty);
+          return;
+        }
+        list.slice(0, 8).forEach(function (d) {
+          var li = document.createElement('li');
+          var a = document.createElement('a');
+          // 走站点的 hash 路由（#/docs/xxx.md），直接指向 .md 会看到原始文本
+          a.href = withBase('index.html#/' + d.path);
+          a.textContent = d.title || d.name;
+          var p = document.createElement('span');
+          p.className = 'nf-path';
+          p.textContent = d.path;
+          a.appendChild(p);
+          li.appendChild(a);
+          results.appendChild(li);
+        });
+      }
+
+      var timer = 0;
+      input.addEventListener('input', function () {
+        clearTimeout(timer);
+        var q = input.value.trim().toLowerCase();
+        if (!q) { results.innerHTML = ''; return; }
+        timer = setTimeout(function () {
+          loadDocs().then(function (all) {
+            var hit = all.filter(function (d) {
+              return (d.title || '').toLowerCase().indexOf(q) >= 0 ||
+                     d.name.toLowerCase().indexOf(q) >= 0 ||
+                     d.path.toLowerCase().indexOf(q) >= 0;
+            });
+            render(hit);
+          });
+        }, 120);
+      });
+
+      // 上次读到哪：reading-pos 按 path 存 { pct, ts }，取最近的一条
+      try {
+        var store = JSON.parse(localStorage.getItem('md-preview-reading-pos') || '{}');
+        var latest = null;
+        Object.keys(store).forEach(function (k) {
+          var v = store[k] || {};
+          if (!latest || (v.ts || 0) > (latest.ts || 0)) latest = { path: k, ts: v.ts };
+        });
+        if (latest && latest.path) {
+          var span = document.getElementById('nf-last');
+          span.innerHTML = '上次读到 <a href="' + withBase('index.html#/' + latest.path) + '">' +
+            latest.path + '</a>';
+          span.querySelector('a').style.color = 'var(--color-accent-purple)';
+        }
+      } catch (e) { /* ignore */ }
+
+      // 样式没加载出来（部署在别的子路径）时，逐级上探找站点根
+      window.addEventListener('load', function () {
+        var probe = getComputedStyle(document.documentElement).getPropertyValue('--color-bg');
+        if (probe && probe.trim()) return;
+        var cands = ['../', '../../', '../../..'];
+        (function next(i) {
+          if (i >= cands.length) return;
+          fetch(cands[i] + 'iris/data/file-tree.json', { cache: 'no-store' })
+            .then(function (r) {
+              if (!r.ok) throw new Error('no');
+              base = cands[i];
+              document.getElementById('theme-css').href = base + 'iris/css/themes/themes.css';
+              document.getElementById('site-css').href = base + 'iris/styles.css';
+            })
+            .catch(function () { next(i + 1); });
+        })(0);
+      });
+    })();
+  </script>
+</body>
+</html>
