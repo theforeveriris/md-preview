@@ -2393,26 +2393,44 @@
 
   // ============== 主题切换 ==============
 
-  themeToggleBtn?.addEventListener('click', () => {
-    document.body.classList.toggle('editor-dark-mode');
-    const isDark = document.body.classList.contains('editor-dark-mode');
+  // 编辑器明暗由「站点主题（html data-mode）+ 会话内手动反转」共同决定：
+  // 站点换到 dracula 等暗色主题时编辑器画布若仍停留在上次的亮色主题，
+  // 会出现深底白卡打架；工具栏日月按钮只做本次会话的临时反转（sessionStorage）
+  function applyEditorDarkMode(isDark) {
+    document.body.classList.toggle('editor-dark-mode', isDark);
     // 同步切换所有 CM6 编辑器实例的主题
     cells.forEach(c => c.editor.setDarkMode(isDark));
-    themeToggleBtn.innerHTML = isDark
-      ? '<svg class="ico"><use href="#i-sun"/></svg>'
-      : '<svg class="ico"><use href="#i-moon"/></svg>';
-    try { localStorage.setItem('mdnb_theme', isDark ? 'dark' : 'light'); } catch (e) {}
-  });
+    if (themeToggleBtn) {
+      themeToggleBtn.innerHTML = isDark
+        ? '<svg class="ico"><use href="#i-sun"/></svg>'
+        : '<svg class="ico"><use href="#i-moon"/></svg>';
+    }
+  }
+
+  function siteModeDark() {
+    return document.documentElement.getAttribute('data-mode') === 'dark';
+  }
+
+  function sessionEditorDark() {
+    try { return sessionStorage.getItem('mdnb_theme'); } catch (e) { return null; }
+  }
 
   function loadTheme() {
-    try {
-      const t = localStorage.getItem('mdnb_theme');
-      if (t === 'dark') {
-        document.body.classList.add('editor-dark-mode');
-        if (themeToggleBtn) themeToggleBtn.innerHTML = '<svg class="ico"><use href="#i-sun"/></svg>';
-      }
-    } catch (e) {}
+    const saved = sessionEditorDark();
+    const isDark = saved === 'dark' ? true : saved === 'light' ? false : siteModeDark();
+    applyEditorDarkMode(isDark);
   }
+
+  themeToggleBtn?.addEventListener('click', () => {
+    const isDark = !document.body.classList.contains('editor-dark-mode');
+    applyEditorDarkMode(isDark);
+    try { sessionStorage.setItem('mdnb_theme', isDark ? 'dark' : 'light'); } catch (e) {}
+  });
+
+  // 编辑器开着时站点主题被切换（悬浮球设置面板）：未手动反转过则跟随
+  window.addEventListener('themechange', () => {
+    if (sessionEditorDark() === null) applyEditorDarkMode(siteModeDark());
+  });
 
   // ============== 初始化 ==============
 

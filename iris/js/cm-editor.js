@@ -359,29 +359,36 @@
       });
     }
 
+    /**
+     * 编辑区主题：颜色全部走站点主题 CSS 变量（var()），主题切换时画布
+     * 自动跟随，不再出现「站点暗色主题 + 编辑器亮色画布」的深底白卡。
+     * dark 参数只影响 CM6 内部的明暗态样式选择（如默认高亮风格回退），
+     * 由 editor.js 按站点 data-mode 同步（见 editor-dark-mode 联动）。
+     */
     _getTheme(dark) {
-      if (dark) {
-        return EditorView.theme({
-          '&': { backgroundColor: '#1e1e2e', color: '#e0e0e8' },
-          '.cm-content': { caretColor: '#e0e0e8' },
-          '.cm-gutters': { backgroundColor: '#181828', color: '#6c6c80', border: 'none' },
-          '.cm-activeLine': { backgroundColor: 'rgba(255,255,255,0.04)' },
-          '.cm-activeLineGutter': { backgroundColor: 'rgba(255,255,255,0.06)', color: '#e0e0e8' },
-          '.cm-selectionBackground, ::selection': { backgroundColor: 'rgba(108,108,160,0.3)' },
-          '.cm-cursor': { borderLeftColor: '#e0e0e8' },
-          '.cm-matchingBracket': { backgroundColor: 'rgba(108,108,160,0.25)' },
-        }, { dark: true });
-      }
       return EditorView.theme({
-        '&': { backgroundColor: '#ffffff', color: '#333' },
-        '.cm-content': { caretColor: '#333' },
-        '.cm-gutters': { backgroundColor: '#fafafa', color: '#aaa', border: 'none' },
-        '.cm-activeLine': { backgroundColor: 'rgba(0,0,0,0.03)' },
-        '.cm-activeLineGutter': { backgroundColor: 'rgba(0,0,0,0.05)', color: '#333' },
-        '.cm-selectionBackground, ::selection': { backgroundColor: 'rgba(100,150,255,0.2)' },
-        '.cm-cursor': { borderLeftColor: '#333' },
-        '.cm-matchingBracket': { backgroundColor: 'rgba(100,150,255,0.15)' },
-      });
+        '&': {
+          // 画布用 --color-bg（cell 是 surface，编辑区取页面底色形成微色差内嵌感，
+          // 与 editor.css .cell-editor-wrap 一致）
+          backgroundColor: 'var(--color-bg)',
+          color: 'var(--color-text)',
+        },
+        '.cm-content': { caretColor: 'var(--color-text)' },
+        '.cm-gutters': {
+          backgroundColor: 'color-mix(in srgb, var(--color-text) 3%, var(--color-bg))',
+          color: 'var(--color-text-muted)',
+          border: 'none',
+        },
+        '.cm-activeLine': { backgroundColor: 'color-mix(in srgb, var(--color-text) 4%, transparent)' },
+        '.cm-activeLineGutter': { backgroundColor: 'color-mix(in srgb, var(--color-text) 5%, transparent)' },
+        '.cm-selectionBackground, ::selection': {
+          backgroundColor: 'color-mix(in srgb, var(--color-accent-purple) 25%, transparent)',
+        },
+        '.cm-cursor': { borderLeftColor: 'var(--color-text)' },
+        '.cm-matchingBracket': {
+          backgroundColor: 'color-mix(in srgb, var(--color-accent-purple) 20%, transparent)',
+        },
+      }, { dark: !!dark });
     }
 
     /**
