@@ -192,7 +192,9 @@
       originalHostParent.appendChild(cmHost);
     }
 
-    // 清空预览区，避免残留渲染器实例/监听
+    // 清空预览区，避免残留渲染器实例/监听；双屏预览是独立渲染根，
+    // 插件资源（倒计时定时器等）先按容器定向清理
+    window.MarkdownPreview.plugins?.dispose?.(dualPanePreview);
     dualPanePreview.innerHTML = '';
 
     dualPaneOverlay.classList.remove('visible');
@@ -600,6 +602,11 @@
     }
     cell.div.remove();
     cells.splice(idx, 1);
+    // 200ms 调度窗口内删除：把该输出从待渲染队列移除（否则 detached 容器
+    // 仍会被插件渲染并登记无人清理的资源）
+    pendingRendererRoots = pendingRendererRoots.filter(r => r !== cell.output);
+    // 插件资源（倒计时定时器等）按 output 容器追踪，cell 删除时定向清理
+    window.MarkdownPreview.plugins?.dispose?.(cell.output);
     // pkt 等渲染器持有全局注册表：清理已脱离 DOM 的孤儿实例（对照 split-view.js）
     window.MarkdownPreview.pkt?.destroyOrphaned?.();
     if (activeCellId === id) {
@@ -704,10 +711,25 @@
     mdRender.groupGalleries(outputElement);
     mdRender.initSliders(outputElement);
     mdRender.highlightCodeBlocks(outputElement);
+    // 代码选项卡点击切换（dataset.codeTabsInit 幂等，容器为常驻节点）
+    mdRender.initCodeTabs(outputElement);
+    // 代码行高亮（```js {2,5-8} / [!code highlight]；pre 每轮重建，守卫自然复位）
+    window.MarkdownPreview.lineHighlight?.apply?.(outputElement);
     // 可视化表格编辑器：输出区表格挂「编辑」按钮（外移模块：table-editor.js）
     tableEditor?.attach?.(outputElement);
     // 表格样式预设标记套用
     window.MarkdownPreview.mdRender.applyTablePresets?.(outputElement);
+    // 标题锚点 id（与文档站 markdown.js 同规则）；同一 cell 内重复 slug
+    // 追加序号保证唯一，锚点才能定位到第二个同名标题
+    const seenSlugs = new Set();
+    outputElement.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(h => {
+      const base = mdRender.slugify(h.textContent) || 'section';
+      let id = base;
+      let n = 2;
+      while (seenSlugs.has(id)) id = `${base}-${n++}`;
+      seenSlugs.add(id);
+      h.id = id;
+    });
 
     // 渲染器批量调度：runAllCells 时 N 个 cell 各自 setTimeout 会叠 N 批，
     // 收集 roots 合并为一次 200ms 调度
@@ -716,8 +738,8 @@
     outputElement.classList.add('visible');
   }
 
-  // cell 渲染器批量调度器（子集常量来自 mdRender.CELL_RENDERER_SUBSET，
-  // 与 split-view.js 共用，消除两处硬编码漂移）
+  // cell 渲染器批量调度器（范围常量来自 mdRender.CELL_RENDERER_EXCLUDED，
+  // 与 split-view.js 共用；默认全量注册表，新渲染器自动生效）
   let pendingRendererRoots = [];
   let rendererScheduleTimer = null;
   function scheduleCellRenderers(outputElement) {
@@ -727,7 +749,6 @@
       rendererScheduleTimer = null;
       const roots = pendingRendererRoots;
       pendingRendererRoots = [];
-      const subset = mdRender.CELL_RENDERER_SUBSET;
       // 缓存挂在 cell 对象上（serializeNotebook 读 c._outputHtmlCache），
       // 这里拿到的是 output DOM 节点，必须回查所属 cell 再失效，
       // 否则渲染器改动过的输出会一直复用旧缓存
@@ -735,14 +756,30 @@
         const owner = cells.find(c => c.output === outputElement);
         if (owner) owner._outputHtmlCache = undefined;
       };
-      roots.forEach(root => {
+      // 200ms 窗口内 cell 可能已被删除：脱离 DOM 的容器不再渲染，
+      // 否则插件会把定时器登记到无人清理的 detached 容器上
+      const excluded = mdRender.CELL_RENDERER_EXCLUDED;
+      roots.filter(root => root.isConnected).forEach(root => {
         try {
-          Promise.resolve(mdRender.runRenderers(root, { only: subset })).then(() => {
-            invalidateOutputCache(root);
-          });
+          // 插件围栏（```qrcode/countdown/regex/...）先于渲染器调度，与文档站
+          // 编排一致（markdown.js 先 plugins.render 后 runRenderers）。
+          // scoped 渲染按容器追踪资源，重复运行同一 cell 自动清理上一轮定时器
+          const plugins = window.MarkdownPreview.plugins;
+          const pluginPass = plugins && typeof plugins.render === 'function'
+            ? Promise.resolve(plugins.render({ root, documentPath: '' })).catch(e => {
+                console.warn('[Editor] Plugin render error:', e);
+              })
+            : Promise.resolve();
+          pluginPass
+            .then(() => mdRender.runRenderers(root, { except: excluded }))
+            .then(() => invalidateOutputCache(root))
+            .catch(e => {
+              invalidateOutputCache(root);
+              console.warn('[Editor] Renderer render error:', e);
+            });
         } catch (e) {
           invalidateOutputCache(root);
-          console.warn('[Editor] Plugin render error:', e);
+          console.warn('[Editor] Renderer render error:', e);
         }
       });
     }, 200);
@@ -1171,8 +1208,33 @@
     acTextarea = null;
   }
 
+  // CM6 closeBrackets 会在输入 opener（如 [）时自动补出配对闭符，该闭符位于
+  // 被替换前缀之后；补全展开后紧邻插入文本的配对闭符需一并吞掉，
+  // 否则 [](https://) 之后会残留一个 ]（旧 textarea 时代无此问题）。
+  // 扫描前缀找「最后一个未闭合的 opener」（[^ 输入序列的 ] 同样要吞）。
+  const PAIR_CLOSER = { '[': ']', '(': ')', '{': '}' };
+  function pairedCloserOf(prefix) {
+    let open = null;
+    for (const ch of prefix) {
+      if (PAIR_CLOSER[ch]) open = ch;
+      else if (open && ch === PAIR_CLOSER[open]) open = null;
+    }
+    return open ? PAIR_CLOSER[open] : null;
+  }
+
   function applyAutocomplete(editor, item, lineStart, replaceLength) {
-    editor.replaceAtLineStart(replaceLength, item.insert);
+    const prefix = editor.value.substring(lineStart, lineStart + replaceLength);
+    const closer = pairedCloserOf(prefix);
+    editor.replaceAtLineStart(replaceLength, item.insert, closer);
+    // 光标落点：显式 cursorOffset 优先；否则当 insert 以闭合围栏 ``` 结尾时
+    // 统一落到闭合围栏之前的块内（空白模板落在空行上，填充模板落在末行内容后）
+    let delta = 0;
+    if (typeof item.cursorOffset === 'number') delta = item.cursorOffset;
+    else if (item.insert.endsWith('```')) delta = -4;
+    if (delta) {
+      const pos = Math.max(lineStart, lineStart + item.insert.length + delta);
+      editor.setSelectionRange(pos, pos);
+    }
     hideAutocomplete();
     editor.focus();
     updateCellMeta(getCell(parseInt(editor.dataset.cellId)));
@@ -1187,7 +1249,7 @@
     // ``` 代码块语言触发（先检查多字符前缀）
     if (lineBeforeCursor.match(/^```[\w-]*$/)) {
       const filter = lineBeforeCursor.substring(3);
-      showAutocomplete(editor, filter, '```', lineStart, 3);
+      showAutocomplete(editor, filter, '```', lineStart, lineBeforeCursor.length);
     }
     // > [! GitHub Alert 触发（比 > 更具体，先检查）
     else if (lineBeforeCursor.match(/^> \[!?[\w]*$/)) {
@@ -1240,10 +1302,19 @@
     else if (lineBeforeCursor.match(/^\[pulse\w*$/)) {
       showAutocomplete(editor, '', '[pulse', lineStart, lineBeforeCursor.length);
     }
+    // [^ 脚注触发（须在 [ 触发之前判断）
+    else if (lineBeforeCursor.match(/^\[\^[\w]*$/)) {
+      showAutocomplete(editor, lineBeforeCursor, '[^', lineStart, lineBeforeCursor.length);
+    }
     // @ 画廊样式触发
     else if (lineBeforeCursor.match(/^@\w*$/)) {
       const filter = lineBeforeCursor.substring(1);
-      showAutocomplete(editor, filter, '@', lineStart, 1);
+      showAutocomplete(editor, filter, '@', lineStart, lineBeforeCursor.length);
+    }
+    // <!-- 注释标记触发（图表编号 / 表格样式预设）
+    else if (lineBeforeCursor.match(/^<!--\s?[#\w:-]*$/)) {
+      const filter = lineBeforeCursor.replace(/^<!--\s?/, '');
+      showAutocomplete(editor, filter, '<!--', lineStart, lineBeforeCursor.length);
     }
     else {
       hideAutocomplete();
@@ -1962,7 +2033,7 @@
     isUnsaved = true;
     if (statusSave) {
       statusSave.textContent = '未保存 *';
-      statusSave.style.color = '#f39c12';
+      statusSave.style.color = 'var(--color-warning)';
     }
     // 同步 tab 状态
     const t = getTabById(activeTabId);
@@ -2005,7 +2076,7 @@
     isUnsaved = false;
     if (statusSave) {
       statusSave.textContent = '已保存 ✓';
-      statusSave.style.color = '#27ae60';
+      statusSave.style.color = 'var(--color-success)';
     }
     // 同步 tab 状态
     const t = getTabById(activeTabId);
@@ -2074,7 +2145,7 @@
         } else {
           if (statusSave) {
             statusSave.textContent = '保存失败';
-            statusSave.style.color = '#e74c3c';
+            statusSave.style.color = 'var(--color-error)';
           }
           showToast(editorT('editor.autosaveFull', '自动保存失败：存储空间可能已满'));
         }
@@ -2086,7 +2157,7 @@
       } else {
         if (statusSave) {
           statusSave.textContent = '保存失败';
-          statusSave.style.color = '#e74c3c';
+          statusSave.style.color = 'var(--color-error)';
         }
         showToast(editorT('editor.autosaveFull', '自动保存失败：存储空间可能已满'));
       }
@@ -2110,6 +2181,9 @@
     closeDualPane();
     if (findReplace) findReplace.invalidateMatches();
     cells.slice().forEach(c => {
+      // 插件资源（倒计时定时器等）按 output 容器追踪，容器销毁前定向清理
+      window.MarkdownPreview.plugins?.dispose?.(c.output);
+      pendingRendererRoots = pendingRendererRoots.filter(r => r !== c.output);
       if (c.textarea && typeof c.textarea.destroy === 'function') c.textarea.destroy();
       c.div.remove();
     });
@@ -2336,26 +2410,44 @@
 
   // ============== 主题切换 ==============
 
-  themeToggleBtn?.addEventListener('click', () => {
-    document.body.classList.toggle('editor-dark-mode');
-    const isDark = document.body.classList.contains('editor-dark-mode');
+  // 编辑器明暗由「站点主题（html data-mode）+ 会话内手动反转」共同决定：
+  // 站点换到 dracula 等暗色主题时编辑器画布若仍停留在上次的亮色主题，
+  // 会出现深底白卡打架；工具栏日月按钮只做本次会话的临时反转（sessionStorage）
+  function applyEditorDarkMode(isDark) {
+    document.body.classList.toggle('editor-dark-mode', isDark);
     // 同步切换所有 CM6 编辑器实例的主题
     cells.forEach(c => c.editor.setDarkMode(isDark));
-    themeToggleBtn.innerHTML = isDark
-      ? '<svg class="ico"><use href="#i-sun"/></svg>'
-      : '<svg class="ico"><use href="#i-moon"/></svg>';
-    try { localStorage.setItem('mdnb_theme', isDark ? 'dark' : 'light'); } catch (e) {}
-  });
+    if (themeToggleBtn) {
+      themeToggleBtn.innerHTML = isDark
+        ? '<svg class="ico"><use href="#i-sun"/></svg>'
+        : '<svg class="ico"><use href="#i-moon"/></svg>';
+    }
+  }
+
+  function siteModeDark() {
+    return document.documentElement.getAttribute('data-mode') === 'dark';
+  }
+
+  function sessionEditorDark() {
+    try { return sessionStorage.getItem('mdnb_theme'); } catch (e) { return null; }
+  }
 
   function loadTheme() {
-    try {
-      const t = localStorage.getItem('mdnb_theme');
-      if (t === 'dark') {
-        document.body.classList.add('editor-dark-mode');
-        if (themeToggleBtn) themeToggleBtn.innerHTML = '<svg class="ico"><use href="#i-sun"/></svg>';
-      }
-    } catch (e) {}
+    const saved = sessionEditorDark();
+    const isDark = saved === 'dark' ? true : saved === 'light' ? false : siteModeDark();
+    applyEditorDarkMode(isDark);
   }
+
+  themeToggleBtn?.addEventListener('click', () => {
+    const isDark = !document.body.classList.contains('editor-dark-mode');
+    applyEditorDarkMode(isDark);
+    try { sessionStorage.setItem('mdnb_theme', isDark ? 'dark' : 'light'); } catch (e) {}
+  });
+
+  // 编辑器开着时站点主题被切换（悬浮球设置面板）：未手动反转过则跟随
+  window.addEventListener('themechange', () => {
+    if (sessionEditorDark() === null) applyEditorDarkMode(siteModeDark());
+  });
 
   // ============== 初始化 ==============
 

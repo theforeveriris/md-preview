@@ -154,7 +154,7 @@ body.sans-heading-digits .markdown-body h6 {
 .markdown-body code {
   font-family: 'SF Mono', Monaco, Consolas, monospace;
   font-size: 0.875em;
-  background: rgba(212, 165, 201, 0.12);
+  background: color-mix(in srgb, var(--color-accent-purple) 12%, transparent);
   padding: 0.2em 0.4em;
   border-radius: 4px;
   color: var(--color-accent-purple-deep);
@@ -214,12 +214,12 @@ body.sans-heading-digits .markdown-body h6 {
 }
 
 .markdown-body pre .copy-btn:hover {
-  background: rgba(212, 165, 201, 0.12);
+  background: color-mix(in srgb, var(--color-accent-purple) 12%, transparent);
   color: var(--color-accent-purple-deep);
 }
 
 .markdown-body pre .copy-btn.copied {
-  color: #10b981;
+  color: var(--color-success);
 }
 
 .markdown-body pre code {
@@ -454,7 +454,7 @@ body.table-bleed #markdownContent .table-wrapper {
 }
 
 .markdown-body th {
-  background: rgba(212, 165, 201, 0.08);
+  background: color-mix(in srgb, var(--color-accent-purple) 8%, transparent);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -471,7 +471,7 @@ body.table-bleed #markdownContent .table-wrapper {
 }
 
 .markdown-body tr:nth-child(even) {
-  background: rgba(212, 165, 201, 0.02);
+  background: color-mix(in srgb, var(--color-accent-purple) 2%, transparent);
 }
 
 .markdown-body img {
@@ -645,7 +645,7 @@ body[data-sidebar-style="floating"] .reading-progress {
 .markdown-body address {
   font-style: normal;
   padding: 1em;
-  background: rgba(212, 165, 201, 0.08);
+  background: color-mix(in srgb, var(--color-accent-purple) 8%, transparent);
   border-radius: 8px;
 }
 
@@ -680,7 +680,7 @@ body[data-sidebar-style="floating"] .reading-progress {
 }
 
 .markdown-body details {
-  background: rgba(212, 165, 201, 0.08);
+  background: color-mix(in srgb, var(--color-accent-purple) 8%, transparent);
   border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 0.75em 1em;
@@ -820,7 +820,7 @@ body[data-sidebar-style="floating"] .reading-progress {
 }
 
 .markdown-body .apex-chart .apexcharts-tooltip-title {
-  background: rgba(212, 165, 201, 0.1);
+  background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent);
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -838,7 +838,7 @@ body[data-sidebar-style="floating"] .reading-progress {
 }
 
 .markdown-body .apex-chart .apexcharts-menu-item:hover {
-  background: rgba(212, 165, 201, 0.1);
+  background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent);
 }
 
 .markdown-body .twitter-tweet,
@@ -869,7 +869,7 @@ body[data-sidebar-style="floating"] .reading-progress {
 }
 
 .markdown-body a.twitter-timeline:hover {
-  background: rgba(212, 165, 201, 0.05);
+  background: color-mix(in srgb, var(--color-accent-purple) 5%, transparent);
   border-color: var(--color-accent-purple);
 }
 
@@ -904,7 +904,7 @@ body[data-sidebar-style="floating"] .reading-progress {
 }
 
 .alert-note {
-  background: rgba(212, 165, 201, 0.08);
+  background: color-mix(in srgb, var(--color-accent-purple) 8%, transparent);
   border-left-color: var(--color-accent-purple);
 }
 
@@ -913,7 +913,7 @@ body[data-sidebar-style="floating"] .reading-progress {
 }
 
 .alert-important {
-  background: rgba(242, 196, 206, 0.08);
+  background: color-mix(in srgb, var(--color-accent-pink) 8%, transparent);
   border-left-color: var(--color-accent-pink);
 }
 
@@ -923,29 +923,31 @@ body[data-sidebar-style="floating"] .reading-progress {
 
 .alert-warning {
   background: rgba(255, 186, 0, 0.1);
-  border-left-color: #ffa000;
+  border-left-color: var(--color-warning);
 }
 
+/* 标题文字与边框/底色区分：语义色原值按「色块」调校（如 #ff9800），
+   直接作浅底上的正文对比度不足；混入文字色自适应加深/提亮，保证可读 */
 .alert-warning .alert-title {
-  color: #b87300;
+  color: color-mix(in srgb, var(--color-warning) 68%, var(--color-text));
 }
 
 .alert-tip {
   background: rgba(0, 255, 128, 0.08);
-  border-left-color: #00c851;
+  border-left-color: var(--color-success);
 }
 
 .alert-tip .alert-title {
-  color: #007e33;
+  color: color-mix(in srgb, var(--color-success) 68%, var(--color-text));
 }
 
 .alert-caution {
   background: rgba(255, 68, 68, 0.1);
-  border-left-color: #ff4444;
+  border-left-color: var(--color-error);
 }
 
 .alert-caution .alert-title {
-  color: #cc0000;
+  color: color-mix(in srgb, var(--color-error) 68%, var(--color-text));
 }
 
 .image-placeholder {
@@ -953,7 +955,7 @@ body[data-sidebar-style="floating"] .reading-progress {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(212, 165, 201, 0.08);
+  background: color-mix(in srgb, var(--color-accent-purple) 8%, transparent);
   border: 1px dashed var(--color-accent-purple);
   border-radius: 8px;
   padding: 32px 24px;
@@ -1029,7 +1031,7 @@ body[data-sidebar-style="floating"] .reading-progress {
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: rgba(212, 165, 201, 0.2);
+  background: color-mix(in srgb, var(--color-accent-purple) 20%, transparent);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   flex-shrink: 0;
 }
@@ -1109,7 +1111,7 @@ body[data-sidebar-style="floating"] .reading-progress {
 }
 
 .debug-value {
-  color: #00c851;
+  color: var(--color-success);
   font-weight: 500;
   font-family: 'SF Mono', Monaco, Consolas, monospace;
   text-align: right;
@@ -1395,7 +1397,7 @@ body[data-sidebar-style="floating"] .reading-progress {
   flex-wrap: wrap;
   gap: 2px;
   padding: 6px 6px 0;
-  background: var(--color-surface-alt, rgba(212, 165, 201, 0.04));
+  background: var(--color-surface-alt, color-mix(in srgb, var(--color-accent-purple) 4%, transparent));
   border-bottom: 1px solid var(--color-border);
   border-radius: 8px 8px 0 0;
 }
@@ -1416,7 +1418,7 @@ body[data-sidebar-style="floating"] .reading-progress {
 
 .code-tab-btn:hover {
   color: var(--color-accent-purple-deep);
-  background: rgba(212, 165, 201, 0.08);
+  background: color-mix(in srgb, var(--color-accent-purple) 8%, transparent);
 }
 
 .code-tab-btn.active {

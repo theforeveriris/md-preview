@@ -74,7 +74,7 @@
 .split-pane-empty-card:hover,
 .split-pane-empty-card:focus-visible {
   border-color: var(--color-accent-purple);
-  background: rgba(128, 128, 128, .05);
+  background: var(--color-hover);
   outline: none;
 }
 .split-pane-empty-icon { color: var(--color-text-muted); opacity: .75; }
@@ -175,7 +175,7 @@
   cursor: pointer;
   text-align: left;
 }
-#splitPickerList button:hover { background: rgba(128, 128, 128, .1); }
+#splitPickerList button:hover { background: var(--color-hover); }
 .split-picker-icon { flex: none; color: var(--color-text-muted); }
 .split-picker-name {
   flex: none;

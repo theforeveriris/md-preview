@@ -7,8 +7,10 @@
   let mermaidInitialized = false;
 
   // DOM 中是否存在 mermaid 代码块（用于决定是否值得加载 3.5MB 的 mermaid.min.js）
-  function hasMermaidBlocks() {
-    const root = window.MarkdownPreview.mdRender.resolveRoot();
+  // 须用调用方传入的渲染根探测：无参 resolveRoot 只看 #markdownContent，
+  // 编辑器 cell / 对照阅读栏里的块会被误判为「没有 mermaid」而整轮跳过
+  function hasMermaidBlocks(scope) {
+    const root = scope || window.MarkdownPreview.mdRender.resolveRoot();
     return !!(root && root.querySelector('pre code.language-mermaid'));
   }
 
@@ -347,19 +349,19 @@
   async function render(root) {
     (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Mermaid] render() called');
 
-    // 没有任何 mermaid 代码块时直接跳过，避免无谓加载
-    if (!hasMermaidBlocks()) {
+    // 容器解析走 mdRender.resolveRoot（split-view 隐藏面板同样带 .markdown-body，
+    // 全局查询会命中空面板——见 md-render.js resolveRoot 注释）
+    const markdownBody = window.MarkdownPreview.mdRender.resolveRoot(root);
+    if (!markdownBody) return;
+
+    // 没有任何 mermaid 代码块时直接跳过，避免无谓加载（按本次渲染根探测）
+    if (!hasMermaidBlocks(markdownBody)) {
       (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Mermaid] No mermaid blocks found, skipping load');
       return;
     }
 
     const ok = await ensureMermaid();
     if (!ok) return;
-
-    // 容器解析走 mdRender.resolveRoot（split-view 隐藏面板同样带 .markdown-body，
-    // 全局查询会命中空面板——见 md-render.js resolveRoot 注释）
-    const markdownBody = window.MarkdownPreview.mdRender.resolveRoot(root);
-    if (!markdownBody) return;
 
     // 先一次性收集所有 mermaid 候选（旧实现每替换一个就重扫全部 pre，
     // O(n²) 且上限 50 个），再顺序替换

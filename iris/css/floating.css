@@ -13,7 +13,7 @@
    彩色柔光投影，图标常显（+ 号），展开旋转 45° 成 ×。
    backdrop-filter 叠一层轻磨砂让下坠内容微微透出（ref: iOS 控制 hub 圆钮）。 */
 .menu-trigger {
-  --fab-glow: rgba(184, 138, 173, 0.45);
+  --fab-glow: color-mix(in srgb, var(--color-accent-purple-deep) 45%, transparent);
   width: 56px;
   height: 56px;
   border-radius: 50%;

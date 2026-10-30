@@ -51,7 +51,7 @@
   border-radius: 8px;
   cursor: pointer;
 }
-.find-bar-btn:hover { background: rgba(128, 128, 128, .12); color: var(--color-text); }
+.find-bar-btn:hover { background: var(--color-hover); color: var(--color-text); }
 
 /* 正文内命中高亮 */
 .markdown-body mark.find-hit {

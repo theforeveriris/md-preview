@@ -7,7 +7,7 @@ tags: [编辑器]
 
 Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可在浏览器内即时编写、运行、预览 Markdown，并支持自动保存、搜索替换、导入导出等能力。
 
-编辑器以全屏覆盖层的形式叠加在文档站之上，复用站点已有的渲染管线（marked.js + 各扩展渲染器），所有渲染结果与文档站完全一致。
+编辑器以全屏覆盖层的形式叠加在文档站之上，复用站点已有的渲染管线（marked.js + 各扩展渲染器与插件），渲染结果与文档站一致；唯一例外是 ```` ```graph ```` 文档图谱挂载点——它依赖构建期生成的全站 links.json，仅在文档站渲染，编辑器预览中保持代码块原样。
 
 ---
 
@@ -164,7 +164,7 @@ Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可�
 | ApexCharts（13 种） | 折线 / 面积 / 柱状（分组）/ 堆叠柱状 / 条形（水平）/ 饼图 / 环形 donut / 雷达 / 散点 scatter / 气泡 bubble / 极坐标 polarArea / 范围区域 rangeArea / 烛台 candlestick |
 | 代码与数学 | Diff 差异 / KaTeX 公式块 / 行内公式 / 矩阵 pmatrix / 方程组 cases / 求和与极限 / 二维码 / 二维码（自定义尺寸） |
 | 插件渲染 | ColorCard 颜色卡片 / Countdown 倒计时（日期或相对时长） |
-| 地理 | 坐标地图（北京 / 上海）/ GeoJSON 多点 / GeoJSON 线 / GeoJSON 多边形 / TopoJSON |
+| 地理 | GeoJSON 多点 / GeoJSON 线 / GeoJSON 多边形 / TopoJSON |
 
 ### 5. 插入
 
@@ -206,12 +206,12 @@ Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可�
 
 ## 五、自动补全
 
-在编辑区输入触发字符即弹出补全列表，支持 ↑↓ 选择、Enter / Tab 确认、Esc 关闭。共 14 类触发字符，120+ 条目。
+在编辑区输入触发字符即弹出补全列表，支持 ↑↓ 选择、Enter / Tab 确认、Esc 关闭。共 16 类触发字符，160+ 条目，覆盖文档站全部渲染语法（含插件围栏）。
 
 | 触发字符 | 补全内容 |
 |----------|----------|
-| `@` | 17 种画廊样式 + 13 种嵌入服务（YouTube / Bilibili / Vimeo / Twitter / Gist / CodePen / JSFiddle / StackBlitz / Replit / Figma / Google Maps / OpenStreetMap / Google Docs）+ `@tab` 选项卡分隔 |
-| ` ``` ` | Mermaid 12 种 + PlantUML 10 种 + ApexCharts 9 种 + geo / geojson / topojson / qrcode / diff + 19 种编程语言 |
+| `@` | 17 种画廊样式 + `@tab` 选项卡分隔（嵌入服务速记已并入 ` ``` ` 组） |
+| ` ``` ` | Mermaid 15 种 + PlantUML 12 种 + ApexCharts 11 种 + 本站全部自定义围栏（steps / quote / orgchart / glossary / timeline / terminal / secret / bits / heatmap / ipcalc / acl / route-table / config-diff / csv / tsv / json 树 / http / openapi / sql ddl / erd / live 沙箱 / graph）+ 插件围栏（regex / cron / time / jwt / hash / color）+ 嵌入围栏（embed / twitter / ensp 及 bilibili、vimeo 速记）+ geojson / topojson / qrcode / diff + 23 种编程语言 |
 | `> [!` | 5 种 GitHub Alerts |
 | `#` | 6 级标题 |
 | `-` | 无序列表 / 任务列表 |
@@ -223,7 +223,11 @@ Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可�
 | `$$` | KaTeX 公式块 |
 | `![` | 图片 / 带标题图片 |
 | `[` | 链接 / 带标题链接 / 引用式链接 |
-| `[pulse` | DG-LAB 波形 `[pulse]...[/pulse]` |
+| `[^` | 脚注引用 / 脚注定义 |
+| `<!--` | 图表编号注释 `#fig:` / `#tbl:`、表格样式预设 `table-style:` |
+| `[pulse` | DG-LAB 波形 `[pulse]...[/pulse]` 与迷你波形 `[pulsemini]` |
+
+围栏类模板统一把光标落到闭合围栏之前的块内；含 `$$` 公式块在内，确认后可直接输入内容。
 
 ---
 
@@ -310,7 +314,7 @@ Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可�
 | 键 | 内容 |
 |----|------|
 | `mdnb_fontsize` | 编辑区字号（12 / 14 / 16 / 18） |
-| `mdnb_theme` | 编辑器主题（light / dark） |
+| `mdnb_theme` | 编辑器明暗会话内覆盖（sessionStorage，light / dark） |
 
 > 自动保存仅写入浏览器本地存储，不会同步到仓库。如需持久分享，请使用「下载」菜单导出 `.mdnb` 笔记本或合并 `.md` 文件。存储层细节见 [开发者文档](../readme-dev.md)。
 
@@ -319,7 +323,7 @@ Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可�
 ## 十、字号与主题
 
 - **字号调节**：工具栏字号图标，可选 12 / 14 / 16 / 18 px，默认 14 px
-- **主题切换**：工具栏主题图标，在亮色 / 暗色间切换，独立于文档站主题
+- **主题切换**：编辑器明暗跟随站点主题（含 25 套预设主题的明暗派生）自动变化；工具栏主题图标只做本次会话内的临时反转（sessionStorage），关闭标签页后恢复跟随。编辑器画布、快照面板、表格编辑器等全部通过主题 CSS 变量取色，任何主题下与站点观感一致
 
 ---
 

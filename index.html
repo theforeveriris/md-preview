@@ -1542,11 +1542,38 @@
               <button class="dropdown-item" data-insert="```colorcard\n#FF6B6B\n#4ECDC4\n#45B7D1\n#FFA07A\n#98D8C8\n```" data-cursor="-6">颜色卡片 colorcard</button>
               <button class="dropdown-item" data-insert="```countdown\n2025-12-31T23:59:59\n```" data-cursor="-6">倒计时 countdown</button>
               <button class="dropdown-item" data-insert="```countdown\n1d2h30m\n```" data-cursor="-6">倒计时（相对时长）</button>
+              <button class="dropdown-item" data-insert="```timeline\n2026-10-10 22:00 | 变更评审通过 | 方案与回退计划归档 | done\n2026-10-18 01:00 | 割接窗口开启 | 接入层堆叠升级 | doing\n```" data-cursor="-6">时间线 timeline</button>
+              <button class="dropdown-item" data-insert="```regex\n\\d+\n样本文本 123\n```" data-cursor="-6">正则测试 regex</button>
+              <button class="dropdown-item" data-insert="```cron\n*/5 * * * *\n```" data-cursor="-6">Cron 解释 cron</button>
+              <button class="dropdown-item" data-insert="```time\n1700000000\n```" data-cursor="-6">时间戳换算 time</button>
+              <button class="dropdown-item" data-insert="```jwt\neyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.sig\n```" data-cursor="-6">JWT 解析 jwt</button>
+              <button class="dropdown-item" data-insert="```hash\n要哈希的文本\n```" data-cursor="-6">哈希计算 hash</button>
+              <button class="dropdown-item" data-insert="```color\n#FF6B6B\n```" data-cursor="-6">色板对比 color</button>
+            </div>
+            <div class="dropdown-group">
+              <div class="dropdown-group-title">内容组件</div>
+              <button class="dropdown-item" data-insert="```steps\n1 | 确认故障现象 | 影响面、时间线、有无变更\n2 | 检查物理层 | 看接口指示灯与光功率\n```" data-cursor="-6">步骤揭示 steps</button>
+              <button class="dropdown-item" data-insert="```quote\n洞穴喻：被缚者看到的影子不是实物本身。 | 柏拉图《理想国》\n```" data-cursor="-6">引用卡片 quote</button>
+              <button class="dropdown-item" data-insert="```orgchart\n网络部\n- 核心组\n  - 骨干交换\n  - 出口路由\n- 接入组\n- 安全组\n```" data-cursor="-6">组织架构图 orgchart</button>
+              <button class="dropdown-item" data-insert="```glossary\nOSPF | 开放最短路径优先\nBGP | 边界网关协议\n```" data-cursor="-6">术语表 glossary</button>
+              <button class="dropdown-item" data-insert="```terminal\n$ ssh admin@10.1.1.1\nPassword:\nCore-SW> show ip interface brief\n```" data-cursor="-6">终端回放 terminal</button>
+              <button class="dropdown-item" data-insert="```secret\nenable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0\n```" data-cursor="-6">敏感遮罩 secret</button>
+              <button class="dropdown-item" data-insert="```bits 0100 0010\n0 | SYN | 发起连接\n6 | ACK | 确认收到\n```" data-cursor="-6">位标注 bits</button>
+              <button class="dropdown-item" data-insert="```heatmap\n2025-09-30,9\n2025-10-01,8\n2025-10-02,0\n```" data-cursor="-6">日历热图 heatmap</button>
+            </div>
+            <div class="dropdown-group">
+              <div class="dropdown-group-title">数据与网络工具</div>
+              <button class="dropdown-item" data-insert="```ipcalc 10.1.1.0/24\n```" data-cursor="-6">子网计算 ipcalc</button>
+              <button class="dropdown-item" data-insert="```acl ios\n10 permit tcp 10.1.1.0 0.0.0.255 any eq 443\n20 deny ip any any\n```" data-cursor="-6">ACL 分析 acl</button>
+              <button class="dropdown-item" data-insert="```route-table\nC    10.1.1.0/24 is directly connected, GigabitEthernet0/0\nO    10.1.2.0/24 [110/2] via 10.1.1.2, GigabitEthernet0/0\n```" data-cursor="-6">路由表分析 route-table</button>
+              <button class="dropdown-item" data-insert="```config-diff ios\ninterface GigabitEthernet0/0\n ip address 10.1.1.1 255.255.255.0\n===\ninterface GigabitEthernet0/0\n ip address 10.1.1.1 255.255.255.252\n```" data-cursor="-6">配置语义 diff config-diff</button>
+              <button class="dropdown-item" data-insert="```http\nGET https://httpbin.org/json\nAccept: application/json\n```" data-cursor="-6">HTTP 请求 http</button>
+              <button class="dropdown-item" data-insert="```openapi\nopenapi: 3.0.0\ninfo:\n  title: 示例 API\n  version: 1.0.0\npaths: {}\n```" data-cursor="-6">OpenAPI 交互文档 openapi</button>
+              <button class="dropdown-item" data-insert="```sql ddl\nCREATE TABLE user (\n  id BIGINT PRIMARY KEY,\n  name VARCHAR(64)\n);\n```" data-cursor="-6">SQL DDL → ER 图</button>
+              <button class="dropdown-item" data-insert="```csv rules=CPU>80:red,丢包率>0:orange\nhost,CPU,丢包率\nweb-01,45,0\nweb-02,91,0.2\n```" data-cursor="-6">CSV 阈值标色 csv rules</button>
             </div>
             <div class="dropdown-group">
               <div class="dropdown-group-title">地理</div>
-              <button class="dropdown-item" data-insert="```geo\n{&quot;lat&quot;:39.9042,&quot;lng&quot;:116.4074,&quot;zoom&quot;:12}\n```" data-cursor="-6">坐标地图 (北京)</button>
-              <button class="dropdown-item" data-insert="```geo\n{&quot;lat&quot;:31.2304,&quot;lng&quot;:121.4737,&quot;zoom&quot;:12}\n```" data-cursor="-6">坐标地图 (上海)</button>
               <button class="dropdown-item" data-insert="```geojson\n{\n  &quot;type&quot;: &quot;FeatureCollection&quot;,\n  &quot;features&quot;: [\n    {&quot;type&quot;:&quot;Feature&quot;,&quot;properties&quot;:{&quot;name&quot;:&quot;北京&quot;},&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[116.4074,39.9042]}},\n    {&quot;type&quot;:&quot;Feature&quot;,&quot;properties&quot;:{&quot;name&quot;:&quot;上海&quot;},&quot;geometry&quot;:{&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[121.4737,31.2304]}}\n  ]\n}\n```" data-cursor="-6">GeoJSON 多点</button>
               <button class="dropdown-item" data-insert="```geojson\n{\n  &quot;type&quot;: &quot;Feature&quot;,\n  &quot;geometry&quot;: {\n    &quot;type&quot;: &quot;LineString&quot;,\n    &quot;coordinates&quot;: [[116.4,39.9],[121.4,31.2],[120.1,30.2]]\n  }\n}\n```" data-cursor="-6">GeoJSON 线</button>
               <button class="dropdown-item" data-insert="```geojson\n{\n  &quot;type&quot;: &quot;Feature&quot;,\n  &quot;geometry&quot;: {\n    &quot;type&quot;: &quot;Polygon&quot;,\n    &quot;coordinates&quot;: [[[116.3,39.9],[116.5,39.9],[116.5,40.0],[116.3,40.0],[116.3,39.9]]]\n  }\n}\n```" data-cursor="-6">GeoJSON 多边形</button>

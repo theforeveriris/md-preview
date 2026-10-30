@@ -277,18 +277,44 @@
 
   // ===== 渲染（支持异步） =====
 
-  async function renderWithPlugins(context) {
-    // 文档渲染边界：清理上一轮文档渲染遗留的插件资源（倒计时定时器、监听器等），
-    // 防止跨文档导航时这些资源持续累积泄漏。渲染器只在本函数内注册资源，
-    // 编辑器 cell 路径不经过这里，不受影响。
-    pluginInstances.forEach((resources) => {
-      resources.forEach(res => {
-        if (res && typeof res.destroy === 'function') {
-          try { res.destroy(); } catch (e) { /* ignore */ }
-        }
-      });
+  // 局部容器渲染（编辑器 cell / 对照阅读栏）的资源追踪：root → 本轮注册的资源。
+  // 与全局 pluginInstances 分开管理：文档级渲染的全量清理不得误伤 cell 内
+  // 正在倒计时的插件；cell 重复运行 / 删除时按容器维度定向清理。
+  const scopedResources = new WeakMap();
+
+  function destroyResources(resources) {
+    (resources || []).forEach(res => {
+      if (res && typeof res.destroy === 'function') {
+        try { res.destroy(); } catch (e) { /* ignore */ }
+      }
     });
-    pluginInstances.clear();
+  }
+
+  // 主动清理某个局部容器上注册的插件资源（编辑器删除 cell 时调用）
+  function disposeRoot(root) {
+    if (!root) return;
+    destroyResources(scopedResources.get(root));
+    scopedResources.delete(root);
+  }
+
+  async function renderWithPlugins(context) {
+    const scopedRoot = context && context.root;
+    const localResources = [];
+
+    if (scopedRoot) {
+      // 局部容器渲染：只清理该容器上一轮的插件资源（倒计时定时器等），
+      // 不触碰全局 pluginInstances（文档级资源生命周期独立）
+      destroyResources(scopedResources.get(scopedRoot));
+      scopedResources.set(scopedRoot, localResources);
+    } else {
+      // 文档渲染边界：清理上一轮文档渲染遗留的插件资源（倒计时定时器、监听器等），
+      // 防止跨文档导航时这些资源持续累积泄漏。渲染器只在本函数内注册资源，
+      // 编辑器 cell 路径不经过这里，不受影响。
+      pluginInstances.forEach((resources) => {
+        destroyResources(resources);
+      });
+      pluginInstances.clear();
+    }
 
     const plugins = window.MarkdownPreview.plugins;
     if (!plugins || typeof plugins.find !== 'function') {
@@ -296,9 +322,10 @@
       return;
     }
 
-    // 容器解析走 mdRender.resolveRoot：split-view 隐藏面板同样带 .markdown-body，
-    // 全局查询会重复处理隐藏面板里的块
-    const rootEl = resolveRoot();
+    // 容器解析：调用方显式传入 root 最优先（编辑器 cell / 对照阅读栏），
+    // 否则走 mdRender.resolveRoot（split-view 隐藏面板同样带 .markdown-body，
+    // 全局查询会重复处理隐藏面板里的块）
+    const rootEl = scopedRoot || resolveRoot();
     const allPres = rootEl.querySelectorAll('pre');
 
     // 收集需要渲染的任务
@@ -336,8 +363,10 @@
         pluginName: plugin.name,
         documentPath: context?.documentPath || window.MarkdownPreview.state?.currentFilePath || '',
         config: getPluginConfig(plugin.name),
-        // 注册资源以便后续清理
+        // 注册资源以便后续清理（局部容器渲染只进容器维度，不进全局表）
         registerResource: (res) => {
+          localResources.push(res);
+          if (scopedRoot) return;
           if (!pluginInstances.has(plugin.name)) {
             pluginInstances.set(plugin.name, []);
           }
@@ -375,10 +404,10 @@
         container.innerHTML = `
           <div class="plugin-error" style="
             padding: 12px 16px;
-            border: 1px solid #ff6b6b;
+            border: 1px solid var(--color-error, #ff6b6b);
             border-radius: 8px;
             background: rgba(255, 107, 107, 0.12);
-            color: #ff6b6b;
+            color: var(--color-error, #ff6b6b);
             font-family: system-ui, sans-serif;
             font-size: 14px;
           ">
@@ -419,6 +448,7 @@
 
     // 渲染 API
     render: renderWithPlugins,
+    dispose: disposeRoot,
 
     // 内部（调试用）
     _registry: pluginRegistry,

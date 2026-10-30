@@ -100,15 +100,13 @@
             }
           }
         }),
-        // DOM 事件：keydown / keyup / click / mouseup
-        // 注意：keydown/keyup 需要与 input/click 等事件一样把 target 设为编辑器包装对象，
+        // DOM 事件：keyup / click / mouseup
+        // 注意：事件需要把 target 设为编辑器包装对象，
         // 否则 editor.js 通过 e.target.dataset.cellId 定位 cell 会拿到 CM6 的 .cm-content 节点而失效。
+        // keydown 不走 domEventHandlers：本构建的 CM 内部 input handler 会对
+        // keydown 短路 runHandlers，这里永远收不到（补全导航/回车应用/
+        // Ctrl+Enter 因此全数失效）——改由下方捕获阶段监听接管。
         EditorView.domEventHandlers({
-          keydown: (event) => {
-            if (this._onKeyDown) this._onKeyDown(event);
-            this._dispatchEvent('keydown', this._wrapKeyEvent(event));
-            return false; // 不阻止默认行为，让 CM6 keymap 优先处理
-          },
           keyup: (event) => {
             if (this._onKeyUp) this._onKeyUp(event);
             this._dispatchEvent('keyup', this._wrapKeyEvent(event));
@@ -133,6 +131,18 @@
         }),
         parent: parentEl,
       });
+
+      this._parentEl = parentEl;
+      // keydown 捕获监听（宿主元素上，先于 CM 在 contentDOM 的处理器执行）：
+      // editor.js 的补全导航 / 快捷键调用 preventDefault 后，这里以
+      // stopPropagation 拦下事件，CM 不再处理（否则 Enter 会先插换行、
+      // 破坏补全上下文）
+      this._captureKeydown = (event) => {
+        if (this._onKeyDown) this._onKeyDown(event);
+        this._dispatchEvent('keydown', this._wrapKeyEvent(event));
+        if (event.defaultPrevented) event.stopPropagation();
+      };
+      parentEl.addEventListener('keydown', this._captureKeydown, true);
 
       // CM6 的 contentDOM 相当于 textarea
       this._contentDOM = this.view.contentDOM;
@@ -359,29 +369,36 @@
       });
     }
 
+    /**
+     * 编辑区主题：颜色全部走站点主题 CSS 变量（var()），主题切换时画布
+     * 自动跟随，不再出现「站点暗色主题 + 编辑器亮色画布」的深底白卡。
+     * dark 参数只影响 CM6 内部的明暗态样式选择（如默认高亮风格回退），
+     * 由 editor.js 按站点 data-mode 同步（见 editor-dark-mode 联动）。
+     */
     _getTheme(dark) {
-      if (dark) {
-        return EditorView.theme({
-          '&': { backgroundColor: '#1e1e2e', color: '#e0e0e8' },
-          '.cm-content': { caretColor: '#e0e0e8' },
-          '.cm-gutters': { backgroundColor: '#181828', color: '#6c6c80', border: 'none' },
-          '.cm-activeLine': { backgroundColor: 'rgba(255,255,255,0.04)' },
-          '.cm-activeLineGutter': { backgroundColor: 'rgba(255,255,255,0.06)', color: '#e0e0e8' },
-          '.cm-selectionBackground, ::selection': { backgroundColor: 'rgba(108,108,160,0.3)' },
-          '.cm-cursor': { borderLeftColor: '#e0e0e8' },
-          '.cm-matchingBracket': { backgroundColor: 'rgba(108,108,160,0.25)' },
-        }, { dark: true });
-      }
       return EditorView.theme({
-        '&': { backgroundColor: '#ffffff', color: '#333' },
-        '.cm-content': { caretColor: '#333' },
-        '.cm-gutters': { backgroundColor: '#fafafa', color: '#aaa', border: 'none' },
-        '.cm-activeLine': { backgroundColor: 'rgba(0,0,0,0.03)' },
-        '.cm-activeLineGutter': { backgroundColor: 'rgba(0,0,0,0.05)', color: '#333' },
-        '.cm-selectionBackground, ::selection': { backgroundColor: 'rgba(100,150,255,0.2)' },
-        '.cm-cursor': { borderLeftColor: '#333' },
-        '.cm-matchingBracket': { backgroundColor: 'rgba(100,150,255,0.15)' },
-      });
+        '&': {
+          // 画布用 --color-bg（cell 是 surface，编辑区取页面底色形成微色差内嵌感，
+          // 与 editor.css .cell-editor-wrap 一致）
+          backgroundColor: 'var(--color-bg)',
+          color: 'var(--color-text)',
+        },
+        '.cm-content': { caretColor: 'var(--color-text)' },
+        '.cm-gutters': {
+          backgroundColor: 'color-mix(in srgb, var(--color-text) 3%, var(--color-bg))',
+          color: 'var(--color-text-muted)',
+          border: 'none',
+        },
+        '.cm-activeLine': { backgroundColor: 'color-mix(in srgb, var(--color-text) 4%, transparent)' },
+        '.cm-activeLineGutter': { backgroundColor: 'color-mix(in srgb, var(--color-text) 5%, transparent)' },
+        '.cm-selectionBackground, ::selection': {
+          backgroundColor: 'color-mix(in srgb, var(--color-accent-purple) 25%, transparent)',
+        },
+        '.cm-cursor': { borderLeftColor: 'var(--color-text)' },
+        '.cm-matchingBracket': {
+          backgroundColor: 'color-mix(in srgb, var(--color-accent-purple) 20%, transparent)',
+        },
+      }, { dark: !!dark });
     }
 
     /**
@@ -404,11 +421,21 @@
 
     /**
      * 替换行首的指定长度文本（用于自动补全）
+     * @param {number} replaceLength - 替换前缀长度
+     * @param {string} newText - 插入文本
+     * @param {string} [swallowCloser] - 若插入点紧邻该配对闭符则一并删除
+     *   （closeBrackets 自动补出的 `]` 等会残留在补全结果之后）
      */
-    replaceAtLineStart(replaceLength, newText) {
-      const lineStart = this.getLineStart();
+    replaceAtLineStart(replaceLength, newText, swallowCloser) {
+      const state = this.view.state;
+      const lineStart = state.doc.lineAt(state.selection.main.head).from;
+      const prefixEnd = lineStart + replaceLength;
+      const changes = [{ from: lineStart, to: prefixEnd, insert: newText }];
+      if (swallowCloser && state.doc.sliceString(prefixEnd, prefixEnd + 1) === swallowCloser) {
+        changes.push({ from: prefixEnd, to: prefixEnd + 1, insert: '' });
+      }
       this.view.dispatch({
-        changes: { from: lineStart, to: lineStart + replaceLength, insert: newText },
+        changes,
         selection: EditorSelection.cursor(lineStart + newText.length),
         scrollIntoView: true,
       });
@@ -431,6 +458,9 @@
      * 销毁编辑器
      */
     destroy() {
+      if (this._parentEl && this._captureKeydown) {
+        this._parentEl.removeEventListener('keydown', this._captureKeydown, true);
+      }
       this.view.destroy();
       this._listeners = {};
     }

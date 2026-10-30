@@ -207,7 +207,7 @@
 }
 
 .search-result-item:hover {
-  background: rgba(212, 165, 201, 0.1);
+  background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent);
 }
 
 .search-result-title {
@@ -353,7 +353,7 @@
   justify-content: center;
   color: white;
   text-decoration: none;
-  box-shadow: 0 4px 12px rgba(212, 165, 201, 0.4);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-accent-purple) 40%, transparent);
   transition: var(--transition-smooth);
   z-index: 60;
 }
@@ -361,7 +361,7 @@
 .edit-fab:hover {
   background: var(--color-accent-purple-deep);
   transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(212, 165, 201, 0.5);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--color-accent-purple) 50%, transparent);
 }
 
 .edit-fab svg {
