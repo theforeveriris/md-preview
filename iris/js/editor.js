@@ -704,10 +704,18 @@
     mdRender.groupGalleries(outputElement);
     mdRender.initSliders(outputElement);
     mdRender.highlightCodeBlocks(outputElement);
+    // 代码选项卡点击切换（dataset.codeTabsInit 幂等，容器为常驻节点）
+    mdRender.initCodeTabs(outputElement);
+    // 代码行高亮（```js {2,5-8} / [!code highlight]；pre 每轮重建，守卫自然复位）
+    window.MarkdownPreview.lineHighlight?.apply?.(outputElement);
     // 可视化表格编辑器：输出区表格挂「编辑」按钮（外移模块：table-editor.js）
     tableEditor?.attach?.(outputElement);
     // 表格样式预设标记套用
     window.MarkdownPreview.mdRender.applyTablePresets?.(outputElement);
+    // 标题锚点 id（与文档站 markdown.js 同规则；跨 cell 重名仅影响跨 cell 跳转）
+    outputElement.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(h => {
+      h.id = mdRender.slugify(h.textContent);
+    });
 
     // 渲染器批量调度：runAllCells 时 N 个 cell 各自 setTimeout 会叠 N 批，
     // 收集 roots 合并为一次 200ms 调度
@@ -716,8 +724,8 @@
     outputElement.classList.add('visible');
   }
 
-  // cell 渲染器批量调度器（子集常量来自 mdRender.CELL_RENDERER_SUBSET，
-  // 与 split-view.js 共用，消除两处硬编码漂移）
+  // cell 渲染器批量调度器（范围常量来自 mdRender.CELL_RENDERER_EXCLUDED，
+  // 与 split-view.js 共用；默认全量注册表，新渲染器自动生效）
   let pendingRendererRoots = [];
   let rendererScheduleTimer = null;
   function scheduleCellRenderers(outputElement) {
@@ -727,7 +735,7 @@
       rendererScheduleTimer = null;
       const roots = pendingRendererRoots;
       pendingRendererRoots = [];
-      const subset = mdRender.CELL_RENDERER_SUBSET;
+      const excluded = mdRender.CELL_RENDERER_EXCLUDED;
       // 缓存挂在 cell 对象上（serializeNotebook 读 c._outputHtmlCache），
       // 这里拿到的是 output DOM 节点，必须回查所属 cell 再失效，
       // 否则渲染器改动过的输出会一直复用旧缓存
@@ -737,12 +745,12 @@
       };
       roots.forEach(root => {
         try {
-          Promise.resolve(mdRender.runRenderers(root, { only: subset })).then(() => {
+          Promise.resolve(mdRender.runRenderers(root, { except: excluded })).then(() => {
             invalidateOutputCache(root);
           });
         } catch (e) {
           invalidateOutputCache(root);
-          console.warn('[Editor] Plugin render error:', e);
+          console.warn('[Editor] Renderer render error:', e);
         }
       });
     }, 200);

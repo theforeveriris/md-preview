@@ -960,9 +960,11 @@
   // IntersectionObserver 离屏暂停（见 pulse.js attachAnimIO）。
   const DEFAULT_LAZY = ['mermaid', 'plantuml', 'apexcharts', 'diff', 'csvtable', 'jsontree', 'graph'];
 
-  // 编辑器 cell / 双屏对照渲染的渲染器子集（消除 editor.js 与 split-view.js
-  // 两处硬编码副本漂移）
-  const CELL_RENDERER_SUBSET = ['mermaid', 'plantuml', 'apexcharts', 'diff', 'katex', 'embedded'];
+  // 编辑器 cell / 双屏对照渲染的渲染器范围：默认全量注册表，仅剔除
+  // graph（文档图谱挂载点依赖构建期全站 links.json，局部容器里无意义）。
+  // 用 except 而非 only：新增渲染器自动进入编辑器预览，不会再出现
+  // 「文档站新语法编辑器渲染不出」的漂移（此前硬编码 6 个子集即此因）。
+  const CELL_RENDERER_EXCLUDED = ['graph'];
 
   /**
    * 渲染器统一调度器
@@ -981,6 +983,8 @@
    * @param {Object} [opts]
    * @param {Function} [opts.before] - 全部渲染器执行前的钩子（文档站用于清理 pkt 画布）
    * @param {string[]} [opts.only] - 仅执行指定渲染器（id 与注册表键一致）
+   * @param {string[]} [opts.except] - 除指定渲染器外全部执行（编辑器 cell 用，
+   *                                   新增渲染器自动生效，无需同步维护白名单）
    * @param {boolean|string[]} [opts.lazy] - true 用默认白名单 / 显式白名单（延迟渲染）
    */
   function runRenderers(root, opts) {
@@ -989,10 +993,12 @@
     if (!registry) return Promise.resolve();
 
     const filter = Array.isArray(opts.only) && opts.only.length ? new Set(opts.only) : null;
+    const excluded = Array.isArray(opts.except) && opts.except.length ? new Set(opts.except) : null;
     const lazySet = opts.lazy === true ? new Set(DEFAULT_LAZY)
       : (Array.isArray(opts.lazy) ? new Set(opts.lazy) : null);
 
-    const ids = Object.keys(registry).filter(id => !filter || filter.has(id));
+    const ids = Object.keys(registry)
+      .filter(id => (!filter || filter.has(id)) && !(excluded && excluded.has(id)));
     const isRunnable = id => registry[id] && typeof registry[id].render === 'function';
     const eagerIds = ids.filter(id => isRunnable(id) && !(lazySet && lazySet.has(id)));
     const lazyIds = lazySet ? ids.filter(id => isRunnable(id) && lazySet.has(id)) : [];
@@ -1123,7 +1129,7 @@
     runRenderers,
     clearLazy,
     DEFAULT_LAZY,
-    CELL_RENDERER_SUBSET,
+    CELL_RENDERER_EXCLUDED,
     docSlug,
     getBasePath,
     CHART_PALETTE,

@@ -125,11 +125,11 @@
     setTimeout(() => {
       const renderers = window.MarkdownPreview && window.MarkdownPreview.renderers;
       if (renderers) {
-        // 统一调度器（md-render.js: runRenderers）：子集与 editor.js 共用
-        // mdRender.CELL_RENDERER_SUBSET（消除两处硬编码漂移）。
+        // 统一调度器（md-render.js: runRenderers）：范围与 editor.js 共用
+        // mdRender.CELL_RENDERER_EXCLUDED（默认全量注册表，新渲染器自动生效）。
         // mdRender 必须在本函数内取：模块里其它函数各自的局部 const 不共享作用域
         const mdRender = window.MarkdownPreview.mdRender;
-        mdRender.runRenderers(container, { only: mdRender.CELL_RENDERER_SUBSET });
+        mdRender.runRenderers(container, { except: mdRender.CELL_RENDERER_EXCLUDED });
       }
     }, 150);
   }
