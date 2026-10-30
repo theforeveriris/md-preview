@@ -71,8 +71,60 @@
     { trigger: '```', label: '```geojson', desc: 'GeoJSON 地图', insert: '```geojson\n{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"name":"点"},"geometry":{"type":"Point","coordinates":[116.4,39.9]}}]}\n```', replaceLength: 3 },
     { trigger: '```', label: '```topojson', desc: 'TopoJSON 地图', insert: '```topojson\n{"type":"Topology","objects":{},"arcs":[]}\n```', replaceLength: 3 },
     { trigger: '```', label: '```qrcode', desc: '二维码', insert: '```qrcode\nhttps://github.com\n```', replaceLength: 3 },
+    { trigger: '```', label: '```qrcode JSON', desc: '二维码·自定义尺寸', insert: '```qrcode\n{"data": "https://github.com", "size": 180}\n```', replaceLength: 3 },
     { trigger: '```', label: '```colorcard', desc: '颜色卡片', insert: '```colorcard\n#FF6B6B\n#4ECDC4\n#45B7D1\n```', replaceLength: 3 },
     { trigger: '```', label: '```countdown', desc: '倒计时', insert: '```countdown\n2025-12-31T23:59:59\n```', replaceLength: 3 },
+    { trigger: '```', label: '```countdown 相对', desc: '倒计时·相对时长', insert: '```countdown\n1d2h30m\n```', replaceLength: 3 },
+    // —— 本站内容组件围栏（steps/orgchart 等近期新增语法）——
+    { trigger: '```', label: '```steps', desc: '步骤揭示·序号|标题|详情', insert: '```steps\n1 | 确认故障现象 | 影响面、时间线、有无变更\n2 | 检查物理层 | 看接口指示灯与光功率\n```', replaceLength: 3 },
+    { trigger: '```', label: '```quote', desc: '引用卡片·引文|出处', insert: '```quote\n洞穴喻：被缚者看到的影子不是实物本身。 | 柏拉图《理想国》\n```', replaceLength: 3 },
+    { trigger: '```', label: '```orgchart', desc: '组织架构图·缩进树', insert: '```orgchart\n网络部\n- 核心组\n  - 骨干交换\n  - 出口路由\n- 接入组\n- 安全组\n```', replaceLength: 3 },
+    { trigger: '```', label: '```glossary', desc: '术语表悬浮·术语|解释', insert: '```glossary\nOSPF | 开放最短路径优先，一种链路状态路由协议\nBGP | 边界网关协议，用于自治系统之间的路由\n```', replaceLength: 3 },
+    { trigger: '```', label: '```timeline', desc: '时间线·时间|事件|备注|状态', insert: '```timeline\n2026-10-10 22:00 | 变更评审通过 | 方案与回退计划归档 | done\n2026-10-18 01:00 | 割接窗口开启 | 接入层堆叠升级 | doing\n```', replaceLength: 3 },
+    // —— 数据 / 网络工具围栏 ——
+    { trigger: '```', label: '```terminal', desc: '终端回放', insert: '```terminal\n$ ssh admin@10.1.1.1\nPassword:\nCore-SW> show ip interface brief\n```', replaceLength: 3 },
+    { trigger: '```', label: '```secret', desc: '敏感遮罩·点击揭示', insert: '```secret\nenable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0\n```', replaceLength: 3 },
+    { trigger: '```', label: '```secret 口令', desc: '敏感遮罩·输对口令揭示', insert: '```secret 2024\n密码: Hunter2\n```', replaceLength: 3 },
+    { trigger: '```', label: '```bits', desc: '位标注块·二进制+标注行', insert: '```bits 0100 0010\n0 | SYN | 发起连接\n6 | ACK | 确认收到\n```', replaceLength: 3 },
+    { trigger: '```', label: '```heatmap', desc: '日历热图·日期,数值', insert: '```heatmap\n2025-09-30,9\n2025-10-01,8\n2025-10-02,0\n```', replaceLength: 3 },
+    { trigger: '```', label: '```ipcalc', desc: '子网计算', insert: '```ipcalc 10.1.1.0/24\n```', replaceLength: 3 },
+    { trigger: '```', label: '```acl', desc: 'ACL 分析（ios/vrp）', insert: '```acl ios\n10 permit tcp 10.1.1.0 0.0.0.255 any eq 443\n20 deny ip any any\n```', replaceLength: 3 },
+    { trigger: '```', label: '```route-table', desc: '路由表分析', insert: '```route-table\nC    10.1.1.0/24 is directly connected, GigabitEthernet0/0\nO    10.1.2.0/24 [110/2] via 10.1.1.2, GigabitEthernet0/0\n```', replaceLength: 3 },
+    { trigger: '```', label: '```config-diff', desc: '配置语义 diff（ios/vrp）', insert: '```config-diff ios\ninterface GigabitEthernet0/0\n ip address 10.1.1.1 255.255.255.0\n===\ninterface GigabitEthernet0/0\n ip address 10.1.1.1 255.255.255.252\n```', replaceLength: 3 },
+    { trigger: '```', label: '```csv', desc: 'CSV 交互表格', insert: '```csv\n协议,端口,说明\nHTTP,80,超文本传输协议\nHTTPS,443,TLS 加密的 HTTP\n```', replaceLength: 3 },
+    { trigger: '```', label: '```csv rules', desc: 'CSV+阈值标色', insert: '```csv rules=CPU>80:red,丢包率>0:orange\nhost,CPU,丢包率\nweb-01,45,0\nweb-02,91,0.2\n```', replaceLength: 3 },
+    { trigger: '```', label: '```tsv', desc: 'TSV 交互表格', insert: '```tsv\n协议\t端口\t说明\nHTTP\t80\t超文本传输协议\nHTTPS\t443\tTLS 加密的 HTTP\n```', replaceLength: 3 },
+    { trigger: '```', label: '```json 树', desc: 'JSON 折叠树（json raw 关闭）', insert: '```json\n{"name": "项目", "deps": ["a", "b"]}\n```', replaceLength: 3 },
+    // —— API / 开发者工具围栏 ——
+    { trigger: '```', label: '```http', desc: 'HTTP 请求卡片', insert: '```http\nGET https://httpbin.org/json\nAccept: application/json\n```', replaceLength: 3 },
+    { trigger: '```', label: '```openapi', desc: 'OpenAPI 交互文档', insert: '```openapi\nopenapi: 3.0.0\ninfo:\n  title: 示例 API\n  version: 1.0.0\npaths: {}\n```', replaceLength: 3 },
+    { trigger: '```', label: '```swagger', desc: 'OpenAPI 交互文档（别名）', insert: '```swagger\nopenapi: 3.0.0\ninfo:\n  title: 示例 API\n  version: 1.0.0\npaths: {}\n```', replaceLength: 3 },
+    { trigger: '```', label: '```sql ddl', desc: 'SQL DDL → ER 图', insert: '```sql ddl\nCREATE TABLE user (\n  id BIGINT PRIMARY KEY,\n  name VARCHAR(64)\n);\n```', replaceLength: 3 },
+    { trigger: '```', label: '```erd', desc: 'ER 图', insert: '```erd\nuser ||--o{ order : has\n```', replaceLength: 3 },
+    { trigger: '```', label: '```html live', desc: 'HTML 实时预览', insert: '```html live\n<h1>Hello</h1>\n```', replaceLength: 3 },
+    { trigger: '```', label: '```js live', desc: 'JS 实时预览（console 面板）', insert: '```js live\nconsole.log("Hello");\n```', replaceLength: 3 },
+    { trigger: '```', label: '```css live', desc: 'CSS 实时预览', insert: '```css live\nh1 { color: crimson; }\n```', replaceLength: 3 },
+    { trigger: '```', label: '```graph', desc: '文档图谱挂载点（仅文档站渲染）', insert: '```graph\n```', replaceLength: 3 },
+    { trigger: '```', label: '```regex', desc: '正则测试', insert: '```regex\n\\d+\n样本文本 123\n```', replaceLength: 3 },
+    { trigger: '```', label: '```cron', desc: 'Cron 解释', insert: '```cron\n*/5 * * * *\n```', replaceLength: 3 },
+    { trigger: '```', label: '```time', desc: '时间戳/时区换算', insert: '```time\n1700000000\n```', replaceLength: 3 },
+    { trigger: '```', label: '```jwt', desc: 'JWT 解析', insert: '```jwt\neyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.sig\n```', replaceLength: 3 },
+    { trigger: '```', label: '```hash', desc: '哈希计算', insert: '```hash\n要哈希的文本\n```', replaceLength: 3 },
+    { trigger: '```', label: '```color', desc: '色板/对比度', insert: '```color\n#FF6B6B\n```', replaceLength: 3 },
+    // —— 嵌入围栏变体 ——
+    { trigger: '```', label: '```twitter', desc: 'Twitter/X 嵌入', insert: '```twitter\n@[twitter](https://twitter.com/user/status/1)\n```', replaceLength: 3 },
+    { trigger: '```', label: '```ensp', desc: 'eNSP 拓扑', insert: '```ensp\n@[ensp](example)\n```', replaceLength: 3 },
+    { trigger: '```', label: '```embed bilibili', desc: 'B 站视频', insert: '```embed\n@[bilibili](BV1xx411c7mZ)\n```', replaceLength: 3 },
+    { trigger: '```', label: '```embed vimeo', desc: 'Vimeo 视频', insert: '```embed\n@[vimeo](https://vimeo.com/76979871)\n```', replaceLength: 3 },
+    // —— 图表种类补齐 ——
+    { trigger: '```', label: '```mermaid 块图', desc: 'block-beta', insert: '```mermaid\nblock-beta\n    columns 3\n    doc["文档"] server["服务器"] db[(数据库)]\n    doc --> server --> db\n```', replaceLength: 3 },
+    { trigger: '```', label: '```mermaid C4', desc: 'C4Context', insert: '```mermaid\nC4Context\n    title 系统架构\n    Person(user, 用户)\n    System(app, 应用系统)\n    Rel(user, app, 使用)\n```', replaceLength: 3 },
+    { trigger: '```', label: '```mermaid XY 图', desc: 'xychart-beta', insert: '```mermaid\nxychart-beta\n    title 月度销量\n    x-axis [1月, 2月, 3月]\n    y-axis 销量 0 --> 100\n    bar [30, 45, 35]\n```', replaceLength: 3 },
+    { trigger: '```', label: '```plantuml 状态图', desc: 'PlantUML state', insert: '```plantuml\n@startuml\n[*] --> 待机\n待机 --> 运行: 启动\n运行 --> [*]\n@enduml\n```', replaceLength: 3 },
+    { trigger: '```', label: '```plantuml JSON', desc: 'PlantUML json', insert: '```plantuml\n@startuml\njson {\n  "name": "项目"\n}\n@enduml\n```', replaceLength: 3 },
+    { trigger: '```', label: '```apexcharts 烛台', desc: 'candlestick', insert: '```apexcharts\n{"chart":{"type":"candlestick"},"series":[{"data":[{"x":"1日","y":[100,120,90,110]}]}]}\n```', replaceLength: 3 },
+    { trigger: '```', label: '```apexcharts 范围', desc: 'rangeArea', insert: '```apexcharts\n{"chart":{"type":"rangeArea"},"series":[{"data":[{"x":"1月","y":[5,15]}]}]}\n```', replaceLength: 3 },
+    { trigger: '```', label: '```diff 完整格式', desc: 'Git diff unified', insert: '```diff\ndiff --git a/app.js b/app.js\n--- a/app.js\n+++ b/app.js\n@@ -1,3 +1,3 @@\n-old line\n+new line\n context line\n```', replaceLength: 3 },
     { trigger: '```', label: '```javascript', desc: 'JavaScript', insert: '```javascript\n\n```', replaceLength: 3 },
     { trigger: '```', label: '```python', desc: 'Python', insert: '```python\n\n```', replaceLength: 3 },
     { trigger: '```', label: '```bash', desc: 'Shell', insert: '```bash\n\n```', replaceLength: 3 },
@@ -128,8 +180,9 @@
     { trigger: '||', label: '||剧透||', desc: '剧透/遮罩', insert: '||剧透内容||', replaceLength: 2 },
     // [pulse DG-LAB 波形
     { trigger: '[pulse', label: '[pulse]...[/pulse]', desc: 'DG-LAB 波形', insert: '[pulse title="标题"]\nDungeonlab+pulse:0,1,16=10,10,10,1,0/50-1,50-1,50-1,50-1\n[/pulse]', replaceLength: 6 },
+    { trigger: '[pulse', label: '[pulsemini]...[/pulsemini]', desc: 'DG-LAB 迷你波形（内联）', insert: '[pulsemini title="标题"]\nDungeonlab+pulse:0,1,16=10,10,10,1,0/50-1,50-1\n[/pulsemini]', replaceLength: 6 },
     // $$ KaTeX 公式块
-    { trigger: '$$', label: '$$ 公式块', desc: 'KaTeX block', insert: '$$\n\n$$', replaceLength: 2 },
+    { trigger: '$$', label: '$$ 公式块', desc: 'KaTeX block', insert: '$$\n\n$$', replaceLength: 2, cursorOffset: -3 },
     // ![ 图片
     { trigger: '![', label: '![alt](url) 图片', desc: '图片', insert: '![](https://)', replaceLength: 2 },
     { trigger: '![', label: '![alt](url "标题") 带标题图片', desc: '带标题', insert: '![](https:// "标题")', replaceLength: 2 },
@@ -137,6 +190,13 @@
     { trigger: '[', label: '[text](url) 链接', desc: '超链接', insert: '[](https://)', replaceLength: 1 },
     { trigger: '[', label: '[text](url "标题") 带标题链接', desc: '带标题', insert: '[](https:// "标题")', replaceLength: 1 },
     { trigger: '[', label: '[ref]: url 引用链接', desc: '引用式', insert: '[1]: https://', replaceLength: 1 },
-  
+    // [^ 脚注
+    { trigger: '[^', label: '[^1] 脚注引用', desc: '脚注标记', insert: '[^1]', replaceLength: 2 },
+    { trigger: '[^', label: '[^1]: 脚注定义', desc: '脚注内容', insert: '[^1]: ', replaceLength: 2 },
+    // <!-- 注释标记（图表编号 / 表格样式预设）
+    { trigger: '<!--', label: '<!-- #fig: -->', desc: '图编号与题注', insert: '<!-- #fig:别名 图片标题 -->\n', replaceLength: 4 },
+    { trigger: '<!--', label: '<!-- #tbl: -->', desc: '表编号与题注', insert: '<!-- #tbl:别名 表格标题 -->\n', replaceLength: 4 },
+    { trigger: '<!--', label: '<!-- table-style: -->', desc: '表格样式预设（zebra 等）', insert: '<!-- table-style: md-table-zebra -->\n', replaceLength: 4 },
+
   ];
 })();

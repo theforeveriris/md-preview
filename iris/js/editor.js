@@ -1196,13 +1196,31 @@
 
   // CM6 closeBrackets 会在输入 opener（如 [）时自动补出配对闭符，该闭符位于
   // 被替换前缀之后；补全展开后紧邻插入文本的配对闭符需一并吞掉，
-  // 否则 [](https://) 之后会残留一个 ]（旧 textarea 时代无此问题）
-  const PAIRED_CLOSERS = { '[': ']', '(': ')', '{': '}', '"': '"', "'": "'", '`': '`' };
+  // 否则 [](https://) 之后会残留一个 ]（旧 textarea 时代无此问题）。
+  // 扫描前缀找「最后一个未闭合的 opener」（[^ 输入序列的 ] 同样要吞）。
+  const PAIR_CLOSER = { '[': ']', '(': ')', '{': '}' };
+  function pairedCloserOf(prefix) {
+    let open = null;
+    for (const ch of prefix) {
+      if (PAIR_CLOSER[ch]) open = ch;
+      else if (open && ch === PAIR_CLOSER[open]) open = null;
+    }
+    return open ? PAIR_CLOSER[open] : null;
+  }
 
   function applyAutocomplete(editor, item, lineStart, replaceLength) {
     const prefix = editor.value.substring(lineStart, lineStart + replaceLength);
-    const closer = PAIRED_CLOSERS[prefix.slice(-1)] || null;
+    const closer = pairedCloserOf(prefix);
     editor.replaceAtLineStart(replaceLength, item.insert, closer);
+    // 光标落点：显式 cursorOffset 优先；否则当 insert 以闭合围栏 ``` 结尾时
+    // 统一落到闭合围栏之前的块内（空白模板落在空行上，填充模板落在末行内容后）
+    let delta = 0;
+    if (typeof item.cursorOffset === 'number') delta = item.cursorOffset;
+    else if (item.insert.endsWith('```')) delta = -4;
+    if (delta) {
+      const pos = Math.max(lineStart, lineStart + item.insert.length + delta);
+      editor.setSelectionRange(pos, pos);
+    }
     hideAutocomplete();
     editor.focus();
     updateCellMeta(getCell(parseInt(editor.dataset.cellId)));
@@ -1270,10 +1288,19 @@
     else if (lineBeforeCursor.match(/^\[pulse\w*$/)) {
       showAutocomplete(editor, '', '[pulse', lineStart, lineBeforeCursor.length);
     }
+    // [^ 脚注触发（须在 [ 触发之前判断）
+    else if (lineBeforeCursor.match(/^\[\^[\w]*$/)) {
+      showAutocomplete(editor, lineBeforeCursor, '[^', lineStart, lineBeforeCursor.length);
+    }
     // @ 画廊样式触发
     else if (lineBeforeCursor.match(/^@\w*$/)) {
       const filter = lineBeforeCursor.substring(1);
       showAutocomplete(editor, filter, '@', lineStart, lineBeforeCursor.length);
+    }
+    // <!-- 注释标记触发（图表编号 / 表格样式预设）
+    else if (lineBeforeCursor.match(/^<!--\s?[#\w:-]*$/)) {
+      const filter = lineBeforeCursor.replace(/^<!--\s?/, '');
+      showAutocomplete(editor, filter, '<!--', lineStart, lineBeforeCursor.length);
     }
     else {
       hideAutocomplete();
