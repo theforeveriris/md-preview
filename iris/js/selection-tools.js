@@ -294,22 +294,26 @@
     return lines;
   }
 
-  // OG 社交图同款背景图案：右上角超大鸢尾花水印（低透明度、出血裁切，
-  // 见 iris/icons/og-image.png）。clip 在内框圆角内，随主题强调色着色。
-  function drawWatermark(ctx, W, H, dark) {
+  // OG 社交图同款背景图案：超大鸢尾花水印（icon.svg 同源六瓣路径，低透明度，
+  // 出血后由内框圆角裁切，见 iris/icons/og-image.png）。随主题强调色着色。
+  function drawIrisWatermark(ctx, W, H, x, y, size, alpha) {
     const paths = window.MarkdownPreview.irisMascot && window.MarkdownPreview.irisMascot.IRIS_PATHS;
     if (!paths || !paths.length) return;
     const accent = cssVar('--color-accent-purple', '#d4a5c9');
-    const size = W * 0.33;
     ctx.save();
     roundRectPath(ctx, 28, 28, W - 56, H - 56, 20);
     ctx.clip();
-    ctx.globalAlpha = dark ? 0.09 : 0.13;
-    ctx.translate(W - size * 0.76, 34);
+    ctx.globalAlpha = alpha;
+    ctx.translate(x, y);
     ctx.scale(size / 512, size / 512);
     ctx.fillStyle = accent;
     paths.forEach(d => ctx.fill(new Path2D(d)));
     ctx.restore();
+  }
+
+  function drawWatermark(ctx, W, H, dark) {
+    const size = W * 0.33;
+    drawIrisWatermark(ctx, W, H, W - size * 0.76, 34, size, dark ? 0.09 : 0.13);
   }
 
   function drawCardFrame(ctx, W, H, opts) {
@@ -337,6 +341,16 @@
     ctx.fillStyle = grad;
     roundRectPath(ctx, 28, 28, W - 56, 10, 5);
     ctx.fill();
+
+    // 竖版（3:4 海报式构图）：底部对称渐变条 + 左下镜像水印，
+    // 填补下半张的空白，避免头重脚轻
+    if (H > W) {
+      ctx.fillStyle = grad;
+      roundRectPath(ctx, 28, H - 38, W - 56, 10, 5);
+      ctx.fill();
+      const wmSize = W * 0.33;
+      drawIrisWatermark(ctx, W, H, 28 - wmSize * 0.24, H - 28 - wmSize * 0.76, wmSize, opts.dark ? 0.07 : 0.10);
+    }
   }
 
   function drawFooter(ctx, W, H, dark) {
@@ -364,9 +378,9 @@
     const accent1 = cssVar('--color-accent-purple', '#d4a5c9');
     const vertical = H > W;
     const bodyFont = cardFont(true);
-    const titleSize = vertical ? 56 : 46;
-    const excerptSize = vertical ? 32 : 28;
-    const lineHeight = vertical ? 50 : 44;
+    const titleSize = vertical ? 58 : 46;
+    const excerptSize = vertical ? 34 : 28;
+    const lineHeight = vertical ? 54 : 44;
     const maxTitleLines = vertical ? 3 : 2;
 
     drawCardFrame(ctx, W, H, {});
