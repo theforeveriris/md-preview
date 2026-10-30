@@ -112,7 +112,7 @@
     }
   }
 
-  window.MarkdownPreview.irisMascot = { init, flowerSvg };
+  window.MarkdownPreview.irisMascot = { init, flowerSvg, IRIS_PATHS };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
