@@ -18,14 +18,14 @@
   window.MarkdownPreview = window.MarkdownPreview || {};
 
   const MIN_HEADINGS = 4;     // 标题数阈值：少于该数不出目录
-  const MIN_ROOM = 260;       // 正文右缘余白阈值：更窄会与正文重叠，不出
+  const MIN_ROOM = 240;       // 正文右缘余白阈值（TOC 宽 210 + 间隙），更窄不出
   const TOP_OFFSET = 96;      // topbar 高度余量：scrollspy 判定线
   const SCROLL_MARGIN = 72;   // 点击跳转时标题距视口顶的落点
 
   let el = null;
   let headings = [];          // [{ el, level }]
   let visible = false;
-  let ticking = false;
+  let resizeLast = 0;
 
   function isEnabled() {
     const st = window.MarkdownPreview.settings;
@@ -132,9 +132,16 @@
 
   function setActive(index) {
     if (!el || !visible) return;
-    el.querySelectorAll('.mini-toc-list li').forEach((li, i) => {
+    const items = el.querySelectorAll('.mini-toc-list li');
+    items.forEach((li, i) => {
       li.classList.toggle('active', i === index);
     });
+    // 长目录（列表溢出可滚动）时，高亮项要随文件滚动保持在可视区内——
+    // block: nearest 只滚 TOC 自身的滚动容器，不会牵动页面
+    const active = items[index];
+    if (active && active.scrollIntoView) {
+      active.scrollIntoView({ block: 'nearest' });
+    }
   }
 
   // scrollspy：最后一个滚过判定线的标题为当前章节（rAF 节流）；
@@ -149,10 +156,13 @@
     setActive(current < 0 ? 0 : current);
   }
 
+  let spyLast = 0;
   function onScroll() {
-    if (!visible || ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => { ticking = false; updateActive(); });
+    if (!visible) return;
+    // 时间戳节流而非 rAF：后台标签页 rAF 被冻结会导致高亮永不更新
+    if (performance.now() - spyLast < 80) return;
+    spyLast = performance.now();
+    updateActive();
   }
 
   // markdown.js 渲染完成后重建（与 findBar.onDocRendered 同款钩子）
@@ -168,10 +178,9 @@
   function init() {
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(() => { ticking = false; updateVisibility(); });
-      }
+      if (performance.now() - resizeLast < 100) return;
+      resizeLast = performance.now();
+      updateVisibility();
     }, { passive: true });
 
     // 内容区自监控（双通道之一）：虚拟路由（#/tags、#/graph 等）不经过
