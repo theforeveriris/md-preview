@@ -142,6 +142,14 @@
     return st.docTitle || document.title.split(' | ')[0] || '';
   }
 
+  // 卡片 / Issue 反馈共用的原文链接：当前文档 + 选区最近标题锚点（hash 路由）
+  function pageUrlFor(rect) {
+    const st = window.MarkdownPreview.state || {};
+    if (!st.currentFilePath) return '';
+    const anchor = nearestHeadingAnchor(rect);
+    return `${location.origin}${location.pathname}#/${st.currentFilePath}${anchor ? '#' + anchor : ''}`;
+  }
+
   // ============== GitHub Issue 一键反馈 ==============
   // 用预填标题/正文的 issue 表单收文档纠错：零后端，评论走 giscus、纠错走这里。
   function nearestHeadingAnchor(rect) {
@@ -162,8 +170,7 @@
     const st = window.MarkdownPreview.state || {};
     if (!cfg.owner || !cfg.repo) return;
     const path = st.currentFilePath || '';
-    const anchor = nearestHeadingAnchor(info.rect);
-    const pageUrl = `${location.origin}${location.pathname}#/${path}${anchor ? '#' + anchor : ''}`;
+    const pageUrl = pageUrlFor(info.rect);
     const quote = info.text.length > 300 ? info.text.slice(0, 300) + '…' : info.text;
     const title = `[反馈] ${docTitle() || path}：${info.text.slice(0, 30)}${info.text.length > 30 ? '…' : ''}`;
     const body = [
@@ -202,7 +209,7 @@
         hideToolbar();
         exportShareCard(
           { title: docTitle(), excerpt: info.text },
-          { template, rawText: info.rawText, tableEl: info.tableEl, vertical: template === 'quote-v' }
+          { template, rawText: info.rawText, tableEl: info.tableEl, vertical: template === 'quote-v', pageUrl: pageUrlFor(info.rect) }
         );
       });
     });
@@ -353,10 +360,15 @@
     }
   }
 
-  function drawFooter(ctx, W, H, dark) {
+  function drawFooter(ctx, W, H, dark, pageUrl) {
     const accent1 = cssVar('--color-accent-purple', '#d4a5c9');
     const accent2 = cssVar('--color-accent-pink', '#f2c4ce');
-    // 站名已上移到品牌头（drawBrand），页脚只留双圆点装饰
+    // 右下角：有原文链接时画主题化二维码（扫码直达本文锚点），
+    // 无链接（本地文件 / 无路径上下文）时退回双圆点装饰
+    if (pageUrl && window.MarkdownPreview.QREncoder) {
+      drawQRChip(ctx, W, H, dark, pageUrl);
+      return;
+    }
     ctx.fillStyle = accent2;
     ctx.beginPath();
     ctx.arc(W - 100, H - 80, 10, 0, Math.PI * 2);
@@ -367,13 +379,45 @@
     ctx.fill();
   }
 
+  // 二维码芯片：surface 圆角底 + 主题文字色模块，随当前主题配色。
+  // 暗色主题下是「浅模块 / 深底」的反色码，主流扫码器（iOS 相机 /
+  // 微信 / Google Lens）均支持反色识别。
+  function drawQRChip(ctx, W, H, dark, pageUrl) {
+    const qr = window.MarkdownPreview.QREncoder.encode(pageUrl, { ecl: 'M' });
+    if (!qr) return;
+    const surface = dark ? '#252533' : cssVar('--color-surface', '#ffffff');
+    const border = dark ? '#3a3a4c' : cssVar('--color-border', '#f0f0f0');
+    const ink = dark ? 'rgba(235,235,245,.92)' : cssVar('--color-text', '#2d2d2d');
+    const size = 116;
+    const x = W - 44 - size;
+    const y = H - 44 - size;
+    roundRectPath(ctx, x, y, size, size, 12);
+    ctx.fillStyle = surface;
+    ctx.fill();
+    ctx.strokeStyle = border;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    // 静区 10px（规范建议 ≥4 模块）+ 模块栅格
+    const quiet = 10;
+    const area = size - quiet * 2;
+    const cell = area / qr.size;
+    ctx.fillStyle = ink;
+    for (let r = 0; r < qr.size; r++) {
+      for (let c = 0; c < qr.size; c++) {
+        if (qr.modules[r * qr.size + c]) {
+          ctx.fillRect(x + quiet + c * cell, y + quiet + r * cell, cell + 0.5, cell + 0.5);
+        }
+      }
+    }
+  }
+
   function cardFont(isTitle) {
     const bodyFont = getComputedStyle(document.querySelector('.markdown-body') || document.body).fontFamily || 'sans-serif';
     return bodyFont;
   }
 
   // 引言模板（横版 1200×630 / 竖版 1200×1600 共用一套排版）
-  function drawQuoteCard(ctx, W, H, content) {
+  function drawQuoteCard(ctx, W, H, content, pageUrl) {
     const text = cssVar('--color-text', '#2d2d2d');
     const accent1 = cssVar('--color-accent-purple', '#d4a5c9');
     const vertical = H > W;
@@ -404,7 +448,7 @@
     // 固定行数在两行标题时会画到卡片内底之外并压住页脚
     const maxExcerptLines = Math.min(
       vertical ? 22 : 8,
-      Math.max(1, Math.floor((H - 130 - excerptTop) / lineHeight))
+      Math.max(1, Math.floor((H - 170 - excerptTop) / lineHeight))
     );
     const excerptLines = [];
     (content.excerpt || '').split('\n').some(seg => {
@@ -423,11 +467,11 @@
     ctx.font = `600 ${vertical ? 150 : 120}px Georgia, serif`;
     ctx.fillText('“', 52, excerptTop + 40);
 
-    drawFooter(ctx, W, H, false);
+    drawFooter(ctx, W, H, false, pageUrl);
   }
 
   // 代码卡片：固定深色编辑器窗口风格
-  function drawCodeCard(ctx, W, H, content, rawText) {
+  function drawCodeCard(ctx, W, H, content, rawText, pageUrl) {
     drawCardFrame(ctx, W, H, { dark: true });
 
     const mono = `ui-monospace, SFMono-Regular, Consolas, "Courier New", monospace`;
@@ -451,7 +495,7 @@
     // 代码正文
     ctx.fillStyle = '#e8e8f0';
     ctx.font = `22px ${mono}`;
-    const maxLines = 13;
+    const maxLines = 11; // 右下角二维码芯片占高 160px，末行基线须在其上
     const lines = [];
     String(rawText || content.excerpt || '').replace(/\t/g, '  ').split('\n').some(raw => {
       const wrapped = wrapLine(ctx, raw.replace(/\s+$/, ''), W - 190);
@@ -468,11 +512,11 @@
     ctx.fillStyle = 'rgba(235,235,245,.28)';
     for (let i = 0; i < lines.length; i++) ctx.fillText(String(i + 1), 56, 148 + i * 32);
 
-    drawFooter(ctx, W, H, true);
+    drawFooter(ctx, W, H, true, pageUrl);
   }
 
   // 表格卡片：把选区所在表格按当前主题重绘
-  function drawTableCard(ctx, W, H, content, tableEl) {
+  function drawTableCard(ctx, W, H, content, tableEl, pageUrl) {
     drawCardFrame(ctx, W, H, {});
     drawBrand(ctx, false);
     const text = cssVar('--color-text', '#2d2d2d');
@@ -503,7 +547,7 @@
 
     const rowH = 44;
     const headerTop = 160;
-    const maxRows = Math.min(rows.length, Math.floor((H - headerTop - 120) / rowH));
+    const maxRows = Math.min(rows.length, Math.floor((H - headerTop - 160) / rowH));
 
     const drawRow = (cells, y, isHeader) => {
       if (isHeader) {
@@ -546,7 +590,7 @@
       ctx.fillText(t('sel.cardTableMore', '… 其余 {n} 行未展示').replace('{n}', rows.length - maxRows), 80, headerTop + maxRows * rowH + 34);
     }
 
-    drawFooter(ctx, W, H, false);
+    drawFooter(ctx, W, H, false, pageUrl);
   }
 
   /**
@@ -558,6 +602,10 @@
     opts = opts || {};
     const template = opts.template || (opts.vertical ? 'quote-v' : 'quote');
     if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    // 二维码编码器按需懒加载（qr-share.js 同款模式）；加载失败时 drawFooter 退回双圆点
+    if (opts.pageUrl && !window.MarkdownPreview.QREncoder) {
+      await window.MarkdownPreview.loadScript('iris/js/qr-encoder.js').catch(() => {});
+    }
 
     const dims = {
       'quote': [1200, 630],
@@ -575,9 +623,9 @@
     ctx.scale(scale, scale);
     ctx.textBaseline = 'alphabetic';
 
-    if (template === 'code') drawCodeCard(ctx, W, H, content, opts.rawText);
-    else if (template === 'table' && opts.tableEl) drawTableCard(ctx, W, H, content, opts.tableEl);
-    else drawQuoteCard(ctx, W, H, content);
+    if (template === 'code') drawCodeCard(ctx, W, H, content, opts.rawText, opts.pageUrl);
+    else if (template === 'table' && opts.tableEl) drawTableCard(ctx, W, H, content, opts.tableEl, opts.pageUrl);
+    else drawQuoteCard(ctx, W, H, content, opts.pageUrl);
 
     canvas.toBlob(blob => {
       if (!blob) return;
