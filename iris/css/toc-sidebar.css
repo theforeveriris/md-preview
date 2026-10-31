@@ -65,10 +65,7 @@
   background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent);
 }
 
-/* 窄视口隐藏（与 JS MIN_VIEWPORT 一致） */
-@media (max-width: 1439px) {
-  .mini-toc { display: none !important; }
-}
+/* 窄视口不出目录由 JS hasRoom() 按正文余白动态判定，不设固定断点 */
 
 /* 编辑器模式：被覆盖层遮住，直接不出 */
 body.editor-mode .mini-toc { display: none !important; }

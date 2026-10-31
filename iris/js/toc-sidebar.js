@@ -17,7 +17,7 @@
   window.MarkdownPreview = window.MarkdownPreview || {};
 
   const MIN_HEADINGS = 4;     // 标题数阈值：少于该数不出目录
-  const MIN_VIEWPORT = 1440;  // 视口宽度阈值：更窄时与正文重叠，不出
+  const MIN_ROOM = 260;       // 正文右缘余白阈值：更窄会与正文重叠，不出
   const TOP_OFFSET = 96;      // topbar 高度余量：scrollspy 判定线
   const SCROLL_MARGIN = 72;   // 点击跳转时标题距视口顶的落点
 
@@ -30,6 +30,14 @@
     const st = window.MarkdownPreview.settings;
     const cfg = st && typeof st.load === 'function' ? st.load() : {};
     return cfg.miniToc !== false;
+  }
+
+  // 余白自适应：正文右缘到视口右缘的空间足够放目录才显示
+  //（内容宽度可调 600~1400，固定视口阈值会误伤）
+  function hasRoom() {
+    const body = document.querySelector('.markdown-body');
+    if (!body) return false;
+    return window.innerWidth - body.getBoundingClientRect().right > MIN_ROOM;
   }
 
   function ensureEl() {
@@ -57,7 +65,7 @@
   function build() {
     headings = collect();
     if (!isEnabled() || headings.length < MIN_HEADINGS ||
-        window.innerWidth < MIN_VIEWPORT || document.body.classList.contains('editor-mode')) {
+        !hasRoom() || document.body.classList.contains('editor-mode')) {
       hide();
       return;
     }
@@ -117,7 +125,7 @@
 
   function onResize() {
     if (!el || !visible) return;
-    if (window.innerWidth < MIN_VIEWPORT) { hide(); return; }
+    if (!hasRoom()) { hide(); return; }
     build();
   }
 
@@ -134,6 +142,16 @@
 
   function init() {
     window.addEventListener('scroll', onScroll, { passive: true });
+    // 内容区自监控：虚拟路由（#/tags、#/graph 等）不经过 markdown.js 的
+    // 渲染钩子，观察 DOM 变化兜底（防抖合并渲染期的批量变更）
+    const content = document.getElementById('markdownContent');
+    if (content) {
+      let deb = null;
+      new MutationObserver(() => {
+        clearTimeout(deb);
+        deb = setTimeout(() => { if (isEnabled()) build(); }, 200);
+      }).observe(content, { childList: true, subtree: true });
+    }
     window.addEventListener('resize', () => {
       if (!ticking) {
         ticking = true;
