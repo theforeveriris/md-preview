@@ -1,0 +1,15 @@
+{
+  "files": [
+    "qrcode.js",
+    "countdown.js",
+    "colorcard.js",
+    "regex.js",
+    "cron.js",
+    "time.js",
+    "color.js",
+    "hash.js",
+    "jwt.js",
+    "timeline.js"
+  ],
+  "description": "Auto-generated plugin manifest for Markdown Preview"
+}

@@ -1,0 +1,150 @@
+/* ==================================================================
+   自绘下拉（custom-select）
+   全部配色走主题变量，所以 25 套预设主题自动跟随；
+   圆角用 --radius-control，由各主题自行覆盖。
+   ================================================================== */
+
+.cs {
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+  max-width: 100%;
+}
+
+/* 原生 select：保留在 DOM 里做值镜像，视觉上收起 */
+select.cs-native {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cs-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  padding: 8px 10px 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control, 6px);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cs-trigger:hover:not(:disabled) {
+  border-color: var(--color-accent-purple);
+  background: var(--color-hover);
+}
+
+.cs-trigger:focus-visible {
+  outline: none;
+  border-color: var(--color-accent-purple);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent-purple) 25%, transparent);
+}
+
+.cs-trigger:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.cs-value {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 箭头：两条边框拼出来的下折线，不依赖图片 */
+.cs-arrow {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  margin-top: -3px;
+  border-right: 1.6px solid currentColor;
+  border-bottom: 1.6px solid currentColor;
+  transform: rotate(45deg);
+  opacity: 0.5;
+  transition: transform 0.18s ease, margin 0.18s ease;
+}
+
+.cs-trigger[aria-expanded="true"] .cs-arrow {
+  margin-top: 3px;
+  transform: rotate(-135deg);
+}
+
+/* ---------- 弹层 ---------- */
+.cs-menu {
+  position: fixed;
+  z-index: 9999;
+  min-width: 120px;
+  max-height: 320px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control, 6px);
+  background: var(--color-surface);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* 细滚动条，别在弹层里显得笨重 */
+.cs-menu::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cs-menu::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar);
+  border-radius: 4px;
+}
+
+.cs-option {
+  padding: 7px 10px;
+  border-radius: max(0px, calc(var(--radius-control, 6px) - 2px));
+  color: var(--color-text);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cs-option:hover,
+.cs-option[data-active="1"] {
+  background: var(--color-hover);
+}
+
+.cs-option[aria-selected="true"] {
+  color: var(--color-accent-purple);
+  font-weight: 600;
+}
+
+.cs-option[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.cs-group-label {
+  padding: 6px 10px 3px;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}

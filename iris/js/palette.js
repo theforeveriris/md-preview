@@ -1,0 +1,387 @@
+/**
+ * palette - Ctrl/⌘+K 万能命令面板的动作注册表
+ *
+ * 与搜索面板（search.js / ui.js）共用一个输入框：
+ *   - 空查询时列出全部动作，直接点击执行
+ *   - 输入 `>` 前缀进入纯命令模式（只匹配动作）
+ *   - 普通查询时文档结果之后追加命中的动作（混排）
+ *
+ * 动作覆盖高频操作：主题切换、开关侧边栏、打开设置、导出、
+ * 复制链接、全量离线缓存、随机阅读、专注模式、打开编辑器。
+ * 新增动作只需在 ACTIONS 里加一项（icon 为 index.html SVG sprite id）。
+ */
+(function() {
+  'use strict';
+  window.MarkdownPreview = window.MarkdownPreview || {};
+  window.MarkdownPreview.palette = {};
+
+  // i18n 文案统一走 i18n.js 的权威实现（MarkdownPreview.t，全站唯一，避免多处包装漂移）
+  const t = window.MarkdownPreview.t;
+
+  function icon(name, size) {
+    return `<svg width="${size || 14}" height="${size || 14}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#${name}"/></svg>`;
+  }
+
+  // ============== 动作注册表 ==============
+  const THEME_ACTIONS = [
+    { id: 'auto', labelKey: 'settings.theme.auto', fallback: '自动（跟随系统）' },
+    { id: 'default', labelKey: 'settings.theme.default', fallback: '紫粉渐变' },
+    { id: 'iris', labelKey: 'settings.theme.iris', fallback: '鸢尾花紫' },
+    { id: 'github-light', label: 'GitHub Light' },
+    { id: 'github-dark', label: 'GitHub Dark' },
+    { id: 'notion', label: 'Notion' },
+    { id: 'arc', label: 'Arc Dark' },
+    { id: 'dracula', label: 'Dracula' },
+    { id: 'nord', label: 'Nord' },
+    { id: 'print', labelKey: 'settings.theme.print', fallback: '铅字印刷' },
+    { id: 'newsprint', labelKey: 'settings.theme.newsprint', fallback: '报纸版式' },
+    { id: 'swiss', labelKey: 'settings.theme.swiss', fallback: '瑞士极简' },
+    { id: 'watercolor', labelKey: 'settings.theme.watercolor', fallback: '水彩手帐' },
+    { id: 'blueprint', labelKey: 'settings.theme.blueprint', fallback: '蓝图工程' },
+    { id: 'terminal', labelKey: 'settings.theme.terminal', fallback: '终端单色' },
+    { id: 'neon', labelKey: 'settings.theme.neon', fallback: '霓虹夜色' },
+    { id: 'sepia', labelKey: 'settings.theme.sepia', fallback: '暖夜' },
+    { id: 'graphite', labelKey: 'settings.theme.graphite', fallback: '极简产品风' },
+    { id: 'notebook', labelKey: 'settings.theme.notebook', fallback: '手写笔记' },
+    { id: 'museum', labelKey: 'settings.theme.museum', fallback: '莫兰迪' },
+    { id: 'editorial', labelKey: 'settings.theme.editorial', fallback: '时尚刊' },
+    { id: 'aurora', labelKey: 'settings.theme.aurora', fallback: '极光' },
+    { id: 'typewriter', labelKey: 'settings.theme.typewriter', fallback: '打字机' },
+    { id: 'blackboard', labelKey: 'settings.theme.blackboard', fallback: '黑板' },
+    { id: 'parcel', labelKey: 'settings.theme.parcel', fallback: '邮政包裹' },
+    { id: 'aaa', labelKey: 'settings.theme.aaa', fallback: '高对比 AAA' }
+  ];
+
+  function themeAction(theme) {
+    return {
+      id: 'theme-' + theme.id,
+      icon: theme.id === 'auto' ? 'i-refresh' : (DARKISH.has(theme.id) ? 'i-moon' : 'i-sun'),
+      label: theme.label || t(theme.labelKey, theme.fallback),
+      group: t('cmd.groupTheme', '主题'),
+      run: () => {
+        if (window.MarkdownPreview.themes) {
+          window.MarkdownPreview.themes.setTheme(theme.id);
+        }
+      }
+    };
+  }
+
+  const DARKISH = new Set(['github-dark', 'arc', 'dracula', 'nord', 'blueprint', 'terminal', 'neon', 'sepia', 'graphite', 'aurora', 'blackboard']);
+
+  function focusModeRun() {
+    const on = window.MarkdownPreview.focusMode ? window.MarkdownPreview.focusMode.toggle() : false;
+    if (window.MarkdownPreview.settings) {
+      const s = window.MarkdownPreview.settings.load();
+      s.focusMode = on;
+      window.MarkdownPreview.settings.save(s);
+    }
+  }
+
+  function randomDocRun() {
+    const { fileTree, markdown } = window.MarkdownPreview;
+    const files = fileTree && fileTree.getAllFilesInDFSOrder ? fileTree.getAllFilesInDFSOrder() : [];
+    if (!files.length) return;
+    const pick = files[Math.floor(Math.random() * files.length)];
+    markdown.loadMarkdownFile(pick.path);
+    fileTree.highlightFileInSidebar(pick.path);
+  }
+
+  function copyPageLinkRun() {
+    const url = window.location.href;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).catch(() => {});
+    }
+  }
+
+  function cacheAllRun(btn) {
+    const { offline } = window.MarkdownPreview;
+    if (!offline || !offline.swSupported()) return;
+    const labelEl = btn.querySelector('span');
+    const original = labelEl ? labelEl.textContent : '';
+    offline.cacheAll({
+      onProgress: (done, total) => {
+        if (labelEl) labelEl.textContent = `${done}/${total}`;
+      }
+    }).then(result => {
+      if (labelEl) {
+        labelEl.textContent = t('cmd.cacheDone', '已缓存 {n} 篇').replace('{n}', result.done);
+        setTimeout(() => { labelEl.textContent = original; }, 2000);
+      }
+    });
+  }
+
+  function buildActions() {
+    const actions = [
+      {
+        id: 'toggle-sidebar',
+        icon: 'i-list',
+        label: t('cmd.toggleSidebar', '开关侧边栏'),
+        run: () => window.MarkdownPreview.fileTree && window.MarkdownPreview.fileTree.toggleSidebar()
+      },
+      {
+        id: 'open-settings',
+        icon: 'i-gear',
+        label: t('cmd.openSettings', '打开设置'),
+        run: () => window.MarkdownPreview.settings && window.MarkdownPreview.settings.open()
+      },
+      {
+        id: 'focus-mode',
+        icon: 'i-eye',
+        label: t('cmd.focusMode', '专注模式'),
+        run: focusModeRun
+      },
+      {
+        id: 'random-doc',
+        icon: 'i-shuffle',
+        label: t('cmd.randomDoc', '随机读一篇'),
+        run: randomDocRun
+      },
+      {
+        id: 'copy-link',
+        icon: 'i-link',
+        label: t('cmd.copyLink', '复制页面链接'),
+        run: copyPageLinkRun
+      },
+      {
+        id: 'export-pdf',
+        icon: 'i-download',
+        label: t('cmd.exportPdf', '导出 PDF（打印）'),
+        run: () => window.print()
+      },
+      {
+        id: 'export-md',
+        icon: 'i-download',
+        label: t('cmd.exportMd', '导出 Markdown'),
+        run: () => window.MarkdownPreview.settings && window.MarkdownPreview.settings.downloadCurrentFile()
+      },
+      {
+        id: 'export-html',
+        icon: 'i-download',
+        label: t('cmd.exportHtml', '导出单文件 HTML'),
+        run: () => window.MarkdownPreview.settings && window.MarkdownPreview.settings.exportStandaloneHtml()
+      },
+      {
+        id: 'cache-all',
+        icon: 'i-zap',
+        label: t('cmd.cacheAll', '缓存全部文档（离线）'),
+        run: cacheAllRun
+      },
+      {
+        id: 'open-graph',
+        icon: 'i-graph',
+        label: t('cmd.openGraph', '文档图谱'),
+        run: () => { window.location.hash = '#/graph'; }
+      },
+      {
+        id: 'open-unread',
+        icon: 'i-zap',
+        // 动态文案：buildItem 支持 label 为函数，取值时再算未读数
+        label: () => {
+          const n = (window.MarkdownPreview.unread && window.MarkdownPreview.unread.getUnread) ?
+            window.MarkdownPreview.unread.getUnread().length : 0;
+          return t('unread.paletteAction', '未读更新（{n} 篇）').replace('{n}', n);
+        },
+        run: () => {
+          if (window.MarkdownPreview.unread) window.MarkdownPreview.unread.openUnreadPage();
+        }
+      },
+      {
+        id: 'open-blog',
+        icon: 'i-list',
+        label: t('cmd.openBlog', '博客流'),
+        run: () => { window.location.hash = '#/blog'; }
+      },
+      {
+        id: 'open-history-page',
+        icon: 'i-refresh',
+        label: t('cmd.openHistoryPage', '浏览足迹'),
+        run: () => { window.location.hash = '#/history'; }
+      },
+      {
+        id: 'open-tags-cloud',
+        icon: 'i-tag',
+        label: t('cmd.openTagsCloud', '标签云'),
+        run: () => { window.location.hash = '#/tags'; }
+      },
+      {
+        id: 'open-site-index',
+        icon: 'i-graph',
+        label: t('cmd.openSiteIndex', '全站目录'),
+        run: () => { window.location.hash = '#/index'; }
+      },
+      {
+        id: 'open-orphan',
+        icon: 'i-filter',
+        label: t('cmd.openOrphan', '孤立文档检测'),
+        run: () => { window.location.hash = '#/orphan'; }
+      },
+      {
+        id: 'open-editor',
+        icon: 'i-code',
+        label: t('cmd.openEditor', '打开编辑器'),
+        run: () => window.MarkdownPreview.enterEditorMode && window.MarkdownPreview.enterEditorMode()
+      },
+      {
+        id: 'edit-current-doc',
+        icon: 'i-code',
+        label: t('cmd.editCurrentDoc', '在编辑器打开当前文档'),
+        run: async () => {
+          const st = window.MarkdownPreview.state;
+          const path = st && st.currentFilePath;
+          if (!path) return;
+          let text;
+          try {
+            const resp = await fetch(path, { cache: 'no-store' });
+            if (!resp.ok) return;
+            text = await resp.text();
+          } catch (e) { return; }
+          const initData = { cells: [{ type: 'markdown', content: text }] };
+          const title = path.split('/').pop().replace(/\.md$/i, '');
+          if (window.MarkdownPreview.editorCreateTab) {
+            const tab = await window.MarkdownPreview.editorCreateTab(initData, title);
+            const map = window.MarkdownPreview.editorRepoPaths =
+              window.MarkdownPreview.editorRepoPaths || new Map();
+            map.set(tab.id, path);
+          } else {
+            window.MarkdownPreview.editorPendingContent = { initData, title, repoPath: path };
+            window.MarkdownPreview.enterEditorMode();
+          }
+        }
+      },
+      {
+        id: 'share-favorites',
+        icon: 'i-star',
+        label: t('cmd.shareFavorites', '收藏夹分享'),
+        run: async (item) => {
+          const snap = window.MarkdownPreview.snapshot;
+          if (!snap || !snap.buildFavoritesShareUrl) return;
+          const result = await snap.buildFavoritesShareUrl();
+          if (!result.ok) { alert(result.reason); return; }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(result.url).catch(() => {});
+          }
+          alert(t('snap.favCopied', '已复制收藏合集链接（含 {n} 篇）')
+            .replace('{n}', result.count) +
+            (result.skipped > 0 ? t('snap.favSkipped', '，{n} 篇因体积未装下').replace('{n}', result.skipped) : ''));
+        }
+      },
+      {
+        id: 'export-html-book',
+        icon: 'i-download',
+        label: t('cmd.exportHtmlBook', '导出整站 HTML 合订本'),
+        run: () => {
+          const bundle = window.MarkdownPreview.exportBundle;
+          if (bundle && bundle.exportSiteHtmlBook) bundle.exportSiteHtmlBook();
+        }
+      },
+      {
+        id: 'new-from-template',
+        icon: 'i-save',
+        label: t('cmd.newFromTemplate', '从模板新建'),
+        run: () => window.MarkdownPreview.docTemplates && window.MarkdownPreview.docTemplates.openPicker()
+      }
+    ];
+    THEME_ACTIONS.forEach(theme => actions.push(themeAction(theme)));
+    // 模块化扩展点：desktop-kb 等功能在运行时注入自己的动作
+    (window.MarkdownPreview.palette.extraActions || []).forEach(a => actions.push(a));
+    return actions;
+  }
+
+  let cachedActions = null;
+  function actions() {
+    if (!cachedActions) cachedActions = buildActions();
+    return cachedActions;
+  }
+  // label 在构建时经 t() 固化：语言切换后失效重建（其他模块同款监听）
+  window.addEventListener('langchange', () => { cachedActions = null; });
+
+  // ============== 渲染 ==============
+
+  function matchActions(query) {
+    const q = (query || '').toLowerCase().trim();
+    const list = actions();
+    if (!q) return list;
+    return list.filter(a => {
+      const label = (typeof a.label === 'function' ? a.label() : a.label) || '';
+      return label.toLowerCase().includes(q) ||
+        (a.group || '').toLowerCase().includes(q) ||
+        a.id.includes(q);
+    });
+  }
+
+  function buildItem(action) {
+    const item = document.createElement('div');
+    item.className = 'search-result-item palette-command-item';
+    const label = typeof action.label === 'function' ? action.label() : action.label;
+    item.innerHTML = `
+      <span class="palette-command-icon">${icon(action.icon, 15)}</span>
+      <div class="palette-command-body">
+        <div class="search-result-title">${escapeHtml(label)}</div>
+      </div>
+      <span class="palette-command-group">${escapeHtml(action.group || t('cmd.groupAction', '命令'))}</span>
+    `;
+    item.addEventListener('click', () => {
+      closePalette();
+      action.run(item);
+    });
+    return item;
+  }
+
+  function sectionHeader(text) {
+    const el = document.createElement('div');
+    el.className = 'palette-section-header';
+    el.textContent = text;
+    return el;
+  }
+
+  // 统一走 md-render 权威实现（search.js 注释声明的全站唯一出处；
+  // DOM 版对引号转义不足，属性插值场景有差异）
+  const escapeHtml = window.MarkdownPreview.mdRender.escapeHtml;
+
+  function closePalette() {
+    if (window.MarkdownPreview.ui && window.MarkdownPreview.ui.closeSearchPalette) {
+      window.MarkdownPreview.ui.closeSearchPalette();
+    }
+  }
+
+  // 纯命令模式（查询以 > 开头）：结果容器里只渲染动作
+  function renderCommands(filterText) {
+    const { dom } = window.MarkdownPreview;
+    const container = dom.searchResults;
+    container.innerHTML = '';
+    container.classList.add('active');
+
+    const matched = matchActions(filterText);
+    if (matched.length === 0) {
+      container.innerHTML = `<div class="search-no-results">${t('cmd.noMatch', '没有匹配的命令')}</div>`;
+      return;
+    }
+    container.appendChild(sectionHeader(t('cmd.groupCommands', '命令')));
+    matched.forEach(a => container.appendChild(buildItem(a)));
+  }
+
+  // 混排模式：文档结果之后追加命中动作（最多 4 条）
+  function appendInline(query, container, limit) {
+    const matched = matchActions(query).slice(0, limit || 4);
+    if (matched.length === 0) return;
+    container.appendChild(sectionHeader(t('cmd.groupCommands', '命令')));
+    matched.forEach(a => container.appendChild(buildItem(a)));
+  }
+
+  // 查询是否为纯命令模式
+  function isCommandQuery(query) {
+    return typeof query === 'string' && query.trimStart().startsWith('>');
+  }
+
+  function stripPrefix(query) {
+    return query.trimStart().replace(/^>\s*/, '');
+  }
+
+  window.MarkdownPreview.palette = {
+    renderCommands,
+    appendInline,
+    isCommandQuery,
+    stripPrefix,
+    actions
+  };
+})();

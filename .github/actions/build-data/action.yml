@@ -1,0 +1,28 @@
+name: 'Build site data files'
+description: '运行全部构建期数据脚本（file-tree / links / search-index / precache / sitemap / changelog）。deploy 与 smoke-test 共用，保证两边构建集合一致（此前 deploy 缺 links，.md 变更的首次部署用旧 links.json 需第二次追平）'
+runs:
+  using: 'composite'
+  steps:
+    - name: Build File Tree
+      shell: bash
+      run: node iris/scripts/build-file-tree.js
+
+    - name: Build Links
+      shell: bash
+      run: node iris/scripts/build-links.js
+
+    - name: Build Search Index
+      shell: bash
+      run: node iris/scripts/build-search-index.js
+
+    - name: Build Precache Manifest
+      shell: bash
+      run: node iris/scripts/build-precache.js
+
+    - name: Build Sitemap
+      shell: bash
+      run: node iris/scripts/build-sitemap.js
+
+    - name: Build Changelog
+      shell: bash
+      run: node iris/scripts/build-changelog.js

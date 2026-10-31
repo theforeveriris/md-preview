@@ -1,0 +1,685 @@
+/**
+ * 选中文字浮动工具栏 + 主题化分享卡片（多模板）
+ *
+ * 划选正文文字后浮出小工具条：复制 / 站内搜索 / 生成分享卡片。
+ * 分享卡片提供四种模板（点击「分享卡片」后弹出模板菜单）：
+ *   - 引言横版：1200×630，标题 + 摘录引言排版（经典样式）
+ *   - 引言竖版：1200×1600（3:4），适合朋友圈 / 小红书等竖版场景
+ *   - 代码卡片：1200×630，编辑器窗口风格深色底 + 等宽排版
+ *   - 表格卡片：1200×630，选区落在表格内时可用，按当前主题重绘表格
+ *
+ * 全部 Canvas 手绘（不依赖 html2canvas），配色取当前主题 CSS 变量，
+ * 深浅主题自动适配；代码卡片固定深色编辑器风格。
+ */
+(function() {
+  'use strict';
+  window.MarkdownPreview = window.MarkdownPreview || {};
+
+  let toolbarEl = null;
+  let menuEl = null;
+  let hideTimer = null;
+  const MIN_SELECTION_LEN = 2;
+  const CARD_MAX_CHARS = 600;
+  const CARD_MAX_CHARS_VERTICAL = 1200;
+
+  // i18n 文案统一走 i18n.js 的权威实现（MarkdownPreview.t，全站唯一，避免多处包装漂移）
+  const t = window.MarkdownPreview.t;
+
+  function icon(name, size) {
+    return `<svg width="${size || 15}" height="${size || 15}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#${name}"/></svg>`;
+  }
+
+  function copyText(text) {
+    return new Promise((resolve) => {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(resolve, () => { legacyCopy(text); resolve(); });
+      } else {
+        legacyCopy(text); resolve();
+      }
+    });
+  }
+  function legacyCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) { /* 忽略 */ }
+    ta.remove();
+  }
+
+  // ============== 选中工具条 ==============
+  function ensureToolbar() {
+    if (toolbarEl) return toolbarEl;
+    toolbarEl = document.createElement('div');
+    toolbarEl.className = 'doc-selection-toolbar';
+    toolbarEl.setAttribute('role', 'toolbar');
+    document.body.appendChild(toolbarEl);
+
+    toolbarEl.addEventListener('mousedown', (e) => e.preventDefault()); // 防止点击按钮丢失选区
+    return toolbarEl;
+  }
+
+  function hideToolbar() {
+    if (toolbarEl) toolbarEl.classList.remove('open');
+    hideCardMenu();
+  }
+
+  function getSelectionInfo() {
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed || sel.rangeCount === 0) return null;
+    const text = sel.toString().replace(/\s+/g, ' ').trim();
+    if (text.length < MIN_SELECTION_LEN) return null;
+    const range = sel.getRangeAt(0);
+    const node = range.commonAncestorContainer;
+    const el = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+    if (!el || !el.closest) return null;
+    // 只对文档正文生效；放映 / 编辑器 / 灯箱内不弹
+    if (!el.closest('.markdown-body') || el.closest('.slides-overlay')) return null;
+    if (el.closest('.doc-selection-toolbar, .ctx-menu, .csv-table')) return null;
+    const rect = range.getBoundingClientRect();
+    if (!rect || (rect.width === 0 && rect.height === 0)) return null;
+    return {
+      text: text.slice(0, CARD_MAX_CHARS),
+      rawText: sel.toString(),
+      rect,
+      tableEl: el.closest('.markdown-body table') || null
+    };
+  }
+
+  function showToolbar(info) {
+    const el = ensureToolbar();
+    // GitHub Issue 反馈仅对站点文档有意义（本地文件没有仓库路径）
+    const st = window.MarkdownPreview.state || {};
+    const canFeedback = !!(st.currentFilePath && window.MarkdownPreview.CONFIG &&
+      window.MarkdownPreview.CONFIG.owner && window.MarkdownPreview.CONFIG.repo);
+    el.innerHTML = `
+      <button type="button" data-action="copy" title="${esc(t('sel.copy', '复制'))}">${icon('i-copy')}<span>${esc(t('sel.copy', '复制'))}</span></button>
+      <button type="button" data-action="search" title="${esc(t('sel.search', '站内搜索'))}">${icon('i-search')}<span>${esc(t('sel.search', '站内搜索'))}</span></button>
+      <button type="button" data-action="card" title="${esc(t('sel.card', '生成分享卡片'))}">${icon('i-image')}<span>${esc(t('sel.card', '分享卡片'))}</span></button>
+      ${canFeedback ? `<button type="button" data-action="issue" title="${esc(t('sel.issue', '反馈到 GitHub Issue'))}">${icon('i-flag')}<span>${esc(t('sel.issue', '反馈问题'))}</span></button>` : ''}
+    `;
+    el.querySelector('[data-action="copy"]').addEventListener('click', () => {
+      copyText(info.rawText).then(hideToolbar);
+    });
+    el.querySelector('[data-action="search"]').addEventListener('click', () => {
+      const ui = window.MarkdownPreview.ui;
+      hideToolbar();
+      if (ui && typeof ui.openSearchPalette === 'function') {
+        ui.openSearchPalette();
+        const input = document.getElementById('searchInput');
+        if (input) {
+          input.value = info.text.slice(0, 60);
+          input.dispatchEvent(new Event('input'));
+        }
+      }
+    });
+    el.querySelector('[data-action="card"]').addEventListener('click', () => {
+      showCardMenu(info);
+    });
+    el.querySelector('[data-action="issue"]')?.addEventListener('click', () => {
+      hideToolbar();
+      openIssueWithSelection(info);
+    });
+
+    // 先挂载拿到尺寸，再按视口边界定位在选区上方
+    el.classList.add('open');
+    const r = el.getBoundingClientRect();
+    const x = Math.max(8, Math.min(info.rect.left + info.rect.width / 2 - r.width / 2, window.innerWidth - r.width - 8));
+    const y = info.rect.top - r.height - 8;
+    el.style.left = x + 'px';
+    // 选区太靠上时放到选区下方
+    el.style.top = (y < 8 ? info.rect.bottom + 8 : y) + 'px';
+  }
+
+  // HTML 转义统一走 md-render.js 的权威实现（全站唯一，避免多处副本漂移）
+  // 惰性转发：解析期直接取全局依赖 index.html 加载顺序（曾按隐式契约）
+  const esc = (...a) => window.MarkdownPreview.mdRender.escapeHtml(...a);
+
+  function docTitle() {
+    const st = window.MarkdownPreview.state || {};
+    return st.docTitle || document.title.split(' | ')[0] || '';
+  }
+
+  // 卡片 / Issue 反馈共用的原文链接：当前文档 + 选区最近标题锚点（hash 路由）
+  function pageUrlFor(rect) {
+    const st = window.MarkdownPreview.state || {};
+    if (!st.currentFilePath) return '';
+    const anchor = nearestHeadingAnchor(rect);
+    return `${location.origin}${location.pathname}#/${st.currentFilePath}${anchor ? '#' + anchor : ''}`;
+  }
+
+  // ============== GitHub Issue 一键反馈 ==============
+  // 用预填标题/正文的 issue 表单收文档纠错：零后端，评论走 giscus、纠错走这里。
+  function nearestHeadingAnchor(rect) {
+    const headings = document.querySelectorAll('.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6');
+    let best = null;
+    headings.forEach(h => {
+      const r = h.getBoundingClientRect();
+      if (r.top <= rect.top + 2 && (!best || r.top > best._top)) {
+        best = h;
+        best._top = r.top;
+      }
+    });
+    return best && best.id ? best.id : '';
+  }
+
+  function openIssueWithSelection(info) {
+    const cfg = window.MarkdownPreview.CONFIG || {};
+    const st = window.MarkdownPreview.state || {};
+    if (!cfg.owner || !cfg.repo) return;
+    const path = st.currentFilePath || '';
+    const pageUrl = pageUrlFor(info.rect);
+    const quote = info.text.length > 300 ? info.text.slice(0, 300) + '…' : info.text;
+    const title = `[反馈] ${docTitle() || path}：${info.text.slice(0, 30)}${info.text.length > 30 ? '…' : ''}`;
+    const body = [
+      t('sel.issueDoc', '**文档**：') + path,
+      t('sel.issueWhere', '**位置**：') + pageUrl,
+      '',
+      t('sel.issueQuote', '**引文**：'),
+      '> ' + quote.replace(/\n/g, '\n> '),
+      '',
+      t('sel.issueDesc', '**问题描述**：'),
+      ''
+    ].join('\n');
+    const url = `https://github.com/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}/issues/new`
+      + `?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
+    window.open(url, '_blank', 'noopener');
+  }
+
+  // ============== 分享卡片模板菜单 ==============
+  function showCardMenu(info) {
+    hideCardMenu();
+    menuEl = document.createElement('div');
+    menuEl.className = 'card-template-menu';
+    const hasTable = !!(info.tableEl && info.tableEl.rows && info.tableEl.rows.length > 0);
+    menuEl.innerHTML = `
+      <div class="card-template-title">${esc(t('sel.cardPick', '选择卡片模板'))}</div>
+      <button type="button" data-template="quote">${icon('i-quote')}${esc(t('sel.cardQuote', '引言 · 横版 1200×630'))}</button>
+      <button type="button" data-template="quote-v">${icon('i-list')}${esc(t('sel.cardQuoteV', '引言 · 竖版 3:4'))}</button>
+      <button type="button" data-template="code">${icon('i-copy')}${esc(t('sel.cardCode', '代码卡片'))}</button>
+      <button type="button" data-template="table" ${hasTable ? '' : 'disabled'} title="${hasTable ? '' : esc(t('sel.cardTableHint', '选区需落在表格内'))}">${icon('i-table')}${esc(t('sel.cardTable', '表格卡片'))}</button>
+    `;
+    menuEl.addEventListener('mousedown', (e) => e.preventDefault());
+    menuEl.querySelectorAll('button[data-template]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const template = btn.dataset.template;
+        hideCardMenu();
+        hideToolbar();
+        exportShareCard(
+          { title: docTitle(), excerpt: info.text },
+          { template, rawText: info.rawText, tableEl: info.tableEl, vertical: template === 'quote-v', pageUrl: pageUrlFor(info.rect) }
+        );
+      });
+    });
+    document.body.appendChild(menuEl);
+    menuEl.classList.add('open');
+    // 定位在选区上方（复用工具条的视口规避逻辑）
+    const r = menuEl.getBoundingClientRect();
+    const x = Math.max(8, Math.min(info.rect.left, window.innerWidth - r.width - 8));
+    const y = info.rect.top - r.height - 8;
+    menuEl.style.left = x + 'px';
+    menuEl.style.top = (y < 8 ? info.rect.bottom + 8 : y) + 'px';
+  }
+
+  function hideCardMenu() {
+    if (menuEl) { menuEl.remove(); menuEl = null; }
+  }
+
+  // ============== 主题化分享卡片（Canvas 多模板） ==============
+  function cssVar(name, fallback) {
+    const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    return v || fallback;
+  }
+
+  // Canvas 文本硬换行：共享 interactions.wrapLine（曾两份逐字副本）
+  const wrapLine = window.MarkdownPreview.interactions.wrapLine;
+
+  function roundRectPath(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    if (ctx.roundRect) { ctx.roundRect(x, y, w, h, r); return; }
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  // 鸢尾花品牌标识：icon.svg 同源六瓣（iris-mascot.js 导出），Path2D 按主题
+  // 强调色渐变填充；路径缺失时退回双圆点（与页脚一致）
+  function drawIris(ctx, x, y, size) {
+    const accent1 = cssVar('--color-accent-purple', '#d4a5c9');
+    const accent2 = cssVar('--color-accent-pink', '#f2c4ce');
+    const paths = window.MarkdownPreview.irisMascot && window.MarkdownPreview.irisMascot.IRIS_PATHS;
+    if (paths && paths.length) {
+      const grad = ctx.createLinearGradient(x, y, x + size, y + size);
+      grad.addColorStop(0, accent1);
+      grad.addColorStop(1, accent2);
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(size / 512, size / 512);
+      ctx.fillStyle = grad;
+      paths.forEach(d => ctx.fill(new Path2D(d)));
+      ctx.restore();
+    } else {
+      ctx.fillStyle = accent2;
+      ctx.beginPath(); ctx.arc(x + size * 0.3, y + size * 0.5, size * 0.26, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = accent1;
+      ctx.beginPath(); ctx.arc(x + size * 0.72, y + size * 0.5, size * 0.26, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  function repoName() {
+    return (window.MarkdownPreview.CONFIG && window.MarkdownPreview.CONFIG.repo) ||
+      (window.MarkdownPreview.config && window.MarkdownPreview.config.repo) || 'Markdown Preview';
+  }
+
+  // 品牌头：鸢尾花 + 站名（各模板卡片左上角统一签名位）
+  function drawBrand(ctx, dark) {
+    const muted = dark ? 'rgba(235,235,245,.6)' : cssVar('--color-text-muted', '#999999');
+    const size = 34;
+    const x = 64, y = 54;
+    drawIris(ctx, x, y, size);
+    ctx.fillStyle = muted;
+    ctx.font = `600 24px ${cardFont(false)}`;
+    ctx.fillText(repoName(), x + size + 16, y + 25);
+  }
+
+  function truncateTail(lines, fullText) {
+    if (lines.length && fullText && fullText.length > lines.join('').length) {
+      const last = lines[lines.length - 1];
+      // CJK 无空格分词，\s*\S*$ 会把整行清空导致省略号独占一行：
+      // 保留末行前半截再接省略号，截断观感更自然
+      const kept = last.replace(/\s*\S*$/, '');
+      const base = kept.length >= last.length / 2
+        ? kept
+        : last.slice(0, Math.max(0, last.length - 4));
+      lines[lines.length - 1] = base + '…';
+    }
+    return lines;
+  }
+
+  // OG 社交图同款背景图案：超大鸢尾花水印（icon.svg 同源六瓣路径，低透明度，
+  // 出血后由内框圆角裁切，见 iris/icons/og-image.png）。随主题强调色着色。
+  function drawIrisWatermark(ctx, W, H, x, y, size, alpha) {
+    const paths = window.MarkdownPreview.irisMascot && window.MarkdownPreview.irisMascot.IRIS_PATHS;
+    if (!paths || !paths.length) return;
+    const accent = cssVar('--color-accent-purple', '#d4a5c9');
+    ctx.save();
+    roundRectPath(ctx, 28, 28, W - 56, H - 56, 20);
+    ctx.clip();
+    ctx.globalAlpha = alpha;
+    ctx.translate(x, y);
+    ctx.scale(size / 512, size / 512);
+    ctx.fillStyle = accent;
+    paths.forEach(d => ctx.fill(new Path2D(d)));
+    ctx.restore();
+  }
+
+  function drawWatermark(ctx, W, H, dark) {
+    const size = W * 0.33;
+    drawIrisWatermark(ctx, W, H, W - size * 0.76, 34, size, dark ? 0.09 : 0.13);
+  }
+
+  function drawCardFrame(ctx, W, H, opts) {
+    const bg = cssVar('--color-bg', '#fafafa');
+    const surface = cssVar('--color-surface', '#ffffff');
+    const border = cssVar('--color-border', '#f0f0f0');
+    const accent1 = cssVar('--color-accent-purple', '#d4a5c9');
+    const accent2 = cssVar('--color-accent-pink', '#f2c4ce');
+
+    ctx.fillStyle = opts.dark ? '#1e1e28' : bg;
+    ctx.fillRect(0, 0, W, H);
+    roundRectPath(ctx, 28, 28, W - 56, H - 56, 20);
+    ctx.fillStyle = opts.dark ? '#252533' : surface;
+    ctx.fill();
+    // 背景水印画在内框上、边框与渐变条之下
+    drawWatermark(ctx, W, H, opts.dark);
+    ctx.strokeStyle = opts.dark ? '#3a3a4c' : border;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // 顶部强调色渐变条
+    const grad = ctx.createLinearGradient(28, 0, W - 28, 0);
+    grad.addColorStop(0, accent1);
+    grad.addColorStop(1, accent2);
+    ctx.fillStyle = grad;
+    roundRectPath(ctx, 28, 28, W - 56, 10, 5);
+    ctx.fill();
+
+    // 竖版（3:4 海报式构图）：底部对称渐变条 + 左下镜像水印，
+    // 填补下半张的空白，避免头重脚轻
+    if (H > W) {
+      ctx.fillStyle = grad;
+      roundRectPath(ctx, 28, H - 38, W - 56, 10, 5);
+      ctx.fill();
+      const wmSize = W * 0.33;
+      drawIrisWatermark(ctx, W, H, 28 - wmSize * 0.24, H - 28 - wmSize * 0.76, wmSize, opts.dark ? 0.07 : 0.10);
+    }
+  }
+
+  function drawFooter(ctx, W, H, dark, pageUrl) {
+    const accent1 = cssVar('--color-accent-purple', '#d4a5c9');
+    const accent2 = cssVar('--color-accent-pink', '#f2c4ce');
+    // 右下角：有原文链接时画主题化二维码（扫码直达本文锚点），
+    // 无链接（本地文件 / 无路径上下文）时退回双圆点装饰
+    if (pageUrl && window.MarkdownPreview.QREncoder) {
+      drawQRChip(ctx, W, H, dark, pageUrl);
+      return;
+    }
+    ctx.fillStyle = accent2;
+    ctx.beginPath();
+    ctx.arc(W - 100, H - 80, 10, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = accent1;
+    ctx.beginPath();
+    ctx.arc(W - 124, H - 80, 10, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // 二维码芯片：surface 圆角底 + 主题文字色模块，随当前主题配色。
+  // 暗色主题下是「浅模块 / 深底」的反色码，主流扫码器（iOS 相机 /
+  // 微信 / Google Lens）均支持反色识别。
+  function drawQRChip(ctx, W, H, dark, pageUrl) {
+    const qr = window.MarkdownPreview.QREncoder.encode(pageUrl, { ecl: 'M' });
+    if (!qr) return;
+    const surface = dark ? '#252533' : cssVar('--color-surface', '#ffffff');
+    const border = dark ? '#3a3a4c' : cssVar('--color-border', '#f0f0f0');
+    const ink = dark ? 'rgba(235,235,245,.92)' : cssVar('--color-text', '#2d2d2d');
+    const size = 116;
+    const x = W - 44 - size;
+    const y = H - 44 - size;
+    roundRectPath(ctx, x, y, size, size, 12);
+    ctx.fillStyle = surface;
+    ctx.fill();
+    ctx.strokeStyle = border;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    // 静区 10px（规范建议 ≥4 模块）+ 模块栅格
+    const quiet = 10;
+    const area = size - quiet * 2;
+    const cell = area / qr.size;
+    ctx.fillStyle = ink;
+    for (let r = 0; r < qr.size; r++) {
+      for (let c = 0; c < qr.size; c++) {
+        if (qr.modules[r * qr.size + c]) {
+          ctx.fillRect(x + quiet + c * cell, y + quiet + r * cell, cell + 0.5, cell + 0.5);
+        }
+      }
+    }
+  }
+
+  function cardFont(isTitle) {
+    const bodyFont = getComputedStyle(document.querySelector('.markdown-body') || document.body).fontFamily || 'sans-serif';
+    return bodyFont;
+  }
+
+  // 引言模板（横版 1200×630 / 竖版 1200×1600 共用一套排版）
+  function drawQuoteCard(ctx, W, H, content, pageUrl) {
+    const text = cssVar('--color-text', '#2d2d2d');
+    const accent1 = cssVar('--color-accent-purple', '#d4a5c9');
+    const vertical = H > W;
+    const bodyFont = cardFont(true);
+    const titleSize = vertical ? 58 : 46;
+    const excerptSize = vertical ? 34 : 28;
+    const lineHeight = vertical ? 54 : 44;
+    const maxTitleLines = vertical ? 3 : 2;
+
+    drawCardFrame(ctx, W, H, {});
+    drawBrand(ctx, false);
+
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = text;
+    ctx.font = `600 ${titleSize}px ${bodyFont}`;
+    const titleTop = 150;
+    let titleLines = wrapLine(ctx, content.title || '', W - 160);
+    if (titleLines.length > maxTitleLines) {
+      titleLines = titleLines.slice(0, maxTitleLines);
+      titleLines[titleLines.length - 1] = titleLines[titleLines.length - 1].replace(/\s*\S*$/, '') + '…';
+    }
+    titleLines.forEach((line, i) => ctx.fillText(line, 80, titleTop + i * (titleSize + 12)));
+
+    const excerptTop = titleTop + titleLines.length * (titleSize + 12);
+    ctx.fillStyle = text;
+    ctx.font = `${excerptSize}px ${bodyFont}`;
+    // 摘录行数按剩余高度动态计算（页脚区预留 130px），
+    // 固定行数在两行标题时会画到卡片内底之外并压住页脚
+    const maxExcerptLines = Math.min(
+      vertical ? 22 : 8,
+      Math.max(1, Math.floor((H - 170 - excerptTop) / lineHeight))
+    );
+    const excerptLines = [];
+    (content.excerpt || '').split('\n').some(seg => {
+      const wrapped = wrapLine(ctx, seg.trim(), W - 160);
+      for (const line of wrapped) {
+        if (excerptLines.length >= maxExcerptLines) return true;
+        excerptLines.push(line);
+      }
+      return false;
+    });
+    truncateTail(excerptLines, content.excerpt || '');
+    excerptLines.forEach((line, i) => ctx.fillText(line, 80, excerptTop + 30 + i * lineHeight));
+
+    // 引号装饰
+    ctx.fillStyle = accent1;
+    ctx.font = `600 ${vertical ? 150 : 120}px Georgia, serif`;
+    ctx.fillText('“', 52, excerptTop + 40);
+
+    drawFooter(ctx, W, H, false, pageUrl);
+  }
+
+  // 代码卡片：固定深色编辑器窗口风格
+  function drawCodeCard(ctx, W, H, content, rawText, pageUrl) {
+    drawCardFrame(ctx, W, H, { dark: true });
+
+    const mono = `ui-monospace, SFMono-Regular, Consolas, "Courier New", monospace`;
+    // 窗口标题栏（红黄绿三点 + 文档标题）
+    ctx.fillStyle = '#14141d';
+    roundRectPath(ctx, 28, 38, W - 56, 54, 14);
+    ctx.fill();
+    const dots = ['#ff5f56', '#ffbd2e', '#27c93f'];
+    dots.forEach((c, i) => {
+      ctx.fillStyle = c;
+      ctx.beginPath();
+      ctx.arc(66 + i * 30, 65, 8, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.fillStyle = 'rgba(235,235,245,.75)';
+    ctx.font = `20px ${mono}`;
+    ctx.fillText((content.title || 'code').slice(0, 70), 170, 72);
+    // 标题栏右侧放鸢尾花品牌标识
+    drawIris(ctx, W - 128, 48, 32);
+
+    // 代码正文
+    ctx.fillStyle = '#e8e8f0';
+    ctx.font = `22px ${mono}`;
+    const maxLines = 11; // 右下角二维码芯片占高 160px，末行基线须在其上
+    const lines = [];
+    String(rawText || content.excerpt || '').replace(/\t/g, '  ').split('\n').some(raw => {
+      const wrapped = wrapLine(ctx, raw.replace(/\s+$/, ''), W - 190);
+      for (const line of wrapped) {
+        if (lines.length >= maxLines) return true;
+        lines.push(line);
+      }
+      return false;
+    });
+    truncateTail(lines, rawText || '');
+    lines.forEach((line, i) => ctx.fillText(line, 80, 148 + i * 32));
+
+    // 行号淡色装饰
+    ctx.fillStyle = 'rgba(235,235,245,.28)';
+    for (let i = 0; i < lines.length; i++) ctx.fillText(String(i + 1), 56, 148 + i * 32);
+
+    drawFooter(ctx, W, H, true, pageUrl);
+  }
+
+  // 表格卡片：把选区所在表格按当前主题重绘
+  function drawTableCard(ctx, W, H, content, tableEl, pageUrl) {
+    drawCardFrame(ctx, W, H, {});
+    drawBrand(ctx, false);
+    const text = cssVar('--color-text', '#2d2d2d');
+    const muted = cssVar('--color-text-muted', '#999999');
+    const accent1 = cssVar('--color-accent-purple', '#d4a5c9');
+    const bodyFont = cardFont(false);
+
+    const rows = [...tableEl.rows].map(tr => [...tr.cells].map(td => td.textContent.replace(/\s+/g, ' ').trim()));
+    if (rows.length === 0) return;
+    const colCount = Math.max(...rows.map(r => r.length));
+    const usable = W - 160;
+    const fontSize = 24;
+    ctx.font = `${fontSize}px ${bodyFont}`;
+
+    // 列宽按内容测量，超宽按比例收缩
+    const colW = [];
+    for (let c = 0; c < colCount; c++) {
+      let w = 0;
+      for (const r of rows) {
+        if (r[c] == null) continue;
+        w = Math.max(w, ctx.measureText(r[c]).width);
+      }
+      colW.push(Math.min(Math.max(w + 32, 90), 420));
+    }
+    const rawTotal = colW.reduce((a, b) => a + b, 0);
+    const scale = Math.min(1, usable / rawTotal);
+    const widths = colW.map(w => w * scale);
+
+    const rowH = 44;
+    const headerTop = 160;
+    const maxRows = Math.min(rows.length, Math.floor((H - headerTop - 160) / rowH));
+
+    const drawRow = (cells, y, isHeader) => {
+      if (isHeader) {
+        ctx.fillStyle = accent1;
+        ctx.fillRect(80, y, usable, rowH);
+      } else if ((rows.indexOf(cells) % 2) === 0) {
+        ctx.fillStyle = 'rgba(128,128,128,.08)';
+        ctx.fillRect(80, y, usable, rowH);
+      }
+      let x = 80;
+      ctx.fillStyle = isHeader ? '#ffffff' : text;
+      ctx.font = `${isHeader ? '600 ' : ''}${fontSize}px ${bodyFont}`;
+      cells.forEach((cell, c) => {
+        if (c >= colCount) return;
+        const avail = widths[c] - 20;
+        const lines = wrapLine(ctx, cell, avail);
+        // 单元格一行放不下时截断并带省略号（此前静默丢弃后续行，文字缺失不可感知）
+        const shown = lines[0].slice(0, 40) + (lines[0].length > 40 || lines.length > 1 ? '…' : '');
+        ctx.fillText(shown, x + 10, y + rowH / 2 + 8);
+        x += widths[c];
+        if (c < colCount - 1) {
+          ctx.strokeStyle = 'rgba(128,128,128,.25)';
+          ctx.beginPath();
+          ctx.moveTo(x, y + 4);
+          ctx.lineTo(x, y + rowH - 4);
+          ctx.stroke();
+        }
+      });
+      ctx.strokeStyle = 'rgba(128,128,128,.25)';
+      ctx.beginPath();
+      ctx.moveTo(80, y + rowH);
+      ctx.lineTo(80 + usable, y + rowH);
+      ctx.stroke();
+    };
+
+    rows.slice(0, maxRows).forEach((cells, i) => drawRow(cells, headerTop + i * rowH, i === 0));
+    if (rows.length > maxRows) {
+      ctx.fillStyle = muted;
+      ctx.font = `20px ${bodyFont}`;
+      ctx.fillText(t('sel.cardTableMore', '… 其余 {n} 行未展示').replace('{n}', rows.length - maxRows), 80, headerTop + maxRows * rowH + 34);
+    }
+
+    drawFooter(ctx, W, H, false, pageUrl);
+  }
+
+  /**
+   * 生成并下载分享卡片 PNG
+   * @param {{title:string, excerpt:string}} content
+   * @param {{template?:'quote'|'quote-v'|'code'|'table', rawText?:string, tableEl?:HTMLTableElement, vertical?:boolean}} [opts]
+   */
+  async function exportShareCard(content, opts) {
+    opts = opts || {};
+    const template = opts.template || (opts.vertical ? 'quote-v' : 'quote');
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    // 二维码编码器按需懒加载（qr-share.js 同款模式）；加载失败时 drawFooter 退回双圆点
+    if (opts.pageUrl && !window.MarkdownPreview.QREncoder) {
+      await window.MarkdownPreview.loadScript('iris/js/qr-encoder.js').catch(() => {});
+    }
+
+    const dims = {
+      'quote': [1200, 630],
+      'quote-v': [1200, 1600],
+      'code': [1200, 630],
+      'table': [1200, 630]
+    }[template] || [1200, 630];
+    const W = dims[0], H = dims[1];
+    const scale = 2;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = W * scale;
+    canvas.height = H * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(scale, scale);
+    ctx.textBaseline = 'alphabetic';
+
+    if (template === 'code') drawCodeCard(ctx, W, H, content, opts.rawText, opts.pageUrl);
+    else if (template === 'table' && opts.tableEl) drawTableCard(ctx, W, H, content, opts.tableEl, opts.pageUrl);
+    else drawQuoteCard(ctx, W, H, content, opts.pageUrl);
+
+    canvas.toBlob(blob => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const slug = (content.title || 'share').replace(/[\\/:*?"<>|\s]+/g, '-').slice(0, 40);
+      a.href = url;
+      a.download = `${slug}-${template}-card.png`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  }
+
+  // ============== 初始化 ==============
+  function init() {
+    document.addEventListener('mouseup', (e) => {
+      if (e.button !== 0) return;
+      if (e.target.closest && e.target.closest('.doc-selection-toolbar')) return;
+      if (e.target.closest && e.target.closest('.card-template-menu')) return;
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => {
+        const info = getSelectionInfo();
+        if (info) showToolbar(info);
+        else hideToolbar();
+      }, 10);
+    });
+    // 点击空白 / 滚动 / Esc / 选区变化时收起
+    document.addEventListener('mousedown', (e) => {
+      if (toolbarEl && toolbarEl.classList.contains('open') && !toolbarEl.contains(e.target)) {
+        // 延迟判断：先让选区落定，若点击后仍有合法选区（如再次划选）则由 mouseup 重新定位
+        setTimeout(() => {
+          if (!getSelectionInfo()) hideToolbar();
+        }, 0);
+      }
+    });
+    window.addEventListener('scroll', hideToolbar, true);
+    window.addEventListener('resize', hideToolbar);
+    document.addEventListener('selectionchange', () => {
+      if (toolbarEl && toolbarEl.classList.contains('open')) {
+        clearTimeout(hideTimer);
+        hideTimer = setTimeout(() => {
+          if (!getSelectionInfo()) hideToolbar();
+        }, 30);
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && ((toolbarEl && toolbarEl.classList.contains('open')) || menuEl)) {
+        hideToolbar();
+      }
+    }, true);
+  }
+
+  window.MarkdownPreview.selectionTools = {
+    init,
+    exportShareCard
+  };
+})();

@@ -1,0 +1,75 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "md-preview",
+  "version": "0.1.0",
+  "identifier": "com.theforeveriris.mdpreview",
+  "build": {
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "md-preview",
+        "width": 1280,
+        "height": 860,
+        "minWidth": 420,
+        "minHeight": 420,
+        "resizable": true,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": {
+        "default-src": "'self'",
+        "script-src": "'self' 'unsafe-inline' https://platform.twitter.com",
+        "style-src": "'self' 'unsafe-inline' https://fonts.googleapis.com",
+        "font-src": "'self' data: https://fonts.gstatic.com",
+        "img-src": "'self' data: blob: https:",
+        "media-src": "'self' https: blob:",
+        "connect-src": "'self' https:",
+        "frame-src": "'self' https:",
+        "object-src": "'none'",
+        "base-uri": "'self'"
+      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "shortDescription": "静态 Markdown 文档站点的桌面端",
+    "longDescription": "把 md-preview 静态站点打包为桌面应用：离线可用，外链交给系统浏览器。",
+    "fileAssociations": [
+      {
+        "ext": ["md", "markdown"],
+        "name": "Markdown 文档",
+        "description": "用 md-preview 打开 Markdown 文档",
+        "role": "Editor",
+        "mimeType": "text/markdown"
+      }
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "nsis": {
+        "languages": ["SimpChinese", "English"],
+        "installMode": "currentUser"
+      }
+    },
+    "createUpdaterArtifacts": false
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://github.com/theforeveriris/md-preview/releases/latest/download/latest.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6c2lnbmF0dXJlCi0tLQpMQVVUSCBVUERBVEVSIFBVQktFWTo="
+    }
+  }
+}

@@ -1,0 +1,51 @@
+name: Build PPTX Thumbnails
+
+on:
+  push:
+    paths:
+      - 'iris/data/pptx/raw/**'
+      - 'iris/scripts/pptx/**'
+      - '.github/workflows/build-pptx.yml'
+  workflow_dispatch:
+
+# 回写 main 的最小权限（此前缺省吃到仓库默认 token 权限）
+permissions:
+  contents: write
+
+concurrency:
+  group: build-pptx
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.11'
+
+      - name: Install LibreOffice + Poppler
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libreoffice-impress \
+            libreoffice-java-common \
+            poppler-utils
+          python -m pip install --upgrade pip
+          python -m pip install python-pptx Pillow
+
+      - name: Process .ppt/.pptx files
+        # --force：fresh checkout 下 git 不保留原始 mtime，增量对比失效，
+        # 触发本次构建的文件会被误判为最新而跳过，因此 CI 必须全量重建
+        run: python iris/scripts/pptx/main.py --force --verbose
+
+      - name: Commit generated JSON + images
+        uses: ./.github/actions/commit-with-retry
+        with:
+          message: 'chore(pptx): 自动构建 PPT 缩略图与元数据 [skip ci]'
+          files: 'iris/data/pptx/images/ iris/data/pptx/json/'

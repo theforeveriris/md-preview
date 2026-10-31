@@ -1,0 +1,9 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "桌面端默认权限：只开核心能力；打开外链走应用自己的 open_external 命令",
+  "windows": ["main", "editor"],
+  "permissions": [
+    "core:default"
+  ]
+}
