@@ -4,13 +4,14 @@
  * 长文阅读时在视口右侧悬浮当前文档的 h2/h3 目录，滚动实时高亮当前章节，
  * 点击平滑滚动到对应标题（手动计算 topbar 偏移，不依赖 scroll-margin）。
  *
- * 行为约定：
- *   - 标题数 < MIN_HEADINGS 或视口 < MIN_VIEWPORT 时自动隐藏（短文/窄屏是噪音）；
- *   - 开关：设置面板「阅读 → 显示选项 → 文章侧边目录」（settings.miniToc，
- *     默认开）；关闭时 display:none 且不监听滚动；
- *   - 隐藏场景：编辑器模式 / 双屏对照 / 打印 / 欢迎页（无标题）；
- *   - code-tabs 未激活面板里的标题不进目录（offsetParent 为 null）。
- * 渲染接入：markdown.js 渲染完成后调 onDocRendered()（与 findBar 同款钩子）。
+ * 显示条件（updateVisibility 统一判定，切换带滑动/淡入动画）：
+ *   - 设置开关（settings.miniToc，默认开）；
+ *   - 标题数 ≥ MIN_HEADINGS（短文是噪音）；
+ *   - 正文右缘余白 > MIN_ROOM（自适应内容宽度，变宽挤压时自动收起）；
+ *   - 侧边栏抽屉未展开（#sidebar.open）、悬浮球菜单未展开（.menu-items.open）；
+ *   - 非编辑器模式；欢迎/虚拟聚合页（无标题）自然不出。
+ * 渲染接入双通道：markdown.js 渲染后钩子 + #markdownContent 的
+ * MutationObserver 自监控（虚拟路由不经过钩子）。
  */
 (function() {
   'use strict';
@@ -33,11 +34,22 @@
   }
 
   // 余白自适应：正文右缘到视口右缘的空间足够放目录才显示
-  //（内容宽度可调 600~1400，固定视口阈值会误伤）
+  //（内容宽度可调 600~1400，固定视口阈值会误伤）。
+  // 必须用 #markdownContent：页面上有 4 个 .markdown-body（分栏左右 /
+  // 编辑器双屏预览），querySelector 会命中隐藏的 split-pane 面板。
   function hasRoom() {
-    const body = document.querySelector('.markdown-body');
+    const body = document.getElementById('markdownContent');
     if (!body) return false;
     return window.innerWidth - body.getBoundingClientRect().right > MIN_ROOM;
+  }
+
+  // 侧边栏抽屉 / 悬浮球菜单展开时收起 TOC，让位给导航浮层
+  function isNavOverlayOpen() {
+    const drawer = document.getElementById('sidebar');
+    if (drawer && drawer.classList.contains('open')) return true;
+    const menu = document.querySelector('.menu-items');
+    if (menu && menu.classList.contains('open')) return true;
+    return false;
   }
 
   function ensureEl() {
@@ -62,19 +74,16 @@
     }).map(h => ({ el: h, level: h.tagName === 'H2' ? 2 : 3 }));
   }
 
+  // 重建目录列表（文档切换 / 标题集合变化时调用）
   function build() {
     headings = collect();
-    if (!isEnabled() || headings.length < MIN_HEADINGS ||
-        !hasRoom() || document.body.classList.contains('editor-mode')) {
-      hide();
-      return;
-    }
-    const node = ensureEl();
+    ensureEl();
+    const node = el;
     node.querySelector('.mini-toc-title').textContent =
       window.MarkdownPreview.t ? window.MarkdownPreview.t('toc.title', '目录') : '目录';
     const list = node.querySelector('.mini-toc-list');
     list.innerHTML = '';
-    headings.forEach((h, i) => {
+    headings.forEach((h) => {
       const li = document.createElement('li');
       li.className = 'lvl' + h.level;
       const a = document.createElement('a');
@@ -83,19 +92,32 @@
       a.addEventListener('click', () => {
         const top = h.el.getBoundingClientRect().top + window.scrollY - SCROLL_MARGIN;
         window.scrollTo({ top, behavior: 'smooth' });
-        setActive(i);
+        setActive(headings.indexOf(h));
       });
       li.appendChild(a);
       list.appendChild(li);
     });
-    node.classList.add('show');
-    visible = true;
+    updateVisibility();
     updateActive();
   }
 
+  // 显隐统一判定：所有条件在此汇合，切换只动 'show' class（CSS 负责动画）
+  function updateVisibility() {
+    if (!el) return;
+    const ok = isEnabled() &&
+      headings.length >= MIN_HEADINGS &&
+      hasRoom() &&
+      !isNavOverlayOpen() &&
+      !document.body.classList.contains('editor-mode');
+    visible = ok;
+    el.classList.toggle('show', ok);
+    if (ok) updateActive();
+  }
+
   function hide() {
-    if (el) el.classList.remove('show');
+    if (!el) return;
     visible = false;
+    el.classList.remove('show');
   }
 
   function setActive(index) {
@@ -123,12 +145,6 @@
     requestAnimationFrame(() => { ticking = false; updateActive(); });
   }
 
-  function onResize() {
-    if (!el || !visible) return;
-    if (!hasRoom()) { hide(); return; }
-    build();
-  }
-
   // markdown.js 渲染完成后重建（与 findBar.onDocRendered 同款钩子）
   function onDocRendered() {
     build();
@@ -136,28 +152,45 @@
 
   // 设置开关实时生效（settings.js toggle 回调）
   function refresh() {
-    if (isEnabled()) build();
-    else hide();
+    build();
   }
 
   function init() {
     window.addEventListener('scroll', onScroll, { passive: true });
-    // 内容区自监控：虚拟路由（#/tags、#/graph 等）不经过 markdown.js 的
-    // 渲染钩子，观察 DOM 变化兜底（防抖合并渲染期的批量变更）
+    window.addEventListener('resize', () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(() => { ticking = false; updateVisibility(); });
+      }
+    }, { passive: true });
+
+    // 内容区自监控（双通道之一）：虚拟路由（#/tags、#/graph 等）不经过
+    // markdown.js 渲染钩子，DOM 变化兜底（防抖合并渲染期批量变更）
     const content = document.getElementById('markdownContent');
     if (content) {
       let deb = null;
       new MutationObserver(() => {
         clearTimeout(deb);
-        deb = setTimeout(() => { if (isEnabled()) build(); }, 200);
+        deb = setTimeout(() => build(), 200);
       }).observe(content, { childList: true, subtree: true });
     }
-    window.addEventListener('resize', () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(() => { ticking = false; onResize(); });
+
+    // 内容宽度变化（Ctrl+Alt+± / 设置滑杆）：正文右缘移动 → 重判余白
+    const markdownBody = document.getElementById('markdownContent');
+    if (markdownBody && typeof ResizeObserver !== 'undefined') {
+      new ResizeObserver(() => updateVisibility()).observe(markdownBody);
+    }
+
+    // 侧边栏抽屉 / 悬浮球菜单展开态：class 属性变化即重判显隐
+    const watch = (sel) => {
+      const node = document.querySelector(sel);
+      if (node && typeof MutationObserver !== 'undefined') {
+        new MutationObserver(() => updateVisibility())
+          .observe(node, { attributes: true, attributeFilter: ['class'] });
       }
-    }, { passive: true });
+    };
+    watch('#sidebar');
+    watch('.menu-items');
   }
 
   window.MarkdownPreview.tocSidebar = { onDocRendered, refresh };

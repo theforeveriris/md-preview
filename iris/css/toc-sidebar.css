@@ -1,6 +1,7 @@
 /* ============== mini-TOC（toc-sidebar.js） ==============
    文章侧边目录：视口右缘悬浮，微色差半透明底 + 细边框（文档站语言）。
-   显示条件（JS 与 CSS 双保险）：标题数 ≥4、视口 ≥1440px、非编辑器模式。 */
+   显隐动画：右滑收起 / 左滑淡入（opacity + translateX），显隐条件由
+   toc-sidebar.js updateVisibility() 统一判定（余白自适应，无固定断点）。 */
 
 .mini-toc {
   position: fixed;
@@ -18,10 +19,18 @@
   border-radius: var(--radius-control, 6px);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
   font-size: 12px;
-  display: none;
+  opacity: 0;
+  transform: translateX(20px);
+  visibility: hidden;
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
 }
 
-.mini-toc.show { display: block; }
+.mini-toc.show {
+  opacity: 1;
+  transform: translateX(0);
+  visibility: visible;
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s;
+}
 
 .mini-toc-title {
   font-size: 11px;
