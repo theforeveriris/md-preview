@@ -1127,6 +1127,24 @@
 
   /* 链接打印为普通下划线文本 */
   .markdown-body a { text-decoration: underline; }
+
+  /* 编辑器 / PPTX 放映覆盖层：打印按阅读模式出正文 */
+  .editor-overlay,
+  .slides-overlay { display: none !important; }
+
+  /* 代码块整体不跨页断开（此前仅图片 / 表格 / 图示防截断） */
+  .code-block { break-inside: avoid; }
+
+  /* 强制亮色语义色：暗色主题下白纸浅字不可读
+     （html:root 特异度 0,1,1 压过 [data-theme] 的 0,1,0） */
+  html:root {
+    --color-bg: #ffffff;
+    --color-surface: #ffffff;
+    --color-text: #222222;
+    --color-text-muted: #666666;
+    --color-border: #dddddd;
+    --color-code-bg: #f6f6f6;
+  }
 }
 
 /* ============== 专注模式（focus-mode.js） ============== */
