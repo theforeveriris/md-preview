@@ -43,13 +43,22 @@
     return window.innerWidth - body.getBoundingClientRect().right > MIN_ROOM;
   }
 
-  // 侧边栏抽屉 / 悬浮球菜单展开时收起 TOC，让位给导航浮层
-  function isNavOverlayOpen() {
+  // 侧边栏展开态：桌面端侧边栏展开（未折叠）或移动端抽屉打开时收起 TOC——
+  // 目录是阅读态的伴生件，展开侧边栏导航时让位；折叠回阅读态时滑回
+  function isSidebarExpanded() {
     const drawer = document.getElementById('sidebar');
-    if (drawer && drawer.classList.contains('open')) return true;
-    const menu = document.querySelector('.menu-items');
-    if (menu && menu.classList.contains('open')) return true;
+    if (drawer && drawer.classList.contains('open')) return true; // 移动端抽屉
+    if (window.innerWidth > 768) {
+      // 桌面端：折叠态写在 body.sidebar-collapsed，未折叠即展开
+      return !document.body.classList.contains('sidebar-collapsed');
+    }
     return false;
+  }
+
+  // 悬浮球菜单展开时收起 TOC
+  function isNavMenuOpen() {
+    const menu = document.querySelector('.menu-items');
+    return !!(menu && menu.classList.contains('open'));
   }
 
   function ensureEl() {
@@ -107,7 +116,8 @@
     const ok = isEnabled() &&
       headings.length >= MIN_HEADINGS &&
       hasRoom() &&
-      !isNavOverlayOpen() &&
+      !isSidebarExpanded() &&
+      !isNavMenuOpen() &&
       !document.body.classList.contains('editor-mode');
     visible = ok;
     el.classList.toggle('show', ok);
@@ -189,6 +199,7 @@
           .observe(node, { attributes: true, attributeFilter: ['class'] });
       }
     };
+    watch('body');
     watch('#sidebar');
     watch('.menu-items');
   }
