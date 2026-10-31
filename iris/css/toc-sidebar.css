@@ -1,0 +1,79 @@
+/* ============== mini-TOC（toc-sidebar.js） ==============
+   文章侧边目录：视口右缘悬浮，微色差半透明底 + 细边框（文档站语言）。
+   显示条件（JS 与 CSS 双保险）：标题数 ≥4、视口 ≥1440px、非编辑器模式。 */
+
+.mini-toc {
+  position: fixed;
+  right: 20px;
+  top: 100px;
+  width: 210px;
+  max-height: calc(100vh - 200px);
+  overflow: auto;
+  z-index: 90;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control, 6px);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  font-size: 12px;
+  display: none;
+}
+
+.mini-toc.show { display: block; }
+
+.mini-toc-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+
+.mini-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mini-toc-list a {
+  display: block;
+  padding: 4px 8px;
+  border-left: 2px solid transparent;
+  border-radius: 4px;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  line-height: 1.45;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color .15s ease, background .15s ease, border-color .15s ease;
+}
+
+.mini-toc-list .lvl3 a { padding-left: 18px; }
+
+.mini-toc-list a:hover {
+  color: var(--color-text);
+  background: var(--color-hover);
+}
+
+.mini-toc-list li.active a {
+  color: var(--color-text);
+  font-weight: 600;
+  border-left-color: var(--color-accent-purple);
+  background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent);
+}
+
+/* 窄视口隐藏（与 JS MIN_VIEWPORT 一致） */
+@media (max-width: 1439px) {
+  .mini-toc { display: none !important; }
+}
+
+/* 编辑器模式：被覆盖层遮住，直接不出 */
+body.editor-mode .mini-toc { display: none !important; }
+
+/* 打印隐藏（与 enhancements.css 讲义化打印块叠加） */
+@media print {
+  .mini-toc { display: none !important; }
+}

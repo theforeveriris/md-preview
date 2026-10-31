@@ -652,6 +652,19 @@
 
               <div class="setting-item">
                 <div>
+                  <div class="setting-label" data-i18n="settings.display.miniToc">文章侧边目录</div>
+                  <div class="setting-description" data-i18n="settings.display.miniTocDesc">长文阅读时在视口右侧悬浮章节目录并随滚动高亮（仅宽屏显示）</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="miniTocToggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div>
                   <div class="setting-label" data-i18n="settings.display.wordCount">显示词数统计</div>
                   <div class="setting-description" data-i18n="settings.display.wordCountDesc">在文件列表中显示每个文件的词数</div>
                 </div>
@@ -2204,6 +2217,8 @@
   <script defer src="iris/js/mascot-copy.js"></script>
   <script defer src="iris/js/iris-mascot.js"></script>
   <script defer src="iris/js/floating-menu-custom.js"></script>
+  <script defer src="iris/js/toc-sidebar.js"></script>
+  <script defer src="iris/js/shortcut-help.js"></script>
   <script defer src="iris/js/sensitive-mode.js"></script>
   <script defer src="iris/js/pages.js"></script>
   <script defer src="iris/js/focus-mode.js"></script>

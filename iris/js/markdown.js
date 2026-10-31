@@ -484,6 +484,9 @@
     if (window.MarkdownPreview.findBar) {
       window.MarkdownPreview.findBar.onDocRendered();
     }
+    if (window.MarkdownPreview.tocSidebar?.onDocRendered) {
+      window.MarkdownPreview.tocSidebar.onDocRendered();
+    }
 
     setTimeout(async () => {
       // 100ms 延迟窗口内可能已切到新文档：旧调度不得在新内容上运行
