@@ -173,6 +173,8 @@
     'settings.display.readingProgress': 'Reading Progress',
     'settings.display.readingProgressDesc': 'Show the page reading progress bar',
     'settings.display.miniToc': 'Article mini table of contents',
+    'settings.display.readingPos': 'Resume reading toast',
+    'settings.display.readingPosDesc': 'When reopening a read document, offer to jump back to your last position',
     'settings.display.miniTocDesc': 'Show a floating chapter outline on the right while reading long articles, highlighting as you scroll (wide screens only)',
     'help.title': 'Keyboard Shortcuts',
     'help.groupReading': 'Reading & Navigation',
@@ -298,7 +300,7 @@
 
     'reading.resume': 'Continue from {pct}%?',
     'reading.resumeGo': 'Continue',
-    'reading.resumeDismiss': 'Dismiss',
+    'reading.resumeDismiss': 'Never for this page',
 
     'sel.copy': 'Copy',
     'sel.search': 'Search docs',

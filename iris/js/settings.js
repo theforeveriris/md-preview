@@ -27,6 +27,7 @@
     mobileGestures: true,
     sectionCollapse: true,
     miniToc: true,             // 文章侧边目录（toc-sidebar.js）
+    readingPosToast: true,     // 续读提示（reading-pos.js）
     splitSyncScroll: true,
     focusMode: false,
     textConversion: 'off',        // 'off' | 'tw' 转繁体 | 'cn' 转简体
@@ -132,6 +133,7 @@
           mobileGestures: parsed.mobileGestures !== false,
           sectionCollapse: parsed.sectionCollapse !== false,
           miniToc: parsed.miniToc !== false,
+          readingPosToast: parsed.readingPosToast !== false,
           splitSyncScroll: parsed.splitSyncScroll !== false,
           focusMode: parsed.focusMode === true,
           textConversion: (parsed.textConversion === 'tw' || parsed.textConversion === 'cn') ? parsed.textConversion : 'off',
@@ -519,6 +521,11 @@
     // 文章侧边目录（toc-sidebar.js：开关即时显隐）
     document.getElementById('miniTocToggle')?.addEventListener('change', (e) => {
       updateSetting({ miniToc: e.target.checked }, () => window.MarkdownPreview.tocSidebar?.refresh());
+    });
+
+    // 续读提示（reading-pos.js）
+    document.getElementById('readingPosToggle')?.addEventListener('change', (e) => {
+      updateSetting({ readingPosToast: e.target.checked });
     });
 
     // 专注模式（focus-mode.js：当前段落高亮、其余淡化）
@@ -1615,6 +1622,8 @@ body { margin: 0; }
     if (splitSyncScrollToggle) splitSyncScrollToggle.checked = settings.splitSyncScroll !== false;
     const miniTocToggle = document.getElementById('miniTocToggle');
     if (miniTocToggle) miniTocToggle.checked = settings.miniToc !== false;
+    const readingPosToggle = document.getElementById('readingPosToggle');
+    if (readingPosToggle) readingPosToggle.checked = settings.readingPosToast !== false;
     if (focusModeToggle) focusModeToggle.checked = settings.focusMode === true;
 
     // 中文 / 排版 / 性能

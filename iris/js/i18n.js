@@ -198,6 +198,8 @@
     'settings.display.readingProgress': '显示阅读进度',
     'settings.display.readingProgressDesc': '显示页面阅读进度',
     'settings.display.miniToc': '文章侧边目录',
+    'settings.display.readingPos': '续读提示',
+    'settings.display.readingPosDesc': '重新打开读过的文档时提示「上次读到 N%，继续？」',
     'settings.display.miniTocDesc': '长文阅读时在视口右侧悬浮章节目录并随滚动高亮（仅宽屏显示）',
     'help.title': '快捷键速查',
     'help.groupReading': '阅读与导航',
@@ -334,7 +336,7 @@
     // 动态文案：阅读位置续读
     'reading.resume': '上次读到 {pct}%，继续？',
     'reading.resumeGo': '继续阅读',
-    'reading.resumeDismiss': '忽略',
+    'reading.resumeDismiss': '本篇不再提示',
 
     // 动态文案：选中文字浮动工具栏
     'sel.copy': '复制',
