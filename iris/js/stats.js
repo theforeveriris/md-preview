@@ -115,7 +115,32 @@
           }).join('')}
         </ul>` : '';
 
-      host.innerHTML = cards + heatmap + tags + recentList;
+      // 生成式封面陈列：无图文档的封面由路径哈希确定性生成（gen-cover.js）
+      let coverWall = '';
+      const gc = window.MarkdownPreview.genCover;
+      if (gc && recent.length) {
+        coverWall = `
+          <h2 class="stats-sec-title">${esc(t('stats.covers', '生成式封面'))}</h2>
+          <div class="stats-cover-wall" id="statsCoverWall"></div>`;
+      }
+
+      host.innerHTML = cards + heatmap + tags + recentList + coverWall;
+
+      const wall = document.getElementById('statsCoverWall');
+      if (wall && gc) {
+        recent.slice(0, 8).forEach(f => {
+          const card = document.createElement('a');
+          card.className = 'stats-cover-card';
+          card.href = '#/' + encodeURI(f.path);
+          card.title = f.title || f.path;
+          card.appendChild(gc.getCoverElement(f.path, 220, 124));
+          const cap = document.createElement('span');
+          cap.className = 'stats-cover-cap';
+          cap.textContent = (f.title || f.path).slice(0, 26);
+          card.appendChild(cap);
+          wall.appendChild(card);
+        });
+      }
     }, 300);
   }
 

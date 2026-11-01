@@ -909,6 +909,14 @@
                   <button id="downloadPdfBtn" class="download-btn" data-i18n="settings.actions.exportPdfBtn">导出 PDF</button>
                 </div>
               </div>
+              <!-- 整页长图导出按钮（page-shot.js 在此锚点装配） -->
+              <div class="setting-item" id="pageShotSettingsAnchor">
+                <div>
+                  <div class="setting-label" data-i18n="settings.actions.pageShot">整页长图</div>
+                  <div class="setting-description" data-i18n="settings.actions.pageShotDesc">把当前文档渲染成一张竖版 PNG，适合分享</div>
+                </div>
+                <div class="setting-control"></div>
+              </div>
               <div class="setting-item">
                 <div>
                   <div class="setting-label" data-i18n="settings.actions.exportHtml">导出 HTML</div>
@@ -2253,6 +2261,8 @@
   <script defer src="iris/js/cheatsheet.js"></script>
   <script defer src="iris/js/stats.js"></script>
   <script defer src="iris/js/broken-links.js"></script>
+  <script defer src="iris/js/gen-cover.js"></script>
+  <script defer src="iris/js/page-shot.js"></script>
   <script defer src="iris/js/focus-mode.js"></script>
   <script defer src="iris/js/split-view.js"></script>
 

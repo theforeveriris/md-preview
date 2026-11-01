@@ -203,3 +203,30 @@
   color: var(--color-text);
   font-size: 13.5px;
 }
+
+/* 生成式封面陈列墙（stats 页） */
+.stats-cover-wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+.stats-cover-card {
+  display: block;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  overflow: hidden;
+  text-decoration: none;
+  background: var(--color-surface);
+  transition: var(--transition-smooth);
+}
+.stats-cover-card:hover { border-color: var(--color-accent-purple); transform: translateY(-2px); }
+.stats-cover-card canvas { display: block; width: 100%; height: auto; }
+.stats-cover-cap {
+  display: block;
+  padding: 7px 10px;
+  font-size: 12px;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
