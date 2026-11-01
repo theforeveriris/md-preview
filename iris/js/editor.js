@@ -2596,7 +2596,6 @@
     }
     const text = cells.map(c => c.textarea.value).join(String.fromCharCode(10, 10));
     window.MarkdownPreview.gitHistory?.openWorkingDiff?.(repoPath, text);
-    window.MarkdownPreview.gitHistory?.openWorkingDiff?.(repoPath, text);
   });
 
   const versionSnapshotsMod = window.MarkdownPreview.editorModules &&
