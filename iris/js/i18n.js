@@ -673,6 +673,8 @@
     'history.notFound': '未找到该文档的提交（可能是新文件或私有仓库）。',
     'history.failed': '加载失败：',
     'history.binary': '（无文本 diff）',
+    'history.notInCommit': '该提交未改动本文档',
+    'history.otherFiles': '此提交还涉及 {n} 个其他文件',
     'qr.lanHint': '提示：本地 / 局域网地址生成的二维码仅本机可扫，跨设备请使用部署后的公网地址',
     // 编辑器（editor.js 分批迁移：toast/confirm 文案）
     'editor.needRunThisCell': '请先运行此 Cell',

@@ -1462,12 +1462,16 @@ body.focus-mode .markdown-body > .focus-current {
 .git-commit-item:hover { background: var(--color-bg); }
 .git-commit-msg { font-size: 14px; }
 .git-commit-meta { font-size: 12px; color: var(--color-text-muted); }
+.git-sha-link { color: var(--color-link, var(--color-accent-purple)); text-decoration: none; }
+.git-sha-link:hover { text-decoration: underline; }
 .git-commit-detail-msg { white-space: pre-wrap; margin: 8px 0 12px; font-size: 13px; }
 .git-file { border: 1px solid var(--color-border); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
 .git-file-head { padding: 6px 10px; font-family: var(--font-mono, monospace); font-size: 12px; background: var(--color-bg); display: flex; justify-content: space-between; gap: 8px; }
 .git-file-stat { color: var(--color-text-muted); }
 .git-patch { margin: 0; padding: 10px; font-size: 12px; overflow: auto; }
 .git-file-note { padding: 8px 10px; color: var(--color-text-muted); font-size: 12px; }
+.git-other-files { margin: 10px 0; }
+.git-other-files > summary { cursor: pointer; color: var(--color-text-muted); font-size: 13px; padding: 6px 0; }
 .doc-update-banner { display: flex; align-items: center; gap: 10px; margin: 0 0 16px; padding: 8px 14px; border: 1px solid var(--color-accent-purple); border-radius: 10px; background: var(--color-surface); font-size: 13px; }
 .doc-update-banner .doc-update-dismiss { margin-left: auto; background: none; border: 0; cursor: pointer; color: var(--color-text-muted); }
 
