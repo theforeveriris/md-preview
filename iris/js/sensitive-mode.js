@@ -164,8 +164,8 @@
     // 渐进式高亮异步完成后重刷（避免新高亮的代码块绕过模糊）
     window.addEventListener('md-hljs-done', () => { if (isOn()) applyIfOn(); });
     const palette = window.MarkdownPreview.palette;
-    if (palette && palette.extraActions) {
-      palette.extraActions.push({
+    if (palette && palette.registerActions) {
+      palette.registerActions([{
         id: 'sensitive-mode',
         icon: 'i-eye',
         label: () => (isOn()
@@ -178,7 +178,7 @@
             ? t('sensitive.enabled', '已开启敏感模式：正文中的 IP 与密码已模糊，点击蒙版可临时显示')
             : t('sensitive.disabled', '已关闭敏感模式'));
         }
-      });
+      }]);
     }
   }
 

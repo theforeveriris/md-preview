@@ -436,8 +436,8 @@
 
   function setupPaletteActions() {
     const palette = window.MarkdownPreview.palette;
-    if (!palette || !palette.extraActions) return;
-    palette.extraActions.push(
+    if (!palette || !palette.registerActions) return;
+    palette.registerActions([
       {
         id: 'kb-mount',
         icon: 'i-list',
@@ -486,7 +486,7 @@
         group: t('kb.group', '桌面端'),
         run: () => printKbCompilation()
       }
-    );
+    ]);
   }
 
   function init() {
