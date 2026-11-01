@@ -43,6 +43,23 @@
     return loadOnce.cache[key];
   }
 
+  // 懒加载失败的统一反馈：mini-toast（history.js 同款样式）
+  MP.notifyLazyLoadFailed = function(name) {
+    try {
+      const i18n = MP.i18n;
+      const msg = i18n && i18n.t
+        ? i18n.t('lazy.loadFailed', '{n} 组件加载失败，请检查网络后重试').replace('{n}', name)
+        : name + ' 组件加载失败，请检查网络后重试';
+      const el = document.createElement('div');
+      el.className = 'mini-toast';
+      el.setAttribute('role', 'status');
+      el.textContent = msg;
+      document.body.appendChild(el);
+      requestAnimationFrame(() => el.classList.add('open'));
+      setTimeout(() => el.classList.remove('open'), 2600);
+    } catch (e) { /* ignore */ }
+  };
+
   // ---- 编辑器（codemirror → cm-editor → editor 顺序不可乱） ----
   MP.enterEditorMode = function() {
     injectTemplate('tplEditorHtml');
@@ -62,6 +79,9 @@
       if (typeof MP.enterEditorMode === 'function' && !MP.enterEditorMode._isLazyShim) {
         MP.enterEditorMode();
       }
+    }).catch(() => {
+      // 失败不能静默：shim 残留会让入口点了没反应（缓存已清除，可重试）
+      MP.notifyLazyLoadFailed('编辑器');
     });
   };
   MP.enterEditorMode._isLazyShim = true;
@@ -78,6 +98,8 @@
       if (typeof MP.enterPulseGen === 'function' && !MP.enterPulseGen._isLazyShim) {
         MP.enterPulseGen();
       }
+    }).catch(() => {
+      MP.notifyLazyLoadFailed('波形生成器');
     });
   };
   MP.enterPulseGen._isLazyShim = true;

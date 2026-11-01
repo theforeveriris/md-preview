@@ -660,6 +660,7 @@
     'editor.cellDeleted': 'Cell [{n}] deleted',
     'editor.undo': 'Undo',
     'editor.cellSourceCopied': 'Cell source copied',
+    'lazy.loadFailed': 'Failed to load {n}; check your network and retry',
     'notfound.title': 'Document not found',
     'notfound.body': 'The path `{p}` does not exist or is not indexed.',
     'notfound.home': 'Back to site index',
