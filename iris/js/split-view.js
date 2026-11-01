@@ -270,11 +270,30 @@
 
   // ============== 开关 ==============
 
+  // 左栏复用主视图：当前文档已经完整渲染在主容器里（figures 编号、行高亮、
+  // 表格预设、checklist 恢复都在），克隆过来即可——旧实现重新 fetch + 重跑
+  // 渲染管线，既多一次网络请求又丢了这些后处理。返回是否复用成功。
+  function renderLeftFromMain(bodyEl, titleEl, path) {
+    if (!path) return false;
+    const st = window.MarkdownPreview.state || {};
+    if (st.currentFilePath !== path) return false;
+    const mainBody = document.querySelector('#markdownContent .markdown-body') ||
+      document.getElementById('markdownContent');
+    if (!mainBody || !mainBody.innerHTML) return false;
+
+    const h1 = mainBody.querySelector('h1');
+    titleEl.textContent = h1 ? h1.textContent : path.split('/').pop().replace(/\.md$/i, '');
+    titleEl.title = path;
+    bodyEl.innerHTML = mainBody.innerHTML;
+    // 克隆体不带事件监听：链接导航重新接管（内链切换右栏、锚点栏内滚动、外链新标签）
+    interceptLinks(bodyEl, path, (target) => renderInto(bodyEl, titleEl, target).catch(showLoadError));
+    return true;
+  }
+
   function open() {
     const { state, settings } = window.MarkdownPreview;
     if (!state) return;
-    const localDoc = state.localDoc;
-    const currentPath = state.currentFilePath;
+    const localDoc = state.localDoc;    const currentPath = state.currentFilePath;
     if (!currentPath && !localDoc) {
       alert(t('split.needDoc', '请先打开一个文档'));
       return;
@@ -295,7 +314,7 @@
       // 本地会话文档：从内存渲染，无需站点路径
       renderLocalInto(leftBody, leftTitle, { id: '', name: localDoc.name || 'document.md', content: localDoc.content })
         .catch(showLoadError);
-    } else {
+    } else if (!renderLeftFromMain(leftBody, leftTitle, currentPath)) {
       renderInto(leftBody, leftTitle, currentPath).catch(showLoadError);
     }
 
