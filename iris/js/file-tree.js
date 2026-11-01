@@ -461,6 +461,13 @@
       // 建立路径 -> li 映射，并注入词数
       state.fileLiMap = new Map();
 
+      // 容器级 ARIA 标注（vendor 组件在 Shadow DOM 内，无法逐节点补
+      // role=treeitem；容器层声明 + 当前文档 aria-current 由 active 类
+      // 联动，读屏至少能报出「树、当前项」）
+      sh.querySelectorAll('li.file.active, li.text.active').forEach(function(li) {
+        li.setAttribute('aria-current', 'true');
+      });
+
       sh.querySelectorAll('li.file, li.text').forEach(li => {
         var button = li.querySelector('button');
         if (!button) return;
