@@ -159,6 +159,8 @@
     mdRender.groupGalleries(bodyEl);
     mdRender.initSliders(bodyEl);
     mdRender.highlightCodeBlocks(bodyEl);
+    // 代码行高亮（[!code highlight]）：主文档有、栏内此前没有
+    window.MarkdownPreview.lineHighlight?.apply?.(bodyEl);
     mdRender.initCodeTabs(bodyEl);
 
     // 标题 id（与 markdown.js:354 同规则），供锚点链接跳转

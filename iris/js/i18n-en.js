@@ -666,6 +666,8 @@
     'cjk.loading': 'Loading the Chinese variant converter…',
     'kb.fileAdded': '{n} added to the library',
     'kb.fileRemoved': '{n} removed from the library',
+    'figure.refMissing': '(broken figure reference)',
+    'figure.refMissingHint': 'Target number not found: the alias may be misspelled or belongs to another document',
     'notfound.title': 'Document not found',
     'notfound.body': 'The path `{p}` does not exist or is not indexed.',
     'notfound.home': 'Back to site index',

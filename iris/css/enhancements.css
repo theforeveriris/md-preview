@@ -1099,14 +1099,27 @@
     display: none !important;
   }
 
+  /* 屏幕态附属条不进纸面：阅读时长条 / 上下篇导航 / 变更横幅 / 贡献者栏 /
+     mini-TOC / 敏感模式徽标（此前会混进打印页） */
+  .doc-meta-bar,
+  .doc-navigation,
+  .doc-update-banner,
+  .contributors-bar,
+  .mini-toc,
+  .sensitive-mode-badge {
+    display: none !important;
+  }
+
   /* 双栏对照：打印主栏文档（对照层整体收起） */
   .split-view-overlay { display: none !important; }
 
   @page { margin: 14mm; }
 
-  /* 章节分页：每个 H2 起新页；避免标题孤行 */
+  /* 章节分页：每个 H2 起新页；H2 密集的文档（速查表类）会爆炸式分页，
+     body.print-no-h2-break 逃生口（设置/控制台可加） */
   .markdown-body h2 { break-before: page; }
   .markdown-body h2:first-child { break-before: auto; }
+  body.print-no-h2-break .markdown-body h2 { break-before: auto; }
   .markdown-body h1, .markdown-body h2, .markdown-body h3,
   .markdown-body h4, .markdown-body h5, .markdown-body h6 {
     break-after: avoid;

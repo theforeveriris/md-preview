@@ -708,6 +708,8 @@
     'cjk.loading': '正在加载繁简转换组件…',
     'kb.fileAdded': '{n} 已加入知识库',
     'kb.fileRemoved': '{n} 已从知识库移除',
+    'figure.refMissing': '（图表引用失效）',
+    'figure.refMissingHint': '目标编号不存在：可能是别名拼错或引用了其他文档的编号',
     'notfound.title': '文档未找到',
     'notfound.body': '路径 `{p}` 不存在或尚未收录。',
     'notfound.home': '返回全站目录',
