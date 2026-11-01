@@ -2165,3 +2165,94 @@ body.graph-page #markdownContent > .doc-graph {
   color: var(--color-text-muted);
   margin-top: 4px;
 }
+
+/* ============== CLI 演练块（renderers/cli-lab.js） ============== */
+
+.cli-lab {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  margin: 14px 0;
+  overflow: hidden;
+  background: #16161f;
+  font-size: 13px;
+}
+
+.cli-lab-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  background: #1f1f2c;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cli-lab-dots { display: inline-flex; gap: 5px; }
+.cli-lab-dots i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255, 255, 255, 0.18); }
+.cli-lab-dots i:nth-child(1) { background: #ff5f56; }
+.cli-lab-dots i:nth-child(2) { background: #ffbd2e; }
+.cli-lab-dots i:nth-child(3) { background: #27c93f; }
+
+.cli-lab-title { color: rgba(235, 235, 245, 0.8); font-weight: 600; font-size: 12px; }
+.cli-lab-progress {
+  margin-left: auto;
+  color: rgba(235, 235, 245, 0.55);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+.cli-lab-reset {
+  border: none;
+  background: transparent;
+  color: rgba(235, 235, 245, 0.6);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0 4px;
+}
+.cli-lab-reset:hover { color: #fff; }
+
+.cli-lab-screen {
+  padding: 10px 12px 12px;
+  max-height: 380px;
+  overflow-y: auto;
+  font-family: var(--font-mono, monospace);
+}
+
+.cli-lab-line { white-space: pre-wrap; word-break: break-word; line-height: 1.55; }
+.cli-lab-echo { margin-top: 6px; }
+.cli-lab-echo-prompt { color: #7ce38b; font-weight: 600; }
+.cli-lab-echo-cmd { color: #e8e8f0; }
+.cli-lab-out { color: rgba(235, 235, 245, 0.72); }
+.cli-lab-help { color: #8ab4ff; }
+.cli-lab-err { color: #ff8a8a; }
+.cli-lab-ok { color: #7ce38b; font-weight: 600; margin-top: 4px; }
+.cli-lab-muted { color: rgba(235, 235, 245, 0.4); }
+
+.cli-lab-input-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+.cli-lab-input-row:focus-within { border-color: var(--color-accent-purple); }
+.cli-lab-prompt { color: #7ce38b; font-weight: 600; white-space: nowrap; }
+.cli-lab-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #e8e8f0;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.cli-lab-hint {
+  padding: 7px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--color-text-muted);
+  font-size: 11.5px;
+  background: var(--color-surface);
+}
