@@ -35,6 +35,22 @@
   // 256KB/5000 节点封顶可参照），超限截断并在计数条提示
   const MAX_ROWS = 5000;
 
+  // ============== 主题切换重绘 ==============
+  // 内嵌图表（画成图）着色在渲染期固化：主题切换后需重建，否则留在旧配色。
+  // 与 apexcharts 渲染器同款 themechange 监听
+  const liveCharts = []; // { widget, hasChart, renderChart }
+  let csvThemeBound = false;
+  function bindCsvThemeChange() {
+    if (csvThemeBound) return;
+    csvThemeBound = true;
+    window.addEventListener('themechange', () => {
+      liveCharts.forEach(item => {
+        if (!item.widget.isConnected || !item.hasChart()) return;
+        try { item.renderChart(); } catch (e) { /* 重建失败保留旧图 */ }
+      });
+    });
+  }
+
   function parseDelimited(text, delim) {
     const rows = [];
     let row = [];
@@ -410,6 +426,14 @@
 
     chartBtn.addEventListener('click', renderChart);
     chartTypeSel.addEventListener('change', () => { if (chartPanel) renderChart(); });
+    // 登记到主题重绘注册表（离开 DOM 的条目惰性清理）
+    bindCsvThemeChange();
+    liveCharts.push({ widget, hasChart: () => !!chartInstance, renderChart });
+    if (liveCharts.length > 32) {
+      for (let i = liveCharts.length - 1; i >= 0; i--) {
+        if (!liveCharts[i].widget.isConnected) liveCharts.splice(i, 1);
+      }
+    }
 
     // ============== 列筛选面板 ==============
     let popover = null;
