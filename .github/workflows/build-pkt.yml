@@ -2,6 +2,8 @@ name: Build PKT Topologies
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'iris/data/pkt/raw/**'
       - 'iris/scripts/pkt/**'

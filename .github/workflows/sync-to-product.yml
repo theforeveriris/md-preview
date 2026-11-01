@@ -44,6 +44,13 @@ jobs:
           git add -A
           git commit -m "初始化 md-preview"
           
-          # 强制更新 product 分支
-          git branch -M temp-product product
+          # 强制更新 product 分支；无实际差异时跳过（orphan 全量重建每次
+          # commit SHA 都不同，但树内容一致——比较树哈希，避免空转提交
+          # 还把 job 弄红）
+          NEW_TREE=$(git rev-parse product^{tree})
+          OLD_TREE=$(git rev-parse origin/product^{tree} 2>/dev/null || echo none)
+          if [ "$NEW_TREE" = "$OLD_TREE" ]; then
+            echo "Product branch up to date (tree $NEW_TREE), skipping push"
+            exit 0
+          fi
           git push -f origin product
