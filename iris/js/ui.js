@@ -223,10 +223,16 @@
         const target = items[next];
         target.classList.add('kbd-active');
         target.scrollIntoView({ block: 'nearest' });
-        // listbox 语义：结果区 + 当前项 id，屏幕阅读器可跟随
+        // listbox 语义：容器声明 listbox，结果项为 option，焦点在输入框上——
+        // aria-activedescendant 必须挂在获焦元素（searchInput）上读屏才能跟随
         container.setAttribute('role', 'listbox');
-        items.forEach((it, i) => { if (!it.id) it.id = 'sr-item-' + i; });
-        container.setAttribute('aria-activedescendant', target.id);
+        container.setAttribute('aria-label', t('search.results', '搜索结果'));
+        items.forEach((it, i) => {
+          if (!it.id) it.id = 'sr-item-' + i;
+          it.setAttribute('role', 'option');
+        });
+        dom.searchInput.setAttribute('aria-controls', container.id || (container.id = 'searchResultsList'));
+        dom.searchInput.setAttribute('aria-activedescendant', target.id);
       } else if (e.key === 'Enter') {
         const active = container.querySelector('.search-result-item.kbd-active') || items[0];
         if (active) {
@@ -283,14 +289,17 @@
 
       // 编辑器模式有独立键位（Ctrl+B=粗体、Ctrl+K=链接等），全部不抢占
       if (isEditorMode()) return;
-      // 输入控件内不抢占
-      if (isEditableTarget(e)) return;
 
-      // 浮层打开时 Tab 圈闭在浮层内（灯箱/设置/命令面板共用）
+      // 浮层打开时 Tab 圈闭在浮层内——必须先于「输入控件内不抢占」守卫：
+      // 设置面板/搜索面板里全是输入框，后置会让 Tab 穿透到遮罩后的页面
       if (e.key === 'Tab') {
         const settingsOv = document.getElementById('settingsOverlay');
         if (settingsOv && settingsOv.classList.contains('open')) {
           if (trapTabIn(e, settingsOv)) e.preventDefault();
+          return;
+        }
+        if (isSearchPaletteOpen()) {
+          if (trapTabIn(e, dom.paletteOverlay)) e.preventDefault();
           return;
         }
         const lightbox = document.getElementById('lightboxOverlay');
@@ -299,6 +308,9 @@
           return;
         }
       }
+
+      // 输入控件内不抢占（其余快捷键让位于输入）
+      if (isEditableTarget(e)) return;
 
       // Ctrl/⌘ + , ：设置面板开关（面板打开时也可用）
       if (mod && !alt && key === ',') {
