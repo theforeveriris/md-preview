@@ -491,6 +491,42 @@ Pulse 格式与示例：[Pulse 波形示例](examples/pulse-examples.md)
 
 ---
 
+## 八、网络工程师工具与站点页面
+
+### pcap 抓包渲染
+
+` ```pcap ` 代码块（`@[pcap](slug)` 引用构建期产物或内嵌 JSON）渲染为类 Wireshark
+包列表：协议着色、列排序、display filter（`tcp` / `port 53` / `src==10.0.0.1`）、
+点击行展开字段树、协议分布条。仓库内 `.pcap` 由 Python 构建管线（scapy / dpkt）
+自动转 JSON。
+
+### traceroute / ping 渲染
+
+` ```traceroute ` / ` ```ping ` 粘贴原始输出即渲染：跳数 RTT 条形图、`* * *` 超时档、
+ping 统计卡与逐包序列图。
+
+### CLI 演练块
+
+` ```cli ` 剧本块渲染为可敲命令的终端：命中回放输出、`?` 漏题、进度与重置——
+教学文档在浏览器里练手。
+
+以上示例见 [pcap / traceroute / CLI 演练示例](examples/pcap-traceroute-clilab-examples.md)。
+
+### 聚合页面三件套
+
+- **全站速查** `#/cheatsheet`：全站 ios/vrp/bash 命令块聚合手册，行号直达原文；
+- **站点统计** `#/stats`：热力图 / 标签分布 / 最近更新 + 生成式封面墙；
+- **死链报告** `#/broken-links`：CI 内链校验明细，作者自查闭环。
+
+### 编辑器 AI 助手 / 整页长图
+
+编辑器选中文字浮出 AI 动作（润色 / 翻译 / 解释 / Mermaid / 自定义，自带 Key）；
+当前文档可一键导出整页竖版 PNG 长图。
+
+以上说明见 [站点页面与写作工具](examples/site-pages-and-writing-tools.md)。
+
+---
+
 ## 索引：示例文档速查表
 
 | 功能分类 | 对应详细文档 |
@@ -506,6 +542,8 @@ Pulse 格式与示例：[Pulse 波形示例](examples/pulse-examples.md)
 | Mermaid / PlantUML / ApexCharts 图表 | [mermaid-examples.md](examples/mermaid-examples.md) / [plantuml-examples.md](examples/plantuml-examples.md) / [apexcharts-examples.md](examples/apexcharts-examples.md) |
 | LaTeX 公式 / Diff 差异 / GeoJSON 地图 | [latex-examples.md](examples/latex-examples.md) / [diff-examples.md](examples/diff-examples.md) / [geojson-examples.md](examples/geojson-examples.md) |
 | Packet Tracer / eNSP 拓扑 | [pkt-examples.md](examples/pkt-examples.md) / [ensp-examples.md](examples/ensp-examples.md) |
+| pcap / traceroute / CLI 演练块 | [pcap-traceroute-clilab-examples.md](examples/pcap-traceroute-clilab-examples.md) |
+| 站点页面（速查/统计/死链）与写作工具（AI/长图/封面） | [site-pages-and-writing-tools.md](examples/site-pages-and-writing-tools.md) |
 | 华为 VRP 配置步骤推算 | [pkt-huawei-vrp-解析示例.md](examples/pkt-huawei-vrp-解析示例.md) |
 | PPTX 嵌入与放映 | [pptx-examples.md](examples/pptx-examples.md) |
 | Pulse 波形渲染与迷你波形 | [pulse-examples.md](examples/pulse-examples.md) |
