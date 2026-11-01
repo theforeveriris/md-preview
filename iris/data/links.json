@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-31T09:14:56.024Z",
+  "generatedAt": "2026-11-01T21:22:32.138Z",
   "count": {
-    "nodes": 67,
+    "nodes": 64,
     "edges": 99
   },
   "nodes": [
@@ -66,10 +66,7 @@
     "docs/shortcuts.md",
     "docs/show.md",
     "docs/theme-customization.md",
-    "docs/zw/1.0-排版问题样例一.md",
-    "docs/zw/2.0-排版问题样例二.md",
-    "docs/zw/3.0-排版问题样例三.md",
-    "docs/zw/README.md",
+    "iris/data/pcap/raw/README.md",
     "iris/scripts/pkt/README.md",
     "readme-dev.md"
   ],
