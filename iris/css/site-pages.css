@@ -49,6 +49,8 @@
 }
 .cheat-row:last-child { border-bottom: none; }
 .cheat-row:hover { background: color-mix(in srgb, var(--color-accent-purple) 5%, transparent); }
+/* 搜索过滤：display:flex 会覆盖 hidden 的 UA 默认样式，需显式声明 */
+.cheat-row[hidden] { display: none; }
 
 .cheat-cmd {
   flex: 1 1 auto;

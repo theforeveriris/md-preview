@@ -101,12 +101,17 @@
         hr { border: none; border-top: 1px solid var(--color-border); }
       `;
 
+      // XMLSerializer 输出带 XHTML 命名空间的合法 XML——outerHTML 的
+      // <br>/<img ...>/&nbsp; 实体在 SVG data URL 的 XML 解析里全是
+      // 格式错误，真实文档几乎必然光栅化失败
+      const xhtmlWrap = document.createElement('div');
+      xhtmlWrap.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+      xhtmlWrap.appendChild(clone);
+      const serializer = new XMLSerializer();
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${body.scrollHeight + 120}">
         <foreignObject width="100%" height="100%">
-          <div xmlns="http://www.w3.org/1999/xhtml">
-            <style>${css}</style>
-            ${clone.outerHTML}
-          </div>
+          <style>${css.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</style>
+          ${serializer.serializeToString(xhtmlWrap)}
         </foreignObject>
       </svg>`;
       const svgUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
