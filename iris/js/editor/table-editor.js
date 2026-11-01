@@ -43,6 +43,7 @@
       function parseTableBlock(rawLines) {
         const rows = [];
         let hasHeader = false;
+        let aligns = null;
         for (const line of rawLines) {
           const trimmed = line.trim();
           if (!/^\|/.test(trimmed)) return null;
@@ -53,6 +54,13 @@
             .map(c => c.replace(/\\\|/g, '|').trim());
           if (rows.length >= 1 && cells.every(c => /^:?-{2,}:?$/.test(c) || c === '')) {
             hasHeader = true;
+            // 记录列对齐（:---: 居中 / ---: 右对齐），序列化时原样回写——
+            // 否则可视化编辑一次会把全部对齐重置为左对齐
+            aligns = cells.map(c => {
+              if (/^:-{2,}:$/.test(c)) return 'center';
+              if (/^-{2,}:$/.test(c)) return 'right';
+              return 'left';
+            });
             continue;
           }
           rows.push(cells);
@@ -60,18 +68,22 @@
         if (rows.length === 0) return null;
         const cols = Math.max(...rows.map(r => r.length), 1);
         rows.forEach(r => { while (r.length < cols) r.push(''); });
-        return { rows, hasHeader };
+        return { rows, hasHeader, aligns: aligns || [] };
       }
 
       function escapeCell(s) {
         return String(s).replace(/\|/g, '\\|');
       }
 
-      function serializeTable(rows, hasHeader) {
+      function serializeTable(rows, hasHeader, aligns) {
         const cols = rows[0].length;
         const lines = ['| ' + rows[0].map(escapeCell).join(' | ') + ' |'];
         if (hasHeader) {
-          lines.push('| ' + Array(cols).fill('---').join(' | ') + ' |');
+          // 对齐列原样回写；加删列后按新列数补齐/截断（缺省左对齐）
+          const al = Array.from({ length: cols }, (_, i) => (aligns && aligns[i]) || 'left');
+          lines.push('| ' + al.map(a =>
+            a === 'center' ? ':---:' : (a === 'right' ? '---:' : '---')
+          ).join(' | ') + ' |');
         }
         for (let i = hasHeader ? 1 : 0; i < rows.length; i++) {
           lines.push('| ' + rows[i].map(escapeCell).join(' | ') + ' |');
@@ -153,6 +165,7 @@
         }
         let rows = parsed.rows.map(r => r.slice());
         let hasHeader = parsed.hasHeader;
+        let aligns = parsed.aligns || [];
         // 已有 table-style 标记 → 初始化预设选择框（否则仅改单元格保存
         // 会把旧样式丢掉）；改选「默认」可清除预设。
         // 只读紧邻表格的标记（允许中间空行；更后面的标记可能属于其他表格）
@@ -263,7 +276,7 @@
           }
           const preset = overlay.querySelector('.tbl-preset-sel').value;
           const marker = preset ? '\n<!-- table-style: ' + preset + ' -->' : '';
-          const tableText = serializeTable(rows, hasHeader) + marker;
+          const tableText = serializeTable(rows, hasHeader, aligns) + marker;
           const newText = lines.slice(0, span.start)
             .concat([tableText], lines.slice(end))
             .join('\n');
