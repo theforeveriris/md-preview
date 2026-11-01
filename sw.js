@@ -192,24 +192,24 @@ self.addEventListener('fetch', event => {
   // 跨源字体（Google Fonts 的 CSS 与 woff2）：缓存优先——此前跨源请求
   // 直接放行，离线后远程字体全丢（正文/标题回退系统字体）。opaque 响应
   // status 为 0 但可缓存；字体内容几乎不变，缓存优先足够。
-  // 缓存写入绑定 event.waitUntil：不延长事件生命周期时 worker 可能在
-  // put 完成前被终止，字体离线仍缺
+  // 写缓存挂在 event.waitUntil（延长事件生命周期），且失败只吞掉缓存错误、
+  // 不影响已成功获取的响应返回（respondWith 的链路不经过 put）
   if (url.origin !== location.origin &&
       /^fonts\.(googleapis|gstatic)\.com$/.test(url.hostname)) {
-    const fontPut = caches.match(request).then(cached => {
-      if (cached) return { cached, response: null };
+    const responsePromise = caches.match(request).then(cached => {
+      if (cached) return cached;
       return fetch(request).then(response => {
         if (response && (response.ok || response.type === 'opaque')) {
-          return caches.open(RUNTIME_CACHE).then(cache =>
-            cache.put(request, response.clone())
-          ).then(() => ({ cached: null, response }));
+          const clone = response.clone();
+          const putPromise = caches.open(RUNTIME_CACHE)
+            .then(cache => cache.put(request, clone))
+            .catch(err => console.warn('[SW] 字体缓存写入失败（响应不受影响）:', err));
+          event.waitUntil(putPromise);
         }
-        return { cached: null, response };
+        return response;
       });
     });
-    event.respondWith(fontPut.then(({ cached, response }) => cached || response));
-    // 写缓存失败不影响本次响应
-    event.waitUntil(fontPut.then(() => {}).catch(() => {}));
+    event.respondWith(responsePromise);
     return;
   }
 
