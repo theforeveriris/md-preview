@@ -103,7 +103,7 @@
     if (titleEl) {
       titleEl.textContent = state.localFolder ? state.localFolder.name : t('local.title', '本地文件');
     }
-    if (toggleBtn) toggleBtn.dataset.count = files.length + ' item' + (files.length === 1 ? '' : 's');
+    if (toggleBtn) toggleBtn.dataset.count = t('local.count', '{n} 个文件').replace('{n}', files.length);
     if (!listEl) return;
     listEl.innerHTML = '';
     if (files.some(f => f.path && f.path.includes('/'))) {
@@ -331,6 +331,24 @@
     });
   }
 
+  // 编码探测读取：UTF-8 严格解码失败 → BOM 识别 UTF-16 → GB18030 回退。
+  // Windows 记事本存的 GBK/GB18030 .md 此前直接乱码（非严格 UTF-8 解码）
+  async function readAsTextSmart(file) {
+    const buf = await file.arrayBuffer();
+    const bytes = new Uint8Array(buf);
+    if (bytes[0] === 0xFF && bytes[1] === 0xFE) return new TextDecoder('utf-16le').decode(buf);
+    if (bytes[0] === 0xFE && bytes[1] === 0xFF) return new TextDecoder('utf-16be').decode(buf);
+    try {
+      return new TextDecoder('utf-8', { fatal: true }).decode(buf);
+    } catch (e) {
+      try {
+        return new TextDecoder('gb18030').decode(buf);
+      } catch (e2) {
+        return readAsText(file); // 都失败时回退原路径（宽松 UTF-8）
+      }
+    }
+  }
+
   async function handlePickedFiles(fileList) {
     const state = getState();
     const picked = Array.from(fileList || []);
@@ -340,6 +358,12 @@
     let firstOpened = false;
 
     for (const file of picked) {
+      // 扩展名复核：accept 只是提示，用户在「所有文件」下选中图片等
+      // 会被当 UTF-8 文本读入并渲染
+      if (!/\.(md|markdown|txt)$/i.test(file.name)) {
+        skipped.push(file.name + t('local.notDoc', '（非 Markdown/文本文件）'));
+        continue;
+      }
       if (file.size > MAX_FILE_BYTES) {
         skipped.push(file.name + t('local.tooLarge', '（超过 10MB）'));
         continue;
@@ -350,7 +374,7 @@
       }
       let content;
       try {
-        content = await readAsText(file);
+        content = await readAsTextSmart(file);
       } catch (e) {
         skipped.push(file.name + t('local.readFailed', '（读取失败）'));
         continue;
@@ -604,6 +628,12 @@
 
   let dragDepth = 0;
 
+  // 波形生成器页面有自己的拖放语义，本地文件管线不接管（与编辑器模式同口径）
+  function dropBlocked() {
+    return document.body.classList.contains('editor-mode') ||
+      document.body.classList.contains('pulse-gen-mode');
+  }
+
   function initDragDrop() {
     const overlay = document.getElementById('dropOverlay');
     const show = () => { if (overlay) overlay.classList.add('open'); };
@@ -613,15 +643,15 @@
     };
 
     document.addEventListener('dragenter', (e) => {
-      // 编辑器模式有自己的拖放处理（图片 / 文件插入），不接管
-      if (document.body.classList.contains('editor-mode')) return;
+      // 编辑器 / 波形生成器模式有自己的拖放处理（图片 / 文件插入），不接管
+      if (dropBlocked()) return;
       if (!isFileDrag(e)) return;
       e.preventDefault();
       dragDepth += 1;
       show();
     });
     document.addEventListener('dragover', (e) => {
-      if (document.body.classList.contains('editor-mode')) return;
+      if (dropBlocked()) return;
       if (!isFileDrag(e)) return;
       // 允许 drop：必须持续阻止默认行为
       e.preventDefault();
@@ -634,7 +664,7 @@
     });
     document.addEventListener('drop', async (e) => {
       hide();
-      if (document.body.classList.contains('editor-mode')) return;
+      if (dropBlocked()) return;
       if (!isFileDrag(e)) return;
       e.preventDefault();
       const entries = collectAsEntries(e.dataTransfer);

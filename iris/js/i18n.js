@@ -703,6 +703,8 @@
     'editor.undo': '撤销',
     'editor.cellSourceCopied': '已复制 Cell 源码',
     'lazy.loadFailed': '{n} 组件加载失败，请检查网络后重试',
+    'local.notDoc': '（非 Markdown/文本文件）',
+    'local.count': '{n} 个文件',
     'notfound.title': '文档未找到',
     'notfound.body': '路径 `{p}` 不存在或尚未收录。',
     'notfound.home': '返回全站目录',
