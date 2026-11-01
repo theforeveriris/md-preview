@@ -26,3 +26,13 @@ runs:
     - name: Build Changelog
       shell: bash
       run: node iris/scripts/build-changelog.js
+
+    - name: Build Cheatsheet Index
+      shell: bash
+      run: node iris/scripts/build-cheatsheet.js
+
+    # 死链报告：--report 不改变退出码（失败仍由独立 link-check job 打红），
+    # 保证最新明细一定写入 #/broken-links 页消费的 link-report.json
+    - name: Link Check Report
+      shell: bash
+      run: node iris/scripts/link-check.js --no-external --report || true

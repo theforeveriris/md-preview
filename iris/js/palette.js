@@ -137,6 +137,24 @@
         run: randomDocRun
       },
       {
+        id: 'open-stats',
+        icon: 'i-table',
+        label: t('cmd.openStats', '站点统计'),
+        run: () => { window.location.hash = '#/stats'; }
+      },
+      {
+        id: 'open-cheatsheet',
+        icon: 'i-code',
+        label: t('cmd.openCheatsheet', '全站速查'),
+        run: () => { window.location.hash = '#/cheatsheet'; }
+      },
+      {
+        id: 'open-broken-links',
+        icon: 'i-flag',
+        label: t('cmd.openBrokenLinks', '死链报告'),
+        run: () => { window.location.hash = '#/broken-links'; }
+      },
+      {
         id: 'copy-link',
         icon: 'i-link',
         label: t('cmd.copyLink', '复制页面链接'),

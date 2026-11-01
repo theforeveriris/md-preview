@@ -106,6 +106,28 @@
       return;
     }
 
+    // 虚拟路由：全站速查 #/cheatsheet · #/cheatsheet/<group>
+    if (path === 'cheatsheet' || path.startsWith('cheatsheet/')) {
+      const group = path.startsWith('cheatsheet/') ? path.slice('cheatsheet/'.length) : '';
+      const cs = window.MarkdownPreview.cheatsheet;
+      if (cs && cs.openPage) cs.openPage(group);
+      return;
+    }
+
+    // 虚拟路由：站点统计 #/stats
+    if (path === 'stats') {
+      const st = window.MarkdownPreview.stats;
+      if (st && st.openPage) st.openPage();
+      return;
+    }
+
+    // 虚拟路由：死链报告 #/broken-links
+    if (path === 'broken-links') {
+      const bl = window.MarkdownPreview.brokenLinks;
+      if (bl && bl.openPage) bl.openPage();
+      return;
+    }
+
     // 无 hash / 仅站点根：可定制首页（config.homepage，第六扩散 DOC-HOME）
     if (!path) {
       if (window.MarkdownPreview.pages && window.MarkdownPreview.pages.openHomepage) {
