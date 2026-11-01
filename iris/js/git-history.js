@@ -196,13 +196,14 @@
       }
       // 关注时顺便记录最新 sha
       if (isWatched(path)) { const w = loadWatched(); w[path] = list[0].sha; saveWatched(w); }
-      const shaHref = shaLink(list[0].sha);
       body.innerHTML = `<ul class="git-commit-list">${list.map(c => {
         const msg = (c.commit && c.commit.message || '').split('\n')[0];
         const author = (c.commit && c.commit.author && c.commit.author.name) || '';
         const date = (c.commit && c.commit.author && c.commit.author.date) || '';
-        const shaHtml = shaHref
-          ? `<a class="git-sha-link" href="${esc(shaHref(c.sha))}" target="_blank" rel="noopener noreferrer">${esc(c.sha.slice(0, 7))}</a>`
+        // shaLink 逐提交调用（返回该 commit 的 GitHub 页 URL 或 null）
+        const commitUrl = shaLink(c.sha);
+        const shaHtml = commitUrl
+          ? `<a class="git-sha-link" href="${esc(commitUrl)}" target="_blank" rel="noopener noreferrer">${esc(c.sha.slice(0, 7))}</a>`
           : esc(c.sha.slice(0, 7));
         return `<li><button type="button" class="git-commit-item" data-sha="${esc(c.sha)}">
           <span class="git-commit-msg">${esc(msg)}</span>

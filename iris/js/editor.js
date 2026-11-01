@@ -332,6 +332,9 @@
       const afterCell = getCell(afterCellId);
       if (afterCell) {
         afterCell.div.after(cellDiv);
+        // DOM 与数组顺序必须同步：编号/序列化/moveCell 都按数组顺序来
+        cells.splice(cells.indexOf(cellData), 1);
+        cells.splice(cells.indexOf(afterCell) + 1, 0, cellData);
       } else {
         editorMain.insertBefore(cellDiv, globalAddBtn);
       }
