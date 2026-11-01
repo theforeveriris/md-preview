@@ -139,9 +139,42 @@
         }
       }).catch(() => {
         console.warn('Failed to load document from URL');
+        // 404 反馈：文件不存在 / 拼写错误不再静默停在旧文档
+        renderNotFound(path);
       });
       fileTree.highlightFileInSidebar(path);
+      return;
     }
+
+    // 其余裸路径：先按 <path>.md 兜底（站内链接漏写扩展名的场景），
+    // 仍失败渲染 404 页——旧实现静默什么都不做
+    if (path) {
+      const { markdown, fileTree } = window.MarkdownPreview;
+      const mdPath = path + '.md';
+      markdown.loadMarkdownFile(mdPath).then(() => {
+        fileTree.highlightFileInSidebar(mdPath);
+      }).catch(() => {
+        console.warn('Failed to resolve route:', path);
+        renderNotFound(path);
+      });
+    }
+  }
+
+  // 404 虚拟页：复用 renderVirtualDoc（与快照无效链接同款模式）
+  function renderNotFound(path) {
+    const { markdown } = window.MarkdownPreview;
+    if (!markdown || !markdown.renderVirtualDoc) return;
+    const tt = (key, fallback) => {
+      const i18n = window.MarkdownPreview.i18n;
+      return i18n && typeof i18n.t === 'function' ? i18n.t(key, fallback) : fallback;
+    };
+    const safePath = String(path).replace(/[`\n]/g, '');
+    const title = tt('notfound.title', '文档未找到');
+    const body = tt('notfound.body', '路径 `{p}` 不存在或尚未收录。').replace('{p}', safePath);
+    markdown.renderVirtualDoc(
+      `# ${title}\n\n${body}\n\n[${tt('notfound.home', '返回全站目录')}](#/index)`,
+      title
+    );
   }
   
   function handleHashChange() {
