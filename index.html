@@ -51,6 +51,8 @@
   <link rel="stylesheet" href="iris/css/pptx.css">
 </head>
 <body class="sidebar-collapsed">
+  <!-- 键盘跳转：跳过侧边栏直达正文 -->
+  <a class="skip-link" href="#markdownContent" data-i18n="a11y.skipToContent">跳到正文</a>
   <!-- 桌面端侧边栏默认收起（该类仅桌面端媒体查询生效，移动端抽屉不受影响）；
        settings.js 初始化时按用户已保存的 sidebarOpen 恢复 -->
   <!-- SVG 图标库 -->
@@ -111,12 +113,12 @@
       <div class="sidebar-resize-handle handle-e" id="sidebarResizeE" aria-hidden="true"></div>
       <div class="sidebar-resize-handle handle-s" id="sidebarResizeS" aria-hidden="true"></div>
       <div class="sidebar-header">
-        <h1 class="sidebar-title">
-          <span class="mode-toggle active" id="modeFiles" data-mode="files">Files</span>
-          <span class="mode-divider">/</span>
-          <span class="mode-toggle" id="modeIndex" data-mode="index">Index</span>
-          <span class="mode-divider">/</span>
-          <span class="mode-toggle" id="modeTags" data-mode="tags">Tags</span>
+        <h1 class="sidebar-title" role="tablist" aria-label="侧边栏视图">
+          <button type="button" class="mode-toggle active" id="modeFiles" data-mode="files" role="tab" aria-selected="true">Files</button>
+          <span class="mode-divider" aria-hidden="true">/</span>
+          <button type="button" class="mode-toggle" id="modeIndex" data-mode="index" role="tab" aria-selected="false">Index</button>
+          <span class="mode-divider" aria-hidden="true">/</span>
+          <button type="button" class="mode-toggle" id="modeTags" data-mode="tags" role="tab" aria-selected="false">Tags</button>
         </h1>
         <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">

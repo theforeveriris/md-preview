@@ -746,6 +746,7 @@
     'fm.hint.installed': '已安装 PWA 后隐藏',
     'fm.hint.desktop': '仅桌面端可用',
     'fm.hint.generic': '当前环境暂不可用',
+    'a11y.skipToContent': '跳到正文',
     'notfound.title': '文档未找到',
     'notfound.body': '路径 `{p}` 不存在或尚未收录。',
     'notfound.home': '返回全站目录',
