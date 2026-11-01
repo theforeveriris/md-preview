@@ -57,17 +57,28 @@
       }
       rest = pm[3];
     }
-    // 收集 RTT token：值 或 *；其余文本（AS 路径等）丢进 remark
+    // 收集 RTT：标准输出里 "1.2 ms" 是两个 token，按空白切分会让数值与
+    // 单位分家——用正则直接扫整段 rest（数值±单位 / 裸数值 / <数值 ms / *）
     const rtts = [];
-    const remarkTokens = [];
-    rest.split(/\s+/).forEach(tok => {
-      if (tok === '*' || /^[\d.]+\s*ms$/i.test(tok) || /^<\s*[\d.]+\s*ms$/i.test(tok)) {
-        const v = parseRtt(tok);
-        if (v !== null) rtts.push(v);
-      } else if (tok && !/^(ms|MPI|mpls)$/i.test(tok)) {
-        remarkTokens.push(tok);
+    const rttSpans = [];
+    const RTT_RE = /(\*|<\s*[\d.]+\s*ms|[\d.]+\s*ms|[\d.]+)/gi;
+    let rm;
+    while ((rm = RTT_RE.exec(rest)) !== null) {
+      if (rm[0] === '*' || /\bms\b/i.test(rm[0])) {
+        const v = parseRtt(rm[0]);
+        if (v !== null && v !== undefined) {
+          rtts.push(v);
+          rttSpans.push([rm.index, rm.index + rm[0].length]);
+        }
       }
-    });
+    }
+    // RTT 之外的文本（AS 路径、Windows 形态里的地址等）丢进 remark：
+    // 把已识别的 RTT 片段从 rest 里挖掉，剩余部分再按空白收集
+    let remarkPart = rest;
+    for (let i = rttSpans.length - 1; i >= 0; i--) {
+      remarkPart = remarkPart.slice(0, rttSpans[i][0]) + ' ' + remarkPart.slice(rttSpans[i][1]);
+    }
+    const remarkTokens = remarkPart.split(/\s+/).filter(tok => tok && tok !== '*' && !/^(ms|MPI|mpls)$/i.test(tok) && !/^[\d.]+$/.test(tok));
     // Windows 形态：rtts 在前、地址在后
     if (!host.ip && !host.name) {
       const ipm = /(\d{1,3}(?:\.\d{1,3}){3}|[0-9a-fA-F:]{2,45})/.exec(remarkTokens.join(' '));

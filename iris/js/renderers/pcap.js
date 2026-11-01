@@ -43,9 +43,26 @@
 
   function protoClass(proto) { return PROTO_CLS[String(proto || '').toUpperCase()] || 'pc-proto-other'; }
 
+  // 入口字段净化：no/length/port 在模板里不经 esc 直接插值（数字语境），
+  // 内嵌 JSON 可注入字符串——统一在此钳制成有限数字或 ''，
+  // 消除存储型 XSS 面（mdRender.escapeHtml 注释把文档内容视为不可信输入）
+  function toCount(v) {
+    const n = Number(v);
+    return Number.isFinite(n) && n >= 0 && n < Number.MAX_SAFE_INTEGER ? n : 0;
+  }
+
   function enrich(entry) {
     // 摘要增强：知名端口识别为应用层协议（TCP 53 → DNS），填 stack 尾部
     const e = Object.assign({}, entry);
+    e.no = toCount(e.no);
+    e.length = toCount(e.length);
+    e.time = Number(e.time) || 0;
+    if (e.srcPort != null) e.srcPort = toCount(e.srcPort);
+    if (e.dstPort != null) e.dstPort = toCount(e.dstPort);
+    if (Array.isArray(e.stack)) e.stack = e.stack.map(x => String(x));
+    else e.stack = [];
+    e.proto = String(e.proto || '').slice(0, 24);
+    if (e.info != null) e.info = String(e.info).slice(0, 300);
     if ((e.proto === 'TCP' || e.proto === 'UDP') && !/^[A-Z]/.test((e.stack && e.stack[e.stack.length - 1]) || '')) {
       const app = WELL_PORTS[e.dstPort] || WELL_PORTS[e.srcPort];
       if (app) {
@@ -58,21 +75,46 @@
 
   // ============== display filter（BPF 简版） ==============
   // 支持：协议名（tcp/udp/icmp/dns/arp/tls/http…）、addr==x、src==x、dst==x、
-  //       port N、src port N / dst port N、len>N / len<N，空格 AND 组合（隐式与）
+  //       port N、src port N / dst port N、len>N / len<N，空格 AND 组合（隐式与）。
+  // 带空格的谓词（src port 53）不能先按空白切 token——正则整体扫描拼接串
   function parseFilter(q) {
-    const tokens = String(q || '').trim().toLowerCase().split(/\s+/).filter(Boolean);
-    if (!tokens.length) return null;
-    return tokens.map(tok => {
-      let m;
-      if ((m = /^(?:ip\.)?src\s*==\s*(\S+)$/.exec(tok))) return { type: 'src', v: m[1] };
-      if ((m = /^(?:ip\.)?dst\s*==\s*(\S+)$/.exec(tok))) return { type: 'dst', v: m[1] };
-      if ((m = /^(?:ip\.)?addr\s*==\s*(\S+)$/.exec(tok))) return { type: 'addr', v: m[1] };
-      if ((m = /^src\s+port\s+(\d+)$/.exec(tok))) return { type: 'sport', v: Number(m[1]) };
-      if ((m = /^dst\s+port\s+(\d+)$/.exec(tok))) return { type: 'dport', v: Number(m[1]) };
-      if ((m = /^port\s+(\d+)$/.exec(tok))) return { type: 'port', v: Number(m[1]) };
-      if ((m = /^len\s*([<>])\s*(\d+)$/.exec(tok))) return { type: 'len', op: m[1], v: Number(m[2]) };
-      return { type: 'proto', v: tok };
-    });
+    const s = String(q || '').trim().toLowerCase();
+    if (!s) return null;
+    // 全局扫描：命中一个谓词就消费掉，剩余部分递归处理；未命中的首个
+    // 空白段作为协议名 token
+    const preds = [];
+    const PATTERNS = [
+      { re: /(?:ip\.)?src\s*==\s*(\S+)/, mk: m => ({ type: 'src', v: m[1] }) },
+      { re: /(?:ip\.)?dst\s*==\s*(\S+)/, mk: m => ({ type: 'dst', v: m[1] }) },
+      { re: /(?:ip\.)?addr\s*==\s*(\S+)/, mk: m => ({ type: 'addr', v: m[1] }) },
+      { re: /src\s+port\s+(\d+)/, mk: m => ({ type: 'sport', v: Number(m[1]) }) },
+      { re: /dst\s+port\s+(\d+)/, mk: m => ({ type: 'dport', v: Number(m[1]) }) },
+      { re: /\bport\s+(\d+)/, mk: m => ({ type: 'port', v: Number(m[1]) }) },
+      { re: /len\s*([<>])\s*(\d+)/, mk: m => ({ type: 'len', op: m[1], v: Number(m[2]) }) }
+    ];
+    let rest = s;
+    let guard = 0;
+    while (rest.trim() && guard++ < 50) {
+      const trimmed = rest.trim();
+      let matched = false;
+      for (const p of PATTERNS) {
+        const m = p.re.exec(trimmed);
+        // 只接受从前缀开始的命中（如 "port 53" / "src == x"），避免吞掉
+        // 中段的碎片
+        if (m && m.index === 0) {
+          preds.push(p.mk(m));
+          rest = trimmed.slice(m[0].length);
+          matched = true;
+          break;
+        }
+      }
+      if (matched) continue;
+      // 没有谓词前缀：消费一个词作为协议名
+      const word = /^(\S+)\s*/.exec(trimmed);
+      preds.push({ type: 'proto', v: word[1] });
+      rest = trimmed.slice(word[0].length);
+    }
+    return preds.length ? preds : null;
   }
 
   function matchEntry(entry, preds) {
