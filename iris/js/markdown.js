@@ -168,9 +168,15 @@
   }
 
   function calculateReadingTime(text) {
-    const englishWords = text.match(/[a-zA-Z]+/g) || [];
+    // 剔除代码块/行内代码再估算：代码占比高的文档（网络配置/示例）此前
+    // 阅读时长虚高数倍
+    const prose = String(text || '')
+      .replace(/```[\s\S]*?```/g, ' ')
+      .replace(/~~~[\s\S]*?~~~/g, ' ')
+      .replace(/`[^`]*`/g, ' ');
+    const englishWords = prose.match(/[a-zA-Z]+/g) || [];
     const englishCount = englishWords.reduce((sum, word) => sum + word.length, 0);
-    const chineseChars = text.match(/[\u4e00-\u9fa5]/g) || [];
+    const chineseChars = prose.match(/[\u4e00-\u9fa5]/g) || [];
     const chineseCount = chineseChars.length;
 
     const englishMinutes = englishCount / 200;
@@ -856,8 +862,9 @@
       heading.style.cursor = 'pointer';
       heading.style.position = 'relative';
 
-      // 锚点分享按钮：仅 H1（文档主标题）显示，点击复制由事件委托处理
-      if (heading.tagName === 'H1' && heading.id && !heading.querySelector('.heading-anchor')) {
+      // 锚点分享按钮：H1-H6 都有（此前仅 H1，深标题分享只能靠目录），
+      // 点击复制由事件委托处理
+      if (heading.id && !heading.querySelector('.heading-anchor')) {
         const anchorBtn = document.createElement('span');
         anchorBtn.className = 'heading-anchor';
         anchorBtn.title = t('md.copyAnchor', '复制此标题的直达链接');
@@ -906,12 +913,12 @@
         }
         return;
       }
-      // 标题锚点按钮（仅 H1）
+      // 标题锚点按钮（H1-H6）
       const anchorBtn = e.target.closest('.heading-anchor');
       if (anchorBtn) {
         e.stopPropagation();
         e.preventDefault();
-        const heading = anchorBtn.closest('h1');
+        const heading = anchorBtn.closest('h1, h2, h3, h4, h5, h6');
         if (heading && heading.id) {
           (window.MarkdownPreview.debug?.debugLog || (() => {}))('[copy] heading-anchor clicked');
           copyHeadingLink(heading.id, anchorBtn);

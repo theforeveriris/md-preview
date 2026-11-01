@@ -88,11 +88,13 @@
     let result = '';
     let i = 0;
     while (i < lines.length) {
-      const m = lines[i].match(/^> \[!([A-Z]+)\](.*)$/);
+      // 缩进的 alert（列表项内）同样识别；`[!TYPE] 自定义标题` 的标题生效
+      const m = lines[i].match(/^\s*> \[!([A-Z]+)\](.*)$/);
       if (m && alertTypes[m[1]]) {
         const cfg = alertTypes[m[1]];
         const icon = cfg.icon;
-        const title = cfg.title || (m[1].charAt(0) + m[1].slice(1).toLowerCase());
+        const customTitle = m[2].trim();
+        const title = customTitle || cfg.title || (m[1].charAt(0) + m[1].slice(1).toLowerCase());
         const contentLines = [];
         i++;
         while (i < lines.length && (lines[i].startsWith('> ') || lines[i].trim() === '')) {
@@ -101,7 +103,8 @@
         }
         const parsedContent = marked.parse(contentLines.join('\n').trim(), { breaks: true, gfm: true });
         const cls = `alert-${m[1].toLowerCase()}`;
-        result += `<div class="alert ${cls}"><div class="alert-header"><span class="alert-icon">${icon}</span><span class="alert-title">${title}</span></div><div class="alert-content">${parsedContent}</div></div>\n`;
+        // 自定义标题来自用户输入：过 escapeHtml 再上屏
+        result += `<div class="alert ${cls}"><div class="alert-header"><span class="alert-icon">${icon}</span><span class="alert-title">${escapeHtml(title)}</span></div><div class="alert-content">${parsedContent}</div></div>\n`;
       } else {
         result += lines[i] + '\n';
         i++;
@@ -707,6 +710,16 @@
       const count = imgs.length;
       let index = 0;
       let timer = null;
+      // 圆点可点（此前只是装饰，只能等自动轮播）
+      dots.addEventListener('click', (e) => {
+        const dot = e.target.closest('span');
+        if (!dot) return;
+        const idx = Array.from(dots.children).indexOf(dot);
+        if (idx >= 0) go(idx);
+      });
+      // prefers-reduced-motion：JS 定时器动画与 CSS 动画同样豁免
+      let reduced = false;
+      try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { /* ignore */ }
       function go(i) {
         index = ((i % count) + count) % count;
         track.style.transform = `translateX(-${index * 100}%)`;
@@ -716,7 +729,7 @@
         if (!slider.isConnected) { stop(); return; } // 脱离文档自动停止
         go(index + 1);
       }
-      function start() { stop(); timer = setInterval(tick, 4000); sliderTimers.add(timer); }
+      function start() { stop(); if (reduced) return; timer = setInterval(tick, 4000); sliderTimers.add(timer); }
       function stop() { if (timer) { clearInterval(timer); sliderTimers.delete(timer); timer = null; } }
       slider.addEventListener('mouseenter', stop);
       slider.addEventListener('mouseleave', start);
