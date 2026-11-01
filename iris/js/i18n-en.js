@@ -297,6 +297,10 @@
 
     'menu.qrShare': 'Continue on phone',
     'qr.title': 'Continue on Phone',
+    'qr.tooLong': 'Link too long to encode as a QR code',
+    'qr.encoderFail': 'QR encoder failed to load; check your network and retry',
+    'qr.copyLink': 'Copy link',
+    'qr.copied': 'Copied',
 
     'reading.resume': 'Continue from {pct}%?',
     'reading.resumeGo': 'Continue',

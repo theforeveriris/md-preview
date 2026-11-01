@@ -431,6 +431,26 @@
   margin-bottom: 14px;
 }
 
+/* 复制链接按钮（二维码对话框的配套出口） */
+.qr-share-copy-btn {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 6px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.qr-share-copy-btn:hover {
+  border-color: var(--color-accent-purple);
+  color: var(--color-accent-purple);
+}
+
 .qr-share-img-wrap {
   display: flex;
   justify-content: center;

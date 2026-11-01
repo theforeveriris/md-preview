@@ -332,6 +332,10 @@
     // 动态文案：扫码续读（悬浮球）
     'menu.qrShare': '扫码续读',
     'qr.title': '扫码续读',
+    'qr.tooLong': '链接过长，无法生成二维码',
+    'qr.encoderFail': '二维码组件加载失败，请检查网络后重试',
+    'qr.copyLink': '复制链接',
+    'qr.copied': '已复制',
 
     // 动态文案：阅读位置续读
     'reading.resume': '上次读到 {pct}%，继续？',

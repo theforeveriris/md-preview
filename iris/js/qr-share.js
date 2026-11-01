@@ -91,11 +91,34 @@
     } catch (e) {
       wrap.innerHTML = '';
       const errBox = document.createElement('div');
-      errBox.style.cssText = 'padding:10px 14px;border:1px solid #ff6b6b;border-radius:8px;background:rgba(255,107,107,0.12);color:#ff6b6b;font-size:14px';
+      errBox.style.cssText = 'padding:10px 14px;border:1px solid var(--color-error,#ff6b6b);border-radius:8px;background:rgba(255,107,107,0.12);color:var(--color-error,#ff6b6b);font-size:14px';
       errBox.textContent = e && e.message === 'too-long'
-        ? '链接过长，无法生成二维码'
-        : '二维码组件加载失败，请检查网络后重试';
+        ? t('qr.tooLong', '链接过长，无法生成二维码')
+        : t('qr.encoderFail', '二维码组件加载失败，请检查网络后重试');
       wrap.appendChild(errBox);
+    }
+
+    // 复制链接：二维码最自然的配套动作（对话框此前只有扫码一条路）
+    let copyBtn = el.querySelector('.qr-share-copy');
+    if (!copyBtn) {
+      copyBtn = document.createElement('button');
+      copyBtn.type = 'button';
+      copyBtn.className = 'qr-share-copy qr-share-copy-btn';
+      copyBtn.textContent = t('qr.copyLink', '复制链接');
+      copyBtn.addEventListener('click', () => {
+        const done = () => {
+          copyBtn.textContent = t('qr.copied', '已复制');
+          setTimeout(() => { copyBtn.textContent = t('qr.copyLink', '复制链接'); }, 1500);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(buildQrUrl() || '').then(done, done);
+        } else {
+          done();
+        }
+      });
+      const hint = el.querySelector('.qr-share-hint');
+      if (hint) hint.insertAdjacentElement('beforebegin', copyBtn);
+      else el.querySelector('.qr-share-card').appendChild(copyBtn);
     }
 
     el.classList.add('open');
