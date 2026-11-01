@@ -583,7 +583,11 @@
         if (!inPageId) return;
         link.addEventListener('click', (e) => {
           e.preventDefault();
-          const target = document.getElementById(inPageId);
+          // marked 会把中文锚点百分号编码（#%E6%A0%87%E9%A2%98），
+          // getElementById 不解码——先试解码后的 id，再回退原文
+          let id = inPageId;
+          try { id = decodeURIComponent(inPageId); } catch (err) { /* 保留原文 */ }
+          const target = document.getElementById(id) || document.getElementById(inPageId);
           if (target) {
             target.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
@@ -1117,11 +1121,12 @@
     }, { passive: true });
     overlay.addEventListener('touchend', (e) => {
       if (!touchStart) return;
-      const t0 = e.changedTouches[0];
+      const start = touchStart;
       touchStart = null;
+      const t0 = e.changedTouches[0];
       if (!t0) return;
-      const dx = t0.clientX - touchStart.x;
-      const dy = t0.clientY - touchStart.y;
+      const dx = t0.clientX - start.x;
+      const dy = t0.clientY - start.y;
       if (Math.abs(dx) >= 50 && Math.abs(dx) > Math.abs(dy) && lightboxState.scale <= 1) {
         navigateLightbox(dx < 0 ? 1 : -1);
       }
