@@ -705,6 +705,7 @@
     'lazy.loadFailed': '{n} 组件加载失败，请检查网络后重试',
     'local.notDoc': '（非 Markdown/文本文件）',
     'local.count': '{n} 个文件',
+    'cjk.loading': '正在加载繁简转换组件…',
     'notfound.title': '文档未找到',
     'notfound.body': '路径 `{p}` 不存在或尚未收录。',
     'notfound.home': '返回全站目录',

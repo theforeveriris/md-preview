@@ -663,6 +663,7 @@
     'lazy.loadFailed': 'Failed to load {n}; check your network and retry',
     'local.notDoc': '(not a Markdown/text file)',
     'local.count': '{n} files',
+    'cjk.loading': 'Loading the Chinese variant converter…',
     'notfound.title': 'Document not found',
     'notfound.body': 'The path `{p}` does not exist or is not indexed.',
     'notfound.home': 'Back to site index',

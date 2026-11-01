@@ -174,6 +174,16 @@
     const tagFilter = tagsMod ? tagsMod.extractTagFilters(currentQuery) : { text: currentQuery, tags: [] };
     const searchText = tagFilter.text;
 
+    // 简繁互通（运行时）：转换开启时索引仍是原文脚本，按显示脚本输入会搜
+    // 不到——把查询词向相反方向再转一份，两组结果合并去重
+    const cjk = window.MarkdownPreview.cjk;
+    const convMode = cjk && cjk.getMode ? cjk.getMode() : 'off';
+    const queries = [searchText];
+    if (convMode !== 'off' && searchText.trim() && cjk.convertText) {
+      const alt = cjk.convertText(searchText, convMode === 'tw' ? 'cn' : 'tw');
+      if (alt && alt !== searchText) queries.push(alt);
+    }
+
     try {
       // tag: 过滤时先取 100 条候补：只看 FlexSearch 截断的 top-20 会让
       // 文本排名 20 名外但标签命中的文档永远搜不到
@@ -184,7 +194,13 @@
         // 空串喂给 FlexSearch/simpleSearch 都恒返回空，曾显示「没有找到」
         results = documents.map((_, i) => i);
       } else {
-        results = flexIndex ? flexSearch(searchText, limit) : simpleSearch(searchText, limit);
+        results = [];
+        const seenIds = new Set();
+        queries.forEach(q => {
+          (flexIndex ? flexSearch(q, limit) : simpleSearch(q, limit)).forEach(id => {
+            if (!seenIds.has(id)) { seenIds.add(id); results.push(id); }
+          });
+        });
       }
       if (tagFilter.tags.length > 0) {
         results = results.filter(id => tagsMod.docHasTags(documents[id], tagFilter.tags));
