@@ -337,6 +337,10 @@
     dom.modeFiles.classList.toggle('active', mode === 'files');
     dom.modeIndex.classList.toggle('active', mode === 'index');
     dom.modeTags?.classList.toggle('active', mode === 'tags');
+    // tablist 语义：aria-selected 与视觉高亮同步（读屏跟随）
+    dom.modeFiles.setAttribute('aria-selected', String(mode === 'files'));
+    dom.modeIndex.setAttribute('aria-selected', String(mode === 'index'));
+    dom.modeTags?.setAttribute('aria-selected', String(mode === 'tags'));
     dom.fileTree.classList.toggle('hidden', mode !== 'files');
     dom.indexTree.classList.toggle('hidden', mode !== 'index');
     // 本地文件面板归属 Files 区
