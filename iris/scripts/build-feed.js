@@ -193,7 +193,13 @@ function buildFeed() {
     const { frontmatter, content: body } = parseFrontmatter(content);
     const title = frontmatter.title || extractTitle(content, file.fileName);
     const description = frontmatter.description || extractDescription(body);
-    const pubDate = frontmatter.date ? new Date(frontmatter.date) : getPublishDate(file.fullPath);
+    // frontmatter.date 无效（如 "bad"）时 new Date 得到 Invalid Date：
+    // 排序变 NaN、toUTCString 输出 "Invalid Date" 直接进 XML——回退 git 时间
+    let pubDate = frontmatter.date ? new Date(frontmatter.date) : getPublishDate(file.fullPath);
+    if (!(pubDate instanceof Date) || isNaN(pubDate.getTime())) {
+      console.warn(`Invalid frontmatter.date "${frontmatter.date}" in ${file.repoRelativePath}, falling back to git date`);
+      pubDate = getPublishDate(file.fullPath);
+    }
 
     // 直链原始 Markdown 文件：标准 RSS 阅读器抓取 <link> 时不执行站点 JS，
     // hash fragment（#/docs/foo.md）只能拿到 index.html 空壳，无法解析。
