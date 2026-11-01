@@ -350,9 +350,44 @@
       shadow.appendChild(styleEl);
     }
 
+    // 文件夹折叠状态持久化（用户手动收起的目录刷新后保持）
+    var FOLDER_STATE_KEY = 'md-preview-folder-state';
+    function readFolderState() {
+      try { return JSON.parse(localStorage.getItem(FOLDER_STATE_KEY) || '{}') || {}; }
+      catch (e) { return {}; }
+    }
+    function folderPathKey(folder) {
+      // 键 = 从根到该目录的名称链（vendor Shadow DOM 内无完整路径可读）
+      var names = [];
+      var node = folder;
+      while (node && node.tagName === 'LI') {
+        var btn = node.querySelector('button');
+        if (!btn || !btn.textContent.trim()) return null;
+        names.unshift(btn.textContent.trim());
+        node = node.parentElement ? node.parentElement.closest('li') : null;
+      }
+      return names.join('/') || null;
+    }
+    function persistFolderState(sh) {
+      var out = {};
+      sh.querySelectorAll('li.folder').forEach(function(folder) {
+        var key = folderPathKey(folder);
+        if (key) out[key] = folder.classList.contains('opened');
+      });
+      try { localStorage.setItem(FOLDER_STATE_KEY, JSON.stringify(out)); } catch (e) { /* 忽略 */ }
+    }
+
     // Handle file clicks
     tree.addEventListener('click', (event) => {
       const { action, folder, target, path } = event.detail;
+      // 文件夹开合：等 vendor 切换完 class 再记录状态
+      if (action === 'click' && folder) {
+        setTimeout(function() {
+          var sh = tree.shadowRoot;
+          if (sh) persistFolderState(sh);
+        }, 0);
+        return;
+      }
       if (action === 'click' && !folder) {
         const filePath = target._path || findFilePath(target.name, state.fileTreeData);
         if (filePath) {
@@ -362,6 +397,39 @@
         }
       }
     });
+
+    // 文件名过滤（树内 type-to-filter）
+    function applyTreeFilter() {
+      var input = document.getElementById('treeFilterInput');
+      var sh = tree.shadowRoot;
+      if (!input || !sh) return;
+      var q = input.value.trim().toLowerCase();
+      if (!q) {
+        sh.querySelectorAll('li').forEach(function(li) { li.style.display = ''; });
+        return;
+      }
+      // 文件名命中显示；目录自底向上：有可见后代才显示，过滤期间全部展开
+      sh.querySelectorAll('li.file, li.text').forEach(function(li) {
+        li.style.display = li.textContent.toLowerCase().indexOf(q) !== -1 ? '' : 'none';
+      });
+      var folders = Array.prototype.slice.call(sh.querySelectorAll('li.folder')).reverse();
+      folders.forEach(function(folder) {
+        var any = false;
+        Array.prototype.forEach.call(folder.children, function(child) {
+          if (child.tagName === 'UL') {
+            Array.prototype.forEach.call(child.children, function(sub) {
+              if (sub.style.display !== 'none') any = true;
+            });
+          }
+        });
+        folder.style.display = any ? '' : 'none';
+        if (any) folder.classList.add('opened');
+      });
+    }
+    var filterInput = document.getElementById('treeFilterInput');
+    if (filterInput) {
+      filterInput.addEventListener('input', applyTreeFilter);
+    }
 
     dom.fileTree.appendChild(tree);
 
@@ -377,6 +445,18 @@
           folder.classList.add('opened');
         });
       }
+      // 恢复用户手动折叠过的目录（有记忆的目录覆盖默认展开）
+      var folderState = readFolderState();
+      if (Object.keys(folderState).length > 0) {
+        sh.querySelectorAll('li.folder').forEach(function(folder) {
+          var key = folderPathKey(folder);
+          if (key && Object.prototype.hasOwnProperty.call(folderState, key)) {
+            folder.classList.toggle('opened', !!folderState[key]);
+          }
+        });
+      }
+      // 过滤输入非空时（树重建后）重放过滤
+      if (filterInput && filterInput.value.trim()) applyTreeFilter();
 
       // 建立路径 -> li 映射，并注入词数
       state.fileLiMap = new Map();
@@ -510,7 +590,20 @@
 
     // 通过路径映射找到对应 li 并高亮
     if (state.fileLiMap && state.fileLiMap.has(path)) {
-      state.fileLiMap.get(path).classList.add('active');
+      var li = state.fileLiMap.get(path);
+      li.classList.add('active');
+      // 从搜索/翻页跳进树深处时高亮必须在可视区：先展开祖先文件夹再滚动
+      //（vendor 树的文件夹折叠态是 li.folder.opened）
+      var ancestor = li.parentElement ? li.parentElement.closest('li.folder') : null;
+      while (ancestor) {
+        ancestor.classList.add('opened');
+        ancestor = ancestor.parentElement ? ancestor.parentElement.closest('li.folder') : null;
+      }
+      // 树刚渲染完时 li 可能还没有布局，滚动放到下一帧；
+      // block:nearest 只滚侧边栏自己的滚动容器，不牵动页面
+      requestAnimationFrame(function() {
+        li.scrollIntoView({ block: 'nearest' });
+      });
     }
   }
   

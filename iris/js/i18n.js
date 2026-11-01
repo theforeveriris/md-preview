@@ -717,6 +717,7 @@
     'globalHistory.favTitle': '收藏',
     'globalHistory.favEmpty': '长按侧边栏文件树中的文档即可收藏',
     'globalHistory.recentTitle': '最近阅读',
+    'sidebar.treeFilter': '按文件名过滤…',
     'globalHistory.empty': '还没有浏览记录，去挑一篇读读吧',
     'tagsCloud.title': '标签云',
     'tagsCloud.empty': '站点还没有标签数据',

@@ -524,6 +524,40 @@ body.sidebar-resizing .sidebar {
 }
 
 /* ===== File Tree Component ===== */
+/* 文件名过滤条（Files 选项卡独有，index/tags 模式下随面板一起隐藏） */
+.tree-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 12px 0 16px;
+  padding: 5px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-text) 3%, transparent);
+  color: var(--color-text-muted);
+  transition: var(--transition-smooth);
+}
+
+.tree-filter-bar:focus-within {
+  border-color: var(--color-accent-purple);
+  color: var(--color-text);
+}
+
+.tree-filter-bar input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.tree-filter-bar input::placeholder {
+  color: var(--color-text-muted);
+}
+
 .file-tree {
   --ft-padding: 4px;
   --ft-icon-size: 14px;

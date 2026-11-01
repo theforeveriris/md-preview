@@ -675,6 +675,7 @@
     'globalHistory.favTitle': 'Favorites',
     'globalHistory.favEmpty': 'Long-press a document in the sidebar file tree to favorite it',
     'globalHistory.recentTitle': 'Recently read',
+    'sidebar.treeFilter': 'Filter by name…',
     'globalHistory.empty': 'No browsing history yet — pick something to read',
     'tagsCloud.title': 'Tag cloud',
     'tagsCloud.empty': 'No tags on this site yet',

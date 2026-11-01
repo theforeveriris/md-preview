@@ -342,6 +342,9 @@
     // 本地文件面板归属 Files 区
     const localFilesPanel = document.getElementById('localFilesPanel');
     if (localFilesPanel) localFilesPanel.hidden = mode !== 'files' || state.localFiles.length === 0;
+    // 文件名过滤条归属 Files 区（过滤逻辑在 file-tree.js）
+    const treeFilterBar = document.getElementById('treeFilterBar');
+    if (treeFilterBar) treeFilterBar.hidden = mode !== 'files';
     // 标签面板独占「标签」选项卡（tags.js 在无标签数据时自行隐藏）
     const tagPanel = document.getElementById('tagPanel');
     if (tagPanel) tagPanel.hidden = mode !== 'tags';
