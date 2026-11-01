@@ -19,6 +19,12 @@
 
   let linksCache = null;
   function loadLinks() {
+    // 桌面端本地知识库：链接关系在挂载时扫描（与 backlinks.js 同口径），
+    // 旧实现无条件 fetch 站内 links.json，挂载 KB 后巡检用的是过期站内数据
+    const kb = window.MarkdownPreview.desktopKb;
+    if (kb && kb.isActive && kb.isActive() && kb.getLinksData) {
+      return Promise.resolve(kb.getLinksData());
+    }
     if (linksCache) return Promise.resolve(linksCache);
     return fetch(LINKS_URL, { cache: 'no-cache' })
       .then(r => (r.ok ? r.json() : null))

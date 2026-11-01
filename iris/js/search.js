@@ -459,6 +459,11 @@
     documents = Array.isArray(docs) ? docs : [];
     isIndexLoaded = true;
     buildPromise = null;
+    // 索引来源标记（debug 面板）：本地知识库注入
+    const { state } = window.MarkdownPreview;
+    if (state) {
+      state.searchIndexStats = { source: 'desktop-kb', entries: documents.length };
+    }
     if (typeof FlexSearch !== 'undefined') {
       flexIndex = new FlexSearch.Index({
         encode: cjkEncode,
@@ -467,7 +472,11 @@
         minlength: 1
       });
       documents.forEach((doc, i) => {
-        flexIndex.add(i, (doc.title || '') + ' ' + (doc.preview || '') + ' ' + (doc.path || ''));
+        // 与站内索引同口径：searchText 含繁体形态与拼音首字母——
+        // 旧实现只索引 title+preview+path，繁体/拼音搜索静默降级
+        const combined = doc.searchText ||
+          ((doc.title || '') + ' ' + (doc.preview || '') + ' ' + (doc.path || ''));
+        flexIndex.add(i, combined);
       });
     }
   }
