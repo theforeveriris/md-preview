@@ -446,9 +446,16 @@
     };
 
     // 以主文档容器为查询根：分栏对照窗格与编辑器预览也用 .markdown-body
-    // 类名，全局查询会给它们赋重复 id（目录/锚点错乱）
-    dom.markdownContent.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(heading => {
-      heading.id = mdRender.slugify(heading.textContent);
+    // 类名，全局查询会给它们赋重复 id（目录/锚点错乱）。
+    // 同名标题 slug 去重：追加 -1/-2（GitHub 惯例），锚点/目录直达最后一个
+    // 之外的同名标题；纯符号标题 slug 为空时回退 heading-N 保证可跳转
+    const seenSlugs = new Map();
+    dom.markdownContent.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach((heading, idx) => {
+      let slug = mdRender.slugify(heading.textContent);
+      if (!slug) slug = 'heading-' + (idx + 1);
+      const n = seenSlugs.get(slug) || 0;
+      seenSlugs.set(slug, n + 1);
+      heading.id = n === 0 ? slug : `${slug}-${n}`;
     });
 
     setupClickDelegate();
@@ -561,6 +568,22 @@
 
       // 跳过外部 URL
       if (href.startsWith('http://') || href.startsWith('https://') || href.startsWith('//')) return;
+
+      // 正文内锚点（[](#标题)）：就地滚动、不改 hash——默认行为会把
+      // location.hash 从 #/docs/x.md 改写成 #标题，路由态丢失（刷新/后退全坏）。
+      // 与 split-view 栏内锚点跳转同款实现
+      if (href.startsWith('#') && !href.startsWith('#/')) {
+        const inPageId = href.substring(1);
+        if (!inPageId) return;
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = document.getElementById(inPageId);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+        return;
+      }
 
       // 匹配内部 .md 链接（可带 #anchor 锚点）
       const mdLinkMatch = href.match(/^([^#]*\.md)(#.*)?$/);
