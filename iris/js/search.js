@@ -488,10 +488,10 @@
         minlength: 1
       });
       documents.forEach((doc, i) => {
-        // 与站内索引同口径：searchText 含繁体形态与拼音首字母——
-        // 旧实现只索引 title+preview+path，繁体/拼音搜索静默降级
-        const combined = doc.searchText ||
-          ((doc.title || '') + ' ' + (doc.preview || '') + ' ' + (doc.path || ''));
+        // title/path 恒在索引内（正文不含文件名的文档也要能按名搜到）；
+        // searchText 含繁体形态与拼音首字母（旧文档缺该字段时回退 preview）
+        const combined = (doc.title || '') + ' ' + (doc.path || '') + ' ' +
+          (doc.searchText || doc.preview || '');
         flexIndex.add(i, combined);
       });
     }

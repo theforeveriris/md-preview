@@ -74,16 +74,24 @@
     lastSaved = now;
     const pct = currentPct();
     const store = loadStore();
-    // 滚回顶部（< 5%）：清除该篇记录——否则重开每次都弹续读提示
+    // 滚回顶部（< 5%）：清除该篇记录——否则重开每次都弹续读提示。
+    // 「本篇不再提示」（muted）是用户的持久选择，清位置不清选择
     if (pct < MIN_PCT) {
-      if (store[currentPath]) {
-        delete store[currentPath];
+      const rec = store[currentPath];
+      if (rec) {
+        if (rec.muted) {
+          store[currentPath] = { muted: true };
+        } else {
+          delete store[currentPath];
+        }
         saveStore(store);
       }
       return;
     }
     if (pct > MAX_PCT) return;
-    store[currentPath] = { pct, ts: now };
+    // 更新位置时保留已有的 muted 标记（否则静音选择被每次保存冲掉）
+    const prev = store[currentPath] || {};
+    store[currentPath] = { pct, ts: now, muted: !!prev.muted };
     // 上限保护：最多保留 200 篇，超出后淘汰最旧的
     const keys = Object.keys(store);
     if (keys.length > 200) {
