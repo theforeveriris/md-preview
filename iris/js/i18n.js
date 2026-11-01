@@ -307,6 +307,7 @@
 
     // 动态文案：PlantUML
     'plantuml.renderFailed': 'PlantUML 渲染服务均不可用，已回退为源码展示',
+    'geo.parseFailed': 'GeoJSON/TopoJSON 解析失败，已保留源码展示',
     'plantuml.renderError': 'PlantUML 渲染错误',
     'plantuml.openInEditor': '在 PlantUML 在线编辑器中打开',
 

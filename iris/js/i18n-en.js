@@ -274,6 +274,7 @@
     'wordCount.unit': ' words',
 
     'plantuml.renderFailed': 'All PlantUML render servers unavailable; showing source instead',
+    'geo.parseFailed': 'GeoJSON/TopoJSON parse failed; showing source instead',
     'plantuml.renderError': 'PlantUML render error',
     'plantuml.openInEditor': 'Open in the PlantUML online editor',
 
