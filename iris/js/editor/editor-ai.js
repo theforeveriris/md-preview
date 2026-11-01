@@ -267,7 +267,20 @@
         const value = editor.value;
         const before = value.slice(Math.max(0, start - 400), start);
         const after = value.slice(end, end + 200);
+        // 记录请求发出时的文档长度与原选区文本：响应到达时文档可能已被
+        // 用户改过——文本内容与长度都一致才允许原位替换，否则中止并提示
+        //（把 AI 结果覆盖掉用户刚输入的内容再被自动保存持久化是真实伤害）
+        const snapshotLen = value.length;
+        const snapshotSel = selected;
         const text = await chat(buildMessages(action, selected, before, after, customPrompt));
+
+        const currentValue = editor.value;
+        const selNow = currentValue.substring(start, end);
+        const stale = currentValue.length !== snapshotLen || selNow !== snapshotSel;
+        if (stale) {
+          showToast(t('ai.stale', '等待期间文档已修改，AI 结果已放弃——请重新选中后再试'));
+          return;
+        }
 
         // 就地写入（CM 正常事务 → 可 Ctrl+Z）
         let clean = text;

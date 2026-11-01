@@ -818,6 +818,7 @@
     'ai.customPlaceholder': '例如：改写成表格；拆成三个小节；补充一个配置示例…',
     'ai.run': '执行',
     'ai.ctxNote': '（供参考的上下文，不必输出）：',
+    'ai.stale': '等待期间文档已修改，AI 结果已放弃——请重新选中后再试',
     'clilab.title': 'CLI 演练',
     'clilab.reset': '重来',
     'clilab.inputLabel': '输入命令',

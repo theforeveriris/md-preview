@@ -78,7 +78,11 @@
     for (let i = rttSpans.length - 1; i >= 0; i--) {
       remarkPart = remarkPart.slice(0, rttSpans[i][0]) + ' ' + remarkPart.slice(rttSpans[i][1]);
     }
-    const remarkTokens = remarkPart.split(/\s+/).filter(tok => tok && tok !== '*' && !/^(ms|MPI|mpls)$/i.test(tok) && !/^[\d.]+$/.test(tok));
+    const remarkTokens = remarkPart.split(/\s+/).filter(tok =>
+      tok && tok !== '*' && !/^(ms|MPI|mpls)$/i.test(tok) &&
+      // 裸数字（拆散的 RTT 残片）才丢弃；IPv4 地址含三个点，不是裸数字
+      !( /^\d+$/.test(tok) )
+    );
     // Windows 形态：rtts 在前、地址在后
     if (!host.ip && !host.name) {
       const ipm = /(\d{1,3}(?:\.\d{1,3}){3}|[0-9a-fA-F:]{2,45})/.exec(remarkTokens.join(' '));

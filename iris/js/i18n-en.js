@@ -776,6 +776,7 @@
     'ai.customPlaceholder': 'e.g. rewrite as a table; split into three sections; add a config example…',
     'ai.run': 'Run',
     'ai.ctxNote': ' (context for reference, do not output): ',
+    'ai.stale': 'The document changed while waiting — AI result discarded, select again and retry',
     'clilab.title': 'CLI Lab',
     'clilab.reset': 'Reset',
     'clilab.inputLabel': 'Type a command',
