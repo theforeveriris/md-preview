@@ -478,6 +478,22 @@ frontmatter 写 `password: xxx`，WebCrypto 客户端解密，目标是在公开
 | 内容 | 时间线组件 | `timeline` 代码块，状态色 + 今日标记线（`iris/plugins/timeline.js`） |
 | 交互 | 脚注悬浮预览 | 悬停 / 聚焦脚注角标浮出脚注原文（`iris/js/hover-preview.js`） |
 | 交互 | 设置项搜索 | 设置面板左栏搜索，行级过滤 + 隐藏空分组 + 唯一命中自动跳转 |
+
+### 本轮新增之二（受众特色与站点页面 ✅）
+
+| 分组 | 功能 | 说明 |
+|------|------|------|
+| 网络 | pcap 抓包渲染 | `iris/scripts/pcap/main.py`（scapy / dpkt）+ ` ```pcap ` 渲染器：类 Wireshark 包列表（协议着色 / display filter / 字段树），`build-pcap.yml` CI（`iris/js/renderers/pcap.js`） |
+| 网络 | traceroute / ping 渲染 | ` ```traceroute ` / ` ```ping `：跳数 RTT 条形图、超时档、ping 统计卡（`iris/js/renderers/traceroute.js`） |
+| 网络 | CLI 演练块 | ` ```cli ` 剧本 → 可敲命令的终端，`?` 漏题 / 进度 / 重置（`iris/js/renderers/cli-lab.js`） |
+| 页面 | 全站速查 | `#/cheatsheet`：构建期聚合全站命令块（`iris/scripts/build-cheatsheet.js` → `cheatsheet.json`），行号直达原文（`iris/js/cheatsheet.js`） |
+| 页面 | 站点统计 | `#/stats`：热力图 / 标签分布 / 最近更新 + 生成式封面墙（`iris/js/stats.js`） |
+| 页面 | 死链报告 | `#/broken-links`：link-check `--report` → `link-report.json`，CI 自动产出（`iris/js/broken-links.js`） |
+| 写作 | 编辑器 AI 助手 | 自带 Key（OpenAI 兼容）浏览器直连：润色 / 翻译 / 解释 / Mermaid / 自定义指令，输出就地写入可撤销（`iris/js/editor/editor-ai.js`） |
+| 写作 | 整页长图导出 | 当前文档 → 竖版 PNG（foreignObject 光栅化，主题变量固化），面板 + 命令面板双入口（`iris/js/page-shot.js`） |
+| 视觉 | 生成式封面 | 路径哈希确定性生成主题配色程序化封面（四种构图家族），stats 封面墙首个消费方（`iris/js/gen-cover.js`） |
+
+示例：[pcap / traceroute / CLI 演练示例](examples/pcap-traceroute-clilab-examples.md) · [站点页面与写作工具](examples/site-pages-and-writing-tools.md)
 ---
 
 ## 建议落地顺序

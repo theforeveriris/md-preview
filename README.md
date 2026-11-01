@@ -72,6 +72,10 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 全局快捷键：设置面板 `Ctrl/⌘ + ,`、搜索 `Ctrl/⌘ + K`、上一篇/下一篇 `[` / `]` 等，详见[快捷键](docs/shortcuts.md)
 - 打开本地文件：悬浮球统一入口，选择面板内可选「文件」（一次多选，最多 20 个，未打开的进入侧边栏「本地文件」会话列表，可切换、移除或清空，内容仅驻内存刷新即清空）或「文件夹」（整体导入目录，File System Access API，旧浏览器自动回退；按目录树展示、可折叠，内容懒加载点开即读，上一篇/下一篇在全部文件间循环）
 - 拖拽打开：把 `.md` 文件或整个文件夹从系统拖入页面任意位置即可打开，拖入期间全屏提示，限制与手动选择一致；编辑器模式内不接管
+- 全站速查：`#/cheatsheet`（可按语言 `#/cheatsheet/cisco|huawei|shell` 直达）——构建期把全站 ` ```ios ` / ` ```vrp ` / ` ```bash ` / ` ```powershell ` 等代码块剥掉提示符聚合成命令手册，每条带来源文档 + 行号直达原文，命令一键复制、搜索框即时过滤；说明见 [站点页面与写作工具](docs/examples/site-pages-and-writing-tools.md)
+- 站点统计页：`#/stats`——文档 / 总字数 / 标签 / 目录总览卡、近一年更新热力图（GitHub contributions 风格）、标签分布、最近更新列表，以及最近文档的**生成式封面墙**（路径哈希确定性生成，四种构图家族，主题配色，零外部资源）
+- 死链报告页：`#/broken-links`——CI 全量内链校验的明细报告（按文档分组、行号 / 类型 / 原因），与 `#/orphan` 巡检页互补；部署流水线自动产出，本地 `node iris/scripts/link-check.js --report`
+- 整页长图导出：把当前文档渲染成一张竖版 PNG（排版与屏幕一致，含代码高亮 / 表格 / 图片，主题变量固化），命令面板与设置面板「导出」双入口
 - 移动端手势：触屏设备上左右滑动正文切换上一篇 / 下一篇，自屏幕左缘右滑呼出侧边栏抽屉（设置面板可关闭）
 - 界面多语言：中文 / English 界面语言包，默认跟随浏览器语言，设置面板一键切换
 - 阅读时间估算：自动计算预计阅读时长
@@ -98,6 +102,8 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 标题锚点分享：标题悬浮出现复制链接按钮，直达章节
 - Packet Tracer 拓扑：解析 Cisco `.pkt` 文件，渲染交互式网络拓扑图（基于 Cytoscape.js）
 - 华为 eNSP 拓扑：解析 `.topo` / `.zip` 华为 eNSP 工程文件，渲染路由器/交换机等网络设备拓扑
+- pcap 抓包渲染：仓库内 `.pcap` / `.pcapng` 经 Python 构建管线（scapy 优先 / dpkt 回退，CI 自动运行）转 JSON，` ```pcap ` 代码块（`@[pcap](文件名)` 引用产物或内嵌 JSON）渲染为类 Wireshark 包列表——协议着色、列排序、display filter（`tcp` / `dns` / `port 53` / `src==10.0.0.1` / `len>100` 隐式 AND）、点击行展开字段树、协议分布条；示例见 [pcap / traceroute / CLI 演练示例](docs/examples/pcap-traceroute-clilab-examples.md)
+- traceroute / ping 渲染：` ```traceroute ` / ` ```ping ` 代码块粘贴原始命令输出即渲染——跳数 RTT 条形图（慢跳变红）、`* * *` 超时档、ping 统计卡与逐包序列图，Cisco / Windows / Linux / mtr 风格通吃；示例见 [pcap / traceroute / CLI 演练示例](docs/examples/pcap-traceroute-clilab-examples.md)
 - PPTX 嵌入：通过预处理将 PPTX 渲染为多页图片网格，点击可进入全屏放映模式
 - 画廊布局：@grid / @cardstack / @filmstrip / @polaroid 等多种图片画廊 CSS 布局
 - 二维码生成：`qrcode` 代码块生成任意内容二维码
@@ -168,8 +174,10 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 2 列右键菜单：17 项 Cell 操作，视口边界自适应定位
 - 导入导出：`.md` / `.html` / `.pdf` / `.mdnb` 笔记本格式
 - 字号与主题：4 档字号、亮/暗主题独立切换
+- AI 助手（自带 Key）：设置面板填 OpenAI 兼容 API Key（仅存本机、不随设置备份导出），选中文字浮动工具条出现 润色 / 译英 / 译中 / 解释 / 生成 Mermaid / 自定义指令 六个动作，输出就地写入（可 Ctrl+Z 撤销）；请求 60s 超时，等待期间文档被改动会自动放弃结果
+- CLI 演练块：` ```cli ` 代码块是「提示符行 + 期望输出」的剧本，渲染为可敲命令的终端——命中回放剧本输出、单独输入 `?` 列出待练命令、进度徽章与重置，教学文档可在浏览器里练手；示例见 [pcap / traceroute / CLI 演练示例](docs/examples/pcap-traceroute-clilab-examples.md)
 
-详见 [编辑器说明](docs/editor.md)。
+详见 [编辑器说明](docs/editor.md) 与 [站点页面与写作工具](docs/examples/site-pages-and-writing-tools.md)。
 
 ## 功能路线图
 
@@ -188,6 +196,15 @@ Demo：https://theforeveriris.github.io/md-preview/
 - ✅ 图 / 表自动编号与交叉引用
 - ✅ 时间线组件
 - ✅ Cisco IOS / 华为 VRP 配置高亮
+- ✅ pcap 抓包渲染（Python 构建管线 + 类 Wireshark 包列表）
+- ✅ traceroute / ping 渲染（RTT 条形图 + 统计卡）
+- ✅ 全站速查聚合页（`#/cheatsheet/<语言>`，构建期聚合命令块）
+- ✅ 站点统计页（`#/stats`：热力图 / 标签分布 / 最近更新 + 生成式封面墙）
+- ✅ 死链报告页（`#/broken-links`，link-check `--report` CI 自动产出）
+- ✅ 编辑器 AI 助手（自带 Key：润色 / 翻译 / 解释 / Mermaid / 自定义指令）
+- ✅ CLI 演练块（` ```cli ` 可敲命令的终端）
+- ✅ 生成式封面（路径哈希确定性生成，主题配色）
+- ✅ 整页长图导出（当前文档 → 竖版 PNG）
 - ✅ 链接悬浮预览
 - ✅ 浏览足迹与收藏（长按收藏 + 文件树内提示）
 - ✅ 阅读位置续读
