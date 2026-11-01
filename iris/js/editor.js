@@ -1162,6 +1162,14 @@
           if (cell) copyOutputHtml(cell);
           break;
         }
+        case 'ctx-copy-source': {
+          const cell = getCell(id);
+          if (!cell) break;
+          window.MarkdownPreview.interactions.copyText(cell.textarea.value).then(() => {
+            showToast(editorT('editor.cellSourceCopied', '已复制 Cell 源码'));
+          });
+          break;
+        }
         case 'ctx-export-cell': {
           const cell = getCell(id);
           if (cell) exportCellStandalone(cell);
@@ -2154,6 +2162,9 @@
         id: c.id,
         type: c.type || 'markdown',
         content: c.textarea.value,
+        // 折叠状态：重开笔记本布局不再全丢
+        collapsed: c.div.classList.contains('cell-collapsed'),
+        editorCollapsed: c.div.classList.contains('cell-editor-collapsed'),
         // output_html 序列化缓存：打字触发的 1.5s 自动保存不再全量重读
         // 每个 cell 的 output DOM（含 base64 图/mermaid SVG 的 innerHTML
         // 序列化是最大头）；markRun / 渲染器跑完时失效重建
@@ -2253,6 +2264,16 @@
     // 已入库，统一在注入前净化（导入边界已有一次净化，这里是纵深防御）
     for (const s of cellList) {
       const newCell = createCell(null, s.content || '', { type: s.type === 'plaintext' ? 'plaintext' : 'markdown' });
+      // 恢复折叠状态（折叠 Cell / 双屏折叠，重开笔记本布局保持）
+      if (s.collapsed || s.editorCollapsed) {
+        if (s.collapsed) {
+          newCell.div.classList.add('cell-collapsed');
+          if (newCell.collapseBtn) {
+            newCell.collapseBtn.innerHTML = '<svg class="ico ico-sm"><use href="#i-chevron-down"/></svg>';
+          }
+        }
+        if (s.editorCollapsed) newCell.div.classList.add('cell-editor-collapsed');
+      }
       if (s.output_html) {
         const clean = await mdRender.sanitizeHtml(s.output_html).catch(() => null);
         if (clean != null) {

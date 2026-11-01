@@ -695,6 +695,7 @@
     'editor.tabClosed': '已关闭「{t}」',
     'editor.cellDeleted': '已删除 Cell [{n}]',
     'editor.undo': '撤销',
+    'editor.cellSourceCopied': '已复制 Cell 源码',
     'notfound.title': '文档未找到',
     'notfound.body': '路径 `{p}` 不存在或尚未收录。',
     'notfound.home': '返回全站目录',
