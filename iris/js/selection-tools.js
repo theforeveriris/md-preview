@@ -663,12 +663,34 @@
     });
     window.addEventListener('scroll', hideToolbar, true);
     window.addEventListener('resize', hideToolbar);
+
+    // 触屏：长按划选与选区手柄拖动不会产生 mouseup，工具条此前永不出现——
+    // touchend 落定 + selectionchange 去抖两条路径兜底
+    let lastPointerType = '';
+    let touchSelTimer = null;
+    document.addEventListener('pointerdown', (e) => { lastPointerType = e.pointerType || ''; }, true);
+    document.addEventListener('touchend', () => {
+      clearTimeout(touchSelTimer);
+      touchSelTimer = setTimeout(() => {
+        if (toolbarEl && toolbarEl.classList.contains('open')) return;
+        const info = getSelectionInfo();
+        if (info) showToolbar(info);
+      }, 400);
+    }, { passive: true });
+
     document.addEventListener('selectionchange', () => {
       if (toolbarEl && toolbarEl.classList.contains('open')) {
         clearTimeout(hideTimer);
         hideTimer = setTimeout(() => {
           if (!getSelectionInfo()) hideToolbar();
         }, 30);
+      } else if (lastPointerType === 'touch') {
+        // 手柄拖选的最终落定多发生在 touchend 之后
+        clearTimeout(touchSelTimer);
+        touchSelTimer = setTimeout(() => {
+          const info = getSelectionInfo();
+          if (info) showToolbar(info);
+        }, 600);
       }
     });
     document.addEventListener('keydown', (e) => {
