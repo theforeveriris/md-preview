@@ -1531,7 +1531,9 @@
     const rootStyle = document.documentElement.getAttribute('style');
     if (rootStyle) rootAttrs.push(` style="${rootStyle.replace(/"/g, '&quot;')}"`);
 
-    const title = (document.title || 'document').replace(/[\\/:*?"<>|]/g, '_');
+    const rawTitle = (document.title || 'document').replace(/[\\/:*?"<>|]/g, '_');
+    // <title> 上下文转义：& 直接拼进 HTML 会伪造实体（文件名用未转义版）
+    const title = rawTitle.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     const bodyHtml = absolutizeUrls(article.innerHTML);
     const html = `<!DOCTYPE html>
 <html lang="${document.documentElement.getAttribute('lang') || 'zh-CN'}"${rootAttrs.join('')}>
@@ -1554,7 +1556,7 @@ body { margin: 0; }
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${title}.html`;
+    a.download = `${rawTitle}.html`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
