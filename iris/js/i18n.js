@@ -312,6 +312,12 @@
     'ctx.imgOpen': '新标签打开原图',
     'ctx.imgDownload': '下载图片',
     'ctx.imgCopyMd': '复制 Markdown',
+    'sel.cardExport': '不下载，直接：',
+    'sel.cardCopy': '复制图片到剪贴板',
+    'sel.cardShare': '调起系统分享',
+    'sel.cardCopied': '卡片已复制到剪贴板',
+    'sel.cardCopyFallback': '当前环境不支持复制图片，已改为下载',
+    'sel.cardShareFallback': '当前环境不支持分享图片，已改为下载',
     'plantuml.renderError': 'PlantUML 渲染错误',
     'plantuml.openInEditor': '在 PlantUML 在线编辑器中打开',
 

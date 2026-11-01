@@ -279,6 +279,12 @@
     'ctx.imgOpen': 'Open original in new tab',
     'ctx.imgDownload': 'Download image',
     'ctx.imgCopyMd': 'Copy Markdown',
+    'sel.cardExport': 'Skip download, directly:',
+    'sel.cardCopy': 'Copy image to clipboard',
+    'sel.cardShare': 'Open system share',
+    'sel.cardCopied': 'Card copied to clipboard',
+    'sel.cardCopyFallback': 'Clipboard image not supported here; downloaded instead',
+    'sel.cardShareFallback': 'Image sharing not supported here; downloaded instead',
     'plantuml.renderError': 'PlantUML render error',
     'plantuml.openInEditor': 'Open in the PlantUML online editor',
 

@@ -189,6 +189,9 @@
   }
 
   // ============== 分享卡片模板菜单 ==============
+  // 上次使用的模板：复制图片 / 系统分享两个快捷出口复用它（默认引言横版）
+  let lastCardTemplate = 'quote';
+
   function showCardMenu(info) {
     hideCardMenu();
     menuEl = document.createElement('div');
@@ -200,16 +203,21 @@
       <button type="button" data-template="quote-v">${icon('i-list')}${esc(t('sel.cardQuoteV', '引言 · 竖版 3:4'))}</button>
       <button type="button" data-template="code">${icon('i-copy')}${esc(t('sel.cardCode', '代码卡片'))}</button>
       <button type="button" data-template="table" ${hasTable ? '' : 'disabled'} title="${hasTable ? '' : esc(t('sel.cardTableHint', '选区需落在表格内'))}">${icon('i-table')}${esc(t('sel.cardTable', '表格卡片'))}</button>
+      <div class="card-template-title">${esc(t('sel.cardExport', '不下载，直接：'))}</div>
+      <button type="button" data-action="copy">${icon('i-clipboard')}${esc(t('sel.cardCopy', '复制图片到剪贴板'))}</button>
+      <button type="button" data-action="share">${icon('i-upload')}${esc(t('sel.cardShare', '调起系统分享'))}</button>
     `;
     menuEl.addEventListener('mousedown', (e) => e.preventDefault());
-    menuEl.querySelectorAll('button[data-template]').forEach(btn => {
+    menuEl.querySelectorAll('button[data-template], button[data-action]').forEach(btn => {
       btn.addEventListener('click', () => {
-        const template = btn.dataset.template;
+        const action = btn.dataset.action || 'download';
+        const template = btn.dataset.template || lastCardTemplate;
+        if (btn.dataset.template) lastCardTemplate = template;
         hideCardMenu();
         hideToolbar();
         exportShareCard(
           { title: docTitle(), excerpt: info.text },
-          { template, rawText: info.rawText, tableEl: info.tableEl, vertical: template === 'quote-v', pageUrl: pageUrlFor(info.rect) }
+          { template, rawText: info.rawText, tableEl: info.tableEl, vertical: template === 'quote-v', pageUrl: pageUrlFor(info.rect), action }
         );
       });
     });
@@ -598,6 +606,31 @@
    * @param {{title:string, excerpt:string}} content
    * @param {{template?:'quote'|'quote-v'|'code'|'table', rawText?:string, tableEl?:HTMLTableElement, vertical?:boolean}} [opts]
    */
+  // 轻量提示（复用 mini-toast 样式，history.js 同款）
+  function cardToast(msg) {
+    let el = document.getElementById('cardActionToast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'cardActionToast';
+      el.className = 'mini-toast';
+      el.setAttribute('role', 'status');
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+    el.classList.add('open');
+    clearTimeout(el._timer);
+    el._timer = setTimeout(() => el.classList.remove('open'), 2200);
+  }
+
+  function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
   async function exportShareCard(content, opts) {
     opts = opts || {};
     const template = opts.template || (opts.vertical ? 'quote-v' : 'quote');
@@ -627,15 +660,42 @@
     else if (template === 'table' && opts.tableEl) drawTableCard(ctx, W, H, content, opts.tableEl, opts.pageUrl);
     else drawQuoteCard(ctx, W, H, content, opts.pageUrl);
 
-    canvas.toBlob(blob => {
+    const slug = (content.title || 'share').replace(/[\\/:*?"<>|\s]+/g, '-').slice(0, 40);
+    const filename = `${slug}-${template}-card.png`;
+
+    canvas.toBlob(async blob => {
       if (!blob) return;
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      const slug = (content.title || 'share').replace(/[\\/:*?"<>|\s]+/g, '-').slice(0, 40);
-      a.href = url;
-      a.download = `${slug}-${template}-card.png`;
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      // 不下载的直接出口：复制到剪贴板 / 调起系统分享（均降级为下载）
+      if (opts.action === 'copy') {
+        try {
+          if (!navigator.clipboard || !window.ClipboardItem || !navigator.clipboard.write) {
+            throw new Error('ClipboardItem unavailable');
+          }
+          await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+          cardToast(t('sel.cardCopied', '卡片已复制到剪贴板'));
+          return;
+        } catch (e) {
+          downloadBlob(blob, filename);
+          cardToast(t('sel.cardCopyFallback', '当前环境不支持复制图片，已改为下载'));
+        }
+        return;
+      }
+      if (opts.action === 'share') {
+        try {
+          const file = new File([blob], filename, { type: 'image/png' });
+          if (!navigator.canShare || !navigator.canShare({ files: [file] })) {
+            throw new Error('Web Share files unsupported');
+          }
+          await navigator.share({ files: [file], title: content.title || '' });
+          return;
+        } catch (e) {
+          if (e && e.name === 'AbortError') return; // 用户取消分享不是失败
+          downloadBlob(blob, filename);
+          cardToast(t('sel.cardShareFallback', '当前环境不支持分享图片，已改为下载'));
+        }
+        return;
+      }
+      downloadBlob(blob, filename);
     }, 'image/png');
   }
 
