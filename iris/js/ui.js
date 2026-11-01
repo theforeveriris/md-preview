@@ -180,6 +180,36 @@
       syncClearBtn();
     });
 
+    // 面板键盘导航：↑/↓ 在结果间移动、Enter 打开当前项——
+    // 文档结果 / 命令动作 / 计算卡通吃（此前只能鼠标点）
+    dom.searchInput?.addEventListener('keydown', (e) => {
+      if (!isSearchPaletteOpen()) return;
+      const container = dom.searchResults;
+      const items = Array.from(container.querySelectorAll('.search-result-item'));
+      if (!items.length) return;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const current = items.findIndex(i => i.classList.contains('kbd-active'));
+        const next = e.key === 'ArrowDown'
+          ? Math.min(items.length - 1, current + 1)
+          : Math.max(0, current <= 0 ? 0 : current - 1);
+        items.forEach(i => i.classList.remove('kbd-active'));
+        const target = items[next];
+        target.classList.add('kbd-active');
+        target.scrollIntoView({ block: 'nearest' });
+        // listbox 语义：结果区 + 当前项 id，屏幕阅读器可跟随
+        container.setAttribute('role', 'listbox');
+        items.forEach((it, i) => { if (!it.id) it.id = 'sr-item-' + i; });
+        container.setAttribute('aria-activedescendant', target.id);
+      } else if (e.key === 'Enter') {
+        const active = container.querySelector('.search-result-item.kbd-active') || items[0];
+        if (active) {
+          e.preventDefault();
+          active.click();
+        }
+      }
+    });
+
     dom.modeFiles.addEventListener('click', () => switchMode('files'));
     dom.modeIndex.addEventListener('click', () => switchMode('index'));
     dom.modeTags?.addEventListener('click', () => switchMode('tags'));

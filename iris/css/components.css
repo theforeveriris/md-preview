@@ -210,6 +210,11 @@
   background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent);
 }
 
+/* 面板键盘导航的当前项（↑/↓）：与 hover 同款高亮 */
+.search-result-item.kbd-active {
+  background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent);
+}
+
 .search-result-title {
   font-weight: 500;
   margin-bottom: 4px;
