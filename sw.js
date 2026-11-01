@@ -1,6 +1,6 @@
 // 版本单一来源：发布时只改这里，CACHE_NAME / RUNTIME_CACHE 随之派生
 //（此前 RUNTIME_CACHE 版本手工维护、跨版本永不重建，曾出过「钉死旧版」事故）
-const VERSION = 'v8.53';
+const VERSION = 'v8.54';
 const CACHE_NAME = 'md-preview-' + VERSION;
 // 运行时缓存版本必须随发布递增：旧版曾长期停留在 v8.19，导致
 // index.html / JS / CSS 这类静态资源被「缓存优先」永久钉在旧版本
@@ -102,15 +102,16 @@ async function precache() {
 self.addEventListener('install', event => {
   console.log('[SW] Installing', CACHE_NAME, '...');
   event.waitUntil(
-    precache()
-      .then(() => self.skipWaiting())
-      .catch(err => {
-        // 预缓存失败：让 install 真正失败（重新抛出），旧 SW 继续服务。
-        // 只「不调用 skipWaiting」不够：旧页面全部关闭后浏览器仍会激活新 SW，
-        // 并执行 activate 的旧缓存清理，用户可能失去原有离线内容。
-        console.error('[SW] Precache failed, install aborted, staying on old version:', err);
-        throw err;
-      })
+    precache().catch(err => {
+      // 预缓存失败：让 install 真正失败（重新抛出），旧 SW 继续服务。
+      // 只「不调用 skipWaiting」不够：旧页面全部关闭后浏览器仍会激活新 SW，
+      // 并执行 activate 的旧缓存清理，用户可能失去原有离线内容。
+      console.error('[SW] Precache failed, install aborted, staying on old version:', err);
+      throw err;
+    })
+    // 不再自动 skipWaiting：安装完保持在 waiting 态，由页面「刷新」按钮
+    // 发送的 SKIP_WAITING 消息触发激活（pwa-boot.js 用户确认流程）——
+    // 编辑器写到一半不再被新版本强制切换
   );
 });
 
@@ -190,21 +191,25 @@ self.addEventListener('fetch', event => {
 
   // 跨源字体（Google Fonts 的 CSS 与 woff2）：缓存优先——此前跨源请求
   // 直接放行，离线后远程字体全丢（正文/标题回退系统字体）。opaque 响应
-  // status 为 0 但可缓存；字体内容几乎不变，缓存优先足够
+  // status 为 0 但可缓存；字体内容几乎不变，缓存优先足够。
+  // 缓存写入绑定 event.waitUntil：不延长事件生命周期时 worker 可能在
+  // put 完成前被终止，字体离线仍缺
   if (url.origin !== location.origin &&
       /^fonts\.(googleapis|gstatic)\.com$/.test(url.hostname)) {
-    event.respondWith(
-      caches.match(request).then(cached => {
-        if (cached) return cached;
-        return fetch(request).then(response => {
-          if (response && (response.ok || response.type === 'opaque')) {
-            const clone = response.clone();
-            caches.open(RUNTIME_CACHE).then(cache => cache.put(request, clone));
-          }
-          return response;
-        }).catch(() => cached || Response.error());
-      })
-    );
+    const fontPut = caches.match(request).then(cached => {
+      if (cached) return { cached, response: null };
+      return fetch(request).then(response => {
+        if (response && (response.ok || response.type === 'opaque')) {
+          return caches.open(RUNTIME_CACHE).then(cache =>
+            cache.put(request, response.clone())
+          ).then(() => ({ cached: null, response }));
+        }
+        return { cached: null, response };
+      });
+    });
+    event.respondWith(fontPut.then(({ cached, response }) => cached || response));
+    // 写缓存失败不影响本次响应
+    event.waitUntil(fontPut.then(() => {}).catch(() => {}));
     return;
   }
 
