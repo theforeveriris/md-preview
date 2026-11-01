@@ -127,7 +127,7 @@
       // 旧请求失败时也已过期：不能把用户刚打开的新文档替换成错误页
       if (seq !== loadSeq) return;
       console.error('Error loading markdown:', error);
-      dom.markdownContent.innerHTML = `<div class="welcome-state"><p class="welcome-text">${t('md.loadFailed', '无法加载文件')}</p></div>`;
+      dom.markdownContent.innerHTML = `<div class="welcome-state welcome-error"><p class="welcome-text">${t('md.loadFailed', '无法加载文件')}</p></div>`;
       setTimeout(() => window.MarkdownPreview.ui.updateProgress(0), 300);
     }
   }
@@ -1288,7 +1288,7 @@
           .then(() => doRender((html) => DOMPurify.sanitize(html)))
           .catch(e => {
             console.error('[Markdown] sanitize failed for virtual doc:', e);
-            dom.markdownContent.innerHTML = `<div class="welcome-state"><p class="welcome-text">${t('md.loadFailed', '无法加载文件')}</p></div>`;
+            dom.markdownContent.innerHTML = `<div class="welcome-state welcome-error"><p class="welcome-text">${t('md.loadFailed', '无法加载文件')}</p></div>`;
           });
       }
       doRender(null);
@@ -1326,7 +1326,7 @@
         .catch(e => {
           console.error('[Markdown] sanitize failed, refusing to render untrusted content:', e);
           // 不能只写控制台：用户看到的是「什么都没发生」
-          dom.markdownContent.innerHTML = `<div class="welcome-state"><p class="welcome-text">${t('md.loadFailed', '无法加载文件')}</p></div>`;
+          dom.markdownContent.innerHTML = `<div class="welcome-state welcome-error"><p class="welcome-text">${t('md.loadFailed', '无法加载文件')}</p></div>`;
         });
     },
     interceptLinks,
