@@ -313,6 +313,14 @@
     }).catch(() => {});
   }
 
+  // 第二实例转发：运行中双击 .md，single-instance 插件把路径转交取件箱
+  // 并 emit 本事件——前端收到后再走一次取件箱
+  function setupOpenFileListener() {
+    const events = window.__TAURI__ && window.__TAURI__.event;
+    if (!events || !events.listen) return;
+    events.listen('open-file-arg', () => { takeOpenFileArg(); });
+  }
+
   // 归一化：Windows 反斜杠 → 正斜杠（大小写不敏感比较由调用方处理）
   function normalizeSep(p) {
     return String(p).replace(/\\/g, '/');
@@ -494,6 +502,7 @@
     setupMenu();
     setupPaletteActions();
     setupWatchListener();
+    setupOpenFileListener();
     takeOpenFileArg(); // 双击 .md 经文件关联启动的场景
   }
 

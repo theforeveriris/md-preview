@@ -415,6 +415,35 @@ async fn open_editor_window(app: tauri::AppHandle) -> Result<(), String> {
 fn main() {
     let open_arg = capture_open_file_arg();
     tauri::Builder::default()
+        // 单实例必须最先注册：运行中再次启动（双击 .md / 重复点图标）时，
+        // 本回调在第二实例退出前执行——把新 argv 的文档路径转交取件箱、
+        // 唤醒前端取件并聚焦已有窗口，不再双开完整实例
+        .plugin(tauri_plugin_single_instance::init(|app, argv, _cwd| {
+            let focus = |app: &tauri::AppHandle| {
+                if let Some(win) = app.get_webview_window("main") {
+                    let _ = win.unminimize();
+                    let _ = win.set_focus();
+                }
+            };
+            if let Some(path) = argv
+                .iter()
+                .skip(1)
+                .find(|arg| {
+                    let p = PathBuf::from(arg);
+                    p.is_file() && is_md_path(&p)
+                })
+                .cloned()
+            {
+                let state: tauri::State<OpenFileArg> = app.state();
+                if let Ok(mut guard) = state.0.lock() {
+                    *guard = Some(path);
+                }
+                if let Some(win) = app.get_webview_window("main") {
+                    let _ = win.emit("open-file-arg", ());
+                }
+            }
+            focus(app);
+        }))
         .plugin(tauri_plugin_updater::Builder::new().build())
         .manage(KbRootState {
             current: Mutex::new(None),
