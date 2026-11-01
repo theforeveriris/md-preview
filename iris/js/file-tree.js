@@ -692,16 +692,34 @@
   
   function getAdjacentFiles(currentPath) {
     bindGlobals();
-    const allFiles = getAllFilesInDFSOrder();
-    const currentIndex = allFiles.findIndex(f => f.path === currentPath);
-    
+    // 与侧边栏显示顺序同口径：每层「目录在前 + 按当前 treeSort 策略排序」
+    // 的先序遍历——用户选「按修改时间」后 [ ] 翻页跟随，不再永远走 JSON 原序
+    const nameSort = window.MarkdownPreview.nameSort;
+    const mode = currentSortMode();
+    const meta = item => ({
+      name: item.name,
+      created: item.created || 0,
+      modified: item.modified || 0
+    });
+    const cmp = (a, b) => (nameSort && nameSort.compareEntries)
+      ? nameSort.compareEntries(meta(a), meta(b), mode)
+      : 0;
+    const result = [];
+    (function traverse(items) {
+      const folders = items.filter(i => i.type === 'folder' && i.children).sort(cmp);
+      const files = items.filter(i => i.type === 'file' && /\.(md|txt)$/i.test(i.name)).sort(cmp);
+      folders.forEach(f => traverse(f.children));
+      files.forEach(f => {
+        result.push({ name: f.name.replace(/\.(md|txt)$/i, ''), path: f.path });
+      });
+    })(state.fileTreeData || []);
+    const currentIndex = result.findIndex(f => f.path === currentPath);
     if (currentIndex === -1) {
       return { prev: null, next: null };
     }
-    
     return {
-      prev: currentIndex > 0 ? allFiles[currentIndex - 1] : null,
-      next: currentIndex < allFiles.length - 1 ? allFiles[currentIndex + 1] : null
+      prev: currentIndex > 0 ? result[currentIndex - 1] : null,
+      next: currentIndex < result.length - 1 ? result[currentIndex + 1] : null
     };
   }
 
