@@ -178,7 +178,14 @@
       // tag: 过滤时先取 100 条候补：只看 FlexSearch 截断的 top-20 会让
       // 文本排名 20 名外但标签命中的文档永远搜不到
       const limit = tagFilter.tags.length > 0 ? 100 : 20;
-      let results = flexIndex ? flexSearch(searchText, limit) : simpleSearch(searchText, limit);
+      let results;
+      if (tagFilter.tags.length > 0 && !searchText.trim()) {
+        // 纯 tag: 查询（无正文关键词）：列出该标签的全部文档——
+        // 空串喂给 FlexSearch/simpleSearch 都恒返回空，曾显示「没有找到」
+        results = documents.map((_, i) => i);
+      } else {
+        results = flexIndex ? flexSearch(searchText, limit) : simpleSearch(searchText, limit);
+      }
       if (tagFilter.tags.length > 0) {
         results = results.filter(id => tagsMod.docHasTags(documents[id], tagFilter.tags));
       }
