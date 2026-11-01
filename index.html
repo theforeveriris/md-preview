@@ -49,6 +49,7 @@
   <link rel="stylesheet" href="iris/css/pulse-generator.css">
   <link rel="stylesheet" href="iris/css/pkt/pkt.css">
   <link rel="stylesheet" href="iris/css/pptx.css">
+  <link rel="stylesheet" href="iris/css/pcap.css">
 </head>
 <body class="sidebar-collapsed">
   <!-- 键盘跳转：跳过侧边栏直达正文 -->
@@ -1600,6 +1601,8 @@
               <button class="dropdown-item" data-insert="```ipcalc 10.1.1.0/24\n```" data-cursor="-6">子网计算 ipcalc</button>
               <button class="dropdown-item" data-insert="```acl ios\n10 permit tcp 10.1.1.0 0.0.0.255 any eq 443\n20 deny ip any any\n```" data-cursor="-6">ACL 分析 acl</button>
               <button class="dropdown-item" data-insert="```route-table\nC    10.1.1.0/24 is directly connected, GigabitEthernet0/0\nO    10.1.2.0/24 [110/2] via 10.1.1.2, GigabitEthernet0/0\n```" data-cursor="-6">路由表分析 route-table</button>
+              <button class="dropdown-item" data-insert="```pcap\n@[pcap](demo)\n```" data-cursor="-6">抓包分析 pcap</button>
+              <button class="dropdown-item" data-insert="```traceroute\n 1  192.168.1.1 (192.168.1.1)  1.2 ms  1.0 ms  0.9 ms\n 2  10.8.0.1 (10.8.0.1)  12.3 ms  12.1 ms  11.8 ms\n```" data-cursor="-6">traceroute / ping</button>
               <button class="dropdown-item" data-insert="```config-diff ios\ninterface GigabitEthernet0/0\n ip address 10.1.1.1 255.255.255.0\n===\ninterface GigabitEthernet0/0\n ip address 10.1.1.1 255.255.255.252\n```" data-cursor="-6">配置语义 diff config-diff</button>
               <button class="dropdown-item" data-insert="```http\nGET https://httpbin.org/json\nAccept: application/json\n```" data-cursor="-6">HTTP 请求 http</button>
               <button class="dropdown-item" data-insert="```openapi\nopenapi: 3.0.0\ninfo:\n  title: 示例 API\n  version: 1.0.0\npaths: {}\n```" data-cursor="-6">OpenAPI 交互文档 openapi</button>
@@ -2276,6 +2279,7 @@
   <script defer src="iris/js/renderers/config-diff.js"></script>
   <script defer src="iris/js/renderers/acl.js"></script>
   <script defer src="iris/js/renderers/route-table.js"></script>
+  <script defer src="iris/js/renderers/pcap.js"></script>
   <script defer src="iris/js/renderers/terminal.js"></script>
   <script defer src="iris/js/renderers/heatmap.js"></script>
   <script defer src="iris/js/renderers/bits.js"></script>

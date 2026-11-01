@@ -90,6 +90,8 @@
     { trigger: '```', label: '```ipcalc', desc: '子网计算', insert: '```ipcalc 10.1.1.0/24\n```', replaceLength: 3 },
     { trigger: '```', label: '```acl', desc: 'ACL 分析（ios/vrp）', insert: '```acl ios\n10 permit tcp 10.1.1.0 0.0.0.255 any eq 443\n20 deny ip any any\n```', replaceLength: 3 },
     { trigger: '```', label: '```route-table', desc: '路由表分析', insert: '```route-table\nC    10.1.1.0/24 is directly connected, GigabitEthernet0/0\nO    10.1.2.0/24 [110/2] via 10.1.1.2, GigabitEthernet0/0\n```', replaceLength: 3 },
+    { trigger: '```', label: '```pcap', desc: '抓包分析（引用 raw/ 产物或内嵌 JSON）', insert: '```pcap\n@[pcap](demo)\n```', replaceLength: 3 },
+    { trigger: '```', label: '```traceroute', desc: 'traceroute/ping 渲染', insert: '```traceroute\n 1  192.168.1.1 (192.168.1.1)  1.2 ms  1.0 ms  0.9 ms\n 2  10.8.0.1 (10.8.0.1)  12.3 ms  12.1 ms  11.8 ms\n```', replaceLength: 3 },
     { trigger: '```', label: '```config-diff', desc: '配置语义 diff（ios/vrp）', insert: '```config-diff ios\ninterface GigabitEthernet0/0\n ip address 10.1.1.1 255.255.255.0\n===\ninterface GigabitEthernet0/0\n ip address 10.1.1.1 255.255.255.252\n```', replaceLength: 3 },
     { trigger: '```', label: '```csv', desc: 'CSV 交互表格', insert: '```csv\n协议,端口,说明\nHTTP,80,超文本传输协议\nHTTPS,443,TLS 加密的 HTTP\n```', replaceLength: 3 },
     { trigger: '```', label: '```csv rules', desc: 'CSV+阈值标色', insert: '```csv rules=CPU>80:red,丢包率>0:orange\nhost,CPU,丢包率\nweb-01,45,0\nweb-02,91,0.2\n```', replaceLength: 3 },
