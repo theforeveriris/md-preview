@@ -78,7 +78,7 @@ async function buildIndex() {
   
   if (!fs.existsSync(docsDir)) {
     console.log(`Docs directory not found: ${docsDir}`);
-    fs.writeFileSync(outputFile, JSON.stringify(index, null, 2));
+    fs.writeFileSync(outputFile, JSON.stringify(index)); // 紧凑输出：美化格式白白膨胀 20-30%（移动端流量敏感）
     return;
   }
   
@@ -123,7 +123,7 @@ async function buildIndex() {
     }
   }
   
-  fs.writeFileSync(outputFile, JSON.stringify(index, null, 2));
+  fs.writeFileSync(outputFile, JSON.stringify(index)); // 紧凑输出：美化格式白白膨胀 20-30%（移动端流量敏感）
   console.log(`\nIndexed ${index.length} files. Output written to: ${outputFile}`);
 }
 

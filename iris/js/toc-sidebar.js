@@ -148,6 +148,13 @@
   // 页面尚在顶部时高亮第一项
   function updateActive() {
     if (!visible || !headings.length) return;
+    // 滚动触底特判：末章内容短于视口时判定线永远到不了，
+    // 经典 scrollspy 边界缺陷——触底强制高亮最后一项
+    if (window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 2) {
+      setActive(headings.length - 1);
+      return;
+    }
     let current = -1;
     for (let i = 0; i < headings.length; i++) {
       if (headings[i].el.getBoundingClientRect().top <= TOP_OFFSET) current = i;
@@ -184,11 +191,23 @@
     }, { passive: true });
 
     // 内容区自监控（双通道之一）：虚拟路由（#/tags、#/graph 等）不经过
-    // markdown.js 渲染钩子，DOM 变化兜底（防抖合并渲染期批量变更）
+    // markdown.js 渲染钩子，DOM 变化兜底（防抖合并渲染期批量变更）。
+    // find-bar 的 <mark.find-hit> 插删不重建目录：每敲一个字会批量
+    // 插删上百个 mark，重收集+重渲染纯属浪费
     const content = document.getElementById('markdownContent');
     if (content) {
       let deb = null;
-      new MutationObserver(() => {
+      new MutationObserver((muts) => {
+        const relevant = muts.some(m => {
+          const nodes = [...m.addedNodes, ...m.removedNodes];
+          return nodes.some(n => {
+            if (n.nodeType === 1 && n.classList.contains('find-hit')) return false;
+            if (n.nodeType === 3 && n.parentElement &&
+                n.parentElement.closest('mark.find-hit')) return false;
+            return true;
+          });
+        });
+        if (!relevant) return;
         clearTimeout(deb);
         deb = setTimeout(() => build(), 200);
       }).observe(content, { childList: true, subtree: true });

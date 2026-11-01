@@ -65,10 +65,18 @@
   };
 
   let activeCy = null;
+  let activeStyleFactory = null; // 主题切换重绘用：重建 graphStyle（cssVar 在渲染期固化）
   let activeTip = null;
   let activeTeardown = null;
   let linksCache = null;
   let linksPromise = null;
+
+  // 主题切换时重着色：节点/连线颜色读的是渲染期的 CSS 变量快照，
+  // 不重挂 style 会一直留在旧配色（与 apexcharts/csv 内嵌图同款监听）
+  window.addEventListener('themechange', () => {
+    if (!activeCy || activeCy.destroyed() || !activeStyleFactory) return;
+    try { activeCy.style(activeStyleFactory()); } catch (e) { /* ignore */ }
+  });
 
   function prefersReducedMotion() {
     try {
@@ -118,6 +126,7 @@
     if (activeCy) {
       try { activeCy.destroy(); } catch (e) { /* ignore */ }
       activeCy = null;
+      activeStyleFactory = null;
     }
     if (activeTeardown) {
       try { activeTeardown(); } catch (e) { /* ignore */ }
@@ -579,6 +588,7 @@
           layout: makeLayoutOpts(),
         });
         activeCy = cy;
+        activeStyleFactory = () => graphStyle(tags, colors);
 
         function toggleIsolated(show) {
           // 孤立节点打 .isolated class（别用 [isolated] 数据选择器，见 graphStyle 里的注释）

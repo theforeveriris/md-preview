@@ -2,6 +2,24 @@
   window.MarkdownPreview = window.MarkdownPreview || {};
   window.MarkdownPreview.renderers = window.MarkdownPreview.renderers || {};
 
+  function t(key, fallback) {
+    const i18n = window.MarkdownPreview.i18n;
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key, fallback);
+    return fallback;
+  }
+
+  // 主题化错误提示（复用 plantuml-fallback 的 CSS 变量着色样式）
+  function geoErrorNote(error) {
+    const box = document.createElement('div');
+    box.className = 'plantuml-fallback';
+    const note = document.createElement('div');
+    note.className = 'plantuml-fallback-note';
+    note.textContent = t('geo.parseFailed', 'GeoJSON/TopoJSON 解析失败');
+    if (error && error.message) note.title = error.message;
+    box.appendChild(note);
+    return box;
+  }
+
   async function renderGeoData(type, dataStr, originalMatch, mapId) {
     // 按需加载 leaflet JS + CSS（~150KB，仅在出现 geojson/topojson 嵌入时才需要）
     if (typeof L === 'undefined') {
@@ -63,6 +81,13 @@
       }, 10);
     } catch (error) {
       console.error('Geo data parsing error:', error);
+      // 嵌入路径容器已建好：就地渲染主题化错误提示，不留空白 400px 盒子
+      const box = mapId ? document.getElementById(mapId) : null;
+      if (box) {
+        box.innerHTML = '';
+        box.style.height = 'auto';
+        box.appendChild(geoErrorNote(error));
+      }
     }
   }
 
@@ -92,6 +117,16 @@
       if (embedMatch) data = embedMatch[1];
 
       pre.dataset.geoDone = '1';
+      // 先验证 JSON 再替换 pre：解析失败保留源码块 + 主题化提示。
+      // 旧实现先换容器后解析，失败后只剩空白 400px 盒子且源码丢失
+      try {
+        JSON.parse(data);
+      } catch (error) {
+        console.error('[geo] fence JSON parse failed:', error);
+        pre.parentNode.insertBefore(geoErrorNote(error), pre);
+        continue;
+      }
+
       const mapId = 'map-' + Date.now() + '-' + (idx++);
       const container = document.createElement('div');
       container.id = mapId;

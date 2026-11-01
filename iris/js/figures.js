@@ -31,7 +31,9 @@
   // 惰性转发：解析期直接取全局依赖 index.html 加载顺序（曾按隐式契约）
   const esc = (...a) => window.MarkdownPreview.mdRender.escapeHtml(...a);
 
-  const FIGURE_LANGS = { mermaid: 1, plantuml: 1, apexcharts: 1 };
+  // 与 FIGURE_LANGS 保持口径一致（diff 渲染 / sql-erd 产物是 Mermaid 图、
+  // geo 是地图、pkt/ensp 是拓扑图——都是「图」）
+  const FIGURE_LANGS = { mermaid: 1, plantuml: 1, apexcharts: 1, diff: 1, ddl: 1, erd: 1, 'sql ddl': 1, geojson: 1, topojson: 1 };
   const ALIAS_RE = /^\s*#(fig|tbl):([A-Za-z0-9_\-.]+)(?:\s+([\s\S]*?))?\s*$/;
   const ANCHOR_SVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
 
@@ -84,6 +86,8 @@
       const p = el.parentElement;
       if (p.classList.contains('no-figure') || el.classList.contains('no-figure')) return null;
       if (p.querySelectorAll('img').length !== 1) return null;
+      // 带链接的图片（点击跳转的截图）不编号——编号套壳会改变点击语义
+      if (p.querySelector(':scope > a')) return null;
       const text = Array.from(p.childNodes)
         .filter(n => !(n.nodeType === 1 && n.nodeName === 'IMG'))
         .map(n => n.textContent)
@@ -183,7 +187,13 @@
       const id = (a.getAttribute('href') || '').slice(1);
       if (!/^(fig|tbl)[-:]/.test(id)) return;
       const targetId = idToText.has(id) ? id : aliasToId.get(id);
-      if (!targetId || !idToText.has(targetId)) return;
+      if (!targetId || !idToText.has(targetId)) {
+        // 引用失效可感知：目标编号不存在（跨文档引用 / 别名拼错）此前静默留白
+        a.dataset.figRef = '1';
+        a.textContent = t('figure.refMissing', '（图表引用失效）');
+        a.title = t('figure.refMissingHint', '目标编号不存在：可能是别名拼错或引用了其他文档的编号');
+        return;
+      }
       a.dataset.figRef = '1';
       a.textContent = idToText.get(targetId);
       a.addEventListener('click', (e) => {

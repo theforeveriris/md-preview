@@ -61,15 +61,37 @@
     return Math.round((window.scrollY / max) * 100);
   }
 
+  function readingToastEnabled() {
+    const settings = window.MarkdownPreview.settings;
+    if (settings && settings.load) return settings.load().readingPosToast !== false;
+    return true;
+  }
+
   function saveCurrent(force) {
     if (!currentPath) return;
     const now = Date.now();
     if (!force && now - lastSaved < SAVE_INTERVAL_MS) return;
     lastSaved = now;
     const pct = currentPct();
-    if (pct < MIN_PCT || pct > MAX_PCT) return;
     const store = loadStore();
-    store[currentPath] = { pct, ts: now };
+    // 滚回顶部（< 5%）：清除该篇记录——否则重开每次都弹续读提示。
+    // 「本篇不再提示」（muted）是用户的持久选择，清位置不清选择
+    if (pct < MIN_PCT) {
+      const rec = store[currentPath];
+      if (rec) {
+        if (rec.muted) {
+          store[currentPath] = { muted: true };
+        } else {
+          delete store[currentPath];
+        }
+        saveStore(store);
+      }
+      return;
+    }
+    if (pct > MAX_PCT) return;
+    // 更新位置时保留已有的 muted 标记（否则静音选择被每次保存冲掉）
+    const prev = store[currentPath] || {};
+    store[currentPath] = { pct, ts: now, muted: !!prev.muted };
     // 上限保护：最多保留 200 篇，超出后淘汰最旧的
     const keys = Object.keys(store);
     if (keys.length > 200) {
@@ -109,9 +131,17 @@
     const go = toastEl.querySelector('.resume-toast-go');
     const dismiss = toastEl.querySelector('.resume-toast-dismiss');
     go.textContent = t('reading.resumeGo', '继续阅读');
-    dismiss.textContent = t('reading.resumeDismiss', '忽略');
+    dismiss.textContent = t('reading.resumeDismiss', '本篇不再提示');
     go.addEventListener('click', () => { hideToast(); jumpTo(pct); });
-    dismiss.addEventListener('click', hideToast);
+    // 「不再提示」是持久记忆而非一次性收起：记录 muted 标记，重开不再弹
+    dismiss.addEventListener('click', () => {
+      hideToast();
+      const store = loadStore();
+      if (store[currentPath]) {
+        store[currentPath].muted = true;
+        saveStore(store);
+      }
+    });
     // 显示前先回到新文档的顶部状态，避免提示条在旧滚动位置闪现
     requestAnimationFrame(() => toastEl.classList.add('open'));
     if (toastTimer) clearTimeout(toastTimer);
@@ -147,8 +177,10 @@
     currentPath = path || '';
     if (!path) return;
     if (consumePosParam()) return;
+    // 设置开关（默认开）：关掉后仍记录位置（扫码 ?pos= 续读不受影响），只是不弹提示
+    if (!readingToastEnabled()) return;
     const rec = loadStore()[path];
-    if (rec && rec.pct >= MIN_PCT && rec.pct <= MAX_PCT) {
+    if (rec && !rec.muted && rec.pct >= MIN_PCT && rec.pct <= MAX_PCT) {
       // 延迟到渲染 / 图片布局基本稳定后再弹
       setTimeout(() => {
         if (currentPath === path) showToast(rec.pct);

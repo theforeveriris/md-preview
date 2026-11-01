@@ -33,9 +33,33 @@
     return true;
   }
 
+  // 可访问名（用途标签）解析：aria-label > label[for] > 设置面板 .setting-label
+  function resolveNameLabel(select) {
+    let nameLabel = select.getAttribute('aria-label') || '';
+    if (!nameLabel && select.id) {
+      const lab = document.querySelector('label[for="' + CSS.escape(select.id) + '"]');
+      if (lab) nameLabel = lab.textContent.trim();
+    }
+    if (!nameLabel) {
+      // 设置面板里字段名是 .setting-label 的 div，不是 <label for>
+      const row = select.closest('.setting-item');
+      const lab = row && row.querySelector('.setting-label');
+      if (lab) nameLabel = lab.textContent.trim();
+    }
+    return nameLabel;
+  }
+
   function upgrade(select) {
     if (!isUpgradable(select)) return null;
-    if (instances.has(select)) return instances.get(select);
+    const existing = instances.get(select);
+    if (existing) {
+      // 语言切换后 i18n.apply 已重写 option 文案与标签来源节点：
+      // 已升级实例需重取用途标签并同步显示值（此前直接早退，
+      // 切到 English 后触发器仍显示中文选中项）
+      existing.nameLabel = resolveNameLabel(select);
+      syncLabel(existing);
+      return existing;
+    }
 
     const wrap = document.createElement('span');
     wrap.className = 'cs';
@@ -49,17 +73,7 @@
     // 原生 select 会被 aria-hidden 掉，可访问名要搬到按钮上。
     // 记下「用途标签」（如「图表类型」），读屏时念成「图表类型：折线」，
     // 既说清了字段也说清了当前值。
-    let nameLabel = select.getAttribute('aria-label') || '';
-    if (!nameLabel && select.id) {
-      const lab = document.querySelector('label[for="' + CSS.escape(select.id) + '"]');
-      if (lab) nameLabel = lab.textContent.trim();
-    }
-    if (!nameLabel) {
-      // 设置面板里字段名是 .setting-label 的 div，不是 <label for>
-      const row = select.closest('.setting-item');
-      const lab = row && row.querySelector('.setting-label');
-      if (lab) nameLabel = lab.textContent.trim();
-    }
+    const nameLabel = resolveNameLabel(select);
 
     const valueEl = document.createElement('span');
     valueEl.className = 'cs-value';

@@ -137,6 +137,24 @@
         run: randomDocRun
       },
       {
+        id: 'open-stats',
+        icon: 'i-table',
+        label: t('cmd.openStats', '站点统计'),
+        run: () => { window.location.hash = '#/stats'; }
+      },
+      {
+        id: 'open-cheatsheet',
+        icon: 'i-code',
+        label: t('cmd.openCheatsheet', '全站速查'),
+        run: () => { window.location.hash = '#/cheatsheet'; }
+      },
+      {
+        id: 'open-broken-links',
+        icon: 'i-flag',
+        label: t('cmd.openBrokenLinks', '死链报告'),
+        run: () => { window.location.hash = '#/broken-links'; }
+      },
+      {
         id: 'copy-link',
         icon: 'i-link',
         label: t('cmd.copyLink', '复制页面链接'),
@@ -283,9 +301,13 @@
     ];
     THEME_ACTIONS.forEach(theme => actions.push(themeAction(theme)));
     // 模块化扩展点：desktop-kb 等功能在运行时注入自己的动作
-    (window.MarkdownPreview.palette.extraActions || []).forEach(a => actions.push(a));
+    extraActions.forEach(a => actions.push(a));
     return actions;
   }
+
+  // 运行时注入动作的扩展点：desktop-kb / sensitive-mode 等模块
+  // 加载晚于本文件，推入后作废缓存才能在面板下次打开时出现
+  const extraActions = [];
 
   let cachedActions = null;
   function actions() {
@@ -382,6 +404,11 @@
     appendInline,
     isCommandQuery,
     stripPrefix,
-    actions
+    actions,
+    extraActions,
+    registerActions(list) {
+      extraActions.push(...list);
+      cachedActions = null;
+    }
   };
 })();

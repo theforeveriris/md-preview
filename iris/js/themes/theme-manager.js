@@ -153,9 +153,30 @@
       customCSSLink = document.createElement('link');
       customCSSLink.rel = 'stylesheet';
       customCSSLink.href = url;
+      // 失效 URL 曾静默无效（排查黑洞）：onerror 给出提示
+      customCSSLink.onerror = () => {
+        console.warn('[theme] 自定义 CSS 加载失败:', url);
+        miniToast('自定义 CSS 加载失败：' + url);
+      };
       document.head.appendChild(customCSSLink);
       (window.MarkdownPreview.debug?.debugLog || (() => {}))(`Custom CSS loaded: ${url}`);
     }
+  }
+
+  // 轻量提示（mini-toast 同款）——自定义 CSS/hljs 加载失败反馈
+  function miniToast(msg) {
+    let el = document.querySelector('.mini-toast[data-owner="theme"]');
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'mini-toast';
+      el.dataset.owner = 'theme';
+      el.setAttribute('role', 'status');
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+    el.classList.add('open');
+    clearTimeout(el._timer);
+    el._timer = setTimeout(() => el.classList.remove('open'), 2600);
   }
 
   // 设置自定义 CSS
@@ -190,6 +211,10 @@
       customHljsLink = document.createElement('link');
       customHljsLink.rel = 'stylesheet';
       customHljsLink.href = url;
+      customHljsLink.onerror = () => {
+        console.warn('[theme] 自定义高亮主题加载失败:', url);
+        miniToast('自定义高亮主题加载失败：' + url);
+      };
       // 插入到 hljs-theme 之后，确保覆盖内置主题
       const hljsTheme = document.getElementById('hljs-theme');
       if (hljsTheme && hljsTheme.parentNode) {
@@ -242,12 +267,30 @@
       }
 
       // 监听变化
+      let lastSelectValue = currentSetting;
       themeSelect.addEventListener('change', (e) => {
-        setTheme(e.target.value);
-        syncAutoPairRow(autoPairRow, e.target.value === 'auto');
-        // 互斥：选预设主题时清空自定义配色
+        // 自定义配色存在且主题真的变化时才询问：改回同一主题 / 切 auto
+        // 不该丢配色，更不该不声不响地丢（auto 时 data-theme 是解析后的
+        // 具体主题，不能拿它比较——用 select 的先前值）
         const settings = window.MarkdownPreview.settings;
-        if (settings && settings.resetCustomColors) {
+        const prev = lastSelectValue;
+        const next = e.target.value;
+        const willChange = next !== prev;
+        const hasCustom = settings && settings.load &&
+          settings.load().customColors && Object.keys(settings.load().customColors).length > 0;
+        if (hasCustom && willChange && !window.confirm(
+          window.MarkdownPreview.t
+            ? window.MarkdownPreview.t('settings.theme.clearColors', '切换主题将清除自定义配色，是否继续？')
+            : '切换主题将清除自定义配色，是否继续？'
+        )) {
+          e.target.value = prev; // 回滚选择
+          return;
+        }
+        setTheme(next);
+        lastSelectValue = next;
+        syncAutoPairRow(autoPairRow, next === 'auto');
+        // 互斥：选预设主题时清空自定义配色
+        if (willChange && settings && settings.resetCustomColors) {
           settings.resetCustomColors();
         }
       });
@@ -260,17 +303,20 @@
         customCSSInput.value = savedCSS;
       }
 
+      // 应用/清除逻辑（Enter 与 blur 共用：blur 提交对齐字体输入的行为）
+      const applyCssInput = () => {
+        const url = customCSSInput.value.trim();
+        if (url) {
+          setCustomCSS(url);
+        } else {
+          clearCustomCSS();
+        }
+      };
       // 回车应用
       customCSSInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-          const url = e.target.value.trim();
-          if (url) {
-            setCustomCSS(url);
-          } else {
-            clearCustomCSS();
-          }
-        }
+        if (e.key === 'Enter') applyCssInput();
       });
+      customCSSInput.addEventListener('blur', applyCssInput);
     }
 
     if (customHljsInput) {
@@ -280,17 +326,19 @@
         customHljsInput.value = savedHljs;
       }
 
+      const applyHljsInput = () => {
+        const url = customHljsInput.value.trim();
+        if (url) {
+          setCustomHljs(url);
+        } else {
+          clearCustomHljs();
+        }
+      };
       // 回车应用
       customHljsInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-          const url = e.target.value.trim();
-          if (url) {
-            setCustomHljs(url);
-          } else {
-            clearCustomHljs();
-          }
-        }
+        if (e.key === 'Enter') applyHljsInput();
       });
+      customHljsInput.addEventListener('blur', applyHljsInput);
     }
   }
 

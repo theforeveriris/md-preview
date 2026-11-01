@@ -38,6 +38,9 @@
     const line = window.innerHeight / 3;
     let current = null;
     for (const block of blocks) {
+      // 折叠章节（display:none）rect 全零：既不该命中中线，
+      // 也不能当作「已滚过」的上一块——否则高亮会落到不可见节点上
+      if (block.offsetParent === null) continue;
       const rect = block.getBoundingClientRect();
       if (rect.top <= line && rect.bottom >= line) { current = block; break; }
       // 中线落在块间空隙时取上一个块

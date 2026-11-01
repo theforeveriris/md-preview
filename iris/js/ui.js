@@ -104,12 +104,36 @@
     return !!(dom.paletteOverlay && dom.paletteOverlay.classList.contains('active'));
   }
 
+  // 浮层焦点管理：记住打开时的焦点元素（关闭时归还），并在浮层内圈住 Tab
+  let paletteLastFocus = null;
+  let settingsLastFocus = null;
+
+  function trapTabIn(e, container) {
+    if (e.key !== 'Tab' || !container) return false;
+    const focusables = container.querySelectorAll(
+      'button:not([disabled]), input:not([disabled]), select, textarea, a[href], [tabindex]:not([tabindex="-1"])'
+    );
+    if (!focusables.length) return false;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      last.focus();
+      return true;
+    }
+    if (!e.shiftKey && document.activeElement === last) {
+      first.focus();
+      return true;
+    }
+    return false;
+  }
+
   function openSearchPalette() {
     if (!dom.paletteOverlay) return;
     // 移动端：先收抽屉，避免双层浮层
     if (window.innerWidth <= 768) {
       window.MarkdownPreview.fileTree.closeSidebar();
     }
+    paletteLastFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     dom.paletteOverlay.classList.add('active');
     dom.paletteOverlay.setAttribute('aria-hidden', 'false');
     window.MarkdownPreview.search.reset();
@@ -125,6 +149,8 @@
     dom.paletteOverlay.setAttribute('aria-hidden', 'true');
     window.MarkdownPreview.search.reset();
     if (dom.paletteClear) dom.paletteClear.hidden = true;
+    // 焦点还给触发者（Esc 关闭后 Tab 不再掉到遮罩后面的页面）
+    if (paletteLastFocus) { paletteLastFocus.focus(); paletteLastFocus = null; }
   }
 
   // Ctrl/⌘ + K：打开搜索命令面板（对齐 GitHub / Slack 惯例键位）；
@@ -180,6 +206,42 @@
       syncClearBtn();
     });
 
+    // 面板键盘导航：↑/↓ 在结果间移动、Enter 打开当前项——
+    // 文档结果 / 命令动作 / 计算卡通吃（此前只能鼠标点）
+    dom.searchInput?.addEventListener('keydown', (e) => {
+      if (!isSearchPaletteOpen()) return;
+      const container = dom.searchResults;
+      const items = Array.from(container.querySelectorAll('.search-result-item'));
+      if (!items.length) return;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const current = items.findIndex(i => i.classList.contains('kbd-active'));
+        const next = e.key === 'ArrowDown'
+          ? Math.min(items.length - 1, current + 1)
+          : Math.max(0, current <= 0 ? 0 : current - 1);
+        items.forEach(i => i.classList.remove('kbd-active'));
+        const target = items[next];
+        target.classList.add('kbd-active');
+        target.scrollIntoView({ block: 'nearest' });
+        // listbox 语义：容器声明 listbox，结果项为 option，焦点在输入框上——
+        // aria-activedescendant 必须挂在获焦元素（searchInput）上读屏才能跟随
+        container.setAttribute('role', 'listbox');
+        container.setAttribute('aria-label', t('search.results', '搜索结果'));
+        items.forEach((it, i) => {
+          if (!it.id) it.id = 'sr-item-' + i;
+          it.setAttribute('role', 'option');
+        });
+        dom.searchInput.setAttribute('aria-controls', container.id || (container.id = 'searchResultsList'));
+        dom.searchInput.setAttribute('aria-activedescendant', target.id);
+      } else if (e.key === 'Enter') {
+        const active = container.querySelector('.search-result-item.kbd-active') || items[0];
+        if (active) {
+          e.preventDefault();
+          active.click();
+        }
+      }
+    });
+
     dom.modeFiles.addEventListener('click', () => switchMode('files'));
     dom.modeIndex.addEventListener('click', () => switchMode('index'));
     dom.modeTags?.addEventListener('click', () => switchMode('tags'));
@@ -227,12 +289,38 @@
 
       // 编辑器模式有独立键位（Ctrl+B=粗体、Ctrl+K=链接等），全部不抢占
       if (isEditorMode()) return;
-      // 输入控件内不抢占
+
+      // 浮层打开时 Tab 圈闭在浮层内——必须先于「输入控件内不抢占」守卫：
+      // 设置面板/搜索面板里全是输入框，后置会让 Tab 穿透到遮罩后的页面
+      if (e.key === 'Tab') {
+        const settingsOv = document.getElementById('settingsOverlay');
+        if (settingsOv && settingsOv.classList.contains('open')) {
+          if (trapTabIn(e, settingsOv)) e.preventDefault();
+          return;
+        }
+        if (isSearchPaletteOpen()) {
+          if (trapTabIn(e, dom.paletteOverlay)) e.preventDefault();
+          return;
+        }
+        const lightbox = document.getElementById('lightboxOverlay');
+        if (lightbox && lightbox.classList.contains('open')) {
+          if (trapTabIn(e, lightbox)) e.preventDefault();
+          return;
+        }
+      }
+
+      // 输入控件内不抢占（其余快捷键让位于输入）
       if (isEditableTarget(e)) return;
 
       // Ctrl/⌘ + , ：设置面板开关（面板打开时也可用）
       if (mod && !alt && key === ',') {
         e.preventDefault();
+        const ov = document.getElementById('settingsOverlay');
+        const opening = !(ov && ov.classList.contains('open'));
+        if (opening) {
+          settingsLastFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+          window.MarkdownPreview.ui._settingsLastFocus = settingsLastFocus;
+        }
         window.MarkdownPreview.settings.toggle();
         return;
       }
@@ -307,11 +395,18 @@
     dom.modeFiles.classList.toggle('active', mode === 'files');
     dom.modeIndex.classList.toggle('active', mode === 'index');
     dom.modeTags?.classList.toggle('active', mode === 'tags');
+    // tablist 语义：aria-selected 与视觉高亮同步（读屏跟随）
+    dom.modeFiles.setAttribute('aria-selected', String(mode === 'files'));
+    dom.modeIndex.setAttribute('aria-selected', String(mode === 'index'));
+    dom.modeTags?.setAttribute('aria-selected', String(mode === 'tags'));
     dom.fileTree.classList.toggle('hidden', mode !== 'files');
     dom.indexTree.classList.toggle('hidden', mode !== 'index');
     // 本地文件面板归属 Files 区
     const localFilesPanel = document.getElementById('localFilesPanel');
     if (localFilesPanel) localFilesPanel.hidden = mode !== 'files' || state.localFiles.length === 0;
+    // 文件名过滤条归属 Files 区（过滤逻辑在 file-tree.js）
+    const treeFilterBar = document.getElementById('treeFilterBar');
+    if (treeFilterBar) treeFilterBar.hidden = mode !== 'files';
     // 标签面板独占「标签」选项卡（tags.js 在无标签数据时自行隐藏）
     const tagPanel = document.getElementById('tagPanel');
     if (tagPanel) tagPanel.hidden = mode !== 'tags';

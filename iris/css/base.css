@@ -76,3 +76,28 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-accent-purple-deep);
 }
+
+/* ============== 全局减少动态（prefers-reduced-motion） ============== */
+/* 此前只有 floating/components 两处局部覆盖；mini-TOC、图谱布局、灯箱、
+   轮播等新动画都没豁免——这里做全局兜底：过渡/动画时长压到近似为零，
+   保留 opacity 状态切换（不产生位移动画的闪烁感）。JS 侧定时器动画
+   （轮播 autoplay、cytoscape 布局）各自已在初始化时读取该媒体查询。 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============== 强制对比 / 高对比模式（prefers-contrast） ============== */
+/* Windows 高对比主题：边框与弱化文本改为实色，维持可读 */
+@media (prefers-contrast: more) {
+  :root {
+    --color-border: #808080;
+    --color-text-muted: #595959;
+  }
+}

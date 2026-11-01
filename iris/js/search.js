@@ -174,11 +174,34 @@
     const tagFilter = tagsMod ? tagsMod.extractTagFilters(currentQuery) : { text: currentQuery, tags: [] };
     const searchText = tagFilter.text;
 
+    // 简繁互通（运行时）：转换开启时索引仍是原文脚本，按显示脚本输入会搜
+    // 不到——把查询词向相反方向再转一份，两组结果合并去重
+    const cjk = window.MarkdownPreview.cjk;
+    const convMode = cjk && cjk.getMode ? cjk.getMode() : 'off';
+    const queries = [searchText];
+    if (convMode !== 'off' && searchText.trim() && cjk.convertText) {
+      const alt = cjk.convertText(searchText, convMode === 'tw' ? 'cn' : 'tw');
+      if (alt && alt !== searchText) queries.push(alt);
+    }
+
     try {
       // tag: 过滤时先取 100 条候补：只看 FlexSearch 截断的 top-20 会让
       // 文本排名 20 名外但标签命中的文档永远搜不到
       const limit = tagFilter.tags.length > 0 ? 100 : 20;
-      let results = flexIndex ? flexSearch(searchText, limit) : simpleSearch(searchText, limit);
+      let results;
+      if (tagFilter.tags.length > 0 && !searchText.trim()) {
+        // 纯 tag: 查询（无正文关键词）：列出该标签的全部文档——
+        // 空串喂给 FlexSearch/simpleSearch 都恒返回空，曾显示「没有找到」
+        results = documents.map((_, i) => i);
+      } else {
+        results = [];
+        const seenIds = new Set();
+        queries.forEach(q => {
+          (flexIndex ? flexSearch(q, limit) : simpleSearch(q, limit)).forEach(id => {
+            if (!seenIds.has(id)) { seenIds.add(id); results.push(id); }
+          });
+        });
+      }
       if (tagFilter.tags.length > 0) {
         results = results.filter(id => tagsMod.docHasTags(documents[id], tagFilter.tags));
       }
@@ -307,13 +330,17 @@
       return;
     }
 
+    // 高亮 token：剔除 > 前缀与 tag: 过滤 token，多词逐个高亮——
+    // 旧实现把整串当一个正则，含 tag:/多词时几乎永远高亮不出
+    const hlTokens = searchDisplayTokens(currentQuery);
+
     merged.slice(0, 15).forEach(result => {
       const item = document.createElement('div');
       item.className = 'search-result-item';
       item.innerHTML = `
-        <div class="search-result-title">${highlightMatch(result.title, currentQuery)}</div>
-        <div class="search-result-path">${highlightMatch(result.path, currentQuery)}</div>
-        ${result.preview ? `<div class="search-result-preview">${highlightMatch(result.preview, currentQuery)}</div>` : ''}
+        <div class="search-result-title">${highlightMatch(result.title, hlTokens)}</div>
+        <div class="search-result-path">${highlightMatch(result.path, hlTokens)}</div>
+        ${result.preview ? `<div class="search-result-preview">${highlightMatch(result.preview, hlTokens)}</div>` : ''}
       `;
 
       item.addEventListener('click', () => {
@@ -367,13 +394,26 @@
   // 惰性转发：解析期直接取全局依赖 index.html 加载顺序（曾按隐式契约）
   const escapeHtml = (...a) => window.MarkdownPreview.mdRender.escapeHtml(...a);
 
-  function highlightMatch(text, query) {
+  // 展示层高亮 token：剔除 > 前缀与 tag: 过滤 token 后按空白拆词
+  function searchDisplayTokens(query) {
+    let q = String(query || '');
+    const palette = window.MarkdownPreview.palette;
+    if (palette) q = palette.stripPrefix(q);
+    const tagsMod = window.MarkdownPreview.tags;
+    if (tagsMod) q = tagsMod.extractTagFilters(q).text;
+    return q.split(/\s+/).filter(Boolean);
+  }
+
+  function highlightMatch(text, tokens) {
     if (!text) return '';
-    if (!query) return escapeHtml(text);
-    const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const words = (Array.isArray(tokens) ? tokens : String(tokens || '').split(/\s+/))
+      .filter(Boolean)
+      .map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    if (!words.length) return escapeHtml(text);
+    // 多词合并为交替正则一次扫描（在已插入 mark 的文本上二次跑会错标）
     let regex;
     try {
-      regex = new RegExp(safeQuery, 'gi');
+      regex = new RegExp(words.join('|'), 'gi');
     } catch (e) {
       return escapeHtml(text);
     }
@@ -435,6 +475,11 @@
     documents = Array.isArray(docs) ? docs : [];
     isIndexLoaded = true;
     buildPromise = null;
+    // 索引来源标记（debug 面板）：本地知识库注入
+    const { state } = window.MarkdownPreview;
+    if (state) {
+      state.searchIndexStats = { source: 'desktop-kb', entries: documents.length };
+    }
     if (typeof FlexSearch !== 'undefined') {
       flexIndex = new FlexSearch.Index({
         encode: cjkEncode,
@@ -443,7 +488,11 @@
         minlength: 1
       });
       documents.forEach((doc, i) => {
-        flexIndex.add(i, (doc.title || '') + ' ' + (doc.preview || '') + ' ' + (doc.path || ''));
+        // title/path 恒在索引内（正文不含文件名的文档也要能按名搜到）；
+        // searchText 含繁体形态与拼音首字母（旧文档缺该字段时回退 preview）
+        const combined = (doc.title || '') + ' ' + (doc.path || '') + ' ' +
+          (doc.searchText || doc.preview || '');
+        flexIndex.add(i, combined);
       });
     }
   }

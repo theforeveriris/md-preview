@@ -27,6 +27,7 @@
     mobileGestures: true,
     sectionCollapse: true,
     miniToc: true,             // 文章侧边目录（toc-sidebar.js）
+    readingPosToast: true,     // 续读提示（reading-pos.js）
     splitSyncScroll: true,
     focusMode: false,
     textConversion: 'off',        // 'off' | 'tw' 转繁体 | 'cn' 转简体
@@ -50,12 +51,13 @@
     return TREE_SORT_MODES.indexOf(value) !== -1 ? value : 'smart';
   }
 
-  // 主题色默认值（与 base.css :root 保持一致）
+  // 主题色默认值（与 base.css :root 保持一致）。
+  // --color-glow 是 rgba：不进取色器体系（input[type=color] 只认 hex），
+  // 也不参与自定义配色存取——避免「没有入口改它、重置却会清掉它」的不一致
   const defaultColors = {
     '--color-accent-purple': '#d4a5c9',
     '--color-accent-pink': '#f2c4ce',
     '--color-accent-purple-deep': '#b88aad',
-    '--color-glow': 'rgba(255, 255, 255, 0.8)',
     '--color-bg': '#fafafa',
     '--color-surface': '#ffffff',
     '--color-border': '#f0f0f0',
@@ -87,12 +89,28 @@
     neutral: ['--color-bg', '--color-surface', '--color-border', '--color-text', '--color-text-muted']
   };
 
+  // 字号钳制范围（normalizeFontConfig 防御：导入备份 / 旧标签页同步可能
+  // 带来极端值，此前无钳制）
+  const FONT_SIZE_RANGE = { fontSizeBody: [12, 28], fontSizeMd: [12, 30], fontSizeH1: [20, 64], fontSizeH2: [16, 52], fontSizeH3: [14, 44] };
+  const FONT_WEIGHTS = ['300', '400', '500', '600', '700', '800'];
+
   // settings → fontConfig 读取，合并默认值
   function normalizeFontConfig(cfg) {
     cfg = cfg && typeof cfg === 'object' ? cfg : {};
     const out = {};
     Object.keys(defaultFontConfig).forEach(k => {
-      out[k] = cfg[k] != null ? cfg[k] : defaultFontConfig[k];
+      if (FONT_SIZE_RANGE[k]) {
+        // 数值字段钳制：非法值回退默认
+        const n = Number(cfg[k]);
+        const [min, max] = FONT_SIZE_RANGE[k];
+        out[k] = Number.isFinite(n) ? Math.min(max, Math.max(min, Math.round(n))) : defaultFontConfig[k];
+      } else if (k.startsWith('fontWeight')) {
+        // 字重白名单
+        const v = String(cfg[k] != null ? cfg[k] : defaultFontConfig[k]);
+        out[k] = FONT_WEIGHTS.includes(v) ? v : defaultFontConfig[k];
+      } else {
+        out[k] = cfg[k] != null ? cfg[k] : defaultFontConfig[k];
+      }
     });
     return out;
   }
@@ -132,6 +150,7 @@
           mobileGestures: parsed.mobileGestures !== false,
           sectionCollapse: parsed.sectionCollapse !== false,
           miniToc: parsed.miniToc !== false,
+          readingPosToast: parsed.readingPosToast !== false,
           splitSyncScroll: parsed.splitSyncScroll !== false,
           focusMode: parsed.focusMode === true,
           textConversion: (parsed.textConversion === 'tw' || parsed.textConversion === 'cn') ? parsed.textConversion : 'off',
@@ -521,6 +540,11 @@
       updateSetting({ miniToc: e.target.checked }, () => window.MarkdownPreview.tocSidebar?.refresh());
     });
 
+    // 续读提示（reading-pos.js）
+    document.getElementById('readingPosToggle')?.addEventListener('change', (e) => {
+      updateSetting({ readingPosToast: e.target.checked });
+    });
+
     // 专注模式（focus-mode.js：当前段落高亮、其余淡化）
     document.getElementById('focusModeToggle')?.addEventListener('change', (e) => {
       updateSetting({ focusMode: e.target.checked }, (st) => applyFocusMode(st.focusMode));
@@ -577,14 +601,23 @@
     });
 
     // 自定义主题色取色器
+    // input 拖动时每帧触发：loadSettings + 全量序列化 + localStorage 写 +
+    // BroadcastChannel 广播——与宽度/字号滑杆同款 300ms 防抖（取色预览
+    // 本身是纯 CSS 变量更新，无需每帧落盘）
+    let colorSaveTimer = null;
     document.querySelectorAll('input[type="color"][data-var]').forEach(input => {
       input.addEventListener('input', (e) => {
         const varName = e.target.dataset.var;
-        const settings = loadSettings();
-        if (!settings.customColors) settings.customColors = {};
-        settings.customColors[varName] = e.target.value;
-        saveSettings(settings);
-        applyCustomColors(settings.customColors);
+        const value = e.target.value;
+        applyCustomColorVar(varName, value);
+        clearTimeout(colorSaveTimer);
+        colorSaveTimer = setTimeout(() => {
+          const settings = loadSettings();
+          if (!settings.customColors) settings.customColors = {};
+          settings.customColors[varName] = value;
+          saveSettings(settings);
+          applyCustomColors(settings.customColors);
+        }, 300);
       });
     });
 
@@ -666,6 +699,11 @@
   });
 
   // 应用自定义主题色到 :root，覆盖 base.css 默认值
+  // 拖动取色器时的单变量实时预览（防抖窗口内不落盘）
+  function applyCustomColorVar(varName, value) {
+    document.documentElement.style.setProperty(varName, value);
+  }
+
   function applyCustomColors(colors) {
     const root = document.documentElement;
     Object.keys(defaultColors).forEach(varName => {
@@ -681,19 +719,20 @@
     if (defaultColors['--color-bg'] || colors && colors['--color-bg']) {
       root.setAttribute('data-mode', siteIsDark() ? 'dark' : 'light');
     }
+    // 地址栏 / 状态栏颜色跟随自定义底色（此前只在主题切换时更新）
+    const meta = document.querySelector('meta[name="theme-color"]');
+    const bgNow = getComputedStyle(root).getPropertyValue('--color-bg').trim();
+    if (meta && bgNow) meta.setAttribute('content', bgNow);
   }
 
-  // 重置自定义主题色，恢复 base.css 默认值
+  // 重置自定义主题色：清除内联覆盖后取色器回到「当前主题」的实际色值
+  //（defaultColors 只是浅色主题出厂值，深色主题下重置到它会误导）
   function resetCustomColors() {
     const settings = loadSettings();
     settings.customColors = {};
     saveSettings(settings);
     applyCustomColors({});
-    // 同步取色器显示为默认色
-    Object.keys(defaultColors).forEach(varName => {
-      const input = document.querySelector(`input[type="color"][data-var="${varName}"]`);
-      if (input) input.value = defaultColors[varName];
-    });
+    refreshColorInputs();
   }
 
   // ---------- 远程字体加载（Google Fonts 等 CSS URL）----------
@@ -714,7 +753,24 @@
     link.id = REMOTE_FONT_STYLE_ID;
     link.rel = 'stylesheet';
     link.href = trimmed;
-    link.onerror = () => console.warn('[font] Remote font CSS failed to load:', trimmed);
+    link.onerror = () => {
+      console.warn('[font] Remote font CSS failed to load:', trimmed);
+      // 填错 URL 曾静默无效（排查黑洞）：mini-toast 提示
+      try {
+        const el = document.querySelector('.mini-toast[data-owner="font"]') || (() => {
+          const t2 = document.createElement('div');
+          t2.className = 'mini-toast';
+          t2.dataset.owner = 'font';
+          t2.setAttribute('role', 'status');
+          document.body.appendChild(t2);
+          return t2;
+        })();
+        el.textContent = t('settings.fontLoadFailed', '远程字体加载失败：') + trimmed;
+        el.classList.add('open');
+        clearTimeout(el._timer);
+        el._timer = setTimeout(() => el.classList.remove('open'), 3000);
+      } catch (e) { /* ignore */ }
+    };
     document.head.appendChild(link);
   }
 
@@ -859,6 +915,8 @@
     // 设置搜索：绑定一次，每次打开重置过滤状态（避免上次筛选残留）
     bindSettingsSearch();
     resetSettingsSearch();
+    // 取色器基准值随当前主题刷新（深色主题下此前显示的是浅色默认值）
+    refreshColorInputs();
     // 每次打开回到顶部，左侧索引同步到第一项
     const content = document.querySelector('#settingsOverlay .settings-content');
     if (content) {
@@ -873,6 +931,22 @@
     // 打开面板时刷新存储管理区块（用量 / 笔记本 / 浏览数据）
     window.MarkdownPreview.storageManager?.refresh?.();
   }
+
+  // 取色器显示值同步：优先已保存的自定义值，否则取当前主题的实际色值
+  //（defaultColors 只是浅色主题的出厂值，深色主题下当「基准」展示会误导）
+  function refreshColorInputs() {
+    const settings = loadSettings();
+    const custom = settings.customColors || {};
+    const root = document.documentElement;
+    document.querySelectorAll('input[type="color"][data-var]').forEach(input => {
+      const varName = input.dataset.var;
+      if (custom[varName]) { input.value = custom[varName]; return; }
+      const v = getComputedStyle(root).getPropertyValue(varName).trim();
+      // input[type=color] 只认 #rrggbb：非 hex 值（如 rgba 的 glow）跳过
+      if (/^#[0-9a-fA-F]{6}$/.test(v)) input.value = v;
+    });
+  }
+  window.addEventListener('themechange', () => refreshColorInputs());
 
   // ===== Chrome 风格左侧分组导航（仅桌面端显示，CSS 控制）=====
   // 模式：所有分组连续渲染在右侧长页，面板固定高度、内容区滚动；
@@ -1042,6 +1116,11 @@
     if (settingsOverlay) {
       settingsOverlay.classList.remove('open');
       document.body.style.overflow = '';
+    }
+    // 焦点还给打开前所在的元素（此前 Tab 落回被遮罩的页面）
+    if (window.MarkdownPreview.ui && window.MarkdownPreview.ui._settingsLastFocus) {
+      window.MarkdownPreview.ui._settingsLastFocus.focus();
+      window.MarkdownPreview.ui._settingsLastFocus = null;
     }
   }
 
@@ -1238,7 +1317,9 @@
       return;
     }
 
-    const fileName = currentPath.split('/').pop().replace('.md', '');
+    // 锚定结尾剥扩展名：'.replace(".md","")' 会命中文件名中间的 ".md"
+    //（a.mdnotes.md → a notes），且漏掉 .markdown
+    const fileName = currentPath.split('/').pop().replace(/\.(md|markdown)$/i, '');
     downloadMarkdown(currentPath, fileName);
   }
   
@@ -1524,7 +1605,9 @@
     const rootStyle = document.documentElement.getAttribute('style');
     if (rootStyle) rootAttrs.push(` style="${rootStyle.replace(/"/g, '&quot;')}"`);
 
-    const title = (document.title || 'document').replace(/[\\/:*?"<>|]/g, '_');
+    const rawTitle = (document.title || 'document').replace(/[\\/:*?"<>|]/g, '_');
+    // <title> 上下文转义：& 直接拼进 HTML 会伪造实体（文件名用未转义版）
+    const title = rawTitle.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     const bodyHtml = absolutizeUrls(article.innerHTML);
     const html = `<!DOCTYPE html>
 <html lang="${document.documentElement.getAttribute('lang') || 'zh-CN'}"${rootAttrs.join('')}>
@@ -1547,7 +1630,7 @@ body { margin: 0; }
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${title}.html`;
+    a.download = `${rawTitle}.html`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -1615,6 +1698,8 @@ body { margin: 0; }
     if (splitSyncScrollToggle) splitSyncScrollToggle.checked = settings.splitSyncScroll !== false;
     const miniTocToggle = document.getElementById('miniTocToggle');
     if (miniTocToggle) miniTocToggle.checked = settings.miniToc !== false;
+    const readingPosToggle = document.getElementById('readingPosToggle');
+    if (readingPosToggle) readingPosToggle.checked = settings.readingPosToast !== false;
     if (focusModeToggle) focusModeToggle.checked = settings.focusMode === true;
 
     // 中文 / 排版 / 性能

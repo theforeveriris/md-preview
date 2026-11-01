@@ -47,6 +47,8 @@ const USAGE = `用法：node iris/scripts/link-check.js [选项]
   --all-external        等价于 --external-limit=0，外链全量检查
   --strict-external     外链失败升级为致命（默认仅告警）
   --seed=STR            抽样种子（默认当天 UTC 日期，按日轮换）
+  --report[=PATH]       把内链失效明细写入 JSON（默认 iris/data/link-report.json，
+                        供站点 #/broken-links 虚拟页消费；忽略退出码）
   -h, --help            显示本帮助`;
 
 const opt = {
@@ -56,12 +58,16 @@ const opt = {
   strictExternal: false,
   seed: new Date().toISOString().slice(0, 10),
   allExternal: false,
+  report: false,
+  reportPath: null,
 };
 for (const a of process.argv.slice(2)) {
   if (a === '-h' || a === '--help') { console.log(USAGE); process.exit(0); }
   else if (a === '--no-external') opt.external = false;
   else if (a === '--strict-external') opt.strictExternal = true;
   else if (a === '--all-external') opt.allExternal = true;
+  else if (a === '--report') opt.report = true;
+  else if (a.startsWith('--report=')) { opt.report = true; opt.reportPath = a.slice(9); }
   else if (a.startsWith('--external-limit=')) opt.externalLimit = parseInt(a.slice(17), 10) || 0;
   else if (a.startsWith('--external-timeout=')) opt.timeout = parseInt(a.slice(19), 10) || 8000;
   else if (a.startsWith('--seed=')) opt.seed = a.slice(7);
@@ -403,6 +409,30 @@ async function main() {
   }
 
   // ---- 汇总 ----
+  // --report：内链失效明细落 JSON（#/broken-links 页消费）。
+  // 报告模式只反映内链健康度，不改变退出码——CI 既能继续失败打红，
+  // 也保证最新报告一定写盘。
+  if (opt.report) {
+    const outPath = opt.reportPath
+      ? path.resolve(ROOT, opt.reportPath)
+      : path.join(ROOT, 'iris', 'data', 'link-report.json');
+    const byFile = new Map();
+    for (const item of broken.values()) {
+      if (!byFile.has(item.file)) byFile.set(item.file, []);
+      byFile.get(item.file).push(item);
+    }
+    const report = {
+      generatedAt: new Date().toISOString(),
+      totalRefs: internalRefs,
+      brokenCount: broken.size,
+      files: Array.from(byFile.entries())
+        .map(([file, items]) => ({ file, count: items.length, items }))
+        .sort((a, b) => b.count - a.count),
+    };
+    fs.writeFileSync(outPath, JSON.stringify(report));
+    console.log(`  死链报告已写入 ${path.relative(ROOT, outPath)}（${broken.size} 处 / ${internalRefs} 个内链）`);
+  }
+
   console.log('');
   const externalFatal = opt.strictExternal ? externalFail : 0;
   if (failures > 0 || externalFatal > 0) {

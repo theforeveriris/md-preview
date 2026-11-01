@@ -25,7 +25,8 @@
           const lines = value.split('\n');
           let offset = 0;
           lines.forEach((line, i) => {
-            const m = /^(#{1,4})\s+(.+?)\s*$/.exec(line);
+            // H1–H6：工具栏可插入 H5/H6 且渲染管线全生成锚点，大纲同步收全
+            const m = /^(#{1,6})\s+(.+?)\s*$/.exec(line);
             if (m) out.push({ cell, line: i, level: m[1].length, text: m[2], offset });
             offset += line.length + 1;
           });
@@ -57,6 +58,9 @@
               });
               item.cell.editor.focus();
             } catch (e) { /* 光标失败不影响跳转 */ }
+            // 与 mermaid 错误行跳转同款 cell 闪烁反馈（同类跳转体验一致）
+            item.cell.div.classList.remove('cell-line-flash');
+            requestAnimationFrame(() => item.cell.div.classList.add('cell-line-flash'));
           });
         });
       }

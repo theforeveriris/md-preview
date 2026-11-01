@@ -318,11 +318,23 @@
     };
     cells.push(cellData);
 
-    // 插入到 DOM：在全局 addBtn 之前插入
-    if (afterCellId) {
+    // 插入到 DOM：beforeCellId（插到某 Cell 之前，撤销删除用）> afterCellId > 末尾
+    if (opts.beforeCellId) {
+      const beforeCell = getCell(opts.beforeCellId);
+      if (beforeCell) {
+        editorMain.insertBefore(cellDiv, beforeCell.div);
+        cells.splice(cells.indexOf(cellData), 1);
+        cells.splice(cells.indexOf(beforeCell), 0, cellData);
+      } else {
+        editorMain.insertBefore(cellDiv, globalAddBtn);
+      }
+    } else if (afterCellId) {
       const afterCell = getCell(afterCellId);
       if (afterCell) {
         afterCell.div.after(cellDiv);
+        // DOM 与数组顺序必须同步：编号/序列化/moveCell 都按数组顺序来
+        cells.splice(cells.indexOf(cellData), 1);
+        cells.splice(cells.indexOf(afterCell) + 1, 0, cellData);
       } else {
         editorMain.insertBefore(cellDiv, globalAddBtn);
       }
@@ -532,7 +544,7 @@
     return fallback;
   }
 
-  function showToast(msg) {
+  function showToast(msg, action) {
     let toast = document.getElementById('editorToast');
     if (!toast) {
       toast = document.createElement('div');
@@ -541,9 +553,26 @@
       document.body.appendChild(toast);
     }
     toast.textContent = msg;
+    // 可交互扩展：带 action 时挂一个操作按钮（如删除 Cell 的「撤销」）
+    if (toast._actionBtn) { toast._actionBtn.remove(); toast._actionBtn = null; }
+    if (action) {
+      const btn = document.createElement('button');
+      btn.textContent = action.label;
+      btn.style.cssText = 'margin-left:10px;padding:2px 10px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.6);border-radius:4px;font-size:12px;cursor:pointer;';
+      btn.addEventListener('click', () => {
+        toast.style.opacity = '0';
+        action.run();
+      });
+      toast.appendChild(btn);
+      toast._actionBtn = btn;
+      toast.style.pointerEvents = 'auto';
+    } else {
+      toast.style.pointerEvents = 'none';
+    }
     toast.style.opacity = '1';
     if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { toast.style.opacity = '0'; }, 1500);
+    // 带撤销按钮的 toast 需要留出反应时间
+    toastTimer = setTimeout(() => { toast.style.opacity = '0'; }, action ? 6000 : 1500);
   }
 
   // ============== Cell 折叠 ==============
@@ -596,6 +625,13 @@
     const idx = cells.findIndex(c => c.id === id);
     if (idx === -1) return;
     const cell = cells[idx];
+    // 快照用于「撤销删除」：销毁后 CM 实例与撤销栈随之丢失，
+    // 恢复 = 按原类型/内容/位置新建一个 Cell
+    const snapshot = {
+      content: cell.textarea ? cell.textarea.value : '',
+      type: cell.type,
+      idx
+    };
     // 销毁 CM6 实例，避免内存泄漏（cell.textarea 是 CodeMirrorEditor 的兼容别名）
     if (cell.textarea && typeof cell.textarea.destroy === 'function') {
       cell.textarea.destroy();
@@ -616,6 +652,26 @@
     }
     renumberCells();
     updateStatusbar();
+    showToast(
+      editorT('editor.cellDeleted', '已删除 Cell [{n}]').replace('{n}', id),
+      {
+        label: editorT('editor.undo', '撤销'),
+        run: () => {
+          // idx=0 时插到首位（beforeCellId），否则接在前一个 Cell 之后即原位
+          const anchor = snapshot.idx > 0 ? cells[snapshot.idx - 1] : null;
+          const first = cells[0];
+          createCell(
+            anchor ? anchor.id : null,
+            snapshot.content,
+            {
+              type: snapshot.type,
+              beforeCellId: !anchor && first ? first.id : null
+            }
+          );
+          markUnsaved();
+        }
+      }
+    );
   }
 
   function moveCell(id, direction) {
@@ -1107,6 +1163,14 @@
         case 'ctx-copy-html': {
           const cell = getCell(id);
           if (cell) copyOutputHtml(cell);
+          break;
+        }
+        case 'ctx-copy-source': {
+          const cell = getCell(id);
+          if (!cell) break;
+          window.MarkdownPreview.interactions.copyText(cell.textarea.value).then(() => {
+            showToast(editorT('editor.cellSourceCopied', '已复制 Cell 源码'));
+          });
           break;
         }
         case 'ctx-export-cell': {
@@ -2101,6 +2165,9 @@
         id: c.id,
         type: c.type || 'markdown',
         content: c.textarea.value,
+        // 折叠状态：重开笔记本布局不再全丢
+        collapsed: c.div.classList.contains('cell-collapsed'),
+        editorCollapsed: c.div.classList.contains('cell-editor-collapsed'),
         // output_html 序列化缓存：打字触发的 1.5s 自动保存不再全量重读
         // 每个 cell 的 output DOM（含 base64 图/mermaid SVG 的 innerHTML
         // 序列化是最大头）；markRun / 渲染器跑完时失效重建
@@ -2200,6 +2267,16 @@
     // 已入库，统一在注入前净化（导入边界已有一次净化，这里是纵深防御）
     for (const s of cellList) {
       const newCell = createCell(null, s.content || '', { type: s.type === 'plaintext' ? 'plaintext' : 'markdown' });
+      // 恢复折叠状态（折叠 Cell / 双屏折叠，重开笔记本布局保持）
+      if (s.collapsed || s.editorCollapsed) {
+        if (s.collapsed) {
+          newCell.div.classList.add('cell-collapsed');
+          if (newCell.collapseBtn) {
+            newCell.collapseBtn.innerHTML = '<svg class="ico ico-sm"><use href="#i-chevron-down"/></svg>';
+          }
+        }
+        if (s.editorCollapsed) newCell.div.classList.add('cell-editor-collapsed');
+      }
       if (s.output_html) {
         const clean = await mdRender.sanitizeHtml(s.output_html).catch(() => null);
         if (clean != null) {
@@ -2509,6 +2586,23 @@
     getCells: () => cells
   }) : null;
 
+  // AI 助手（用户自带 Key：选中工具栏 润色/翻译/解释/Mermaid，输出就地写入）。
+  // init 内含 DOM 装配，包一层 try：它抛错不能中断后续 tableEditor/loadAutosave
+  const aiMod = window.MarkdownPreview.editorModules &&
+    window.MarkdownPreview.editorModules.editorAI;
+  if (aiMod) {
+    try {
+      aiMod.init({
+        editorT,
+        showToast,
+        getCells: () => cells,
+        getActiveCellId: () => activeCellId
+      });
+    } catch (e) {
+      console.error('[editor] AI 助手初始化失败（不影响其余编辑器功能）:', e);
+    }
+  }
+
   // 可视化表格编辑器（输出区表格「编辑」→ 网格编辑 → 回写 Markdown 源码）
   const tableEditorMod = window.MarkdownPreview.editorModules &&
     window.MarkdownPreview.editorModules.tableEditor;
@@ -2542,7 +2636,6 @@
       return;
     }
     const text = cells.map(c => c.textarea.value).join(String.fromCharCode(10, 10));
-    window.MarkdownPreview.gitHistory?.openWorkingDiff?.(repoPath, text);
     window.MarkdownPreview.gitHistory?.openWorkingDiff?.(repoPath, text);
   });
 

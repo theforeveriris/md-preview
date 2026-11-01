@@ -350,9 +350,44 @@
       shadow.appendChild(styleEl);
     }
 
+    // 文件夹折叠状态持久化（用户手动收起的目录刷新后保持）
+    var FOLDER_STATE_KEY = 'md-preview-folder-state';
+    function readFolderState() {
+      try { return JSON.parse(localStorage.getItem(FOLDER_STATE_KEY) || '{}') || {}; }
+      catch (e) { return {}; }
+    }
+    function folderPathKey(folder) {
+      // 键 = 从根到该目录的名称链（vendor Shadow DOM 内无完整路径可读）
+      var names = [];
+      var node = folder;
+      while (node && node.tagName === 'LI') {
+        var btn = node.querySelector('button');
+        if (!btn || !btn.textContent.trim()) return null;
+        names.unshift(btn.textContent.trim());
+        node = node.parentElement ? node.parentElement.closest('li') : null;
+      }
+      return names.join('/') || null;
+    }
+    function persistFolderState(sh) {
+      var out = {};
+      sh.querySelectorAll('li.folder').forEach(function(folder) {
+        var key = folderPathKey(folder);
+        if (key) out[key] = folder.classList.contains('opened');
+      });
+      try { localStorage.setItem(FOLDER_STATE_KEY, JSON.stringify(out)); } catch (e) { /* 忽略 */ }
+    }
+
     // Handle file clicks
     tree.addEventListener('click', (event) => {
       const { action, folder, target, path } = event.detail;
+      // 文件夹开合：等 vendor 切换完 class 再记录状态
+      if (action === 'click' && folder) {
+        setTimeout(function() {
+          var sh = tree.shadowRoot;
+          if (sh) persistFolderState(sh);
+        }, 0);
+        return;
+      }
       if (action === 'click' && !folder) {
         const filePath = target._path || findFilePath(target.name, state.fileTreeData);
         if (filePath) {
@@ -362,6 +397,39 @@
         }
       }
     });
+
+    // 文件名过滤（树内 type-to-filter）
+    function applyTreeFilter() {
+      var input = document.getElementById('treeFilterInput');
+      var sh = tree.shadowRoot;
+      if (!input || !sh) return;
+      var q = input.value.trim().toLowerCase();
+      if (!q) {
+        sh.querySelectorAll('li').forEach(function(li) { li.style.display = ''; });
+        return;
+      }
+      // 文件名命中显示；目录自底向上：有可见后代才显示，过滤期间全部展开
+      sh.querySelectorAll('li.file, li.text').forEach(function(li) {
+        li.style.display = li.textContent.toLowerCase().indexOf(q) !== -1 ? '' : 'none';
+      });
+      var folders = Array.prototype.slice.call(sh.querySelectorAll('li.folder')).reverse();
+      folders.forEach(function(folder) {
+        var any = false;
+        Array.prototype.forEach.call(folder.children, function(child) {
+          if (child.tagName === 'UL') {
+            Array.prototype.forEach.call(child.children, function(sub) {
+              if (sub.style.display !== 'none') any = true;
+            });
+          }
+        });
+        folder.style.display = any ? '' : 'none';
+        if (any) folder.classList.add('opened');
+      });
+    }
+    var filterInput = document.getElementById('treeFilterInput');
+    if (filterInput) {
+      filterInput.addEventListener('input', applyTreeFilter);
+    }
 
     dom.fileTree.appendChild(tree);
 
@@ -377,9 +445,28 @@
           folder.classList.add('opened');
         });
       }
+      // 恢复用户手动折叠过的目录（有记忆的目录覆盖默认展开）
+      var folderState = readFolderState();
+      if (Object.keys(folderState).length > 0) {
+        sh.querySelectorAll('li.folder').forEach(function(folder) {
+          var key = folderPathKey(folder);
+          if (key && Object.prototype.hasOwnProperty.call(folderState, key)) {
+            folder.classList.toggle('opened', !!folderState[key]);
+          }
+        });
+      }
+      // 过滤输入非空时（树重建后）重放过滤
+      if (filterInput && filterInput.value.trim()) applyTreeFilter();
 
       // 建立路径 -> li 映射，并注入词数
       state.fileLiMap = new Map();
+
+      // 容器级 ARIA 标注（vendor 组件在 Shadow DOM 内，无法逐节点补
+      // role=treeitem；容器层声明 + 当前文档 aria-current 由 active 类
+      // 联动，读屏至少能报出「树、当前项」）
+      sh.querySelectorAll('li.file.active, li.text.active').forEach(function(li) {
+        li.setAttribute('aria-current', 'true');
+      });
 
       sh.querySelectorAll('li.file, li.text').forEach(li => {
         var button = li.querySelector('button');
@@ -510,7 +597,20 @@
 
     // 通过路径映射找到对应 li 并高亮
     if (state.fileLiMap && state.fileLiMap.has(path)) {
-      state.fileLiMap.get(path).classList.add('active');
+      var li = state.fileLiMap.get(path);
+      li.classList.add('active');
+      // 从搜索/翻页跳进树深处时高亮必须在可视区：先展开祖先文件夹再滚动
+      //（vendor 树的文件夹折叠态是 li.folder.opened）
+      var ancestor = li.parentElement ? li.parentElement.closest('li.folder') : null;
+      while (ancestor) {
+        ancestor.classList.add('opened');
+        ancestor = ancestor.parentElement ? ancestor.parentElement.closest('li.folder') : null;
+      }
+      // 树刚渲染完时 li 可能还没有布局，滚动放到下一帧；
+      // block:nearest 只滚侧边栏自己的滚动容器，不牵动页面
+      requestAnimationFrame(function() {
+        li.scrollIntoView({ block: 'nearest' });
+      });
     }
   }
   
@@ -599,16 +699,34 @@
   
   function getAdjacentFiles(currentPath) {
     bindGlobals();
-    const allFiles = getAllFilesInDFSOrder();
-    const currentIndex = allFiles.findIndex(f => f.path === currentPath);
-    
+    // 与侧边栏显示顺序同口径：每层「目录在前 + 按当前 treeSort 策略排序」
+    // 的先序遍历——用户选「按修改时间」后 [ ] 翻页跟随，不再永远走 JSON 原序
+    const nameSort = window.MarkdownPreview.nameSort;
+    const mode = currentSortMode();
+    const meta = item => ({
+      name: item.name,
+      created: item.created || 0,
+      modified: item.modified || 0
+    });
+    const cmp = (a, b) => (nameSort && nameSort.compareEntries)
+      ? nameSort.compareEntries(meta(a), meta(b), mode)
+      : 0;
+    const result = [];
+    (function traverse(items) {
+      const folders = items.filter(i => i.type === 'folder' && i.children).sort(cmp);
+      const files = items.filter(i => i.type === 'file' && /\.(md|txt)$/i.test(i.name)).sort(cmp);
+      folders.forEach(f => traverse(f.children));
+      files.forEach(f => {
+        result.push({ name: f.name.replace(/\.(md|txt)$/i, ''), path: f.path });
+      });
+    })(state.fileTreeData || []);
+    const currentIndex = result.findIndex(f => f.path === currentPath);
     if (currentIndex === -1) {
       return { prev: null, next: null };
     }
-    
     return {
-      prev: currentIndex > 0 ? allFiles[currentIndex - 1] : null,
-      next: currentIndex < allFiles.length - 1 ? allFiles[currentIndex + 1] : null
+      prev: currentIndex > 0 ? result[currentIndex - 1] : null,
+      next: currentIndex < result.length - 1 ? result[currentIndex + 1] : null
     };
   }
 

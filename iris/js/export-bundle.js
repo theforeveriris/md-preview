@@ -209,11 +209,91 @@ figure { margin: 1em 0; text-align: center; }`;
     return assets;
   }
 
+  // 生成封面：当前主题配色 + 书名排版（Canvas → PNG，Uint8Array）
+  function makeCoverPng(title, author) {
+    const W = 1200, H = 1600;
+    const canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    const css = getComputedStyle(document.documentElement);
+    const bg = css.getPropertyValue('--color-bg').trim() || '#ffffff';
+    const accent = css.getPropertyValue('--color-accent-purple').trim() || '#8B5CF6';
+    const pink = css.getPropertyValue('--color-accent-pink').trim() || '#D946EF';
+    const text = css.getPropertyValue('--color-text').trim() || '#333333';
+    const muted = css.getPropertyValue('--color-text-muted').trim() || '#999999';
+
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+    // 顶部渐变色带 + 底部细线，避免纯色封面太素
+    const grad = ctx.createLinearGradient(0, 0, W, 0);
+    grad.addColorStop(0, accent);
+    grad.addColorStop(1, pink);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, 26);
+    ctx.fillStyle = accent;
+    ctx.fillRect(80, H - 210, W - 160, 3);
+
+    // 书名自动换行（最多 5 行，放不下整行字号收缩）
+    ctx.fillStyle = text;
+    ctx.textBaseline = 'top';
+    let fontSize = 92;
+    let lines = [];
+    const maxW = W - 160;
+    for (; fontSize >= 44; fontSize -= 8) {
+      ctx.font = `700 ${fontSize}px sans-serif`;
+      lines = [];
+      let current = '';
+      String(title || '').split(/\s+/).forEach(word => {
+        const test = current ? current + ' ' + word : word;
+        if (ctx.measureText(test).width > maxW && current) {
+          lines.push(current);
+          current = word;
+        } else {
+          current = test;
+        }
+      });
+      if (current) lines.push(current);
+      // CJK 长词按字符二次切分
+      const wrapped = [];
+      lines.forEach(line => {
+        if (ctx.measureText(line).width <= maxW) { wrapped.push(line); return; }
+        let seg = '';
+        for (const ch of line) {
+          if (ctx.measureText(seg + ch).width > maxW && seg) { wrapped.push(seg); seg = ch; }
+          else seg += ch;
+        }
+        if (seg) wrapped.push(seg);
+      });
+      lines = wrapped;
+      if (lines.length <= 5) break;
+    }
+    lines = lines.slice(0, 6);
+    const lineH = fontSize * 1.25;
+    const blockH = lines.length * lineH;
+    const top = (H - blockH) / 2 - 60;
+    lines.forEach((line, i) => ctx.fillText(line, 80, top + i * lineH));
+
+    // 底部署名
+    ctx.fillStyle = muted;
+    ctx.font = '36px sans-serif';
+    ctx.fillText(String(author || 'Markdown Preview').slice(0, 40), 80, H - 160);
+
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(async b => {
+        if (!b) return reject(new Error('toBlob failed'));
+        resolve(new Uint8Array(await b.arrayBuffer()));
+      }, 'image/png');
+    });
+  }
+
   async function buildEpub({ title, chapters, onProgress }) {
     const zip = window.MarkdownPreview.zip;
     const lang = document.documentElement.getAttribute('lang') || 'zh-CN';
     const bookId = 'urn:uuid:' + uuid();
     const modified = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
+    const cfg = window.MarkdownPreview.config || {};
+    const creator = cfg.owner || 'Markdown Preview';
 
     // 渲染正文：与站点同源的 parseMarkdown；本地图片随文打包
     for (const chap of chapters) {
@@ -223,6 +303,39 @@ figure { margin: 1em 0; text-align: center; }`;
       chap.title = extractTitle(chap.text, chap.fallbackTitle);
     }
     const assets = await collectImages(chapters, onProgress);
+
+    // 章节间互链重写：站内 .md 相对链接 / #/ 路由链接 → 对应章节文件。
+    // 此前电子书里点跨文档链接直接失效；目标不在书内时保留原样
+    const chapByPath = new Map();
+    chapters.forEach((c, i) => {
+      if (c.path) chapByPath.set(c.path.replace(/\\/g, '/').toLowerCase(), i + 1);
+    });
+    const resolveInBook = (href, dir) => {
+      let h = String(href || '');
+      if (!h || /^(https?:|mailto:|data:)/i.test(h) || h.startsWith('//')) return null;
+      const hashIdx = h.indexOf('#');
+      if (hashIdx >= 0) h = h.slice(0, hashIdx); // 章节内未生成标题锚点，去掉锚段
+      if (!h) return null;
+      if (h.startsWith('#/')) h = h.slice(2);
+      if (h.startsWith('/')) h = h.slice(1);
+      try { h = decodeURIComponent(h); } catch (e) { /* 保留原文 */ }
+      h = h.replace(/\\/g, '/');
+      const full = dir ? dir + '/' + h : h;
+      const segs = [];
+      full.split('/').forEach(seg => {
+        if (seg === '..') segs.pop();
+        else if (seg !== '.' && seg !== '') segs.push(seg);
+      });
+      const n = chapByPath.get(segs.join('/').toLowerCase());
+      return n ? `text/chap-${String(n).padStart(3, '0')}.xhtml` : null;
+    };
+    chapters.forEach(chap => {
+      const dir = (chap.path || '').split('/').slice(0, -1).join('/');
+      chap.html = chap.html.replace(/href="([^"]+)"/g, (m0, href) => {
+        const target = resolveInBook(href, dir);
+        return target ? `href="../${target}"` : m0;
+      });
+    });
 
     const chapterFiles = chapters.map((chap, i) => {
       const hasH1 = /<h1[\s>]/i.test(chap.html);
@@ -258,18 +371,30 @@ ${navItems}
       `    <item id="a-${a.href.replace(/[^a-z0-9]/gi, '-')}" href="${a.href}" media-type="${a.media}"/>`).join('\n');
     const spineRefs = chapterFiles.map((c, i) => `    <itemref idref="c${i + 1}"/>`).join('\n');
 
+    // 元数据补全：作者 / 描述 / 日期（此前只有 title/language，EPUB 元数据页近乎空白）
+    let cover = null;
+    try {
+      if (document.fonts && document.fonts.ready) await document.fonts.ready;
+      const png = await makeCoverPng(title, creator);
+      cover = { href: 'assets/cover.png', data: png };
+    } catch (e) { /* 封面生成失败不阻断导出 */ }
+    const fmDesc = /(?:^|\n)description:\s*(.+)/.exec(chapters[0] ? chapters[0].text || '' : '');
+    const description = fmDesc ? fmDesc[1].trim().slice(0, 300) : '';
+
     const opf = `<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bookid" xml:lang="${lang}">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
     <dc:identifier id="bookid">${bookId}</dc:identifier>
     <dc:title>${escapeXml(title)}</dc:title>
     <dc:language>${lang}</dc:language>
-    <meta property="dcterms:modified">${modified}</meta>
+    <dc:creator>${escapeXml(creator)}</dc:creator>
+    <dc:date>${modified}</dc:date>
+${description ? `    <dc:description>${escapeXml(description)}</dc:description>\n` : ''}    <meta property="dcterms:modified">${modified}</meta>
   </metadata>
   <manifest>
     <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
     <item id="css" href="style.css" media-type="text/css"/>
-${manifestItems}
+${cover ? `    <item id="cover-image" href="${cover.href}" media-type="image/png" properties="cover-image"/>\n` : ''}${manifestItems}
 ${assetItems}
   </manifest>
   <spine>
@@ -289,7 +414,8 @@ ${spineRefs}
       { name: 'OEBPS/nav.xhtml', data: navXhtml },
       { name: 'OEBPS/style.css', data: EPUB_STYLE },
       ...chapterFiles.map(c => ({ name: 'OEBPS/' + c.name, data: c.data })),
-      ...[...assets.values()].map(a => ({ name: 'OEBPS/' + a.href, data: a.data }))
+      ...[...assets.values()].map(a => ({ name: 'OEBPS/' + a.href, data: a.data })),
+      ...(cover ? [{ name: 'OEBPS/' + cover.href, data: cover.data }] : [])
     ];
     return zip.createZip(entries);
   }

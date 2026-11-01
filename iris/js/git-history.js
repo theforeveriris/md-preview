@@ -200,9 +200,14 @@
         const msg = (c.commit && c.commit.message || '').split('\n')[0];
         const author = (c.commit && c.commit.author && c.commit.author.name) || '';
         const date = (c.commit && c.commit.author && c.commit.author.date) || '';
+        // shaLink 逐提交调用（返回该 commit 的 GitHub 页 URL 或 null）
+        const commitUrl = shaLink(c.sha);
+        const shaHtml = commitUrl
+          ? `<a class="git-sha-link" href="${esc(commitUrl)}" target="_blank" rel="noopener noreferrer">${esc(c.sha.slice(0, 7))}</a>`
+          : esc(c.sha.slice(0, 7));
         return `<li><button type="button" class="git-commit-item" data-sha="${esc(c.sha)}">
           <span class="git-commit-msg">${esc(msg)}</span>
-          <span class="git-commit-meta">${esc(c.sha.slice(0, 7))} · ${esc(author)} · ${esc(formatDate(date))}</span>
+          <span class="git-commit-meta">${shaHtml} · ${esc(author)} · ${esc(formatDate(date))}</span>
         </button></li>`;
       }).join('')}</ul>`;
       body.querySelectorAll('.git-commit-item').forEach(btn => {
@@ -233,19 +238,43 @@
     try { return new Date(iso).toLocaleString('zh-CN', { hour12: false }); } catch (e) { return iso; }
   }
 
+  // GitHub 托管时返回该 commit 的网页链接（sha 可点跳 GitHub）；其他平台 null
+  function shaLink(sha) {
+    const cfg = window.MarkdownPreview.CONFIG || {};
+    if (cfg.owner && cfg.repo) {
+      return `https://github.com/${cfg.owner}/${cfg.repo}/commit/${sha}`;
+    }
+    return null;
+  }
+
+  function fileBlock(f) {
+    return `
+      <div class="git-file">
+        <div class="git-file-head">${esc(f.filename)} <span class="git-file-stat">+${f.additions} −${f.deletions}</span></div>
+        ${f.patch ? `<pre class="git-patch"><code class="language-diff">${esc(f.patch)}</code></pre>` : `<div class="git-file-note">${esc(t('history.binary', '（无文本 diff）'))}</div>`}
+      </div>`;
+  }
+
   async function showCommit(body, sha) {
     body.innerHTML = `<div class="git-history-loading">${esc(t('history.loading', '加载中…'))}</div>`;
     try {
       const detail = await getCommitDetail(sha);
+      const currentPath = overlay.dataset.currentPath || '';
       const files = (detail && detail.files) || [];
+      // 单篇历史进来的 commit 详情：本文档的 diff 置顶展示，其余文件收进
+      // 可展开分组——merge commit 动辄几十个文件，此前整屏糊满无关 diff
+      const norm = s => String(s || '').replace(/^\.\//, '').replace(/\\/g, '/');
+      const mine = files.filter(f => norm(f.filename) === norm(currentPath));
+      const others = files.filter(f => mine.indexOf(f) === -1);
       body.innerHTML =
         `<button type="button" class="download-btn git-back">← ${esc(t('history.back', '返回列表'))}</button>` +
         `<div class="git-commit-detail-msg">${esc((detail.commit && detail.commit.message || '').trim())}</div>` +
-        files.map(f => `
-          <div class="git-file">
-            <div class="git-file-head">${esc(f.filename)} <span class="git-file-stat">+${f.additions} −${f.deletions}</span></div>
-            ${f.patch ? `<pre class="git-patch"><code class="language-diff">${esc(f.patch)}</code></pre>` : `<div class="git-file-note">${esc(t('history.binary', '（无文本 diff）'))}</div>`}
-          </div>`).join('');
+        (mine.length
+          ? mine.map(fileBlock).join('')
+          : `<div class="git-file-note">${esc(t('history.notInCommit', '该提交未改动本文档'))}</div>`) +
+        (others.length
+          ? `<details class="git-other-files"><summary>${esc(t('history.otherFiles', '此提交还涉及 {n} 个其他文件').replace('{n}', others.length))}</summary>${others.map(fileBlock).join('')}</details>`
+          : '');
       body.querySelector('.git-back').addEventListener('click', () => {
         openHistory(overlay.dataset.currentPath || window.MarkdownPreview.state.currentFilePath);
       });

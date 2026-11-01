@@ -107,6 +107,13 @@
     });
   }
 
+  // 折叠状态的存储键：标题 id 优先，无 id（纯符号标题等）回退标题文本。
+  // 保存与恢复必须共用同一把钥匙——旧实现保存用文本回退、恢复只认 id，
+  // 无 id 标题的状态存进 localStorage 后永远无法恢复
+  function headingKey(h2) {
+    return h2.id || h2.textContent.trim();
+  }
+
   // markdown.js 渲染完成后调用
   function onDocRendered(currentPath) {
     clearAll();
@@ -126,11 +133,11 @@
         e.stopPropagation();
         const collapsed = !h2.classList.contains('section-collapsed-heading');
         applyState(h2, collapsed);
-        setCollapsed(currentPath, h2.id || h2.textContent.trim(), collapsed);
+        setCollapsed(currentPath, headingKey(h2), collapsed);
       });
       h2.appendChild(btn);
 
-      if (h2.id && store[h2.id]) applyState(h2, true);
+      if (store[headingKey(h2)]) applyState(h2, true);
     });
   }
 

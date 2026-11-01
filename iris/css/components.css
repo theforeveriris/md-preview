@@ -210,6 +210,11 @@
   background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent);
 }
 
+/* 面板键盘导航的当前项（↑/↓）：与 hover 同款高亮 */
+.search-result-item.kbd-active {
+  background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent);
+}
+
 .search-result-title {
   font-weight: 500;
   margin-bottom: 4px;
@@ -1300,6 +1305,14 @@ pre.code-block code { position: relative; z-index: 1; }
   font-size: 13px;
 }
 .fm-label .fm-pinned { color: var(--color-text-muted); }
+/* 「开关开了但环境不满足」的行内说明 */
+.fm-env-hint {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
 
 /* ============== 位标注块（renderers/bits.js） ============== */
 .bits-widget {
@@ -1384,8 +1397,30 @@ table.md-table-accent-header thead th {
   transition: filter 0.15s ease;
   display: inline-block;
 }
-.sensitive-blur:hover { filter: blur(4px); }
+/* hover 不做部分去模糊：演示/投屏场景鼠标扫过密码就变半可读，
+   与「点击才显示」的设计意图冲突（removed） */
 .sensitive-blur.revealed { filter: none; }
+
+/* 开启态常驻徽标：模式开着没有全局线索，点击 = 一键重新遮盖全部蒙版 */
+.sensitive-mode-badge {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 900;
+  padding: 5px 12px;
+  border: 1px solid var(--color-error, #ff6b6b);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-error, #ff6b6b) 12%, var(--color-surface));
+  color: var(--color-error, #ff6b6b);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+.sensitive-mode-badge:hover {
+  background: color-mix(in srgb, var(--color-error, #ff6b6b) 22%, var(--color-surface));
+}
+.sensitive-mode-badge[hidden] { display: none; }
 
 /* ============== 文档 meta 信息头（markdown.js DOC-META） ============== */
 .doc-meta-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }

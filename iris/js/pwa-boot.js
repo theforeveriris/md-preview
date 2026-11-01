@@ -20,6 +20,8 @@
 
   let deferredPrompt = null;
   let swRegistration = null;
+  // 处于 waiting 态的新版本 SW：刷新按钮点击时才被激活（SKIP_WAITING）
+  let waitingWorker = null;
 
   function showInstallButton() {
     const installBtn = document.getElementById('installPwaBtn');
@@ -73,7 +75,11 @@
             newWorker.addEventListener('statechange', () => {
               console.log('[PWA] Worker state:', newWorker.state);
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                newWorker.postMessage({ type: 'SKIP_WAITING' });
+                // 不再自动 SKIP_WAITING：编辑器写到一半被强制切换是真实伤害。
+                // 记住 waiting worker，提示条交给用户决定——
+                // 「刷新」按钮会激活它并重载
+                waitingWorker = newWorker;
+                showUpdateToast(true);
               }
             });
           });
@@ -93,9 +99,9 @@
     }
   }
 
-  function showUpdateToast() {
-    // 避免首次安装时触发
-    if (!sessionStorage.getItem('sw-first-load')) {
+  function showUpdateToast(force) {
+    // 避免首次安装时触发（force = waiting worker 就绪，明确要提示）
+    if (!force && !sessionStorage.getItem('sw-first-load')) {
       sessionStorage.setItem('sw-first-load', '1');
       return;
     }
@@ -220,6 +226,12 @@
       updateRefreshBtn.addEventListener('click', () => {
         let reloaded = false;
         const doReload = () => { if (!reloaded) { reloaded = true; window.location.reload(); } };
+        // 用户点「刷新」= 明确同意切换：激活 waiting 态的新版本 SW
+        if (waitingWorker) {
+          waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+        } else if (navigator.serviceWorker.controller) {
+          navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+        }
         if (navigator.serviceWorker.controller) {
           navigator.serviceWorker.addEventListener('controllerchange', doReload, { once: true });
           // 兜底：600ms 内没触发 controllerchange（如无 waiting SW）也照常刷新

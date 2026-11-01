@@ -37,7 +37,7 @@ const OUTPUT_FILE = path.join(__dirname, '../data/feed.xml');
  * 仅支持简单的 key: value 形式，与 markdown.js 中 parseFrontmatter 保持一致
  */
 // frontmatter 解析/标题提取：统一走 lib/frontmatter.js
-const { parseFrontmatter, splitFrontmatter } = require('./lib/frontmatter.js');
+const { parseFrontmatter, splitFrontmatter, extractTags } = require('./lib/frontmatter.js');
 
 function extractTitle(content, fallbackName) {
   const { body } = splitFrontmatter(content);
@@ -79,9 +79,10 @@ function getPublishDate(fullPath) {
     return new Date(ts.modified * 1000);
   }
   try {
-    // execFileSync 数组形式：路径含引号/$/反引号不会破坏命令（同仓其余脚本惯例）
+    // %cI（committer date，最后修改）与 sitemap 同口径——此前 feed 用 %aI
+    // （author date，首次创作），同一份数据两种时间
     const out = execFileSync(
-      'git', ['log', '-1', '--format=%aI', '--', fullPath],
+      'git', ['log', '-1', '--format=%cI', '--', fullPath],
       { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] }
     ).trim();
     if (out) {
@@ -193,7 +194,13 @@ function buildFeed() {
     const { frontmatter, content: body } = parseFrontmatter(content);
     const title = frontmatter.title || extractTitle(content, file.fileName);
     const description = frontmatter.description || extractDescription(body);
-    const pubDate = frontmatter.date ? new Date(frontmatter.date) : getPublishDate(file.fullPath);
+    // frontmatter.date 无效（如 "bad"）时 new Date 得到 Invalid Date：
+    // 排序变 NaN、toUTCString 输出 "Invalid Date" 直接进 XML——回退 git 时间
+    let pubDate = frontmatter.date ? new Date(frontmatter.date) : getPublishDate(file.fullPath);
+    if (!(pubDate instanceof Date) || isNaN(pubDate.getTime())) {
+      console.warn(`Invalid frontmatter.date "${frontmatter.date}" in ${file.repoRelativePath}, falling back to git date`);
+      pubDate = getPublishDate(file.fullPath);
+    }
 
     // 直链原始 Markdown 文件：标准 RSS 阅读器抓取 <link> 时不执行站点 JS，
     // hash fragment（#/docs/foo.md）只能拿到 index.html 空壳，无法解析。
@@ -212,14 +219,18 @@ function buildFeed() {
       guid: itemUrl,
       description,
       pubDate,
+      tags: extractTags(content),
       fullText
     };
   }).filter(Boolean);
 
-  // 按发布时间倒序
+  // 按发布时间倒序；LIMIT 上限（env FEED_LIMIT，默认 100）——全文输出下
+  // 全量条目会让 feed.xml 体积随文档数无限增长
   items.sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
+  const FEED_LIMIT = Number(process.env.FEED_LIMIT || 100);
+  const limited = items.slice(0, FEED_LIMIT);
 
-  writeFeed(items);
+  writeFeed(limited);
 }
 
 function writeFeed(items) {
@@ -228,6 +239,8 @@ function writeFeed(items) {
 
   const itemsXml = items.map(item => {
     const pubDate = toRFC822(item.pubDate);
+    const categories = (item.tags || []).map(tag =>
+      `      <category>${escapeXml(tag)}</category>`).join('\n');
     return [
       '    <item>',
       `      <title>${escapeXml(item.title)}</title>`,
@@ -235,6 +248,7 @@ function writeFeed(items) {
       `      <guid isPermaLink="true">${escapeXml(item.guid)}</guid>`,
       `      <pubDate>${pubDate}</pubDate>`,
       `      <description>${escapeXml(item.description)}</description>`,
+      ...(categories ? [categories] : []),
       `      <content:encoded>${wrapCdata(item.fullText)}</content:encoded>`,
       '    </item>'
     ].join('\n');

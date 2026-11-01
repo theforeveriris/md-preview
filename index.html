@@ -49,8 +49,13 @@
   <link rel="stylesheet" href="iris/css/pulse-generator.css">
   <link rel="stylesheet" href="iris/css/pkt/pkt.css">
   <link rel="stylesheet" href="iris/css/pptx.css">
+  <link rel="stylesheet" href="iris/css/pcap.css">
+  <link rel="stylesheet" href="iris/css/traceroute.css">
+  <link rel="stylesheet" href="iris/css/site-pages.css">
 </head>
 <body class="sidebar-collapsed">
+  <!-- 键盘跳转：跳过侧边栏直达正文 -->
+  <a class="skip-link" href="#markdownContent" data-i18n="a11y.skipToContent">跳到正文</a>
   <!-- 桌面端侧边栏默认收起（该类仅桌面端媒体查询生效，移动端抽屉不受影响）；
        settings.js 初始化时按用户已保存的 sidebarOpen 恢复 -->
   <!-- SVG 图标库 -->
@@ -111,12 +116,12 @@
       <div class="sidebar-resize-handle handle-e" id="sidebarResizeE" aria-hidden="true"></div>
       <div class="sidebar-resize-handle handle-s" id="sidebarResizeS" aria-hidden="true"></div>
       <div class="sidebar-header">
-        <h1 class="sidebar-title">
-          <span class="mode-toggle active" id="modeFiles" data-mode="files">Files</span>
-          <span class="mode-divider">/</span>
-          <span class="mode-toggle" id="modeIndex" data-mode="index">Index</span>
-          <span class="mode-divider">/</span>
-          <span class="mode-toggle" id="modeTags" data-mode="tags">Tags</span>
+        <h1 class="sidebar-title" role="tablist" aria-label="侧边栏视图">
+          <button type="button" class="mode-toggle active" id="modeFiles" data-mode="files" role="tab" aria-selected="true">Files</button>
+          <span class="mode-divider" aria-hidden="true">/</span>
+          <button type="button" class="mode-toggle" id="modeIndex" data-mode="index" role="tab" aria-selected="false">Index</button>
+          <span class="mode-divider" aria-hidden="true">/</span>
+          <button type="button" class="mode-toggle" id="modeTags" data-mode="tags" role="tab" aria-selected="false">Tags</button>
         </h1>
         <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -145,7 +150,13 @@
         <ul class="local-files-list" id="localFilesList"></ul>
       </div>
       <div class="tag-panel" id="tagPanel" hidden></div>
-      <div class="file-tree" id="fileTree"></div>
+      <div class="tree-filter-bar" id="treeFilterBar">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" id="treeFilterInput" autocomplete="off" spellcheck="false"
+               placeholder="按文件名过滤…" aria-label="按文件名过滤文件树"
+               data-i18n-placeholder="sidebar.treeFilter" data-i18n-aria="sidebar.treeFilter">
+      </div>
+      <div class="file-tree" id="fileTree" role="tree" aria-label="文档目录"></div>
       <div class="index-tree hidden" id="indexTree"></div>
     </aside>
 
@@ -665,6 +676,19 @@
 
               <div class="setting-item">
                 <div>
+                  <div class="setting-label" data-i18n="settings.display.readingPos">续读提示</div>
+                  <div class="setting-description" data-i18n="settings.display.readingPosDesc">重新打开读过的文档时提示「上次读到 N%，继续？」</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="readingPosToggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div>
                   <div class="setting-label" data-i18n="settings.display.wordCount">显示词数统计</div>
                   <div class="setting-description" data-i18n="settings.display.wordCountDesc">在文件列表中显示每个文件的词数</div>
                 </div>
@@ -852,6 +876,8 @@
                   <button id="openEditorBtn" class="download-btn" data-i18n="settings.actions.openEditor">打开编辑器</button>
                 </div>
               </div>
+              <!-- AI 助手配置区块（editor-ai.js 在此锚点后注入三个输入框） -->
+              <div id="editorSettingsAnchor"></div>
               <div class="setting-item">
                 <div>
                   <div class="setting-label" data-i18n="settings.actions.pulseGen">波形生成器</div>
@@ -882,6 +908,14 @@
                 <div class="setting-control">
                   <button id="downloadPdfBtn" class="download-btn" data-i18n="settings.actions.exportPdfBtn">导出 PDF</button>
                 </div>
+              </div>
+              <!-- 整页长图导出按钮（page-shot.js 在此锚点装配） -->
+              <div class="setting-item" id="pageShotSettingsAnchor">
+                <div>
+                  <div class="setting-label" data-i18n="settings.actions.pageShot">整页长图</div>
+                  <div class="setting-description" data-i18n="settings.actions.pageShotDesc">把当前文档渲染成一张竖版 PNG，适合分享</div>
+                </div>
+                <div class="setting-control"></div>
               </div>
               <div class="setting-item">
                 <div>
@@ -1579,6 +1613,8 @@
               <button class="dropdown-item" data-insert="```ipcalc 10.1.1.0/24\n```" data-cursor="-6">子网计算 ipcalc</button>
               <button class="dropdown-item" data-insert="```acl ios\n10 permit tcp 10.1.1.0 0.0.0.255 any eq 443\n20 deny ip any any\n```" data-cursor="-6">ACL 分析 acl</button>
               <button class="dropdown-item" data-insert="```route-table\nC    10.1.1.0/24 is directly connected, GigabitEthernet0/0\nO    10.1.2.0/24 [110/2] via 10.1.1.2, GigabitEthernet0/0\n```" data-cursor="-6">路由表分析 route-table</button>
+              <button class="dropdown-item" data-insert="```pcap\n@[pcap](demo)\n```" data-cursor="-6">抓包分析 pcap</button>
+              <button class="dropdown-item" data-insert="```traceroute\n 1  192.168.1.1 (192.168.1.1)  1.2 ms  1.0 ms  0.9 ms\n 2  10.8.0.1 (10.8.0.1)  12.3 ms  12.1 ms  11.8 ms\n```" data-cursor="-6">traceroute / ping</button>
               <button class="dropdown-item" data-insert="```config-diff ios\ninterface GigabitEthernet0/0\n ip address 10.1.1.1 255.255.255.0\n===\ninterface GigabitEthernet0/0\n ip address 10.1.1.1 255.255.255.252\n```" data-cursor="-6">配置语义 diff config-diff</button>
               <button class="dropdown-item" data-insert="```http\nGET https://httpbin.org/json\nAccept: application/json\n```" data-cursor="-6">HTTP 请求 http</button>
               <button class="dropdown-item" data-insert="```openapi\nopenapi: 3.0.0\ninfo:\n  title: 示例 API\n  version: 1.0.0\npaths: {}\n```" data-cursor="-6">OpenAPI 交互文档 openapi</button>
@@ -1875,6 +1911,7 @@
           <div class="context-menu-item" data-action="ctx-collapse-editor"><svg class="ico ico-sm"><use href="#i-chevron-right"/></svg>折叠编辑器</div>
           <div class="context-menu-item" data-action="ctx-collapse-output"><svg class="ico ico-sm"><use href="#i-chevron-right"/></svg>折叠输出</div>
           <div class="context-menu-item" data-action="ctx-copy-html"><svg class="ico ico-sm"><use href="#i-clipboard"/></svg>复制输出 HTML</div>
+          <div class="context-menu-item" data-action="ctx-copy-source"><svg class="ico ico-sm"><use href="#i-copy"/></svg>复制 Cell 源码</div>
           <div class="context-menu-item" data-action="ctx-export-cell"><svg class="ico ico-sm"><use href="#i-save"/></svg>导出此 Cell</div>
           <div class="context-menu-item" data-action="ctx-collapse-all"><svg class="ico ico-sm"><use href="#i-chevron-right"/></svg>折叠全部</div>
           <div class="context-menu-item" data-action="ctx-expand-all"><svg class="ico ico-sm"><use href="#i-chevron-down"/></svg>展开全部</div>
@@ -2221,6 +2258,11 @@
   <script defer src="iris/js/shortcut-help.js"></script>
   <script defer src="iris/js/sensitive-mode.js"></script>
   <script defer src="iris/js/pages.js"></script>
+  <script defer src="iris/js/cheatsheet.js"></script>
+  <script defer src="iris/js/stats.js"></script>
+  <script defer src="iris/js/broken-links.js"></script>
+  <script defer src="iris/js/gen-cover.js"></script>
+  <script defer src="iris/js/page-shot.js"></script>
   <script defer src="iris/js/focus-mode.js"></script>
   <script defer src="iris/js/split-view.js"></script>
 
@@ -2254,6 +2296,9 @@
   <script defer src="iris/js/renderers/config-diff.js"></script>
   <script defer src="iris/js/renderers/acl.js"></script>
   <script defer src="iris/js/renderers/route-table.js"></script>
+  <script defer src="iris/js/renderers/pcap.js"></script>
+  <script defer src="iris/js/renderers/traceroute.js"></script>
+  <script defer src="iris/js/renderers/cli-lab.js"></script>
   <script defer src="iris/js/renderers/terminal.js"></script>
   <script defer src="iris/js/renderers/heatmap.js"></script>
   <script defer src="iris/js/renderers/bits.js"></script>

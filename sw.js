@@ -1,6 +1,6 @@
 // 版本单一来源：发布时只改这里，CACHE_NAME / RUNTIME_CACHE 随之派生
 //（此前 RUNTIME_CACHE 版本手工维护、跨版本永不重建，曾出过「钉死旧版」事故）
-const VERSION = 'v8.52';
+const VERSION = 'v8.54';
 const CACHE_NAME = 'md-preview-' + VERSION;
 // 运行时缓存版本必须随发布递增：旧版曾长期停留在 v8.19，导致
 // index.html / JS / CSS 这类静态资源被「缓存优先」永久钉在旧版本
@@ -102,15 +102,16 @@ async function precache() {
 self.addEventListener('install', event => {
   console.log('[SW] Installing', CACHE_NAME, '...');
   event.waitUntil(
-    precache()
-      .then(() => self.skipWaiting())
-      .catch(err => {
-        // 预缓存失败：让 install 真正失败（重新抛出），旧 SW 继续服务。
-        // 只「不调用 skipWaiting」不够：旧页面全部关闭后浏览器仍会激活新 SW，
-        // 并执行 activate 的旧缓存清理，用户可能失去原有离线内容。
-        console.error('[SW] Precache failed, install aborted, staying on old version:', err);
-        throw err;
-      })
+    precache().catch(err => {
+      // 预缓存失败：让 install 真正失败（重新抛出），旧 SW 继续服务。
+      // 只「不调用 skipWaiting」不够：旧页面全部关闭后浏览器仍会激活新 SW，
+      // 并执行 activate 的旧缓存清理，用户可能失去原有离线内容。
+      console.error('[SW] Precache failed, install aborted, staying on old version:', err);
+      throw err;
+    })
+    // 不再自动 skipWaiting：安装完保持在 waiting 态，由页面「刷新」按钮
+    // 发送的 SKIP_WAITING 消息触发激活（pwa-boot.js 用户确认流程）——
+    // 编辑器写到一半不再被新版本强制切换
   );
 });
 
@@ -162,11 +163,56 @@ function isMarkdownDoc(url) {
   return url.pathname.endsWith('.md');
 }
 
+// 样式化离线兜底页：导航/文档请求失败时不再给一行纯文本
+function offlineFallbackResponse(kind) {
+  const html = `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>离线 · Markdown Preview</title>
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f7f5fb;color:#3a3a3a}
+.card{text-align:center;padding:44px 36px;border-radius:16px;background:#fff;box-shadow:0 10px 36px rgba(0,0,0,.08);max-width:420px;margin:16px}
+h1{font-size:20px;margin:0 0 10px}
+p{font-size:14px;color:#8a8a8a;margin:0 0 18px;line-height:1.6}
+button{padding:8px 22px;border:1px solid #d4a5c9;background:#fff;border-radius:8px;cursor:pointer;color:#8B5CF6;font-size:14px}
+</style></head><body><div class="card"><h1>当前处于离线状态</h1>
+<p>${kind}尚未缓存。重新联网后点击下方按钮即可恢复。</p>
+<button onclick="location.reload()">重新加载</button></div></body></html>`;
+  return new Response(html, {
+    status: 503,
+    headers: { 'Content-Type': 'text/html; charset=utf-8' }
+  });
+}
+
 self.addEventListener('fetch', event => {
   const { request } = event;
   if (request.method !== 'GET') return;
 
   const url = new URL(request.url);
+
+  // 跨源字体（Google Fonts 的 CSS 与 woff2）：缓存优先——此前跨源请求
+  // 直接放行，离线后远程字体全丢（正文/标题回退系统字体）。opaque 响应
+  // status 为 0 但可缓存；字体内容几乎不变，缓存优先足够。
+  // 写缓存挂在 event.waitUntil（延长事件生命周期），且失败只吞掉缓存错误、
+  // 不影响已成功获取的响应返回（respondWith 的链路不经过 put）
+  if (url.origin !== location.origin &&
+      /^fonts\.(googleapis|gstatic)\.com$/.test(url.hostname)) {
+    const responsePromise = caches.match(request).then(cached => {
+      if (cached) return cached;
+      return fetch(request).then(response => {
+        if (response && (response.ok || response.type === 'opaque')) {
+          const clone = response.clone();
+          const putPromise = caches.open(RUNTIME_CACHE)
+            .then(cache => cache.put(request, clone))
+            .catch(err => console.warn('[SW] 字体缓存写入失败（响应不受影响）:', err));
+          event.waitUntil(putPromise);
+        }
+        return response;
+      });
+    });
+    event.respondWith(responsePromise);
+    return;
+  }
+
   if (url.origin !== location.origin) return;
 
   // 代码 / 入口 / 数据：网络优先（强制绕过 HTTP 缓存校验），失败回退缓存。
@@ -182,11 +228,16 @@ self.addEventListener('fetch', event => {
           }
           return response;
         })
-        .catch(() => caches.match(request).then(cached => cached || new Response(
-          '离线模式下无法加载该资源', {
-            status: 503,
-            headers: { 'Content-Type': 'text/plain; charset=utf-8' }
-          })))
+        .catch(() => caches.match(request).then(cached => {
+          if (cached) return cached;
+          // 导航请求（首屏）给样式化离线页，其余资源维持纯文本提示
+          if (request.mode === 'navigate') return offlineFallbackResponse('站点');
+          return new Response(
+            '离线模式下无法加载该资源', {
+              status: 503,
+              headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+            });
+        }))
     );
     return;
   }
@@ -224,10 +275,7 @@ self.addEventListener('fetch', event => {
           }
           return response;
         })
-        .catch(() => caches.match(request).then(cached => cached || new Response('离线模式下无法加载此文档', {
-          status: 503,
-          headers: { 'Content-Type': 'text/plain; charset=utf-8' }
-        })))
+        .catch(() => caches.match(request).then(cached => cached || offlineFallbackResponse('这份文档')))
     );
     return;
   }

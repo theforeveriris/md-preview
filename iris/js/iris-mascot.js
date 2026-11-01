@@ -38,9 +38,22 @@
     '按 Ctrl + K 打开命令面板，直达任意文档。',
     '把 .md 文件拖进页面，本地直接打开。'
   ];
+  const FALLBACK_LINES_EN = [
+    'Press Ctrl+K to open the command palette.',
+    'Drop a .md file onto the page to read it locally.'
+  ];
 
+  // 台词按界面语言取池：linesEn 缺省时（用户只配了一份台词）共用 lines
   const LINES = () => {
-    const lines = window.MarkdownPreview.mascotCopy && window.MarkdownPreview.mascotCopy.lines;
+    const copy = window.MarkdownPreview.mascotCopy;
+    const lang = (window.MarkdownPreview.i18n && typeof window.MarkdownPreview.i18n.getLang === 'function')
+      ? window.MarkdownPreview.i18n.getLang() : 'zh';
+    if (lang === 'en') {
+      if (copy && Array.isArray(copy.linesEn) && copy.linesEn.length) return copy.linesEn;
+      if (copy && Array.isArray(copy.lines) && copy.lines.length) return copy.lines;
+      return FALLBACK_LINES_EN;
+    }
+    const lines = copy && copy.lines;
     return (Array.isArray(lines) && lines.length) ? lines : FALLBACK_LINES;
   };
 
@@ -64,7 +77,10 @@
 
   function decorateWelcomeState(welcome) {
     if (welcome.querySelector('.mascot-welcome')) return;
-    const isError = /无法加载|加载失败|Failed/i.test(welcome.textContent || '');
+    // 错误态由渲染管线打标记（.welcome-error）——此前靠正则猜欢迎语文案，
+    // 文案一改就退化为普通欢迎语
+    const isError = welcome.classList.contains('welcome-error') ||
+      /无法加载|加载失败|Failed/i.test(welcome.textContent || '');
     const wrap = document.createElement('div');
     wrap.className = 'mascot-welcome';
     wrap.innerHTML = `

@@ -25,7 +25,9 @@
       //   注意不能用 sensitivity: 'base'：那会让 A.md 与 a.md 比较结果为 0，
       //   最终顺序取决于文件系统 readdir 的原始返回顺序，跨平台不确定。
       //   caseFirst 在 Chrome 24+ / Firefox 55+ / Safari 11+ / Node 0.12+ 均可用。
-      collator = new Intl.Collator(undefined, { numeric: true, caseFirst: 'upper' });
+      // locale 钉住 zh-Hans-CN：undefined 会跟随系统语言，同一仓库在不同
+      // 设备上（中文/英文系统）排序不同——文件顺序应当是仓库属性而非设备属性
+      collator = new Intl.Collator('zh-Hans-CN', { numeric: true, caseFirst: 'upper' });
     }
     return collator;
   }

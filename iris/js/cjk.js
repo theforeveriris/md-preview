@@ -130,17 +130,73 @@
         node.nodeValue = node.__mdpOrig;
       }
     });
+    applyTitle(currentMode);
   }
 
   function afterRender() {
     if (currentMode !== 'off') applyToRoot();
   }
 
+  // 同步转换单段文本（转换器未就绪时原样返回）——搜索层查询词与
+  // 显示层简繁对齐用（search.js：转换开启时索引仍是原文脚本）
+  function convertText(text, mode) {
+    if (!text || (mode !== 'tw' && mode !== 'cn') || !converters) return text;
+    try { return converters[mode](text); } catch (e) { return text; }
+  }
+
+  // document.title 跟随转换：此前只有正文转换，标签页标题仍是原文脚本。
+  // titleOrig 捕获渲染管线重设后的原始值（document.title !== 上次转换结果
+  // 即视为已被管线重设）
+  let titleOrig = null;
+  let titleConverted = null;
+  function applyTitle(mode) {
+    if (mode === 'off') {
+      if (titleOrig != null && document.title === titleConverted) document.title = titleOrig;
+      titleOrig = null;
+      titleConverted = null;
+      return;
+    }
+    if (titleOrig == null || document.title !== titleConverted) titleOrig = document.title;
+    const conv = converters && converters[mode];
+    if (!conv || !titleOrig) return;
+    try {
+      titleConverted = conv(titleOrig);
+      document.title = titleConverted;
+    } catch (e) { /* 转换失败保留原标题 */ }
+  }
+
+  // 轻量提示（mini-toast 同款）——opencc 首载反馈
+  let toastEl = null;
+  let toastTimer = null;
+  function toast(msg) {
+    if (!toastEl) {
+      toastEl = document.createElement('div');
+      toastEl.className = 'mini-toast';
+      toastEl.setAttribute('role', 'status');
+      document.body.appendChild(toastEl);
+    }
+    toastEl.textContent = msg;
+    toastEl.classList.add('open');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('open'), 2600);
+  }
+
+  function t(key, fallback) {
+    const i18n = window.MarkdownPreview.i18n;
+    if (i18n && typeof i18n.t === 'function') return i18n.t(key, fallback);
+    return fallback;
+  }
+
   async function setMode(mode) {
     currentMode = (mode === 'tw' || mode === 'cn') ? mode : 'off';
     if (currentMode === 'off') {
       restore(resolveScope());
+      applyTitle('off');
       return;
+    }
+    // opencc 约 450KB 首次加载：慢网下给个「转换中」提示，否则像没反应
+    if (typeof window.OpenCC === 'undefined') {
+      toast(t('cjk.loading', '正在加载繁简转换组件…'));
     }
     await applyToRoot();
   }
@@ -169,6 +225,7 @@
     applyToRoot,
     afterRender,
     applyTypography,
+    convertText,
     getMode: () => currentMode
   };
 

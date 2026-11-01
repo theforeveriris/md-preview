@@ -1,0 +1,95 @@
+/* ============== traceroute / ping 渲染器（renderers/traceroute.js） ============== */
+
+.tr-widget {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  margin: 14px 0;
+  overflow: hidden;
+  background: var(--color-surface);
+  font-size: 13px;
+  padding: 12px 14px;
+}
+
+.tr-head {
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.tr-head-meta { font-weight: 400; font-size: 12px; color: var(--color-text-muted); }
+
+/* traceroute 跳行 */
+.tr-hop {
+  display: grid;
+  grid-template-columns: 28px minmax(120px, 1.1fr) minmax(80px, 1fr) auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 6px;
+  border-radius: 6px;
+}
+
+.tr-hop:hover { background: color-mix(in srgb, var(--color-accent-purple) 6%, transparent); }
+.tr-hop-no { color: var(--color-text-muted); font-variant-numeric: tabular-nums; text-align: right; }
+.tr-hop-host {
+  font-family: var(--font-mono, monospace);
+  font-size: 12.5px;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tr-hop-host:hover { color: var(--color-accent-purple); }
+.tr-host-name { color: var(--color-text-muted); margin-left: 6px; font-size: 11.5px; }
+
+.tr-hop-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+  overflow: hidden;
+}
+.tr-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--color-accent-purple), var(--color-accent-pink));
+}
+
+.tr-hop-rtts { display: inline-flex; align-items: flex-end; gap: 3px; height: 22px; }
+.tr-mini-bar {
+  display: inline-block;
+  width: 7px;
+  border-radius: 2px 2px 0 0;
+  background: var(--color-accent-purple);
+}
+.tr-mini-timeout { background: color-mix(in srgb, var(--color-text) 25%, transparent); }
+
+.tr-hop-ms { font-variant-numeric: tabular-nums; white-space: nowrap; min-width: 72px; text-align: right; }
+.tr-lost { margin-left: 6px; font-size: 11px; color: var(--color-warning, #F59E0B); }
+
+.tr-row-timeout .tr-hop-host { color: var(--color-text-muted); }
+.tr-row-slow .tr-bar-fill { background: linear-gradient(90deg, #F59E0B, #EF4444); }
+
+/* ping 视图 */
+.tr-summary { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-bottom: 10px; }
+.tr-stat { font-size: 12px; color: var(--color-text-muted); }
+.tr-stat b { font-size: 17px; color: var(--color-text); margin-right: 4px; font-variant-numeric: tabular-nums; }
+.tr-stat-loss.is-bad b { color: var(--color-error, #EF4444); }
+
+.tr-seq-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 64px;
+  padding: 8px 4px 0;
+  border-top: 1px dashed var(--color-border);
+  overflow-x: auto;
+}
+
+.tr-empty { color: var(--color-text-muted); font-size: 13px; padding: 8px 0; }
+
+@media (max-width: 640px) {
+  .tr-hop { grid-template-columns: 24px 1fr auto; }
+  .tr-hop-bar, .tr-host-name { display: none; }
+}

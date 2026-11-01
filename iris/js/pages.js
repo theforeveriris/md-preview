@@ -80,7 +80,27 @@
   function openHistoryPage() {
     const hist = (window.MarkdownPreview.history && window.MarkdownPreview.history.getHistory) || (() => []);
     const entries = hist();
+    const favs = (window.MarkdownPreview.history && window.MarkdownPreview.history.getFavorites) || (() => []);
+    const favEntries = favs();
     const lines = [`# ${t('globalHistory.title', '浏览足迹')}`, ''];
+
+    // 收藏分组：此前收藏只能长按文件树写入，全站没有任何查看入口
+    lines.push(`## ${t('globalHistory.favTitle', '收藏')}（${favEntries.length}）`);
+    lines.push('');
+    if (favEntries.length === 0) {
+      lines.push(`*${t('globalHistory.favEmpty', '长按侧边栏文件树中的文档即可收藏')}*`);
+    } else {
+      favEntries.forEach(item => {
+        const when = new Date(item.ts || Date.now());
+        const dateStr = isNaN(when) ? '' : when.toISOString().slice(0, 10);
+        lines.push(`- [${mdText(item.title || item.path)}](#/${encodeURI(item.path)})`);
+        lines.push('  ' + [dateStr, `\`${item.path}\``].filter(Boolean).join(' · '));
+      });
+    }
+    lines.push('');
+
+    lines.push(`## ${t('globalHistory.recentTitle', '最近阅读')}`);
+    lines.push('');
     lines.push(`> ${t('globalHistory.count', '最近 {n} 次阅读').replace('{n}', entries.length)}`);
     lines.push('');
     entries.forEach(item => {

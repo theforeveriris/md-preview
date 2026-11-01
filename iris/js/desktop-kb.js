@@ -196,29 +196,9 @@
       window.MarkdownPreview.fileTree.renderFileTree(enriched);
       window.dispatchEvent(new CustomEvent('filetreeloaded'));
 
-      // 轻量搜索索引 + 站内链接关系（图谱 / 反链）
-      const allSet = new Set(docs.keys());
-      const links = {};
-      const searchDocs = [];
-      docs.forEach((meta, rel) => {
-        // 链接关系的源与目标都统一挂 kb/ 前缀——消费端（backlinks/graph）
-        // 用 state.currentFilePath（kb/…）与 enrichTree 的 key 匹配
-        const out = {};
-        Object.entries(scanLinks(rel, meta.text, allSet))
-          .forEach(([to, n]) => { out[KB_PREFIX + to] = n; });
-        links[KB_PREFIX + rel] = out;
-        searchDocs.push({
-          path: KB_PREFIX + rel,
-          title: meta.title,
-          preview: meta.text.replace(/```[\s\S]*?```/g, ' ').replace(/[#*`>\[\]!()]/g, ' ').replace(/\s+/g, ' ').slice(0, 160),
-          tags: meta.tags
-        });
-      });
+      // 轻量搜索索引 + 站内链接关系（图谱 / 反链）——与热更新共用同一构建
       st.desktopKbDocs = docs;
-      st.desktopKbLinks = { generatedAt: new Date().toISOString(), links };
-
-      const search = window.MarkdownPreview.search;
-      if (search && search.injectDocuments) search.injectDocuments(searchDocs);
+      rebuildKbIndexes(st, docs);
 
       // 侧边栏展开到第一个文档
       window.MarkdownPreview.fileTree.setSidebarCollapsed(false);
@@ -239,6 +219,7 @@
   async function unmount() {
     const st = window.MarkdownPreview.state;
     if (!st || !st.desktopKb) return;
+    kbGeneration++; // 作废在途的 watch 重建写回
     invoke('unbind_kb_root').catch(() => {});
     delete st.desktopKb;
     delete st.desktopKbDocs;
@@ -313,15 +294,84 @@
     }).catch(() => {});
   }
 
+  // 第二实例转发：运行中双击 .md，single-instance 插件把路径转交取件箱
+  // 并 emit 本事件——前端收到后再走一次取件箱
+  function setupOpenFileListener() {
+    const events = window.__TAURI__ && window.__TAURI__.event;
+    if (!events || !events.listen) return;
+    events.listen('open-file-arg', () => { takeOpenFileArg(); });
+  }
+
+  // 重建轻量搜索索引与链接关系（mount 与热更新共用）
+  function rebuildKbIndexes(st, docs) {
+    if (!st.desktopKb) return; // 卸载后作废
+    const allSet = new Set(docs.keys());
+    const links = {};
+    const searchDocs = [];
+    docs.forEach((meta, rel) => {
+      // 链接关系的源与目标都统一挂 kb/ 前缀——消费端（backlinks/graph）
+      // 用 state.currentFilePath（kb/…）与 enrichTree 的 key 匹配
+      const out = {};
+      Object.entries(scanLinks(rel, meta.text, allSet))
+        .forEach(([to, n]) => { out[KB_PREFIX + to] = n; });
+      links[KB_PREFIX + rel] = out;
+      // 与站内索引同口径补 searchText：KB「全文检索」此前只覆盖前 160 字符
+      const plain = meta.text.replace(/```[\s\S]*?```/g, ' ').replace(/[#*`>\[\]!()]/g, ' ').replace(/\s+/g, ' ');
+      searchDocs.push({
+        path: KB_PREFIX + rel,
+        title: meta.title,
+        preview: plain.slice(0, 160),
+        searchText: plain.slice(0, 20000),
+        tags: meta.tags
+      });
+    });
+    st.desktopKbLinks = { generatedAt: new Date().toISOString(), links };
+    const search = window.MarkdownPreview.search;
+    if (search && search.injectDocuments) search.injectDocuments(searchDocs);
+  }
+
+  // 知识库挂载代次：卸载/重挂递增。watch 事件触发的异步重建（读树、读文件
+  // 都是 await）在落盘前校验代次——卸载后在途的旧重建不得把 KB 数据写回
+  // 刚恢复的站内树/索引
+  let kbGeneration = 0;
+
+  // 重建文件树（新增/删除文件后侧边栏同步）+ filetreeloaded 通知
+  async function rebuildKbTree(st, docs) {
+    const gen = kbGeneration;
+    try {
+      const treeJson = await invoke('read_kb_tree');
+      // await 期间可能已卸载/重挂：作废本次写回
+      if (gen !== kbGeneration) return;
+      st.fileTreeData = enrichTree(JSON.parse(treeJson), docs);
+      window.MarkdownPreview.fileTree.renderFileTree(st.fileTreeData);
+      window.dispatchEvent(new CustomEvent('filetreeloaded'));
+    } catch (e) {
+      console.warn('[DesktopKB] 树重建失败:', e);
+    }
+  }
+
   // 归一化：Windows 反斜杠 → 正斜杠（大小写不敏感比较由调用方处理）
   function normalizeSep(p) {
     return String(p).replace(/\\/g, '/');
   }
 
+  // 原子保存常触发 2-3 个 watch 事件：按路径去抖合并，避免重复重读+重渲染
+  const reloadTimers = new Map();
+  const RELOAD_DEBOUNCE_MS = 350;
+
+  function handleKbChanged(absPath) {
+    clearTimeout(reloadTimers.get(absPath));
+    reloadTimers.set(absPath, setTimeout(() => {
+      reloadTimers.delete(absPath);
+      handleKbChangedNow(absPath);
+    }, RELOAD_DEBOUNCE_MS));
+  }
+
   // 挂载目录内文件变更 → 刷新缓存/树/索引；当前文档打开着就直接重渲染
-  async function handleKbChanged(absPath) {
+  async function handleKbChangedNow(absPath) {
     const st = window.MarkdownPreview.state;
     if (!st || !st.desktopKb) return;
+    const gen = kbGeneration;
     const rootNorm = normalizeSep(st.desktopKb.root).replace(/\/+$/, '').toLowerCase();
     const norm = normalizeSep(absPath);
     const normLower = norm.toLowerCase();
@@ -332,8 +382,11 @@
 
     try {
       const text = await invoke('read_kb_file', { path: rel });
+      // await 期间已卸载/重挂：作废本次写回
+      if (gen !== kbGeneration || !st.desktopKb) return;
       const { frontmatter, content } = parseFrontmatter(text);
       const docs = st.desktopKbDocs;
+      const isNew = docs && !docs.has(rel);
       if (docs) {
         docs.set(rel, {
           text,
@@ -343,6 +396,13 @@
           modified: Math.floor(Date.now() / 1000)
         });
       }
+      if (isNew) {
+        // 新增文件：重建树（否则侧边栏看不见）+ 重建索引与链接关系
+        await rebuildKbTree(st, docs);
+        rebuildKbIndexes(st, docs);
+        notify(t('kb.fileAdded', '{n} 已加入知识库').replace('{n}', name));
+        return;
+      }
       // 文件树上的 modified 时间戳刷新
       (function bump(nodes) {
         (nodes || []).forEach(n => {
@@ -350,6 +410,8 @@
           else if (n.path === kbPath) n.modified = Math.floor(Date.now() / 1000);
         });
       })(st.fileTreeData);
+      // 索引与链接关系随内容更新（该篇的全文/出链可能都变了）
+      rebuildKbIndexes(st, docs);
       // 正在阅读这篇 → 热重渲染（走 kb/ 读取管线，闪一下即可）
       if (st.currentFilePath === kbPath) {
         window.MarkdownPreview.markdown.loadMarkdownFile(kbPath);
@@ -358,8 +420,12 @@
         notify(t('kb.fileChanged', '{n} 已更新').replace('{n}', name));
       }
     } catch (e) {
-      // 文件被删除等场景：从缓存移除，交给用户手动刷新
-      if (st.desktopKbDocs) st.desktopKbDocs.delete(rel);
+      // 删除/读取失败：从缓存移除并重建树——此前树里残留死条目（点击报错）
+      if (st.desktopKbDocs && st.desktopKbDocs.delete(rel)) {
+        await rebuildKbTree(st, st.desktopKbDocs);
+        rebuildKbIndexes(st, st.desktopKbDocs);
+        notify(t('kb.fileRemoved', '{n} 已从知识库移除').replace('{n}', name));
+      }
     }
   }
 
@@ -436,8 +502,8 @@
 
   function setupPaletteActions() {
     const palette = window.MarkdownPreview.palette;
-    if (!palette || !palette.extraActions) return;
-    palette.extraActions.push(
+    if (!palette || !palette.registerActions) return;
+    palette.registerActions([
       {
         id: 'kb-mount',
         icon: 'i-list',
@@ -486,7 +552,7 @@
         group: t('kb.group', '桌面端'),
         run: () => printKbCompilation()
       }
-    );
+    ]);
   }
 
   function init() {
@@ -494,6 +560,7 @@
     setupMenu();
     setupPaletteActions();
     setupWatchListener();
+    setupOpenFileListener();
     takeOpenFileArg(); // 双击 .md 经文件关联启动的场景
   }
 

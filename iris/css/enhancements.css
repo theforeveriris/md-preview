@@ -431,6 +431,26 @@
   margin-bottom: 14px;
 }
 
+/* 复制链接按钮（二维码对话框的配套出口） */
+.qr-share-copy-btn {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 6px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.qr-share-copy-btn:hover {
+  border-color: var(--color-accent-purple);
+  color: var(--color-accent-purple);
+}
+
 .qr-share-img-wrap {
   display: flex;
   justify-content: center;
@@ -1079,14 +1099,27 @@
     display: none !important;
   }
 
+  /* 屏幕态附属条不进纸面：阅读时长条 / 上下篇导航 / 变更横幅 / 贡献者栏 /
+     mini-TOC / 敏感模式徽标（此前会混进打印页） */
+  .doc-meta-bar,
+  .doc-navigation,
+  .doc-update-banner,
+  .contributors-bar,
+  .mini-toc,
+  .sensitive-mode-badge {
+    display: none !important;
+  }
+
   /* 双栏对照：打印主栏文档（对照层整体收起） */
   .split-view-overlay { display: none !important; }
 
   @page { margin: 14mm; }
 
-  /* 章节分页：每个 H2 起新页；避免标题孤行 */
+  /* 章节分页：每个 H2 起新页；H2 密集的文档（速查表类）会爆炸式分页，
+     body.print-no-h2-break 逃生口（设置/控制台可加） */
   .markdown-body h2 { break-before: page; }
   .markdown-body h2:first-child { break-before: auto; }
+  body.print-no-h2-break .markdown-body h2 { break-before: auto; }
   .markdown-body h1, .markdown-body h2, .markdown-body h3,
   .markdown-body h4, .markdown-body h5, .markdown-body h6 {
     break-after: avoid;
@@ -1442,12 +1475,16 @@ body.focus-mode .markdown-body > .focus-current {
 .git-commit-item:hover { background: var(--color-bg); }
 .git-commit-msg { font-size: 14px; }
 .git-commit-meta { font-size: 12px; color: var(--color-text-muted); }
+.git-sha-link { color: var(--color-link, var(--color-accent-purple)); text-decoration: none; }
+.git-sha-link:hover { text-decoration: underline; }
 .git-commit-detail-msg { white-space: pre-wrap; margin: 8px 0 12px; font-size: 13px; }
 .git-file { border: 1px solid var(--color-border); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
 .git-file-head { padding: 6px 10px; font-family: var(--font-mono, monospace); font-size: 12px; background: var(--color-bg); display: flex; justify-content: space-between; gap: 8px; }
 .git-file-stat { color: var(--color-text-muted); }
 .git-patch { margin: 0; padding: 10px; font-size: 12px; overflow: auto; }
 .git-file-note { padding: 8px 10px; color: var(--color-text-muted); font-size: 12px; }
+.git-other-files { margin: 10px 0; }
+.git-other-files > summary { cursor: pointer; color: var(--color-text-muted); font-size: 13px; padding: 6px 0; }
 .doc-update-banner { display: flex; align-items: center; gap: 10px; margin: 0 0 16px; padding: 8px 14px; border: 1px solid var(--color-accent-purple); border-radius: 10px; background: var(--color-surface); font-size: 13px; }
 .doc-update-banner .doc-update-dismiss { margin-left: auto; background: none; border: 0; cursor: pointer; color: var(--color-text-muted); }
 
@@ -2010,4 +2047,212 @@ body.graph-page #markdownContent > .doc-graph {
 @media print {
   .doc-backlinks,
   .doc-graph { break-inside: avoid; }
+}
+
+/* ============== 编辑器 AI 助手（editor-ai.js） ============== */
+
+/* 选中工具栏里的 AI 按钮：文字按钮与图标按钮混排，稍加内边距 */
+.selection-toolbar .sel-btn[data-format^="ai-"] {
+  padding: 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* 处理中 toast：转圈 */
+.ai-working .ai-spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: ai-spin 0.8s linear infinite;
+  vertical-align: -2px;
+}
+@keyframes ai-spin { to { transform: rotate(360deg); } }
+
+/* 自定义指令弹窗 */
+.ai-prompt-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-prompt-card {
+  width: min(92vw, 460px);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.25);
+}
+
+.ai-prompt-title { font-weight: 600; margin-bottom: 10px; color: var(--color-text); }
+
+.ai-prompt-input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 13px;
+  resize: vertical;
+  outline: none;
+}
+.ai-prompt-input:focus { border-color: var(--color-accent-purple); }
+
+.ai-prompt-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+.ai-prompt-actions button {
+  padding: 6px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text);
+  font-family: inherit;
+  cursor: pointer;
+}
+.ai-prompt-actions .ai-prompt-ok {
+  background: var(--color-accent-purple);
+  border-color: var(--color-accent-purple);
+  color: #fff;
+}
+
+/* 设置面板 AI 区块（复用现有设置分组视觉） */
+#aiSettingsBlock { margin: 18px 0; }
+#aiSettingsBlock .settings-group-title,
+#aiSettingsBlock > div:first-child {
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--color-text);
+}
+#aiSettingsBlock .setting-item-vertical { margin-bottom: 12px; }
+#aiSettingsBlock label {
+  display: block;
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+#aiSettingsBlock input[type="text"],
+#aiSettingsBlock input[type="password"] {
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 420px;
+  padding: 7px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+#aiSettingsBlock input:focus { border-color: var(--color-accent-purple); }
+#aiSettingsBlock .setting-hint {
+  font-size: 11.5px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+/* ============== CLI 演练块（renderers/cli-lab.js） ============== */
+
+.cli-lab {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  margin: 14px 0;
+  overflow: hidden;
+  background: #16161f;
+  font-size: 13px;
+}
+
+.cli-lab-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  background: #1f1f2c;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cli-lab-dots { display: inline-flex; gap: 5px; }
+.cli-lab-dots i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255, 255, 255, 0.18); }
+.cli-lab-dots i:nth-child(1) { background: #ff5f56; }
+.cli-lab-dots i:nth-child(2) { background: #ffbd2e; }
+.cli-lab-dots i:nth-child(3) { background: #27c93f; }
+
+.cli-lab-title { color: rgba(235, 235, 245, 0.8); font-weight: 600; font-size: 12px; }
+.cli-lab-progress {
+  margin-left: auto;
+  color: rgba(235, 235, 245, 0.55);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+.cli-lab-reset {
+  border: none;
+  background: transparent;
+  color: rgba(235, 235, 245, 0.6);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0 4px;
+}
+.cli-lab-reset:hover { color: #fff; }
+
+.cli-lab-screen {
+  padding: 10px 12px 12px;
+  max-height: 380px;
+  overflow-y: auto;
+  font-family: var(--font-mono, monospace);
+}
+
+.cli-lab-line { white-space: pre-wrap; word-break: break-word; line-height: 1.55; }
+.cli-lab-echo { margin-top: 6px; }
+.cli-lab-echo-prompt { color: #7ce38b; font-weight: 600; }
+.cli-lab-echo-cmd { color: #e8e8f0; }
+.cli-lab-out { color: rgba(235, 235, 245, 0.72); }
+.cli-lab-help { color: #8ab4ff; }
+.cli-lab-err { color: #ff8a8a; }
+.cli-lab-ok { color: #7ce38b; font-weight: 600; margin-top: 4px; }
+.cli-lab-muted { color: rgba(235, 235, 245, 0.4); }
+
+.cli-lab-input-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+.cli-lab-input-row:focus-within { border-color: var(--color-accent-purple); }
+.cli-lab-prompt { color: #7ce38b; font-weight: 600; white-space: nowrap; }
+.cli-lab-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #e8e8f0;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.cli-lab-hint {
+  padding: 7px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--color-text-muted);
+  font-size: 11.5px;
+  background: var(--color-surface);
 }

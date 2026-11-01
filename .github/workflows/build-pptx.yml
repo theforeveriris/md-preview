@@ -2,6 +2,8 @@ name: Build PPTX Thumbnails
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'iris/data/pptx/raw/**'
       - 'iris/scripts/pptx/**'

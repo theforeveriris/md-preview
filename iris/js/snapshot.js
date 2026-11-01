@@ -132,8 +132,9 @@
   // ============== 收藏夹合集分享 ==============
 
   async function buildFavoritesShareUrl() {
-    let favs = [];
-    try { favs = JSON.parse(localStorage.getItem('md-preview-favorites') || '[]'); } catch (e) { /* ignore */ }
+    // 收藏读取统一走 history 模块（key 字面量曾在多处复制漂移）
+    const hist = window.MarkdownPreview.history;
+    const favs = hist && hist.getFavorites ? hist.getFavorites() : [];
     if (!Array.isArray(favs) || favs.length === 0) {
       return { ok: false, reason: t('snap.noFavorites', '收藏夹是空的（长按文件树中的文档可收藏）') };
     }

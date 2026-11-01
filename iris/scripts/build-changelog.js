@@ -27,14 +27,19 @@ function getCommits() {
   try {
     const out = execFileSync(
       'git',
-      ['log', '-n', String(LIMIT), '--date=short', `--pretty=format:%h${FIELD}%cs${FIELD}%an${FIELD}%s`, '--', 'docs'],
+      ['log', '-n', String(LIMIT * 2), '--date=short', `--pretty=format:%h${FIELD}%cs${FIELD}%an${FIELD}%s`, '--', 'docs'],
       { cwd: ROOT, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] }
     ).trim();
     if (!out) return [];
+    const BOT_AUTHORS = /github-actions\[bot\]|dependabot\[bot\]/i;
+    // 回写型 workflow 的 "build: update …" 提交不进日志——否则 feed/links
+    // 的机器回写会刷屏，淹没真实的人工变更
     return out.split('\n').map(line => {
       const [hash, date, author, subject] = line.split(FIELD);
       return { hash, date, author, subject };
-    }).filter(c => c.hash && c.date);
+    }).filter(c => c.hash && c.date)
+      .filter(c => !BOT_AUTHORS.test(c.author || '') && !/^build: update (feed|links|sitemap)/i.test(c.subject || ''))
+      .slice(0, LIMIT);
   } catch (e) {
     return [];
   }

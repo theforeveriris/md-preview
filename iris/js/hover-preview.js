@@ -243,13 +243,35 @@
       hoverTimer = setTimeout(() => showCard(path, link), HOVER_DELAY_MS);
     });
 
-    // 键盘可达：Tab 聚焦到脚注角标即刻浮出（不等延迟）
+    // 键盘可达：Tab 聚焦到脚注角标即刻浮出（不等延迟）；
+    // 站内文档链接聚焦同款摘要卡（与 hover 行为对齐）
     content.addEventListener('focusin', (e) => {
-      const fnLink = e.target.closest && e.target.closest('.markdown-body a[href^="#"]');
+      if (!e.target.closest) return;
+      const fnLink = e.target.closest('.markdown-body a[href^="#"]');
       const fnTarget = fnLink ? footnoteTargetOf(fnLink.getAttribute('href')) : null;
-      if (!fnTarget) return;
+      if (fnTarget) {
+        if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; }
+        showFootnoteCard(fnLink, fnTarget.el, fnTarget.label);
+        return;
+      }
+      const link = e.target.closest('.markdown-body a[href^="#/"]');
+      if (!link || link === pinnedForLink) return;
+      const path = pathFromHref(link.getAttribute('href'));
+      if (!path) return;
+      const st = window.MarkdownPreview.state;
+      if (!st || path === st.currentFilePath) return;
       if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; }
-      showFootnoteCard(fnLink, fnTarget.el, fnTarget.label);
+      showCard(path, link);
+    });
+
+    // 焦点移走即收卡：focusin 只弹不收，键盘用户 Tab 走后卡片一直挂着
+    content.addEventListener('focusout', (e) => {
+      if (!cardEl || !cardEl.classList.contains('open')) return;
+      // 焦点移入卡片内部（卡片里有可聚焦元素时）不收
+      requestAnimationFrame(() => {
+        if (cardEl.contains(document.activeElement)) return;
+        hideCard();
+      });
     });
 
     content.addEventListener('mouseout', (e) => {

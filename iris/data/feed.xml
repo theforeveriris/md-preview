@@ -5,7 +5,7 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 31 Oct 2026 09:14:57 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 01 Nov 2026 18:52:13 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>配置参考</title>
@@ -13,6 +13,7 @@
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
       <pubDate>Fri, 30 Oct 2026 19:04:13 GMT</pubDate>
       <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
+      <category>配置</category>
       <content:encoded><![CDATA[<h1>配置参考</h1>
 <p>Markdown Preview 的配置分为两层：</p>
 <ol>
@@ -610,6 +611,7 @@
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/editor.md</guid>
       <pubDate>Fri, 30 Oct 2026 16:52:20 GMT</pubDate>
       <description>Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可在浏览器内即时编写、运行、预览 Markdown，并支持自动保存、搜索替换、导入导出等能力。 编辑器以全屏覆盖层的形式叠加在文档站之上，复用站点已有的渲染管线（marked.js + 各扩展渲染器与插件），渲染结果与文档站一致；唯一例外是 graph ┌───────────────────</description>
+      <category>编辑器</category>
       <content:encoded><![CDATA[<h1>Markdown 编辑器</h1>
 <p>Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可在浏览器内即时编写、运行、预览 Markdown，并支持自动保存、搜索替换、导入导出等能力。</p>
 <p>编辑器以全屏覆盖层的形式叠加在文档站之上，复用站点已有的渲染管线（marked.js + 各扩展渲染器与插件），渲染结果与文档站一致；唯一例外是 <code>```graph</code> 文档图谱挂载点——它依赖构建期生成的全站 links.json，仅在文档站渲染，编辑器预览中保持代码块原样。</p>
@@ -1273,6 +1275,7 @@
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/requirements.md</guid>
       <pubDate>Fri, 30 Oct 2026 01:05:36 GMT</pubDate>
       <description>本文整理自一轮功能头脑风暴中筛选出的候选需求，作为排期参考。 与 功能路线图 的分工：roadmap 是维护者已确认的正式规划，本文是待评估的候选池；某项落地后，请移入 roadmap / README 特性清单，并从本表移除。 约定：优先级 P0（低风险快赢）→ P1（体感/内容增强）→ P2（攻坚）；工作量 小（≤ 半天）→ 中（13 天）→ 大（多日）。 --- 以下 26 项已全部落地（按</description>
+      <category>规划</category>
       <content:encoded><![CDATA[<h1>需求整理（候选功能）</h1>
 <p>本文整理自一轮功能头脑风暴中筛选出的候选需求，作为<strong>排期参考</strong>。</p>
 <p>与 <a href="https://theforeveriris.github.io/md-preview/docs/roadmap.md">功能路线图</a> 的分工：roadmap 是维护者已确认的正式规划，本文是<strong>待评估的候选池</strong>；某项落地后，请移入 roadmap / README 特性清单，并从本表移除。</p>
@@ -1788,6 +1791,8 @@ pre.code-block 代码块内容，无需独立术语文件）。</li>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/theme-customization.md</guid>
       <pubDate>Thu, 29 Oct 2026 15:31:01 GMT</pubDate>
       <description>Markdown Preview 提供三种层级的外观定制方式，由易到难： 1. 预设主题 — 内置 8 套配色，一键切换 2. 可视化取色器 — 拖动色块即可调整主题色，无需写 CSS 3. 自定义 CSS — 加载外部 CSS 文件，完全控制样式 --- | ID | 名称 | 说明 | |----|------|------| | | 默认 | 浅紫浅粉渐变风格 | | | 鸢尾花紫 | 亮色</description>
+      <category>主题</category>
+      <category>配置</category>
       <content:encoded><![CDATA[<h1>主题定制</h1>
 <p>Markdown Preview 提供三种层级的外观定制方式，由易到难：</p>
 <ol>
@@ -2032,6 +2037,7 @@ pre.code-block 代码块内容，无需独立术语文件）。</li>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/theme-demo.md</guid>
       <pubDate>Thu, 29 Oct 2026 15:28:37 GMT</pubDate>
       <description>这是一个展示主题系统的示例文档。点击左下角的调色盘图标可以切换不同的主题。 | 主题名称 | 描述 | |---------|------| | 🌸 紫粉渐变 | 默认的浅紫浅粉渐变主题 | | 💜 鸢尾花紫 | 亮色淡紫底 + 鸢尾品牌紫强调色 | | ⚡ GitHub Light | 仿 GitHub 明亮主题 | | 🌙 GitHub Dark | 仿 GitHub 深色主题 | | </description>
+      <category>主题</category>
       <content:encoded><![CDATA[<h1>主题市场演示</h1>
 <p>这是一个展示主题系统的示例文档。点击左下角的调色盘图标可以切换不同的主题。</p>
 <h2>可用主题</h2>
@@ -2212,6 +2218,8 @@ const themes = MarkdownPreview.themes.getAllThemes();
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/terminal-secret-examples.md</guid>
       <pubDate>Wed, 28 Oct 2026 10:04:15 GMT</pubDate>
       <description>markdown 点击揭示；markdown markdown ` 口令就是今年年份（演示用）。</description>
+      <category>网络</category>
+      <category>工具</category>
       <content:encoded><![CDATA[<h1>终端回放块</h1>
 <p><code>```terminal</code>：<code>$</code> / <code>#</code> 开头的行是命令（逐字打字），其余是输出（逐行闪现）。
 播放 / 重播 / 1×-4× 倍速，也可「直接看结果」；跟随系统减动效偏好。</p>
@@ -2277,6 +2285,8 @@ vpn pre-shared-key hex 2A4F6B8C0D1E3F5A7B9C2D4E6F8A0C2E
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/steps-quote-examples.md</guid>
       <pubDate>Wed, 28 Oct 2026 09:42:09 GMT</pubDate>
       <description>markdown ：，空行分隔多条——带出处署名的卡片式引用。 源码 quote 洞穴喻：被缚者看到的影子不是实物本身。 | 柏拉图《理想国》 复杂度是分层的：你不理解它，它就一定是魔法。 |</description>
+      <category>示例</category>
+      <category>教学</category>
       <content:encoded><![CDATA[<h1>步骤揭示块</h1>
 <p><code>```steps</code>：<code>序号 | 标题 | 详情</code>，点击逐步展开——排错思路、证明过程
 比 quiz 轻量的教学件。</p>
@@ -2316,6 +2326,8 @@ vpn pre-shared-key hex 2A4F6B8C0D1E3F5A7B9C2D4E6F8A0C2E
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/orgchart-examples.md</guid>
       <pubDate>Wed, 28 Oct 2026 09:24:22 GMT</pubDate>
       <description>markdown `</description>
+      <category>示例</category>
+      <category>教学</category>
       <content:encoded><![CDATA[<h1>组织架构图语法糖</h1>
 <p><code>```orgchart</code>：缩进文本直接变 mermaid 组织架构图，不用手写 graph TD。</p>
 <p><strong>源码</strong></p>
@@ -2344,6 +2356,7 @@ vpn pre-shared-key hex 2A4F6B8C0D1E3F5A7B9C2D4E6F8A0C2E
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/line-highlight-examples.md</guid>
       <pubDate>Wed, 28 Oct 2026 09:09:59 GMT</pubDate>
       <description>两种标记方式：fence 信息串 （行号）与代码内 注释， 可叠加使用。高亮为覆盖层实现，不影响 hljs 语法着色。 源码 js {2,5-8} const store = new Map(); // ← 高亮第 2 行 function get(key) { return store.get(key); } function set(key, value) { // ← 高亮 5-8 行 st</description>
+      <category>代码高亮</category>
       <content:encoded><![CDATA[<h1>代码行高亮</h1>
 <p>两种标记方式：fence 信息串 <code>{2,5-8}</code>（行号）与代码内 <code>[!code highlight]</code> 注释，
 可叠加使用。高亮为覆盖层实现，不影响 hljs 语法着色。</p>
@@ -2402,6 +2415,8 @@ print(os.getcwd())
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/learning-path-examples.md</guid>
       <pubDate>Wed, 28 Oct 2026 08:40:17 GMT</pubDate>
       <description>frontmatter 写 ，文档头出现「前置阅读」卡片链 （本篇就是一个活例子）； 图谱上按同一数据画出虚线强调色的有向 学习路径边——知识库的结构化阅读顺序一眼可辨。 本篇的前置阅读指向多篇示例文档；卡片链过长时在条内左右滚动，不换行。把 换成你自己的路径即可。</description>
+      <category>学习</category>
+      <category>示例</category>
       <content:encoded><![CDATA[<h1>学习路径</h1>
 <p>frontmatter 写 <code>prerequisites: [路径/文件.md]</code>，文档头出现「前置阅读」卡片链
 （本篇就是一个活例子）；<code>#/graph</code> 图谱上按同一数据画出虚线强调色的有向
@@ -2415,6 +2430,8 @@ print(os.getcwd())
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/ipcalc-examples.md</guid>
       <pubDate>Wed, 28 Oct 2026 08:20:02 GMT</pubDate>
       <description>markdown ipcalc 10.1.1.0/24 markdown ipcalc 10.20.30.46/22 `</description>
+      <category>网络</category>
+      <category>工具</category>
       <content:encoded><![CDATA[<h1>ipcalc 子网计算块</h1>
 <p><code>```ipcalc &lt;CIDR&gt;</code> 代码块把目标网段渲染为掩码 / 通配符 / 可用范围 / 广播 /
 主机数速查卡，并附子网划分表。纯前端计算，零依赖，贴运维常用网段即得结果。</p>
@@ -2452,6 +2469,8 @@ print(os.getcwd())
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/heatmap-examples.md</guid>
       <pubDate>Wed, 28 Oct 2026 08:14:23 GMT</pubDate>
       <description>markdown markdown markdown ` 多年数据同样通过顶部年份选择框切换，每次只展示一个完整年份，避免横向拉得过长。</description>
+      <category>示例</category>
+      <category>可视化</category>
       <content:encoded><![CDATA[<h1>日历热图块</h1>
 <p><code>```heatmap</code>：正文每行 <code>YYYY-MM-DD,数值</code>，渲染 GitHub 贡献图样式的
 日历热图（列=周 / 行=星期，强度按最大值分 5 档，悬停看日期与数值）。
@@ -2704,6 +2723,8 @@ print(os.getcwd())
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/config-diff-examples.md</guid>
       <pubDate>Wed, 28 Oct 2026 07:16:56 GMT</pubDate>
       <description>markdown markdown `</description>
+      <category>网络</category>
+      <category>示例</category>
       <content:encoded><![CDATA[<h1>配置语义 diff</h1>
 <p><code>```config-diff ios</code>（或 <code>vrp</code>）代码块渲染两份配置的**语义**对比：
 按缩进层级解析成命令树、以祖先命令链对齐，<code>===</code> 分隔线隔开变更前后。
@@ -2770,6 +2791,8 @@ ntp-service unicast-server 10.10.10.2
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/bits-examples.md</guid>
       <pubDate>Wed, 28 Oct 2026 07:10:12 GMT</pubDate>
       <description>markdown markdown markdown ...` 省略；完整位串仍显示在下方位条中。</description>
+      <category>网络</category>
+      <category>教学</category>
       <content:encoded><![CDATA[<h1>位标注块</h1>
 <p><code>```bits &lt;二进制&gt;</code>（可空格分组）+ 正文标注行 <code>位序 | 名称 | 说明</code>
 （位序自最高位起算）：位条可视化、二/十六/十进制速读、点击位定位标注。</p>
@@ -2818,6 +2841,8 @@ ntp-service unicast-server 10.10.10.2
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/acl-route-examples.md</guid>
       <pubDate>Wed, 28 Oct 2026 05:58:58 GMT</pubDate>
       <description>markdown 粘贴 输出：可排序表 + 协议分布统计。 源码 route-table Codes: L - local, C - connected, S - static, O - OSPF, B - BGP Gateway of last resort is 10.1.1.254 to network 0.0.0.0 C 10.1.1.0/24 is directly connected,</description>
+      <category>网络</category>
+      <category>工具</category>
       <content:encoded><![CDATA[<h1>ACL 与路由表分析块</h1>
 <p><code>```acl</code> 粘贴 IOS/VRP ACL：渲染匹配顺序表 + 五元组命中测试。自上而下
 模拟求值，第一条命中即返回；无命中提示隐式 deny——排查「为什么这条流量
@@ -2878,6 +2903,8 @@ S    10.99.0.0/16 [1/0] via 10.1.1.9
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/csv-examples.md</guid>
       <pubDate>Tue, 27 Oct 2026 19:48:48 GMT</pubDate>
       <description>/ 代码块会渲染为可排序、可搜索、可按列筛选的交互表格，贴数据不用再截图。 - 点击表头排序：升 → 降 → 恢复原始顺序，数值列按数值比较 - 表头漏斗按钮：按该列的唯一值勾选筛选 - 工具栏搜索框：即时过滤任意单元格命中的行 - 右侧按钮：复制 CSV / 下载 CSV（保留原文） 逗号或换行出现在单元格内时，用双引号包裹（RFC 4180），引号本身写两个： 规则也可用列序号与 hex 色：</description>
+      <category>数据</category>
+      <category>表格</category>
       <content:encoded><![CDATA[<h1>CSV / TSV 交互表格示例</h1>
 <p><code>csv</code> / <code>tsv</code> 代码块会渲染为可排序、可搜索、可按列筛选的交互表格，贴数据不用再截图。</p>
 <h2>基础 CSV</h2>
@@ -2946,6 +2973,7 @@ db-02,95,1.3
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/changelog.md</guid>
       <pubDate>Tue, 27 Oct 2026 19:40:57 GMT</pubDate>
       <description>&gt; 本页由 从 git 历史自动生成，请勿手动编辑。 - feat(bits): 位标注块 — theforeveriris - feat(heatmap): 日历热图块 — theforeveriris - feat(steps,quote,orgchart): 步骤揭示 / 引用卡片 / 架构图语法糖三件套 — theforeveriris - feat(csv): 条件格式（阈值着色） — </description>
+      <category>规划</category>
       <content:encoded><![CDATA[<h1>变更日志</h1>
 <blockquote>
 <p>本页由 <code>iris/scripts/build-changelog.js</code> 从 git 历史自动生成，请勿手动编辑。</p>
@@ -3176,6 +3204,7 @@ db-02,95,1.3
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/show.md</guid>
       <pubDate>Mon, 26 Oct 2026 22:14:45 GMT</pubDate>
       <description>本文档按功能模块整理了 Markdown Preview 站点的完整运行时界面截图，每个截图附有功能介绍，并指向 中对应的详细示例文档。特殊页面会额外标注访问 URL。 --- 站点默认以左侧文档目录树 + 右侧正文阅读区的两栏布局呈现。侧边栏自动扫描仓库中所有 文件，构建嵌套目录结构并显示字数统计；顶部显示面包屑路径与搜索框；右上角悬浮球提供回到顶部、上一篇/下一篇、打开本地 MD、安装 PWA</description>
+      <category>截图</category>
       <content:encoded><![CDATA[<h1>系统运行时截图</h1>
 <p>本文档按功能模块整理了 Markdown Preview 站点的完整运行时界面截图，每个截图附有功能介绍，并指向 <code>docs/examples/</code> 中对应的详细示例文档。特殊页面会额外标注访问 URL。</p>
 <hr>
@@ -3563,6 +3592,8 @@ Pulse 格式与示例：<a href="https://theforeveriris.github.io/md-preview/doc
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/colorcard-examples.md</guid>
       <pubDate>Mon, 26 Oct 2026 21:01:56 GMT</pubDate>
       <description>插件将颜色列表渲染为可点击复制的色卡墙，自动根据背景亮度自适应文字颜色。常用于： - 设计稿配色展示 - 品牌色 / 主题色文档 - 调色板分享 - 数据可视化色阶说明 支持三种代码块语言别名：、、。 每行一个颜色，支持十六进制、颜色名、、 等任意浏览器识别的格式。 colorcard #FF6B6B #4ECDC4 #45B7D1 #FFA07A #98D8C8 支持 、、 等形式： color</description>
+      <category>插件</category>
+      <category>排版</category>
       <content:encoded><![CDATA[<h1>ColorCard 颜色卡片插件示例</h1>
 <p><code>colorcard</code> 插件将颜色列表渲染为可点击复制的色卡墙，自动根据背景亮度自适应文字颜色。常用于：</p>
 <ul>
@@ -3768,6 +3799,8 @@ not-a-color
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/devtools-examples.md</guid>
       <pubDate>Mon, 26 Oct 2026 21:01:56 GMT</pubDate>
       <description>本篇演示本轮新增的若干「文档即工具」能力：术语表、HTTP 请求块、OpenAPI 文档、 SQL DDL → ER 图、开发者小工具（正则 / cron / 时间 / 色板 / 哈希 / JWT）、拼音注音， 以及 CSV → 图表联动。 正文里首次出现 OSPF、BGP、VLAN 时会加下划线，悬停即可看到解释（本段即命中）。 点击「发送」后才会真正发起请求（JSON 响应会自动格式化）： &gt;</description>
+      <category>示例</category>
+      <category>工具</category>
       <content:encoded><![CDATA[<h1>开发者工具与交互组件示例</h1>
 <p>本篇演示本轮新增的若干「文档即工具」能力：术语表、HTTP 请求块、OpenAPI 文档、
 SQL DDL → ER 图、开发者小工具（正则 / cron / 时间 / 色板 / 哈希 / JWT）、拼音注音，
@@ -3859,6 +3892,8 @@ rgb(139, 92, 246)
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/live-preview-examples.md</guid>
       <pubDate>Mon, 26 Oct 2026 21:01:56 GMT</pubDate>
       <description>fence 信息串追加 标记的 / / 代码块会在文档内提供沙箱运行预览； 代码块自动渲染为可折叠树（追加 标记保留源码展示）。脚本运行在隔离 iframe（opaque origin）中，无法访问页面数据。 html live html live &lt;div style=&quot;font-family: system-ui; text-align: center; padding: 16px;&quot;&gt; &lt;h</description>
+      <category>图表</category>
+      <category>数据</category>
       <content:encoded><![CDATA[<h1>Live 预览与 JSON 树</h1>
 <p>fence 信息串追加 <code>live</code> 标记的 <code>html</code> / <code>js</code> / <code>css</code> 代码块会在文档内提供沙箱运行预览；<code>json</code> 代码块自动渲染为可折叠树（追加 <code>raw</code> 标记保留源码展示）。脚本运行在隔离 iframe（opaque origin）中，无法访问页面数据。</p>
 <h2>HTML live 预览</h2>
@@ -3910,6 +3945,8 @@ li:hover { color: #b88aad; }
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/code-highlight-theme.md</guid>
       <pubDate>Mon, 26 Oct 2026 20:22:33 GMT</pubDate>
       <description>Markdown Preview 使用 highlight.js 进行代码语法高亮。内置了 10 种常用主题，并支持自定义主题。 | 主题 ID | 名称 | 类型 | |---------|------|------| | | GitHub Light | 亮色 | | | GitHub Dark | 暗色 | | | Atom One Light | 亮色 | | | Atom One Dar</description>
+      <category>主题</category>
+      <category>代码高亮</category>
       <content:encoded><![CDATA[<h1>代码高亮主题开发指南</h1>
 <h2>概述</h2>
 <p>Markdown Preview 使用 <a href="https://highlightjs.org/">highlight.js</a> 进行代码语法高亮。内置了 10 种常用主题，并支持自定义主题。</p>
@@ -4224,6 +4261,8 @@ li:hover { color: #b88aad; }
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/graph-backlinks-demo.md</guid>
       <pubDate>Mon, 26 Oct 2026 20:22:33 GMT</pubDate>
       <description>文档图谱（#/graph）与反向链接区块的用法示例：文档间的 markdown 链接如何变成图谱的边与文末的反向链接。</description>
+      <category>导航</category>
+      <category>进阶</category>
       <content:encoded><![CDATA[<h1>文档图谱与反向链接</h1>
 <p>文档之间的关系来自<strong>正文里的 markdown 相对链接</strong>：构建期 <code>iris/scripts/build-links.js</code>
 扫描全部文档，产出 <code>iris/data/links.json</code>（谁链接了谁），运行时用它渲染两个地方：</p>
@@ -4267,6 +4306,7 @@ li:hover { color: #b88aad; }
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/getting-started.md</guid>
       <pubDate>Mon, 26 Oct 2026 20:22:33 GMT</pubDate>
       <description>点击右上角的 Fork 按钮，将仓库复制到你的账号下。 1. 进入 Fork 后的仓库 2. 点击 Settings → Pages 3. 在 Build and deployment 中，Source 选择 GitHub Actions 编辑 ，将 和 改为你的信息： 提交修改并推送到 分支，GitHub Actions 会自动构建并部署。部署完成后，访问 即可查看。 在仓库的任意位置创建 文件</description>
+      <category>入门</category>
       <content:encoded><![CDATA[<h1>快速开始</h1>
 <h2>部署到 GitHub Pages</h2>
 <h3>1. Fork 仓库</h3>
@@ -4361,6 +4401,7 @@ python3 iris/scripts/pptx/main.py
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/roadmap.md</guid>
       <pubDate>Mon, 26 Oct 2026 17:21:19 GMT</pubDate>
       <description>本文档收录项目的功能规划。标注「已实现」的功能已落地可用（正式说明见 README 特性清单与相关专题文档），其余仍为规划，描述目标交互、可以复用的现有基建、实现要点与边界。功能落地后，对应章节会更新为正式文档并标注版本。 &gt; 状态速记：已完成功能见 README 特性清单 与各专题文档；未标注「已实现」的章节均为「规划中（未实现）」。 --- | 分组 | 功能 | 一句话说明 | 主要复用基建</description>
+      <category>规划</category>
       <content:encoded><![CDATA[<h1>功能路线图</h1>
 <p>本文档收录项目的功能规划。<strong>标注「已实现」的功能已落地可用</strong>（正式说明见 README 特性清单与相关专题文档），其余仍为规划，描述目标交互、可以复用的现有基建、实现要点与边界。功能落地后，对应章节会更新为正式文档并标注版本。</p>
 <blockquote>
@@ -5025,6 +5066,7 @@ python3 iris/scripts/pptx/main.py
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/native-html-examples.md</guid>
       <pubDate>Mon, 26 Oct 2026 08:37:50 GMT</pubDate>
       <description>本页面展示丰富的浏览器原生功能，零 JS、零后端即可使用！ --- &lt;dialog id=&quot;dialogDemo&quot;&gt; &lt;h3&gt;欢迎！&lt;/h3&gt; &lt;p&gt;这是一个纯 HTML 原生模态对话框。&lt;/p&gt; &lt;button onclick=&quot;document.getElementById(&apos;dialogDemo&apos;).close()&quot;&gt;关闭&lt;/button&gt; &lt;/dialog&gt; &lt;button onclick</description>
+      <category>排版</category>
       <content:encoded><![CDATA[<h1>浏览器原生 HTML 元素与 Web API 示例</h1>
 <p>本页面展示丰富的浏览器原生功能，零 JS、零后端即可使用！</p>
 <hr>
@@ -5379,6 +5421,8 @@ Super<wbr>cali<wbr>fragilistic<wbr>expiali<wbr>docious（有换行点）</p>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/ensp-examples.md</guid>
       <pubDate>Mon, 26 Oct 2026 05:22:55 GMT</pubDate>
       <description>本站点支持在 Markdown 文档中嵌入华为 eNSP 拓扑图。将 或 压缩包放入 目录，构建脚本会自动解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。 使用 嵌入语法引用预处理好的拓扑 JSON，需要用 代码块包裹（即三反引号 + 语言标记）： &gt; 提示：如果文件名包含空格，引用时请使用 URL 编码（空格替换为 ）。例如 。 9 台设备、8 条链路的华为设备</description>
+      <category>网络</category>
+      <category>拓扑</category>
       <content:encoded><![CDATA[<h1>华为 eNSP 拓扑渲染</h1>
 <p>本站点支持在 Markdown 文档中嵌入华为 eNSP 拓扑图。将 <code>.topo</code> 或 <code>.zip</code> 压缩包放入 <code>iris/data/ensp/raw/</code> 目录，构建脚本会自动解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。</p>
 <h2>基本用法</h2>
@@ -5511,6 +5555,7 @@ Super<wbr>cali<wbr>fragilistic<wbr>expiali<wbr>docious（有换行点）</p>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/pulse-examples.md</guid>
       <pubDate>Mon, 26 Oct 2026 05:22:55 GMT</pubDate>
       <description>本文档展示了 DG-LAB 郊狼波形文件（）的渲染效果。使用 语法即可渲染出逐帧动态波形演示。 如需内联的迷你波形，使用 语法，适合在文字段落中嵌入或批量展示。 所有示例均基于 DG-LAB 官方 3.4.4 版本波形文件导出规范。 &gt; 默认以官方竖线样式展示，点击左上角「竖线/曲线」按钮可切换显示模式；点击「全局/滚动」可切换视图模式。 --- | 参数 | 取值 | 说明 | |------|</description>
+      <category>图表</category>
       <content:encoded><![CDATA[<h1>Pulse 波形示例</h1>
 <p>本文档展示了 DG-LAB 郊狼波形文件（<code>.pulse</code>）的渲染效果。使用 <code>[pulse title=&quot;标题&quot;]Dungeonlab+pulse:...[/pulse]</code> 语法即可渲染出逐帧动态波形演示。</p>
 <p>如需内联的迷你波形，使用 <code>[pulsemini title=&quot;标题&quot;]Dungeonlab+pulse:...[/pulsemini]</code> 语法，适合在文字段落中嵌入或批量展示。</p>
@@ -5789,6 +5834,7 @@ Super<wbr>cali<wbr>fragilistic<wbr>expiali<wbr>docious（有换行点）</p>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/pulse-generator-page.md</guid>
       <pubDate>Mon, 26 Oct 2026 05:22:55 GMT</pubDate>
       <description>郊狼波形批量生成页是系统内置的可视化波形生成工具，面向 DG-LAB 郊狼设备的 波形创作者。以全屏覆盖层形式呈现，支持按类别/具体波形批量生成、参数调优、随机种子、波形叠加混合，并实时预览生成的迷你波形，提供一键复制源码与下载 文件的能力。 --- 四种入口方式任选其一： | 方式 | 说明 | |------|------| | URL 参数 | 在站点任意 URL 后追加 ，例如 | | 设</description>
+      <category>图表</category>
       <content:encoded><![CDATA[<h1>郊狼波形批量生成页（特殊页面）</h1>
 <p>郊狼波形批量生成页是系统内置的可视化波形生成工具，面向 DG-LAB 郊狼设备的 <code>.pulse</code> 波形创作者。以全屏覆盖层形式呈现，支持按类别/具体波形批量生成、参数调优、随机种子、波形叠加混合，并实时预览生成的迷你波形，提供一键复制源码与下载 <code>.pulse</code> 文件的能力。</p>
 <hr>
@@ -6145,6 +6191,8 @@ tags: [内容增强]</h2>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/timeline-examples.md</guid>
       <pubDate>Mon, 19 Oct 2026 09:25:58 GMT</pubDate>
       <description>插件把代码块渲染为单列时间线，适合： - 网络割接 / 变更窗口计划与执行记录 - 故障复盘（事故时间线） - 项目里程碑与发布计划 每行一条：。 timeline 2026-10-10 22:00 | 变更评审通过 | 方案与回退计划归档 | done 2026-10-18 01:00 | 割接窗口开启 | 接入层堆叠升级 | doing 2026-10-22 01:00 | 核心链路切换 | </description>
+      <category>插件</category>
+      <category>内容增强</category>
       <content:encoded><![CDATA[<h1>Timeline 时间线组件示例</h1>
 <p><code>timeline</code> 插件把代码块渲染为单列时间线，适合：</p>
 <ul>
@@ -6258,6 +6306,7 @@ tags: [内容增强]</h2>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/basic-usage.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>学习如何使用 Markdown 预览器的基本功能。 - 自动发现并显示所有 .md 文件的树形结构 - 点击文件夹可以展开/折叠 - 点击文件名加载文档 - 显示 Markdown 渲染后的内容 - 支持代码高亮 - 支持图片预览 - 顶部：文件加载进度条 - 底部：阅读位置进度条 1. 点击侧边栏中的文件名 2. 文档内容将在主区域显示 3. 使用滚动查看完整内容 - 直接点击其他文件名 - 或</description>
+      <category>入门</category>
       <content:encoded><![CDATA[<h1>基础使用教程</h1>
 <p>学习如何使用 Markdown 预览器的基本功能。</p>
 <h2>界面概览</h2>
@@ -6316,6 +6365,7 @@ tags: [内容增强]</h2>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/code-tabs-examples.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>使用 语法可以创建多语言代码选项卡，点击顶部标签切换不同语言的代码示例。 --- 源码： js function greet(name) { return ; } console.log(greet(&apos;World&apos;)); python def greet(name): return f&quot;Hello, {name}!&quot; print(greet(&quot;World&quot;)) go package main im</description>
+      <category>代码高亮</category>
       <content:encoded><![CDATA[<h1>代码选项卡使用示例</h1>
 <p>使用 <code>::: code-tabs</code> 语法可以创建多语言代码选项卡，点击顶部标签切换不同语言的代码示例。</p>
 <hr>
@@ -6747,6 +6797,7 @@ LIMIT 10;
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/columns-examples.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>使用 语法可以在 Markdown 中创建多栏布局，每栏可以包含任意 Markdown 内容。 --- 源码： 渲染效果： ::: columns ::: column 第一栏 功能 A 快速、高效、稳定的核心功能，满足日常需求。 - 高性能 - 低延迟 - 易使用 ::: ::: column 第二栏 功能 B 丰富的扩展能力，灵活应对各种场景。 - 可定制 - 可扩展 - 可集成 ::: ::</description>
+      <category>排版</category>
       <content:encoded><![CDATA[<h1>分栏布局使用示例</h1>
 <p>使用 <code>::: columns</code> 语法可以在 Markdown 中创建多栏布局，每栏可以包含任意 Markdown 内容。</p>
 <hr>
@@ -6966,6 +7017,7 @@ def hello():
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/countdown-examples.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>插件将 Markdown 代码块渲染为实时刷新的倒计时 / 正计时卡片，适合用于： - 距离某个固定时间点的倒计时（截止日期、活动开始、考试倒计时等） - 自某个历史时间点起的正计时（项目开始至今、产品上线至今等） - 相对时长的倒计时（30 分钟后、1 天 2 小时后等） 直接传入任何 能识别的日期字符串，默认倒计时方向。 countdown 2026-12-31T23:59:59 1d2h3m</description>
+      <category>插件</category>
       <content:encoded><![CDATA[<h1>Countdown 倒计时插件示例</h1>
 <p><code>countdown</code> 插件将 Markdown 代码块渲染为实时刷新的倒计时 / 正计时卡片，适合用于：</p>
 <ul>
@@ -7179,6 +7231,7 @@ def hello():
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/diff-examples.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>本页面展示如何使用 diff2html 可视化展示 Git Diff 内容。 --- 源码格式： 渲染效果： --- 渲染效果： --- --- --- 1. 使用 --- 1. 确保使用标准的 Git Diff 格式 2. 可以使用 命令生成 diff 内容 3. 支持多个文件的 diff 同时展示 4. 代码块标记必须是 类型</description>
+      <category>图表</category>
       <content:encoded><![CDATA[<h1>Git Diff 可视化示例</h1>
 <p>本页面展示如何使用 diff2html 可视化展示 Git Diff 内容。</p>
 <hr>
@@ -7395,6 +7448,7 @@ index 旧哈希..新哈希 文件权限
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/embed-examples.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>本页面展示各种外部服务的嵌入方式和渲染效果。 --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲</description>
+      <category>嵌入</category>
       <content:encoded><![CDATA[<h1>外部服务嵌入示例</h1>
 <p>本页面展示各种外部服务的嵌入方式和渲染效果。</p>
 <hr>
@@ -7522,6 +7576,7 @@ index 旧哈希..新哈希 文件权限
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/gallery-layouts.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>本页是画廊布局样式的快速查阅卡片。完整示例与说明见 图片画廊与懒加载示例。 在连续图片之前，用单独一行 指定该组图片的渲染样式： - 必须独占一行（单独成段） - 标记只作用于紧跟其后的一组连续图片 - 不写 时，连续 2 张及以上图片自动使用默认网格布局 - 未识别的 会被当作普通文本输出 | 样式 | 说明 | 推荐图片数 | |------|------|-----------| | | 默</description>
+      <category>画廊</category>
       <content:encoded><![CDATA[<h1>画廊布局样式速查</h1>
 <p>本页是画廊布局样式的快速查阅卡片。完整示例与说明见 <a href="https://theforeveriris.github.io/md-preview/docs/examples/image-gallery-examples.md#3-%E7%94%BB%E5%BB%8A%E5%B8%83%E5%B1%80%E6%A0%B7%E5%BC%8F">图片画廊与懒加载示例</a>。</p>
 <h2>语法</h2>
@@ -7757,6 +7812,7 @@ index 旧哈希..新哈希 文件权限
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/github-alerts-examples.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>本页面展示如何在 Markdown 中使用 GitHub 风格的 Alerts 语法。 GitHub 引入了一种特殊的引用块语法，用于创建具有不同颜色和图标的提示框。 &gt; [!NOTE] &gt; 这是一个提示信息，用于提供额外的说明或重要信息。 &gt; [!TIP] &gt; 这是一个技巧提示，用于提供有用的建议或最佳实践。 &gt; [!IMPORTANT] &gt; 这是重要信息，需要用户特别注意的关键内容。 &gt; [!</description>
+      <category>排版</category>
       <content:encoded><![CDATA[<h1>GitHub Alerts 示例</h1>
 <p>本页面展示如何在 Markdown 中使用 GitHub 风格的 Alerts 语法。</p>
 <h2>什么是 GitHub Alerts？</h2>
@@ -7830,6 +7886,7 @@ Alert 支持各种 Markdown 格式：</p>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/image-gallery-examples.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>本页面展示图片的懒加载、画廊模式（含多种布局样式）、图片灯箱和错误降级功能。 --- 所有图片都自动添加了 属性，会在图片进入视口时才加载。 语法格式： 图片会在滚动到视口时才开始加载，提升页面性能。 --- 当文档中出现连续两张或以上的图片（中间无其他内容）时，会自动包装成画廊布局。 以下两张图片会自动布局成画廊： 连续四张图片也会自动组成画廊： 如果只有一张图片，则不会触发画廊模式，保持原样：</description>
+      <category>画廊</category>
       <content:encoded><![CDATA[<h1>图片画廊与懒加载示例</h1>
 <p>本页面展示图片的懒加载、画廊模式（含多种布局样式）、图片灯箱和错误降级功能。</p>
 <hr>
@@ -8169,6 +8226,7 @@ Alert 支持各种 Markdown 格式：</p>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/markdown-syntax.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>本页面展示所有常用 Markdown 语法及其渲染效果。 --- 使用 符号创建标题， 的数量表示标题级别。 渲染效果： --- 使用 或 表示斜体， 或 表示粗体。 渲染效果： 斜体文本 也是斜体 粗体文本 也是粗体 粗斜体文本 也是粗斜体 删除线文本 --- 使用 、 或 创建无序列表，可以嵌套。 渲染效果： - 项目一 - 项目二 - 子项目 A - 子项目 B - 项目三 也可以使用 + </description>
+      <category>入门</category>
       <content:encoded><![CDATA[<h1>Markdown 语法参考</h1>
 <p>本页面展示所有常用 Markdown 语法及其渲染效果。</p>
 <hr>
@@ -8482,6 +8540,8 @@ ___
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/pkt-huawei-vrp-%E8%A7%A3%E6%9E%90%E7%A4%BA%E4%BE%8B.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>&gt; ⚠️ 重要说明：PKT 渲染器当前的解析逻辑并不是特别健壮。 &gt; &gt; PKT 拓扑渲染器（）中&quot;可能的配置过程&quot;推算逻辑基于正则表达式 + 段落分割实现，并非真正的语法解析器。它对常见的、格式规范的 VRP 配置文本能给出合理的步骤拆分，但在以下情况下可能产生错误、遗漏或乱序： &gt; &gt; - 配置文本被压缩、加密或经过非标准格式化（多余空格、Tab/空格混用、换行符不统一等） &gt; - 使用了未覆</description>
+      <category>网络</category>
+      <category>配置</category>
       <content:encoded><![CDATA[<h1>PKT 华为 VRP 命令解析示例</h1>
 <blockquote>
 <p>⚠️ <strong>重要说明：PKT 渲染器当前的解析逻辑并不是特别健壮。</strong></p>
@@ -8809,6 +8869,7 @@ return
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/plantuml-examples.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>本文档展示了 PlantUML 支持的各类图表及其渲染效果。 --- 渲染效果： --- 渲染效果： 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- &gt; 注意：PlantUML 对甘特图的</description>
+      <category>图表</category>
       <content:encoded><![CDATA[<h1>PlantUML 图表示例</h1>
 <p>本文档展示了 PlantUML 支持的各类图表及其渲染效果。</p>
 <hr>
@@ -10855,6 +10916,7 @@ Formula3 -down-&gt; Formula4
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/plugin-demo.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>这是一个展示 Markdown Preview 插件系统的示例文档。</description>
+      <category>插件</category>
       <content:encoded><![CDATA[<h1>插件系统示例</h1>
 <p>这是一个展示 Markdown Preview 插件系统的示例文档。</p>
 <h2>Mermaid 图表</h2>
@@ -10920,6 +10982,7 @@ C D E F|G A B c|
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/pptx-examples.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>本站点支持在 Markdown 文档中嵌入 PPT 与 PPTX 演示文稿（预处理产物方案，与 / 拓扑嵌入完全同风格）。 与 PDF/PPTX 在前端动态解码相比，「提前导出每页图片 + 元数据 JSON」有以下优势： | 方案 | 首屏速度 | 依赖体积 | 兼容性 | 可搜索 | |---|---|---|---|---| | 前端实时解码 PPTX | 慢（多 MB 级解码库） | 重 |</description>
+      <category>嵌入</category>
       <content:encoded><![CDATA[<h1>PPTX 演示嵌入</h1>
 <p>本站点支持在 Markdown 文档中嵌入 PPT 与 PPTX 演示文稿（预处理产物方案，与 <code>pkt</code> / <code>ensp</code> 拓扑嵌入完全同风格）。</p>
 <h2>为什么采用「预处理产物」？</h2>
@@ -11077,6 +11140,7 @@ python3 iris/scripts/pptx/main.py --verbose --file my-deck.pptx
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/qrcode-examples.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>这是一个展示 Markdown Preview 二维码插件功能的示例文档。 使用 语言标签，内容就是你想要生成二维码的文本或 URL： 你可以使用 JSON 格式指定更多选项，比如二维码的大小： --- 二维码插件支持： - 直接文本和 URL - JSON 配置（支持自定义大小） - 自动显示二维码下方的内容预览</description>
+      <category>插件</category>
       <content:encoded><![CDATA[<h1>二维码生成插件示例</h1>
 <p>这是一个展示 Markdown Preview 二维码插件功能的示例文档。</p>
 <h2>基本用法</h2>
@@ -11128,6 +11192,7 @@ python3 iris/scripts/pptx/main.py --verbose --file my-deck.pptx
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/spoiler-examples.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>使用 语法可以创建遮罩（剧透）效果，鼠标悬停或点击（移动端）时才会显示内容。遮罩颜色使用当前主题的主题色。 --- 这是一段普通文字，||这是被遮罩隐藏的内容||，后面继续是普通文字。 把鼠标移到上面紫色的色块上，就会显示隐藏的内容。 --- 今天的考试题答案是：||A||、||B||、||C||、||D||，全选就对了。 --- 主角最后的结局是||在雪地中独自离去，没有人知道他去了哪里||，留</description>
+      <category>排版</category>
       <content:encoded><![CDATA[<h1>遮罩（剧透）语法示例</h1>
 <p>使用 <code>||内容||</code> 语法可以创建遮罩（剧透）效果，鼠标悬停或点击（移动端）时才会显示内容。遮罩颜色使用当前主题的主题色。</p>
 <hr>
@@ -11184,6 +11249,7 @@ function hello() {
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/table-examples.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>本页面展示各种场景下的表格渲染效果，包括宽表格、长内容表格、多列表格等。 &gt; 💡 提示：表格内容过宽时可左右滑动查看，表头会保持固定可见。 --- 标准的 Markdown 表格语法，支持对齐方式设置。 渲染效果： | 左对齐 | 居中对齐 | 右对齐 | | :----- | :------: | -----: | | 内容 1 | 内容 2 | 内容 3 | | 内容 4 | 内容 5 | </description>
+      <category>表格</category>
       <content:encoded><![CDATA[<h1>表格使用示例</h1>
 <p>本页面展示各种场景下的表格渲染效果，包括宽表格、长内容表格、多列表格等。</p>
 <blockquote>
@@ -11459,6 +11525,7 @@ function hello() {
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/twitter-embed-examples.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>本页面展示如何使用 Markdown 预览器嵌入 Twitter/X 推文和时间线。 --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： 说明： - 显示该用户最近的推文 - 自动刷新显示最新内容 - 高度可自定义 --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 线程是一系列相关的推文，可以完整嵌入： 源码： 渲染效果： </description>
+      <category>嵌入</category>
       <content:encoded><![CDATA[<h1>Twitter/X 嵌入示例</h1>
 <p>本页面展示如何使用 Markdown 预览器嵌入 Twitter/X 推文和时间线。</p>
 <hr>
@@ -11750,6 +11817,7 @@ function hello() {
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/plugin-development.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>Markdown Preview 的插件系统允许你扩展 Markdown 渲染能力，自定义处理特定的代码块。插件放入 目录后，加载器会自动发现并注册。 每个插件是一个导出对象的 JavaScript 模块（ES Module），支持以下接口： | 字段/方法 | 类型 | 必填 | 说明 | |-----------|------|------|------| | | | ✅ | 插件唯一标识 |</description>
+      <category>插件</category>
       <content:encoded><![CDATA[<h1>插件开发指南</h1>
 <h2>插件机制概述</h2>
 <p>Markdown Preview 的插件系统允许你扩展 Markdown 渲染能力，自定义处理特定的代码块。插件放入 <code>iris/plugins/</code> 目录后，加载器会自动发现并注册。</p>
@@ -11996,6 +12064,8 @@ function hello() {
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/rss.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>Markdown Preview 自动为 目录下的所有 Markdown 文档生成 RSS 2.0 feed，方便他人通过 RSS 阅读器订阅你的文档更新。 --- 部署后，RSS feed 位于： 例如本站： &gt; feed.xml 不放在仓库根目录，而是放在 下，与 、 等预构建数据并列。 中已添加： 主流浏览器和 RSS 阅读器扩展会自动发现并提示订阅。 每篇文档对应一个 ，包含： | 字段 </description>
+      <category>配置</category>
+      <category>RSS</category>
       <content:encoded><![CDATA[<h1>RSS 订阅</h1>
 <p>Markdown Preview 自动为 <code>docs/</code> 目录下的所有 Markdown 文档生成 RSS 2.0 feed，方便他人通过 RSS 阅读器订阅你的文档更新。</p>
 <hr>
@@ -12141,6 +12211,8 @@ date: 2026-01-15
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/shortcuts.md</guid>
       <pubDate>Sat, 17 Oct 2026 15:21:46 GMT</pubDate>
       <description>Markdown Preview 支持一组全局键盘快捷键，覆盖侧边栏、设置、搜索、文档导航与内容区宽度调节。 表示 macOS 的 Cmd 键， 表示 Windows / Linux 的 Ctrl 键。 --- | 按键 | 功能 | 说明 | |------|------|------| | | 折叠 / 展开侧边栏 | 对齐 VS Code 的侧边栏键位；折叠后左上角会浮现展开按钮；状态自动记</description>
+      <category>入门</category>
+      <category>快捷键</category>
       <content:encoded><![CDATA[<h1>快捷键</h1>
 <p>Markdown Preview 支持一组全局键盘快捷键，覆盖侧边栏、设置、搜索、文档导航与内容区宽度调节。<code>⌘</code> 表示 macOS 的 Cmd 键，<code>Ctrl</code> 表示 Windows / Linux 的 Ctrl 键。</p>
 <hr>
@@ -12364,6 +12436,8 @@ date: 2026-01-15
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/apexcharts-examples.md</guid>
       <pubDate>Mon, 05 Oct 2026 03:18:09 GMT</pubDate>
       <description>本页面展示 ApexCharts 的各种图表类型和配置方式。 --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： -</description>
+      <category>图表</category>
+      <category>数据</category>
       <content:encoded><![CDATA[<h1>ApexCharts 交互式图表示例</h1>
 <p>本页面展示 ApexCharts 的各种图表类型和配置方式。</p>
 <hr>
@@ -12687,6 +12761,8 @@ date: 2026-01-15
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/geojson-examples.md</guid>
       <pubDate>Mon, 05 Oct 2026 03:18:09 GMT</pubDate>
       <description>本页面展示地理数据可视化功能，支持 GeoJSON 和 TopoJSON 格式的嵌入渲染。 --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果： --- 源码： 渲染效果：</description>
+      <category>地图</category>
+      <category>数据</category>
       <content:encoded><![CDATA[<h1>GeoJSON / TopoJSON 示例</h1>
 <p>本页面展示地理数据可视化功能，支持 GeoJSON 和 TopoJSON 格式的嵌入渲染。</p>
 <hr>
@@ -12766,6 +12842,8 @@ date: 2026-01-15
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/ios-vrp-examples.md</guid>
       <pubDate>Mon, 05 Oct 2026 03:18:09 GMT</pubDate>
       <description>内置两个网络设备配置语法包：（Cisco IOS / IOS-XE）与 （华为 VRP）。命令关键字、注释、字符串与地址分级着色，与内置 10 套代码高亮主题自动兼容。 ! 接口配置 interface GigabitEthernet0/0/1 description TO-CORE-SW-01 ip address 10.0.0.1 255.255.255.252 ip ospf 1 area </description>
+      <category>网络</category>
+      <category>配置</category>
       <content:encoded><![CDATA[<h1>Cisco IOS / 华为 VRP 配置高亮示例</h1>
 <p>内置两个网络设备配置语法包：<code>ios</code>（Cisco IOS / IOS-XE）与 <code>vrp</code>（华为 VRP）。命令关键字、注释、字符串与地址分级着色，与内置 10 套代码高亮主题自动兼容。</p>
 <h2>Cisco IOS（```ios）</h2>
@@ -12860,6 +12938,7 @@ interface Vlanif10
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/latex-examples.md</guid>
       <pubDate>Mon, 05 Oct 2026 03:18:09 GMT</pubDate>
       <description>本文档展示了 KaTeX 支持的各类数学公式及其渲染效果。 --- 行内公式使用单个 \$ 包裹，例如： - 勾股定理：$a^2 + b^2 = c^2$ - 欧拉公式：$e^{i\pi} + 1 = 0$ - 二次方程根：$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$ - 积分：$\int{a}^{b} f(x) dx$ - 求和：$\sum{n=1}^{\in</description>
+      <category>数学</category>
       <content:encoded><![CDATA[<h1>LaTeX 公式示例</h1>
 <p>本文档展示了 KaTeX 支持的各类数学公式及其渲染效果。</p>
 <hr>
@@ -13157,6 +13236,7 @@ $$</p>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/mermaid-examples.md</guid>
       <pubDate>Mon, 05 Oct 2026 03:18:09 GMT</pubDate>
       <description>本文档展示了 Mermaid 支持的各类图表及其渲染效果。 --- 渲染效果： 渲染效果： 渲染效果： --- 渲染效果： 渲染效果： --- 渲染效果： 渲染效果： --- 渲染效果： 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- 渲染效果： --- </description>
+      <category>图表</category>
       <content:encoded><![CDATA[<h1>Mermaid 图表示例</h1>
 <p>本文档展示了 Mermaid 支持的各类图表及其渲染效果。</p>
 <hr>
@@ -14133,6 +14213,8 @@ $$</p>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/pkt-examples.md</guid>
       <pubDate>Mon, 05 Oct 2026 03:18:09 GMT</pubDate>
       <description>本站点支持在 Markdown 文档中嵌入 Cisco Packet Tracer 拓扑图。将 文件放入 目录，构建脚本会自动解密、解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。 使用 嵌入语法引用预处理好的拓扑 JSON，需要用 代码块包裹（即三反引号 + 语言标记）： 渲染效果如下： &gt; 提示：如果文件名包含空格，引用时请使用 URL 编码（空格替换为 ）。</description>
+      <category>网络</category>
+      <category>拓扑</category>
       <content:encoded><![CDATA[<h1>Packet Tracer 拓扑渲染</h1>
 <p>本站点支持在 Markdown 文档中嵌入 Cisco Packet Tracer 拓扑图。将 <code>.pkt</code> 文件放入 <code>iris/data/pkt/raw/</code> 目录，构建脚本会自动解密、解压、解析并生成 JSON，前端用 Cytoscape.js 渲染为交互式拓扑图。</p>
 <h2>基本用法</h2>

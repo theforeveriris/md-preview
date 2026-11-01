@@ -262,19 +262,22 @@
     // ============== 扩展 API ==============
 
     /**
-     * 设置编辑器内容（程序化，不触发 undo 栈）
+     * 设置编辑器内容（程序化，不触发 input 事件）
+     * 默认记入撤销栈且整段替换为一个撤销单元——replaceAll / 清空 /
+     * 表格回写 / 导入等破坏性操作由此获得 Ctrl+Z 还原能力；
+     * 传 skipHistory:true 保持旧行为（完全不进撤销栈）
      */
-    setValue(v) {
+    setValue(v, opts) {
       const current = this.view.state.doc.toString();
       if (current === v) return;
+      const annotations = [programmaticUpdate.of(true)];
+      if (opts && opts.skipHistory) {
+        // CM6 history 只认 addToHistory.of(false)：自定义注解压不住撤销栈
+        annotations.push(Transaction.addToHistory.of(false));
+      }
       this.view.dispatch({
         changes: { from: 0, to: current.length, insert: v },
-        annotations: [
-          programmaticUpdate.of(true),
-          // CM6 history 只认 addToHistory.of(false)：自定义注解压不住撤销栈，
-          // 旧实现每次 setValue 产生一条独立历史，无法一次性撤销
-          Transaction.addToHistory.of(false),
-        ],
+        annotations,
       });
     }
 

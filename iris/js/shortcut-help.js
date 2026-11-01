@@ -19,46 +19,48 @@
   const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
   const MOD = IS_MAC ? '⌘' : 'Ctrl';
 
-  // 分组数据：k 为按键序列（MOD 占位符在 render 时替换）
+  // 分组数据：k 为按键序列（MOD 占位符在 render 时替换）。
+  // desc 走 i18n key + fallback——此前条目描述硬编码中文，英文界面下
+  // 是「英文标题 + 中文正文」混排
   const GROUPS = [
     {
       title: 'help.groupReading', fb: '阅读与导航',
       items: [
-        { keys: [MOD, 'B'], desc: '折叠 / 展开侧边栏' },
-        { keys: [MOD, 'K'], desc: '搜索命令面板（支持拼音与 > 命令模式）' },
-        { keys: [MOD, 'F'], desc: '文章内查找' },
-        { keys: [MOD, ','], desc: '打开设置面板' },
-        { keys: [MOD, '\\'], desc: '双栏对照阅读' },
-        { keys: [MOD, 'Alt', 'S'], desc: '开关对照阅读同步滚动' },
-        { keys: ['['], desc: '上一篇文档' },
-        { keys: [']'], desc: '下一篇文档' },
-        { keys: [MOD, 'Alt', '+ / − / 0'], desc: '内容区加宽 / 收窄 / 重置' },
-        { keys: [MOD, 'Alt', 'F'], desc: '正文占满可用宽度' },
-        { keys: ['Esc'], desc: '关闭当前浮层（面板 / 查找 / 对照 / 菜单）' }
+        { keys: [MOD, 'B'], k: 'help.read.sidebar', d: '折叠 / 展开侧边栏' },
+        { keys: [MOD, 'K'], k: 'help.read.palette', d: '搜索命令面板（支持拼音与 > 命令模式）' },
+        { keys: [MOD, 'F'], k: 'help.read.find', d: '文章内查找' },
+        { keys: [MOD, ','], k: 'help.read.settings', d: '打开设置面板' },
+        { keys: [MOD, '\\'], k: 'help.read.split', d: '双栏对照阅读' },
+        { keys: [MOD, 'Alt', 'S'], k: 'help.read.splitSync', d: '开关对照阅读同步滚动' },
+        { keys: ['['], k: 'help.read.prev', d: '上一篇文档' },
+        { keys: [']'], k: 'help.read.next', d: '下一篇文档' },
+        { keys: [MOD, 'Alt', '+ / − / 0'], k: 'help.read.width', d: '内容区加宽 / 收窄 / 重置' },
+        { keys: [MOD, 'Alt', 'F'], k: 'help.read.fullWidth', d: '正文占满可用宽度' },
+        { keys: ['Esc'], k: 'help.read.esc', d: '关闭当前浮层（面板 / 查找 / 对照 / 菜单）' }
       ]
     },
     {
       title: 'help.groupMedia', fb: '媒体查看',
       items: [
-        { keys: ['← / →'], desc: '图片灯箱翻页' },
-        { keys: ['+ / − / 0'], desc: '图片灯箱缩放 / 重置' },
-        { keys: ['← / →', 'Space'], desc: 'PPTX 放映翻页（Space 仅下一页）' },
-        { keys: ['Esc'], desc: '关闭灯箱 / 退出放映' }
+        { keys: ['← / →'], k: 'help.media.nav', d: '图片灯箱翻页' },
+        { keys: ['+ / − / 0'], k: 'help.media.zoom', d: '图片灯箱缩放 / 重置' },
+        { keys: ['← / →', 'Space'], k: 'help.media.pptx', d: 'PPTX 放映翻页（Space 仅下一页）' },
+        { keys: ['Esc'], k: 'help.media.esc', d: '关闭灯箱 / 退出放映' }
       ]
     },
     {
       title: 'help.groupEditor', fb: '内置编辑器',
       note: 'help.groupEditorNote', noteFb: '编辑器模式（?mode=editor）下生效，与文档站键位隔离',
       items: [
-        { keys: [MOD, 'Enter'], desc: '运行当前 Cell' },
-        { keys: [MOD, 'Shift', 'Enter'], desc: '运行全部 Cell' }
+        { keys: [MOD, 'Enter'], k: 'help.editor.run', d: '运行当前 Cell' },
+        { keys: [MOD, 'Shift', 'Enter'], k: 'help.editor.runAll', d: '运行全部 Cell' }
       ]
     },
     {
       title: 'help.groupTouch', fb: '移动端手势',
       items: [
-        { keys: ['←→ 滑动'], desc: '移动端翻上一篇 / 下一篇' },
-        { keys: ['左缘右滑'], desc: '呼出侧边栏' }
+        { keys: ['←→ 滑动'], k: 'help.touch.page', d: '移动端翻上一篇 / 下一篇' },
+        { keys: ['左缘右滑'], k: 'help.touch.sidebar', d: '呼出侧边栏' }
       ]
     }
   ];
@@ -81,7 +83,7 @@
         ${g.items.map(it => `
           <div class="sh-row">
             <span class="sh-keys">${renderKeys(it.keys)}</span>
-            <span class="sh-desc">${esc(it.desc)}</span>
+            <span class="sh-desc">${esc(t(it.k, it.d))}</span>
           </div>`).join('')}
       </div>`).join('');
     overlayEl.innerHTML = `

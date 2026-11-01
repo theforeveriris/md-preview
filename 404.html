@@ -217,7 +217,7 @@
 
     <div class="nf-search">
       <input id="nf-input" type="search" placeholder="搜索文档标题或文件名…" autocomplete="off" aria-label="搜索文档">
-      <ul class="nf-results" id="nf-results"></ul>
+      <ul class="nf-results" id="nf-results" role="listbox" aria-live="polite"></ul>
     </div>
 
     <nav class="nf-links" id="nf-links">
@@ -334,9 +334,13 @@
         });
         if (latest && latest.path) {
           var span = document.getElementById('nf-last');
-          span.innerHTML = '上次读到 <a href="' + withBase('index.html#/' + latest.path) + '">' +
-            latest.path + '</a>';
-          span.querySelector('a').style.color = 'var(--color-accent-purple)';
+          // 纵深防御：localStorage 里的路径不直接 innerHTML 拼接
+          var link = document.createElement('a');
+          link.href = withBase('index.html#/' + latest.path);
+          link.textContent = latest.path;
+          link.style.color = 'var(--color-accent-purple)';
+          span.textContent = '上次读到 ';
+          span.appendChild(link);
         }
       } catch (e) { /* ignore */ }
 
