@@ -318,8 +318,17 @@
     };
     cells.push(cellData);
 
-    // 插入到 DOM：在全局 addBtn 之前插入
-    if (afterCellId) {
+    // 插入到 DOM：beforeCellId（插到某 Cell 之前，撤销删除用）> afterCellId > 末尾
+    if (opts.beforeCellId) {
+      const beforeCell = getCell(opts.beforeCellId);
+      if (beforeCell) {
+        editorMain.insertBefore(cellDiv, beforeCell.div);
+        cells.splice(cells.indexOf(cellData), 1);
+        cells.splice(cells.indexOf(beforeCell), 0, cellData);
+      } else {
+        editorMain.insertBefore(cellDiv, globalAddBtn);
+      }
+    } else if (afterCellId) {
       const afterCell = getCell(afterCellId);
       if (afterCell) {
         afterCell.div.after(cellDiv);
@@ -532,7 +541,7 @@
     return fallback;
   }
 
-  function showToast(msg) {
+  function showToast(msg, action) {
     let toast = document.getElementById('editorToast');
     if (!toast) {
       toast = document.createElement('div');
@@ -541,9 +550,26 @@
       document.body.appendChild(toast);
     }
     toast.textContent = msg;
+    // 可交互扩展：带 action 时挂一个操作按钮（如删除 Cell 的「撤销」）
+    if (toast._actionBtn) { toast._actionBtn.remove(); toast._actionBtn = null; }
+    if (action) {
+      const btn = document.createElement('button');
+      btn.textContent = action.label;
+      btn.style.cssText = 'margin-left:10px;padding:2px 10px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.6);border-radius:4px;font-size:12px;cursor:pointer;';
+      btn.addEventListener('click', () => {
+        toast.style.opacity = '0';
+        action.run();
+      });
+      toast.appendChild(btn);
+      toast._actionBtn = btn;
+      toast.style.pointerEvents = 'auto';
+    } else {
+      toast.style.pointerEvents = 'none';
+    }
     toast.style.opacity = '1';
     if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { toast.style.opacity = '0'; }, 1500);
+    // 带撤销按钮的 toast 需要留出反应时间
+    toastTimer = setTimeout(() => { toast.style.opacity = '0'; }, action ? 6000 : 1500);
   }
 
   // ============== Cell 折叠 ==============
@@ -596,6 +622,13 @@
     const idx = cells.findIndex(c => c.id === id);
     if (idx === -1) return;
     const cell = cells[idx];
+    // 快照用于「撤销删除」：销毁后 CM 实例与撤销栈随之丢失，
+    // 恢复 = 按原类型/内容/位置新建一个 Cell
+    const snapshot = {
+      content: cell.textarea ? cell.textarea.value : '',
+      type: cell.type,
+      idx
+    };
     // 销毁 CM6 实例，避免内存泄漏（cell.textarea 是 CodeMirrorEditor 的兼容别名）
     if (cell.textarea && typeof cell.textarea.destroy === 'function') {
       cell.textarea.destroy();
@@ -616,6 +649,26 @@
     }
     renumberCells();
     updateStatusbar();
+    showToast(
+      editorT('editor.cellDeleted', '已删除 Cell [{n}]').replace('{n}', id),
+      {
+        label: editorT('editor.undo', '撤销'),
+        run: () => {
+          // idx=0 时插到首位（beforeCellId），否则接在前一个 Cell 之后即原位
+          const anchor = snapshot.idx > 0 ? cells[snapshot.idx - 1] : null;
+          const first = cells[0];
+          createCell(
+            anchor ? anchor.id : null,
+            snapshot.content,
+            {
+              type: snapshot.type,
+              beforeCellId: !anchor && first ? first.id : null
+            }
+          );
+          markUnsaved();
+        }
+      }
+    );
   }
 
   function moveCell(id, direction) {

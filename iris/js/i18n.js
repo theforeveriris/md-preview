@@ -680,6 +680,8 @@
     'editor.badHeadersJson': '自定义请求头不是有效的 JSON',
     'editor.hostConfigCleared': '图片上传配置已清除',
     'editor.tabClosed': '已关闭「{t}」',
+    'editor.cellDeleted': '已删除 Cell [{n}]',
+    'editor.undo': '撤销',
     'editor.idbFallback': 'IndexedDB 写入失败，已回退到 localStorage',
     'editor.autosaveFull': '自动保存失败：存储空间可能已满',
     'editor.restoreFailed': '恢复自动保存失败：数据可能已损坏',

@@ -638,6 +638,8 @@
     'editor.badHeadersJson': 'Custom headers is not valid JSON',
     'editor.hostConfigCleared': 'Image upload configuration cleared',
     'editor.tabClosed': 'Closed "{t}"',
+    'editor.cellDeleted': 'Cell [{n}] deleted',
+    'editor.undo': 'Undo',
     'editor.idbFallback': 'IndexedDB write failed, fell back to localStorage',
     'editor.autosaveFull': 'Autosave failed: storage may be full',
     'editor.restoreFailed': 'Failed to restore autosave: data may be corrupted',
