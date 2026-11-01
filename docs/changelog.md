@@ -7,8 +7,40 @@ tags: [规划]
 
 > 本页由 `iris/scripts/build-changelog.js` 从 git 历史自动生成，请勿手动编辑。
 
+## 2026-10-31
+
+- `5bc988b` feat(ui): 分享卡片右下角加主题化二维码，扫码直达本文锚点 — theforeveriris
+- `a1fa074` docs(artwork): 分享卡片章节补四张运行时原图预览 — theforeveriris
+- `6a2ca38` feat(mascot): 鸢尾花台词库外置为用户可配置文件，文案改为站点功能提示 — theforeveriris
+- `88b6b10` docs(editor): 主题切换说明与实现同步（跟随站点主题，会话内临时反转） — theforeveriris
+- `0dacef5` feat(editor): 补全条目补齐至全语法覆盖（新增 52 条）+ 新增触发组 — theforeveriris
+- `83fdcc2` fix(editor): 修复补全触发残留字符与 closeBrackets 闭符残留，移除死语法 geo — theforeveriris
+## 2026-10-30
+
+- `433775e` fix(editor): 编辑器预览补齐文档站全部渲染器与渲染后处理 — theforeveriris
+- `59d262e` docs(examples): txt 示例换成古典名篇长文 — theforeveriris
+- `76d2ac7` feat(docs): 支持 .txt 纯文本文档（仓库内与拖入） — theforeveriris
+## 2026-10-29
+
+- `0b31ab5` feat(ui): 下拉框改为自绘组件，跟随主题配色 — theforeveriris
+- `29a445a` feat(theme): 新增 13 套预设主题 — theforeveriris
 ## 2026-10-28
 
+- `629f951` 智谱模型高峰期降智毁我青春20：终端与敏感遮罩补源码并重做解锁面板 — theforeveriris
+- `03d2101` 智谱模型高峰期降智毁我青春19：重做引用卡片样式并修正多引用拆分 — theforeveriris
+- `804f8c1` 智谱模型高峰期降智毁我青春18：步骤引用补源码并拆分 orgchart 文档 — theforeveriris
+- `37f0aa9` 智谱模型高峰期降智毁我青春17：修复代码行高亮错位并补源码示例 — theforeveriris
+- `07ca970` 智谱模型高峰期降智毁我青春16：学习路径卡片链图标化与横向滚动 — theforeveriris
+- `bea9e96` 智谱模型高峰期降智毁我青春14：ipcalc 示例补 Markdown 源码 — theforeveriris
+- `8aa7b1d` 智谱模型高峰期降智毁我青春13：日历热图补源码与跨年示例 — theforeveriris
+- `72aa281` 智谱模型高峰期降智毁我青春11：配置 diff 示例补源码并隐藏行内滚动条 — theforeveriris
+- `776ce89` 智谱模型高峰期降智毁我青春10：位标注头部超长位串中段省略 — theforeveriris
+- `24e98bd` 智谱模型高峰期降智毁我青春8：位标注示例展示 Markdown 源码 — theforeveriris
+- `eab5859` 智谱模型高峰期降智毁我青春7：统一 ACL 与路由表示例标题 — theforeveriris
+- `a643d37` 智谱模型高峰期降智毁我青春6：修复多反引号代码围栏解析 — theforeveriris
+- `be973de` docs(config): 补 homepage 门户页 / 虚拟路由 / 非 GitHub 托管配置说明 — theforeveriris
+- `5619437` style: 中文排版自动修正（csv-examples 示例）[skip ci] — theforeveriris
+- `01fd5e6` build: 重建数据产物（file-tree/search-index/links/feed/sitemap/changelog/precache）+ 桌面端文档 — theforeveriris
 - `5040dec` feat(bits): 位标注块 — theforeveriris
 - `4bd0261` feat(heatmap): 日历热图块 — theforeveriris
 - `daa17e6` feat(steps,quote,orgchart): 步骤揭示 / 引用卡片 / 架构图语法糖三件套 — theforeveriris
@@ -33,7 +65,6 @@ tags: [规划]
 - `1a83ac2` feat(graph): 配色改色相轮分层 + 独立页形态 + 修复节点点击导航（SW v8.51） — theforeveriris
 ## 2026-10-26
 
-- `e6dd36d` style: 中文排版自动修正 [skip ci] — github-actions[bot]
 - `297e234` test(docs): 触发排版校验流水线 — theforeveriris
 - `0d5c72b` test(docs): 触发排版校验流水线 — theforeveriris
 - `12434b1` test(docs): 触发排版校验流水线 — theforeveriris
@@ -136,7 +167,6 @@ tags: [规划]
 - `2429e19` docs: 添加插件开发指南 — theforeveriris
 ## 2026-07-09
 
-- `5906c31` docs: 重写项目文档，更新为当前实际代码结构 — github-actions[bot]
 - `f121401` docs: 更新表格示例文档，添加使用提示 — theforeveriris
 - `61ac951` docs: 添加表格使用示例文档 — theforeveriris
 ## 2026-05-24
@@ -199,4 +229,4 @@ tags: [规划]
 - `b1eecd4` Add multi-level documentation structure with test files — theforeveriris
 - `4a49e3b` Initial commit: Markdown previewer for GitHub Pages — agelaia521
 
-> 共 143 条（最多展示 200 条）。
+> 共 167 条（最多展示 200 条）。
