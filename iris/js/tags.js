@@ -104,7 +104,11 @@
     `;
 
     panel.querySelectorAll('[data-tag]').forEach(btn => {
-      btn.addEventListener('click', () => openTagPage(btn.dataset.tag));
+      btn.addEventListener('click', () => {
+        // 经 hash 导航而非直呼 openTagPage：URL 可深链、浏览器返回键可退出
+        //（与标签云页的标准 #/tag/ 链接行为一致）
+        window.location.hash = '#/tag/' + encodeURIComponent(btn.dataset.tag);
+      });
     });
   }
 
