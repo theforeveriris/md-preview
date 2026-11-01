@@ -219,6 +219,7 @@
   async function unmount() {
     const st = window.MarkdownPreview.state;
     if (!st || !st.desktopKb) return;
+    kbGeneration++; // 作废在途的 watch 重建写回
     invoke('unbind_kb_root').catch(() => {});
     delete st.desktopKb;
     delete st.desktopKbDocs;
@@ -303,6 +304,7 @@
 
   // 重建轻量搜索索引与链接关系（mount 与热更新共用）
   function rebuildKbIndexes(st, docs) {
+    if (!st.desktopKb) return; // 卸载后作废
     const allSet = new Set(docs.keys());
     const links = {};
     const searchDocs = [];
@@ -328,10 +330,18 @@
     if (search && search.injectDocuments) search.injectDocuments(searchDocs);
   }
 
+  // 知识库挂载代次：卸载/重挂递增。watch 事件触发的异步重建（读树、读文件
+  // 都是 await）在落盘前校验代次——卸载后在途的旧重建不得把 KB 数据写回
+  // 刚恢复的站内树/索引
+  let kbGeneration = 0;
+
   // 重建文件树（新增/删除文件后侧边栏同步）+ filetreeloaded 通知
   async function rebuildKbTree(st, docs) {
+    const gen = kbGeneration;
     try {
       const treeJson = await invoke('read_kb_tree');
+      // await 期间可能已卸载/重挂：作废本次写回
+      if (gen !== kbGeneration) return;
       st.fileTreeData = enrichTree(JSON.parse(treeJson), docs);
       window.MarkdownPreview.fileTree.renderFileTree(st.fileTreeData);
       window.dispatchEvent(new CustomEvent('filetreeloaded'));
@@ -361,6 +371,7 @@
   async function handleKbChangedNow(absPath) {
     const st = window.MarkdownPreview.state;
     if (!st || !st.desktopKb) return;
+    const gen = kbGeneration;
     const rootNorm = normalizeSep(st.desktopKb.root).replace(/\/+$/, '').toLowerCase();
     const norm = normalizeSep(absPath);
     const normLower = norm.toLowerCase();
@@ -371,6 +382,8 @@
 
     try {
       const text = await invoke('read_kb_file', { path: rel });
+      // await 期间已卸载/重挂：作废本次写回
+      if (gen !== kbGeneration || !st.desktopKb) return;
       const { frontmatter, content } = parseFrontmatter(text);
       const docs = st.desktopKbDocs;
       const isNew = docs && !docs.has(rel);
