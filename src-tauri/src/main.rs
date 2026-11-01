@@ -418,25 +418,28 @@ fn main() {
         // 单实例必须最先注册：运行中再次启动（双击 .md / 重复点图标）时，
         // 本回调在第二实例退出前执行——把新 argv 的文档路径转交取件箱、
         // 唤醒前端取件并聚焦已有窗口，不再双开完整实例
-        .plugin(tauri_plugin_single_instance::init(|app, argv, _cwd| {
+        .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
             let focus = |app: &tauri::AppHandle| {
                 if let Some(win) = app.get_webview_window("main") {
                     let _ = win.unminimize();
                     let _ = win.set_focus();
                 }
             };
-            if let Some(path) = argv
-                .iter()
-                .skip(1)
-                .find(|arg| {
-                    let p = PathBuf::from(arg);
-                    p.is_file() && is_md_path(&p)
-                })
-                .cloned()
-            {
+            let cwd = PathBuf::from(cwd);
+            if let Some(path) = argv.iter().skip(1).find_map(|arg| {
+                // 相对路径按第二实例的工作目录解析（否则按第一实例的
+                // cwd 找 note.md 会找错或找不到）
+                let p = PathBuf::from(arg);
+                let p = if p.is_absolute() { p } else { cwd.join(&p) };
+                if p.is_file() && is_md_path(&p) {
+                    Some(p)
+                } else {
+                    None
+                }
+            }) {
                 let state: tauri::State<OpenFileArg> = app.state();
                 if let Ok(mut guard) = state.0.lock() {
-                    *guard = Some(path);
+                    *guard = Some(path.to_string_lossy().to_string());
                 }
                 if let Some(win) = app.get_webview_window("main") {
                     let _ = win.emit("open-file-arg", ());
