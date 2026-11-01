@@ -1,6 +1,6 @@
 // 版本单一来源：发布时只改这里，CACHE_NAME / RUNTIME_CACHE 随之派生
 //（此前 RUNTIME_CACHE 版本手工维护、跨版本永不重建，曾出过「钉死旧版」事故）
-const VERSION = 'v8.52';
+const VERSION = 'v8.53';
 const CACHE_NAME = 'md-preview-' + VERSION;
 // 运行时缓存版本必须随发布递增：旧版曾长期停留在 v8.19，导致
 // index.html / JS / CSS 这类静态资源被「缓存优先」永久钉在旧版本
