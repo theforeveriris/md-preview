@@ -275,6 +275,10 @@
 
     'plantuml.renderFailed': 'All PlantUML render servers unavailable; showing source instead',
     'geo.parseFailed': 'GeoJSON/TopoJSON parse failed; showing source instead',
+    'ctx.imgCopyUrl': 'Copy image URL',
+    'ctx.imgOpen': 'Open original in new tab',
+    'ctx.imgDownload': 'Download image',
+    'ctx.imgCopyMd': 'Copy Markdown',
     'plantuml.renderError': 'PlantUML render error',
     'plantuml.openInEditor': 'Open in the PlantUML online editor',
 

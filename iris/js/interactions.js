@@ -661,12 +661,80 @@
     }
   }
 
+  // ============== 正文图片右键菜单 ==============
+  // 与 LaTeX 右键复制同模式（hover 会干扰灯箱点击，右键零侵入）：
+  // 复制地址 / 新标签打开 / 下载 / 复制 Markdown——表格图表公式都有
+  // 悬浮操作，图片此前一个入口都没有
+  function initImageContextMenu() {
+    document.addEventListener('contextmenu', (e) => {
+      const img = e.target.closest('.markdown-body img');
+      if (!img) return;
+      // 渲染器自管的图片让位（拓扑/图表有自己的工具条），编辑器输出区不管
+      if (img.closest('.plantuml-diagram, .mermaid-diagram, .geo-map, .pptx-grid, .hm-widget, .csv-table, .cell-output')) return;
+      const src = img.currentSrc || img.src;
+      if (!src) return;
+      e.preventDefault();
+
+      let fileName = 'image';
+      try {
+        fileName = decodeURIComponent(new URL(src, location.href).pathname.split('/').pop()) || 'image';
+      } catch (err) { /* 非法 URL 时用默认名 */ }
+      const alt = (img.getAttribute('alt') || '').trim();
+
+      showMenu([
+        {
+          icon: 'i-link',
+          label: t('ctx.imgCopyUrl', '复制图片地址'),
+          action: (btn) => {
+            const originalHtml = btn.innerHTML;
+            copyText(src).then(() => copiedFeedback(btn, originalHtml), () => hideMenu());
+          }
+        },
+        {
+          icon: 'i-image',
+          label: t('ctx.imgOpen', '新标签打开原图'),
+          action: () => { hideMenu(); window.open(src, '_blank', 'noopener'); }
+        },
+        {
+          icon: 'i-download',
+          label: t('ctx.imgDownload', '下载图片'),
+          action: () => { hideMenu(); downloadImage(src, fileName); }
+        },
+        {
+          icon: 'i-copy',
+          label: t('ctx.imgCopyMd', '复制 Markdown'),
+          action: (btn) => {
+            const originalHtml = btn.innerHTML;
+            const mdAlt = (alt || fileName).replace(/[\[\]]/g, '');
+            copyText('![' + mdAlt + '](' + src + ')').then(
+              () => copiedFeedback(btn, originalHtml),
+              () => hideMenu()
+            );
+          }
+        }
+      ], e.clientX + 2, e.clientY + 2);
+    });
+  }
+
+  async function downloadImage(src, fileName) {
+    try {
+      const resp = await fetch(src, { mode: 'cors' });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const blob = await resp.blob();
+      downloadBlob(blob, fileName);
+    } catch (e) {
+      // 跨域获取失败（无 CORS 头的图床）：退化为新标签打开手动另存
+      window.open(src, '_blank', 'noopener');
+    }
+  }
+
   // ============== 初始化 ==============
   function init() {
     bindMenuDismiss();
     initLatexContextMenu();
     initTableHandle();
     initDiagramToolbar();
+    initImageContextMenu();
   }
 
   window.MarkdownPreview.interactions = {

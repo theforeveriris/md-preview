@@ -308,6 +308,10 @@
     // 动态文案：PlantUML
     'plantuml.renderFailed': 'PlantUML 渲染服务均不可用，已回退为源码展示',
     'geo.parseFailed': 'GeoJSON/TopoJSON 解析失败，已保留源码展示',
+    'ctx.imgCopyUrl': '复制图片地址',
+    'ctx.imgOpen': '新标签打开原图',
+    'ctx.imgDownload': '下载图片',
+    'ctx.imgCopyMd': '复制 Markdown',
     'plantuml.renderError': 'PlantUML 渲染错误',
     'plantuml.openInEditor': '在 PlantUML 在线编辑器中打开',
 
