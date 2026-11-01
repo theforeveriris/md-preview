@@ -706,6 +706,8 @@
     'local.notDoc': '（非 Markdown/文本文件）',
     'local.count': '{n} 个文件',
     'cjk.loading': '正在加载繁简转换组件…',
+    'kb.fileAdded': '{n} 已加入知识库',
+    'kb.fileRemoved': '{n} 已从知识库移除',
     'notfound.title': '文档未找到',
     'notfound.body': '路径 `{p}` 不存在或尚未收录。',
     'notfound.home': '返回全站目录',

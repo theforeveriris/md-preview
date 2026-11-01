@@ -664,6 +664,8 @@
     'local.notDoc': '(not a Markdown/text file)',
     'local.count': '{n} files',
     'cjk.loading': 'Loading the Chinese variant converter…',
+    'kb.fileAdded': '{n} added to the library',
+    'kb.fileRemoved': '{n} removed from the library',
     'notfound.title': 'Document not found',
     'notfound.body': 'The path `{p}` does not exist or is not indexed.',
     'notfound.home': 'Back to site index',
