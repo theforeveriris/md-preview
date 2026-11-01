@@ -6,7 +6,8 @@
  * 内容挂在 window.MarkdownPreview.mascotCopy 上。
  *
  * 自定义说明：
- *   - lines：点击鸢尾花时按顺序轮换展示的功能提示，可增删改、调整顺序；
+ *   - lines：点击鸢尾花时按顺序轮换展示的功能提示（中文池），可增删改、调整顺序；
+ *   - linesEn：英文界面台词池（可选；缺省时英文界面共用 lines）；
  *   - 单条建议不超过 30 个字（气泡最宽 240px，约两行半）；
  *   - 台词保持纯文本、不带 emoji，与站点文案规范一致；
  *   - 文件被移除时 iris-mascot.js 会退回内置兜底台词，站点不受影响。
@@ -42,5 +43,35 @@ window.MarkdownPreview.mascotCopy = {
     '界面支持中英双语，设置里一键切换。',
     '这个站还有桌面端版本，打包成 Windows 应用离线跑。',
     '订阅 RSS 的话，站里有新文章会自动推送给你。'
+  ],
+  // 英文界面台词池（与 lines 一一对应即可，数量不必相等）
+  linesEn: [
+    'Press Ctrl+K for the command palette — jump to any document or action.',
+    'Drop .md files or a folder onto the page to read them locally.',
+    'Long-press a file in the sidebar to favorite it.',
+    'Use split-pane reading to view two documents side by side.',
+    'The reading position is remembered — resume right where you left off.',
+    'Related documents are linked at the end of each page.',
+    'Over twenty preset themes are available in Settings.',
+    'The editor supports thirty-plus syntax blocks with instant preview.',
+    'Export any document as Markdown or print it to PDF.',
+    'Sensitive mode blurs IPs and passwords for screen sharing.',
+    'Scan the QR code in the floating menu to continue on your phone.',
+    'The whole site works offline once documents are cached.',
+    'Hover internal links for a preview card before clicking.',
+    'Click any image for the lightbox; arrow keys navigate.',
+    'Sections can be collapsed for long documents.',
+    'Ctrl+F opens in-page search with live match counts.',
+    'Every code block has a one-click copy button.',
+    'Write ```mermaid to render flowcharts and sequence diagrams.',
+    'Wrap math in $…$ — matrices and systems are supported.',
+    'Export as Markdown, site ZIP, or EPUB.',
+    'The command palette understands pinyin search.',
+    'Swipe left/right on mobile to flip pages.',
+    'Adjacent documents are prefetched while idle.',
+    'Recent reads and favorites live in the sidebar.',
+    'The UI speaks Chinese and English — switch in Settings.',
+    'There is also a Windows desktop build that runs offline.',
+    'Subscribe to the RSS feed for new posts.'
   ]
 };

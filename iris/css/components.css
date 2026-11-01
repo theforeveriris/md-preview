@@ -1305,6 +1305,14 @@ pre.code-block code { position: relative; z-index: 1; }
   font-size: 13px;
 }
 .fm-label .fm-pinned { color: var(--color-text-muted); }
+/* 「开关开了但环境不满足」的行内说明 */
+.fm-env-hint {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
 
 /* ============== 位标注块（renderers/bits.js） ============== */
 .bits-widget {

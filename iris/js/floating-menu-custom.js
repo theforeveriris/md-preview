@@ -64,6 +64,27 @@
     });
   }
 
+  // 「勾了却不出现」的可感知提示：勾选项有静态 hidden / .fm-user-hidden
+  // 之外的全局条件（PWA 已安装 / 桌面端才有 / 无仓库配置）时给出说明。
+  // 已知条件映射：id → i18n key
+  const SHOW_CONDITION_HINTS = {
+    installPwaBtn: 'fm.hint.installed',
+    kbMountBtn: 'fm.hint.desktop',
+    editPageBtn: 'fm.hint.desktop',
+    snapshotShareBtn: 'fm.hint.desktop'
+  };
+
+  function whyHidden(id) {
+    const el = document.getElementById(id);
+    if (!el) return '';
+    if (el.hidden) {
+      const key = SHOW_CONDITION_HINTS[id];
+      if (key) return t(key, '当前环境暂不可用（条件未满足）');
+      return t('fm.hint.generic', '当前环境暂不可用');
+    }
+    return '';
+  }
+
   // ============== 设置面板 UI ==============
 
   function labelFor(el) {
@@ -80,10 +101,12 @@
           const el = document.getElementById(id);
           if (!el) return '';
           const isPinned = PINNED.includes(id);
+          // 开关打开但按钮因环境条件隐藏：行内给出说明，不再让人猜
+          const envHint = !hidden.includes(id) ? whyHidden(id) : '';
           return `<div class="fm-row" data-id="${esc(id)}">
-            <button type="button" class="fm-btn" data-act="up" ${isPinned ? 'disabled' : ''} aria-label="上移"><svg class="ico ico-xs" aria-hidden="true"><use href="#i-arrow-up"/></svg></button>
-            <button type="button" class="fm-btn" data-act="down" ${isPinned ? 'disabled' : ''} aria-label="下移"><svg class="ico ico-xs" aria-hidden="true"><use href="#i-arrow-down"/></svg></button>
-            <span class="fm-label">${esc(labelFor(el))}${isPinned ? '<svg class="ico ico-xs fm-pinned" role="img" aria-label="固定项"><use href="#i-lock"/></svg>' : ''}</span>
+            <button type="button" class="fm-btn" data-act="up" ${isPinned ? 'disabled' : ''} aria-label="${esc(t('fm.moveUp', '上移'))}"><svg class="ico ico-xs" aria-hidden="true"><use href="#i-arrow-up"/></svg></button>
+            <button type="button" class="fm-btn" data-act="down" ${isPinned ? 'disabled' : ''} aria-label="${esc(t('fm.moveDown', '下移'))}"><svg class="ico ico-xs" aria-hidden="true"><use href="#i-arrow-down"/></svg></button>
+            <span class="fm-label">${esc(labelFor(el))}${envHint ? `<span class="fm-env-hint">${esc(envHint)}</span>` : ''}${isPinned ? '<svg class="ico ico-xs fm-pinned" role="img" aria-label="固定项"><use href="#i-lock"/></svg>' : ''}</span>
             <label class="switch">
               <input type="checkbox" data-act="toggle" ${hidden.includes(id) ? '' : 'checked'} ${isPinned ? 'disabled' : ''}>
               <span class="switch-slider"></span>
