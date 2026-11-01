@@ -17,6 +17,8 @@ on:
   push:
     tags: ['v*']
   workflow_dispatch:
+    # 手动运行也必须针对版本 tag（分支运行在下方校验步骤被拒绝）——
+    # 否则 ref_name 是分支名，Release 会建成 "main" 并可能成为 updater 的 latest
 
 permissions:
   contents: write
@@ -25,15 +27,21 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Verify version tag ref
+        if: github.event_name == 'workflow_dispatch' && !startsWith(github.ref, 'refs/tags/v')
+        run: |
+          echo "::error::手动运行必须针对 v* 版本 tag（在 Run workflow 面板选择 tag），当前 ref: ${GITHUB_REF}"
+          exit 1
 
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
 
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
 
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
         with:
           workspaces: src-tauri
 
@@ -48,9 +56,10 @@ jobs:
           fi
 
       # 本地开发构建保持 createUpdaterArtifacts:false（无需签名密钥）；
-      # 发布构建经 --config 临时开启，产出 latest.json 与 .sig 签名文件
+      # 发布构建经 --config 临时开启，产出 latest.json 与 .sig 签名文件。
+      # 第三方 action 按安全基线固定到完整 commit SHA（SHA 与注释同步维护）
       - name: Build desktop app and publish release
-        uses: tauri-apps/tauri-action@v0
+        uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5 # v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
