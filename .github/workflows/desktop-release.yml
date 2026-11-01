@@ -1,0 +1,64 @@
+name: Desktop Release
+
+# 桌面端发布流水线：打 tag（v*）触发，构建 Windows 安装包 + 自动更新签名
+# 产物（latest.json），上传到 GitHub Release——tauri.conf.json 里 updater
+# endpoint 指向的正是本 job 产出的 latest/latest.json。
+#
+# 首次启用需一次性配置（缺任一项本 job 会在校验步骤失败并给出提示）：
+#   1. 生成签名密钥对：
+#        pnpm tauri signer generate -w ~/.tauri/md-preview.key
+#   2. 仓库 Settings → Secrets and variables → Actions 配置：
+#        TAURI_SIGNING_PRIVATE_KEY          （私钥文件内容）
+#        TAURI_SIGNING_PRIVATE_KEY_PASSWORD （生成时设置的口令，可为空串）
+#   3. 把公钥内容更新进 src-tauri/tauri.conf.json 的 plugins.updater.pubkey
+#      （当前是占位空钥，更新检查会一直失败）
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Verify signing secrets present
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          if [ -z "$TAURI_SIGNING_PRIVATE_KEY" ]; then
+            echo "::error::缺少 TAURI_SIGNING_PRIVATE_KEY Secret（配置步骤见本 workflow 文件头部说明）"
+            exit 1
+          fi
+
+      # 本地开发构建保持 createUpdaterArtifacts:false（无需签名密钥）；
+      # 发布构建经 --config 临时开启，产出 latest.json 与 .sig 签名文件
+      - name: Build desktop app and publish release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'md-preview ${{ github.ref_name }}'
+          releaseBody: '桌面端安装包与自动更新签名产物（latest.json / *.sig）。'
+          releaseDraft: false
+          prerelease: false
+          args: --config '{"bundle":{"createUpdaterArtifacts":true}}'
