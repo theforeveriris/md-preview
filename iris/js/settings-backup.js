@@ -49,15 +49,12 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'md-preview-settings.json';
+    // 导出文件名带日期：多次导出不互相覆盖
+    a.download = `md-preview-settings-${new Date().toISOString().slice(0, 10)}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }
-
-  function validBackupLang(v) {
-    return v === 'auto' || v === 'zh' || v === 'en';
   }
 
   async function importSettings(file, t) {

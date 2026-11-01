@@ -584,14 +584,23 @@
     });
 
     // 自定义主题色取色器
+    // input 拖动时每帧触发：loadSettings + 全量序列化 + localStorage 写 +
+    // BroadcastChannel 广播——与宽度/字号滑杆同款 300ms 防抖（取色预览
+    // 本身是纯 CSS 变量更新，无需每帧落盘）
+    let colorSaveTimer = null;
     document.querySelectorAll('input[type="color"][data-var]').forEach(input => {
       input.addEventListener('input', (e) => {
         const varName = e.target.dataset.var;
-        const settings = loadSettings();
-        if (!settings.customColors) settings.customColors = {};
-        settings.customColors[varName] = e.target.value;
-        saveSettings(settings);
-        applyCustomColors(settings.customColors);
+        const value = e.target.value;
+        applyCustomColorVar(varName, value);
+        clearTimeout(colorSaveTimer);
+        colorSaveTimer = setTimeout(() => {
+          const settings = loadSettings();
+          if (!settings.customColors) settings.customColors = {};
+          settings.customColors[varName] = value;
+          saveSettings(settings);
+          applyCustomColors(settings.customColors);
+        }, 300);
       });
     });
 
@@ -673,6 +682,11 @@
   });
 
   // 应用自定义主题色到 :root，覆盖 base.css 默认值
+  // 拖动取色器时的单变量实时预览（防抖窗口内不落盘）
+  function applyCustomColorVar(varName, value) {
+    document.documentElement.style.setProperty(varName, value);
+  }
+
   function applyCustomColors(colors) {
     const root = document.documentElement;
     Object.keys(defaultColors).forEach(varName => {
@@ -1245,7 +1259,9 @@
       return;
     }
 
-    const fileName = currentPath.split('/').pop().replace('.md', '');
+    // 锚定结尾剥扩展名：'.replace(".md","")' 会命中文件名中间的 ".md"
+    //（a.mdnotes.md → a notes），且漏掉 .markdown
+    const fileName = currentPath.split('/').pop().replace(/\.(md|markdown)$/i, '');
     downloadMarkdown(currentPath, fileName);
   }
   
