@@ -1019,7 +1019,11 @@
 
   /* ============ 图片灯箱 ============ */
   let lightboxInitialized = false;
-  const lightboxState = { images: [], index: 0, scale: 1 };
+  const lightboxState = { images: [], index: 0, scale: 1, tx: 0, ty: 0 };
+
+  function applyLightboxTransform(imgEl) {
+    imgEl.style.transform = `translate(${lightboxState.tx}px, ${lightboxState.ty}px) scale(${lightboxState.scale})`;
+  }
 
   function initLightbox() {
     if (lightboxInitialized) return;
@@ -1028,18 +1032,23 @@
     const overlay = document.createElement('div');
     overlay.className = 'lightbox-overlay';
     overlay.id = 'lightboxOverlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', '图片查看');
     overlay.innerHTML = `
       <button class="lightbox-close" aria-label="关闭">&times;</button>
       <button class="lightbox-nav lightbox-prev" aria-label="上一张">&#8249;</button>
       <button class="lightbox-nav lightbox-next" aria-label="下一张">&#8250;</button>
       <div class="lightbox-stage">
-        <img class="lightbox-image" alt="">
+        <img class="lightbox-image" alt="" draggable="false">
       </div>
       <div class="lightbox-toolbar">
         <button class="lightbox-tool" data-action="zoom-out" aria-label="缩小">&minus;</button>
         <span class="lightbox-zoom-label">100%</span>
         <button class="lightbox-tool" data-action="zoom-in" aria-label="放大">+</button>
         <button class="lightbox-tool" data-action="reset" aria-label="重置缩放">&#8634;</button>
+        <button class="lightbox-tool" data-action="open" aria-label="新标签打开原图">↗</button>
+        <button class="lightbox-tool" data-action="download" aria-label="下载图片">⬇</button>
       </div>
       <div class="lightbox-counter"></div>
     `;
@@ -1059,6 +1068,57 @@
     overlay.querySelector('[data-action="zoom-in"]').addEventListener('click', (e) => { e.stopPropagation(); zoomLightbox(0.25); });
     overlay.querySelector('[data-action="zoom-out"]').addEventListener('click', (e) => { e.stopPropagation(); zoomLightbox(-0.25); });
     overlay.querySelector('[data-action="reset"]').addEventListener('click', (e) => { e.stopPropagation(); resetLightboxZoom(); });
+    overlay.querySelector('[data-action="open"]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const src = lightboxState.images[lightboxState.index];
+      if (src) window.open(src.src, '_blank', 'noopener');
+    });
+    overlay.querySelector('[data-action="download"]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const src = lightboxState.images[lightboxState.index];
+      if (src) downloadLightboxImage(src.src);
+    });
+
+    // 滚轮缩放（放大后看不了边缘是高频痛点，配合拖拽平移）
+    overlay.addEventListener('wheel', (e) => {
+      if (!overlay.classList.contains('open')) return;
+      e.preventDefault();
+      zoomLightbox(e.deltaY < 0 ? 0.25 : -0.25);
+    }, { passive: false });
+
+    // 放大后拖拽平移
+    const stage = overlay.querySelector('.lightbox-stage');
+    let dragging = null; // { startX, startY, baseTx, baseTy }
+    stage.addEventListener('mousedown', (e) => {
+      if (lightboxState.scale <= 1) return;
+      dragging = { startX: e.clientX, startY: e.clientY, baseTx: lightboxState.tx, baseTy: lightboxState.ty };
+      e.preventDefault();
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!dragging) return;
+      lightboxState.tx = dragging.baseTx + (e.clientX - dragging.startX);
+      lightboxState.ty = dragging.baseTy + (e.clientY - dragging.startY);
+      applyLightboxTransform(overlay.querySelector('.lightbox-image'));
+    });
+    window.addEventListener('mouseup', () => { dragging = null; });
+
+    // 触屏左右滑动翻图（此前只有键盘方向键）
+    let touchStart = null;
+    overlay.addEventListener('touchstart', (e) => {
+      if (e.touches.length !== 1) { touchStart = null; return; }
+      touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }, { passive: true });
+    overlay.addEventListener('touchend', (e) => {
+      if (!touchStart) return;
+      const t0 = e.changedTouches[0];
+      touchStart = null;
+      if (!t0) return;
+      const dx = t0.clientX - touchStart.x;
+      const dy = t0.clientY - touchStart.y;
+      if (Math.abs(dx) >= 50 && Math.abs(dx) > Math.abs(dy) && lightboxState.scale <= 1) {
+        navigateLightbox(dx < 0 ? 1 : -1);
+      }
+    }, { passive: true });
 
     document.addEventListener('keydown', (e) => {
       if (!overlay.classList.contains('open')) return;
@@ -1072,6 +1132,40 @@
       else if (e.key === '-') zoomLightbox(-0.25);
       else if (e.key === '0') resetLightboxZoom();
     });
+
+    // split-view 双栏的图片：主容器 click 委托（dom.markdownContent）覆盖不到，
+    // document 级委托兜底（主容器已处理的点击 defaultPrevented，自然跳过）
+    document.addEventListener('click', (e) => {
+      if (e.defaultPrevented) return;
+      const img = e.target.closest && e.target.closest('img');
+      if (!img || !isLightboxEligibleImage(img)) return;
+      if (img.closest('#markdownContent')) return;
+      if (!img.closest('.markdown-body')) return;
+      e.preventDefault();
+      openLightbox(img);
+    });
+  }
+
+  function downloadLightboxImage(src) {
+    const name = (() => {
+      try {
+        return decodeURIComponent(new URL(src, location.href).pathname.split('/').pop()) || 'image';
+      } catch (e) { return 'image'; }
+    })();
+    fetch(src, { mode: 'cors' })
+      .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.blob(); })
+      .then(b => {
+        const url = URL.createObjectURL(b);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = name;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      })
+      .catch(() => {
+        // 跨域获取失败：退化为新标签打开手动另存
+        window.open(src, '_blank', 'noopener');
+      });
   }
 
   // 判定：这张 img 是否应该进入通用图片灯箱（与 markdown.js click 委托保持一致）
@@ -1087,8 +1181,10 @@
   function openLightbox(img) {
     initLightbox();
     const overlay = document.getElementById('lightboxOverlay');
-    // 收集当前文档内所有可查看图片（与 click 委托用同一个 isLightboxEligibleImage）
-    const allImgs = Array.from(dom.markdownContent.querySelectorAll('img'))
+    // 收集可查看图片：以点击图所在的 .markdown-body 为scope——split-view
+    // 双栏来源也能组出自己的翻页序列（此前只收主容器，双栏图无灯箱）
+    const scope = img.closest('.markdown-body') || dom.markdownContent;
+    const allImgs = Array.from(scope.querySelectorAll('img'))
       .filter(isLightboxEligibleImage);
     lightboxState.images = allImgs;
 
@@ -1116,7 +1212,9 @@
     imgEl.src = src.src;
     imgEl.alt = src.alt || '';
     lightboxState.scale = 1;
-    imgEl.style.transform = 'scale(1)';
+    lightboxState.tx = 0;
+    lightboxState.ty = 0;
+    applyLightboxTransform(imgEl);
     zoomLabel.textContent = '100%';
     const multi = lightboxState.images.length > 1;
     counter.textContent = multi ? `${lightboxState.index + 1} / ${lightboxState.images.length}` : '';
@@ -1141,7 +1239,7 @@
     const overlay = document.getElementById('lightboxOverlay');
     const imgEl = overlay.querySelector('.lightbox-image');
     lightboxState.scale = Math.min(4, Math.max(0.25, lightboxState.scale + delta));
-    imgEl.style.transform = `scale(${lightboxState.scale})`;
+    applyLightboxTransform(imgEl);
     overlay.querySelector('.lightbox-zoom-label').textContent = Math.round(lightboxState.scale * 100) + '%';
   }
 
@@ -1149,7 +1247,9 @@
     const overlay = document.getElementById('lightboxOverlay');
     const imgEl = overlay.querySelector('.lightbox-image');
     lightboxState.scale = 1;
-    imgEl.style.transform = 'scale(1)';
+    lightboxState.tx = 0;
+    lightboxState.ty = 0;
+    applyLightboxTransform(imgEl);
     overlay.querySelector('.lightbox-zoom-label').textContent = '100%';
   }
 
