@@ -746,6 +746,9 @@
     'sensitive.off': 'Turn off sensitive mode',
     'sensitive.enabled': 'Sensitive mode on: IPs and passwords are blurred; click a mask to reveal temporarily',
     'sensitive.disabled': 'Sensitive mode off',
-    'sensitive.revealHint': 'Click to reveal'
+    'sensitive.revealHint': 'Click to reveal',
+    'sensitive.badge': 'Sensitive mode · click to re-blur',
+    'sensitive.reblurred': 'All sensitive content re-blurred',
+    'sensitive.truncated': 'Too many matches — some sensitive content remains unmasked; double-check'
   };
 })();

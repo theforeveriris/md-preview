@@ -14,12 +14,53 @@
   const MAX_NODES = 6000;
   const MAX_BLURS = 500;
 
-  const SENSITIVE_RE = /\b(?:\d{1,3}\.){3}\d{1,3}\b|\b(?:password|passwd|pwd|secret|community|psk|pre-shared-key)\s*[:=]\s*\S+/gi;
+  // 覆盖面：IPv4 / IPv6（≥4 组，避免误伤 12:30:45 这类时间）/ 密码与
+  // 密钥类赋值（password/secret/community/psk/token/api key/私钥/
+  // authorization）/ Bearer 凭证 / JWT（eyJ… 开头）
+  const SENSITIVE_RE = new RegExp([
+    '\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b',
+    '\\b(?:[0-9a-fA-F]{1,4}:){3,7}[0-9a-fA-F]{1,4}\\b',
+    '\\b(?:password|passwd|pwd|secret|community|psk|pre-shared-key|token|api[_-]?key|access[_-]?key|secret[_-]?key|private[_-]?key|authorization)\\s*[:=]\\s*\\S+',
+    '\\bBearer\\s+[A-Za-z0-9._\\-]+',
+    '\\beyJ[A-Za-z0-9._\\-]{10,}'
+  ].join('|'), 'gi');
 
   function t(key, fallback) {
     const i18n = window.MarkdownPreview.i18n;
     if (i18n && typeof i18n.t === 'function') return i18n.t(key, fallback);
     return fallback;
+  }
+
+  // 轻量提示（mini-toast 同款，history.js 模式）——替代 toggle 的 alert()
+  let toastEl = null;
+  let toastTimer = null;
+  function toast(msg) {
+    if (!toastEl) {
+      toastEl = document.createElement('div');
+      toastEl.className = 'mini-toast';
+      toastEl.setAttribute('role', 'status');
+      document.body.appendChild(toastEl);
+    }
+    toastEl.textContent = msg;
+    toastEl.classList.add('open');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('open'), 2600);
+  }
+
+  // 上限触顶标记：fail-open 必须可感知——截断后剩余敏感内容未遮盖，
+  // 用户至少要知道「还有漏网的」
+  let lastTruncated = false;
+
+  // 遮盖范围：主文档 + 双栏对照窗格（右栏渲染另一篇文档）。
+  // 侧边栏/TOC 在 vendor Shadow DOM 内且随渲染重建，暂不纳入
+  function rootEls() {
+    const main = document.getElementById('markdownContent');
+    const els = main ? [main] : [];
+    document.querySelectorAll('.split-pane-body').forEach(el => els.push(el));
+    if (!els.length) {
+      document.querySelectorAll('.markdown-body').forEach(el => els.push(el));
+    }
+    return els;
   }
 
   function isOn() {
@@ -30,12 +71,8 @@
     try { localStorage.setItem(STORE_KEY, on ? '1' : '0'); } catch (e) { /* ignore */ }
   }
 
-  function rootEl() {
-    return document.getElementById('markdownContent') ||
-      document.querySelector('.markdown-body');
-  }
-
   function blurMatches(root) {
+    lastTruncated = false;
     // 按块级容器分组收集文本节点：hljs 等会把一段赋值拆进多个 span，
     // 单节点匹配会漏——把同一块内的连续文本拼接后再匹配（CodeRabbit
     // review fix：跨节点匹配），命中部分逐节点拆分包裹。
@@ -59,10 +96,12 @@
       groups.get(key).push(node);
       scanned++;
     }
+    // 节点数触顶且后面还有：截断
+    if (scanned >= MAX_NODES && walker.nextNode()) lastTruncated = true;
 
     let count = 0;
     groups.forEach(nodes => {
-      if (count >= MAX_BLURS) return;
+      if (count >= MAX_BLURS) { lastTruncated = true; return; }
       // 拼接块内文本，记录每个片段到节点的映射
       const parts = []; // { node, start, end }（在拼接串中的偏移）
       let joined = '';
@@ -128,27 +167,57 @@
     });
   }
 
+  // 开启态常驻徽标：全局状态指示 + 点击一键重新遮盖（已点开的蒙版批量恢复）
+  function ensureBadge() {
+    let badge = document.querySelector('.sensitive-mode-badge');
+    if (!badge) {
+      badge = document.createElement('button');
+      badge.type = 'button';
+      badge.className = 'sensitive-mode-badge';
+      badge.textContent = t('sensitive.badge', '敏感模式 · 点击重新遮盖');
+      badge.addEventListener('click', () => {
+        applyIfOn();
+        toast(t('sensitive.reblurred', '已重新遮盖全部敏感内容'));
+      });
+      document.body.appendChild(badge);
+    }
+    return badge;
+  }
+
   function apply() {
-    const root = rootEl();
-    if (!root) return;
+    const roots = rootEls();
+    if (!roots.length) return;
     if (isOn()) {
-      const count = blurMatches(root);
+      let count = 0;
+      roots.forEach(root => { count += blurMatches(root); });
       if (count > 0) {
         document.body.classList.add('sensitive-mode');
       }
+      ensureBadge().hidden = false;
+      if (lastTruncated) {
+        // fail-open 必须可感知：上限之外还有未遮盖的敏感内容
+        toast(t('sensitive.truncated', '敏感内容较多，已遮盖部分——仍有漏网内容，请抽查'));
+      }
     } else {
-      unblur(root);
+      roots.forEach(unblur);
       document.body.classList.remove('sensitive-mode');
+      const badge = document.querySelector('.sensitive-mode-badge');
+      if (badge) badge.hidden = true;
     }
   }
 
   function applyIfOn() {
     if (!isOn()) return;
-    const root = rootEl();
-    if (!root) return;
-    unblur(root); // 重渲染后重建（渲染器可能替换过节点）
-    blurMatches(root);
+    const roots = rootEls();
+    if (!roots.length) return;
+    roots.forEach(unblur); // 重渲染后重建（渲染器可能替换过节点）
+    let count = 0;
+    roots.forEach(root => { count += blurMatches(root); });
     document.body.classList.add('sensitive-mode');
+    ensureBadge().hidden = false;
+    if (lastTruncated) {
+      toast(t('sensitive.truncated', '敏感内容较多，已遮盖部分——仍有漏网内容，请抽查'));
+    }
   }
 
   function toggle() {
@@ -173,8 +242,8 @@
           : t('sensitive.on', '敏感模式（模糊 IP/密码）')),
         run: () => {
           const on = toggle();
-          // 动态 label 的动作列表无需重建；提示结果即可
-          alert(on
+          // toast 而非 alert：与全站反馈风格一致（mini-toast）
+          toast(on
             ? t('sensitive.enabled', '已开启敏感模式：正文中的 IP 与密码已模糊，点击蒙版可临时显示')
             : t('sensitive.disabled', '已关闭敏感模式'));
         }

@@ -788,7 +788,10 @@
     'sensitive.off': '关闭敏感模式',
     'sensitive.enabled': '已开启敏感模式：正文中的 IP 与密码已模糊，点击蒙版可临时显示',
     'sensitive.disabled': '已关闭敏感模式',
-    'sensitive.revealHint': '点击临时显示'
+    'sensitive.revealHint': '点击临时显示',
+    'sensitive.badge': '敏感模式 · 点击重新遮盖',
+    'sensitive.reblurred': '已重新遮盖全部敏感内容',
+    'sensitive.truncated': '敏感内容较多，已遮盖部分——仍有漏网内容，请抽查'
   };
 
   // en 语言包按需加载（见 iris/js/i18n-en.js）：首屏只内联 zh（默认语向）。
