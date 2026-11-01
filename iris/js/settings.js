@@ -1117,6 +1117,11 @@
       settingsOverlay.classList.remove('open');
       document.body.style.overflow = '';
     }
+    // 焦点还给打开前所在的元素（此前 Tab 落回被遮罩的页面）
+    if (window.MarkdownPreview.ui && window.MarkdownPreview.ui._settingsLastFocus) {
+      window.MarkdownPreview.ui._settingsLastFocus.focus();
+      window.MarkdownPreview.ui._settingsLastFocus = null;
+    }
   }
 
   // 快捷键入口：设置面板开关（Ctrl/⌘+,）

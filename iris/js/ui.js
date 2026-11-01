@@ -104,12 +104,36 @@
     return !!(dom.paletteOverlay && dom.paletteOverlay.classList.contains('active'));
   }
 
+  // 浮层焦点管理：记住打开时的焦点元素（关闭时归还），并在浮层内圈住 Tab
+  let paletteLastFocus = null;
+  let settingsLastFocus = null;
+
+  function trapTabIn(e, container) {
+    if (e.key !== 'Tab' || !container) return false;
+    const focusables = container.querySelectorAll(
+      'button:not([disabled]), input:not([disabled]), select, textarea, a[href], [tabindex]:not([tabindex="-1"])'
+    );
+    if (!focusables.length) return false;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      last.focus();
+      return true;
+    }
+    if (!e.shiftKey && document.activeElement === last) {
+      first.focus();
+      return true;
+    }
+    return false;
+  }
+
   function openSearchPalette() {
     if (!dom.paletteOverlay) return;
     // 移动端：先收抽屉，避免双层浮层
     if (window.innerWidth <= 768) {
       window.MarkdownPreview.fileTree.closeSidebar();
     }
+    paletteLastFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     dom.paletteOverlay.classList.add('active');
     dom.paletteOverlay.setAttribute('aria-hidden', 'false');
     window.MarkdownPreview.search.reset();
@@ -125,6 +149,8 @@
     dom.paletteOverlay.setAttribute('aria-hidden', 'true');
     window.MarkdownPreview.search.reset();
     if (dom.paletteClear) dom.paletteClear.hidden = true;
+    // 焦点还给触发者（Esc 关闭后 Tab 不再掉到遮罩后面的页面）
+    if (paletteLastFocus) { paletteLastFocus.focus(); paletteLastFocus = null; }
   }
 
   // Ctrl/⌘ + K：打开搜索命令面板（对齐 GitHub / Slack 惯例键位）；
@@ -260,9 +286,29 @@
       // 输入控件内不抢占
       if (isEditableTarget(e)) return;
 
+      // 浮层打开时 Tab 圈闭在浮层内（灯箱/设置/命令面板共用）
+      if (e.key === 'Tab') {
+        const settingsOv = document.getElementById('settingsOverlay');
+        if (settingsOv && settingsOv.classList.contains('open')) {
+          if (trapTabIn(e, settingsOv)) e.preventDefault();
+          return;
+        }
+        const lightbox = document.getElementById('lightboxOverlay');
+        if (lightbox && lightbox.classList.contains('open')) {
+          if (trapTabIn(e, lightbox)) e.preventDefault();
+          return;
+        }
+      }
+
       // Ctrl/⌘ + , ：设置面板开关（面板打开时也可用）
       if (mod && !alt && key === ',') {
         e.preventDefault();
+        const ov = document.getElementById('settingsOverlay');
+        const opening = !(ov && ov.classList.contains('open'));
+        if (opening) {
+          settingsLastFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+          window.MarkdownPreview.ui._settingsLastFocus = settingsLastFocus;
+        }
         window.MarkdownPreview.settings.toggle();
         return;
       }
