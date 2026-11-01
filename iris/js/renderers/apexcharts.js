@@ -124,6 +124,8 @@
         container.id = chartId;
         container.className = 'apex-chart';
         container.style.minHeight = '400px';
+        // 图表悬浮工具条「复制源码」用（interactions.js 读 dataset.src）
+        container.dataset.src = codeElement.textContent.trim();
 
         const mergedConfig = themedConfig(chartConfig, chartId);
 

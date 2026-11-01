@@ -454,7 +454,10 @@
   // Mermaid 产出内联 SVG（直接序列化）；PlantUML 产出跨域 <img>，
   // 走 fetch → Blob（同源 object URL）→ Image → Canvas，避开画布污染。
   const TOOLBAR_ID = 'diagramHoverToolbar';
-  const DIAGRAM_SELECTOR = '.mermaid-diagram, .plantuml-diagram';
+  // 覆盖所有「内联 SVG 产出」的图表容器：mermaid / plantuml / apexcharts
+  //（ApexCharts 渲染后容器内是内联 SVG，serializeSvg 直接可用；
+  // 源码由渲染器写入 dataset.src）
+  const DIAGRAM_SELECTOR = '.mermaid-diagram, .plantuml-diagram, .apex-chart';
   let diagramToolbar = null;
   let diagramHideTimer = null;
 
