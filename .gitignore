@@ -58,3 +58,4 @@ __pycache__/
 .cr-*.json
 .fix-*.py
 .reply-review.py
+.review-findings.md
