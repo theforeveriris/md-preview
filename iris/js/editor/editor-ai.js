@@ -32,6 +32,15 @@
     return fallback;
   }
 
+  // 本地 esc：mdRender.escapeHtml 未加载时（编辑器懒加载链先行）退化为最小转义
+  function esc(s) {
+    const md = window.MarkdownPreview.mdRender;
+    if (md && typeof md.escapeHtml === 'function') return md.escapeHtml(String(s));
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
   // ============== 配置存取 ==============
 
   function getConfig() {
@@ -67,7 +76,7 @@
 
   // ============== OpenAI 兼容补全 ==============
 
-  let inflight = null; // AbortController：连续点击时取消上一个
+  let inflight = null; // 当前请求的 AbortController：新请求中止上一个
 
   async function chat(messages, opts) {
     const cfg = getConfig();
@@ -77,8 +86,11 @@
       throw err;
     }
     if (inflight) inflight.abort();
-    inflight = new AbortController();
-    const timer = setTimeout(() => inflight.abort(), 60000);
+    const controller = new AbortController();
+    inflight = controller;
+    // 定时器持有局部 controller：旧请求的 finally 置空 inflight 后，
+    // 本请求的超时仍正确触发（此前读模块级 inflight 会读到 null/新请求）
+    const timer = setTimeout(() => controller.abort(), 60000);
 
     try {
       const resp = await fetch(cfg.base + '/chat/completions', {
@@ -92,7 +104,7 @@
           messages,
           temperature: opts && typeof opts.temperature === 'number' ? opts.temperature : 0.4
         }),
-        signal: inflight.signal
+        signal: controller.signal
       });
       if (!resp.ok) {
         let detail = 'HTTP ' + resp.status;
@@ -116,7 +128,8 @@
       throw e;
     } finally {
       clearTimeout(timer);
-      inflight = null;
+      // 只清自己：并发下旧请求的 finally 不得抹掉新请求的 controller
+      if (inflight === controller) inflight = null;
     }
   }
 
@@ -272,19 +285,14 @@
           insert = clean;
         }
 
-        editor.dispatch({
-          changes: action === 'explain' || action === 'mermaid'
-            ? { from: end, to: end, insert }
-            : { from: start, to: end, insert },
-          selection: action === 'explain' || action === 'mermaid'
-            ? { anchor: end + insert.length }
-            : { anchor: start + insert.length }
-        });
-        // 触发 modified 标记（编辑器把 onInput 挂在 view 上；直接派发不触发
-        // textarea 的 input 兼容层时手动补）
-        if (typeof editor._notifyInput === 'function') editor._notifyInput();
-        else if (cell && typeof window.MarkdownPreview.editorMarkModified === 'function') {
-          window.MarkdownPreview.editorMarkModified(cell);
+        // 就地写入：CodeMirrorEditor 兼容层的 replaceRange（CM 正常事务，
+        // 走 updateListener → onInput → markModified/markUnsaved 链）。
+        // wrapper 没有 dispatch()，直接派发 CM transaction 会 TypeError；
+        // replaceRange 自带光标定位到插入末尾
+        if (action === 'explain' || action === 'mermaid') {
+          editor.replaceRange(end, end, insert);
+        } else {
+          editor.replaceRange(start, end, insert);
         }
       } catch (e) {
         if (e.code === 'no-key') {

@@ -2586,16 +2586,21 @@
     getCells: () => cells
   }) : null;
 
-  // AI 助手（用户自带 Key：选中工具栏 润色/翻译/解释/Mermaid，输出就地写入）
+  // AI 助手（用户自带 Key：选中工具栏 润色/翻译/解释/Mermaid，输出就地写入）。
+  // init 内含 DOM 装配，包一层 try：它抛错不能中断后续 tableEditor/loadAutosave
   const aiMod = window.MarkdownPreview.editorModules &&
     window.MarkdownPreview.editorModules.editorAI;
   if (aiMod) {
-    aiMod.init({
-      editorT,
-      showToast,
-      getCells: () => cells,
-      getActiveCellId: () => activeCellId
-    });
+    try {
+      aiMod.init({
+        editorT,
+        showToast,
+        getCells: () => cells,
+        getActiveCellId: () => activeCellId
+      });
+    } catch (e) {
+      console.error('[editor] AI 助手初始化失败（不影响其余编辑器功能）:', e);
+    }
   }
 
   // 可视化表格编辑器（输出区表格「编辑」→ 网格编辑 → 回写 Markdown 源码）
