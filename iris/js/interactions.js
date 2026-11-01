@@ -209,6 +209,9 @@
     document.addEventListener('mouseover', (e) => {
       if (e.target.closest('.ctx-menu')) return;
       const table = e.target.closest('.markdown-body table, .table-wrapper table');
+      // CSV 交互表格有自己的工具栏（排序/筛选/画图/复制下载），
+      // 通用手柄不再叠加——旧实现两套 UI 同时浮出
+      if (table && table.closest('.csv-table')) return;
       if (table) {
         showHandle(table);
       } else if (e.target.closest('.table-handle')) {
