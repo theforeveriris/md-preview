@@ -114,6 +114,9 @@
   }
 
   function onTouchStart(e) {
+    // 多指（捏合/双指滑动）作废当前手势：否则首指起点仍被记住，
+    // touchend 按漂移后的触点判位移会误触发翻页
+    if (e.touches.length > 1) { touch = null; return; }
     if (touch) return;
     if (e.touches.length !== 1) return;
     if (!isMobileViewport() || !gesturesEnabled()) return;
@@ -133,6 +136,8 @@
 
   function onTouchEnd(e) {
     if (!touch) return;
+    // 还有手指按着（多指抬起其中一指）：不作判定，等最后一指
+    if (e.touches.length > 0) { touch = null; return; }
     const t0 = e.changedTouches[0];
     if (!t0) { touch = null; return; }
 
