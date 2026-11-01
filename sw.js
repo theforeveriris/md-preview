@@ -162,11 +162,52 @@ function isMarkdownDoc(url) {
   return url.pathname.endsWith('.md');
 }
 
+// 样式化离线兜底页：导航/文档请求失败时不再给一行纯文本
+function offlineFallbackResponse(kind) {
+  const html = `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>离线 · Markdown Preview</title>
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f7f5fb;color:#3a3a3a}
+.card{text-align:center;padding:44px 36px;border-radius:16px;background:#fff;box-shadow:0 10px 36px rgba(0,0,0,.08);max-width:420px;margin:16px}
+h1{font-size:20px;margin:0 0 10px}
+p{font-size:14px;color:#8a8a8a;margin:0 0 18px;line-height:1.6}
+button{padding:8px 22px;border:1px solid #d4a5c9;background:#fff;border-radius:8px;cursor:pointer;color:#8B5CF6;font-size:14px}
+</style></head><body><div class="card"><h1>当前处于离线状态</h1>
+<p>${kind}尚未缓存。重新联网后点击下方按钮即可恢复。</p>
+<button onclick="location.reload()">重新加载</button></div></body></html>`;
+  return new Response(html, {
+    status: 503,
+    headers: { 'Content-Type': 'text/html; charset=utf-8' }
+  });
+}
+
 self.addEventListener('fetch', event => {
   const { request } = event;
   if (request.method !== 'GET') return;
 
   const url = new URL(request.url);
+
+  // 跨源字体（Google Fonts 的 CSS 与 woff2）：缓存优先——此前跨源请求
+  // 直接放行，离线后远程字体全丢（正文/标题回退系统字体）。opaque 响应
+  // status 为 0 但可缓存；字体内容几乎不变，缓存优先足够
+  if (url.origin !== location.origin &&
+      /^fonts\.(googleapis|gstatic)\.com$/.test(url.hostname)) {
+    event.respondWith(
+      caches.match(request).then(cached => {
+        if (cached) return cached;
+        return fetch(request).then(response => {
+          if (response && (response.ok || response.type === 'opaque')) {
+            const clone = response.clone();
+            caches.open(RUNTIME_CACHE).then(cache => cache.put(request, clone));
+          }
+          return response;
+        }).catch(() => cached || Response.error());
+      })
+    );
+    return;
+  }
+
   if (url.origin !== location.origin) return;
 
   // 代码 / 入口 / 数据：网络优先（强制绕过 HTTP 缓存校验），失败回退缓存。
@@ -182,11 +223,16 @@ self.addEventListener('fetch', event => {
           }
           return response;
         })
-        .catch(() => caches.match(request).then(cached => cached || new Response(
-          '离线模式下无法加载该资源', {
-            status: 503,
-            headers: { 'Content-Type': 'text/plain; charset=utf-8' }
-          })))
+        .catch(() => caches.match(request).then(cached => {
+          if (cached) return cached;
+          // 导航请求（首屏）给样式化离线页，其余资源维持纯文本提示
+          if (request.mode === 'navigate') return offlineFallbackResponse('站点');
+          return new Response(
+            '离线模式下无法加载该资源', {
+              status: 503,
+              headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+            });
+        }))
     );
     return;
   }
@@ -224,10 +270,7 @@ self.addEventListener('fetch', event => {
           }
           return response;
         })
-        .catch(() => caches.match(request).then(cached => cached || new Response('离线模式下无法加载此文档', {
-          status: 503,
-          headers: { 'Content-Type': 'text/plain; charset=utf-8' }
-        })))
+        .catch(() => caches.match(request).then(cached => cached || offlineFallbackResponse('这份文档')))
     );
     return;
   }
