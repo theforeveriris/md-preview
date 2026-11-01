@@ -668,6 +668,8 @@
     'kb.fileRemoved': '{n} removed from the library',
     'figure.refMissing': '(broken figure reference)',
     'figure.refMissingHint': 'Target number not found: the alias may be misspelled or belongs to another document',
+    'settings.theme.clearColors': 'Switching themes will clear custom colors. Continue?',
+    'settings.fontLoadFailed': 'Failed to load remote font: ',
     'notfound.title': 'Document not found',
     'notfound.body': 'The path `{p}` does not exist or is not indexed.',
     'notfound.home': 'Back to site index',
