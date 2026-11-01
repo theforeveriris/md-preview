@@ -67,6 +67,7 @@
       'iris/vendor/codemirror/codemirror.min.js',
       'iris/js/cm-editor.js',
       'iris/js/editor/completions.js',
+      'iris/js/editor/editor-ai.js',
       'iris/js/editor/find-replace.js',
       'iris/js/editor/media-upload.js',
       'iris/js/editor/version-snapshots.js',

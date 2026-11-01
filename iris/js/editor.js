@@ -2583,6 +2583,18 @@
     getCells: () => cells
   }) : null;
 
+  // AI 助手（用户自带 Key：选中工具栏 润色/翻译/解释/Mermaid，输出就地写入）
+  const aiMod = window.MarkdownPreview.editorModules &&
+    window.MarkdownPreview.editorModules.editorAI;
+  if (aiMod) {
+    aiMod.init({
+      editorT,
+      showToast,
+      getCells: () => cells,
+      getActiveCellId: () => activeCellId
+    });
+  }
+
   // 可视化表格编辑器（输出区表格「编辑」→ 网格编辑 → 回写 Markdown 源码）
   const tableEditorMod = window.MarkdownPreview.editorModules &&
     window.MarkdownPreview.editorModules.tableEditor;
