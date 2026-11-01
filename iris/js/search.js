@@ -314,13 +314,17 @@
       return;
     }
 
+    // 高亮 token：剔除 > 前缀与 tag: 过滤 token，多词逐个高亮——
+    // 旧实现把整串当一个正则，含 tag:/多词时几乎永远高亮不出
+    const hlTokens = searchDisplayTokens(currentQuery);
+
     merged.slice(0, 15).forEach(result => {
       const item = document.createElement('div');
       item.className = 'search-result-item';
       item.innerHTML = `
-        <div class="search-result-title">${highlightMatch(result.title, currentQuery)}</div>
-        <div class="search-result-path">${highlightMatch(result.path, currentQuery)}</div>
-        ${result.preview ? `<div class="search-result-preview">${highlightMatch(result.preview, currentQuery)}</div>` : ''}
+        <div class="search-result-title">${highlightMatch(result.title, hlTokens)}</div>
+        <div class="search-result-path">${highlightMatch(result.path, hlTokens)}</div>
+        ${result.preview ? `<div class="search-result-preview">${highlightMatch(result.preview, hlTokens)}</div>` : ''}
       `;
 
       item.addEventListener('click', () => {
@@ -374,13 +378,26 @@
   // 惰性转发：解析期直接取全局依赖 index.html 加载顺序（曾按隐式契约）
   const escapeHtml = (...a) => window.MarkdownPreview.mdRender.escapeHtml(...a);
 
-  function highlightMatch(text, query) {
+  // 展示层高亮 token：剔除 > 前缀与 tag: 过滤 token 后按空白拆词
+  function searchDisplayTokens(query) {
+    let q = String(query || '');
+    const palette = window.MarkdownPreview.palette;
+    if (palette) q = palette.stripPrefix(q);
+    const tagsMod = window.MarkdownPreview.tags;
+    if (tagsMod) q = tagsMod.extractTagFilters(q).text;
+    return q.split(/\s+/).filter(Boolean);
+  }
+
+  function highlightMatch(text, tokens) {
     if (!text) return '';
-    if (!query) return escapeHtml(text);
-    const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const words = (Array.isArray(tokens) ? tokens : String(tokens || '').split(/\s+/))
+      .filter(Boolean)
+      .map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    if (!words.length) return escapeHtml(text);
+    // 多词合并为交替正则一次扫描（在已插入 mark 的文本上二次跑会错标）
     let regex;
     try {
-      regex = new RegExp(safeQuery, 'gi');
+      regex = new RegExp(words.join('|'), 'gi');
     } catch (e) {
       return escapeHtml(text);
     }
