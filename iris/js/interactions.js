@@ -167,8 +167,9 @@
     return handle;
   }
 
-  // 手柄贴在表格第一行左侧外侧：垂直对齐首行中线，水平悬于表格左缘外 6px；
-  // 表格贴近视口左缘时收敛到 8px，此时会短暂覆盖首行，可接受
+  // 手柄贴在表格左上角外侧：垂直对齐首行中线，水平悬于表格左缘外 6px。
+  // 表格在横向滚动容器里时，以容器可见左缘为基准（不随内容滑走），
+  // 同样悬在容器外侧——绝不能落到表格内部压住首列。
   function positionHandle(table) {
     const handle = document.getElementById(HANDLE_ID);
     if (!handle || !handle.classList.contains('visible')) return;
@@ -176,8 +177,18 @@
     const firstRow = table.rows[0];
     const rowRect = firstRow ? firstRow.getBoundingClientRect() : rect;
     const rowCenter = rowRect.top + rowRect.height / 2;
-    handle.style.left = Math.max(8, rect.left - 32) + 'px'; // 26px 手柄 + 6px 间距
-    handle.style.top = Math.round(rowCenter - 13) + 'px';   // 26px 手柄垂直居中于首行
+
+    // 基准左缘：滚动容器取容器可见左缘，否则取表格自身左缘
+    let anchorLeft = rect.left;
+    const scroller = table.closest('.mdt-wrapper, .table-wrapper, .csv-table-scroll');
+    if (scroller && scroller.scrollWidth > scroller.clientWidth + 1) {
+      anchorLeft = scroller.getBoundingClientRect().left;
+    }
+    // 26px 手柄 + 6px 间距，悬在左缘之外
+    const HANDLE_SIZE = 26;
+    const GAP = 6;
+    handle.style.left = Math.max(8, Math.round(anchorLeft - HANDLE_SIZE - GAP)) + 'px';
+    handle.style.top = Math.round(rowCenter - HANDLE_SIZE / 2) + 'px';
   }
 
   function showHandle(table) {
@@ -210,8 +221,11 @@
       if (e.target.closest('.ctx-menu')) return;
       const table = e.target.closest('.markdown-body table, .table-wrapper table');
       // CSV 交互表格有自己的工具栏（排序/筛选/画图/复制下载），
-      // 通用手柄不再叠加——旧实现两套 UI 同时浮出
+      // 通用手柄不再叠加——旧实现两套 UI 同时浮出。
+      // diff 视图同理：它是逐行对照视图，不是数据表格，
+      // 浮一个「表格」图标只会误导。
       if (table && table.closest('.csv-table')) return;
+      if (table && table.closest('.diff-container, .diff-view')) return;
       if (table) {
         showHandle(table);
       } else if (e.target.closest('.table-handle')) {

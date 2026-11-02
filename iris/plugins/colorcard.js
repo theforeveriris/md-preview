@@ -140,15 +140,15 @@ function parseColors(code) {
   }
 
   // 2. CSV / 行分隔 / 空格分隔
-  const tokens = raw
-    .split(/[\n,]+/)
-    .map(s => s.trim())
-    .filter(Boolean);
+  // 分隔逗号时必须避开函数式记法内部（rgb(99, 102, 241) 是一个颜色，
+  // 不能被切成三段）。先用括号深度把 rgb()/hsl() 整体保护起来，
+  // 之后再按分隔符切。
+  const tokens = splitColorTokens(raw);
 
   return tokens
     .map(tok => {
       // 支持 "name: #hex" / "name = #hex" / "name #hex" 形式
-      const m = tok.match(/^(.+?)[\s:=]+(#[0-9a-fA-F]{3,8}|[a-zA-Z]+|rgb\([^)]+\)|hsl\([^)]+\))$/);
+      const m = tok.match(/^(.+?)[\s:=]+(#[0-9a-fA-F]{3,8}|[a-zA-Z]+|rgba?\([^)]+\)|hsla?\([^)]+\))$/i);
       if (m) {
         const c = normalizeColor(m[2]);
         return c ? { ...c, name: m[1].trim() } : null;
@@ -156,6 +156,37 @@ function parseColors(code) {
       return normalizeColor(tok);
     })
     .filter(Boolean);
+}
+
+/**
+ * 按行 / 逗号切出色值，但保护 rgb()/hsl() 等函数式记法里的分隔符。
+ * 例："rgb(99, 102, 241)\nhsl(160, 60%, 45%)" → 2 个 token。
+ */
+function splitColorTokens(raw) {
+  const out = [];
+  let buf = '';
+  let depth = 0;
+  for (const ch of raw) {
+    if (ch === '(') depth++;
+    else if (ch === ')') depth = Math.max(0, depth - 1);
+
+    if (depth === 0 && (ch === '\n' || ch === ',')) {
+      if (buf.trim()) out.push(buf.trim());
+      buf = '';
+      continue;
+    }
+    buf += ch;
+  }
+  if (buf.trim()) out.push(buf.trim());
+
+  // 再按空格切（" #fff  #000" 这类纯空格分隔），
+  // 但仍要保护函数式记法内部的空格（hsl(160, 60%, 45%)）。
+  const result = [];
+  for (const tok of out) {
+    if (/^[a-zA-Z]+\(/.test(tok)) { result.push(tok); continue; }
+    tok.split(/\s+/).filter(Boolean).forEach(t => result.push(t));
+  }
+  return result;
 }
 
 function normalizeColor(input, name) {

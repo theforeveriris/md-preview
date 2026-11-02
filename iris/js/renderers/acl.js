@@ -19,6 +19,9 @@
 
   const t = window.MarkdownPreview.t;
   const esc = window.MarkdownPreview.mdRender.escapeHtml;
+  // 共享图标构造（dom.js 提供）
+  const icon = window.MarkdownPreview.icon || ((name, size) =>
+    '<svg width="' + (size || 14) + '" height="' + (size || 14) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#' + name + '"/></svg>');
 
   // ============== 解析 ==============
 
@@ -185,11 +188,11 @@
       <div class="acl-test">
         <div class="acl-test-title">${esc(t('acl.testTitle', '五元组命中测试'))}</div>
         <div class="acl-test-form">
-          <select class="acl-test-proto"><option value="tcp">TCP</option><option value="udp">UDP</option><option value="icmp">ICMP</option><option value="ip">IP</option></select>
-          <input class="acl-test-src" type="text" placeholder="${esc(t('acl.srcPh', '源 IP（10.1.1.8）'))}" value="10.1.1.8">
-          <input class="acl-test-dst" type="text" placeholder="${esc(t('acl.dstPh', '目的 IP（8.8.8.8）'))}" value="8.8.8.8">
-          <input class="acl-test-port" type="text" placeholder="${esc(t('acl.portPh', '端口（443）'))}" value="443">
-          <button type="button" class="download-btn acl-test-btn">${esc(t('acl.testBtn', '测试'))}</button>
+          <select class="acl-test-proto" aria-label="${esc(t('acl.testProto', '协议'))}"><option value="tcp">TCP</option><option value="udp">UDP</option><option value="icmp">ICMP</option><option value="ip">IP</option></select>
+          <input class="acl-test-src" type="text" placeholder="${esc(t('acl.srcPh', '源 IP（10.1.1.8）'))}" value="10.1.1.8" aria-label="${esc(t('acl.source', '源'))}">
+          <input class="acl-test-dst" type="text" placeholder="${esc(t('acl.dstPh', '目的 IP（8.8.8.8）'))}" value="8.8.8.8" aria-label="${esc(t('acl.dest', '目的'))}">
+          <input class="acl-test-port" type="text" placeholder="${esc(t('acl.portPh', '端口（443）'))}" value="443" aria-label="${esc(t('acl.port', '端口'))}">
+          <button type="button" class="acl-test-btn" data-tip="${esc(t('acl.testBtn', '测试'))}" title="${esc(t('acl.testBtn', '测试'))}" aria-label="${esc(t('acl.testBtn', '测试'))}">${icon('i-zap', 15)}</button>
         </div>
         <div class="acl-test-result" hidden></div>
       </div>`;

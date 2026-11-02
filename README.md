@@ -325,6 +325,21 @@ python3 iris/scripts/pptx/main.py
 | 外部嵌入 | YouTube、Bilibili、Twitter、Figma、CodePen 等 |
 | GitHub Alerts | `[!NOTE]` `[!TIP]` `[!WARNING]` 等 |
 | Pulse 波形 | DG-LAB 郊狼电击器 `.pulse` 波形解析、迷你波形、滚动/全局模式、可视化波形生成器 |
+| 表格交互 | 排序 / 过滤 / 列显隐 / 复制 TSV / 导出 CSV |
+| JSON 搜索 | JSONPath 查询与关键字高亮 |
+| 协议注册表 | `registry` / `@[registry](common)` 协议表 |
+| 日志渲染 | `log` 级别筛选与关键字过滤 |
+| LLDP/CDP 拓扑 | 邻居输出 → 可交互 SVG 拓扑 |
+| HAR 瀑布 | 请求瀑布图、分段计时、过滤与导出 |
+| Nmap/dig/BGP | 协议专用视图 |
+| Trace 瀑布 | OTLP / Jaeger / Zipkin span 瀑布 |
+| Kroki | 通用图类型入口 |
+| Vega-Lite | JSON 规范高级图表 |
+| 图片热点 | `hotspot` 百分比坐标标注 |
+| CLI 帮助 | `clihelp` 结构化帮助卡片 |
+| 源码嵌入 | `@[code]` / `@[file]` 仓库源码嵌入 |
+| GitHub 卡片 | issue / PR / release / repo |
+| 转换工具 | HTML / Obsidian 导入与干净 CommonMark 导出 |
 
 ## 示例文档索引
 
@@ -368,6 +383,17 @@ python3 iris/scripts/pptx/main.py
 | `devtools-examples.md` | 开发者工具与交互组件（术语表 / HTTP 请求块 / OpenAPI / SQL DDL→ER / 小工具 / 拼音注音 / CSV→图表） |
 | `timeline-examples.md` | 时间线组件（状态色 / 分隔符 / 今日标记线） |
 | `figure-examples.md` | 图 / 表自动编号、别名与交叉引用 |
+| `code-reader-examples.md` | 源码嵌入与代码块阅读模式 |
+| `log-cli-examples.md` | 日志与 CLI 输出渲染 |
+| `har-examples.md` | HAR 瀑布图 |
+| `lldp-examples.md` | LLDP / CDP 邻居拓扑 |
+| `net-tools-examples.md` | Nmap / dig / BGP 专用视图 |
+| `trace-examples.md` | 分布式 Trace 瀑布 |
+| `json-search-examples.md` | JSON 树搜索与 JSONPath |
+| `kroki-vega-examples.md` | Kroki 与 Vega-Lite |
+| `hotspot-clihelp-examples.md` | 图片热点、CLI 帮助、协议注册表 |
+| `github-examples.md` | GitHub 卡片与协议注册表 |
+| `render-improvements.md` | 渲染内容改进总览（全部新语法与限制） |
 
 ## 项目结构
 

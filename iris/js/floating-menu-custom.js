@@ -13,9 +13,12 @@
   const esc = window.MarkdownPreview.mdRender.escapeHtml;
 
   // 排序兜底顺序（未配置时 = index.html 里的原始顺序）
+  // 注：转换工具（convertBtn）已移到设置面板「工具与导出 → 工具」，
+  // 不再是悬浮球菜单项，故不在此列表里。
   const DEFAULT_ORDER = [
     'backToTopBtn', 'openLocalBtn', 'kbMountBtn', 'qrShareBtn', 'splitViewBtn',
-    'snapshotShareBtn', 'installPwaBtn', 'editPageBtn', 'historyBtn', 'openSettingsBtn'
+    'snapshotShareBtn', 'installPwaBtn', 'editPageBtn', 'historyBtn',
+    'openSettingsBtn'
   ];
   // 设置项永远最后且不可隐藏（逃生门）
   const PINNED = ['openSettingsBtn'];

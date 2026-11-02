@@ -345,7 +345,14 @@
         ':host(.tinted-icons) li.file.fav::before,:host(.tinted-icons) li.text.fav::before{background:var(--color-accent-purple)}',
         ':host li.file.recent>button,:host li.text.recent>button{color:color-mix(in srgb, var(--color-text) 55%, transparent)}',
         ':host li.file.recent.active>button{color:var(--color-accent-purple-deep)}',
-        ':host li.file.recent.active>button>.file-name{font-weight:500}'
+        ':host li.file.recent.active>button>.file-name{font-weight:500}',
+        // 隐藏文件图标（默认）：整棵树退化成纯文字列表，样式对齐「Index」页签。
+        // vendor 的图标是 li/button 的 ::before 伪元素，
+        // 隐藏后要一并收回它占的缩进，否则文字会比 Index 那边多缩进一截。
+        ':host(.hide-icons) li::before,:host(.hide-icons) li>button::before{display:none}',
+        ':host(.hide-icons)>ul{padding-inline-start:var(--padding)}',
+        ':host(.hide-icons) li.folder>ul{padding-inline-start:calc(var(--padding) + 10px)}',
+        ':host(.hide-icons) li.file>button,:host(.hide-icons) li.text>button{padding-left:var(--padding)}'
       ].join('\n');
       shadow.appendChild(styleEl);
     }
@@ -515,6 +522,7 @@
       var settings = window.MarkdownPreview.settings && window.MarkdownPreview.settings.load ? window.MarkdownPreview.settings.load() : {};
       setWordCountVisibility(settings.showWordCount === true);
       setTruncateNames(settings.truncateFileNames !== false);
+      setIconsVisible(settings.showTreeIcons === true);
 
       // 树重建后刷新收藏/最近阅读提示（history.js）
       if (window.MarkdownPreview.history && window.MarkdownPreview.history.syncTreeHints) {
@@ -548,6 +556,19 @@
     var tree = dom.fileTree.querySelector('file-tree');
     if (tree) {
       tree.classList.toggle('truncate-names', truncate !== false);
+    }
+  }
+
+  /**
+   * 设置切换「侧边栏文件图标」后即时生效：就地切 Shadow DOM 里的图标样式。
+   * 默认不显示图标（跟「Index」页签一致，纯粹是文字列表），
+   * 开启后显示文件/文件夹图标。
+   */
+  function setIconsVisible(visible) {
+    bindGlobals();
+    var tree = dom.fileTree.querySelector('file-tree');
+    if (tree) {
+      tree.classList.toggle('hide-icons', visible !== true);
     }
   }
 
@@ -748,6 +769,7 @@
     getAllFilesInDFSOrder,
     getAdjacentFiles,
     setWordCountVisibility,
-    setTruncateNames
+    setTruncateNames,
+    setIconsVisible
   };
 })();

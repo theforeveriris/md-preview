@@ -12,6 +12,7 @@
     showReadingProgress: true,
     showWordCount: false,
     truncateFileNames: false,
+    showTreeIcons: false,      // 侧边栏文件图标：默认关闭（跟「Index」页签一致，纯文字列表）
     expandFolders: true,
     treeSort: 'smart',         // 侧边栏排序：smart | createdDesc/Asc | modifiedDesc/Asc
     sidebarStyle: 'classic',   // classic = 贴边经典样式（默认）；floating = 悬浮卡片
@@ -135,6 +136,7 @@
           showReadingProgress: parsed.showReadingProgress ?? defaultSettings.showReadingProgress,
           showWordCount: parsed.showWordCount ?? defaultSettings.showWordCount,
           truncateFileNames: parsed.truncateFileNames ?? defaultSettings.truncateFileNames,
+          showTreeIcons: parsed.showTreeIcons ?? defaultSettings.showTreeIcons,
           expandFolders: parsed.expandFolders ?? defaultSettings.expandFolders,
           treeSort: normalizeTreeSort(parsed.treeSort),
           sidebarStyle: parsed.sidebarStyle === 'floating' ? 'floating' : 'classic',
@@ -440,6 +442,13 @@
       settings.truncateFileNames = e.target.checked;
       saveSettings(settings);
       toggleTruncateFileNames(settings.truncateFileNames);
+    });
+
+    showTreeIconsToggle?.addEventListener('change', (e) => {
+      const settings = loadSettings();
+      settings.showTreeIcons = e.target.checked;
+      saveSettings(settings);
+      toggleTreeIcons(settings.showTreeIcons);
     });
 
     // 显式 getElementById：不依赖「有 id 的元素自动成为 window 属性」这一
@@ -1156,6 +1165,14 @@
     window.MarkdownPreview?.localDocs?.refresh();
   }
 
+  // 侧边栏文件图标：默认关闭（纯文字列表，跟「Index」页签一致），开启后显示图标
+  function toggleTreeIcons(show) {
+    if (window.MarkdownPreview?.fileTree?.setIconsVisible) {
+      window.MarkdownPreview.fileTree.setIconsVisible(show);
+    }
+    window.MarkdownPreview?.localDocs?.refresh();
+  }
+
   // 侧边栏样式：classic 贴边（默认）/ floating 悬浮卡片；写入 body[data-sidebar-style] 由 CSS 分流
   function applySidebarStyle(style) {
     document.body.dataset.sidebarStyle = style === 'floating' ? 'floating' : 'classic';
@@ -1659,6 +1676,7 @@ body { margin: 0; }
     toggleReadingProgress(settings.showReadingProgress);
     toggleWordCount(settings.showWordCount);
     toggleTruncateFileNames(settings.truncateFileNames);
+    toggleTreeIcons(settings.showTreeIcons);
     applyCodeTheme(settings.codeTheme);
     applyCustomColors(settings.customColors || {});
     applyFontConfig(settings.fontConfig || defaultFontConfig);
@@ -1673,6 +1691,7 @@ body { margin: 0; }
     const showReadingProgressToggle = document.getElementById('showReadingProgressToggle');
     const showWordCountToggle = document.getElementById('showWordCountToggle');
     const truncateFileNamesToggle = document.getElementById('truncateFileNamesToggle');
+    const showTreeIconsToggle = document.getElementById('showTreeIconsToggle');
     const expandFoldersToggle = document.getElementById('expandFoldersToggle');
     const treeSortSelect = document.getElementById('treeSortSelect');
     const sidebarStyleSelect = document.getElementById('sidebarStyleSelect');
@@ -1685,6 +1704,7 @@ body { margin: 0; }
     if (showReadingProgressToggle) showReadingProgressToggle.checked = settings.showReadingProgress;
     if (showWordCountToggle) showWordCountToggle.checked = settings.showWordCount;
     if (truncateFileNamesToggle) truncateFileNamesToggle.checked = settings.truncateFileNames !== false;
+    if (showTreeIconsToggle) showTreeIconsToggle.checked = settings.showTreeIcons === true;
     if (expandFoldersToggle) expandFoldersToggle.checked = settings.expandFolders !== false;
     if (treeSortSelect) treeSortSelect.value = normalizeTreeSort(settings.treeSort);
     if (sidebarStyleSelect) sidebarStyleSelect.value = settings.sidebarStyle === 'floating' ? 'floating' : 'classic';

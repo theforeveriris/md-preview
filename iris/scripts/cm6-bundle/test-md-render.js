@@ -79,11 +79,12 @@ function run() {
    'hexagon','coverflow','tape','duotone','frame','arch','masonry','slider','ticket','panorama']
     .forEach(s => assert(`包含 ${s}`, mdRender.KNOWN_STYLES.includes(s)));
 
-  console.log('=== processGitHubAlerts 默认 emoji ===');
+  console.log('=== processGitHubAlerts 默认图标 ===');
   const alertText = '> [!NOTE]\n> 这是一个 note';
   const result = mdRender.processGitHubAlerts(alertText);
   assert('NOTE alert 被识别', result.includes('alert-note'));
-  assert('默认 emoji 图标 ℹ️', result.includes('ℹ️'));
+  // 默认图标用站点 SVG 图标库（不用 emoji：跨平台字形差异大）
+  assert('默认图标来自图标库 <use href="#i-...">', /<use href="#i-[a-z-]+"\/>/.test(result));
   assert('默认标题 Note', result.includes('Note'));
 
   console.log('=== processGitHubAlerts 自定义 SVG ===');

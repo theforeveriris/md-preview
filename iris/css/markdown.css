@@ -891,7 +891,23 @@ body[data-sidebar-style="floating"] .reading-progress {
 .alert-icon {
   font-size: 16px;
   line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  flex: none;
 }
+
+/* 图标库图标（<use>）在部分浏览器里不继承 currentColor，显式指定 */
+.alert-icon .alert-svg {
+  display: block;
+  stroke: currentColor;
+  color: inherit;
+}
+
+.alert-note .alert-icon { color: var(--color-accent-purple-deep); }
+.alert-important .alert-icon { color: var(--color-accent-pink); }
+.alert-warning .alert-icon { color: var(--color-warning); }
+.alert-tip .alert-icon { color: var(--color-success); }
+.alert-caution .alert-icon { color: var(--color-error); }
 
 .alert-title {
   font-size: 14px;
@@ -1447,6 +1463,19 @@ body[data-sidebar-style="floating"] .reading-progress {
   border-radius: 0;
   overflow-x: auto;
   max-width: 100%;
+}
+
+/* 选项卡面板自带卡片外框（.code-tabs 有边框+底色），
+   里面的代码阅读器再画一圈边框就成了「一层套一层」。
+   只留阅读器的头部与代码区，去掉外框。 */
+.code-tab-panel .code-reader {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.code-tab-panel pre.code-block.cr-pre {
+  background: transparent;
 }
 
 .code-tab-panel pre code {

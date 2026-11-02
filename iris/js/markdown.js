@@ -335,6 +335,50 @@
    * @param {Function} [opts.sanitize] - 非受信来源的净化函数（渲染产物注入 DOM
    *   前调用；由 renderVirtualDoc/renderMarkdownDirect 按 sanitize 选项传入）
    */
+  // ============== F2 渲染结果缓存 ==============
+  // 非受信来源（快照 / 本地文件 / 导入）不做缓存，避免跨来源复用渲染产物。
+  function cachedParseMarkdown(content) {
+    try {
+      if (typeof sessionStorage === 'undefined') return mdRender.parseMarkdown(content);
+      const key = 'mdp:render:' + fnv1a(content);
+      const hit = JSON.parse(sessionStorage.getItem(key) || 'null');
+      if (hit && hit.html && Date.now() - hit.at < 24 * 3600 * 1000) return { html: hit.html };
+      const out = mdRender.parseMarkdown(content);
+      sessionStorage.setItem(key, JSON.stringify({ html: out.html, at: Date.now() }));
+      return out;
+    } catch (e) {
+      return mdRender.parseMarkdown(content);
+    }
+  }
+
+  function fnv1a(str) {
+    let h = 0x811c9dc5;
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 0x01000193);
+    }
+    return (h >>> 0).toString(16);
+  }
+
+  // ============== F1 长文档渐进渲染进度 ==============
+  // 超大文档在异步渲染周期内显示进度条，避免「卡住」错觉；
+  // 真正的解析/高亮已由 parseMarkdown + highlightCodeBlocksProgressive +
+  // lazy renderers + F3 content-visibility 组合完成。
+  function showRenderProgress() {
+    const bar = document.createElement('div');
+    bar.className = 'md-render-progress';
+    bar.innerHTML = '<div class="md-render-progress-label">渲染中…</div>' +
+      '<div class="md-render-progress-track"><div class="md-render-progress-bar"></div></div>';
+    document.body.appendChild(bar);
+    return {
+      update(pct, label) {
+        bar.querySelector('.md-render-progress-bar').style.width = Math.round(pct) + '%';
+        bar.querySelector('.md-render-progress-label').textContent = label || '渲染中…';
+      },
+      hide() { bar.remove(); }
+    };
+  }
+
   function renderMarkdown(markdown, currentPath = '', opts = {}) {
     const renderStartTime = performance.now();
     // 图谱页是沉浸式布局（body.graph-page）。任何一次新文档渲染都先摘掉这个标记，
@@ -375,7 +419,11 @@
     state.currentFrontmatter = frontmatter;
 
     // Markdown → HTML（LaTeX 保护 + Alerts + 自定义 Renderer）已迁移至共享模块
-    let { html } = mdRender.parseMarkdown(content);
+    // G2 导出用：缓存当前文档原文（供转换工具导出干净 CommonMark）
+    try { window.MarkdownPreview.state.currentMarkdown = markdown; } catch (e) { /* ignore */ }
+    // F2：渲染结果缓存（sessionStorage），同一文档重复打开（返回/预取）直接复用，
+    // 避免大文档重复 parse + 预处理。key 用 FNV 哈希，TTL 24h，最多保留 80 条。
+    let { html } = cachedParseMarkdown(content);
     // 非受信来源（快照链接 / 本地文件 / 导入内容）：注入前净化渲染产物
     if (typeof opts.sanitize === 'function') {
       html = opts.sanitize(html);
@@ -451,6 +499,10 @@
       renderMs: Math.round(performance.now() - renderStartTime)
     };
 
+    // F1：超大文档显示渐进渲染进度
+    const progress = finalHtml.length > 120000 ? showRenderProgress() : null;
+    if (progress) progress.update(20, '解析完成');
+
     // 以主文档容器为查询根：分栏对照窗格与编辑器预览也用 .markdown-body
     // 类名，全局查询会给它们赋重复 id（目录/锚点错乱）。
     // 同名标题 slug 去重：追加 -1/-2（GitHub 惯例），锚点/目录直达最后一个
@@ -509,6 +561,7 @@
       // 插件渲染（plugins.render 由 loader.js 始终注册，含跨文档插件资源清理；
       // 旧版 renderWithPluginsLegacy 分发路径已删除——不可达且缺少资源清理）
       await window.MarkdownPreview.plugins.render({ documentPath: currentPath });
+      if (progress) progress.update(50, '插件渲染');
       (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Markdown] Plugins rendered, calling other renderers');
       // 渲染器统一调度：遍历 renderers 注册表逐个执行（顺序 = index.html 脚本加载序），
       // 单个渲染器失败被隔离，不影响后续。见 md-render.js: runRenderers。
@@ -520,8 +573,10 @@
           window.MarkdownPreview.pkt?.destroyOrphaned?.();
         }
       });
+      if (progress) progress.update(80, '渲染完成');
       // 全文敏感模式开启时对新文档重刷模糊（渲染器可能替换过节点）
       window.MarkdownPreview.sensitiveMode?.applyIfOn?.();
+      if (progress) { progress.update(100, '完成'); setTimeout(() => progress.hide(), 400); }
       (window.MarkdownPreview.debug?.debugLog || (() => {}))('[Markdown] Render cycle complete');
     }, 100);
 

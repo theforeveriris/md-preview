@@ -177,6 +177,10 @@
 
     const widget = document.createElement('div');
     widget.className = 'csv-table';
+    // 工具条按钮一律用图标，文字靠悬停提示（data-tip），工具条只占一行高
+    const chartLabel = t('csv.chart.build', '画成图');
+    const copyLabel = t('csv.copyCsv', '复制 CSV');
+    const downloadLabel = t('csv.downloadCsv', '下载 CSV');
     widget.innerHTML = `
       <div class="csv-table-toolbar">
         <div class="csv-table-search">
@@ -192,10 +196,10 @@
             <option value="area">${esc(t('csv.chart.area', '面积'))}</option>
             <option value="pie">${esc(t('csv.chart.pie', '饼图'))}</option>
           </select>
-          <button type="button" class="csv-tool-btn csv-chart-btn" title="${esc(t('csv.chart.build', '画成图'))}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l3-4 3 3 4-6"/></svg><span>${esc(t('csv.chart.build', '画成图'))}</span></button>
+          <button type="button" class="icon-btn csv-tool-btn csv-chart-btn" data-tip="${esc(chartLabel)}" title="${esc(chartLabel)}" aria-label="${esc(chartLabel)}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l3-4 3 3 4-6"/></svg><span class="icon-btn-label">${esc(chartLabel)}</span></button>
         </span>
-        <button type="button" class="csv-tool-btn csv-copy" title="${esc(t('csv.copyCsv', '复制 CSV'))}">${icon('i-clipboard')}<span>${esc(t('csv.copyCsv', '复制 CSV'))}</span></button>
-        <button type="button" class="csv-tool-btn csv-download" title="${esc(t('csv.downloadCsv', '下载 CSV'))}">${icon('i-download')}<span>${esc(t('csv.downloadCsv', '下载 CSV'))}</span></button>
+        <button type="button" class="icon-btn csv-tool-btn csv-copy" data-tip="${esc(copyLabel)}" title="${esc(copyLabel)}" aria-label="${esc(copyLabel)}">${icon('i-clipboard', 15)}<span class="icon-btn-label">${esc(copyLabel)}</span></button>
+        <button type="button" class="icon-btn csv-tool-btn csv-download" data-tip="${esc(downloadLabel)}" title="${esc(downloadLabel)}" aria-label="${esc(downloadLabel)}">${icon('i-download', 15)}<span class="icon-btn-label">${esc(downloadLabel)}</span></button>
       </div>
       <div class="csv-table-scroll"><table></table></div>
     `;

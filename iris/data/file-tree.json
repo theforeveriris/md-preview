@@ -92,6 +92,19 @@
             "title": "chinese-classics-example"
           },
           {
+            "name": "code-reader-examples.md",
+            "type": "file",
+            "path": "docs/examples/code-reader-examples.md",
+            "wordCount": 291,
+            "created": 0,
+            "modified": 0,
+            "title": "代码阅读与源码嵌入",
+            "tags": [
+              "代码",
+              "源码"
+            ]
+          },
+          {
             "name": "code-tabs-examples.md",
             "type": "file",
             "path": "docs/examples/code-tabs-examples.md",
@@ -167,6 +180,20 @@
                 "name": "theforeveriris",
                 "count": 2
               }
+            ]
+          },
+          {
+            "name": "convert-tools-examples.md",
+            "type": "file",
+            "path": "docs/examples/convert-tools-examples.md",
+            "wordCount": 119,
+            "created": 0,
+            "modified": 0,
+            "title": "转换工具示例",
+            "tags": [
+              "转换",
+              "导入",
+              "导出"
             ]
           },
           {
@@ -355,6 +382,20 @@
             ]
           },
           {
+            "name": "github-examples.md",
+            "type": "file",
+            "path": "docs/examples/github-examples.md",
+            "wordCount": 102,
+            "created": 0,
+            "modified": 0,
+            "title": "GitHub 卡片与协议注册表",
+            "tags": [
+              "GitHub",
+              "外部卡片",
+              "协议"
+            ]
+          },
+          {
             "name": "graph-backlinks-demo.md",
             "type": "file",
             "path": "docs/examples/graph-backlinks-demo.md",
@@ -374,6 +415,19 @@
             ]
           },
           {
+            "name": "har-examples.md",
+            "type": "file",
+            "path": "docs/examples/har-examples.md",
+            "wordCount": 108,
+            "created": 0,
+            "modified": 0,
+            "title": "HAR 瀑布图与请求分析",
+            "tags": [
+              "HAR",
+              "网络"
+            ]
+          },
+          {
             "name": "heatmap-examples.md",
             "type": "file",
             "path": "docs/examples/heatmap-examples.md",
@@ -390,6 +444,20 @@
                 "name": "theforeveriris",
                 "count": 2
               }
+            ]
+          },
+          {
+            "name": "hotspot-clihelp-examples.md",
+            "type": "file",
+            "path": "docs/examples/hotspot-clihelp-examples.md",
+            "wordCount": 218,
+            "created": 0,
+            "modified": 0,
+            "title": "图片热点与 CLI 帮助",
+            "tags": [
+              "图片",
+              "教程",
+              "CLI"
             ]
           },
           {
@@ -446,6 +514,33 @@
                 "name": "theforeveriris",
                 "count": 2
               }
+            ]
+          },
+          {
+            "name": "json-search-examples.md",
+            "type": "file",
+            "path": "docs/examples/json-search-examples.md",
+            "wordCount": 68,
+            "created": 0,
+            "modified": 0,
+            "title": "JSON 树搜索与 JSONPath",
+            "tags": [
+              "JSON",
+              "数据"
+            ]
+          },
+          {
+            "name": "kroki-vega-examples.md",
+            "type": "file",
+            "path": "docs/examples/kroki-vega-examples.md",
+            "wordCount": 312,
+            "created": 0,
+            "modified": 0,
+            "title": "Kroki 与 Vega-Lite",
+            "tags": [
+              "图表",
+              "Kroki",
+              "Vega"
             ]
           },
           {
@@ -530,6 +625,32 @@
             ]
           },
           {
+            "name": "lldp-examples.md",
+            "type": "file",
+            "path": "docs/examples/lldp-examples.md",
+            "wordCount": 153,
+            "created": 0,
+            "modified": 0,
+            "title": "LLDP / CDP 邻居拓扑",
+            "tags": [
+              "网络",
+              "拓扑"
+            ]
+          },
+          {
+            "name": "log-cli-examples.md",
+            "type": "file",
+            "path": "docs/examples/log-cli-examples.md",
+            "wordCount": 163,
+            "created": 0,
+            "modified": 0,
+            "title": "日志与 CLI 输出渲染",
+            "tags": [
+              "日志",
+              "网络"
+            ]
+          },
+          {
             "name": "markdown-syntax.md",
             "type": "file",
             "path": "docs/examples/markdown-syntax.md",
@@ -588,6 +709,19 @@
             ]
           },
           {
+            "name": "net-tools-examples.md",
+            "type": "file",
+            "path": "docs/examples/net-tools-examples.md",
+            "wordCount": 172,
+            "created": 0,
+            "modified": 0,
+            "title": "Nmap / dig / BGP 专用视图",
+            "tags": [
+              "网络",
+              "排查"
+            ]
+          },
+          {
             "name": "orgchart-examples.md",
             "type": "file",
             "path": "docs/examples/orgchart-examples.md",
@@ -603,6 +737,25 @@
               {
                 "name": "theforeveriris",
                 "count": 1
+              }
+            ]
+          },
+          {
+            "name": "pcap-traceroute-clilab-examples.md",
+            "type": "file",
+            "path": "docs/examples/pcap-traceroute-clilab-examples.md",
+            "wordCount": 413,
+            "created": 1793569098,
+            "modified": 1793622509,
+            "title": "pcap / traceroute / CLI 演练示例",
+            "tags": [
+              "网络",
+              "示例"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "count": 2
               }
             ]
           },
@@ -757,6 +910,25 @@
             ]
           },
           {
+            "name": "site-pages-and-writing-tools.md",
+            "type": "file",
+            "path": "docs/examples/site-pages-and-writing-tools.md",
+            "wordCount": 855,
+            "created": 1793569098,
+            "modified": 1793569098,
+            "title": "站点页面与写作工具",
+            "tags": [
+              "入门",
+              "示例"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "count": 1
+              }
+            ]
+          },
+          {
             "name": "spoiler-examples.md",
             "type": "file",
             "path": "docs/examples/spoiler-examples.md",
@@ -868,6 +1040,19 @@
             ]
           },
           {
+            "name": "trace-examples.md",
+            "type": "file",
+            "path": "docs/examples/trace-examples.md",
+            "wordCount": 116,
+            "created": 0,
+            "modified": 0,
+            "title": "分布式 Trace 瀑布",
+            "tags": [
+              "Trace",
+              "可观测性"
+            ]
+          },
+          {
             "name": "twitter-embed-examples.md",
             "type": "file",
             "path": "docs/examples/twitter-embed-examples.md",
@@ -886,9 +1071,9 @@
             ]
           }
         ],
-        "wordCount": 14483,
+        "wordCount": 17573,
         "created": 1779157467,
-        "modified": 1793287717
+        "modified": 1793622509
       },
       {
         "name": "changelog.md",
@@ -896,7 +1081,7 @@
         "path": "docs/changelog.md",
         "wordCount": 8,
         "created": 1792355917,
-        "modified": 1793130057,
+        "modified": 1793559147,
         "title": "变更日志",
         "tags": [
           "规划"
@@ -904,7 +1089,7 @@
         "contributors": [
           {
             "name": "theforeveriris",
-            "count": 9
+            "count": 10
           }
         ]
       },
@@ -931,9 +1116,9 @@
         "name": "configuration.md",
         "type": "file",
         "path": "docs/configuration.md",
-        "wordCount": 2158,
+        "wordCount": 2243,
         "created": 1779600314,
-        "modified": 1793322336,
+        "modified": 1793387053,
         "title": "配置参考",
         "tags": [
           "配置"
@@ -941,7 +1126,7 @@
         "contributors": [
           {
             "name": "theforeveriris",
-            "count": 16
+            "count": 17
           },
           {
             "name": "github-actions[bot]",
@@ -953,9 +1138,9 @@
         "name": "editor.md",
         "type": "file",
         "path": "docs/editor.md",
-        "wordCount": 1351,
+        "wordCount": 448,
         "created": 1783934812,
-        "modified": 1793046153,
+        "modified": 1793379140,
         "title": "Markdown 编辑器",
         "tags": [
           "编辑器"
@@ -963,7 +1148,7 @@
         "contributors": [
           {
             "name": "theforeveriris",
-            "count": 7
+            "count": 11
           }
         ]
       },
@@ -1008,6 +1193,19 @@
         ]
       },
       {
+        "name": "render-improvements.md",
+        "type": "file",
+        "path": "docs/render-improvements.md",
+        "wordCount": 550,
+        "created": 0,
+        "modified": 0,
+        "title": "渲染内容改进总览",
+        "tags": [
+          "渲染",
+          "新功能"
+        ]
+      },
+      {
         "name": "requirements.md",
         "type": "file",
         "path": "docs/requirements.md",
@@ -1029,9 +1227,9 @@
         "name": "roadmap.md",
         "type": "file",
         "path": "docs/roadmap.md",
-        "wordCount": 1163,
+        "wordCount": 1380,
         "created": 1790831276,
-        "modified": 1793035279,
+        "modified": 1793569098,
         "title": "功能路线图",
         "tags": [
           "规划"
@@ -1039,7 +1237,7 @@
         "contributors": [
           {
             "name": "theforeveriris",
-            "count": 10
+            "count": 11
           }
         ]
       },
@@ -1085,9 +1283,9 @@
         "name": "show.md",
         "type": "file",
         "path": "docs/show.md",
-        "wordCount": 3090,
+        "wordCount": 3313,
         "created": 1785512983,
-        "modified": 1793052885,
+        "modified": 1793569098,
         "title": "系统运行时截图",
         "tags": [
           "截图"
@@ -1095,7 +1293,7 @@
         "contributors": [
           {
             "name": "theforeveriris",
-            "count": 9
+            "count": 10
           }
         ]
       },
@@ -1123,14 +1321,56 @@
         ]
       }
     ],
-    "wordCount": 26953,
+    "wordCount": 30215,
     "created": 1779157467,
-    "modified": 1793322336
+    "modified": 1793622509
   },
   {
     "name": "iris",
     "type": "folder",
     "children": [
+      {
+        "name": "data",
+        "type": "folder",
+        "children": [
+          {
+            "name": "pcap",
+            "type": "folder",
+            "children": [
+              {
+                "name": "raw",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "iris/data/pcap/raw/README.md",
+                    "wordCount": 0,
+                    "created": 1793561434,
+                    "modified": 1793561434,
+                    "title": "存放 .pcap / .pcapng 原始抓包文件（构建期经 iris/scripts/pcap/main.py 转 JSON）。二进制文件不直接被站点引用。",
+                    "contributors": [
+                      {
+                        "name": "theforeveriris",
+                        "count": 1
+                      }
+                    ]
+                  }
+                ],
+                "wordCount": 0,
+                "created": 1793561434,
+                "modified": 1793561434
+              }
+            ],
+            "wordCount": 0,
+            "created": 1793561434,
+            "modified": 1793561434
+          }
+        ],
+        "wordCount": 0,
+        "created": 1793561434,
+        "modified": 1793561434
+      },
       {
         "name": "scripts",
         "type": "folder",
@@ -1167,15 +1407,24 @@
     ],
     "wordCount": 166,
     "created": 1783944425,
-    "modified": 1783944425
+    "modified": 1793561434
+  },
+  {
+    "name": ".review-findings.md",
+    "type": "file",
+    "path": ".review-findings.md",
+    "wordCount": 2663,
+    "created": 0,
+    "modified": 0,
+    "title": "代码审查待办清单（2026-11-01 会话记录）"
   },
   {
     "name": "ARTWORK.md",
     "type": "file",
     "path": "ARTWORK.md",
-    "wordCount": 1700,
+    "wordCount": 2538,
     "created": 1792684224,
-    "modified": 1792686157,
+    "modified": 1793562139,
     "title": "美术设计规范",
     "tags": [
       "开发",
@@ -1184,7 +1433,7 @@
     "contributors": [
       {
         "name": "theforeveriris",
-        "count": 2
+        "count": 6
       }
     ]
   },
@@ -1207,9 +1456,9 @@
     "name": "readme-dev.md",
     "type": "file",
     "path": "readme-dev.md",
-    "wordCount": 1310,
+    "wordCount": 1358,
     "created": 1779253703,
-    "modified": 1793130057,
+    "modified": 1793387053,
     "title": "Markdown Preview — 开发者文档",
     "tags": [
       "开发"
@@ -1217,7 +1466,7 @@
     "contributors": [
       {
         "name": "theforeveriris",
-        "count": 44
+        "count": 45
       },
       {
         "name": "github-actions[bot]",
@@ -1229,9 +1478,9 @@
     "name": "README.md",
     "type": "file",
     "path": "README.md",
-    "wordCount": 1205,
+    "wordCount": 561,
     "created": 1779156860,
-    "modified": 1793052885,
+    "modified": 1793569098,
     "title": "Markdown Preview",
     "tags": [
       "入门"
@@ -1239,7 +1488,7 @@
     "contributors": [
       {
         "name": "theforeveriris",
-        "count": 68
+        "count": 70
       },
       {
         "name": "github-actions[bot]",

@@ -9,6 +9,23 @@ tags: [截图]
 
 ---
 
+## 渲染内容改进总览
+
+本轮新增覆盖源码阅读、表格交互、网络与可观测性、图表、图片热点、性能优化与导入导出等渲染能力。完整语法与限制说明见 [渲染内容改进总览](render-improvements.md)。
+
+- [代码阅读与源码嵌入](examples/code-reader-examples.md)
+- [日志与 CLI 输出渲染](examples/log-cli-examples.md)
+- [HAR 瀑布图](examples/har-examples.md)
+- [LLDP / CDP 邻居拓扑](examples/lldp-examples.md)
+- [Nmap / dig / BGP 专用视图](examples/net-tools-examples.md)
+- [分布式 Trace 瀑布](examples/trace-examples.md)
+- [JSON 树搜索与 JSONPath](examples/json-search-examples.md)
+- [Kroki 与 Vega-Lite](examples/kroki-vega-examples.md)
+- [图片热点与 CLI 帮助](examples/hotspot-clihelp-examples.md)
+- [GitHub 卡片与协议注册表](examples/github-examples.md)
+
+---
+
 ## 一、整体界面
 
 ### 首页整体展示

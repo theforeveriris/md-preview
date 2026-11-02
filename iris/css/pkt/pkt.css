@@ -36,17 +36,22 @@
   flex-shrink: 0;
 }
 
+/* 工具条按钮：默认只有图标，鼠标掠过才显示文字（与全站工具条一致） */
 .pkt-btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
-  padding: 4px 10px;
+  width: 26px;
+  height: 26px;
+  padding: 0;
   font-size: 12px;
   font-family: inherit;
-  border: 1px solid var(--color-border, #e0e0e0);
+  border: 1px solid transparent;
   border-radius: 5px;
-  background: var(--color-surface, #fff);
-  color: var(--color-text, #333);
+  background: transparent;
+  color: var(--color-text-muted, #666);
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
   white-space: nowrap;
@@ -65,8 +70,33 @@
 }
 
 .pkt-btn svg {
-  width: 13px;
-  height: 13px;
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+
+/* 文字标签默认藏起来；悬停时以气泡形式显示 */
+.pkt-btn-label {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--color-text, #2d2d2d);
+  color: var(--color-bg, #fafafa);
+  font-size: 11.5px;
+  line-height: 1.4;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+}
+
+.pkt-btn:hover .pkt-btn-label,
+.pkt-btn:focus-visible .pkt-btn-label {
+  display: block;
 }
 
 /* 搜索框：扁平缩小，置于底部状态栏（仅容纳 2-3 个汉字） */

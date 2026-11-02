@@ -5,8 +5,1080 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 02 Nov 2026 12:29:37 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 02 Nov 2026 23:49:00 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>代码阅读与源码嵌入</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/code-reader-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/code-reader-examples.md</guid>
+      <pubDate>Mon, 02 Nov 2026 23:48:41 GMT</pubDate>
+      <description>本页演示代码块阅读模式、源码嵌入与统一代码工具条。 每个普通代码块自动升级为「阅读模式」：左上角显示语言与行数，右上角悬停浮现图标工具按钮（鼠标掠过显示文字提示），左侧行号与代码行严格对齐（换行模式下自动隐藏）。 行高亮语法不受影响。 源码（fence 信息串里用 指定高亮行）： js {2,5-8} function parse(url) { let p = url; let range = n</description>
+      <category>代码</category>
+      <category>源码</category>
+      <content:encoded><![CDATA[<h1>代码阅读与源码嵌入</h1>
+<p>本页演示代码块阅读模式、源码嵌入与统一代码工具条。</p>
+<h2>阅读模式</h2>
+<p>每个普通代码块自动升级为「阅读模式」：左上角显示语言与行数，右上角悬停浮现图标工具按钮（鼠标掠过显示文字提示），左侧行号与代码行严格对齐（换行模式下自动隐藏）。<code>{2,5-8}</code> 行高亮语法不受影响。</p>
+<p><strong>源码</strong>（fence 信息串里用 <code>{行}</code> 指定高亮行）：</p>
+<pre><code class="language-markdown">```js {2,5-8}
+function parse(url) {
+  let p = url;
+  let range = null;
+  let lang = &#39;&#39;;
+  const q = url.indexOf(&#39;?&#39;);
+  if (q !== -1) {
+    p = url.slice(0, q);
+  }
+  return { path: p, range, lang };
+}
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-js">function parse(url) {
+  let p = url;
+  let range = null;
+  let lang = &#39;&#39;;
+  const q = url.indexOf(&#39;?&#39;);
+  if (q !== -1) {
+    p = url.slice(0, q);
+  }
+  return { path: p, range, lang };
+}
+</code></pre>
+<p>工具按钮：</p>
+<ul>
+<li><strong>换行</strong>：切换软换行；开启后行号隐藏，图标保持高亮，提示文字变为「不换行」。</li>
+<li><strong>折叠</strong>：超过 30 行的代码块可折叠为前 24 行 + 渐变遮罩；展开/收起不影响复制内容。</li>
+<li><strong>纯文本</strong>：临时去掉语法高亮，便于选择复制原始文本；再次点击恢复。</li>
+</ul>
+<p>折叠按钮只在长代码块（&gt;30 行）出现，短代码块保持原有紧凑外观。</p>
+<h2>源码嵌入</h2>
+<p>语法：<code>@[code](路径#Lx-Ly lang=js)</code> 或 <code>@[file](路径)</code>。行范围与 <code>lang=</code> 均可省略；优先读构建期快照 <code>iris/data/code-snippets.json</code>（离线可用），否则同源 <code>fetch</code>。</p>
+<p>嵌入长片段（超过 30 行）时自动折叠为前 24 行，标题显示路径、行范围与总行数，行号从真实起始行起算。</p>
+<p><strong>源码</strong>（带行范围与语言覆盖）：</p>
+<pre><code class="language-markdown">```code
+@[code](iris/js/renderers/table-tools.js#L1-L60 lang=js)
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-code">@[code](iris/js/renderers/table-tools.js#L1-L60 lang=js)
+</code></pre>
+<p><strong>源码</strong>（整文件嵌入，以 49 行的 extra-langs.js 为例）：</p>
+<pre><code class="language-markdown">```code
+@[file](iris/js/langs/extra-langs.js)
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-code">@[file](iris/js/langs/extra-langs.js)
+</code></pre>
+<p><strong>源码</strong>（路径不存在时的失败演示）：</p>
+<pre><code class="language-markdown">```code
+@[code](no/such/file.js#L1-L5)
+```
+</code></pre>
+<p><strong>渲染效果</strong>（降级为错误卡片，不白屏）：</p>
+<pre><code class="language-code">@[code](no/such/file.js#L1-L5)
+</code></pre>
+<p>构建期校验：<code>node iris/scripts/build-code-snippets.js</code> 会输出路径不存在、行号越界的告警。</p>
+<h2>统一工具条</h2>
+<p>换行 / 折叠 / 纯文本为图标按钮，与复制按钮一起悬停浮现于代码块右上角；鼠标掠过图标会显示文字提示，激活的功能（如已切到「不换行」）以主题色高亮。触屏设备控件常显；打印时控件隐藏、折叠块完整展开。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>转换工具示例</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/convert-tools-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/convert-tools-examples.md</guid>
+      <pubDate>Mon, 02 Nov 2026 23:48:41 GMT</pubDate>
+      <description>悬浮球菜单 → 设置 → 工具与导出 → 工具 → 格式转换工具 提供三个页签，用于在 HTML、Obsidian 与纯 Markdown 之间转换。 粘贴或选择 文件，转换为 Markdown： - 标题、列表、表格、代码块、链接、图片都会保留； - 等危险标签先净化再转换； - 转换结果可直接复制或下载。 粘贴或选择 文件，转换为 Markdown： - 双链保留为普通文本； - 嵌入语法转为</description>
+      <category>转换</category>
+      <category>导入</category>
+      <category>导出</category>
+      <content:encoded><![CDATA[<h1>转换工具示例</h1>
+<p>悬浮球菜单 → 设置 → <strong>工具与导出 → 工具 → 格式转换工具</strong> 提供三个页签，用于在 HTML、Obsidian 与纯 Markdown 之间转换。</p>
+<h2>HTML 导入</h2>
+<p>粘贴或选择 <code>.html</code> 文件，转换为 Markdown：</p>
+<ul>
+<li>标题、列表、表格、代码块、链接、图片都会保留；</li>
+<li><code>script</code> 等危险标签先净化再转换；</li>
+<li>转换结果可直接复制或下载。</li>
+</ul>
+<h2>Obsidian 导入</h2>
+<p>粘贴或选择 <code>.md</code> 文件，转换为 Markdown：</p>
+<ul>
+<li><code>[[wiki]]</code> 双链保留为普通文本；</li>
+<li><code>![[图片]]</code> 嵌入语法转为图片；</li>
+<li><code>&gt; [!note]</code> callout 转为 Alert 提示框；</li>
+<li><code>==高亮==</code> 保留。</li>
+</ul>
+<h2>导出 Markdown</h2>
+<p>把当前文档导出为干净的 CommonMark/GFM：</p>
+<ul>
+<li>去除站点私有注释；</li>
+<li>规范空行；</li>
+<li>可复制或下载。</li>
+</ul>
+<h2>入口位置</h2>
+<p>以上都是界面工具，没有围栏语法。入口在<strong>设置面板 → 工具与导出 → 工具 → 格式转换工具</strong>。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>GitHub 卡片与协议注册表</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/github-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/github-examples.md</guid>
+      <pubDate>Mon, 02 Nov 2026 23:48:41 GMT</pubDate>
+      <description>引用 repo / issue / PR / release 时直接显示状态、作者、标签与更新时间；API 失败或限流时自动回退为可点击链接。 源码（仓库卡片）： github @github 渲染效果： 源码（issue 卡片）： github @issue 渲染效果： 源码（不存在的编号 → 演示失败回退）： github @issue registry common 渲染效果：</description>
+      <category>GitHub</category>
+      <category>外部卡片</category>
+      <category>协议</category>
+      <content:encoded><![CDATA[<h1>GitHub 卡片与协议注册表</h1>
+<h2>GitHub 卡片</h2>
+<p>引用 repo / issue / PR / release 时直接显示状态、作者、标签与更新时间；API 失败或限流时自动回退为可点击链接。</p>
+<p><strong>源码</strong>（仓库卡片）：</p>
+<pre><code class="language-markdown">```github
+@[github](theforeveriris/md-preview)
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-github">@[github](theforeveriris/md-preview)
+</code></pre>
+<p><strong>源码</strong>（PR 卡片，指向本仓库真实存在的 PR）：</p>
+<pre><code class="language-markdown">```github
+@[pr](https://github.com/theforeveriris/md-preview/pull/15)
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-github">@[pr](https://github.com/theforeveriris/md-preview/pull/15)
+</code></pre>
+<p><strong>源码</strong>（issue 卡片）：</p>
+<pre><code class="language-markdown">```github
+@[issue](https://github.com/kubernetes/kubernetes/issues/1)
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-github">@[issue](https://github.com/kubernetes/kubernetes/issues/1)
+</code></pre>
+<p><strong>源码</strong>（release 卡片）：</p>
+<pre><code class="language-markdown">```github
+@[release](https://github.com/git-lfs/git-lfs/releases/tag/v3.5.1)
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-github">@[release](https://github.com/git-lfs/git-lfs/releases/tag/v3.5.1)
+</code></pre>
+<p><strong>源码</strong>（不存在的编号 → 演示失败回退）：</p>
+<pre><code class="language-markdown">```github
+@[issue](https://github.com/theforeveriris/md-preview/issues/99999)
+```
+</code></pre>
+<p><strong>渲染效果</strong>（回退为链接卡片）：</p>
+<pre><code class="language-github">@[issue](https://github.com/theforeveriris/md-preview/issues/99999)
+</code></pre>
+<h2>协议注册表</h2>
+<p><strong>源码</strong>（<code>registry common</code> 显示内置 50+ 条常用协议表）：</p>
+<pre><code class="language-markdown">```registry common
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-registry">
+</code></pre>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>HAR 瀑布图与请求分析</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/har-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/har-examples.md</guid>
+      <pubDate>Mon, 02 Nov 2026 23:48:41 GMT</pubDate>
+      <description>源码（HAR 1.2 JSON，重点在 的分段计时）： har {&quot;log&quot;:{&quot;version&quot;:&quot;1.2&quot;,&quot;creator&quot;:{&quot;name&quot;:&quot;demo&quot;,&quot;version&quot;:&quot;1&quot;},&quot;entries&quot;:[{&quot;startedDateTime&quot;:&quot;2026-11-02T10:00:00.000Z&quot;,&quot;time&quot;:42,&quot;resourceType&quot;:&quot;document&quot;,&quot;request&quot;:{</description>
+      <category>HAR</category>
+      <category>网络</category>
+      <content:encoded><![CDATA[<h1>HAR 瀑布图与请求分析</h1>
+<h2>内联 HAR</h2>
+<p><strong>源码</strong>（HAR 1.2 JSON，重点在 <code>entries[].timings</code> 的分段计时）：</p>
+<pre><code class="language-markdown">```har
+{&quot;log&quot;:{&quot;version&quot;:&quot;1.2&quot;,&quot;creator&quot;:{&quot;name&quot;:&quot;demo&quot;,&quot;version&quot;:&quot;1&quot;},&quot;entries&quot;:[{&quot;startedDateTime&quot;:&quot;2026-11-02T10:00:00.000Z&quot;,&quot;time&quot;:42,&quot;_resourceType&quot;:&quot;document&quot;,&quot;request&quot;:{&quot;method&quot;:&quot;GET&quot;,&quot;url&quot;:&quot;https://example.com/index.html&quot;,&quot;headers&quot;:[{&quot;name&quot;:&quot;Accept&quot;,&quot;value&quot;:&quot;text/html&quot;}]},&quot;response&quot;:{&quot;status&quot;:200,&quot;headers&quot;:[{&quot;name&quot;:&quot;Content-Type&quot;,&quot;value&quot;:&quot;text/html&quot;}],&quot;content&quot;:{&quot;size&quot;:10240}},&quot;timings&quot;:{&quot;blocked&quot;:4,&quot;dns&quot;:10,&quot;connect&quot;:12,&quot;send&quot;:1,&quot;wait&quot;:12,&quot;receive&quot;:3}},{&quot;startedDateTime&quot;:&quot;2026-11-02T10:00:00.045Z&quot;,&quot;time&quot;:128,&quot;_resourceType&quot;:&quot;stylesheet&quot;,&quot;request&quot;:{&quot;method&quot;:&quot;GET&quot;,&quot;url&quot;:&quot;https://example.com/app.css&quot;,&quot;headers&quot;:[]},&quot;response&quot;:{&quot;status&quot;:200,&quot;headers&quot;:[],&quot;content&quot;:{&quot;size&quot;:24800}},&quot;timings&quot;:{&quot;blocked&quot;:2,&quot;dns&quot;:0,&quot;connect&quot;:0,&quot;send&quot;:1,&quot;wait&quot;:90,&quot;receive&quot;:35}}]}}
+```
+</code></pre>
+<p><strong>渲染效果</strong>（点击任意行展开请求头 / 响应头 / 分段计时）：</p>
+<pre><code class="language-har">{&quot;log&quot;:{&quot;version&quot;:&quot;1.2&quot;,&quot;creator&quot;:{&quot;name&quot;:&quot;demo&quot;,&quot;version&quot;:&quot;1&quot;},&quot;entries&quot;:[{&quot;startedDateTime&quot;:&quot;2026-11-02T10:00:00.000Z&quot;,&quot;time&quot;:42,&quot;_resourceType&quot;:&quot;document&quot;,&quot;request&quot;:{&quot;method&quot;:&quot;GET&quot;,&quot;url&quot;:&quot;https://example.com/index.html&quot;,&quot;headers&quot;:[{&quot;name&quot;:&quot;Accept&quot;,&quot;value&quot;:&quot;text/html&quot;}]},&quot;response&quot;:{&quot;status&quot;:200,&quot;headers&quot;:[{&quot;name&quot;:&quot;Content-Type&quot;,&quot;value&quot;:&quot;text/html&quot;}],&quot;content&quot;:{&quot;size&quot;:10240}},&quot;timings&quot;:{&quot;blocked&quot;:4,&quot;dns&quot;:10,&quot;connect&quot;:12,&quot;send&quot;:1,&quot;wait&quot;:12,&quot;receive&quot;:3}},{&quot;startedDateTime&quot;:&quot;2026-11-02T10:00:00.045Z&quot;,&quot;time&quot;:128,&quot;_resourceType&quot;:&quot;stylesheet&quot;,&quot;request&quot;:{&quot;method&quot;:&quot;GET&quot;,&quot;url&quot;:&quot;https://example.com/app.css&quot;,&quot;headers&quot;:[]},&quot;response&quot;:{&quot;status&quot;:200,&quot;headers&quot;:[],&quot;content&quot;:{&quot;size&quot;:24800}},&quot;timings&quot;:{&quot;blocked&quot;:2,&quot;dns&quot;:0,&quot;connect&quot;:0,&quot;send&quot;:1,&quot;wait&quot;:90,&quot;receive&quot;:35}}]}}
+</code></pre>
+<h2>嵌入 HAR 文件</h2>
+<p><strong>源码</strong>（<code>@[har](路径)</code> 引用仓库内 <code>.har</code> 文件，这里用 <code>docs/examples/demo.har</code>）：</p>
+<pre><code class="language-markdown">```har
+@[har](docs/examples/demo.har)
+```
+</code></pre>
+<p><strong>渲染效果</strong>（6 请求，含一条 504 失败——红色状态标记）：</p>
+<pre><code class="language-har">@[har](docs/examples/demo.har)
+</code></pre>
+<p>能力说明：瀑布条按 blocked / DNS / connect / SSL / send / wait / receive 分段着色；顶部汇总请求数、总大小、总耗时、失败数；支持搜索 URL、按类型 / 域名 / 状态过滤，导出 CSV。解析失败回退为源码块。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>图片热点与 CLI 帮助</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/hotspot-clihelp-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/hotspot-clihelp-examples.md</guid>
+      <pubDate>Mon, 02 Nov 2026 23:48:41 GMT</pubDate>
+      <description>围栏用百分比坐标在图片上标注热点：悬停/点击显示标签，热点带编号徽标，图片下方自动生成编号图例（打印时图例保留，悬停信息不丢失）。 源码（ 为相对图片宽高的百分比； 缺省时按标签自适应大小）： hotspot { &quot;image&quot;: &quot;docs/image/share-card-code.png&quot;, &quot;title&quot;: &quot;分享卡片示例&quot;, &quot;hotspots&quot;: [ { &quot;x&quot;: 12, &quot;y&quot;: 1</description>
+      <category>图片</category>
+      <category>教程</category>
+      <category>CLI</category>
+      <content:encoded><![CDATA[<h1>图片热点与 CLI 帮助</h1>
+<h2>图片热点标注</h2>
+<p><code>hotspot</code> 围栏用百分比坐标在图片上标注热点：悬停/点击显示标签，热点带编号徽标，图片下方自动生成编号图例（打印时图例保留，悬停信息不丢失）。</p>
+<p><strong>源码</strong>（<code>x/y/w/h</code> 为相对图片宽高的百分比；<code>w/h</code> 缺省时按标签自适应大小）：</p>
+<pre><code class="language-markdown">```hotspot
+{
+  &quot;image&quot;: &quot;docs/image/share-card-code.png&quot;,
+  &quot;title&quot;: &quot;分享卡片示例&quot;,
+  &quot;hotspots&quot;: [
+    { &quot;x&quot;: 12, &quot;y&quot;: 18, &quot;w&quot;: 34, &quot;h&quot;: 10, &quot;label&quot;: &quot;标题区&quot; },
+    { &quot;x&quot;: 55, &quot;y&quot;: 70, &quot;label&quot;: &quot;二维码&quot; }
+  ]
+}
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-hotspot">{
+  &quot;image&quot;: &quot;docs/image/share-card-code.png&quot;,
+  &quot;title&quot;: &quot;分享卡片示例&quot;,
+  &quot;hotspots&quot;: [
+    { &quot;x&quot;: 12, &quot;y&quot;: 18, &quot;w&quot;: 34, &quot;h&quot;: 10, &quot;label&quot;: &quot;标题区&quot; },
+    { &quot;x&quot;: 55, &quot;y&quot;: 70, &quot;label&quot;: &quot;二维码&quot; }
+  ]
+}
+</code></pre>
+<h2>CLI 帮助</h2>
+<p>把 <code>--help</code> 输出变成结构化帮助卡片。</p>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```clihelp
+Usage: iris &lt;command&gt; [options]
+
+Commands:
+  build     构建文档站点
+  serve     本地开发服务器
+  test      运行测试
+
+Options:
+  -V, --version      输出版本号
+  -h, --help         显示帮助
+  --config &lt;path&gt;    配置文件路径
+  --port &lt;number&gt;    服务端口
+
+Examples:
+  iris build --config config.json
+  iris serve --port 8080
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-clihelp">Usage: iris &lt;command&gt; [options]
+
+Commands:
+  build     构建文档站点
+  serve     本地开发服务器
+  test      运行测试
+
+Options:
+  -V, --version      输出版本号
+  -h, --help         显示帮助
+  --config &lt;path&gt;    配置文件路径
+  --port &lt;number&gt;    服务端口
+
+Examples:
+  iris build --config config.json
+  iris serve --port 8080
+</code></pre>
+<p>解析规则：识别 <code>Usage:</code> / <code>Options:</code> / <code>Commands:</code> / <code>Examples:</code> 段；选项行把短选项、长选项、参数（<code>&lt;path&gt;</code>、<code>[n]</code>、<code>=值</code> 或与说明间隔 ≥2 空格的裸词）分列；无法识别时回退为源码块。</p>
+<h2>协议注册表</h2>
+<p><strong>源码</strong>（列间用 ≥2 个空格对齐，末列可含空格）：</p>
+<pre><code class="language-markdown">```registry
+port  name   proto  description
+22    ssh    tcp    Secure Shell
+53    dns    udp    Domain Name System
+80    http   tcp    Hypertext Transfer Protocol
+443   https  tcp    HTTPS
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-registry">port  name   proto  description
+22    ssh    tcp    Secure Shell
+53    dns    udp    Domain Name System
+80    http   tcp    Hypertext Transfer Protocol
+443   https  tcp    HTTPS
+</code></pre>
+<p>内置常用协议表可用 <code>registry common</code> 或 <code>@[registry](common)</code> 调用（可搜索、排序、导出）。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>JSON 树搜索与 JSONPath</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/json-search-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/json-search-examples.md</guid>
+      <pubDate>Mon, 02 Nov 2026 23:48:41 GMT</pubDate>
+      <description>围栏渲染为可折叠的 JSON 树；工具条内提供关键字搜索与 JSONPath 查询。 源码： json { &quot;project&quot;: &quot;md-preview&quot;, &quot;version&quot;: &quot;0.1.0&quot;, &quot;deps&quot;: { &quot;marked&quot;: &quot;^12.0.0&quot;, &quot;highlight.js&quot;: &quot;^11.0.0&quot; }, &quot;users&quot;: [ { &quot;id&quot;: 1, &quot;name&quot;: &quot;Alice&quot;, &quot;r</description>
+      <category>JSON</category>
+      <category>数据</category>
+      <content:encoded><![CDATA[<h1>JSON 树搜索与 JSONPath</h1>
+<p><code>json</code> 围栏渲染为可折叠的 JSON 树；工具条内提供关键字搜索与 JSONPath 查询。</p>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```json
+{
+  &quot;project&quot;: &quot;md-preview&quot;,
+  &quot;version&quot;: &quot;0.1.0&quot;,
+  &quot;deps&quot;: {
+    &quot;marked&quot;: &quot;^12.0.0&quot;,
+    &quot;highlight.js&quot;: &quot;^11.0.0&quot;
+  },
+  &quot;users&quot;: [
+    { &quot;id&quot;: 1, &quot;name&quot;: &quot;Alice&quot;, &quot;role&quot;: &quot;admin&quot; },
+    { &quot;id&quot;: 2, &quot;name&quot;: &quot;Bob&quot;, &quot;role&quot;: &quot;editor&quot; },
+    { &quot;id&quot;: 3, &quot;name&quot;: &quot;Carol&quot;, &quot;role&quot;: &quot;viewer&quot; }
+  ],
+  &quot;stats&quot;: { &quot;stars&quot;: 1200, &quot;forks&quot;: 340 }
+}
+```
+</code></pre>
+<p><strong>渲染效果</strong>（试试在「搜索」框输入 <code>Bob</code>，或在「JSONPath」框输入 <code>$.users[*].name</code> 后点「运行」）：</p>
+<pre><code class="language-json">{
+  &quot;project&quot;: &quot;md-preview&quot;,
+  &quot;version&quot;: &quot;0.1.0&quot;,
+  &quot;deps&quot;: {
+    &quot;marked&quot;: &quot;^12.0.0&quot;,
+    &quot;highlight.js&quot;: &quot;^11.0.0&quot;
+  },
+  &quot;users&quot;: [
+    { &quot;id&quot;: 1, &quot;name&quot;: &quot;Alice&quot;, &quot;role&quot;: &quot;admin&quot; },
+    { &quot;id&quot;: 2, &quot;name&quot;: &quot;Bob&quot;, &quot;role&quot;: &quot;editor&quot; },
+    { &quot;id&quot;: 3, &quot;name&quot;: &quot;Carol&quot;, &quot;role&quot;: &quot;viewer&quot; }
+  ],
+  &quot;stats&quot;: { &quot;stars&quot;: 1200, &quot;forks&quot;: 340 }
+}
+</code></pre>
+<p>工具条能力：</p>
+<ul>
+<li><strong>搜索</strong>：输入关键字，命中节点高亮并统计，祖先节点自动展开。</li>
+<li><strong>JSONPath</strong>：支持 <code>$</code>、<code>.key</code>、<code>[&#39;key&#39;]</code>、<code>[n]</code>、<code>[*]</code>、<code>.*</code>、<code>..key</code>，如 <code>$.users[*].name</code>、<code>$..role</code>、<code>$.deps.marked</code>；命中数显示在输入框右侧，<code>Esc</code> 清空。</li>
+<li>原有 收起 / 展开 / 复制 JSON / 下载 json 不变；解析失败回退为源码块。</li>
+</ul>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Kroki 与 Vega-Lite</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/kroki-vega-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/kroki-vega-examples.md</guid>
+      <pubDate>Mon, 02 Nov 2026 23:48:41 GMT</pubDate>
+      <description>一个 入口支持 Blockdiag / Seqdiag / Actdiag / Nwdiag / Packetdiag / Rackdiag / Bytefield / Ditaa / Erd / Graphviz / Nomnoml / Svgbob / Umlet 等： fence 信息串第二个 token 是图类型，正文为图源码。 源码（blockdiag：节点标签用 紧贴引号写法）： kr</description>
+      <category>图表</category>
+      <category>Kroki</category>
+      <category>Vega</category>
+      <content:encoded><![CDATA[<h1>Kroki 与 Vega-Lite</h1>
+<h2>Kroki 通用入口</h2>
+<p>一个 <code>kroki</code> 入口支持 Blockdiag / Seqdiag / Actdiag / Nwdiag / Packetdiag /
+Rackdiag / Bytefield / Ditaa / Erd / Graphviz / Nomnoml / Svgbob / Umlet 等：
+fence 信息串第二个 token 是图类型，正文为图源码。</p>
+<p><strong>源码</strong>（blockdiag：节点标签用 <code>label=&quot;…&quot;</code> 紧贴引号写法）：</p>
+<pre><code class="language-markdown">```kroki blockdiag
+{
+  orientation = portrait
+  A[label=&quot;客户端&quot;];
+  B[label=&quot;网关&quot;];
+  C[label=&quot;认证服务&quot;];
+  D[label=&quot;业务服务&quot;];
+  E[label=&quot;数据库&quot;];
+  A -&gt; B; B -&gt; C; B -&gt; D; C -&gt; E;
+}
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-kroki">{
+  orientation = portrait
+  A[label=&quot;客户端&quot;];
+  B[label=&quot;网关&quot;];
+  C[label=&quot;认证服务&quot;];
+  D[label=&quot;业务服务&quot;];
+  E[label=&quot;数据库&quot;];
+  A -&gt; B; B -&gt; C; B -&gt; D; C -&gt; E;
+}
+</code></pre>
+<p><strong>源码</strong>（seqdiag：边标签用 <code>[label=&quot;…&quot;]</code>）：</p>
+<pre><code class="language-markdown">```kroki seqdiag
+{
+  client -&gt; gateway [label=&quot;GET /api&quot;];
+  gateway -&gt; auth [label=&quot;校验&quot;];
+  auth -&gt; gateway [label=&quot;通过&quot;];
+  gateway -&gt; db [label=&quot;查询&quot;];
+  gateway -&gt; client [label=&quot;响应&quot;];
+}
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-kroki">{
+  client -&gt; gateway [label=&quot;GET /api&quot;];
+  gateway -&gt; auth [label=&quot;校验&quot;];
+  auth -&gt; gateway [label=&quot;通过&quot;];
+  gateway -&gt; db [label=&quot;查询&quot;];
+  gateway -&gt; client [label=&quot;响应&quot;];
+}
+</code></pre>
+<p><strong>源码</strong>（nwdiag 拓扑网）：</p>
+<pre><code class="language-markdown">```kroki nwdiag
+nwdiag {
+  network dmz {
+    web01 [label = &quot;Web 01&quot;];
+    web02 [label = &quot;Web 02&quot;];
+  }
+  network core {
+    gw01 [label = &quot;网关&quot;];
+  }
+}
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-kroki">nwdiag {
+  network dmz {
+    web01 [label = &quot;Web 01&quot;];
+    web02 [label = &quot;Web 02&quot;];
+  }
+  network core {
+    gw01 [label = &quot;网关&quot;];
+  }
+}
+</code></pre>
+<p><strong>源码</strong>（actdiag 活动图）：</p>
+<pre><code class="language-markdown">```kroki actdiag
+actdiag {
+  write -&gt; review -&gt; publish
+  lane user {
+    write [label = &quot;写文档&quot;];
+    publish [label = &quot;发布&quot;];
+  }
+  lane team {
+    review [label = &quot;评审&quot;];
+  }
+}
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-kroki">actdiag {
+  write -&gt; review -&gt; publish
+  lane user {
+    write [label = &quot;写文档&quot;];
+    publish [label = &quot;发布&quot;];
+  }
+  lane team {
+    review [label = &quot;评审&quot;];
+  }
+}
+</code></pre>
+<h2>Vega-Lite</h2>
+<p><strong>源码</strong>（JSON 规范；渲染 treemap / density / facet / transform 等 ApexCharts 覆盖不到的图，vega 系列按需从 CDN 懒加载）：</p>
+<pre><code class="language-markdown">```vega-lite
+{
+  &quot;$schema&quot;: &quot;https://vega.github.io/schema/vega-lite/v5.json&quot;,
+  &quot;description&quot;: &quot;A simple bar chart&quot;,
+  &quot;data&quot;: {
+    &quot;values&quot;: [
+      {&quot;category&quot;: &quot;A&quot;, &quot;value&quot;: 28},
+      {&quot;category&quot;: &quot;B&quot;, &quot;value&quot;: 55},
+      {&quot;category&quot;: &quot;C&quot;, &quot;value&quot;: 43},
+      {&quot;category&quot;: &quot;D&quot;, &quot;value&quot;: 91},
+      {&quot;category&quot;: &quot;E&quot;, &quot;value&quot;: 81}
+    ]
+  },
+  &quot;mark&quot;: {&quot;type&quot;: &quot;bar&quot;},
+  &quot;encoding&quot;: {
+    &quot;x&quot;: {&quot;field&quot;: &quot;category&quot;, &quot;type&quot;: &quot;nominal&quot;, &quot;axis&quot;: {&quot;labelAngle&quot;: 0}},
+    &quot;y&quot;: {&quot;field&quot;: &quot;value&quot;, &quot;type&quot;: &quot;quantitative&quot;}
+  }
+}
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-vega-lite">{
+  &quot;$schema&quot;: &quot;https://vega.github.io/schema/vega-lite/v5.json&quot;,
+  &quot;description&quot;: &quot;A simple bar chart&quot;,
+  &quot;data&quot;: {
+    &quot;values&quot;: [
+      {&quot;category&quot;: &quot;A&quot;, &quot;value&quot;: 28},
+      {&quot;category&quot;: &quot;B&quot;, &quot;value&quot;: 55},
+      {&quot;category&quot;: &quot;C&quot;, &quot;value&quot;: 43},
+      {&quot;category&quot;: &quot;D&quot;, &quot;value&quot;: 91},
+      {&quot;category&quot;: &quot;E&quot;, &quot;value&quot;: 81}
+    ]
+  },
+  &quot;mark&quot;: {&quot;type&quot;: &quot;bar&quot;},
+  &quot;encoding&quot;: {
+    &quot;x&quot;: {&quot;field&quot;: &quot;category&quot;, &quot;type&quot;: &quot;nominal&quot;, &quot;axis&quot;: {&quot;labelAngle&quot;: 0}},
+    &quot;y&quot;: {&quot;field&quot;: &quot;value&quot;, &quot;type&quot;: &quot;quantitative&quot;}
+  }
+}
+</code></pre>
+<h3>堆叠条形图（按区域分组）</h3>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```vega-lite
+{
+  &quot;$schema&quot;: &quot;https://vega.github.io/schema/vega-lite/v5.json&quot;,
+  &quot;description&quot;: &quot;Stacked bar chart by region&quot;,
+  &quot;data&quot;: {
+    &quot;values&quot;: [
+      {&quot;region&quot;: &quot;华东&quot;, &quot;quarter&quot;: &quot;Q1&quot;, &quot;amount&quot;: 120},
+      {&quot;region&quot;: &quot;华东&quot;, &quot;quarter&quot;: &quot;Q2&quot;, &quot;amount&quot;: 165},
+      {&quot;region&quot;: &quot;华北&quot;, &quot;quarter&quot;: &quot;Q1&quot;, &quot;amount&quot;: 98},
+      {&quot;region&quot;: &quot;华北&quot;, &quot;quarter&quot;: &quot;Q2&quot;, &quot;amount&quot;: 143},
+      {&quot;region&quot;: &quot;华南&quot;, &quot;quarter&quot;: &quot;Q1&quot;, &quot;amount&quot;: 76},
+      {&quot;region&quot;: &quot;华南&quot;, &quot;quarter&quot;: &quot;Q2&quot;, &quot;amount&quot;: 112}
+    ]
+  },
+  &quot;mark&quot;: {&quot;type&quot;: &quot;bar&quot;},
+  &quot;encoding&quot;: {
+    &quot;x&quot;: {&quot;field&quot;: &quot;quarter&quot;, &quot;type&quot;: &quot;nominal&quot;, &quot;axis&quot;: {&quot;title&quot;: null}},
+    &quot;y&quot;: {&quot;field&quot;: &quot;amount&quot;, &quot;type&quot;: &quot;quantitative&quot;, &quot;axis&quot;: {&quot;title&quot;: null}},
+    &quot;color&quot;: {&quot;field&quot;: &quot;region&quot;, &quot;type&quot;: &quot;nominal&quot;},
+    &quot;xOffset&quot;: {&quot;field&quot;: &quot;region&quot;}
+  }
+}
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-vega-lite">{
+  &quot;$schema&quot;: &quot;https://vega.github.io/schema/vega-lite/v5.json&quot;,
+  &quot;description&quot;: &quot;Stacked bar chart by region&quot;,
+  &quot;data&quot;: {
+    &quot;values&quot;: [
+      {&quot;region&quot;: &quot;华东&quot;, &quot;quarter&quot;: &quot;Q1&quot;, &quot;amount&quot;: 120},
+      {&quot;region&quot;: &quot;华东&quot;, &quot;quarter&quot;: &quot;Q2&quot;, &quot;amount&quot;: 165},
+      {&quot;region&quot;: &quot;华北&quot;, &quot;quarter&quot;: &quot;Q1&quot;, &quot;amount&quot;: 98},
+      {&quot;region&quot;: &quot;华北&quot;, &quot;quarter&quot;: &quot;Q2&quot;, &quot;amount&quot;: 143},
+      {&quot;region&quot;: &quot;华南&quot;, &quot;quarter&quot;: &quot;Q1&quot;, &quot;amount&quot;: 76},
+      {&quot;region&quot;: &quot;华南&quot;, &quot;quarter&quot;: &quot;Q2&quot;, &quot;amount&quot;: 112}
+    ]
+  },
+  &quot;mark&quot;: {&quot;type&quot;: &quot;bar&quot;},
+  &quot;encoding&quot;: {
+    &quot;x&quot;: {&quot;field&quot;: &quot;quarter&quot;, &quot;type&quot;: &quot;nominal&quot;, &quot;axis&quot;: {&quot;title&quot;: null}},
+    &quot;y&quot;: {&quot;field&quot;: &quot;amount&quot;, &quot;type&quot;: &quot;quantitative&quot;, &quot;axis&quot;: {&quot;title&quot;: null}},
+    &quot;color&quot;: {&quot;field&quot;: &quot;region&quot;, &quot;type&quot;: &quot;nominal&quot;},
+    &quot;xOffset&quot;: {&quot;field&quot;: &quot;region&quot;}
+  }
+}
+</code></pre>
+<h3>折线图（多序列 + 数据点）</h3>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```vega-lite
+{
+  &quot;$schema&quot;: &quot;https://vega.github.io/schema/vega-lite/v5.json&quot;,
+  &quot;description&quot;: &quot;Multi-series line chart&quot;,
+  &quot;data&quot;: {
+    &quot;values&quot;: [
+      {&quot;month&quot;: &quot;1月&quot;, &quot;core01&quot;: 42, &quot;core02&quot;: 35},
+      {&quot;month&quot;: &quot;2月&quot;, &quot;core01&quot;: 51, &quot;core02&quot;: 39},
+      {&quot;month&quot;: &quot;3月&quot;, &quot;core01&quot;: 47, &quot;core02&quot;: 55},
+      {&quot;month&quot;: &quot;4月&quot;, &quot;core01&quot;: 63, &quot;core02&quot;: 58},
+      {&quot;month&quot;: &quot;5月&quot;, &quot;core01&quot;: 59, &quot;core02&quot;: 71},
+      {&quot;month&quot;: &quot;6月&quot;, &quot;core01&quot;: 74, &quot;core02&quot;: 66}
+    ]
+  },
+  &quot;mark&quot;: {&quot;type&quot;: &quot;line&quot;, &quot;point&quot;: true},
+  &quot;encoding&quot;: {
+    &quot;x&quot;: {&quot;field&quot;: &quot;month&quot;, &quot;type&quot;: &quot;ordinal&quot;, &quot;axis&quot;: {&quot;title&quot;: null}},
+    &quot;y&quot;: {&quot;field&quot;: &quot;value&quot;, &quot;type&quot;: &quot;quantitative&quot;, &quot;axis&quot;: {&quot;title&quot;: null}},
+    &quot;color&quot;: {&quot;field&quot;: &quot;key&quot;, &quot;type&quot;: &quot;nominal&quot;}
+  }
+}
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-vega-lite">{
+  &quot;$schema&quot;: &quot;https://vega.github.io/schema/vega-lite/v5.json&quot;,
+  &quot;description&quot;: &quot;Multi-series line chart&quot;,
+  &quot;data&quot;: {
+    &quot;values&quot;: [
+      {&quot;month&quot;: &quot;1月&quot;, &quot;core01&quot;: 42, &quot;core02&quot;: 35},
+      {&quot;month&quot;: &quot;2月&quot;, &quot;core01&quot;: 51, &quot;core02&quot;: 39},
+      {&quot;month&quot;: &quot;3月&quot;, &quot;core01&quot;: 47, &quot;core02&quot;: 55},
+      {&quot;month&quot;: &quot;4月&quot;, &quot;core01&quot;: 63, &quot;core02&quot;: 58},
+      {&quot;month&quot;: &quot;5月&quot;, &quot;core01&quot;: 59, &quot;core02&quot;: 71},
+      {&quot;month&quot;: &quot;6月&quot;, &quot;core01&quot;: 74, &quot;core02&quot;: 66}
+    ]
+  },
+  &quot;mark&quot;: {&quot;type&quot;: &quot;line&quot;, &quot;point&quot;: true},
+  &quot;encoding&quot;: {
+    &quot;x&quot;: {&quot;field&quot;: &quot;month&quot;, &quot;type&quot;: &quot;ordinal&quot;, &quot;axis&quot;: {&quot;title&quot;: null}},
+    &quot;y&quot;: {&quot;field&quot;: &quot;value&quot;, &quot;type&quot;: &quot;quantitative&quot;, &quot;axis&quot;: {&quot;title&quot;: null}},
+    &quot;color&quot;: {&quot;field&quot;: &quot;key&quot;, &quot;type&quot;: &quot;nominal&quot;}
+  }
+}
+</code></pre>
+<p>服务失败或离线时两者都会回退为源码 + 在线打开链接；错误响应（如 400）也会触发回退而不是把错误图当结果展示。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>LLDP / CDP 邻居拓扑</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/lldp-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/lldp-examples.md</guid>
+      <pubDate>Mon, 02 Nov 2026 23:48:41 GMT</pubDate>
+      <description>粘贴 / 输出，即可得到可交互拓扑图。 源码（直接粘贴 输出， Capability codes 段可留可去）： lldp Capability codes: (R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device (W) WLAN Access Point, (P) Repeater, (S) Station, (O) Oth</description>
+      <category>网络</category>
+      <category>拓扑</category>
+      <content:encoded><![CDATA[<h1>LLDP / CDP 邻居拓扑</h1>
+<p>粘贴 <code>show lldp neighbors</code> / <code>show cdp neighbors</code> 输出，即可得到可交互拓扑图。</p>
+<h2>Cisco LLDP</h2>
+<p><strong>源码</strong>（直接粘贴 <code>show lldp neighbors</code> 输出， Capability codes 段可留可去）：</p>
+<pre><code class="language-markdown">```lldp
+Capability codes:
+	(R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device
+	(W) WLAN Access Point, (P) Repeater, (S) Station, (O) Other
+
+Device ID           Local Intf     Hold-time  Capability      Port ID
+core01              Gi0/0/1        120        BR              Gi0/0/24
+sw-access-02        Gi0/0/2        120        B               Gi0/0/5
+sw-access-03        Gi0/0/3        120        B               Gi0/0/6
+```
+</code></pre>
+<p><strong>渲染效果</strong>（本设备为主题色节点，双击可切换布局）：</p>
+<pre><code class="language-lldp">Capability codes:
+	(R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device
+	(W) WLAN Access Point, (P) Repeater, (S) Station, (O) Other
+
+Device ID           Local Intf     Hold-time  Capability      Port ID
+core01              Gi0/0/1        120        BR              Gi0/0/24
+sw-access-02        Gi0/0/2        120        B               Gi0/0/5
+sw-access-03        Gi0/0/3        120        B               Gi0/0/6
+</code></pre>
+<h2>CDP 邻居</h2>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```cdp
+Device ID        Local Int  Port      Hold-time  Capability  Platform
+core01           Gi0/0/1    Gi0/0/24  165        R S I       SW-1
+sw-access-02     Gi0/0/2    Gi0/0/5   165        B S         S2960
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-cdp">Device ID        Local Int  Port      Hold-time  Capability  Platform
+core01           Gi0/0/1    Gi0/0/24  165        R S I       SW-1
+sw-access-02     Gi0/0/2    Gi0/0/5   165        B S         S2960
+</code></pre>
+<p>交互说明：节点悬停或点击会高亮邻居链路（点本设备恢复），顶部按钮切换<strong>环形 / 同心</strong>布局，<strong>导出 SVG</strong> 下载当前图；双向边自动去重，边标签为 <code>本端口 ↔ 对端口</code>。解析失败回退为源码块。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>日志与 CLI 输出渲染</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/log-cli-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/log-cli-examples.md</guid>
+      <pubDate>Mon, 02 Nov 2026 23:48:41 GMT</pubDate>
+      <description>围栏自动识别时间戳、主机、进程、级别，并支持级别筛选（错误/警告/信息/调试）、关键字过滤与导出 CSV。 源码（混排 syslog 传统格式、ISO 时间戳格式与 JSON 行）： log Mar 1 12:00:01 core01 sshd[2451]: Accepted publickey for deploy Mar 1 12:00:05 core01 systemd[1]: Starte</description>
+      <category>日志</category>
+      <category>网络</category>
+      <content:encoded><![CDATA[<h1>日志与 CLI 输出渲染</h1>
+<h2>日志块</h2>
+<p><code>log</code> 围栏自动识别时间戳、主机、进程、级别，并支持级别筛选（错误/警告/信息/调试）、关键字过滤与导出 CSV。</p>
+<p><strong>源码</strong>（混排 syslog 传统格式、ISO 时间戳格式与 JSON 行）：</p>
+<pre><code class="language-markdown">```log
+Mar  1 12:00:01 core01 sshd[2451]: Accepted publickey for deploy
+Mar  1 12:00:05 core01 systemd[1]: Started Session 42 of user deploy
+2026-11-02T10:00:00.000Z core01 api[881]: INFO request handled in 12ms
+2026-11-02T10:00:01.000Z core01 api[881]: WARN slow query 1.8s
+2026-11-02T10:00:02.000Z core01 api[881]: ERROR upstream timed out
+{&quot;timestamp&quot;:&quot;2026-11-02T10:00:03.000Z&quot;,&quot;level&quot;:&quot;debug&quot;,&quot;logger&quot;:&quot;worker&quot;,&quot;message&quot;:&quot;poll tick&quot;}
+```
+</code></pre>
+<p><strong>渲染效果</strong>（点级别 chip 筛掉对应级别；右侧计数实时显示可见行数）：</p>
+<pre><code class="language-log">Mar  1 12:00:01 core01 sshd[2451]: Accepted publickey for deploy
+Mar  1 12:00:05 core01 systemd[1]: Started Session 42 of user deploy
+2026-11-02T10:00:00.000Z core01 api[881]: INFO request handled in 12ms
+2026-11-02T10:00:01.000Z core01 api[881]: WARN slow query 1.8s
+2026-11-02T10:00:02.000Z core01 api[881]: ERROR upstream timed out
+{&quot;timestamp&quot;:&quot;2026-11-02T10:00:03.000Z&quot;,&quot;level&quot;:&quot;debug&quot;,&quot;logger&quot;:&quot;worker&quot;,&quot;message&quot;:&quot;poll tick&quot;}
+</code></pre>
+<h2>CLI 表格</h2>
+<p><code>clitable</code> 围栏把 <code>show</code> 系列输出变成可排序表格（复用统一表格工具条）。</p>
+<p><strong>源码</strong>（表头 + 分隔行）：</p>
+<pre><code class="language-markdown">```clitable
+Interface     Description     Admin Status    Operational Status
+----          -----------     -------------   -------------------
+GigabitEthernet0/0/1  Uplink to core  up            up
+GigabitEthernet0/0/2  DVR camera       up            up
+GigabitEthernet0/0/3  spare            down          down
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-clitable">Interface     Description     Admin Status    Operational Status
+----          -----------     -------------   -------------------
+GigabitEthernet0/0/1  Uplink to core  up            up
+GigabitEthernet0/0/2  DVR camera       up            up
+GigabitEthernet0/0/3  spare            down          down
+</code></pre>
+<p><strong>源码</strong>（键值输出也能识别）：</p>
+<pre><code class="language-markdown">```clitable
+Vlan ID: 100
+Vlan Name: mgmt
+MTU: 1500
+Primary MAC: 00-11-22-33-44-55
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-clitable">Vlan ID: 100
+Vlan Name: mgmt
+MTU: 1500
+Primary MAC: 00-11-22-33-44-55
+</code></pre>
+<p>无法解析的输出会原样保留为代码块，不影响其他块渲染。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Nmap / dig / BGP 专用视图</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/net-tools-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/net-tools-examples.md</guid>
+      <pubDate>Mon, 02 Nov 2026 23:48:41 GMT</pubDate>
+      <description>每个视图都复用统一表格工具（排序/筛选/导出），并带有协议语义配色。 源码（normal 输出，也支持 grepable 与 XML）： nmap Nmap scan report for 10.0.0.5 (10.0.0.5) Host is up (0.0012s latency). PORT STATE SERVICE VERSION 22/tcp open ssh OpenSSH 8.9p</description>
+      <category>网络</category>
+      <category>排查</category>
+      <content:encoded><![CDATA[<h1>Nmap / dig / BGP 专用视图</h1>
+<p>每个视图都复用统一表格工具（排序/筛选/导出），并带有协议语义配色。</p>
+<h2>Nmap</h2>
+<p><strong>源码</strong>（normal 输出，也支持 grepable 与 XML）：</p>
+<pre><code class="language-markdown">```nmap
+Nmap scan report for 10.0.0.5 (10.0.0.5)
+Host is up (0.0012s latency).
+
+PORT     STATE  SERVICE     VERSION
+22/tcp   open  ssh         OpenSSH 8.9p1
+80/tcp   open  http        nginx 1.24.0
+443/tcp  open  https       nginx 1.24.0
+2222/tcp  open  ssh         OpenSSH 8.9p1
+3306/tcp  closed mysql
+8080/tcp  filtered http
+```
+</code></pre>
+<p><strong>渲染效果</strong>（open 绿色 / closed 弱化 / filtered 黄色，头部汇总主机与开放端口数）：</p>
+<pre><code class="language-nmap">Nmap scan report for 10.0.0.5 (10.0.0.5)
+Host is up (0.0012s latency).
+
+PORT     STATE  SERVICE     VERSION
+22/tcp   open  ssh         OpenSSH 8.9p1
+80/tcp   open  http        nginx 1.24.0
+443/tcp  open  https       nginx 1.24.0
+2222/tcp  open  ssh         OpenSSH 8.9p1
+3306/tcp  closed mysql
+8080/tcp  filtered http
+</code></pre>
+<h2>dig</h2>
+<p><strong>源码</strong>（按 ANSWER / AUTHORITY / ADDITIONAL 分区识别）：</p>
+<pre><code class="language-markdown">```dig
+; &lt;&lt;&gt;&gt; DiG 9.18 &lt;&lt;&gt;&gt; example.com
+;; global options: +cmd
+;; ANSWER SECTION:
+example.com.  3600  IN  A  93.184.216.34
+example.com.  3600  IN  AAAA  2606:2800:220:1:248:1893:25c8:1946
+;; AUTHORITY SECTION:
+example.com.  3600  IN  NS  a.iana-servers.net.
+;; Query time: 12 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+```
+</code></pre>
+<p><strong>渲染效果</strong>（底部显示各分区记录数，头部显示服务器与耗时）：</p>
+<pre><code class="language-dig">; &lt;&lt;&gt;&gt; DiG 9.18 &lt;&lt;&gt;&gt; example.com
+;; global options: +cmd
+;; ANSWER SECTION:
+example.com.  3600  IN  A  93.184.216.34
+example.com.  3600  IN  AAAA  2606:2800:220:1:248:1893:25c8:1946
+;; AUTHORITY SECTION:
+example.com.  3600  IN  NS  a.iana-servers.net.
+;; Query time: 12 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+</code></pre>
+<h2>BGP</h2>
+<p><strong>源码</strong>（<code>show ip bgp</code> 前缀表 + <code>show bgp summary</code> 邻居表）：</p>
+<pre><code class="language-markdown">```bgp
+Network       Next-Hop       Metric LocPrf Weight Path
+* 10.0.0.0/8   10.1.1.1       0      100    320 i
+  172.16.0.0/12 10.1.1.2      0      100    65000 320 i
+* 192.168.0.0/16 10.1.1.3     5      100    320 65000 i
+
+Neighbor        AS     Status     PfxRcvd PfxSent OutQ
+10.1.1.1        65000  Established 3       2       0
+10.1.1.2        64512  Established 1       1       0
+```
+</code></pre>
+<p><strong>渲染效果</strong>（★ 标记 best path，AS Path 渲染为 chips，Established 绿色）：</p>
+<pre><code class="language-bgp">Network       Next-Hop       Metric LocPrf Weight Path
+* 10.0.0.0/8   10.1.1.1       0      100    320 i
+  172.16.0.0/12 10.1.1.2      0      100    65000 320 i
+* 192.168.0.0/16 10.1.1.3     5      100    320 65000 i
+
+Neighbor        AS     Status     PfxRcvd PfxSent OutQ
+10.1.1.1        65000  Established 3       2       0
+10.1.1.2        64512  Established 1       1       0
+</code></pre>
+<p>解析失败回退为源码块，不误识别普通代码块。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>分布式 Trace 瀑布</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/trace-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/trace-examples.md</guid>
+      <pubDate>Mon, 02 Nov 2026 23:48:41 GMT</pubDate>
+      <description>支持 OTLP、Jaeger、Zipkin 三种格式。span 按父子层级缩进，关键路径高亮，点击展开属性。 源码（OTLP JSON 数组，service 取自 的 ，时间为 /）： trace [ {&quot;traceId&quot;:&quot;abc123&quot;,&quot;spanId&quot;:&quot;1&quot;,&quot;name&quot;:&quot;GET /api&quot;,&quot;startTimeUnixNano&quot;:1700000000000000000,&quot;endTime</description>
+      <category>Trace</category>
+      <category>可观测性</category>
+      <content:encoded><![CDATA[<h1>分布式 Trace 瀑布</h1>
+<p>支持 OTLP、Jaeger、Zipkin 三种格式。span 按父子层级缩进，关键路径高亮，点击展开属性。</p>
+<h2>OTLP</h2>
+<p><strong>源码</strong>（OTLP JSON 数组，service 取自 <code>resource.attributes</code> 的 <code>service.name</code>，时间为 <code>startTimeUnixNano</code>/<code>endTimeUnixNano</code>）：</p>
+<pre><code class="language-markdown">```trace
+[
+  {&quot;traceId&quot;:&quot;abc123&quot;,&quot;spanId&quot;:&quot;1&quot;,&quot;name&quot;:&quot;GET /api&quot;,&quot;startTimeUnixNano&quot;:1700000000000000000,&quot;endTimeUnixNano&quot;:1700000000200000000,&quot;resource&quot;:{&quot;attributes&quot;:[{&quot;key&quot;:&quot;service.name&quot;,&quot;value&quot;:{&quot;stringValue&quot;:&quot;gateway&quot;}}]}},
+  {&quot;traceId&quot;:&quot;abc123&quot;,&quot;spanId&quot;:&quot;2&quot;,&quot;parentSpanId&quot;:&quot;1&quot;,&quot;name&quot;:&quot;auth.check&quot;,&quot;startTimeUnixNano&quot;:1700000000020000000,&quot;endTimeUnixNano&quot;:1700000000080000000,&quot;resource&quot;:{&quot;attributes&quot;:[{&quot;key&quot;:&quot;service.name&quot;,&quot;value&quot;:{&quot;stringValue&quot;:&quot;auth&quot;}}]}},
+  {&quot;traceId&quot;:&quot;abc123&quot;,&quot;spanId&quot;:&quot;3&quot;,&quot;parentSpanId&quot;:&quot;1&quot;,&quot;name&quot;:&quot;db.query&quot;,&quot;startTimeUnixNano&quot;:1700000000090000000,&quot;endTimeUnixNano&quot;:1700000000180000000,&quot;resource&quot;:{&quot;attributes&quot;:[{&quot;key&quot;:&quot;service.name&quot;,&quot;value&quot;:{&quot;stringValue&quot;:&quot;db&quot;}}]}},
+  {&quot;traceId&quot;:&quot;abc123&quot;,&quot;spanId&quot;:&quot;4&quot;,&quot;parentSpanId&quot;:&quot;3&quot;,&quot;name&quot;:&quot;redis.get&quot;,&quot;startTimeUnixNano&quot;:1700000000100000000,&quot;endTimeUnixNano&quot;:1700000000140000000,&quot;resource&quot;:{&quot;attributes&quot;:[{&quot;key&quot;:&quot;service.name&quot;,&quot;value&quot;:{&quot;stringValue&quot;:&quot;cache&quot;}}]}},
+  {&quot;traceId&quot;:&quot;abc123&quot;,&quot;spanId&quot;:&quot;5&quot;,&quot;parentSpanId&quot;:&quot;1&quot;,&quot;name&quot;:&quot;render&quot;,&quot;startTimeUnixNano&quot;:1700000000185000000,&quot;endTimeUnixNano&quot;:1700000000200000000,&quot;resource&quot;:{&quot;attributes&quot;:[{&quot;key&quot;:&quot;service.name&quot;,&quot;value&quot;:{&quot;stringValue&quot;:&quot;gateway&quot;}}]}}
+]
+```
+</code></pre>
+<p><strong>渲染效果</strong>（auth.check / db.query / redis.get 按父子层级缩进，根到最耗时子链即关键路径）：</p>
+<pre><code class="language-trace">[
+  {&quot;traceId&quot;:&quot;abc123&quot;,&quot;spanId&quot;:&quot;1&quot;,&quot;name&quot;:&quot;GET /api&quot;,&quot;startTimeUnixNano&quot;:1700000000000000000,&quot;endTimeUnixNano&quot;:1700000000200000000,&quot;resource&quot;:{&quot;attributes&quot;:[{&quot;key&quot;:&quot;service.name&quot;,&quot;value&quot;:{&quot;stringValue&quot;:&quot;gateway&quot;}}]}},
+  {&quot;traceId&quot;:&quot;abc123&quot;,&quot;spanId&quot;:&quot;2&quot;,&quot;parentSpanId&quot;:&quot;1&quot;,&quot;name&quot;:&quot;auth.check&quot;,&quot;startTimeUnixNano&quot;:1700000000020000000,&quot;endTimeUnixNano&quot;:1700000000080000000,&quot;resource&quot;:{&quot;attributes&quot;:[{&quot;key&quot;:&quot;service.name&quot;,&quot;value&quot;:{&quot;stringValue&quot;:&quot;auth&quot;}}]}},
+  {&quot;traceId&quot;:&quot;abc123&quot;,&quot;spanId&quot;:&quot;3&quot;,&quot;parentSpanId&quot;:&quot;1&quot;,&quot;name&quot;:&quot;db.query&quot;,&quot;startTimeUnixNano&quot;:1700000000090000000,&quot;endTimeUnixNano&quot;:1700000000180000000,&quot;resource&quot;:{&quot;attributes&quot;:[{&quot;key&quot;:&quot;service.name&quot;,&quot;value&quot;:{&quot;stringValue&quot;:&quot;db&quot;}}]}},
+  {&quot;traceId&quot;:&quot;abc123&quot;,&quot;spanId&quot;:&quot;4&quot;,&quot;parentSpanId&quot;:&quot;3&quot;,&quot;name&quot;:&quot;redis.get&quot;,&quot;startTimeUnixNano&quot;:1700000000100000000,&quot;endTimeUnixNano&quot;:1700000000140000000,&quot;resource&quot;:{&quot;attributes&quot;:[{&quot;key&quot;:&quot;service.name&quot;,&quot;value&quot;:{&quot;stringValue&quot;:&quot;cache&quot;}}]}},
+  {&quot;traceId&quot;:&quot;abc123&quot;,&quot;spanId&quot;:&quot;5&quot;,&quot;parentSpanId&quot;:&quot;1&quot;,&quot;name&quot;:&quot;render&quot;,&quot;startTimeUnixNano&quot;:1700000000185000000,&quot;endTimeUnixNano&quot;:1700000000200000000,&quot;resource&quot;:{&quot;attributes&quot;:[{&quot;key&quot;:&quot;service.name&quot;,&quot;value&quot;:{&quot;stringValue&quot;:&quot;gateway&quot;}}]}}
+]
+</code></pre>
+<h2>Jaeger</h2>
+<p><strong>源码</strong>（Jaeger HTTP API 的 <code>{data:[{traceID, spans, processes}]}</code> 结构）：</p>
+<pre><code class="language-markdown">```trace
+{&quot;data&quot;:[{&quot;traceID&quot;:&quot;def456&quot;,&quot;spans&quot;:[
+  {&quot;spanID&quot;:&quot;1&quot;,&quot;operationName&quot;:&quot;web&quot;,&quot;startTime&quot;:1700000000000000,&quot;duration&quot;:30000, &quot;processID&quot;:&quot;p1&quot;,&quot;references&quot;:[]},
+  {&quot;spanID&quot;:&quot;2&quot;,&quot;operationName&quot;:&quot;api&quot;,&quot;startTime&quot;:1700000000100000,&quot;duration&quot;:20000,&quot;processID&quot;:&quot;p2&quot;,&quot;references&quot;:[{&quot;refType&quot;:&quot;CHILD&quot;,&quot;spanID&quot;:&quot;1&quot;,&quot;traceID&quot;:&quot;def456&quot;}]}
+]}],&quot;processes&quot;:{&quot;p1&quot;:{&quot;serviceName&quot;:&quot;web&quot;},&quot;p2&quot;:{&quot;serviceName&quot;:&quot;api&quot;}}}
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-trace">{&quot;data&quot;:[{&quot;traceID&quot;:&quot;def456&quot;,&quot;spans&quot;:[
+  {&quot;spanID&quot;:&quot;1&quot;,&quot;operationName&quot;:&quot;web&quot;,&quot;startTime&quot;:1700000000000000,&quot;duration&quot;:30000, &quot;processID&quot;:&quot;p1&quot;,&quot;references&quot;:[]},
+  {&quot;spanID&quot;:&quot;2&quot;,&quot;operationName&quot;:&quot;api&quot;,&quot;startTime&quot;:1700000000100000,&quot;duration&quot;:20000,&quot;processID&quot;:&quot;p2&quot;,&quot;references&quot;:[{&quot;refType&quot;:&quot;CHILD&quot;,&quot;spanID&quot;:&quot;1&quot;,&quot;traceID&quot;:&quot;def456&quot;}]}
+]}],&quot;processes&quot;:{&quot;p1&quot;:{&quot;serviceName&quot;:&quot;web&quot;},&quot;p2&quot;:{&quot;serviceName&quot;:&quot;api&quot;}}}
+</code></pre>
+<h2>Zipkin</h2>
+<p><strong>源码</strong>（Zipkin v2 的 <code>tags</code> 是对象；span 有属性时点击行可展开查看）：</p>
+<pre><code class="language-markdown">```trace
+[
+  {&quot;traceId&quot;:&quot;789abc&quot;,&quot;id&quot;:&quot;a&quot;,&quot;name&quot;:&quot;GET /cart&quot;,&quot;timestamp&quot;:1700000000000000,&quot;duration&quot;:50000,
+   &quot;localEndpoint&quot;:{&quot;serviceName&quot;:&quot;cart&quot;},
+   &quot;tags&quot;:{&quot;http.method&quot;:&quot;GET&quot;,&quot;http.path&quot;:&quot;/cart&quot;,&quot;user.id&quot;:&quot;u1024&quot;}},
+  {&quot;traceId&quot;:&quot;789abc&quot;,&quot;id&quot;:&quot;b&quot;,&quot;parentId&quot;:&quot;a&quot;,&quot;name&quot;:&quot;mysql SELECT&quot;,&quot;timestamp&quot;:1700000000100000,&quot;duration&quot;:30000,
+   &quot;localEndpoint&quot;:{&quot;serviceName&quot;:&quot;db&quot;},
+   &quot;tags&quot;:{&quot;db.statement&quot;:&quot;SELECT * FROM cart WHERE uid=?&quot;,&quot;db.rows&quot;:&quot;3&quot;}}
+]
+```
+</code></pre>
+<p><strong>渲染效果</strong>（点击 GET /cart 或 mysql SELECT 行展开属性面板）：</p>
+<pre><code class="language-trace">[
+  {&quot;traceId&quot;:&quot;789abc&quot;,&quot;id&quot;:&quot;a&quot;,&quot;name&quot;:&quot;GET /cart&quot;,&quot;timestamp&quot;:1700000000000000,&quot;duration&quot;:50000,
+   &quot;localEndpoint&quot;:{&quot;serviceName&quot;:&quot;cart&quot;},
+   &quot;tags&quot;:{&quot;http.method&quot;:&quot;GET&quot;,&quot;http.path&quot;:&quot;/cart&quot;,&quot;user.id&quot;:&quot;u1024&quot;}},
+  {&quot;traceId&quot;:&quot;789abc&quot;,&quot;id&quot;:&quot;b&quot;,&quot;parentId&quot;:&quot;a&quot;,&quot;name&quot;:&quot;mysql SELECT&quot;,&quot;timestamp&quot;:1700000000100000,&quot;duration&quot;:30000,
+   &quot;localEndpoint&quot;:{&quot;serviceName&quot;:&quot;db&quot;},
+   &quot;tags&quot;:{&quot;db.statement&quot;:&quot;SELECT * FROM cart WHERE uid=?&quot;,&quot;db.rows&quot;:&quot;3&quot;}}
+]
+</code></pre>
+<h2>说明</h2>
+<ul>
+<li><code>@[trace](trace.json)</code> 可嵌入仓库内 trace 文件（OTLP/Jaeger/Zipkin 自动识别）。</li>
+<li>时间轴按全 trace 归一化；关键路径（根到最耗时子链）的行与条以主题色高亮。</li>
+<li>服务过滤、关键字搜索与 CSV 导出均可用；解析失败会回退为源码块。</li>
+</ul>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>渲染内容改进总览</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/render-improvements.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/render-improvements.md</guid>
+      <pubDate>Mon, 02 Nov 2026 23:48:41 GMT</pubDate>
+      <description>本页汇总「渲染内容改进实施总纲」落地的全部能力。每项均给出语法、示例文档与失败回退说明。 源码： code @code @file #Lx-Lylang=iris/data/code-snippets.jsonfetchnode iris/scripts/build-code-snippets.js换行折叠纯文本@[code]@[file]#L39-L50iris/js/langs/extra-l</description>
+      <category>渲染</category>
+      <category>新功能</category>
+      <content:encoded><![CDATA[<h1>渲染内容改进总览</h1>
+<p>本页汇总「渲染内容改进实施总纲」落地的全部能力。每项均给出语法、示例文档与失败回退说明。</p>
+<h2>源码与代码阅读</h2>
+<h3>源码嵌入 <code>@[code]</code> / <code>@[file]</code></h3>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```code
+@[code](iris/js/renderers/table-tools.js#L1-L60 lang=js)
+@[file](iris/js/renderers/code-reader.js)
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-code">@[code](iris/js/renderers/table-tools.js#L1-L60 lang=js)
+@[file](iris/js/renderers/code-reader.js)
+</code></pre>
+<ul>
+<li>整文件 / 行范围（<code>#Lx-Ly</code>）/ <code>lang=</code> 覆盖三种写法。</li>
+<li>优先读构建期快照 <code>iris/data/code-snippets.json</code>（离线可用），缺失时同源 <code>fetch</code>。</li>
+<li>构建期校验：<code>node iris/scripts/build-code-snippets.js</code>（输出告警：路径不存在、行号越界）。</li>
+<li>失败回退：错误卡片 + 源文件链接。</li>
+<li>示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/code-reader-examples.md">代码阅读与源码嵌入</a>。</li>
+</ul>
+<h3>代码块阅读模式</h3>
+<p>每个代码块头部增加 <code>换行</code> / <code>折叠</code> / <code>纯文本</code>，左侧行号与代码行严格对齐（横向滚动时行号列 sticky 固定，换行模式下自动隐藏）；超过 30 行的块提供折叠：默认显示前 24 行 + 渐变遮罩 + 「展开全部」，折叠高度按实际渲染行高取整行数。复制沿用全局复制按钮，复制内容始终为完整源码。</p>
+<h3>补充：嵌入块默认折叠</h3>
+<p><code>@[code]</code> / <code>@[file]</code> 嵌入超过 30 行时自动折叠（前 24 行 + 展开），标题显示路径、行范围与总行数；行号从真实起始行起算（如 <code>#L39-L50</code> 显示 39–50）。</p>
+<h3>配置语言高亮</h3>
+<p><code>iris/js/langs/extra-langs.js</code> 为 toml / dockerfile / properties / nginx / apache / ssh / http / nmap / rst 注册别名，避免 no-highlight 回退。</p>
+<h3>通用代码工具条</h3>
+<p>与阅读模式合并实现：换行 / 折叠 / 纯文本为图标按钮（悬停显示文字提示，激活态主题色高亮），与复制按钮一起悬停浮现于代码块右上角；触屏常显，打印隐藏。</p>
+<h3>CLI <code>--help</code> 渲染器</h3>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```clihelp
+Usage: iris &lt;command&gt; [options]
+Options:
+  -V, --version      输出版本号
+  -h, --help         显示帮助
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-clihelp">Usage: iris &lt;command&gt; [options]
+Options:
+  -V, --version      输出版本号
+  -h, --help         显示帮助
+</code></pre>
+<p>识别 Usage / Options / Commands / Examples，渲染为结构化帮助卡片。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/hotspot-clihelp-examples.md">图片热点与 CLI 帮助</a>。</p>
+<h2>表格与结构数据</h2>
+<h3>Markdown 表格交互化</h3>
+<p>普通 Markdown 表格自动获得工具条：表头排序、关键字过滤、列显示/隐藏、复制 TSV、导出 CSV；长表固定表头并在内部滚动。可用 <code>&lt;!-- table-tools: off --&gt;</code> 关闭。</p>
+<h3>JSON 搜索 / JSONPath</h3>
+<p>在 json-tree 工具条内新增搜索与 JSONPath 输入框，支持 <code>$</code>、<code>.key</code>、<code>[&#39;key&#39;]</code>、<code>[n]</code>、<code>[*]</code>、<code>.*</code>、<code>..key</code>。命中节点高亮并自动展开父节点。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/json-search-examples.md">JSON 树搜索与 JSONPath</a>。</p>
+<h3>协议注册表块</h3>
+<p><strong>源码</strong>（列间 ≥2 空格对齐）：</p>
+<pre><code class="language-markdown">```registry
+port  name   proto  description
+22    ssh    tcp    Secure Shell
+53    dns    udp    Domain Name System
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-registry">port  name   proto  description
+22    ssh    tcp    Secure Shell
+53    dns    udp    Domain Name System
+</code></pre>
+<p><code>registry common</code> 或 <code>@[registry](common)</code> 显示内置常用协议表（50+ 条），可搜索/排序/导出。</p>
+<h2>网络与可观测性</h2>
+<h3>log + clitable</h3>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```log
+2026-11-02T10:00:01.000Z host api[1]: ERROR upstream timed out
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-log">2026-11-02T10:00:01.000Z host api[1]: ERROR upstream timed out
+</code></pre>
+<p>识别 syslog / ISO / JSON 日志，级别筛选 + 关键字过滤 + 导出。<code>clitable</code> 解析 show 系列表格与 <code>key: value</code> 键值。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/log-cli-examples.md">日志与 CLI 输出渲染</a>。</p>
+<h3>LLDP / CDP 拓扑</h3>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```lldp
+Device ID           Local Intf     Hold-time  Capability      Port ID
+core01              Gi0/0/1        120        BR              Gi0/0/24
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-lldp">Device ID           Local Intf     Hold-time  Capability      Port ID
+core01              Gi0/0/1        120        BR              Gi0/0/24
+</code></pre>
+<p>渲染 SVG 拓扑，双向边去重，节点高亮邻居，布局切换（环形/同心），导出 SVG。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/lldp-examples.md">LLDP / CDP 邻居拓扑</a>。</p>
+<h3>HAR 瀑布图</h3>
+<p><strong>源码</strong>（内联 JSON 或 <code>@[har](file.har)</code> 引用文件）：</p>
+<pre><code class="language-markdown">```har
+{&quot;log&quot;:{&quot;entries&quot;:[...]}}
+```
+</code></pre>
+<p><strong>渲染效果</strong>（<code>entries</code> 留空时仅显示空态；完整演示见示例页）：</p>
+<pre><code class="language-har">{&quot;log&quot;:{&quot;entries&quot;:[]}}
+</code></pre>
+<p>按 blocked/dns/connect/ssl/send/wait/receive 分段着色，搜索 + 类型/域名/状态过滤，点击行展开请求/响应头与计时，导出 CSV。支持 <code>@[har](file.har)</code> 嵌入。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/har-examples.md">HAR 瀑布图</a>。</p>
+<h3>Nmap / dig / BGP 专用视图</h3>
+<p><code>nmap</code>（normal/grepable/XML）端口矩阵与风险色；<code>dig</code> 按 ANSWER/AUTHORITY/ADDITIONAL 分区；<code>bgp</code> 前缀表 + AS Path chips + best 标记。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/net-tools-examples.md">Nmap / dig / BGP 专用视图</a>。</p>
+<h3>OpenTelemetry trace 瀑布</h3>
+<p>支持 OTLP / Jaeger / Zipkin，span 按父子层级缩进、关键路径高亮、服务过滤、导出 CSV。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/trace-examples.md">分布式 Trace 瀑布</a>。</p>
+<h2>图表与图形</h2>
+<h3>通用 Kroki 渲染器</h3>
+<p><strong>源码</strong>（fence 第二个 token 为图类型）：</p>
+<pre><code class="language-markdown">```kroki blockdiag
+{
+  A[label=&quot;客户端&quot;];
+  B[label=&quot;网关&quot;];
+  A -&gt; B;
+}
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-kroki">{
+  A[label=&quot;客户端&quot;];
+  B[label=&quot;网关&quot;];
+  A -&gt; B;
+}
+</code></pre>
+<p>一个入口支持 blockdiag / seqdiag / actdiag / nwdiag / packetdiag / rackdiag / bytefield / ditaa / erd / graphviz / nomnoml / svgbob / umlet / plantuml / mermaid / dbml / excalidraw 等。失败回退源码 + 在线链接。</p>
+<h3>Vega-Lite</h3>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```vega-lite
+{ &quot;$schema&quot;: &quot;...&quot;, &quot;mark&quot;: &quot;bar&quot;, &quot;encoding&quot;: {...} }
+```
+</code></pre>
+<p><strong>渲染效果</strong>（<code>...</code> 为占位时整体回退为源码块，完整演示见示例页）：</p>
+<pre><code class="language-vega-lite">{ &quot;$schema&quot;: &quot;...&quot;, &quot;mark&quot;: &quot;bar&quot;, &quot;encoding&quot;: {...} }
+</code></pre>
+<p>按需从 CDN 懒加载 vega / vega-lite / vega-embed；失败回退源码 + 在线编辑器。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/kroki-vega-examples.md">Kroki 与 Vega-Lite</a>。</p>
+<h2>图片热点</h2>
+<h3>图片热点标注</h3>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```hotspot
+{ &quot;image&quot;: &quot;docs/image/x.png&quot;,
+  &quot;hotspots&quot;: [ { &quot;x&quot;: 12, &quot;y&quot;: 18, &quot;w&quot;: 34, &quot;h&quot;: 10, &quot;label&quot;: &quot;标题区&quot; } ] }
+```
+</code></pre>
+<p><strong>渲染效果</strong>（图片缺失时降级为错误卡片，完整演示见示例页）：</p>
+<pre><code class="language-hotspot">{ &quot;image&quot;: &quot;docs/image/x.png&quot;,
+  &quot;hotspots&quot;: [ { &quot;x&quot;: 12, &quot;y&quot;: 18, &quot;w&quot;: 34, &quot;h&quot;: 10, &quot;label&quot;: &quot;标题区&quot; } ] }
+</code></pre>
+<p>x/y/w/h 为百分比；热点带编号徽标，悬停显示标签，点击固定，图片下方自动生成编号图例（悬停/点击图例项与热点双向联动，打印时图例保留）。</p>
+<h2>性能与架构</h2>
+<ul>
+<li><strong>长文档渐进渲染</strong>：超大文档（HTML &gt; 120KB）在渲染周期显示进度条。</li>
+<li><strong>渲染结果缓存</strong>：sessionStorage 缓存 parse 结果（24h），非受信来源不缓存。</li>
+<li><strong>大表/大树虚拟滚动</strong>：长表格行、日志行、JSON 节点使用 <code>content-visibility:auto</code> 跳过视口外渲染。</li>
+<li><strong>骨架屏</strong>：lazy 渲染器等待时插入 <code>.md-skeleton</code> 骨架屏。</li>
+</ul>
+<h2>导入 / 导出</h2>
+<p>设置面板「工具与导出 → 工具 → 格式转换工具」：</p>
+<ul>
+<li><strong>HTML → Markdown</strong>：粘贴或选择 <code>.html</code>，DOM 解析转 GFM（标题/列表/表格/代码/链接/图片）。</li>
+<li><strong>干净 CommonMark/GFM 导出</strong>：去除站点私有注释、规范换行，复制/下载。</li>
+<li><strong>Obsidian 导入</strong>：<code>[[wiki]]</code> → 相对链接、<code>![[img]]</code> → 图片、<code>&gt; [!note]</code> → callout、<code>==高亮==</code> 保留。</li>
+</ul>
+<h2>外部卡片</h2>
+<h3>GitHub issue/PR/release/repo 卡片</h3>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```github
+@[github](owner/repo)
+@[issue](https://github.com/owner/repo/issues/1)
+@[pr](https://github.com/owner/repo/pull/2)
+@[release](https://github.com/owner/repo/releases/tag/v1)
+```
+</code></pre>
+<p><strong>渲染效果</strong>（示例仓库不存在时回退为链接卡片，完整演示见示例页）：</p>
+<pre><code class="language-github">@[github](owner/repo)
+@[issue](https://github.com/owner/repo/issues/1)
+@[pr](https://github.com/owner/repo/pull/2)
+@[release](https://github.com/owner/repo/releases/tag/v1)
+</code></pre>
+<p>渲染标题、状态、作者、标签、更新时间；匿名 API 限流或失败时回退纯链接。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/github-examples.md">GitHub 卡片与协议注册表</a>。</p>
+<h2>约定与限制</h2>
+<ul>
+<li>所有文档内容拼 HTML 前均 <code>escapeHtml</code>；非受信来源再过 DOMPurify。</li>
+<li>渲染器幂等（<code>data-*-done</code> 标记）；单个渲染器失败被隔离，不影响其他块。</li>
+<li>解析失败一律回退源码块或错误卡片，不白屏。</li>
+<li>打印时隐藏工具条；暗色主题自适应；尊重 <code>prefers-reduced-motion</code>。</li>
+</ul>
+]]></content:encoded>
+    </item>
     <item>
       <title>pcap / traceroute / CLI 演练示例</title>
       <link>https://theforeveriris.github.io/md-preview/docs/examples/pcap-traceroute-clilab-examples.md</link>
@@ -1006,10 +2078,25 @@ API Base URL、API Key、模型名。<strong>Key 仅存本机浏览器，不随�
       <link>https://theforeveriris.github.io/md-preview/docs/show.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/show.md</guid>
       <pubDate>Sun, 01 Nov 2026 21:38:18 GMT</pubDate>
-      <description>本文档按功能模块整理了 Markdown Preview 站点的完整运行时界面截图，每个截图附有功能介绍，并指向 中对应的详细示例文档。特殊页面会额外标注访问 URL。 --- 站点默认以左侧文档目录树 + 右侧正文阅读区的两栏布局呈现。侧边栏自动扫描仓库中所有 文件，构建嵌套目录结构并显示字数统计；顶部显示面包屑路径与搜索框；右上角悬浮球提供回到顶部、上一篇/下一篇、打开本地 MD、安装 PWA</description>
+      <description>本文档按功能模块整理了 Markdown Preview 站点的完整运行时界面截图，每个截图附有功能介绍，并指向 中对应的详细示例文档。特殊页面会额外标注访问 URL。 --- 本轮新增覆盖源码阅读、表格交互、网络与可观测性、图表、图片热点、性能优化与导入导出等渲染能力。完整语法与限制说明见 渲染内容改进总览。 - 代码阅读与源码嵌入 - 日志与 CLI 输出渲染 - HAR 瀑布图 - LLDP</description>
       <category>截图</category>
       <content:encoded><![CDATA[<h1>系统运行时截图</h1>
 <p>本文档按功能模块整理了 Markdown Preview 站点的完整运行时界面截图，每个截图附有功能介绍，并指向 <code>docs/examples/</code> 中对应的详细示例文档。特殊页面会额外标注访问 URL。</p>
+<hr>
+<h2>渲染内容改进总览</h2>
+<p>本轮新增覆盖源码阅读、表格交互、网络与可观测性、图表、图片热点、性能优化与导入导出等渲染能力。完整语法与限制说明见 <a href="https://theforeveriris.github.io/md-preview/docs/render-improvements.md">渲染内容改进总览</a>。</p>
+<ul>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/code-reader-examples.md">代码阅读与源码嵌入</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/log-cli-examples.md">日志与 CLI 输出渲染</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/har-examples.md">HAR 瀑布图</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/lldp-examples.md">LLDP / CDP 邻居拓扑</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/net-tools-examples.md">Nmap / dig / BGP 专用视图</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/trace-examples.md">分布式 Trace 瀑布</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/json-search-examples.md">JSON 树搜索与 JSONPath</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/kroki-vega-examples.md">Kroki 与 Vega-Lite</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/hotspot-clihelp-examples.md">图片热点与 CLI 帮助</a></li>
+<li><a href="https://theforeveriris.github.io/md-preview/docs/examples/github-examples.md">GitHub 卡片与协议注册表</a></li>
+</ul>
 <hr>
 <h2>一、整体界面</h2>
 <h3>首页整体展示</h3>
@@ -2258,6 +3345,8 @@ ping 统计卡与逐包序列图。</p>
 <td>打开设置面板</td>
 </tr>
 </tbody></table>
+<p>格式转换（HTML / Obsidian 导入、干净 CommonMark 导出）不在悬浮球里，
+入口在<strong>设置面板 → 工具与导出 → 工具 → 格式转换工具</strong>。</p>
 <hr>
 <h2>四、RSS 订阅</h2>
 <p>站点自动生成 RSS feed，订阅地址：</p>
@@ -4540,7 +5629,8 @@ ntp-service unicast-server 10.10.10.2
 30 permit udp any host 8.8.8.8 eq 53
 40 deny ip any any
 </code></pre>
-<p>点「测试」改源/目的/端口试试：<code>10.1.1.8 → 8.8.8.8:53</code> 命中第 2 条；
+<p>点表单末尾的闪电按钮（悬停出提示）改源/目的/端口试试：
+<code>10.1.1.8 → 8.8.8.8:53</code> 命中第 2 条；
 <code>10.1.1.8 → 1.1.1.1:80</code> 落入第 4 条显式 deny；换成没写 deny 的 ACL
 则提示隐式 deny。</p>
 <h2>路由表分析块</h2>

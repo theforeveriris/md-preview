@@ -24,9 +24,13 @@
   const MAX_BYTES = 256 * 1024;
   const MAX_NODES = 5000;
 
+  // 供 B2（json-search）按路径精确定位节点
+  let currentNodeMap = null;
+
   // i18n 文案统一走 i18n.js 的权威实现（MarkdownPreview.t，全站唯一，避免多处包装漂移）
   const t = window.MarkdownPreview.t;
   const icon = window.MarkdownPreview.icon; // 共享副本（曾三处逐字重复）
+  const esc = window.MarkdownPreview.mdRender.escapeHtml;
 
   // ============== 路径格式化 ==============
   // 标识符键用 a.b.c，其余用 a["b-c"][0]
@@ -73,6 +77,10 @@
   function buildNode(key, value, path) {
     const li = document.createElement('div');
     li.className = 'json-node';
+    if (currentNodeMap) {
+      const p = path.length ? '$' + '.' + formatPath(path) : '$';
+      currentNodeMap.set(p, li);
+    }
 
     const isBranch = value !== null && typeof value === 'object';
     const line = document.createElement('div');
@@ -227,20 +235,31 @@
 
       const toolbar = document.createElement('div');
       toolbar.className = 'json-tree-toolbar';
+      // 工具条按钮一律用图标，文字靠悬停提示（data-tip）
+      const btn = (act, ico, label) =>
+        `<button type="button" class="icon-btn json-tree-btn" data-act="${act}" data-tip="${esc(label)}" title="${esc(label)}" aria-label="${esc(label)}">` +
+        icon(ico, 15) + `<span class="icon-btn-label">${esc(label)}</span></button>`;
       toolbar.innerHTML = `
         <span class="json-tree-lang">JSON</span>
         <span class="json-tree-info">${summarizeRoot(data)}</span>
         <span class="json-tree-actions">
-          <button type="button" class="json-tree-btn" data-act="collapse">${icon('i-chevron-down')}<span>${t('json.collapseAll', '收起')}</span></button>
-          <button type="button" class="json-tree-btn" data-act="expand">${icon('i-chevron-up')}<span>${t('json.expandAll', '展开')}</span></button>
-          <button type="button" class="json-tree-btn" data-act="copy">${icon('i-copy')}<span>${t('json.copyJson', '复制 JSON')}</span></button>
-          <button type="button" class="json-tree-btn" data-act="download">${icon('i-download')}<span>${t('json.download', '下载 .json')}</span></button>
+          ${btn('collapse', 'i-chevron-down', t('json.collapseAll', '收起'))}
+          ${btn('expand', 'i-chevron-up', t('json.expandAll', '展开'))}
+          ${btn('copy', 'i-copy', t('json.copyJson', '复制 JSON'))}
+          ${btn('download', 'i-download', t('json.download', '下载 .json'))}
         </span>
       `;
 
       const tree = document.createElement('div');
       tree.className = 'json-tree-body';
-      tree.appendChild(buildNode(null, data, []));
+      currentNodeMap = new Map();
+      widget.__jsonNodes = currentNodeMap;
+      widget.__jsonData = data;
+      try {
+        tree.appendChild(buildNode(null, data, []));
+      } finally {
+        currentNodeMap = null;
+      }
 
       toolbar.addEventListener('click', (e) => {
         const btn = e.target.closest('button[data-act]');
@@ -256,6 +275,10 @@
       widget.appendChild(tree);
       pre.parentNode.replaceChild(widget, pre);
     });
+    // B2：json-tree 生成后立即挂上搜索 / JSONPath 工具条
+    if (window.MarkdownPreview.renderers.jsonsearch) {
+      window.MarkdownPreview.renderers.jsonsearch.render(scope);
+    }
   }
 
   function summarizeRoot(data) {
@@ -264,5 +287,12 @@
     return '';
   }
 
-  window.MarkdownPreview.renderers.jsontree = { render };
+  try {
+    window.MarkdownPreview.renderers.jsontree = { render };
+    window.__jtReg = true;
+    window.__jtAfter = Object.keys(window.MarkdownPreview.renderers).length;
+    window.__jtHas = Object.prototype.hasOwnProperty.call(window.MarkdownPreview.renderers, 'jsontree');
+  } catch (e) {
+    window.__jtErr = String(e && e.stack || e);
+  }
 })();

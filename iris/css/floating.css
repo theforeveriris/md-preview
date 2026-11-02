@@ -423,6 +423,10 @@
   padding: 12px 0;
 }
 
+/* display:flex 会盖掉 [hidden] 自带的 display:none，
+   被隐藏的设置项仍然占位显示。显式藏掉。 */
+.setting-item[hidden] { display: none; }
+
 .setting-item:not(:last-child) {
   border-bottom: 1px solid var(--color-border);
 }

@@ -208,7 +208,7 @@
       const totalMs = hops.reduce((a, h) => a + (h.best > 0 ? h.best : 0), 0);
       widget.innerHTML = `
         <div class="tr-head">${esc(t('tr.traceTitle', '路径追踪'))}<span class="tr-head-meta">${hops.length} ${esc(t('tr.hops', '跳'))} · ${esc(t('tr.total', '累计'))} ${totalMs.toFixed(1)} ms</span></div>
-        ${hopRowsHtml(hops, maxRtt)}
+        <div class="tr-body">${hopRowsHtml(hops, maxRtt)}</div>
       `;
       // 点击 IP 复制
       widget.querySelectorAll('.tr-hop-host').forEach(el => {

@@ -218,14 +218,13 @@
     });
     menu.appendChild(frag);
 
-    // 让触发器至少和最宽的一项一样宽（接近原生下拉的观感）
+    // 记下最宽的一项，弹层据此撑宽。
+    // 注意：这里刻意不去改触发器的宽度——触发器在文档流里，
+    // 一旦撑大就会把后面的内容挤走（而且关闭后宽度还留在那儿）。
+    // 弹层是 position:fixed 的浮层，宽度不够时撑它自己即可。
     let widest = 0;
     inst.items.forEach((it) => { widest = Math.max(widest, it.text.length); });
-    if (widest) {
-      inst.trigger.style.minWidth = '';
-      const need = Math.max(inst.trigger.offsetWidth, widest * 8 + 44);
-      inst.trigger.style.minWidth = need + 'px';
-    }
+    inst.widestLen = widest;
   }
 
   function open(inst) {
@@ -288,6 +287,10 @@
     menu.style.width = '';
     menu.style.minWidth = Math.round(r.width) + 'px';
     menu.style.maxHeight = '';
+    // 弹层至少要放得下最宽的那一项（触发器只显示当前值，往往更短）
+    if (inst.widestLen) {
+      menu.style.minWidth = Math.max(Math.round(r.width), inst.widestLen * 8 + 44) + 'px';
+    }
     const below = window.innerHeight - r.bottom;
     const above = r.top;
     const needed = menu.offsetHeight;

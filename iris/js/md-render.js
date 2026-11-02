@@ -26,13 +26,31 @@
     'arch', 'masonry', 'slider', 'ticket', 'panorama'
   ];
 
-  // ============== 默认 Alert 类型（emoji 版） ==============
+  // ============== 默认 Alert 类型 ==============
+  // 图标用站点的 SVG symbol（index.html 里的图标库），
+  // 不用 emoji：emoji 跨平台字形差异大，且跟正文图标风格不一致。
+  const ALERT_ICONS = {
+    'i-info':    '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>',
+    'i-star':    '<path d="M12 2.5l2.95 5.98 6.6.96-4.78 4.66 1.13 6.58L12 17.57l-5.9 3.11 1.13-6.58L2.45 9.44l6.6-.96L12 2.5z"/>',
+    'i-warning': '<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+    'i-zap':     '<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>',
+    'i-ban':     '<circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/>'
+  };
+
+  // alert 图标：优先复用站点图标库（<use href="#i-xxx">），否则内联 SVG
+  function alertIconSvg(name) {
+    if (typeof name === 'string' && name.startsWith('i-')) {
+      return `<svg class="alert-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#${name}"/></svg>`;
+    }
+    return name || '';
+  }
+
   const DEFAULT_ALERT_TYPES = {
-    NOTE:     { icon: 'ℹ️',    title: 'Note' },
-    IMPORTANT:{ icon: '💡',    title: 'Important' },
-    WARNING:  { icon: '⚠️',    title: 'Warning' },
-    TIP:      { icon: '💡',    title: 'Tip' },
-    CAUTION:  { icon: '⚠️',    title: 'Caution' }
+    NOTE:     { icon: 'i-info',    title: 'Note' },
+    IMPORTANT:{ icon: 'i-star',    title: 'Important' },
+    WARNING:  { icon: 'i-warning', title: 'Warning' },
+    TIP:      { icon: 'i-zap',     title: 'Tip' },
+    CAUTION:  { icon: 'i-ban',     title: 'Caution' }
   };
 
   /**
@@ -92,7 +110,7 @@
       const m = lines[i].match(/^\s*> \[!([A-Z]+)\](.*)$/);
       if (m && alertTypes[m[1]]) {
         const cfg = alertTypes[m[1]];
-        const icon = cfg.icon;
+        const icon = alertIconSvg(cfg.icon);
         const customTitle = m[2].trim();
         const title = customTitle || cfg.title || (m[1].charAt(0) + m[1].slice(1).toLowerCase());
         const contentLines = [];
@@ -273,7 +291,7 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
-      return `<pre class="code-block"${dataLang ? ` data-lang="${dataLang}"` : ''}${lineHl ? ` data-line-hl="${escapeHtml(lineHl)}"` : ''}><button class="copy-btn" aria-label="复制代码"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>${langLabel}<code${languageClass}>${escapedText}</code></pre>`;
+      return `<pre class="code-block"${dataLang ? ` data-lang="${dataLang}"` : ''}${lineHl ? ` data-line-hl="${escapeHtml(lineHl)}"` : ''}><button class="copy-btn" title="复制代码" aria-label="复制代码"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>${langLabel}<code${languageClass}>${escapedText}</code></pre>`;
     };
     renderer.paragraph = function(token) {
       const trimmed = (token && token.text ? token.text : '').trim();
@@ -863,13 +881,29 @@
     wrap.className = 'lazy-render-scope';
     parent.insertBefore(wrap, block);
     wrap.appendChild(block);
+    // F4：等待渲染期间插入骨架屏，避免内容跳变；渲染完成（或失败）后移除
+    const skeleton = createSkeleton(block);
+    parent.insertBefore(skeleton, wrap);
     Promise.resolve()
       .then(() => renderer.render(wrap))
       .catch(e => { console.error('[Renderers] ' + id + ' lazy render failed:', e); })
       .then(() => {
+        skeleton.remove();
         while (wrap.firstChild) parent.insertBefore(wrap.firstChild, wrap);
         parent.removeChild(wrap);
       });
+  }
+
+  // F4 骨架屏：按代码行数估算高度（渲染器替换为成品后即移除）
+  function createSkeleton(block) {
+    const sk = document.createElement('div');
+    sk.className = 'md-skeleton';
+    sk.setAttribute('aria-busy', 'true');
+    sk.setAttribute('aria-label', '正在加载内容…');
+    const code = block.querySelector('code');
+    const lines = code ? code.textContent.split('\n').length : 6;
+    sk.style.height = Math.min(420, Math.max(60, lines * 20)) + 'px';
+    return sk;
   }
 
   // 去重的延迟渲染：每个块只渲染一次

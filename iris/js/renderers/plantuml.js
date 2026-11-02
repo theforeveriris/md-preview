@@ -78,7 +78,7 @@
 
   // Kroki 服务使用标准 base64url 编码
   function encodeKroki(source) {
-    const compressed = deflate(source);
+    const compressed = pako.deflate(new TextEncoder().encode(source)); // Kroki 要求 zlib 格式（带头部）
     let bin = '';
     compressed.forEach(b => { bin += String.fromCharCode(b); });
     return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');

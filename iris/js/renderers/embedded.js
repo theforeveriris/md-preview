@@ -57,7 +57,7 @@
     // 支持传入外部容器（如编辑器 cell 的 outputElement），不传则默认操作主文档
     const targetEl = container || dom.markdownContent;
 
-    const embedLanguages = ['embed', 'geojson', 'topojson', 'twitter', 'x', 'pkt', 'ensp', 'pptx'];
+    const embedLanguages = ['embed', 'geojson', 'topojson', 'twitter', 'x', 'pkt', 'ensp', 'pptx', 'code', 'file', 'har', 'trace', 'lldp', 'cdp', 'registry', 'github', 'issue', 'pr', 'release'];
 
     // 提前检测：文档不含任何嵌入语言标记时直接返回
     const embedSelector = embedLanguages.map(l => `pre code.language-${l}`).join(',');
@@ -132,6 +132,60 @@
             if (window.MarkdownPreview.pptx) {
               return window.MarkdownPreview.pptx.loadAndRender(el, embedUrl, 'pptx');
             }
+          }
+        });
+      } else if (service === 'code' || service === 'file') {
+        // 源码嵌入（A1）：@[code](path#Lx-Ly lang=js)
+        mountEmbed({
+          prefix: 'code',
+          className: 'code-embed',
+          delay: 0,
+          mount: (el, embedUrl) => {
+            if (window.MarkdownPreview.codeReader) {
+              return window.MarkdownPreview.codeReader.renderCodeEmbed(el, embedUrl, service);
+            }
+          }
+        });
+      } else if (service === 'lldp' || service === 'cdp') {
+        mountEmbed({
+          prefix: service,
+          className: service + '-embed',
+          delay: 0,
+          mount: (el, embedUrl) => {
+            const r = window.MarkdownPreview.renderers.lldp;
+            if (r && r.renderEmbed) return r.renderEmbed(el, embedUrl);
+          }
+        });
+      } else if (service === 'registry') {
+        mountEmbed({
+          prefix: 'registry',
+          className: 'registry-embed',
+          delay: 0,
+          mount: (el) => {
+            if (window.MarkdownPreview.renderers.registry) {
+              window.MarkdownPreview.renderers.registry.renderEmbed(el);
+            }
+          }
+        });
+      } else if (service === 'github' || service === 'issue' || service === 'pr' || service === 'release') {
+        mountEmbed({
+          prefix: service,
+          className: 'gh-card-embed',
+          delay: 0,
+          mount: (el, embedUrl) => {
+            if (window.MarkdownPreview.renderers.github) {
+              return window.MarkdownPreview.renderers.github.renderEmbed(el, embedUrl, service);
+            }
+          }
+        });
+      } else if (service === 'har' || service === 'trace') {
+        mountEmbed({
+          prefix: service,
+          className: service + '-embed',
+          delay: 0,
+          mount: (el, embedUrl) => {
+            const r = window.MarkdownPreview.renderers[service];
+            if (r && r.renderEmbed) return r.renderEmbed(el, embedUrl);
           }
         });
       } else if (service === 'twitter' || service === 'x') {

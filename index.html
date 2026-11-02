@@ -108,6 +108,9 @@
     <symbol id="i-scissors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
     <symbol id="i-graph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><line x1="10.6" y1="7.2" x2="6.4" y2="15.6"/><line x1="13.4" y1="7.2" x2="17.6" y2="15.6"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+    <symbol id="i-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></symbol>
   </svg>
   <div class="progress-bar" id="progressBar"></div>
   
@@ -715,6 +718,19 @@
 
               <div class="setting-item">
                 <div>
+                  <div class="setting-label" data-i18n="settings.display.treeIcons">侧边栏显示文件图标</div>
+                  <div class="setting-description" data-i18n="settings.display.treeIconsDesc">默认关闭，侧边栏是纯文字列表（跟「Index」页签一致）；开启后在文件夹与文件名前显示图标</div>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="showTreeIconsToggle">
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div>
                   <div class="setting-label" data-i18n="settings.display.expandFolders">侧边栏文件夹默认展开</div>
                   <div class="setting-description" data-i18n="settings.display.expandFoldersDesc">开启时文件树中的文件夹全部展开显示；关闭时默认折叠，点击文件夹手动展开</div>
                 </div>
@@ -885,6 +901,15 @@
                 </div>
                 <div class="setting-control">
                   <button id="openPulseGenBtn" class="download-btn" data-i18n="settings.actions.openPulseGen">打开生成器</button>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div>
+                  <div class="setting-label" data-i18n="settings.actions.convert">格式转换工具</div>
+                  <div class="setting-description" data-i18n="settings.actions.convertDesc">HTML / Obsidian 导入为 Markdown，或把当前文档导出为干净的 CommonMark</div>
+                </div>
+                <div class="setting-control">
+                  <button id="convertBtn" class="download-btn" data-i18n="settings.actions.openConvert">打开转换工具</button>
                 </div>
               </div>
             </div>
@@ -2189,6 +2214,7 @@
   <script defer src="iris/vendor/marked-footnote.min.js"></script>
   <script defer src="iris/vendor/highlight.js/highlight.min.js"></script>
   <script defer src="iris/js/langs/net-config.js"></script>
+  <script defer src="iris/js/langs/extra-langs.js"></script>
   <script defer src="iris/vendor/flexsearch.bundle.js"></script>
   <!-- 以下重型 vendor 库改为按需懒加载（由各 renderer 在 DOM 出现对应内容时调用 dom.js#loadScript/loadStyle）：
        mermaid.min.js / pako.min.js / leaflet.js / apexcharts.min.js
@@ -2232,6 +2258,7 @@
   <script defer src="iris/js/export-bundle.js"></script>
   <script defer src="iris/js/settings-backup.js"></script>
   <script defer src="iris/js/settings.js"></script>
+  <script defer src="iris/js/convert.js"></script>
   <script defer src="iris/js/reading-pos.js"></script>
   <script defer src="iris/js/history.js"></script>
   <script defer src="iris/js/offline.js"></script>
@@ -2279,14 +2306,19 @@
   <script defer src="iris/js/renderers/sql-erd.js"></script>
   <script defer src="iris/js/renderers/mermaid.js"></script>
   <script defer src="iris/js/renderers/plantuml.js"></script>
+  <script defer src="iris/js/renderers/kroki.js"></script>
   <script defer src="iris/js/renderers/apexcharts.js"></script>
+  <script defer src="iris/js/renderers/vega-lite.js"></script>
   <script defer src="iris/js/renderers/diff.js"></script>
   <script defer src="iris/js/renderers/geo.js"></script>
+  <script defer src="iris/js/renderers/code-reader.js"></script>
   <script defer src="iris/js/renderers/embedded.js"></script>
+  <script defer src="iris/js/renderers/github.js"></script>
   <script defer src="iris/js/renderers/katex.js"></script>
   <script defer src="iris/js/renderers/pulse.js"></script>
   <script defer src="iris/js/renderers/csv-table.js"></script>
   <script defer src="iris/js/renderers/json-tree.js"></script>
+  <script defer src="iris/js/renderers/json-search.js"></script>
   <script defer src="iris/js/renderers/sandbox.js"></script>
   <script defer src="iris/js/renderers/http-request.js"></script>
   <script defer src="iris/js/renderers/openapi.js"></script>
@@ -2300,6 +2332,15 @@
   <script defer src="iris/js/renderers/traceroute.js"></script>
   <script defer src="iris/js/renderers/cli-lab.js"></script>
   <script defer src="iris/js/renderers/terminal.js"></script>
+  <script defer src="iris/js/renderers/clihelp.js"></script>
+  <script defer src="iris/js/renderers/hotspot.js"></script>
+  <script defer src="iris/js/renderers/log.js"></script>
+  <script defer src="iris/js/renderers/har.js"></script>
+  <script defer src="iris/js/renderers/lldp.js"></script>
+  <script defer src="iris/js/renderers/net-tools.js"></script>
+  <script defer src="iris/js/renderers/registry.js"></script>
+  <script defer src="iris/js/renderers/trace.js"></script>
+  <script defer src="iris/js/renderers/table-tools.js"></script>
   <script defer src="iris/js/renderers/heatmap.js"></script>
   <script defer src="iris/js/renderers/bits.js"></script>
   <script defer src="iris/js/renderers/secret.js"></script>
