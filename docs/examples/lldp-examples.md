@@ -9,7 +9,7 @@ tags: [网络, 拓扑]
 
 ## Cisco LLDP
 
-**源码**（直接粘贴 `show lldp neighbors` 输出， Capability codes 段可留可去）：
+**源码**（直接粘贴 `show lldp neighbors` 输出，Capability codes 段可留可去）：
 
 ````markdown
 ```lldp
