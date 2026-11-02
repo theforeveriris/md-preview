@@ -130,21 +130,35 @@
     return v.toFixed(v < 10 ? 1 : 0) + ' ms';
   }
 
+  // 每跳 RTT 走势 sparkline：Unicode 八档字符（▁▂▃▄▅▆▇█），不占布局
+  function sparkline(values, max) {
+    const bars = ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'];
+    const valid = values.filter(v => v >= 0);
+    if (!valid.length) return '···';
+    const peak = Math.max.apply(null, valid.concat([1]));
+    return values.map(v => {
+      if (v < 0) return '·';
+      const lvl = Math.min(7, Math.max(0, Math.round((v / peak) * 7)));
+      return bars[lvl];
+    }).join('');
+  }
+
   function hopRowsHtml(hops, maxRtt) {
     return hops.map(hop => {
       const pct = hop.best >= 0 ? Math.max(1.5, (hop.avg / maxRtt) * 100) : 0;
       const cls = hop.best < 0 ? 'tr-row-timeout' : (hop.avg > maxRtt * 0.6 ? 'tr-row-slow' : '');
-      const bars = hop.rtts.map(v => {
-        if (v < 0) return `<span class="tr-mini-bar tr-mini-timeout" style="height:14px" title="${esc(t('tr.timeout', '超时'))}"></span>`;
-        const hp = Math.max(6, (v / maxRtt) * 100);
-        return `<span class="tr-mini-bar" style="height:${Math.round(4 + hp * 0.6)}px" title="${esc(v.toFixed(1))} ms"></span>`;
-      }).join('');
+      // 丢包独立列（此前只是 ms 角标，不显眼）
+      const lossPct = Math.round((hop.lost / hop.rtts.length) * 100);
+      const lossCell = hop.lost
+        ? `<span class="tr-loss-cell ${lossPct >= 34 ? 'is-bad' : ''}">${lossPct}%</span>`
+        : '<span class="tr-loss-cell">0%</span>';
       return `<div class="tr-hop ${cls}">
         <span class="tr-hop-no">${hop.no}</span>
         <span class="tr-hop-host">${esc(hop.ip || hop.name || '*')}${hop.name && hop.ip ? `<span class="tr-host-name">${esc(hop.name)}</span>` : ''}</span>
         <span class="tr-hop-bar"><span class="tr-bar-fill" style="width:${pct}%"></span></span>
-        <span class="tr-hop-rtts">${bars}</span>
-        <span class="tr-hop-ms">${esc(hop.best < 0 ? '—' : fmtRtt(hop.avg))}${hop.lost ? `<span class="tr-lost">${esc(t('tr.lost', '丢 {n}/3').replace('{n}', hop.lost))}</span>` : ''}</span>
+        <span class="tr-hop-rtts" title="${esc(hop.rtts.map(v => v < 0 ? '—' : v.toFixed(1)).join(' / '))}"><span class="tr-sparkline">${sparkline(hop.rtts, maxRtt)}</span></span>
+        <span class="tr-hop-ms">${esc(hop.best < 0 ? '—' : fmtRtt(hop.avg))}</span>
+        ${lossCell}
       </div>`;
     }).join('');
   }
@@ -152,7 +166,9 @@
   function buildWidget(pre, mode) {
     const code = pre.querySelector('code');
     const text = code ? code.textContent : pre.textContent;
-    const lines = text.split('\n').filter(l => l.trim() && !/^(traceroute to|PING |TRACE)/.test(l.trim()));
+    // 中文 Windows / mtr 风格提示行也剔除（中文 tracert 表头、Ping 统计行）
+    const lines = text.split('\n').filter(l => l.trim() &&
+      !/^(traceroute to|PING |TRACE|跟踪|通过最多|正在|Ping |数据包|往返行程)/.test(l.trim()));
 
     const widget = document.createElement('div');
     widget.className = 'tr-widget';

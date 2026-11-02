@@ -93,3 +93,30 @@
   .tr-hop { grid-template-columns: 24px 1fr auto; }
   .tr-hop-bar, .tr-host-name { display: none; }
 }
+
+/* RTT 走势 sparkline（Unicode 八档，等宽最小宽度） */
+.tr-sparkline {
+  font-family: var(--font-mono, monospace);
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--color-accent-purple);
+  white-space: pre;
+}
+.tr-hop-rtts { display: inline-flex; align-items: center; min-width: 56px; }
+
+/* 丢包独立列 */
+.tr-loss-cell {
+  font-variant-numeric: tabular-nums;
+  font-size: 11.5px;
+  color: var(--color-text-muted);
+  min-width: 36px;
+  text-align: right;
+}
+.tr-loss-cell.is-bad { color: var(--color-error, #EF4444); font-weight: 600; }
+
+/* 跳行 grid 追加丢包列 */
+.tr-hop { grid-template-columns: 28px minmax(120px, 1.1fr) minmax(80px, 1fr) auto auto auto; }
+@media (max-width: 640px) {
+  .tr-hop { grid-template-columns: 24px 1fr auto auto; }
+  .tr-loss-cell { display: none; }
+}
