@@ -1,11 +1,10 @@
 {
-  "generatedAt": "2026-11-02T23:48:55.570Z",
+  "generatedAt": "2026-11-02T23:51:44.490Z",
   "count": {
-    "nodes": 79,
+    "nodes": 78,
     "edges": 132
   },
   "nodes": [
-    ".review-findings.md",
     "ARTWORK.md",
     "CONTRIBUTING.md",
     "README.md",
