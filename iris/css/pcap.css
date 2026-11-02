@@ -191,3 +191,60 @@
   font-size: 13px;
 }
 .pcap-error-box { margin: 10px 0; }
+
+/* 协议分层树（嵌套可折叠） */
+.pc-layer { margin: 2px 0; padding-left: calc(var(--depth) * 10px); }
+.pc-layer > summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--color-text);
+  padding: 3px 6px;
+  border-radius: 4px;
+  user-select: none;
+}
+.pc-layer > summary:hover { background: color-mix(in srgb, var(--color-accent-purple) 8%, transparent); }
+.pc-layer-leaf {
+  padding-left: calc(var(--depth) * 10px + 4px);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.pc-layer-fields {
+  border-left: 1px solid var(--color-border);
+  margin-left: 8px;
+  padding-left: 8px;
+}
+
+/* Hex Dump（等宽三栏：偏移 / hex / ASCII） */
+.pc-hex {
+  margin-top: 10px;
+  padding: 8px 10px;
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
+  border-radius: 6px;
+  font-family: var(--font-mono, monospace);
+  font-size: 11.5px;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+.pc-hex-row { display: flex; gap: 14px; white-space: pre; }
+.pc-hex-off { color: var(--color-accent-purple-deep); flex: 0 0 36px; }
+.pc-hex-bytes { color: var(--color-text); }
+.pc-hex-ascii { color: var(--color-text-muted); }
+
+/* 导出按钮 */
+.pcap-export-btn {
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition-smooth);
+}
+.pcap-export-btn:hover { color: var(--color-accent-purple); border-color: var(--color-accent-purple); }

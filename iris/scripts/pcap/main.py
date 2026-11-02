@@ -191,20 +191,50 @@ def parse_with_dpkt(path, max_packets):
                 'length': len(buf),
                 'stack': [],
                 'info': '',
+                # 前 96 字节 hex（渲染器 Hex Dump 面板用；避免 JSON 体积膨胀）
+                'hex': buf[:96].hex(),
+                # 分层协议字段（渲染器逐层嵌套树）：frame > ethernet > ip > tcp…
+                'layers': [],
             }
             eth = dpkt.ethernet.Ethernet(buf)
             entry['stack'].append('Ethernet')
+            entry['layers'].append({'name': 'Frame %d, %d bytes' % (count, len(buf)), 'fields': {
+                'encapsulation': 'Ethernet',
+                'arrivalTime': round(ts, 6),
+                'frameLength': len(buf),
+                'captureLength': min(len(buf), 96),
+            }})
+            entry['layers'].append({'name': 'Ethernet II', 'fields': {
+                'src': ':'.join('%02x' % b for b in eth.src),
+                'dst': ':'.join('%02x' % b for b in eth.dst),
+                'type': '0x%04x' % eth.type,
+            }})
             if isinstance(eth.data, dpkt.arp.ARP):
                 arp = eth.data
                 entry['proto'] = 'ARP'
                 entry['stack'].append('ARP')
                 entry['src'] = '.'.join(str(b) for b in arp.spa)
                 entry['dst'] = '.'.join(str(b) for b in arp.tpa)
+                entry['layers'].append({'name': 'Address Resolution Protocol', 'fields': {
+                    'operation': 'request' if arp.op == 1 else 'reply' if arp.op == 2 else str(arp.op),
+                    'senderIP': '.'.join(str(b) for b in arp.spa),
+                    'senderMAC': ':'.join('%02x' % b for b in arp.sha),
+                    'targetIP': '.'.join(str(b) for b in arp.tpa),
+                    'targetMAC': ':'.join('%02x' % b for b in arp.tha),
+                }})
             elif isinstance(eth.data, dpkt.ip.IP):
                 ip = eth.data
                 entry['stack'].append('IP')
                 entry['src'] = '.'.join(str(b) for b in ip.src)
                 entry['dst'] = '.'.join(str(b) for b in ip.dst)
+                entry['layers'].append({'name': 'Internet Protocol Version 4', 'fields': {
+                    'src': '.'.join(str(b) for b in ip.src),
+                    'dst': '.'.join(str(b) for b in ip.dst),
+                    'protocol': ip.p,
+                    'ttl': ip.ttl,
+                    'totalLength': ip.len,
+                    'identification': ip.id,
+                }})
                 if isinstance(ip.data, dpkt.tcp.TCP):
                     tcp = ip.data
                     entry['proto'] = 'TCP'
@@ -212,6 +242,16 @@ def parse_with_dpkt(path, max_packets):
                     entry['srcPort'] = tcp.sport
                     entry['dstPort'] = tcp.dport
                     entry['info'] = tcp_flags_name(tcp.flags)
+                    entry['layers'].append({'name': 'Transmission Control Protocol', 'fields': {
+                        'srcPort': tcp.sport,
+                        'dstPort': tcp.dport,
+                        'seq': tcp.seq,
+                        'ack': tcp.ack,
+                        'flags': '0x%04x' % tcp.flags,
+                        'flagsDetail': tcp_flags_name(tcp.flags),
+                        'window': tcp.win,
+                        'payloadLength': len(tcp.data) if tcp.data else 0,
+                    }})
                 elif isinstance(ip.data, dpkt.udp.UDP):
                     udp = ip.data
                     entry['proto'] = 'UDP'
@@ -221,10 +261,20 @@ def parse_with_dpkt(path, max_packets):
                     if udp.dport == 53 or udp.sport == 53:
                         entry['proto'] = 'DNS'
                         entry['stack'].append('DNS')
+                    entry['layers'].append({'name': 'User Datagram Protocol', 'fields': {
+                        'srcPort': udp.sport,
+                        'dstPort': udp.dport,
+                        'length': udp.ulen,
+                        'payloadLength': len(udp.data) if udp.data else 0,
+                    }})
                 elif isinstance(ip.data, dpkt.icmp.ICMP):
                     entry['proto'] = 'ICMP'
                     entry['stack'].append('ICMP')
                     entry['info'] = 'ICMP type=%d code=%d' % (ip.data.type, ip.data.code)
+                    entry['layers'].append({'name': 'Internet Control Message Protocol', 'fields': {
+                        'type': ip.data.type,
+                        'code': ip.data.code,
+                    }})
                 else:
                     entry['proto'] = 'IP'
             else:

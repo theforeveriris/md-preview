@@ -758,6 +758,8 @@
     'pcap.count': '{shown} / {total} 包',
     'pcap.renderCapped': '（仅渲染前 {n} 行）',
     'pcap.frameDetail': '帧详情',
+    'pcap.exportCsv': '导出 CSV',
+    'pcap.filterPlaceholder': '过滤：tcp、!arp、dns or port 53、src==10.0.0.1…',
     'tr.pingTitle': 'PING 连通性',
     'tr.traceTitle': '路径追踪',
     'tr.timeout': '超时',

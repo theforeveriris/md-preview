@@ -716,6 +716,8 @@
     'pcap.count': '{shown} / {total} packets',
     'pcap.renderCapped': '(first {n} rows rendered)',
     'pcap.frameDetail': 'Frame detail',
+    'pcap.exportCsv': 'Export CSV',
+    'pcap.filterPlaceholder': 'Filter: tcp, !arp, dns or port 53, src==10.0.0.1…',
     'tr.pingTitle': 'PING connectivity',
     'tr.traceTitle': 'Path trace',
     'tr.timeout': 'timeout',

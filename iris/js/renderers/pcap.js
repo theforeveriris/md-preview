@@ -73,86 +73,128 @@
     return e;
   }
 
-  // ============== display filter（BPF 简版） ==============
-  // 支持：协议名（tcp/udp/icmp/dns/arp/tls/http…）、addr==x、src==x、dst==x、
-  //       port N、src port N / dst port N、len>N / len<N，空格 AND 组合（隐式与）。
-  // 带空格的谓词（src port 53）不能先按空白切 token——正则整体扫描拼接串
-  function parseFilter(q) {
-    const s = String(q || '').trim().toLowerCase();
-    if (!s) return null;
-    // 全局扫描：命中一个谓词就消费掉，剩余部分递归处理；未命中的首个
-    // 空白段作为协议名 token
+  // ============== display filter（BPF 简版 + 否定/组合） ==============
+  // 支持：协议名、src/dst/addr==x、port N、src/dst port N、len>N / len<N、
+  //       `!proto` 否定、`and` / `or` 显式组合（空格隐式 AND）
+  // 实现：先按 and/or 切分为「与组」，组内每个子谓词走 parseAtoms 前缀扫描；
+  // matchEntry 对 or 组取「任一命中」，其余组取「全部命中」
+  const PRED_PATTERNS = [
+    { re: /(?:ip\.)?src\s*==\s*(\S+)/, mk: m => ({ type: 'src', v: m[1] }) },
+    { re: /(?:ip\.)?dst\s*==\s*(\S+)/, mk: m => ({ type: 'dst', v: m[1] }) },
+    { re: /(?:ip\.)?addr\s*==\s*(\S+)/, mk: m => ({ type: 'addr', v: m[1] }) },
+    { re: /src\s+port\s+(\d+)/, mk: m => ({ type: 'sport', v: Number(m[1]) }) },
+    { re: /dst\s+port\s+(\d+)/, mk: m => ({ type: 'dport', v: Number(m[1]) }) },
+    { re: /\bport\s+(\d+)/, mk: m => ({ type: 'port', v: Number(m[1]) }) },
+    { re: /len\s*([<>])\s*(\d+)/, mk: m => ({ type: 'len', op: m[1], v: Number(m[2]) }) }
+  ];
+
+  function parseAtoms(s) {
+    // 前缀扫描：命中谓词则消费；`!` 前缀给谓词取反；剩余首词作为协议名
     const preds = [];
-    const PATTERNS = [
-      { re: /(?:ip\.)?src\s*==\s*(\S+)/, mk: m => ({ type: 'src', v: m[1] }) },
-      { re: /(?:ip\.)?dst\s*==\s*(\S+)/, mk: m => ({ type: 'dst', v: m[1] }) },
-      { re: /(?:ip\.)?addr\s*==\s*(\S+)/, mk: m => ({ type: 'addr', v: m[1] }) },
-      { re: /src\s+port\s+(\d+)/, mk: m => ({ type: 'sport', v: Number(m[1]) }) },
-      { re: /dst\s+port\s+(\d+)/, mk: m => ({ type: 'dport', v: Number(m[1]) }) },
-      { re: /\bport\s+(\d+)/, mk: m => ({ type: 'port', v: Number(m[1]) }) },
-      { re: /len\s*([<>])\s*(\d+)/, mk: m => ({ type: 'len', op: m[1], v: Number(m[2]) }) }
-    ];
-    let rest = s;
+    let rest = s.trim();
     let guard = 0;
-    while (rest.trim() && guard++ < 50) {
+    while (rest && guard++ < 30) {
       const trimmed = rest.trim();
+      let negated = false;
+      let cur = trimmed;
+      if (cur.startsWith('!')) { negated = true; cur = cur.slice(1); }
       let matched = false;
-      for (const p of PATTERNS) {
-        const m = p.re.exec(trimmed);
-        // 只接受从前缀开始的命中（如 "port 53" / "src == x"），避免吞掉
-        // 中段的碎片
+      for (const p of PRED_PATTERNS) {
+        const m = p.re.exec(cur);
         if (m && m.index === 0) {
-          preds.push(p.mk(m));
-          rest = trimmed.slice(m[0].length);
+          preds.push(Object.assign(p.mk(m), { negated }));
+          rest = cur.slice(m[0].length);
           matched = true;
           break;
         }
       }
       if (matched) continue;
-      // 没有谓词前缀：消费一个词作为协议名
-      const word = /^(\S+)\s*/.exec(trimmed);
-      preds.push({ type: 'proto', v: word[1] });
-      rest = trimmed.slice(word[0].length);
+      const word = /^(\S+)\s*/.exec(cur);
+      if (!word) break;
+      preds.push({ type: 'proto', v: word[1], negated });
+      rest = cur.slice(word[0].length);
     }
-    return preds.length ? preds : null;
+    return preds;
+  }
+
+  function parseFilter(q) {
+    const s = String(q || '').trim().toLowerCase();
+    if (!s) return null;
+    // 按 ` or ` 拆分；每段内 ` and ` 与空格都视为 AND（在 matchEntry 处体现）
+    const orGroups = s.split(/\s+or\s+/).map(seg =>
+      seg.split(/\s+and\s+/).map(parseAtoms).filter(a => a.length)
+    ).filter(g => g.length);
+    return orGroups.length ? { orGroups } : null;
+  }
+
+  function evalAtom(entry, p) {
+    const stackText = (entry.stack || []).join(' ').toLowerCase();
+    switch (p.type) {
+      case 'proto':
+        if (p.v === 'ip') return !entry.proto || /^(TCP|UDP|ICMP|DNS|HTTP|TLS|IP)$/.test(entry.proto);
+        return entry.proto.toLowerCase().includes(p.v) || stackText.includes(p.v);
+      case 'src': return String(entry.src || '').toLowerCase() === p.v;
+      case 'dst': return String(entry.dst || '').toLowerCase() === p.v;
+      case 'addr': return String(entry.src || '').toLowerCase() === p.v || String(entry.dst || '').toLowerCase() === p.v;
+      case 'sport': return entry.srcPort === p.v;
+      case 'dport': return entry.dstPort === p.v;
+      case 'port': return entry.srcPort === p.v || entry.dstPort === p.v;
+      case 'len': return p.op === '>' ? entry.length > p.v : entry.length < p.v;
+      default: return true;
+    }
   }
 
   function matchEntry(entry, preds) {
-    if (!preds) return true;
-    const stackText = (entry.stack || []).join(' ').toLowerCase();
-    return preds.every(p => {
-      switch (p.type) {
-        case 'proto':
-          if (p.v === 'ip') return !entry.proto || /^(TCP|UDP|ICMP|DNS|HTTP|TLS|IP)$/.test(entry.proto);
-          return entry.proto.toLowerCase().includes(p.v) || stackText.includes(p.v);
-        case 'src': return String(entry.src || '').toLowerCase() === p.v;
-        case 'dst': return String(entry.dst || '').toLowerCase() === p.v;
-        case 'addr': return String(entry.src || '').toLowerCase() === p.v || String(entry.dst || '').toLowerCase() === p.v;
-        case 'sport': return entry.srcPort === p.v;
-        case 'dport': return entry.dstPort === p.v;
-        case 'port': return entry.srcPort === p.v || entry.dstPort === p.v;
-        case 'len': return p.op === '>' ? entry.length > p.v : entry.length < p.v;
-        default: return true;
-      }
-    });
+    if (!preds || !preds.orGroups || !preds.orGroups.length) return true;
+    // 组间 OR、组内 AND；否定按原子级取反
+    return preds.orGroups.some(andGroup =>
+      andGroup.every(atom => evalAtom(entry, atom) !== !!atom.negated)
+    );
   }
 
-  // ============== 字段树（点击行展开） ==============
-  function fieldTreeHtml(entry) {
+  // ============== 协议分层树（嵌套可折叠） ==============
+  // 数据来自构建期 layers[]（Frame > Ethernet > IP > TCP…）；
+  // 无 layers 数据（旧产物/手写 JSON）回退到 stack 扁平层
+  function protocolTreeHtml(entry) {
+    const layers = Array.isArray(entry.layers) && entry.layers.length
+      ? entry.layers
+      : (entry.stack || []).map(name => ({ name, fields: null }));
+    const fieldRows = (fields) => {
+      if (!fields) return '';
+      return Object.entries(fields).map(([k, v]) =>
+        `<div class="pc-field"><span class="pc-field-k">${esc(k)}</span><span class="pc-field-v">${esc(String(v))}</span></div>`
+      ).join('');
+    };
+    return layers.map((layer, i) => {
+      const fields = fieldRows(layer.fields);
+      if (!fields) {
+        return `<div class="pc-layer-leaf" style="--depth:${i + 1}">${esc(layer.name)}</div>`;
+      }
+      return `<details class="pc-layer" style="--depth:${i + 1}" open>
+        <summary>${esc(layer.name)}</summary>
+        <div class="pc-layer-fields">${fields}</div>
+      </details>`;
+    }).join('');
+  }
+
+  // ============== Hex Dump（偏移 / hex / ASCII 三栏，每行 16 字节） ==============
+  function hexDumpHtml(hexStr) {
+    if (!hexStr) return '';
+    const bytes = [];
+    for (let i = 0; i < hexStr.length; i += 2) bytes.push(parseInt(hexStr.substr(i, 2), 16));
     const rows = [];
-    const push = (depth, k, v) => rows.push(
-      `<div class="pc-field" style="padding-left:${8 + depth * 16}px"><span class="pc-field-k">${esc(k)}</span><span class="pc-field-v">${esc(String(v))}</span></div>`
-    );
-    push(0, 'Frame', `#${entry.no} · ${entry.length} bytes`);
-    push(0, 'Time', `+${Number(entry.time).toFixed(6)}s`);
-    (entry.stack || []).forEach((layer, i) => push(0, `Layer ${i + 1}`, layer));
-    push(0, 'Protocol', entry.proto);
-    if (entry.src != null) push(1, 'Source', entry.src + (entry.srcPort ? ':' + entry.srcPort : ''));
-    if (entry.dst != null) push(1, 'Destination', entry.dst + (entry.dstPort ? ':' + entry.dstPort : ''));
-    if (entry.srcPort != null) push(1, 'Source Port', entry.srcPort);
-    if (entry.dstPort != null) push(1, 'Destination Port', entry.dstPort);
-    if (entry.info) push(1, 'Info', entry.info);
-    return rows.join('');
+    for (let off = 0; off < bytes.length; off += 16) {
+      const slice = bytes.slice(off, off + 16);
+      const hexCol = slice.map(b => b.toString(16).padStart(2, '0')).join(' ');
+      const asciiCol = slice.map(b => (b >= 0x20 && b < 0x7f) ? String.fromCharCode(b) : '.').join('');
+      rows.push(`<div class="pc-hex-row"><span class="pc-hex-off">${off.toString(16).padStart(4, '0')}</span><span class="pc-hex-bytes">${esc(hexCol.padEnd(47, ' '))}</span><span class="pc-hex-ascii">${esc(asciiCol)}</span></div>`);
+    }
+    return `<div class="pc-hex">${rows.join('')}</div>`;
+  }
+
+  function detailHtml(entry) {
+    return `<div class="pcap-detail-title">${esc(t('pcap.frameDetail', '帧详情'))} · #${entry.no}</div>` +
+      protocolTreeHtml(entry) + hexDumpHtml(entry.hex);
   }
 
   // ============== 构建 widget ==============
@@ -182,6 +224,7 @@
         </div>
         <span class="pcap-count" role="status"></span>
         <span class="pcap-toolbar-space"></span>
+        <button type="button" class="pcap-export-btn" title="${esc(t('pcap.exportCsv', '导出当前过滤结果为 CSV'))}">${esc(t('pcap.exportCsv', '导出 CSV'))}</button>
         <span class="pcap-file-badge">${esc(data.file || '')}${data.backend ? ' · ' + esc(data.backend) : ''}</span>
       </div>
       <div class="pcap-proto-bar" aria-hidden="true"></div>
@@ -300,8 +343,30 @@
       row.classList.add('pc-expanded');
       detailNo = entry.no;
       detail.hidden = false;
-      detail.innerHTML = `<div class="pcap-detail-title">${esc(t('pcap.frameDetail', '帧详情'))} · #${entry.no}</div>${fieldTreeHtml(entry)}`;
+      detail.innerHTML = detailHtml(entry);
       detail.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
+
+    // 导出当前过滤结果为 CSV（RFC 4180 引号转义）
+    widget.querySelector('.pcap-export-btn').addEventListener('click', () => {
+      const rows = visibleRows();
+      if (!rows.length) return;
+      const quote = (v) => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+      const header = ['No', 'Time', 'Source', 'Destination', 'Protocol', 'Length', 'Info'];
+      const body = rows.map(p => [
+        p.no, Number(p.time).toFixed(6),
+        p.src != null ? p.src + (p.srcPort ? ':' + p.srcPort : '') : '',
+        p.dst != null ? p.dst + (p.dstPort ? ':' + p.dstPort : '') : '',
+        p.appProto || p.proto || '', p.length, p.info || ''
+      ].map(quote).join(','));
+      const csv = header.join(',') + '\n' + body.join('\n');
+      const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = (data.file || 'capture').replace(/\.(pcap|pcapng|json)$/i, '') + '-filtered.csv';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     });
 
     pre.parentNode.replaceChild(widget, pre);
