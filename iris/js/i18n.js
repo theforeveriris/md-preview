@@ -830,6 +830,7 @@
     'clilab.miss': '% 未在本节剧本中——输入 ? 查看待练命令',
     'clilab.complete': '✓ 本节演练完成！',
     'clilab.welcome': '演练开始——在下方输入命令',
+    'clilab.noHelp': '% 该前缀下没有本节可练的命令',
     'shot.paletteLabel': '整页长图导出',
     'shot.button': '导出整页长图（PNG）',
     'shot.needDoc': '请先打开一个文档',

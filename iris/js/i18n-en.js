@@ -788,6 +788,7 @@
     'clilab.miss': '% not in this lab — type ? to list commands',
     'clilab.complete': '✓ Lab complete!',
     'clilab.welcome': 'Lab started — type commands below',
+    'clilab.noHelp': '% no commands in this lab under that prefix',
     'shot.paletteLabel': 'Export full-page image',
     'shot.button': 'Export full-page image (PNG)',
     'shot.needDoc': 'Open a document first',
