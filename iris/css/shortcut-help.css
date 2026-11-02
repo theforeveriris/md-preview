@@ -1,0 +1,157 @@
+/* ============== 快捷键速查面板（shortcut-help.js） ==============
+   `?` 呼出、Esc / 遮罩点击关闭。弹层语言与文档站一致：
+   surface 底、14px 圆角、--shadow-modal、无边框控件。 */
+
+.shortcut-help-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2100; /* 设置面板 2000 之上 */
+  display: none;
+}
+
+.shortcut-help-overlay.open { display: block; }
+
+.shortcut-help-overlay .sh-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transition: opacity 0.16s ease;
+}
+
+.shortcut-help-overlay.open .sh-backdrop { opacity: 1; }
+
+.shortcut-help-overlay .sh-panel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -48%);
+  width: min(680px, calc(100vw - 32px));
+  max-height: min(80vh, 720px);
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border-radius: 14px;
+  box-shadow: var(--shadow-modal, 0 20px 60px rgba(0, 0, 0, 0.25));
+  opacity: 0;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.shortcut-help-overlay.open .sh-panel {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+
+.shortcut-help-overlay .sh-head {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.shortcut-help-overlay .sh-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.shortcut-help-overlay .sh-close {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font-size: 18px;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.shortcut-help-overlay .sh-close:hover {
+  color: var(--color-text);
+  background: var(--color-hover);
+}
+
+.shortcut-help-overlay .sh-body {
+  overflow: auto;
+  padding: 12px 18px 18px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 4px 28px;
+  align-items: start;
+}
+
+.shortcut-help-overlay .sh-group { min-width: 0; }
+
+.shortcut-help-overlay .sh-group-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin: 10px 0 4px;
+}
+
+.shortcut-help-overlay .sh-group-note {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+
+.shortcut-help-overlay .sh-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.shortcut-help-overlay .sh-row:last-child { border-bottom: none; }
+
+.shortcut-help-overlay .sh-keys {
+  flex: 0 0 auto;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.shortcut-help-overlay .sh-kbd {
+  display: inline-block;
+  padding: 1px 7px;
+  font-family: 'SF Mono', Consolas, 'Courier New', monospace;
+  font-size: 11.5px;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+}
+
+.shortcut-help-overlay .sh-plus {
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.shortcut-help-overlay .sh-desc {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--color-text);
+}
+
+.shortcut-help-overlay .sh-foot {
+  grid-column: 1 / -1;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* 打印隐藏（与 enhancements.css 讲义化打印块叠加） */
+@media print {
+  .shortcut-help-overlay { display: none !important; }
+}

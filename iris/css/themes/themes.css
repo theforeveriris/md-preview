@@ -1,0 +1,1799 @@
+/* Theme System - 内置主题定义 */
+
+:root {
+  /* 默认主题：紫粉渐变 */
+  --color-bg: #fafafa;
+  --color-surface: #ffffff;
+  --color-border: #f0f0f0;
+  --color-text: #2d2d2d;
+  --color-text-muted: #999999;
+  --color-accent-purple: #d4a5c9;
+  --color-accent-pink: #f2c4ce;
+  --color-accent-purple-deep: #b88aad;
+  --color-glow: rgba(255, 255, 255, 0.8);
+  --color-hover: rgba(212, 165, 201, 0.1);
+  --color-selection: var(--color-accent-pink);
+  --color-scrollbar: var(--color-accent-purple);
+  --color-scrollbar-hover: var(--color-accent-purple-deep);
+  --color-link: #6b5b95;
+  --color-link-hover: #4a3f6b;
+  --color-code-bg: #f5f5f5;
+  --color-code-border: #e0e0e0;
+  --color-success: #4caf50;
+  --color-error: #f44336;
+  --color-warning: #ff9800;
+  /* 侧边栏分界：悬浮卡片用四周扩散的悬浮投影；经典贴边由下方按模式覆盖为右向投影 */
+  --shadow-sidebar: 0 8px 28px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-sidebar-floating: 0 8px 28px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-sidebar-classic: 6px 0 20px rgba(0, 0, 0, 0.05), 1px 0 4px rgba(0, 0, 0, 0.03);
+  /* 弹层阴影两档：菜单/下拉/补全用 popover，模态/大面板用 modal；
+     深色模式下黑系阴影在深底上不可见，改为细描边 + 深投影（同 sidebar 做法） */
+  --shadow-popover: 0 12px 40px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-modal: 0 20px 60px rgba(0, 0, 0, 0.25), 0 4px 16px rgba(0, 0, 0, 0.10);
+  /* 卡片/挂件微阴影（enhancements.css csv 面板等引用） */
+  --color-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* 经典贴边模式下浅色主题改用右向扩散投影 */
+body[data-sidebar-style="classic"] {
+  --shadow-sidebar: var(--shadow-sidebar-classic);
+}
+
+/* GitHub Light 主题 */
+[data-theme="github-light"] {
+  --color-bg: #ffffff;
+  --color-surface: #f6f8fa;
+  --color-border: #d0d7de;
+  --color-text: #24292f;
+  --color-text-muted: #57606a;
+  --color-accent-purple: #0969da;
+  --color-accent-pink: #0969da;
+  --color-accent-purple-deep: #0550ae;
+  --color-glow: rgba(255, 255, 255, 0.8);
+  --color-hover: rgba(9, 105, 218, 0.08);
+  --color-selection: rgba(9, 105, 218, 0.2);
+  --color-scrollbar: #c1c7cd;
+  --color-scrollbar-hover: #8c959f;
+  --color-link: #0969da;
+  --color-link-hover: #0550ae;
+  --color-code-bg: #f6f8fa;
+  --color-code-border: #d0d7de;
+  --color-success: #1a7f37;
+  --color-error: #cf222e;
+  --color-warning: #bf8700;
+}
+
+/* GitHub Dark 主题 */
+[data-theme="github-dark"] {
+  --color-bg: #0d1117;
+  --color-surface: #161b22;
+  --color-border: #30363d;
+  --color-text: #c9d1d9;
+  --color-text-muted: #8b949e;
+  --color-accent-purple: #58a6ff;
+  --color-accent-pink: #58a6ff;
+  --color-accent-purple-deep: #388bfd;
+  --color-glow: rgba(13, 17, 23, 0.8);
+  --color-hover: rgba(88, 166, 255, 0.1);
+  --color-selection: rgba(88, 166, 255, 0.3);
+  --color-scrollbar: #484f58;
+  --color-scrollbar-hover: #6e7681;
+  --color-link: #58a6ff;
+  --color-link-hover: #79c0ff;
+  --color-code-bg: #161b22;
+  --color-code-border: #30363d;
+  --color-success: #3fb950;
+  --color-error: #f85149;
+  --color-warning: #d29922;
+}
+
+/* Notion 暖灰主题 */
+/* 鸢尾花紫主题（亮色）：淡紫底 + 鸢尾品牌紫强调色
+   设计取向：低饱和淡紫背景（#f6f2fd）承担「鸢尾花瓣」的柔和感，
+   卡片与代码块保持近白以便长时间阅读；强调色用品牌鸢尾紫 #8B5CF6，
+   链接/强调色配套更深的 #6d3fd4 保证白底对比度（≥4.5:1）；
+   边框与分隔线用带紫调的浅灰，避免与背景糊在一起。 */
+[data-theme="iris"] {
+  --color-bg: #f6f2fd;
+  --color-surface: #ffffff;
+  --color-border: #e3d9f6;
+  --color-text: #2c2340;
+  --color-text-muted: #7d7295;
+  --color-accent-purple: #8B5CF6;
+  --color-accent-pink: #c4b0f0;
+  --color-accent-purple-deep: #6d3fd4;
+  --color-glow: rgba(246, 242, 253, 0.85);
+  --color-hover: rgba(139, 92, 246, 0.08);
+  --color-selection: rgba(139, 92, 246, 0.18);
+  --color-scrollbar: #cbb8ef;
+  --color-scrollbar-hover: #a98fe0;
+  --color-link: #6d3fd4;
+  --color-link-hover: #4f2ba3;
+  --color-code-bg: #f3eefc;
+  --color-code-border: #e0d4f5;
+  --color-success: #2f9e6f;
+  --color-error: #d94a63;
+  --color-warning: #b6791f;
+}
+
+[data-theme="notion"] {
+  --color-bg: #f7f6f3;
+  --color-surface: #ffffff;
+  --color-border: #e9e9e7;
+  --color-text: #37352f;
+  --color-text-muted: #9b9a97;
+  --color-accent-purple: #2383e2;
+  --color-accent-pink: #2383e2;
+  --color-accent-purple-deep: #1b6bb5;
+  --color-glow: rgba(247, 246, 243, 0.8);
+  --color-hover: rgba(35, 131, 226, 0.06);
+  --color-selection: rgba(35, 131, 226, 0.15);
+  --color-scrollbar: #d3d3d0;
+  --color-scrollbar-hover: #b8b8b5;
+  --color-link: #2383e2;
+  --color-link-hover: #1b6bb5;
+  --color-code-bg: #f7f6f3;
+  --color-code-border: #e9e9e7;
+  --color-success: #0f7b6c;
+  --color-error: #eb5757;
+  --color-warning: #cb912f;
+}
+
+/* Arc 彩虹紫主题 */
+[data-theme="arc"] {
+  --color-bg: #1a1625;
+  --color-surface: #251e33;
+  --color-border: #3d3456;
+  --color-text: #e4e0f3;
+  --color-text-muted: #9d97b8;
+  --color-accent-purple: #a78bfa;
+  --color-accent-pink: #f472b6;
+  --color-accent-purple-deep: #8b5cf6;
+  --color-glow: rgba(26, 22, 37, 0.8);
+  --color-hover: rgba(167, 139, 250, 0.15);
+  --color-selection: rgba(167, 139, 250, 0.3);
+  --color-scrollbar: #5a4d7a;
+  --color-scrollbar-hover: #7c6d9a;
+  --color-link: #a78bfa;
+  --color-link-hover: #c4b5fd;
+  --color-code-bg: #1f1a2e;
+  --color-code-border: #3d3456;
+  --color-success: #34d399;
+  --color-error: #f87171;
+  --color-warning: #fbbf24;
+}
+
+/* Dracula 主题 */
+[data-theme="dracula"] {
+  --color-bg: #282a36;
+  --color-surface: #383a4a;
+  --color-border: #44475a;
+  --color-text: #f8f8f2;
+  --color-text-muted: #6272a4;
+  --color-accent-purple: #bd93f9;
+  --color-accent-pink: #ff79c6;
+  --color-accent-purple-deep: #9b59d0;
+  --color-glow: rgba(40, 42, 54, 0.8);
+  --color-hover: rgba(189, 147, 249, 0.15);
+  --color-selection: rgba(189, 147, 249, 0.3);
+  --color-scrollbar: #6272a4;
+  --color-scrollbar-hover: #44475a;
+  --color-link: #bd93f9;
+  --color-link-hover: #d6acff;
+  --color-code-bg: #1e1f29;
+  --color-code-border: #44475a;
+  --color-success: #50fa7b;
+  --color-error: #ff5555;
+  --color-warning: #f1fa8c;
+}
+
+/* Nord 主题 */
+[data-theme="nord"] {
+  --color-bg: #2e3440;
+  --color-surface: #3b4252;
+  --color-border: #434c5e;
+  --color-text: #eceff4;
+  --color-text-muted: #d8dee9;
+  --color-accent-purple: #88c0d0;
+  --color-accent-pink: #81a1c1;
+  --color-accent-purple-deep: #5e81ac;
+  --color-glow: rgba(46, 52, 64, 0.8);
+  --color-hover: rgba(136, 192, 208, 0.15);
+  --color-selection: rgba(136, 192, 208, 0.3);
+  --color-scrollbar: #4c566a;
+  --color-scrollbar-hover: #5e81ac;
+  --color-link: #88c0d0;
+  --color-link-hover: #a3d8e8;
+  --color-code-bg: #2e3440;
+  --color-code-border: #434c5e;
+  --color-success: #a3be8c;
+  --color-error: #bf616a;
+  --color-warning: #ebcb8b;
+}
+
+/* 深色主题：黑色投影在深底上不可见，分界靠细边框 + 轻投影（两种模式各自适配） */
+[data-mode="dark"] {
+  --shadow-sidebar-floating: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 8px 28px rgba(0, 0, 0, 0.35);
+  --shadow-sidebar-classic: 6px 0 20px rgba(0, 0, 0, 0.3), 1px 0 4px rgba(0, 0, 0, 0.25);
+  --shadow-sidebar: var(--shadow-sidebar-classic);
+  --shadow-popover: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 12px 40px rgba(0, 0, 0, 0.5);
+  --shadow-modal: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 20px 60px rgba(0, 0, 0, 0.55);
+}
+
+/* 悬浮卡片模式下深浅主题都换用悬浮投影 */
+body[data-sidebar-style="floating"] {
+  --shadow-sidebar: var(--shadow-sidebar-floating);
+}
+
+/* 更新组件样式以使用新变量 */
+.search-result-item:hover {
+  background: var(--color-hover);
+}
+
+.edit-fab {
+  background: var(--color-accent-purple);
+  box-shadow: 0 4px 12px var(--color-hover);
+}
+
+.edit-fab:hover {
+  background: var(--color-accent-purple-deep);
+  box-shadow: 0 6px 16px var(--color-hover);
+}
+
+.comments-section::before {
+  background: linear-gradient(90deg, var(--color-accent-purple), var(--color-accent-pink));
+}
+
+::selection {
+  background: var(--color-selection);
+  color: var(--color-text);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-scrollbar-hover);
+}
+
+/* ==================================================================
+   铅字印刷 Print（亮色）
+   设计取向：纸感底 + 衬线正文 + 居中的衬线大标题 + 首字下沉，
+   卡片全部去掉圆角与阴影只留 1px 墨线，表格只用横线。
+   目标是「书页」，与现有的柔和圆角主题形成明显反差。
+   字体只用系统栈，不新增外链字体依赖（离线 / 桌面端表现一致）。
+   ================================================================== */
+[data-theme="print"] {
+  --color-bg: #f6f1e7;
+  --color-surface: #fffdf7;
+  --color-border: #d9cfbd;
+  --color-text: #1b1a17;
+  --color-text-muted: #6d6559;
+  --color-accent-purple: #b3261e;
+  --color-accent-pink: #e6d3b3;
+  --color-accent-purple-deep: #8c1c16;
+  --color-glow: rgba(255, 253, 247, 0.85);
+  --color-hover: rgba(179, 38, 30, 0.06);
+  --color-selection: rgba(179, 38, 30, 0.16);
+  --color-scrollbar: #cbbfa9;
+  --color-scrollbar-hover: #b3261e;
+  --color-link: #8c1c16;
+  --color-link-hover: #b3261e;
+  --color-code-bg: #efe7d8;
+  --color-code-border: #ded3bf;
+  --color-success: #2f6b45;
+  --color-error: #a3231c;
+  --color-warning: #8a6416;
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Georgia, 'Songti SC', 'Noto Serif SC', 'Source Han Serif SC', SimSun, serif;
+  --font-body: Georgia, 'Songti SC', 'Noto Serif SC', 'Source Han Serif SC', SimSun, serif;
+}
+
+/* 标题：一级标题居中 + 朱红双细线，二级标题只留一条发丝线 */
+[data-theme="print"] .markdown-body h1 {
+  border-bottom: 0;
+  padding-bottom: 0;
+  text-align: center;
+  font-size: 2.5rem;
+  letter-spacing: 0.01em;
+}
+[data-theme="print"] .markdown-body h1::after {
+  content: '';
+  display: block;
+  width: 5em;
+  margin: 0.6em auto 0;
+  border-top: 3px double var(--color-accent-purple);
+}
+[data-theme="print"] .markdown-body h2 {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.3em;
+}
+/* 首字下沉：标题后的第一段 */
+[data-theme="print"] .markdown-body h1 + p::first-letter {
+  float: left;
+  font-family: var(--font-display);
+  font-size: 3.1em;
+  font-weight: 600;
+  line-height: 0.86;
+  margin: 0.04em 0.1em 0 0;
+  color: var(--color-accent-purple);
+}
+
+/* 链接：朱红 + 细下划线（不是卡片式的无下划线） */
+[data-theme="print"] .markdown-body a {
+  color: var(--color-link);
+  border-bottom: 1px solid rgba(140, 28, 22, 0.35);
+}
+[data-theme="print"] .markdown-body a:hover {
+  border-bottom-color: var(--color-link);
+}
+
+/* 行内代码：去掉底色，改用墨蓝字色，像印刷品里的等宽引文 */
+[data-theme="print"] .markdown-body code {
+  background: none;
+  padding: 0 0.15em;
+  color: #24384f;
+}
+
+/* 引用：右侧留白 + 双线竖栏 + 斜体 */
+[data-theme="print"] .markdown-body blockquote {
+  border-left: 3px double var(--color-accent-purple);
+  font-style: italic;
+  color: #4a453c;
+}
+
+/* 卡片统一成方角墨线，去掉投影与圆角 */
+[data-theme="print"] .markdown-body pre,
+[data-theme="print"] .markdown-body .table-wrapper,
+[data-theme="print"] .markdown-body :is(
+  .mermaid-diagram,
+  .plantuml-diagram,
+  .apex-chart,
+  .csv-table,
+  .pptx-container,
+  .pptx-embed,
+  .hm-widget,
+  .json-tree,
+  .pkt-container,
+  .diff-container .d2h-file-wrapper
+) {
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid var(--color-border);
+}
+
+/* 表格：只有横线，表头压一条粗线，错行底色取消，外框也不要 */
+[data-theme="print"] .markdown-body .table-wrapper {
+  border: 0;
+}
+[data-theme="print"] .markdown-body th,
+[data-theme="print"] .markdown-body td {
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+}
+[data-theme="print"] .markdown-body thead th {
+  background: none;
+  border-bottom: 2px solid var(--color-text);
+  font-weight: 700;
+}
+[data-theme="print"] .markdown-body tr:nth-child(even) {
+  background: none;
+}
+
+/* 代码块：纸色底，与正文区分但仍是同一张纸 */
+[data-theme="print"] .markdown-body pre {
+  background: var(--color-code-bg);
+}
+
+/* 分隔线：一条细横线即可，粗红线留给一级标题 */
+[data-theme="print"] .markdown-body hr {
+  border: 0;
+  border-top: 1px solid var(--color-border);
+}
+[data-theme="print"] .markdown-body img {
+  border-radius: 0;
+  border: 1px solid var(--color-border);
+}
+
+/* ==================================================================
+   蓝图工程 Blueprint（暗色）
+   设计取向：深靛蓝底 + 固定网格底纹 + 青色线条 + 方角图纸框，
+   标题前加一个小方块标记，数字用等宽字形。取色全部走主题变量，
+   mermaid / apexcharts / diff 会自动跟着变暗。
+   ================================================================== */
+[data-theme="blueprint"] {
+  --color-bg: #0a1a2f;
+  --color-surface: #0f2645;
+  --color-border: #1f4067;
+  --color-text: #d6e8fa;
+  --color-text-muted: #8fb3d4;
+  --color-accent-purple: #38bdf8;
+  --color-accent-pink: #7dd3fc;
+  --color-accent-purple-deep: #0ea5e9;
+  --color-glow: rgba(10, 26, 47, 0.8);
+  --color-hover: rgba(56, 189, 248, 0.12);
+  --color-selection: rgba(56, 189, 248, 0.28);
+  --color-scrollbar: #1f4067;
+  --color-scrollbar-hover: #38bdf8;
+  --color-link: #7dd3fc;
+  --color-link-hover: #bae6fd;
+  --color-code-bg: #0b1f38;
+  --color-code-border: #1f4067;
+  --color-success: #34d399;
+  --color-error: #fb7185;
+  --color-warning: #fbbf24;
+  --font-display: 'IBM Plex Sans', -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+/* 图纸网格：画在 body 上，固定不随内容滚动 */
+[data-theme="blueprint"] body {
+  background-image:
+    linear-gradient(rgba(56, 189, 248, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-attachment: fixed;
+}
+
+/* 等宽数字，读起来像标注尺寸 */
+[data-theme="blueprint"] .markdown-body {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 标题：一级压一条青色基准线，二级前置小方块标记（不用序号，避免
+   与文档里已有的「1. xxx」标题重复编号） */
+[data-theme="blueprint"] .markdown-body h1 {
+  border-bottom: 1px solid var(--color-accent-purple);
+  padding-bottom: 0.35em;
+}
+[data-theme="blueprint"] .markdown-body h2 {
+  border-bottom: 0;
+}
+[data-theme="blueprint"] .markdown-body h2::before {
+  content: '';
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  margin-right: 0.55em;
+  vertical-align: 0.08em;
+  border: 1px solid var(--color-accent-purple);
+  background: rgba(56, 189, 248, 0.2);
+}
+
+/* 引用：青色虚线竖栏，像图纸上的注释引出线 */
+[data-theme="blueprint"] .markdown-body blockquote {
+  border-left: 2px dashed var(--color-accent-purple);
+}
+
+/* 卡片：方角细线，无投影 */
+[data-theme="blueprint"] .markdown-body pre,
+[data-theme="blueprint"] .markdown-body .table-wrapper,
+[data-theme="blueprint"] .markdown-body :is(
+  .mermaid-diagram,
+  .plantuml-diagram,
+  .apex-chart,
+  .csv-table,
+  .pptx-container,
+  .pptx-embed,
+  .hm-widget,
+  .json-tree,
+  .pkt-container,
+  .diff-container .d2h-file-wrapper
+) {
+  border-radius: 2px;
+  box-shadow: none;
+  border: 1px solid var(--color-border);
+}
+
+/* 表格：细网格线 + 淡青表头 */
+[data-theme="blueprint"] .markdown-body th {
+  background: rgba(56, 189, 248, 0.1);
+  border-color: var(--color-border);
+}
+[data-theme="blueprint"] .markdown-body tr:nth-child(even) {
+  background: rgba(56, 189, 248, 0.04);
+}
+
+/* 分隔线：虚线 */
+[data-theme="blueprint"] .markdown-body hr {
+  border: 0;
+  border-top: 1px dashed var(--color-border);
+}
+[data-theme="blueprint"] .markdown-body img {
+  border-radius: 2px;
+  border: 1px solid var(--color-border);
+}
+
+/* ==================================================================
+   报纸版式 Newsprint（亮色）
+   与「铅字印刷」同属印刷派但版式不同：报纸是密排、多规则线、
+   小标题全大写拉字距、正文两端对齐，标题上下都压线（报头感）。
+   ================================================================== */
+[data-theme="newsprint"] {
+  --color-bg: #faf8f2;
+  --color-surface: #ffffff;
+  --color-border: #cfc9b8;
+  --color-text: #131209;
+  --color-text-muted: #5a5446;
+  --color-accent-purple: #8c1f28;
+  --color-accent-pink: #d9d2bf;
+  --color-accent-purple-deep: #6f1620;
+  --color-glow: rgba(255, 255, 255, 0.85);
+  --color-hover: rgba(140, 31, 40, 0.06);
+  --color-selection: rgba(140, 31, 40, 0.15);
+  --color-scrollbar: #c4bda9;
+  --color-scrollbar-hover: #8c1f28;
+  --color-link: #8c1f28;
+  --color-link-hover: #6f1620;
+  --color-code-bg: #f2efe6;
+  --color-code-border: #d9d2bf;
+  --color-success: #2f6b45;
+  --color-error: #a3231c;
+  --color-warning: #8a6416;
+  --font-display: 'Times New Roman', Times, 'Songti SC', 'Noto Serif SC', SimSun, serif;
+  --font-body: 'Times New Roman', Times, 'Songti SC', 'Noto Serif SC', SimSun, serif;
+}
+
+/* 报头：标题上方粗线、下方细线，整体左对齐（不像书页那样居中） */
+[data-theme="newsprint"] .markdown-body h1 {
+  border-top: 3px solid var(--color-text);
+  border-bottom: 1px solid var(--color-text);
+  padding: 0.5em 0 0.35em;
+  font-size: 2.3rem;
+  letter-spacing: -0.01em;
+}
+/* 小标题：全大写 + 拉开字距 + 上方细线，报纸栏目名的手感 */
+[data-theme="newsprint"] .markdown-body h2 {
+  border-top: 1px solid var(--color-border);
+  border-bottom: 0;
+  padding-top: 0.5em;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 1.1rem;
+}
+/* 密排：正文两端对齐 */
+[data-theme="newsprint"] .markdown-body p {
+  text-align: justify;
+  line-height: 1.75;
+}
+[data-theme="newsprint"] .markdown-body a {
+  color: var(--color-link);
+  border-bottom: 1px solid rgba(140, 31, 40, 0.45);
+}
+/* 报纸表格是带竖线的完整网格 */
+[data-theme="newsprint"] .markdown-body th {
+  background: var(--color-code-bg);
+  border: 1px solid var(--color-border);
+  border-bottom: 2px solid var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.85em;
+}
+[data-theme="newsprint"] .markdown-body td {
+  border: 1px solid var(--color-border);
+}
+[data-theme="newsprint"] .markdown-body tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.02);
+}
+[data-theme="newsprint"] .markdown-body blockquote {
+  border-left: 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.8em 0;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+/* ==================================================================
+   瑞士极简 Swiss（亮色）
+   纯白 + 纯黑 + 唯一一抹瑞士红。超大无衬线标题、极紧字距、
+   粗横线切分、卡片无圆角无阴影。一套把「克制」推到极致的主题。
+   ================================================================== */
+[data-theme="swiss"] {
+  --color-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-border: #e5e5e5;
+  --color-text: #111111;
+  --color-text-muted: #6a6a6a;
+  --color-accent-purple: #e4002b;
+  --color-accent-pink: #e4002b;
+  --color-accent-purple-deep: #111111;
+  --color-glow: rgba(255, 255, 255, 0.9);
+  --color-hover: rgba(0, 0, 0, 0.04);
+  --color-selection: rgba(228, 0, 43, 0.18);
+  --color-scrollbar: #cccccc;
+  --color-scrollbar-hover: #999999;
+  --color-link: #111111;
+  --color-link-hover: #e4002b;
+  --color-code-bg: #f5f5f5;
+  --color-code-border: #e5e5e5;
+  --color-success: #007a3d;
+  --color-error: #d0021b;
+  --color-warning: #b26a00;
+  --font-display: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-body: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+[data-theme="swiss"] .markdown-body h1 {
+  border-bottom: 4px solid var(--color-text);
+  padding-bottom: 0.3em;
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+}
+[data-theme="swiss"] .markdown-body h2 {
+  border-bottom: 1px solid var(--color-text);
+  padding-bottom: 0.25em;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+/* 链接只有下划线，颜色保持黑色，悬停才变红 */
+[data-theme="swiss"] .markdown-body a {
+  color: var(--color-link);
+  border-bottom: 1px solid currentColor;
+}
+[data-theme="swiss"] .markdown-body a:hover {
+  color: var(--color-accent-purple);
+  border-bottom-color: currentColor;
+}
+[data-theme="swiss"] .markdown-body pre,
+[data-theme="swiss"] .markdown-body .table-wrapper,
+[data-theme="swiss"] .markdown-body :is(
+  .mermaid-diagram, .plantuml-diagram, .apex-chart, .csv-table,
+  .pptx-container, .pptx-embed, .hm-widget, .json-tree, .pkt-container,
+  .diff-container .d2h-file-wrapper
+) {
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid var(--color-border);
+}
+/* 表格只用横线 */
+[data-theme="swiss"] .markdown-body th,
+[data-theme="swiss"] .markdown-body td {
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+}
+[data-theme="swiss"] .markdown-body thead th {
+  background: none;
+  border-bottom: 2px solid var(--color-text);
+  font-weight: 700;
+}
+[data-theme="swiss"] .markdown-body tr:nth-child(even) {
+  background: none;
+}
+/* 唯一的一抹红：分隔线 */
+[data-theme="swiss"] .markdown-body hr {
+  border: 0;
+  border-top: 4px solid var(--color-accent-purple);
+}
+
+/* ==================================================================
+   终端单色 Terminal（暗色）
+   近黑绿底 + 荧光苔绿单色 + 等宽字体 + 零圆角 + 扫描线。
+   中文回退到系统无衬线，避免长文阅读疲劳。
+   ================================================================== */
+[data-theme="terminal"] {
+  --color-bg: #070c09;
+  --color-surface: #0c130f;
+  --color-border: #1e2b22;
+  --color-text: #b9f6cb;
+  --color-text-muted: #6f9c80;
+  --color-accent-purple: #4ade80;
+  --color-accent-pink: #22c55e;
+  --color-accent-purple-deep: #86efac;
+  --color-glow: rgba(7, 12, 9, 0.85);
+  --color-hover: rgba(74, 222, 128, 0.1);
+  --color-selection: rgba(74, 222, 128, 0.25);
+  --color-scrollbar: #1e2b22;
+  --color-scrollbar-hover: #4ade80;
+  --color-link: #86efac;
+  --color-link-hover: #bbf7d0;
+  --color-code-bg: #0a120d;
+  --color-code-border: #1e2b22;
+  --color-success: #4ade80;
+  --color-error: #f87171;
+  --color-warning: #fbbf24;
+  --font-display: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'PingFang SC', 'Microsoft YaHei', monospace;
+  --font-body: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'PingFang SC', 'Microsoft YaHei', monospace;
+}
+
+/* 扫描线：极低对比的横向细纹，只在暗底上看得出 */
+[data-theme="terminal"] body {
+  background-image: linear-gradient(rgba(74, 222, 128, 0.03) 1px, transparent 1px);
+  background-size: 100% 3px;
+}
+/* 标题带 # 前缀，像 Markdown 源码本身 */
+[data-theme="terminal"] .markdown-body h1::before { content: '# '; color: var(--color-text-muted); }
+[data-theme="terminal"] .markdown-body h2::before { content: '## '; color: var(--color-text-muted); }
+[data-theme="terminal"] .markdown-body h3::before { content: '### '; color: var(--color-text-muted); }
+[data-theme="terminal"] .markdown-body h1,
+[data-theme="terminal"] .markdown-body h2,
+[data-theme="terminal"] .markdown-body h3 {
+  border-bottom: 0;
+  letter-spacing: -0.01em;
+}
+[data-theme="terminal"] .markdown-body a {
+  color: var(--color-link);
+  border-bottom: 1px dotted var(--color-link);
+}
+[data-theme="terminal"] .markdown-body pre,
+[data-theme="terminal"] .markdown-body .table-wrapper,
+[data-theme="terminal"] .markdown-body :is(
+  .mermaid-diagram, .plantuml-diagram, .apex-chart, .csv-table,
+  .pptx-container, .pptx-embed, .hm-widget, .json-tree, .pkt-container,
+  .diff-container .d2h-file-wrapper
+) {
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid var(--color-border);
+}
+/* 代码块左侧一条荧光绿标签条 */
+[data-theme="terminal"] .markdown-body pre {
+  border-left: 2px solid var(--color-accent-purple);
+  background: var(--color-code-bg);
+}
+[data-theme="terminal"] .markdown-body th,
+[data-theme="terminal"] .markdown-body td {
+  border: 1px dashed var(--color-border);
+}
+[data-theme="terminal"] .markdown-body th {
+  background: rgba(74, 222, 128, 0.08);
+  color: var(--color-accent-purple-deep);
+}
+[data-theme="terminal"] .markdown-body tr:nth-child(even) {
+  background: rgba(74, 222, 128, 0.03);
+}
+
+/* ==================================================================
+   霓虹夜色 Neon（暗色）
+   纯黑底 + 粉青双色外发光。发光只给标题、链接与卡片边框，
+   正文保持干净，否则整页都在「嗡嗡响」。
+   ================================================================== */
+[data-theme="neon"] {
+  --color-bg: #07060f;
+  --color-surface: #0d0b18;
+  --color-border: #2a2347;
+  --color-text: #ece9ff;
+  --color-text-muted: #a79bd4;
+  --color-accent-purple: #ff3ea5;
+  --color-accent-pink: #35f2ff;
+  --color-accent-purple-deep: #ff74bf;
+  --color-glow: rgba(7, 6, 15, 0.9);
+  --color-hover: rgba(255, 62, 165, 0.12);
+  --color-selection: rgba(53, 242, 255, 0.25);
+  --color-scrollbar: #2a2347;
+  --color-scrollbar-hover: #ff3ea5;
+  --color-link: #35f2ff;
+  --color-link-hover: #9dfbff;
+  --color-code-bg: #0b0913;
+  --color-code-border: #2a2347;
+  --color-success: #35f2a0;
+  --color-error: #ff5470;
+  --color-warning: #ffd166;
+}
+
+/* 环境光：左上粉、右下青的两团大范围径向光晕 */
+[data-theme="neon"] body {
+  background-image:
+    radial-gradient(900px 600px at 12% -5%, rgba(255, 62, 165, 0.16), transparent 70%),
+    radial-gradient(800px 520px at 95% 105%, rgba(53, 242, 255, 0.14), transparent 70%);
+  background-attachment: fixed;
+}
+[data-theme="neon"] .markdown-body h1,
+[data-theme="neon"] .markdown-body h2 {
+  text-shadow: 0 0 14px rgba(255, 62, 165, 0.45), 0 0 2px rgba(255, 62, 165, 0.6);
+  border-bottom-color: rgba(53, 242, 255, 0.35);
+}
+[data-theme="neon"] .markdown-body a {
+  color: var(--color-link);
+  border-bottom: 1px solid rgba(53, 242, 255, 0.4);
+}
+[data-theme="neon"] .markdown-body a:hover {
+  text-shadow: 0 0 10px rgba(53, 242, 255, 0.8);
+}
+[data-theme="neon"] .markdown-body pre,
+[data-theme="neon"] .markdown-body :is(
+  .mermaid-diagram, .plantuml-diagram, .apex-chart, .csv-table,
+  .pptx-container, .pptx-embed, .hm-widget, .json-tree, .pkt-container,
+  .diff-container .d2h-file-wrapper
+) {
+  border-radius: 12px;
+  border: 1px solid rgba(53, 242, 255, 0.25);
+  box-shadow: 0 0 22px rgba(53, 242, 255, 0.1), inset 0 0 24px rgba(255, 62, 165, 0.05);
+}
+[data-theme="neon"] .markdown-body th {
+  background: rgba(255, 62, 165, 0.1);
+  border-color: var(--color-border);
+}
+[data-theme="neon"] .markdown-body tr:nth-child(even) {
+  background: rgba(53, 242, 255, 0.04);
+}
+[data-theme="neon"] .markdown-body blockquote {
+  border-left: 2px solid var(--color-accent-purple);
+  background: rgba(255, 62, 165, 0.06);
+}
+
+/* ==================================================================
+   暖夜 Sepia（暗色）
+   深棕黑 + 米色字，全站去掉冷色，像琥珀滤镜。护眼向，
+   行高略放大，适合夜里长时间读长文。
+   ================================================================== */
+[data-theme="sepia"] {
+  --color-bg: #17110c;
+  --color-surface: #201811;
+  --color-border: #3a2c1f;
+  --color-text: #ecdfcc;
+  --color-text-muted: #ab9580;
+  --color-accent-purple: #e0913f;
+  --color-accent-pink: #c9a227;
+  --color-accent-purple-deep: #f0a860;
+  --color-glow: rgba(23, 17, 12, 0.85);
+  --color-hover: rgba(224, 145, 63, 0.1);
+  --color-selection: rgba(224, 145, 63, 0.25);
+  --color-scrollbar: #3a2c1f;
+  --color-scrollbar-hover: #e0913f;
+  --color-link: #f0a860;
+  --color-link-hover: #ffc98a;
+  --color-code-bg: #140f0a;
+  --color-code-border: #3a2c1f;
+  --color-success: #9bbf6a;
+  --color-error: #e06c52;
+  --color-warning: #e0b64a;
+}
+
+[data-theme="sepia"] .markdown-body {
+  line-height: 1.85;
+}
+[data-theme="sepia"] .markdown-body h1,
+[data-theme="sepia"] .markdown-body h2 {
+  border-bottom-color: rgba(224, 145, 63, 0.35);
+  color: #f4e6d2;
+}
+[data-theme="sepia"] .markdown-body a {
+  color: var(--color-link);
+  border-bottom: 1px solid rgba(240, 168, 96, 0.35);
+}
+[data-theme="sepia"] .markdown-body pre,
+[data-theme="sepia"] .markdown-body :is(
+  .mermaid-diagram, .plantuml-diagram, .apex-chart, .csv-table,
+  .pptx-container, .pptx-embed, .hm-widget, .json-tree, .pkt-container,
+  .diff-container .d2h-file-wrapper
+) {
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+}
+[data-theme="sepia"] .markdown-body th {
+  background: rgba(224, 145, 63, 0.1);
+  border-color: var(--color-border);
+}
+[data-theme="sepia"] .markdown-body tr:nth-child(even) {
+  background: rgba(224, 145, 63, 0.04);
+}
+
+/* ==================================================================
+   水彩手帐 Watercolor（亮色）
+   米白纸底上叠几团极淡的彩晕，标题用楷体手写感，卡片大圆角
+   柔和投影。是十二套里最「软」的一版。
+   ================================================================== */
+[data-theme="watercolor"] {
+  --color-bg: #fdfbf8;
+  --color-surface: #ffffff;
+  --color-border: #e6ddec;
+  --color-text: #3a3440;
+  --color-text-muted: #6e6480;
+  --color-accent-purple: #d2648a;
+  --color-accent-pink: #7ec4cf;
+  --color-accent-purple-deep: #a8456b;
+  --color-glow: rgba(255, 255, 255, 0.85);
+  --color-hover: rgba(210, 100, 138, 0.1);
+  --color-selection: rgba(126, 196, 207, 0.35);
+  --color-scrollbar: #ddd0e4;
+  --color-scrollbar-hover: #d2648a;
+  --color-link: #6b5bd2;
+  --color-link-hover: #5847bd;
+  --color-code-bg: #f8f4fa;
+  --color-code-border: #ece3f2;
+  --color-success: #2f8f6b;
+  --color-error: #c9584f;
+  --color-warning: #a8762a;
+  --font-display: 'Kaiti SC', 'KaiTi', 'STKaiti', 'Segoe Script', Georgia, serif;
+}
+
+/* 彩晕：四团极淡的径向渐变，像没干透的水彩 */
+[data-theme="watercolor"] body {
+  background-image:
+    radial-gradient(680px 420px at 8% 4%, rgba(210, 100, 138, 0.12), transparent 70%),
+    radial-gradient(600px 380px at 96% 12%, rgba(126, 196, 207, 0.12), transparent 70%),
+    radial-gradient(700px 460px at 20% 98%, rgba(240, 205, 120, 0.12), transparent 70%),
+    radial-gradient(560px 360px at 88% 92%, rgba(168, 140, 220, 0.1), transparent 70%);
+  background-attachment: fixed;
+}
+[data-theme="watercolor"] .markdown-body h1 {
+  border-bottom: 0;
+  font-size: 2.3rem;
+  color: #4a3f58;
+}
+/* 标题下的一笔彩条：用 ::after 画，避免 inline-block 把折叠按钮挤到文字旁 */
+[data-theme="watercolor"] .markdown-body h2 {
+  border-bottom: 0;
+}
+[data-theme="watercolor"] .markdown-body h2::after {
+  content: '';
+  display: block;
+  width: 4.5em;
+  height: 6px;
+  margin-top: 0.3em;
+  border-radius: 3px;
+  background: linear-gradient(90deg, rgba(126, 196, 207, 0.55), rgba(210, 100, 138, 0.45));
+}
+[data-theme="watercolor"] .markdown-body a {
+  color: var(--color-link);
+  border-bottom: 1px solid rgba(107, 91, 210, 0.35);
+}
+[data-theme="watercolor"] .markdown-body pre,
+[data-theme="watercolor"] .markdown-body :is(
+  .mermaid-diagram, .plantuml-diagram, .apex-chart, .csv-table,
+  .pptx-container, .pptx-embed, .hm-widget, .json-tree, .pkt-container,
+  .diff-container .d2h-file-wrapper
+) {
+  border-radius: 18px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 26px rgba(120, 100, 140, 0.08);
+}
+[data-theme="watercolor"] .markdown-body th {
+  background: rgba(126, 196, 207, 0.14);
+  border-color: var(--color-border);
+}
+[data-theme="watercolor"] .markdown-body blockquote {
+  border-left: 4px solid rgba(210, 100, 138, 0.55);
+  border-radius: 0 12px 12px 0;
+  background: rgba(210, 100, 138, 0.06);
+}
+
+/* ==================================================================
+   极简产品风 Graphite（暗色）
+   纯黑底 + 石墨灰层次 + 单一蓝色强调，1px 边框、零圆角、
+   等宽数字。Vercel / Linear 那类产品界面语言。
+   ================================================================== */
+[data-theme="graphite"] {
+  --color-bg: #000000;
+  --color-surface: #0a0a0a;
+  --color-border: #333333;
+  --color-text: #ededed;
+  --color-text-muted: #8a8a8a;
+  --color-accent-purple: #0070f3;
+  --color-accent-pink: #3291ff;
+  --color-accent-purple-deep: #3291ff;
+  --color-glow: rgba(0, 0, 0, 0.9);
+  --color-hover: rgba(255, 255, 255, 0.06);
+  --color-selection: rgba(0, 112, 243, 0.3);
+  --color-scrollbar: #333333;
+  --color-scrollbar-hover: #666666;
+  --color-link: #3291ff;
+  --color-link-hover: #66b1ff;
+  --color-code-bg: #0a0a0a;
+  --color-code-border: #333333;
+  --color-success: #3ecf8e;
+  --color-error: #f75f5f;
+  --color-warning: #f5a623;
+  --font-display: 'Inter', -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+[data-theme="graphite"] .markdown-body {
+  font-variant-numeric: tabular-nums;
+}
+[data-theme="graphite"] .markdown-body h1 {
+  border-bottom: 1px solid var(--color-border);
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+[data-theme="graphite"] .markdown-body h2 {
+  border-bottom: 0;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+}
+[data-theme="graphite"] .markdown-body a {
+  color: var(--color-link);
+  border-bottom: 1px solid transparent;
+}
+[data-theme="graphite"] .markdown-body a:hover {
+  border-bottom-color: currentColor;
+}
+[data-theme="graphite"] .markdown-body pre,
+[data-theme="graphite"] .markdown-body .table-wrapper,
+[data-theme="graphite"] .markdown-body :is(
+  .mermaid-diagram, .plantuml-diagram, .apex-chart, .csv-table,
+  .pptx-container, .pptx-embed, .hm-widget, .json-tree, .pkt-container,
+  .diff-container .d2h-file-wrapper
+) {
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+}
+[data-theme="graphite"] .markdown-body th,
+[data-theme="graphite"] .markdown-body td {
+  border: 1px solid var(--color-border);
+}
+[data-theme="graphite"] .markdown-body th {
+  background: #111111;
+  color: var(--color-text);
+  font-weight: 500;
+}
+[data-theme="graphite"] .markdown-body tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+[data-theme="graphite"] .markdown-body blockquote {
+  border-left: 2px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+/* ==================================================================
+   手写笔记 Notebook（亮色）
+   横线纸底 + 左侧红色页边线 + 蓝墨水字 + 手写体标题 + 荧光笔。
+   与水彩手帐的「彩晕」不同，这一套的签名是纸的横线与页边线。
+   ================================================================== */
+[data-theme="notebook"] {
+  --color-bg: #fdfcf7;
+  --color-surface: #fffdf4;
+  --color-border: #ded7c3;
+  --color-text: #1f2a44;
+  --color-text-muted: #7a7466;
+  --color-accent-purple: #2f5ea8;
+  --color-accent-pink: #ffe066;
+  --color-accent-purple-deep: #1f4a8a;
+  --color-glow: rgba(255, 253, 244, 0.85);
+  --color-hover: rgba(47, 94, 168, 0.08);
+  --color-selection: rgba(255, 224, 102, 0.6);
+  --color-scrollbar: #d8d1bd;
+  --color-scrollbar-hover: #2f5ea8;
+  --color-link: #1f4a8a;
+  --color-link-hover: #2f5ea8;
+  --color-code-bg: #fff8dc;
+  --color-code-border: #e6dcb8;
+  --color-success: #2f7a55;
+  --color-error: #b23a34;
+  --color-warning: #9a6b10;
+  --font-display: 'Segoe Print', 'Bradley Hand', 'Kaiti SC', 'KaiTi', 'STKaiti', cursive;
+  --font-body: 'Xingkai SC', 'Kaiti SC', 'KaiTi', 'Songti SC', 'Microsoft YaHei', Georgia, serif;
+}
+
+/* 横线纸：28px 一格的横线，浅到不抢字 */
+[data-theme="notebook"] body {
+  background-image: repeating-linear-gradient(
+    180deg,
+    transparent 0 27px,
+    rgba(120, 160, 200, 0.22) 27px 28px
+  );
+}
+/* 页边线：正文左侧一道红竖线 */
+[data-theme="notebook"] .markdown-body {
+  border-left: 1px solid rgba(214, 80, 80, 0.4);
+  padding-left: 1.8em;
+}
+[data-theme="notebook"] .markdown-body h1,
+[data-theme="notebook"] .markdown-body h2 {
+  border-bottom: 0;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+/* 标题下压一笔荧光笔 */
+[data-theme="notebook"] .markdown-body h2::after {
+  content: '';
+  display: block;
+  width: 5em;
+  height: 0.35em;
+  margin-top: 0.25em;
+  border-radius: 2px;
+  background: rgba(255, 224, 102, 0.85);
+}
+[data-theme="notebook"] .markdown-body a {
+  color: var(--color-link);
+  border-bottom: 1px solid rgba(47, 94, 168, 0.45);
+}
+/* 引用像整段被荧光笔划过 */
+[data-theme="notebook"] .markdown-body blockquote {
+  border-left: 3px solid rgba(214, 80, 80, 0.5);
+  background: rgba(255, 224, 102, 0.35);
+}
+/* 代码块像贴在纸上的便利贴：暖黄底 + 轻微错位阴影 */
+[data-theme="notebook"] .markdown-body pre {
+  background: var(--color-code-bg);
+  border: 1px solid var(--color-code-border);
+  border-radius: 2px;
+  box-shadow: 2px 2px 0 rgba(120, 110, 80, 0.12);
+}
+[data-theme="notebook"] .markdown-body th {
+  background: rgba(255, 224, 102, 0.45);
+  border: 1px dashed var(--color-border);
+}
+[data-theme="notebook"] .markdown-body td {
+  border: 1px dashed var(--color-border);
+}
+[data-theme="notebook"] .markdown-body tr:nth-child(even) {
+  background: rgba(47, 94, 168, 0.03);
+}
+
+/* ==================================================================
+   莫兰迪 Museum（亮色）
+   暖灰底 + 极低饱和的灰粉/灰绿/灰蓝，大留白、细发丝线、
+   标题小而克制。目标不是抓眼球，而是安静。
+   ================================================================== */
+[data-theme="museum"] {
+  --color-bg: #f4f1ec;
+  --color-surface: #faf8f4;
+  --color-border: #ddd7cf;
+  --color-text: #4a4640;
+  --color-text-muted: #857e74;
+  --color-accent-purple: #a8836f;
+  --color-accent-pink: #9aa88f;
+  --color-accent-purple-deep: #8d6a58;
+  --color-glow: rgba(250, 248, 244, 0.85);
+  --color-hover: rgba(168, 131, 111, 0.08);
+  --color-selection: rgba(154, 168, 143, 0.35);
+  --color-scrollbar: #d5cec6;
+  --color-scrollbar-hover: #a8836f;
+  --color-link: #8d6a58;
+  --color-link-hover: #a8836f;
+  --color-code-bg: #f0ece5;
+  --color-code-border: #ddd7cf;
+  --color-success: #6b8a6b;
+  --color-error: #a8675c;
+  --color-warning: #a08149;
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Georgia, 'Songti SC', SimSun, serif;
+}
+
+/* 留白：行距与段距都放松一点，标题压小、字重变轻 */
+[data-theme="museum"] .markdown-body {
+  line-height: 1.95;
+}
+[data-theme="museum"] .markdown-body h1 {
+  font-size: 1.95rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.6em;
+}
+[data-theme="museum"] .markdown-body h2 {
+  font-size: 1.3rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  border-bottom: 0;
+}
+/* 二级标题前置一个小圆点，像展签上的项目符号 */
+[data-theme="museum"] .markdown-body h2::before {
+  content: '';
+  display: inline-block;
+  width: 0.32em;
+  height: 0.32em;
+  margin-right: 0.6em;
+  vertical-align: 0.15em;
+  border-radius: 50%;
+  background: var(--color-accent-purple);
+}
+[data-theme="museum"] .markdown-body a {
+  color: var(--color-link);
+  border-bottom: 1px solid rgba(141, 106, 88, 0.35);
+}
+[data-theme="museum"] .markdown-body strong {
+  font-weight: 600;
+}
+[data-theme="museum"] .markdown-body pre,
+[data-theme="museum"] .markdown-body :is(
+  .mermaid-diagram, .plantuml-diagram, .apex-chart, .csv-table,
+  .pptx-container, .pptx-embed, .hm-widget, .json-tree, .pkt-container,
+  .diff-container .d2h-file-wrapper
+) {
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 6px 18px rgba(120, 110, 100, 0.06);
+}
+[data-theme="museum"] .markdown-body th {
+  background: transparent;
+  border-bottom: 1px solid var(--color-text-muted);
+  font-weight: 500;
+}
+[data-theme="museum"] .markdown-body td {
+  border-bottom: 1px solid var(--color-border);
+}
+[data-theme="museum"] .markdown-body blockquote {
+  border-left: 2px solid rgba(154, 168, 143, 0.8);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* ==================================================================
+   极光 Aurora（暗色）
+   深色底上三条缓慢漂移的青/紫/蓝光带，标题用渐变字。
+   动效刻意做到 72s 一个来回，并用 prefers-reduced-motion 兜底。
+   ================================================================== */
+[data-theme="aurora"] {
+  --color-bg: #060a12;
+  --color-surface: #0b1220;
+  --color-border: #17243a;
+  --color-text: #dbe6f5;
+  --color-text-muted: #8ea3c0;
+  --color-accent-purple: #4fd1c5;
+  --color-accent-pink: #a78bfa;
+  --color-accent-purple-deep: #7dd3fc;
+  --color-glow: rgba(6, 10, 18, 0.9);
+  --color-hover: rgba(79, 209, 197, 0.12);
+  --color-selection: rgba(167, 139, 250, 0.3);
+  --color-scrollbar: #17243a;
+  --color-scrollbar-hover: #4fd1c5;
+  --color-link: #7dd3fc;
+  --color-link-hover: #bae6fd;
+  --color-code-bg: #08101d;
+  --color-code-border: #17243a;
+  --color-success: #4fd1c5;
+  --color-error: #fb7185;
+  --color-warning: #fcd34d;
+}
+
+@keyframes aurora-drift {
+  0%   { background-position: 12% 0%, 88% 8%, 50% 100%; }
+  50%  { background-position: 26% 16%, 72% 0%, 34% 86%; }
+  100% { background-position: 4% 8%, 96% 22%, 62% 96%; }
+}
+[data-theme="aurora"] body {
+  background-image:
+    radial-gradient(900px 620px at 15% 0%, rgba(79, 209, 197, 0.18), transparent 65%),
+    radial-gradient(820px 560px at 85% 6%, rgba(167, 139, 250, 0.16), transparent 65%),
+    radial-gradient(900px 700px at 50% 100%, rgba(56, 189, 248, 0.12), transparent 65%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  animation: aurora-drift 72s ease-in-out infinite alternate;
+}
+/* 动效对前庭敏感人群不友好，也省电 */
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="aurora"] body { animation: none; }
+}
+
+/* 标题渐变字：支持才启用，不支持时退回普通前景色 */
+[data-theme="aurora"] .markdown-body h1 {
+  border-bottom-color: rgba(79, 209, 197, 0.3);
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  [data-theme="aurora"] .markdown-body h1 {
+    background-image: linear-gradient(92deg, #7dd3fc, #4fd1c5 45%, #a78bfa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+}
+[data-theme="aurora"] .markdown-body a {
+  color: var(--color-link);
+  border-bottom: 1px solid rgba(125, 211, 252, 0.35);
+}
+/* 玻璃卡片：半透明面 + 青色细边 + 内发光 */
+[data-theme="aurora"] .markdown-body pre,
+[data-theme="aurora"] .markdown-body :is(
+  .mermaid-diagram, .plantuml-diagram, .apex-chart, .csv-table,
+  .pptx-container, .pptx-embed, .hm-widget, .json-tree, .pkt-container,
+  .diff-container .d2h-file-wrapper
+) {
+  border-radius: 14px;
+  background: rgba(11, 18, 32, 0.72);
+  border: 1px solid rgba(79, 209, 197, 0.22);
+  box-shadow: 0 0 26px rgba(79, 209, 197, 0.08), inset 0 0 30px rgba(167, 139, 250, 0.05);
+}
+[data-theme="aurora"] .markdown-body th {
+  background: rgba(79, 209, 197, 0.1);
+  border-color: var(--color-border);
+}
+[data-theme="aurora"] .markdown-body tr:nth-child(even) {
+  background: rgba(125, 211, 252, 0.04);
+}
+[data-theme="aurora"] .markdown-body blockquote {
+  border-left: 2px solid rgba(167, 139, 250, 0.7);
+  background: rgba(167, 139, 250, 0.06);
+}
+
+/* ==================================================================
+   时尚刊 Editorial（亮色）
+   巨号细衬线标题 + 大量留白 + 洋红点缀 + 发丝线。
+   正文用无衬线，标题用衬线，形成杂志常见的字族对比。
+   ================================================================== */
+[data-theme="editorial"] {
+  --color-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-border: #e8e6e3;
+  --color-text: #16161a;
+  --color-text-muted: #7b7b80;
+  --color-accent-purple: #e6007a;
+  --color-accent-pink: #16161a;
+  --color-accent-purple-deep: #16161a;
+  --color-glow: rgba(255, 255, 255, 0.9);
+  --color-hover: rgba(230, 0, 122, 0.06);
+  --color-selection: rgba(230, 0, 122, 0.18);
+  --color-scrollbar: #dcdad7;
+  --color-scrollbar-hover: #e6007a;
+  --color-link: #16161a;
+  --color-link-hover: #e6007a;
+  --color-code-bg: #f7f6f5;
+  --color-code-border: #e8e6e3;
+  --color-success: #00753f;
+  --color-error: #d0021b;
+  --color-warning: #a86a00;
+  --font-display: 'Didot', 'Playfair Display', 'Times New Roman', Georgia, 'Songti SC', serif;
+  --font-body: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+/* 巨号细衬线标题，行高收到 1.02 */
+[data-theme="editorial"] .markdown-body h1 {
+  font-size: 3.4rem;
+  font-weight: 300;
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  border-bottom: 1px solid var(--color-text);
+  padding-bottom: 0.3em;
+}
+[data-theme="editorial"] .markdown-body h2 {
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  border-bottom: 0;
+  margin-top: 2em;
+}
+/* 二级标题上方一小段洋红短线，像杂志的栏目引导线 */
+[data-theme="editorial"] .markdown-body h2::before {
+  content: '';
+  display: block;
+  width: 2.2em;
+  height: 2px;
+  margin-bottom: 0.55em;
+  background: var(--color-accent-purple);
+}
+[data-theme="editorial"] .markdown-body a {
+  color: var(--color-link);
+  border-bottom: 1px solid rgba(22, 22, 26, 0.4);
+}
+[data-theme="editorial"] .markdown-body a:hover {
+  color: var(--color-link-hover);
+  border-bottom-color: currentColor;
+}
+[data-theme="editorial"] .markdown-body pre,
+[data-theme="editorial"] .markdown-body :is(
+  .mermaid-diagram, .plantuml-diagram, .apex-chart, .csv-table,
+  .pptx-container, .pptx-embed, .hm-widget, .json-tree, .pkt-container,
+  .diff-container .d2h-file-wrapper
+) {
+  border-radius: 0;
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+}
+/* 表格：发丝线 + 全大写表头拉字距 */
+[data-theme="editorial"] .markdown-body th,
+[data-theme="editorial"] .markdown-body td {
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+}
+[data-theme="editorial"] .markdown-body thead th {
+  background: none;
+  border-bottom: 1px solid var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.78em;
+  font-weight: 500;
+}
+[data-theme="editorial"] .markdown-body tr:nth-child(even) {
+  background: none;
+}
+[data-theme="editorial"] .markdown-body blockquote {
+  border-left: 2px solid var(--color-accent-purple);
+  font-style: italic;
+  font-size: 1.05em;
+}
+[data-theme="editorial"] .markdown-body img {
+  border-radius: 0;
+}
+
+/* ==================================================================
+   打字机 Typewriter（亮色）
+   米色连续纸 + 全等宽字 + 字键印记般的深浅不均 + 标题下的色带。
+   与「手写笔记」的横线纸区分：这套是竖向栏位导线与机械感。
+   ================================================================== */
+[data-theme="typewriter"] {
+  --color-bg: #f4efe3;
+  --color-surface: #f7f2e6;
+  --color-border: #d8cdb6;
+  --color-text: #2b2620;
+  --color-text-muted: #7a7164;
+  --color-accent-purple: #8c2f26;
+  --color-accent-pink: #c9bda4;
+  --color-accent-purple-deep: #5f1f18;
+  --color-glow: rgba(247, 242, 230, 0.85);
+  --color-hover: rgba(140, 47, 38, 0.07);
+  --color-selection: rgba(140, 47, 38, 0.16);
+  --color-scrollbar: #cdc2ab;
+  --color-scrollbar-hover: #8c2f26;
+  --color-link: #5f1f18;
+  --color-link-hover: #8c2f26;
+  --color-code-bg: #ece5d3;
+  --color-code-border: #d0c4ab;
+  --color-success: #3f6b45;
+  --color-error: #a33128;
+  --color-warning: #8a6416;
+  --font-display: 'Courier New', 'Nimbus Mono PS', Courier, 'Kaiti SC', 'Microsoft YaHei', monospace;
+  --font-body: 'Courier New', 'Nimbus Mono PS', Courier, 'Songti SC', 'Microsoft YaHei', monospace;
+}
+
+/* 连续纸的栏位导线：极淡的竖线 */
+[data-theme="typewriter"] body {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 39px,
+    rgba(120, 100, 70, 0.05) 39px 40px
+  );
+}
+/* 标题上方一道色带，像机器里的墨带 */
+[data-theme="typewriter"] .markdown-body h1 {
+  border-bottom: 0;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+[data-theme="typewriter"] .markdown-body h1::before {
+  content: '';
+  display: block;
+  width: 3.2em;
+  height: 8px;
+  margin-bottom: 0.5em;
+  background: var(--color-accent-purple);
+}
+[data-theme="typewriter"] .markdown-body h2 {
+  border-bottom: 1px dashed var(--color-border);
+  padding-bottom: 0.35em;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+[data-theme="typewriter"] .markdown-body a {
+  color: var(--color-link);
+  border-bottom: 1px dashed var(--color-link);
+  font-weight: 600;
+}
+/* 卡片：像压出来的印记，带一点点墨痕投影 */
+[data-theme="typewriter"] .markdown-body pre,
+[data-theme="typewriter"] .markdown-body :is(
+  .mermaid-diagram, .plantuml-diagram, .apex-chart, .csv-table,
+  .pptx-container, .pptx-embed, .hm-widget, .json-tree, .pkt-container,
+  .diff-container .d2h-file-wrapper
+) {
+  border-radius: 0;
+  border: 1px solid var(--color-border);
+  box-shadow: 1px 1px 0 rgba(90, 75, 50, 0.18);
+}
+[data-theme="typewriter"] .markdown-body th {
+  background: transparent;
+  border-bottom: 2px solid var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.82em;
+}
+[data-theme="typewriter"] .markdown-body td {
+  border-bottom: 1px solid var(--color-border);
+}
+[data-theme="typewriter"] .markdown-body tr:nth-child(even) {
+  background: rgba(120, 100, 70, 0.04);
+}
+[data-theme="typewriter"] .markdown-body blockquote {
+  border-left: 3px dashed var(--color-accent-purple);
+}
+
+/* ==================================================================
+   黑板 Blackboard（暗色）
+   炭黑板面 + 粉笔白字 + 粉尘颗粒，标题像板书，卡片是粉笔画的框。
+   ================================================================== */
+[data-theme="blackboard"] {
+  --color-bg: #232a26;
+  --color-surface: #1b211d;
+  --color-border: #3d4842;
+  --color-text: #e9e7de;
+  --color-text-muted: #a6afa4;
+  --color-accent-purple: #ffd97d;
+  --color-accent-pink: #9fd6c2;
+  --color-accent-purple-deep: #ffe9a8;
+  --color-glow: rgba(35, 42, 38, 0.85);
+  --color-hover: rgba(255, 217, 125, 0.1);
+  --color-selection: rgba(255, 217, 125, 0.28);
+  --color-scrollbar: #3d4842;
+  --color-scrollbar-hover: #ffd97d;
+  --color-link: #ffd97d;
+  --color-link-hover: #fff0c4;
+  --color-code-bg: #161b18;
+  --color-code-border: #3d4842;
+  --color-success: #9fd6c2;
+  --color-error: #f2a0a0;
+  --color-warning: #ffd97d;
+  --font-display: 'Chalkboard SE', 'Comic Sans MS', 'Kaiti SC', 'KaiTi', 'Microsoft YaHei', sans-serif;
+  --font-body: 'Chalkboard SE', 'Kaiti SC', 'KaiTi', 'Microsoft YaHei', sans-serif;
+}
+
+/* 板面粉尘：极细的白点颗粒 */
+[data-theme="blackboard"] body {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+[data-theme="blackboard"] .markdown-body h1,
+[data-theme="blackboard"] .markdown-body h2 {
+  color: #f3f1e8;
+  letter-spacing: 0.03em;
+}
+/* 板书：标题下面一道粉笔划痕（虚线） */
+[data-theme="blackboard"] .markdown-body h1 {
+  border-bottom: 0;
+}
+[data-theme="blackboard"] .markdown-body h1::after {
+  content: '';
+  display: block;
+  width: 6em;
+  height: 3px;
+  margin-top: 0.4em;
+  background-image: linear-gradient(90deg, rgba(255, 217, 125, 0.85) 60%, transparent 60%);
+  background-size: 9px 3px;
+}
+[data-theme="blackboard"] .markdown-body a {
+  color: var(--color-link);
+  border-bottom: 1px dashed rgba(255, 217, 125, 0.6);
+}
+/* 粉笔画的框：虚线 + 手绘感的圆角 */
+[data-theme="blackboard"] .markdown-body pre,
+[data-theme="blackboard"] .markdown-body :is(
+  .mermaid-diagram, .plantuml-diagram, .apex-chart, .csv-table,
+  .pptx-container, .pptx-embed, .hm-widget, .json-tree, .pkt-container,
+  .diff-container .d2h-file-wrapper
+) {
+  border-radius: 10px;
+  border: 1px dashed rgba(233, 231, 222, 0.35);
+  box-shadow: none;
+  background: var(--color-surface);
+}
+[data-theme="blackboard"] .markdown-body th {
+  background: rgba(255, 217, 125, 0.1);
+  border-bottom: 1px solid rgba(233, 231, 222, 0.4);
+  color: #f3f1e8;
+}
+[data-theme="blackboard"] .markdown-body td {
+  border-bottom: 1px dashed rgba(233, 231, 222, 0.18);
+}
+[data-theme="blackboard"] .markdown-body blockquote {
+  border-left: 3px solid rgba(159, 214, 194, 0.7);
+  color: #dcd9cf;
+}
+
+/* ==================================================================
+   邮政包裹 Parcel（亮色）
+   牛皮纸底 + 折痕线 + 邮戳红 + 邮票蓝，表格像快递面单。
+   ================================================================== */
+[data-theme="parcel"] {
+  --color-bg: #e9dcc2;
+  --color-surface: #f3ead7;
+  --color-border: #c6b391;
+  --color-text: #3a2f22;
+  --color-text-muted: #7c6b52;
+  --color-accent-purple: #b23a2f;
+  --color-accent-pink: #2f5d7c;
+  --color-accent-purple-deep: #8c2b22;
+  --color-glow: rgba(243, 234, 215, 0.85);
+  --color-hover: rgba(178, 58, 47, 0.08);
+  --color-selection: rgba(47, 93, 124, 0.2);
+  --color-scrollbar: #c6b391;
+  --color-scrollbar-hover: #b23a2f;
+  --color-link: #2f5d7c;
+  --color-link-hover: #b23a2f;
+  --color-code-bg: #efe4cd;
+  --color-code-border: #c6b391;
+  --color-success: #4a6b3f;
+  --color-error: #b23a2f;
+  --color-warning: #8a6416;
+  --font-display: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+/* 牛皮纸：斜向纤维纹 + 轻微色斑 */
+[data-theme="parcel"] body {
+  background-image:
+    repeating-linear-gradient(45deg, rgba(120, 96, 60, 0.035) 0 2px, transparent 2px 5px),
+    radial-gradient(700px 420px at 18% 6%, rgba(160, 130, 80, 0.10), transparent 70%);
+  background-attachment: fixed;
+}
+[data-theme="parcel"] .markdown-body h1 {
+  border-bottom: 2px solid var(--color-text);
+  padding-bottom: 0.35em;
+  letter-spacing: 0.02em;
+}
+/* 二级标题前置一枚「邮票」色块 */
+[data-theme="parcel"] .markdown-body h2::before {
+  content: '';
+  display: inline-block;
+  width: 0.62em;
+  height: 0.46em;
+  margin-right: 0.55em;
+  vertical-align: 0.06em;
+  border: 1px solid var(--color-border);
+  background: repeating-linear-gradient(45deg, var(--color-accent-pink) 0 3px, #fff 3px 6px);
+}
+[data-theme="parcel"] .markdown-body a {
+  color: var(--color-link);
+  border-bottom: 1px dotted var(--color-link);
+  font-weight: 600;
+}
+/* 卡片：贴纸标签式的白边 + 轻投影 */
+[data-theme="parcel"] .markdown-body pre,
+[data-theme="parcel"] .markdown-body :is(
+  .mermaid-diagram, .plantuml-diagram, .apex-chart, .csv-table,
+  .pptx-container, .pptx-embed, .hm-widget, .json-tree, .pkt-container,
+  .diff-container .d2h-file-wrapper
+) {
+  border-radius: 3px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 3px 0 rgba(120, 96, 60, 0.12);
+}
+/* 表格像面单：表头粗黑、虚线分隔 */
+[data-theme="parcel"] .markdown-body th {
+  background: transparent;
+  border-bottom: 2px solid var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.82em;
+}
+[data-theme="parcel"] .markdown-body td {
+  border-bottom: 1px dashed var(--color-border);
+}
+[data-theme="parcel"] .markdown-body tr:nth-child(even) {
+  background: rgba(120, 96, 60, 0.04);
+}
+/* 分隔线做成折痕 */
+[data-theme="parcel"] .markdown-body hr {
+  border: 0;
+  border-top: 1px dashed var(--color-border);
+}
+[data-theme="parcel"] .markdown-body blockquote {
+  border-left: 3px solid var(--color-accent-purple);
+  background: rgba(178, 58, 47, 0.05);
+}
+
+/* ==================================================================
+   高对比 AAA（亮色）
+   纯黑白、字号更大、边框更粗、焦点环加粗。不好看，
+   但对比度全部拉到 7:1 以上，弱视与强光环境都能读。
+   ================================================================== */
+[data-theme="aaa"] {
+  --color-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-border: #000000;
+  --color-text: #000000;
+  --color-text-muted: #333333;
+  --color-accent-purple: #000000;
+  --color-accent-pink: #000000;
+  --color-accent-purple-deep: #000000;
+  --color-glow: rgba(255, 255, 255, 0.9);
+  --color-hover: rgba(0, 0, 0, 0.08);
+  --color-selection: #000000;
+  --color-scrollbar: #000000;
+  --color-scrollbar-hover: #000000;
+  --color-link: #000000;
+  --color-link-hover: #000000;
+  --color-code-bg: #ffffff;
+  --color-code-border: #000000;
+  --color-success: #005a30;
+  --color-error: #a80000;
+  --color-warning: #6b4b00;
+  /* 字号整体放大一档 */
+  --font-size-body: 18px;
+  --font-size-md: 19px;
+  --font-weight-body: 500;
+  --font-weight-md: 500;
+  --font-weight-h1: 700;
+  --font-weight-h2: 700;
+  --font-weight-h3: 700;
+  --font-display: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-body: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+[data-theme="aaa"] .markdown-body {
+  line-height: 1.8;
+}
+[data-theme="aaa"] .markdown-body h1 {
+  border-bottom: 4px solid #000000;
+  padding-bottom: 0.3em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+[data-theme="aaa"] .markdown-body h2 {
+  border-bottom: 3px solid #000000;
+  padding-bottom: 0.25em;
+  font-weight: 700;
+}
+[data-theme="aaa"] .markdown-body a {
+  color: #000000;
+  border-bottom: 3px solid #000000;
+  font-weight: 600;
+}
+/* 焦点环加粗，键盘操作时位置非常清楚 */
+[data-theme="aaa"] :focus-visible {
+  outline: 4px solid #000000;
+  outline-offset: 2px;
+}
+/* 行内代码：去掉默认的粉色底，改成下划线的纯黑，保持「纯黑白」承诺 */
+[data-theme="aaa"] .markdown-body code {
+  background: transparent;
+  color: #000000;
+  border-bottom: 2px solid #000000;
+  padding: 0 0.1em;
+}
+/* 代码块：语法色里最浅的几种达不到 7:1，这里统一转成纯黑 */
+[data-theme="aaa"] .markdown-body pre code,
+[data-theme="aaa"] .markdown-body pre code span,
+[data-theme="aaa"] .markdown-body pre .hljs {
+  color: #000000 !important;
+  background: transparent;
+}
+[data-theme="aaa"] .markdown-body pre,
+[data-theme="aaa"] .markdown-body :is(
+  .mermaid-diagram, .plantuml-diagram, .apex-chart, .csv-table,
+  .pptx-container, .pptx-embed, .hm-widget, .json-tree, .pkt-container,
+  .diff-container .d2h-file-wrapper
+) {
+  border-radius: 0;
+  border: 3px solid #000000;
+  box-shadow: none;
+}
+[data-theme="aaa"] .markdown-body th,
+[data-theme="aaa"] .markdown-body td {
+  border: 2px solid #000000;
+}
+[data-theme="aaa"] .markdown-body th {
+  background: #000000;
+  color: #ffffff;
+}
+[data-theme="aaa"] .markdown-body tr:nth-child(even) {
+  background: #ffffff;
+}
+[data-theme="aaa"] .markdown-body blockquote {
+  border-left: 6px solid #000000;
+  font-weight: 500;
+}
+[data-theme="aaa"] .markdown-body hr {
+  border: 0;
+  border-top: 3px solid #000000;
+}
+[data-theme="aaa"] .markdown-body img {
+  border: 3px solid #000000;
+  border-radius: 0;
+}
+
+/* ==================================================================
+   控件圆角（--radius-control）
+   自绘下拉的按钮与弹层按主题气质取圆角：印刷派直角、
+   工程派近乎直角、柔和派大圆角。
+   ================================================================== */
+[data-theme="print"],
+[data-theme="newsprint"],
+[data-theme="swiss"],
+[data-theme="aaa"],
+[data-theme="typewriter"],
+[data-theme="terminal"] { --radius-control: 0px; }
+
+[data-theme="blueprint"] { --radius-control: 2px; }
+[data-theme="parcel"] { --radius-control: 3px; }
+[data-theme="notebook"] { --radius-control: 3px; }
+[data-theme="museum"] { --radius-control: 4px; }
+[data-theme="blackboard"] { --radius-control: 8px; }
+[data-theme="neon"] { --radius-control: 12px; }
+[data-theme="aurora"] { --radius-control: 12px; }
+[data-theme="watercolor"] { --radius-control: 14px; }
+
+/* ==================================================================
+   侧栏标题基准字号（--sidebar-title-size）
+   展示字体偏宽的主题（等宽、手写体）天生占地方，先给一个略小的基准，
+   剩下的由 sidebar-title-fit.js 按实际可用宽度缩。
+   ================================================================== */
+[data-theme="typewriter"] { --sidebar-title-size: 1rem; }
+[data-theme="terminal"] { --sidebar-title-size: 1rem; }
+[data-theme="blackboard"] { --sidebar-title-size: 1.05rem; }
+[data-theme="notebook"] { --sidebar-title-size: 1.05rem; }
+[data-theme="watercolor"] { --sidebar-title-size: 1.05rem; }
+[data-theme="print"],
+[data-theme="newsprint"],
+[data-theme="editorial"],
+[data-theme="museum"] { --sidebar-title-size: 1.05rem; }

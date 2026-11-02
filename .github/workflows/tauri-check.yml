@@ -1,0 +1,97 @@
+name: Tauri Check
+
+# 此前 9 个 workflow 均不涉及 src-tauri/：Rust 代码无 build/clippy 检查、
+# build-desktop-dist.js 无验证，破坏只能人肉发现。轻量检查（不打包安装器）。
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src-tauri/**'
+      - 'iris/scripts/build-desktop-dist.js'
+      - '.github/workflows/tauri-check.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src-tauri/**'
+      - 'iris/scripts/build-desktop-dist.js'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tauri-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
+        with:
+          workspaces: src-tauri
+
+      # Tauri 的 generate_context!() 在编译期要求 frontendDist（../dist）存在，
+      # 否则报 "The `frontendDist` configuration is set to ../dist but this path doesn't exist"
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '20'
+
+      - name: Build frontend dist (编译期依赖)
+        run: node iris/scripts/build-desktop-dist.js
+
+      - name: Install Linux system deps (Tauri v2 webkit)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
+
+      - name: Format check
+        run: cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
+
+      - name: Clippy
+        run: cargo clippy --manifest-path src-tauri/Cargo.toml -- -D warnings
+
+      - name: Cargo check
+        run: cargo check --manifest-path src-tauri/Cargo.toml
+
+  desktop-dist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '20'
+
+      # build-desktop-dist.js 挑选逻辑验证：能跑完且产物含关键入口文件
+      - name: Build desktop dist
+        run: node iris/scripts/build-desktop-dist.js
+
+      - name: Verify dist contents
+        run: |
+          test -f dist/index.html
+          test -f dist/sw.js
+          test -f dist/manifest.json
+          test -f dist/iris/app.js
+          test -f dist/iris/desktop-bridge.js
+          # 用 `test ! -d` 而不是 `! test -d`：取反的命令不受 set -e 约束，
+          # 目录真存在时也不会让 job 失败
+          test ! -d dist/iris/node_modules
+          test ! -d dist/iris/scripts
+          echo 'dist 产物结构校验通过'
