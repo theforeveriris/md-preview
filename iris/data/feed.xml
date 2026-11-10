@@ -5,13 +5,13 @@
     <link>https://theforeveriris.github.io/md-preview/</link>
     <description>一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能</description>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 02 Nov 2026 23:51:43 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 10 Nov 2026 22:34:57 GMT</lastBuildDate>
     <atom:link href="https://theforeveriris.github.io/md-preview/iris/data/feed.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>配置参考</title>
       <link>https://theforeveriris.github.io/md-preview/docs/configuration.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/configuration.md</guid>
-      <pubDate>Mon, 02 Nov 2026 23:50:14 GMT</pubDate>
+      <pubDate>Tue, 10 Nov 2026 22:34:29 GMT</pubDate>
       <description>Markdown Preview 的配置分为两层： 1. 构建/部署配置 — （仓库级，所有访客共享） 2. 运行时设置 — 浏览器 localStorage（用户级，仅当前浏览器生效） --- 修改此文件后需推送代码触发重新部署。 | 字段 | 类型 | 默认值 | 说明 | |------|------|--------|------| | | string | - | GitHub 用户名或</description>
       <category>配置</category>
       <content:encoded><![CDATA[<h1>配置参考</h1>
@@ -56,11 +56,17 @@
   &quot;owner&quot;: &quot;&quot;,
   &quot;repo&quot;: &quot;&quot;,
   &quot;branch&quot;: &quot;main&quot;,
+  &quot;provider&quot;: &quot;github&quot;,
+  &quot;gitlabUrl&quot;: &quot;https://gitlab.com&quot;,
+  &quot;projectId&quot;: &quot;&quot;,
   &quot;title&quot;: &quot;Markdown Preview&quot;,
   &quot;defaultTheme&quot;: &quot;default&quot;,
   &quot;showEditButton&quot;: true,
   &quot;showReadingTime&quot;: true,
-  &quot;showBreadcrumbs&quot;: true
+  &quot;showBreadcrumbs&quot;: true,
+  &quot;homepage&quot;: &quot;&quot;,
+  &quot;plantumlServers&quot;: [],
+  &quot;plugins&quot;: {}
 }
 </code></pre>
 <table>
@@ -73,28 +79,58 @@
 </tr>
 </thead>
 <tbody><tr>
+<td><code>owner</code></td>
+<td>string</td>
+<td>-</td>
+<td>GitHub/Gitee/GitLab 用户名或组织名</td>
+</tr>
+<tr>
+<td><code>repo</code></td>
+<td>string</td>
+<td>-</td>
+<td>仓库名</td>
+</tr>
+<tr>
 <td><code>branch</code></td>
 <td>string</td>
 <td><code>main</code></td>
 <td>文档所在的 Git 分支</td>
 </tr>
 <tr>
+<td><code>provider</code></td>
+<td>string</td>
+<td><code>github</code></td>
+<td>Git 托管平台：<code>github</code> | <code>gitee</code> | <code>gitlab</code></td>
+</tr>
+<tr>
+<td><code>gitlabUrl</code></td>
+<td>string</td>
+<td><code>https://gitlab.com</code></td>
+<td>自托管 GitLab 地址（仅 <code>provider=gitlab</code> 时生效）</td>
+</tr>
+<tr>
+<td><code>projectId</code></td>
+<td>string</td>
+<td>-</td>
+<td>GitLab 项目 ID 或 URL 编码路径（仅 <code>provider=gitlab</code> 时需要）</td>
+</tr>
+<tr>
 <td><code>title</code></td>
 <td>string</td>
 <td><code>Markdown Preview</code></td>
-<td>站点标题</td>
+<td>站点标题，用于浏览器标签页和 OGP 元数据</td>
 </tr>
 <tr>
 <td><code>defaultTheme</code></td>
 <td>string</td>
 <td><code>default</code></td>
-<td>默认主题 ID</td>
+<td>默认主题 ID，首次访问（无 localStorage 记录）时生效</td>
 </tr>
 <tr>
 <td><code>showEditButton</code></td>
 <td>boolean</td>
 <td><code>true</code></td>
-<td>是否显示&quot;编辑此页&quot;按钮</td>
+<td>是否显示「编辑此页」按钮</td>
 </tr>
 <tr>
 <td><code>showReadingTime</code></td>
@@ -109,12 +145,27 @@
 <td>是否显示面包屑导航</td>
 </tr>
 <tr>
+<td><code>homepage</code></td>
+<td>string</td>
+<td>-</td>
+<td>门户页首页文档路径，如 <code>docs/index.md</code></td>
+</tr>
+<tr>
 <td><code>plantumlServers</code></td>
 <td>array</td>
 <td>内置列表</td>
 <td>PlantUML 渲染服务列表，按顺序尝试</td>
 </tr>
+<tr>
+<td><code>plugins</code></td>
+<td>object</td>
+<td><code>{}</code></td>
+<td>插件专属配置，按插件名分组传入 <code>init(config)</code></td>
+</tr>
 </tbody></table>
+<blockquote>
+<p><strong>配置固定说明</strong>：以上所有字段均可在 <code>iris/config.json</code> 中固定为指定值，覆盖代码内置默认值。修改后推送代码即生效，无需改代码。加载顺序：内置默认 → <code>config.json</code>（覆盖）→ 用户 localStorage（如主题选择，会覆盖前两者）。</p>
+</blockquote>
 <h4>PlantUML 渲染服务（plantumlServers）</h4>
 <p>PlantUML 图表默认依次尝试官方服务器与 Kroki 公共服务，全部失败时自动降级为源码展示并提供在线编辑器链接。若你自建了 PlantUML 服务或想使用其他镜像，可在 <code>iris/config.json</code> 中覆盖：</p>
 <pre><code class="language-json">{
@@ -140,6 +191,59 @@
 <td>服务基础地址，渲染时自动拼接 <code>/svg/&lt;编码&gt;</code></td>
 </tr>
 </tbody></table>
+<h3>功能开关（features）</h3>
+<p><code>config.json</code> 的 <code>features</code> 块控制各渲染器和插件的启用/禁用。每个功能项包含 <code>enabled</code>（布尔值）和 <code>description</code>（功能说明）。</p>
+<pre><code class="language-json">{
+  &quot;features&quot;: {
+    &quot;mermaid&quot;: { &quot;enabled&quot;: true, &quot;description&quot;: &quot;Mermaid 时序图/流程图/甘特图等&quot; },
+    &quot;plantuml&quot;: { &quot;enabled&quot;: true, &quot;description&quot;: &quot;PlantUML UML 图表&quot; },
+    &quot;geo&quot;: { &quot;enabled&quot;: false, &quot;description&quot;: &quot;地理地图渲染&quot; },
+    &quot;qrcode&quot;: { &quot;enabled&quot;: true, &quot;description&quot;: &quot;二维码生成插件&quot; }
+  }
+}
+</code></pre>
+<p><strong>同步机制</strong>：修改 <code>features</code> 块后，运行同步脚本使文件系统与配置保持一致：</p>
+<pre><code class="language-bash">npm run sync:features          # 执行同步（移入/移出文件 + 重建 index.html + 刷新预缓存）
+npm run sync:features:dry      # 仅预览变更，不执行
+</code></pre>
+<blockquote>
+<p>推送 <code>config.json</code> 后无需手动执行：部署工作流（<code>.github/workflows/build-and-deploy.yml</code>）会在构建前自动运行 <code>sync-features.js</code>，改值即生效。</p>
+</blockquote>
+<p>同步脚本的行为：</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>enabled: false</th>
+<th>enabled: true</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>渲染器文件</td>
+<td>移入同目录 <code>.disabled/</code> 子目录（备份）</td>
+<td>从 <code>.disabled/</code> 恢复</td>
+</tr>
+<tr>
+<td><code>index.html</code></td>
+<td>按清单顺序重建脚本块，移除对应标签</td>
+<td>按清单顺序重建脚本块，恢复对应标签</td>
+</tr>
+<tr>
+<td>插件文件</td>
+<td>移入 <code>.disabled/</code> 子目录</td>
+<td>从 <code>.disabled/</code> 恢复</td>
+</tr>
+<tr>
+<td><code>plugins/directory.json</code></td>
+<td>移除插件条目</td>
+<td>确保插件条目存在</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><code>.disabled/</code> 备份目录建议一并提交入库——这样换机器或 CI 重新启用时能直接恢复源文件。预缓存与桌面端构建会自动跳过 <code>.disabled/</code>，不会把禁用文件带进产物。</p>
+</blockquote>
+<p><strong>渲染器解耦</strong>：各渲染器通过 <code>window.MarkdownPreview.renderers</code> 注册表独立注册，<code>runRenderers()</code> 逐渲染器执行并隔离错误（任一渲染器抛异常不影响其他渲染器）。跨渲染器调用均有 <code>if (renderers.X)</code> 守卫，删除某个渲染器不会导致连锁崩溃，相关语法块会自动退化为普通代码块/表格。</p>
+<p><strong>清单文件</strong>：<code>iris/scripts/renderer-manifest.json</code> 是渲染器/插件的完整清单，包含文件路径、类型和功能描述。新增渲染器时在此登记，同步脚本会自动管理。</p>
 <h3>首页（homepage）</h3>
 <p>不配置时打开站点显示「选择一个文件开始阅读」空状态；配置 <code>homepage</code> 后，打开站点（或点面包屑回首页）会先进入指定的首页形态：</p>
 <pre><code class="language-jsonc">{
@@ -604,6 +708,246 @@
 <li>单条建议不超过 30 个字（气泡最宽 240px，约两行半）；</li>
 <li>台词保持纯文本、不带 emoji，与站点文案规范一致；</li>
 <li>该文件已纳入 Service Worker 预缓存清单（<code>iris/data/precache-manifest.json</code>），修改后离线缓存需刷新一次才会更新。</li>
+</ul>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>LLDP / CDP 邻居拓扑</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/examples/lldp-examples.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/lldp-examples.md</guid>
+      <pubDate>Mon, 02 Nov 2026 23:51:48 GMT</pubDate>
+      <description>粘贴 / 输出，即可得到可交互拓扑图。 源码（直接粘贴 输出，Capability codes 段可留可去）： lldp Capability codes: (R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device (W) WLAN Access Point, (P) Repeater, (S) Station, (O) Othe</description>
+      <category>网络</category>
+      <category>拓扑</category>
+      <content:encoded><![CDATA[<h1>LLDP / CDP 邻居拓扑</h1>
+<p>粘贴 <code>show lldp neighbors</code> / <code>show cdp neighbors</code> 输出，即可得到可交互拓扑图。</p>
+<h2>Cisco LLDP</h2>
+<p><strong>源码</strong>（直接粘贴 <code>show lldp neighbors</code> 输出，Capability codes 段可留可去）：</p>
+<pre><code class="language-markdown">```lldp
+Capability codes:
+	(R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device
+	(W) WLAN Access Point, (P) Repeater, (S) Station, (O) Other
+
+Device ID           Local Intf     Hold-time  Capability      Port ID
+core01              Gi0/0/1        120        BR              Gi0/0/24
+sw-access-02        Gi0/0/2        120        B               Gi0/0/5
+sw-access-03        Gi0/0/3        120        B               Gi0/0/6
+```
+</code></pre>
+<p><strong>渲染效果</strong>（本设备为主题色节点，双击可切换布局）：</p>
+<pre><code class="language-lldp">Capability codes:
+	(R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device
+	(W) WLAN Access Point, (P) Repeater, (S) Station, (O) Other
+
+Device ID           Local Intf     Hold-time  Capability      Port ID
+core01              Gi0/0/1        120        BR              Gi0/0/24
+sw-access-02        Gi0/0/2        120        B               Gi0/0/5
+sw-access-03        Gi0/0/3        120        B               Gi0/0/6
+</code></pre>
+<h2>CDP 邻居</h2>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```cdp
+Device ID        Local Int  Port      Hold-time  Capability  Platform
+core01           Gi0/0/1    Gi0/0/24  165        R S I       SW-1
+sw-access-02     Gi0/0/2    Gi0/0/5   165        B S         S2960
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-cdp">Device ID        Local Int  Port      Hold-time  Capability  Platform
+core01           Gi0/0/1    Gi0/0/24  165        R S I       SW-1
+sw-access-02     Gi0/0/2    Gi0/0/5   165        B S         S2960
+</code></pre>
+<p>交互说明：节点悬停或点击会高亮邻居链路（点本设备恢复），顶部按钮切换<strong>环形 / 同心</strong>布局，<strong>导出 SVG</strong> 下载当前图；双向边自动去重，边标签为 <code>本端口 ↔ 对端口</code>。解析失败回退为源码块。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>渲染内容改进总览</title>
+      <link>https://theforeveriris.github.io/md-preview/docs/render-improvements.md</link>
+      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/render-improvements.md</guid>
+      <pubDate>Mon, 02 Nov 2026 23:51:48 GMT</pubDate>
+      <description>本页汇总「渲染内容改进实施总纲」落地的全部能力。每项均给出语法、示例文档与失败回退说明。 源码： code @code @file #Lx-Lylang=iris/data/code-snippets.jsonfetchnode iris/scripts/build-code-snippets.js换行折叠纯文本@[code]@[file]#L39-L50iris/js/langs/extra-l</description>
+      <category>渲染</category>
+      <category>新功能</category>
+      <content:encoded><![CDATA[<h1>渲染内容改进总览</h1>
+<p>本页汇总「渲染内容改进实施总纲」落地的全部能力。每项均给出语法、示例文档与失败回退说明。</p>
+<h2>源码与代码阅读</h2>
+<h3>源码嵌入 <code>@[code]</code> / <code>@[file]</code></h3>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```code
+@[code](iris/js/renderers/table-tools.js#L1-L60 lang=js)
+@[file](iris/js/renderers/code-reader.js)
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-code">@[code](iris/js/renderers/table-tools.js#L1-L60 lang=js)
+@[file](iris/js/renderers/code-reader.js)
+</code></pre>
+<ul>
+<li>整文件 / 行范围（<code>#Lx-Ly</code>）/ <code>lang=</code> 覆盖三种写法。</li>
+<li>优先读构建期快照 <code>iris/data/code-snippets.json</code>（离线可用），缺失时同源 <code>fetch</code>。</li>
+<li>构建期校验：<code>node iris/scripts/build-code-snippets.js</code>（输出告警：路径不存在、行号越界）。</li>
+<li>失败回退：错误卡片 + 源文件链接。</li>
+<li>示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/code-reader-examples.md">代码阅读与源码嵌入</a>。</li>
+</ul>
+<h3>代码块阅读模式</h3>
+<p>每个代码块头部增加 <code>换行</code> / <code>折叠</code> / <code>纯文本</code>，左侧行号与代码行严格对齐（横向滚动时行号列 sticky 固定，换行模式下自动隐藏）；超过 30 行的块提供折叠：默认显示前 24 行 + 渐变遮罩 + 「展开全部」，折叠高度按实际渲染行高取整行数。复制沿用全局复制按钮，复制内容始终为完整源码。</p>
+<h3>补充：嵌入块默认折叠</h3>
+<p><code>@[code]</code> / <code>@[file]</code> 嵌入超过 30 行时自动折叠（前 24 行 + 展开），标题显示路径、行范围与总行数；行号从真实起始行起算（如 <code>#L39-L50</code> 显示 39–50）。</p>
+<h3>配置语言高亮</h3>
+<p><code>iris/js/langs/extra-langs.js</code> 为 toml / dockerfile / properties / nginx / apache / ssh / http / nmap / rst 注册别名，避免 no-highlight 回退。</p>
+<h3>通用代码工具条</h3>
+<p>与阅读模式合并实现：换行 / 折叠 / 纯文本为图标按钮（悬停显示文字提示，激活态主题色高亮），与复制按钮一起悬停浮现于代码块右上角；触屏常显，打印隐藏。</p>
+<h3>CLI <code>--help</code> 渲染器</h3>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```clihelp
+Usage: iris &lt;command&gt; [options]
+Options:
+  -V, --version      输出版本号
+  -h, --help         显示帮助
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-clihelp">Usage: iris &lt;command&gt; [options]
+Options:
+  -V, --version      输出版本号
+  -h, --help         显示帮助
+</code></pre>
+<p>识别 Usage / Options / Commands / Examples，渲染为结构化帮助卡片。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/hotspot-clihelp-examples.md">图片热点与 CLI 帮助</a>。</p>
+<h2>表格与结构数据</h2>
+<h3>Markdown 表格交互化</h3>
+<p>普通 Markdown 表格自动获得工具条：表头排序、关键字过滤、列显示/隐藏、复制 TSV、导出 CSV；长表固定表头并在内部滚动。可用 <code>&lt;!-- table-tools: off --&gt;</code> 关闭。</p>
+<h3>JSON 搜索 / JSONPath</h3>
+<p>在 json-tree 工具条内新增搜索与 JSONPath 输入框，支持 <code>$</code>、<code>.key</code>、<code>[&#39;key&#39;]</code>、<code>[n]</code>、<code>[*]</code>、<code>.*</code>、<code>..key</code>。命中节点高亮并自动展开父节点。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/json-search-examples.md">JSON 树搜索与 JSONPath</a>。</p>
+<h3>协议注册表块</h3>
+<p><strong>源码</strong>（列间 ≥2 空格对齐）：</p>
+<pre><code class="language-markdown">```registry
+port  name   proto  description
+22    ssh    tcp    Secure Shell
+53    dns    udp    Domain Name System
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-registry">port  name   proto  description
+22    ssh    tcp    Secure Shell
+53    dns    udp    Domain Name System
+</code></pre>
+<p><code>registry common</code> 或 <code>@[registry](common)</code> 显示内置常用协议表（50+ 条），可搜索/排序/导出。</p>
+<h2>网络与可观测性</h2>
+<h3>log + clitable</h3>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```log
+2026-11-02T10:00:01.000Z host api[1]: ERROR upstream timed out
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-log">2026-11-02T10:00:01.000Z host api[1]: ERROR upstream timed out
+</code></pre>
+<p>识别 syslog / ISO / JSON 日志，级别筛选 + 关键字过滤 + 导出。<code>clitable</code> 解析 show 系列表格与 <code>key: value</code> 键值。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/log-cli-examples.md">日志与 CLI 输出渲染</a>。</p>
+<h3>LLDP / CDP 拓扑</h3>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```lldp
+Device ID           Local Intf     Hold-time  Capability      Port ID
+core01              Gi0/0/1        120        BR              Gi0/0/24
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-lldp">Device ID           Local Intf     Hold-time  Capability      Port ID
+core01              Gi0/0/1        120        BR              Gi0/0/24
+</code></pre>
+<p>渲染 SVG 拓扑，双向边去重，节点高亮邻居，布局切换（环形/同心），导出 SVG。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/lldp-examples.md">LLDP / CDP 邻居拓扑</a>。</p>
+<h3>HAR 瀑布图</h3>
+<p><strong>源码</strong>（内联 JSON 或 <code>@[har](file.har)</code> 引用文件）：</p>
+<pre><code class="language-markdown">```har
+{&quot;log&quot;:{&quot;entries&quot;:[...]}}
+```
+</code></pre>
+<p><strong>渲染效果</strong>（<code>entries</code> 留空时仅显示空态；完整演示见示例页）：</p>
+<pre><code class="language-har">{&quot;log&quot;:{&quot;entries&quot;:[]}}
+</code></pre>
+<p>按 blocked/dns/connect/ssl/send/wait/receive 分段着色，搜索 + 类型/域名/状态过滤，点击行展开请求/响应头与计时，导出 CSV。支持 <code>@[har](file.har)</code> 嵌入。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/har-examples.md">HAR 瀑布图</a>。</p>
+<h3>Nmap / dig / BGP 专用视图</h3>
+<p><code>nmap</code>（normal/grepable/XML）端口矩阵与风险色；<code>dig</code> 按 ANSWER/AUTHORITY/ADDITIONAL 分区；<code>bgp</code> 前缀表 + AS Path chips + best 标记。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/net-tools-examples.md">Nmap / dig / BGP 专用视图</a>。</p>
+<h3>OpenTelemetry trace 瀑布</h3>
+<p>支持 OTLP / Jaeger / Zipkin，span 按父子层级缩进、关键路径高亮、服务过滤、导出 CSV。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/trace-examples.md">分布式 Trace 瀑布</a>。</p>
+<h2>图表与图形</h2>
+<h3>通用 Kroki 渲染器</h3>
+<p><strong>源码</strong>（fence 第二个 token 为图类型）：</p>
+<pre><code class="language-markdown">```kroki blockdiag
+{
+  A[label=&quot;客户端&quot;];
+  B[label=&quot;网关&quot;];
+  A -&gt; B;
+}
+```
+</code></pre>
+<p><strong>渲染效果</strong>：</p>
+<pre><code class="language-kroki">{
+  A[label=&quot;客户端&quot;];
+  B[label=&quot;网关&quot;];
+  A -&gt; B;
+}
+</code></pre>
+<p>一个入口支持 blockdiag / seqdiag / actdiag / nwdiag / packetdiag / rackdiag / bytefield / ditaa / erd / graphviz / nomnoml / svgbob / umlet / plantuml / mermaid / dbml / excalidraw 等。失败回退源码 + 在线链接。</p>
+<h3>Vega-Lite</h3>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```vega-lite
+{ &quot;$schema&quot;: &quot;...&quot;, &quot;mark&quot;: &quot;bar&quot;, &quot;encoding&quot;: {...} }
+```
+</code></pre>
+<p><strong>渲染效果</strong>（<code>...</code> 为占位时整体回退为源码块，完整演示见示例页）：</p>
+<pre><code class="language-vega-lite">{ &quot;$schema&quot;: &quot;...&quot;, &quot;mark&quot;: &quot;bar&quot;, &quot;encoding&quot;: {...} }
+</code></pre>
+<p>按需从 CDN 懒加载 vega / vega-lite / vega-embed；失败回退源码 + 在线编辑器。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/kroki-vega-examples.md">Kroki 与 Vega-Lite</a>。</p>
+<h2>图片热点</h2>
+<h3>图片热点标注</h3>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```hotspot
+{ &quot;image&quot;: &quot;docs/image/x.png&quot;,
+  &quot;hotspots&quot;: [ { &quot;x&quot;: 12, &quot;y&quot;: 18, &quot;w&quot;: 34, &quot;h&quot;: 10, &quot;label&quot;: &quot;标题区&quot; } ] }
+```
+</code></pre>
+<p><strong>渲染效果</strong>（图片缺失时降级为错误卡片，完整演示见示例页）：</p>
+<pre><code class="language-hotspot">{ &quot;image&quot;: &quot;docs/image/x.png&quot;,
+  &quot;hotspots&quot;: [ { &quot;x&quot;: 12, &quot;y&quot;: 18, &quot;w&quot;: 34, &quot;h&quot;: 10, &quot;label&quot;: &quot;标题区&quot; } ] }
+</code></pre>
+<p>x/y/w/h 为百分比；热点带编号徽标，悬停显示标签，点击固定，图片下方自动生成编号图例（悬停/点击图例项与热点双向联动，打印时图例保留）。</p>
+<h2>性能与架构</h2>
+<ul>
+<li><strong>长文档渐进渲染</strong>：超大文档（HTML &gt; 120 KB）在渲染周期显示进度条。</li>
+<li><strong>渲染结果缓存</strong>：sessionStorage 缓存 parse 结果（24h），非受信来源不缓存。</li>
+<li><strong>大表/大树虚拟滚动</strong>：长表格行、日志行、JSON 节点使用 <code>content-visibility:auto</code> 跳过视口外渲染。</li>
+<li><strong>骨架屏</strong>：lazy 渲染器等待时插入 <code>.md-skeleton</code> 骨架屏。</li>
+</ul>
+<h2>导入 / 导出</h2>
+<p>设置面板「工具与导出 → 工具 → 格式转换工具」：</p>
+<ul>
+<li><strong>HTML → Markdown</strong>：粘贴或选择 <code>.html</code>，DOM 解析转 GFM（标题/列表/表格/代码/链接/图片）。</li>
+<li><strong>干净 CommonMark/GFM 导出</strong>：去除站点私有注释、规范换行，复制/下载。</li>
+<li><strong>Obsidian 导入</strong>：<code>[[wiki]]</code> → 相对链接、<code>![[img]]</code> → 图片、<code>&gt; [!note]</code> → callout、<code>==高亮==</code> 保留。</li>
+</ul>
+<h2>外部卡片</h2>
+<h3>GitHub issue/PR/release/repo 卡片</h3>
+<p><strong>源码</strong>：</p>
+<pre><code class="language-markdown">```github
+@[github](owner/repo)
+@[issue](https://github.com/owner/repo/issues/1)
+@[pr](https://github.com/owner/repo/pull/2)
+@[release](https://github.com/owner/repo/releases/tag/v1)
+```
+</code></pre>
+<p><strong>渲染效果</strong>（示例仓库不存在时回退为链接卡片，完整演示见示例页）：</p>
+<pre><code class="language-github">@[github](owner/repo)
+@[issue](https://github.com/owner/repo/issues/1)
+@[pr](https://github.com/owner/repo/pull/2)
+@[release](https://github.com/owner/repo/releases/tag/v1)
+</code></pre>
+<p>渲染标题、状态、作者、标签、更新时间；匿名 API 限流或失败时回退纯链接。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/github-examples.md">GitHub 卡片与协议注册表</a>。</p>
+<h2>约定与限制</h2>
+<ul>
+<li>所有文档内容拼 HTML 前均 <code>escapeHtml</code>；非受信来源再过 DOMPurify。</li>
+<li>渲染器幂等（<code>data-*-done</code> 标记）；单个渲染器失败被隔离，不影响其他块。</li>
+<li>解析失败一律回退源码块或错误卡片，不白屏。</li>
+<li>打印时隐藏工具条；暗色主题自适应；尊重 <code>prefers-reduced-motion</code>。</li>
 </ul>
 ]]></content:encoded>
     </item>
@@ -1274,55 +1618,6 @@ actdiag {
 ]]></content:encoded>
     </item>
     <item>
-      <title>LLDP / CDP 邻居拓扑</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/examples/lldp-examples.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/lldp-examples.md</guid>
-      <pubDate>Mon, 02 Nov 2026 23:50:14 GMT</pubDate>
-      <description>粘贴 / 输出，即可得到可交互拓扑图。 源码（直接粘贴 输出， Capability codes 段可留可去）： lldp Capability codes: (R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device (W) WLAN Access Point, (P) Repeater, (S) Station, (O) Oth</description>
-      <category>网络</category>
-      <category>拓扑</category>
-      <content:encoded><![CDATA[<h1>LLDP / CDP 邻居拓扑</h1>
-<p>粘贴 <code>show lldp neighbors</code> / <code>show cdp neighbors</code> 输出，即可得到可交互拓扑图。</p>
-<h2>Cisco LLDP</h2>
-<p><strong>源码</strong>（直接粘贴 <code>show lldp neighbors</code> 输出， Capability codes 段可留可去）：</p>
-<pre><code class="language-markdown">```lldp
-Capability codes:
-	(R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device
-	(W) WLAN Access Point, (P) Repeater, (S) Station, (O) Other
-
-Device ID           Local Intf     Hold-time  Capability      Port ID
-core01              Gi0/0/1        120        BR              Gi0/0/24
-sw-access-02        Gi0/0/2        120        B               Gi0/0/5
-sw-access-03        Gi0/0/3        120        B               Gi0/0/6
-```
-</code></pre>
-<p><strong>渲染效果</strong>（本设备为主题色节点，双击可切换布局）：</p>
-<pre><code class="language-lldp">Capability codes:
-	(R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device
-	(W) WLAN Access Point, (P) Repeater, (S) Station, (O) Other
-
-Device ID           Local Intf     Hold-time  Capability      Port ID
-core01              Gi0/0/1        120        BR              Gi0/0/24
-sw-access-02        Gi0/0/2        120        B               Gi0/0/5
-sw-access-03        Gi0/0/3        120        B               Gi0/0/6
-</code></pre>
-<h2>CDP 邻居</h2>
-<p><strong>源码</strong>：</p>
-<pre><code class="language-markdown">```cdp
-Device ID        Local Int  Port      Hold-time  Capability  Platform
-core01           Gi0/0/1    Gi0/0/24  165        R S I       SW-1
-sw-access-02     Gi0/0/2    Gi0/0/5   165        B S         S2960
-```
-</code></pre>
-<p><strong>渲染效果</strong>：</p>
-<pre><code class="language-cdp">Device ID        Local Int  Port      Hold-time  Capability  Platform
-core01           Gi0/0/1    Gi0/0/24  165        R S I       SW-1
-sw-access-02     Gi0/0/2    Gi0/0/5   165        B S         S2960
-</code></pre>
-<p>交互说明：节点悬停或点击会高亮邻居链路（点本设备恢复），顶部按钮切换<strong>环形 / 同心</strong>布局，<strong>导出 SVG</strong> 下载当前图；双向边自动去重，边标签为 <code>本端口 ↔ 对端口</code>。解析失败回退为源码块。</p>
-]]></content:encoded>
-    </item>
-    <item>
       <title>日志与 CLI 输出渲染</title>
       <link>https://theforeveriris.github.io/md-preview/docs/examples/log-cli-examples.md</link>
       <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/examples/log-cli-examples.md</guid>
@@ -1548,197 +1843,6 @@ Neighbor        AS     Status     PfxRcvd PfxSent OutQ
 <li><code>@[trace](trace.json)</code> 可嵌入仓库内 trace 文件（OTLP/Jaeger/Zipkin 自动识别）。</li>
 <li>时间轴按全 trace 归一化；关键路径（根到最耗时子链）的行与条以主题色高亮。</li>
 <li>服务过滤、关键字搜索与 CSV 导出均可用；解析失败会回退为源码块。</li>
-</ul>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>渲染内容改进总览</title>
-      <link>https://theforeveriris.github.io/md-preview/docs/render-improvements.md</link>
-      <guid isPermaLink="true">https://theforeveriris.github.io/md-preview/docs/render-improvements.md</guid>
-      <pubDate>Mon, 02 Nov 2026 23:50:14 GMT</pubDate>
-      <description>本页汇总「渲染内容改进实施总纲」落地的全部能力。每项均给出语法、示例文档与失败回退说明。 源码： code @code @file #Lx-Lylang=iris/data/code-snippets.jsonfetchnode iris/scripts/build-code-snippets.js换行折叠纯文本@[code]@[file]#L39-L50iris/js/langs/extra-l</description>
-      <category>渲染</category>
-      <category>新功能</category>
-      <content:encoded><![CDATA[<h1>渲染内容改进总览</h1>
-<p>本页汇总「渲染内容改进实施总纲」落地的全部能力。每项均给出语法、示例文档与失败回退说明。</p>
-<h2>源码与代码阅读</h2>
-<h3>源码嵌入 <code>@[code]</code> / <code>@[file]</code></h3>
-<p><strong>源码</strong>：</p>
-<pre><code class="language-markdown">```code
-@[code](iris/js/renderers/table-tools.js#L1-L60 lang=js)
-@[file](iris/js/renderers/code-reader.js)
-```
-</code></pre>
-<p><strong>渲染效果</strong>：</p>
-<pre><code class="language-code">@[code](iris/js/renderers/table-tools.js#L1-L60 lang=js)
-@[file](iris/js/renderers/code-reader.js)
-</code></pre>
-<ul>
-<li>整文件 / 行范围（<code>#Lx-Ly</code>）/ <code>lang=</code> 覆盖三种写法。</li>
-<li>优先读构建期快照 <code>iris/data/code-snippets.json</code>（离线可用），缺失时同源 <code>fetch</code>。</li>
-<li>构建期校验：<code>node iris/scripts/build-code-snippets.js</code>（输出告警：路径不存在、行号越界）。</li>
-<li>失败回退：错误卡片 + 源文件链接。</li>
-<li>示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/code-reader-examples.md">代码阅读与源码嵌入</a>。</li>
-</ul>
-<h3>代码块阅读模式</h3>
-<p>每个代码块头部增加 <code>换行</code> / <code>折叠</code> / <code>纯文本</code>，左侧行号与代码行严格对齐（横向滚动时行号列 sticky 固定，换行模式下自动隐藏）；超过 30 行的块提供折叠：默认显示前 24 行 + 渐变遮罩 + 「展开全部」，折叠高度按实际渲染行高取整行数。复制沿用全局复制按钮，复制内容始终为完整源码。</p>
-<h3>补充：嵌入块默认折叠</h3>
-<p><code>@[code]</code> / <code>@[file]</code> 嵌入超过 30 行时自动折叠（前 24 行 + 展开），标题显示路径、行范围与总行数；行号从真实起始行起算（如 <code>#L39-L50</code> 显示 39–50）。</p>
-<h3>配置语言高亮</h3>
-<p><code>iris/js/langs/extra-langs.js</code> 为 toml / dockerfile / properties / nginx / apache / ssh / http / nmap / rst 注册别名，避免 no-highlight 回退。</p>
-<h3>通用代码工具条</h3>
-<p>与阅读模式合并实现：换行 / 折叠 / 纯文本为图标按钮（悬停显示文字提示，激活态主题色高亮），与复制按钮一起悬停浮现于代码块右上角；触屏常显，打印隐藏。</p>
-<h3>CLI <code>--help</code> 渲染器</h3>
-<p><strong>源码</strong>：</p>
-<pre><code class="language-markdown">```clihelp
-Usage: iris &lt;command&gt; [options]
-Options:
-  -V, --version      输出版本号
-  -h, --help         显示帮助
-```
-</code></pre>
-<p><strong>渲染效果</strong>：</p>
-<pre><code class="language-clihelp">Usage: iris &lt;command&gt; [options]
-Options:
-  -V, --version      输出版本号
-  -h, --help         显示帮助
-</code></pre>
-<p>识别 Usage / Options / Commands / Examples，渲染为结构化帮助卡片。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/hotspot-clihelp-examples.md">图片热点与 CLI 帮助</a>。</p>
-<h2>表格与结构数据</h2>
-<h3>Markdown 表格交互化</h3>
-<p>普通 Markdown 表格自动获得工具条：表头排序、关键字过滤、列显示/隐藏、复制 TSV、导出 CSV；长表固定表头并在内部滚动。可用 <code>&lt;!-- table-tools: off --&gt;</code> 关闭。</p>
-<h3>JSON 搜索 / JSONPath</h3>
-<p>在 json-tree 工具条内新增搜索与 JSONPath 输入框，支持 <code>$</code>、<code>.key</code>、<code>[&#39;key&#39;]</code>、<code>[n]</code>、<code>[*]</code>、<code>.*</code>、<code>..key</code>。命中节点高亮并自动展开父节点。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/json-search-examples.md">JSON 树搜索与 JSONPath</a>。</p>
-<h3>协议注册表块</h3>
-<p><strong>源码</strong>（列间 ≥2 空格对齐）：</p>
-<pre><code class="language-markdown">```registry
-port  name   proto  description
-22    ssh    tcp    Secure Shell
-53    dns    udp    Domain Name System
-```
-</code></pre>
-<p><strong>渲染效果</strong>：</p>
-<pre><code class="language-registry">port  name   proto  description
-22    ssh    tcp    Secure Shell
-53    dns    udp    Domain Name System
-</code></pre>
-<p><code>registry common</code> 或 <code>@[registry](common)</code> 显示内置常用协议表（50+ 条），可搜索/排序/导出。</p>
-<h2>网络与可观测性</h2>
-<h3>log + clitable</h3>
-<p><strong>源码</strong>：</p>
-<pre><code class="language-markdown">```log
-2026-11-02T10:00:01.000Z host api[1]: ERROR upstream timed out
-```
-</code></pre>
-<p><strong>渲染效果</strong>：</p>
-<pre><code class="language-log">2026-11-02T10:00:01.000Z host api[1]: ERROR upstream timed out
-</code></pre>
-<p>识别 syslog / ISO / JSON 日志，级别筛选 + 关键字过滤 + 导出。<code>clitable</code> 解析 show 系列表格与 <code>key: value</code> 键值。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/log-cli-examples.md">日志与 CLI 输出渲染</a>。</p>
-<h3>LLDP / CDP 拓扑</h3>
-<p><strong>源码</strong>：</p>
-<pre><code class="language-markdown">```lldp
-Device ID           Local Intf     Hold-time  Capability      Port ID
-core01              Gi0/0/1        120        BR              Gi0/0/24
-```
-</code></pre>
-<p><strong>渲染效果</strong>：</p>
-<pre><code class="language-lldp">Device ID           Local Intf     Hold-time  Capability      Port ID
-core01              Gi0/0/1        120        BR              Gi0/0/24
-</code></pre>
-<p>渲染 SVG 拓扑，双向边去重，节点高亮邻居，布局切换（环形/同心），导出 SVG。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/lldp-examples.md">LLDP / CDP 邻居拓扑</a>。</p>
-<h3>HAR 瀑布图</h3>
-<p><strong>源码</strong>（内联 JSON 或 <code>@[har](file.har)</code> 引用文件）：</p>
-<pre><code class="language-markdown">```har
-{&quot;log&quot;:{&quot;entries&quot;:[...]}}
-```
-</code></pre>
-<p><strong>渲染效果</strong>（<code>entries</code> 留空时仅显示空态；完整演示见示例页）：</p>
-<pre><code class="language-har">{&quot;log&quot;:{&quot;entries&quot;:[]}}
-</code></pre>
-<p>按 blocked/dns/connect/ssl/send/wait/receive 分段着色，搜索 + 类型/域名/状态过滤，点击行展开请求/响应头与计时，导出 CSV。支持 <code>@[har](file.har)</code> 嵌入。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/har-examples.md">HAR 瀑布图</a>。</p>
-<h3>Nmap / dig / BGP 专用视图</h3>
-<p><code>nmap</code>（normal/grepable/XML）端口矩阵与风险色；<code>dig</code> 按 ANSWER/AUTHORITY/ADDITIONAL 分区；<code>bgp</code> 前缀表 + AS Path chips + best 标记。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/net-tools-examples.md">Nmap / dig / BGP 专用视图</a>。</p>
-<h3>OpenTelemetry trace 瀑布</h3>
-<p>支持 OTLP / Jaeger / Zipkin，span 按父子层级缩进、关键路径高亮、服务过滤、导出 CSV。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/trace-examples.md">分布式 Trace 瀑布</a>。</p>
-<h2>图表与图形</h2>
-<h3>通用 Kroki 渲染器</h3>
-<p><strong>源码</strong>（fence 第二个 token 为图类型）：</p>
-<pre><code class="language-markdown">```kroki blockdiag
-{
-  A[label=&quot;客户端&quot;];
-  B[label=&quot;网关&quot;];
-  A -&gt; B;
-}
-```
-</code></pre>
-<p><strong>渲染效果</strong>：</p>
-<pre><code class="language-kroki">{
-  A[label=&quot;客户端&quot;];
-  B[label=&quot;网关&quot;];
-  A -&gt; B;
-}
-</code></pre>
-<p>一个入口支持 blockdiag / seqdiag / actdiag / nwdiag / packetdiag / rackdiag / bytefield / ditaa / erd / graphviz / nomnoml / svgbob / umlet / plantuml / mermaid / dbml / excalidraw 等。失败回退源码 + 在线链接。</p>
-<h3>Vega-Lite</h3>
-<p><strong>源码</strong>：</p>
-<pre><code class="language-markdown">```vega-lite
-{ &quot;$schema&quot;: &quot;...&quot;, &quot;mark&quot;: &quot;bar&quot;, &quot;encoding&quot;: {...} }
-```
-</code></pre>
-<p><strong>渲染效果</strong>（<code>...</code> 为占位时整体回退为源码块，完整演示见示例页）：</p>
-<pre><code class="language-vega-lite">{ &quot;$schema&quot;: &quot;...&quot;, &quot;mark&quot;: &quot;bar&quot;, &quot;encoding&quot;: {...} }
-</code></pre>
-<p>按需从 CDN 懒加载 vega / vega-lite / vega-embed；失败回退源码 + 在线编辑器。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/kroki-vega-examples.md">Kroki 与 Vega-Lite</a>。</p>
-<h2>图片热点</h2>
-<h3>图片热点标注</h3>
-<p><strong>源码</strong>：</p>
-<pre><code class="language-markdown">```hotspot
-{ &quot;image&quot;: &quot;docs/image/x.png&quot;,
-  &quot;hotspots&quot;: [ { &quot;x&quot;: 12, &quot;y&quot;: 18, &quot;w&quot;: 34, &quot;h&quot;: 10, &quot;label&quot;: &quot;标题区&quot; } ] }
-```
-</code></pre>
-<p><strong>渲染效果</strong>（图片缺失时降级为错误卡片，完整演示见示例页）：</p>
-<pre><code class="language-hotspot">{ &quot;image&quot;: &quot;docs/image/x.png&quot;,
-  &quot;hotspots&quot;: [ { &quot;x&quot;: 12, &quot;y&quot;: 18, &quot;w&quot;: 34, &quot;h&quot;: 10, &quot;label&quot;: &quot;标题区&quot; } ] }
-</code></pre>
-<p>x/y/w/h 为百分比；热点带编号徽标，悬停显示标签，点击固定，图片下方自动生成编号图例（悬停/点击图例项与热点双向联动，打印时图例保留）。</p>
-<h2>性能与架构</h2>
-<ul>
-<li><strong>长文档渐进渲染</strong>：超大文档（HTML &gt; 120KB）在渲染周期显示进度条。</li>
-<li><strong>渲染结果缓存</strong>：sessionStorage 缓存 parse 结果（24h），非受信来源不缓存。</li>
-<li><strong>大表/大树虚拟滚动</strong>：长表格行、日志行、JSON 节点使用 <code>content-visibility:auto</code> 跳过视口外渲染。</li>
-<li><strong>骨架屏</strong>：lazy 渲染器等待时插入 <code>.md-skeleton</code> 骨架屏。</li>
-</ul>
-<h2>导入 / 导出</h2>
-<p>设置面板「工具与导出 → 工具 → 格式转换工具」：</p>
-<ul>
-<li><strong>HTML → Markdown</strong>：粘贴或选择 <code>.html</code>，DOM 解析转 GFM（标题/列表/表格/代码/链接/图片）。</li>
-<li><strong>干净 CommonMark/GFM 导出</strong>：去除站点私有注释、规范换行，复制/下载。</li>
-<li><strong>Obsidian 导入</strong>：<code>[[wiki]]</code> → 相对链接、<code>![[img]]</code> → 图片、<code>&gt; [!note]</code> → callout、<code>==高亮==</code> 保留。</li>
-</ul>
-<h2>外部卡片</h2>
-<h3>GitHub issue/PR/release/repo 卡片</h3>
-<p><strong>源码</strong>：</p>
-<pre><code class="language-markdown">```github
-@[github](owner/repo)
-@[issue](https://github.com/owner/repo/issues/1)
-@[pr](https://github.com/owner/repo/pull/2)
-@[release](https://github.com/owner/repo/releases/tag/v1)
-```
-</code></pre>
-<p><strong>渲染效果</strong>（示例仓库不存在时回退为链接卡片，完整演示见示例页）：</p>
-<pre><code class="language-github">@[github](owner/repo)
-@[issue](https://github.com/owner/repo/issues/1)
-@[pr](https://github.com/owner/repo/pull/2)
-@[release](https://github.com/owner/repo/releases/tag/v1)
-</code></pre>
-<p>渲染标题、状态、作者、标签、更新时间；匿名 API 限流或失败时回退纯链接。示例：<a href="https://theforeveriris.github.io/md-preview/docs/examples/github-examples.md">GitHub 卡片与协议注册表</a>。</p>
-<h2>约定与限制</h2>
-<ul>
-<li>所有文档内容拼 HTML 前均 <code>escapeHtml</code>；非受信来源再过 DOMPurify。</li>
-<li>渲染器幂等（<code>data-*-done</code> 标记）；单个渲染器失败被隔离，不影响其他块。</li>
-<li>解析失败一律回退源码块或错误卡片，不白屏。</li>
-<li>打印时隐藏工具条；暗色主题自适应；尊重 <code>prefers-reduced-motion</code>。</li>
 </ul>
 ]]></content:encoded>
     </item>
