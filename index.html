@@ -2299,6 +2299,7 @@
   <!-- Built-in Plugins (loaded dynamically via loader.js) -->
 
   <!-- Renderers -->
+  <!-- BEGIN RENDERER SCRIPTS (managed by iris/scripts/sync-features.js — do not edit inside) -->
   <!-- color-utils：graph 渲染器与 color 插件共用的颜色解析/对比度工具 -->
   <script defer src="iris/js/color-utils.js"></script>
   <!-- steps/quote/orgchart 语法糖：orgchart 注入 mermaid 块，必须先于 mermaid.js -->
@@ -2344,12 +2345,11 @@
   <script defer src="iris/js/renderers/heatmap.js"></script>
   <script defer src="iris/js/renderers/bits.js"></script>
   <script defer src="iris/js/renderers/secret.js"></script>
-
   <!-- Packet Tracer 拓扑渲染器（cytoscape.min.js 已改为按需懒加载，见 pkt-renderer.js#loadAndRender） -->
   <script defer src="iris/js/pkt/pkt-renderer.js"></script>
-
   <!-- PPTX 嵌入渲染器（缩略图网格 + 全屏放映模式，详见 pptx.js 顶部注释） -->
   <script defer src="iris/js/renderers/pptx.js"></script>
+  <!-- END RENDERER SCRIPTS -->
 
   <!-- Main Entry -->
   <script defer src="iris/js/themes/theme-manager.js"></script>

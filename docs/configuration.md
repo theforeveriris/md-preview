@@ -37,23 +37,38 @@ Markdown Preview 的配置分为两层：
   "owner": "",
   "repo": "",
   "branch": "main",
+  "provider": "github",
+  "gitlabUrl": "https://gitlab.com",
+  "projectId": "",
   "title": "Markdown Preview",
   "defaultTheme": "default",
   "showEditButton": true,
   "showReadingTime": true,
-  "showBreadcrumbs": true
+  "showBreadcrumbs": true,
+  "homepage": "",
+  "plantumlServers": [],
+  "plugins": {}
 }
 ```
 
 | 字段 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
+| `owner` | string | - | GitHub/Gitee/GitLab 用户名或组织名 |
+| `repo` | string | - | 仓库名 |
 | `branch` | string | `main` | 文档所在的 Git 分支 |
-| `title` | string | `Markdown Preview` | 站点标题 |
-| `defaultTheme` | string | `default` | 默认主题 ID |
-| `showEditButton` | boolean | `true` | 是否显示"编辑此页"按钮 |
+| `provider` | string | `github` | Git 托管平台：`github` \| `gitee` \| `gitlab` |
+| `gitlabUrl` | string | `https://gitlab.com` | 自托管 GitLab 地址（仅 `provider=gitlab` 时生效） |
+| `projectId` | string | - | GitLab 项目 ID 或 URL 编码路径（仅 `provider=gitlab` 时需要） |
+| `title` | string | `Markdown Preview` | 站点标题，用于浏览器标签页和 OGP 元数据 |
+| `defaultTheme` | string | `default` | 默认主题 ID，首次访问（无 localStorage 记录）时生效 |
+| `showEditButton` | boolean | `true` | 是否显示「编辑此页」按钮 |
 | `showReadingTime` | boolean | `true` | 是否显示阅读时间估算 |
 | `showBreadcrumbs` | boolean | `true` | 是否显示面包屑导航 |
+| `homepage` | string | - | 门户页首页文档路径，如 `docs/index.md` |
 | `plantumlServers` | array | 内置列表 | PlantUML 渲染服务列表，按顺序尝试 |
+| `plugins` | object | `{}` | 插件专属配置，按插件名分组传入 `init(config)` |
+
+> **配置固定说明**：以上所有字段均可在 `iris/config.json` 中固定为指定值，覆盖代码内置默认值。修改后推送代码即生效，无需改代码。加载顺序：内置默认 → `config.json`（覆盖）→ 用户 localStorage（如主题选择，会覆盖前两者）。
 
 #### PlantUML 渲染服务（plantumlServers）
 
@@ -72,6 +87,45 @@ PlantUML 图表默认依次尝试官方服务器与 Kroki 公共服务，全部�
 |------|------|
 | `type` | `plantuml`（PlantUML 自定义编码）或 `kroki`（标准 base64url 编码） |
 | `base` | 服务基础地址，渲染时自动拼接 `/svg/<编码>` |
+
+### 功能开关（features）
+
+`config.json` 的 `features` 块控制各渲染器和插件的启用/禁用。每个功能项包含 `enabled`（布尔值）和 `description`（功能说明）。
+
+```json
+{
+  "features": {
+    "mermaid": { "enabled": true, "description": "Mermaid 时序图/流程图/甘特图等" },
+    "plantuml": { "enabled": true, "description": "PlantUML UML 图表" },
+    "geo": { "enabled": false, "description": "地理地图渲染" },
+    "qrcode": { "enabled": true, "description": "二维码生成插件" }
+  }
+}
+```
+
+**同步机制**：修改 `features` 块后，运行同步脚本使文件系统与配置保持一致：
+
+```bash
+npm run sync:features          # 执行同步（移入/移出文件 + 重建 index.html + 刷新预缓存）
+npm run sync:features:dry      # 仅预览变更，不执行
+```
+
+> 推送 `config.json` 后无需手动执行：部署工作流（`.github/workflows/build-and-deploy.yml`）会在构建前自动运行 `sync-features.js`，改值即生效。
+
+同步脚本的行为：
+
+| 操作 | enabled: false | enabled: true |
+|------|----------------|---------------|
+| 渲染器文件 | 移入同目录 `.disabled/` 子目录（备份） | 从 `.disabled/` 恢复 |
+| `index.html` | 按清单顺序重建脚本块，移除对应标签 | 按清单顺序重建脚本块，恢复对应标签 |
+| 插件文件 | 移入 `.disabled/` 子目录 | 从 `.disabled/` 恢复 |
+| `plugins/directory.json` | 移除插件条目 | 确保插件条目存在 |
+
+> `.disabled/` 备份目录建议一并提交入库——这样换机器或 CI 重新启用时能直接恢复源文件。预缓存与桌面端构建会自动跳过 `.disabled/`，不会把禁用文件带进产物。
+
+**渲染器解耦**：各渲染器通过 `window.MarkdownPreview.renderers` 注册表独立注册，`runRenderers()` 逐渲染器执行并隔离错误（任一渲染器抛异常不影响其他渲染器）。跨渲染器调用均有 `if (renderers.X)` 守卫，删除某个渲染器不会导致连锁崩溃，相关语法块会自动退化为普通代码块/表格。
+
+**清单文件**：`iris/scripts/renderer-manifest.json` 是渲染器/插件的完整清单，包含文件路径、类型和功能描述。新增渲染器时在此登记，同步脚本会自动管理。
 
 ### 首页（homepage）
 

@@ -110,8 +110,10 @@
           className: 'geo-map',
           style: 'height:400px;border-radius:8px;overflow:hidden',
           delay: 10,
-          mount: (el, embedUrl) =>
-            window.MarkdownPreview.renderers.geo.renderGeoData(service, embedUrl, fullMatch, el.id)
+          mount: (el, embedUrl) => {
+            const geoR = window.MarkdownPreview.renderers.geo;
+            if (geoR && geoR.renderGeoData) return geoR.renderGeoData(service, embedUrl, fullMatch, el.id);
+          }
         });
       } else if (service === 'pkt' || service === 'ensp') {
         mountEmbed({

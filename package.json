@@ -4,10 +4,12 @@
   "private": true,
   "description": "md-preview 的桌面端外壳（Tauri）：把纯静态站点打包成 Windows 可执行文件",
   "scripts": {
-    "desktop:dist": "node iris/scripts/build-desktop-dist.js",
+    "desktop:dist": "node iris/scripts/sync-features.js && node iris/scripts/build-desktop-dist.js",
     "desktop:icon": "tauri icon iris/icons/icon.svg",
     "desktop:dev": "npm run desktop:dist && tauri dev",
     "desktop:build": "npm run desktop:dist && tauri build",
+    "sync:features": "node iris/scripts/sync-features.js && node iris/scripts/build-precache.js",
+    "sync:features:dry": "node iris/scripts/sync-features.js --dry-run",
     "test": "npm run test:smoke && npm run test:unit && npm run test:cm6",
     "test:smoke": "node iris/scripts/smoke-test.js",
     "test:unit": "node iris/scripts/test-slug-consistency.js && node iris/scripts/test-file-tree-sort.js && node iris/scripts/test-render-pipeline.js",

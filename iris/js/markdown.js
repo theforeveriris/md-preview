@@ -393,24 +393,24 @@
       : parseFrontmatter(markdown);
 
     if (frontmatter.title) {
-      document.title = frontmatter.title + ' | ' + (CONFIG.repo || 'Markdown Preview');
+      document.title = frontmatter.title + ' | ' + (CONFIG.title || CONFIG.repo || 'Markdown Preview');
     } else {
       const titleMatch = content.match(/^#\s+(.+)$/m);
       if (titleMatch) {
-        document.title = titleMatch[1] + ' | ' + (CONFIG.repo || 'Markdown Preview');
+        document.title = titleMatch[1] + ' | ' + (CONFIG.title || CONFIG.repo || 'Markdown Preview');
       } else if (isPlainText && currentPath) {
         // 纯文本没有 frontmatter 也没有一级标题时，用文件名当标题
         const base = String(currentPath).split('/').pop().replace(/\.(md|txt)$/i, '');
-        document.title = base + ' | ' + (CONFIG.repo || 'Markdown Preview');
+        document.title = base + ' | ' + (CONFIG.title || CONFIG.repo || 'Markdown Preview');
       } else {
-        document.title = CONFIG.repo || 'Markdown Preview';
+        document.title = CONFIG.title || CONFIG.repo || 'Markdown Preview';
       }
     }
 
     // OGP 随文档更新：描述优先 frontmatter.description，否则取正文摘要
     const ogTitle = frontmatter.title ||
       (content.match(/^#\s+(.+)$/m) || [])[1] ||
-      CONFIG.repo || 'Markdown Preview';
+      CONFIG.title || CONFIG.repo || 'Markdown Preview';
     const ogDescription = frontmatter.description ||
       extractExcerpt(content) ||
       t('md.defaultDescription', '一个简洁优雅的 Markdown 文档预览站点，支持多种渲染功能');
@@ -473,18 +473,27 @@
       metaBits.push(`<span class="doc-meta-tags">${tagList.slice(0, 6).map(tag =>
         `<a class="doc-meta-tag" href="#/tag/${encodeURIComponent(tag)}">${escHtml(tag)}</a>`).join('')}</span>`);
     }
-    metaBits.push(`<span class="doc-meta-reading">${t('md.readingTime', '预计阅读 {n} 分钟').replace('{n}', readingTime)}</span>`);
-    const readingTimeHtml = `<div class="reading-time doc-meta-bar">${metaBits.join('<span class="doc-meta-sep">·</span>')}</div>`;
+    // 阅读时间：CONFIG.showReadingTime 控制是否显示
+    if (CONFIG.showReadingTime !== false) {
+      metaBits.push(`<span class="doc-meta-reading">${t('md.readingTime', '预计阅读 {n} 分钟').replace('{n}', readingTime)}</span>`);
+    }
+    const readingTimeHtml = metaBits.length > 0
+      ? `<div class="reading-time doc-meta-bar">${metaBits.join('<span class="doc-meta-sep">·</span>')}</div>`
+      : '';
 
     const headingMatch = html.match(/<h1[^>]*>/);
     let finalHtml;
-    if (headingMatch) {
-      // 插在 h1 开标签之前（兄弟节点）：注入为 h1 子元素会被计入
-      // heading.textContent，H1 的 id 带上「预计阅读 N 分钟」后随字数变化，
-      // 复制出的标题锚点链接会在文档更新后失效
-      finalHtml = html.slice(0, headingMatch.index) + readingTimeHtml + html.slice(headingMatch.index);
+    if (readingTimeHtml) {
+      if (headingMatch) {
+        // 插在 h1 开标签之前（兄弟节点）：注入为 h1 子元素会被计入
+        // heading.textContent，H1 的 id 带上「预计阅读 N 分钟」后随字数变化，
+        // 复制出的标题锚点链接会在文档更新后失效
+        finalHtml = html.slice(0, headingMatch.index) + readingTimeHtml + html.slice(headingMatch.index);
+      } else {
+        finalHtml = readingTimeHtml + html;
+      }
     } else {
-      finalHtml = readingTimeHtml + html;
+      finalHtml = html;
     }
 
     // 上一文档遗留的延迟渲染观察器全部断开（PERF-1），再注入新内容
@@ -802,7 +811,7 @@
     }
 
     dom.pageHeader.style.display = 'flex';
-    dom.editPageBtn.style.display = 'flex';
+    dom.editPageBtn.style.display = CONFIG.showEditButton !== false ? 'flex' : 'none';
 
     // 路径逐段编码：含空格/#/中文的文件名不编码会生成坏链接；
     // 非 GitHub 托管由 git-provider 按平台拼编辑 URL
@@ -814,6 +823,12 @@
 
   function updateBreadcrumbs(path) {
     if (!dom.pageBreadcrumbs) return;
+
+    if (CONFIG.showBreadcrumbs === false) {
+      dom.pageBreadcrumbs.style.display = 'none';
+      return;
+    }
+    dom.pageBreadcrumbs.style.display = '';
 
     dom.pageBreadcrumbs.innerHTML = '';
 

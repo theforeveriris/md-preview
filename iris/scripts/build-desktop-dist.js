@@ -77,8 +77,11 @@ function main() {
     fs.cpSync(src, path.join(DIST, dir), {
       recursive: true,
       filter: (s) => {
+        const rel = path.relative(src, s).replace(/\\/g, '/');
+        // 功能开关禁用的渲染器/插件备份目录不进产物
+        if (rel.split('/').includes('.disabled')) return false;
         if (dir !== 'iris') return true;
-        const top = path.relative(src, s).replace(/\\/g, '/').split('/')[0];
+        const top = rel.split('/')[0];
         return !IRIS_SKIP.has(top);
       },
     });

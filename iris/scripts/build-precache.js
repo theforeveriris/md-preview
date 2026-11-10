@@ -52,6 +52,7 @@ const EXCLUDE_PREFIXES = [
 // 排除路径片段（任意位置包含即排除，主要用于 vendor/data 下的子目录）
 // 注：data/ 和 vendor/ 已有白名单约束，这里仅作为冗余防护
 const EXCLUDE_PATH_FRAGMENTS = [
+  '/.disabled/',  // 功能开关禁用的渲染器/插件备份
   '/data/ensp/',
   '/data/pkt/raw/',
   '/data/pkt/xml/',

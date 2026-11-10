@@ -67,11 +67,22 @@
   }
 
   // 初始化主题系统
-  function init() {
-    // 加载保存的主题
+  async function init() {
+    // config.json 是异步 fetch 的：DOMContentLoaded 时可能尚未返回，
+    // 必须先等 configLoadPromise，否则 defaultTheme 仍取到代码内置默认值
+    if (window.MarkdownPreview.configLoadPromise) {
+      try { await window.MarkdownPreview.configLoadPromise; } catch (e) { /* ignore */ }
+    }
+
+    // 加载保存的主题；无保存时使用 config.json 的 defaultTheme
     const savedTheme = localStorage.getItem(STORAGE_KEY);
     if (savedTheme === 'auto' || savedTheme && VALID_THEMES.includes(savedTheme)) {
       setTheme(savedTheme, false);
+    } else {
+      const cfgTheme = (window.MarkdownPreview.CONFIG &&
+        window.MarkdownPreview.CONFIG.defaultTheme);
+      const fallback = VALID_THEMES.includes(cfgTheme) ? cfgTheme : 'default';
+      setTheme(fallback, false);
     }
 
     // auto 模式下监听系统亮暗变化，实时切换
