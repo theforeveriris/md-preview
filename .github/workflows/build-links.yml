@@ -1,0 +1,45 @@
+name: Build Links Data
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/*.md'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-links
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      with:
+        node-version: '20'
+
+    - name: Build links data (graph / backlinks)
+      run: node iris/scripts/build-links.js
+
+    # 提交并推送。
+    # 不用 EndBug/add-and-commit：它的执行顺序是 add → pull → commit → push，
+    # 只要暂存了改动，随后的 `git pull --rebase` 就会报
+    # "cannot pull with rebase: Your index contains uncommitted changes"。
+    # 改为先提交，再循环「拉取远端 + rebase + 推送」，
+    # 处理多个工作流同时向 main 推送的竞态。
+    # 提交+rebase 重试统一走 composite action
+    - name: Commit and push changes
+      uses: ./.github/actions/commit-with-retry
+      with:
+        message: 'build: update links.json'
+        files: 'iris/data/links.json'
