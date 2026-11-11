@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T22:34:56.100Z",
+  "generatedAt": "2026-11-11T01:51:03.791Z",
   "count": {
     "nodes": 78,
     "edges": 132
@@ -256,7 +256,7 @@
     },
     "readme-dev.md": {
       "README.md": 1,
-      "ARTWORK.md": 2,
+      "ARTWORK.md": 1,
       "docs/plugin-development.md": 1
     }
   }
