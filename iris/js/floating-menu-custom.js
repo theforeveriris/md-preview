@@ -16,7 +16,7 @@
   // 注：转换工具（convertBtn）已移到设置面板「工具与导出 → 工具」，
   // 不再是悬浮球菜单项，故不在此列表里。
   const DEFAULT_ORDER = [
-    'backToTopBtn', 'openLocalBtn', 'kbMountBtn', 'qrShareBtn', 'splitViewBtn',
+    'backToTopBtn', 'openLocalBtn', 'qrShareBtn', 'splitViewBtn',
     'snapshotShareBtn', 'installPwaBtn', 'editPageBtn', 'historyBtn',
     'openSettingsBtn'
   ];
@@ -60,7 +60,7 @@
     // 未在 order 里的剩余节点跟在后面
     nodes.forEach((el, id) => { if (!order.includes(id)) menuItems.appendChild(el); });
     // 显隐：专用类表达「用户隐藏」，不清内联 display——installPwaBtn /
-    // kbMountBtn / editPageBtn 等按钮的默认隐藏与运行时显隐不受影响
+    // editPageBtn 等按钮的默认隐藏与运行时显隐不受影响
     nodes.forEach((el, id) => {
       if (PINNED.includes(id)) return;
       el.classList.toggle('fm-user-hidden', hidden.includes(id));
@@ -72,7 +72,6 @@
   // 已知条件映射：id → i18n key
   const SHOW_CONDITION_HINTS = {
     installPwaBtn: 'fm.hint.installed',
-    kbMountBtn: 'fm.hint.desktop',
     editPageBtn: 'fm.hint.desktop',
     snapshotShareBtn: 'fm.hint.desktop'
   };
@@ -156,7 +155,7 @@
       window.addEventListener('fm-config-changed', refresh);
       window.addEventListener('langchange', apply);
     }
-    // 桌面端知识库按钮挂载后补充进默认序（kbMountBtn 显示与否由 desktop-kb 控制）
+    // 文件树加载后重新应用一次（保证菜单顺序与新节点一致）
     window.addEventListener('filetreeloaded', apply);
   }
 

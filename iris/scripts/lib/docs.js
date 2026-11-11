@@ -8,7 +8,7 @@
  *   collectMarkdownFiles(rootDir, opts) -> [{ path, name, rel }]
  *
  * opts.skip：目录名 Set（默认跳过 .git / node_modules / vendor / dist /
- * src-tauri / .github）；遍历顺序为 readdir 序（与各脚本原实现一致，输出
+ * .github）；遍历顺序为 readdir 序（与各脚本原实现一致，输出
  * 顺序敏感的调用方自行 sort）。脚本的特有排除规则仍可在 opts.skip 扩展。
  */
 'use strict';
@@ -17,7 +17,7 @@ const fs = require('fs');
 const path = require('path');
 
 const DEFAULT_SKIP = new Set([
-  '.git', 'node_modules', 'vendor', 'dist', 'src-tauri', '.github'
+  '.git', 'node_modules', 'vendor', 'dist', '.github'
 ]);
 
 function collectMarkdownFiles(rootDir, opts) {

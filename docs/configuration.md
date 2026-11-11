@@ -121,7 +121,7 @@ npm run sync:features:dry      # 仅预览变更，不执行
 | 插件文件 | 移入 `.disabled/` 子目录 | 从 `.disabled/` 恢复 |
 | `plugins/directory.json` | 移除插件条目 | 确保插件条目存在 |
 
-> `.disabled/` 备份目录建议一并提交入库——这样换机器或 CI 重新启用时能直接恢复源文件。预缓存与桌面端构建会自动跳过 `.disabled/`，不会把禁用文件带进产物。
+> `.disabled/` 备份目录建议一并提交入库——这样换机器或 CI 重新启用时能直接恢复源文件。预缓存与站点构建会自动跳过 `.disabled/`，不会把禁用文件带进产物。
 
 **渲染器解耦**：各渲染器通过 `window.MarkdownPreview.renderers` 注册表独立注册，`runRenderers()` 逐渲染器执行并隔离错误（任一渲染器抛异常不影响其他渲染器）。跨渲染器调用均有 `if (renderers.X)` 守卫，删除某个渲染器不会导致连锁崩溃，相关语法块会自动退化为普通代码块/表格。
 

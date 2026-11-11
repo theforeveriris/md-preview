@@ -67,7 +67,7 @@
     <text x="448" y="252" text-anchor="middle" fill="#6D28D9">PWA 离线可用</text>
 
     <rect x="522" y="232" width="128" height="30" rx="15" fill="#FFFFFF" filter="url(#softer)"/>
-    <text x="586" y="252" text-anchor="middle" fill="#6D28D9">Windows 桌面端</text>
+    <text x="586" y="252" text-anchor="middle" fill="#6D28D9">内置编辑器</text>
   </g>
 
   <!-- 底部一行说明 -->

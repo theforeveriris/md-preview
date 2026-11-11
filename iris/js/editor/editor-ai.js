@@ -50,13 +50,6 @@
       key = localStorage.getItem(KEY_KEY) || '';
       model = localStorage.getItem(KEY_MODEL) || '';
     } catch (e) { /* ignore */ }
-    // 桌面端持久化桥：有则优先读（独立窗口共享配置）
-    const bridge = window.desktopAIConfig;
-    if (bridge) {
-      if (bridge.getBase) base = bridge.getBase() || base;
-      if (bridge.getKey) key = bridge.getKey() || key;
-      if (bridge.getModel) model = bridge.getModel() || model;
-    }
     return {
       base: (base || 'https://api.openai.com/v1').replace(/\/+$/, ''),
       key,
@@ -70,8 +63,6 @@
       if (key != null) localStorage.setItem(KEY_KEY, key.trim());
       if (model != null) localStorage.setItem(KEY_MODEL, model.trim());
     } catch (e) { /* ignore */ }
-    const bridge = window.desktopAIConfig;
-    if (bridge && bridge.set) bridge.set(base, key, model);
   }
 
   // ============== OpenAI 兼容补全 ==============

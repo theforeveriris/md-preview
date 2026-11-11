@@ -28,7 +28,6 @@ tags: [开发]
 - 按需懒加载机制
 - 笔记本存储（IndexedDB）
 - 构建脚本参考
-- 桌面端（Tauri）
 - 本地调试与常见坑
 - 目录结构速查
 
@@ -167,7 +166,6 @@ tags: [开发]
 |-----------|----------|------|
 | `build-and-deploy.yml` | push 到 `main`，或手动触发 | 构建 file-tree / search-index / precache / sitemap 并部署到 GitHub Pages |
 | `build-links.yml` | push 到 `main` 且 `docs/**` 变化 | 运行 `build-links.js`，`links.json`（反向链接数据）有变化时提交回仓库 |
-| `tauri-check.yml` | push / PR 且 `src-tauri/**` 变化 | cargo fmt/clippy/check 轻量检查 + `build-desktop-dist.js` 产物结构校验 |
 | `build-feed.yml` | push 到 `main` 且 `docs/**` 变化 | 运行 `build-feed.js` + `build-sitemap.js`，`feed.xml` / `sitemap.xml` 有变化时提交回仓库 |
 | `build-search-index.yml` | push 到 `main` | 运行 `build-search-index.js`，`search-index.json` 有变化时提交回仓库 |
 | `build-pkt.yml` | push 到 `main`，且 `iris/data/pkt/raw/**` 或 `iris/data/ensp/raw/**` 变化 | 执行 `iris/scripts/pkt/main.py` 和 `iris/scripts/ensp/main.py`，把产物 push 回 `data/pkt/json`、`data/pkt/images` 等 |
@@ -175,24 +173,6 @@ tags: [开发]
 | `smoke-test.yml` | push / PR 到 `main`，或手动触发 | 跑全部构建脚本验证可执行，安装 jsdom 后运行 `iris/scripts/smoke-test.js` 冒烟测试 + `iris/scripts/link-check.js` 死链检查（内链全量 + 外链按日抽查） |
 | `cjk-typography-lint.yml` | push / PR 到 `main` 且 `**/*.md` 变化，或每周定时 | 中文文案排版校验（见下节）；main 上自动修复并由机器人提交，PR 上仅提示 |
 | `sync-to-product.yml` | push 到 `main` | 将站点产物同步到 product 分支 |
-
-### 桌面端 CSP 取舍（src-tauri/tauri.conf.json）
-
-`app.security.csp` 从 `null` 收紧为分域白名单，但 `script-src` 保留
-`'unsafe-inline'`，原因：
-
-- **必须保留**：`iris/js/renderers/sandbox.js` 用 `iframe.srcdoc` 做 HTML/JS
-  实时预览，文档内含内联 `<script>`（console 捕获 + 用户代码）。srcdoc 文档会
-  继承父页面的 CSP，`script-src 'self'` 会把这些内联脚本全部拦掉，桌面端的
-  代码预览直接失效。对动态用户代码无法用 hash / nonce 白名单解决。
-- **隔离边界不是 CSP**：用户代码跑在 `sandbox` 属性未开
-  `allow-same-origin` 的 iframe 里，属于不透明源，碰不到主站点 DOM /
-  localStorage / cookie。
-- **已经收紧的部分**：无 `'unsafe-eval'`；`object-src 'none'`；
-  `base-uri 'self'`；远端脚本只允许 `platform.twitter.com`（推文嵌入需要）。
-
-如需进一步收紧，正确方向是把 sandbox 预览改成「外部脚本文件 + postMessage」
-的形式而不是给 CSP 开口子——属于独立改造，未在本轮做。
 
 ### 测试夹具目录 docs/zw/
 
@@ -475,95 +455,6 @@ python3 iris/scripts/pptx/main.py
 1. raw 目录下发现 ppt/pptx → 导出 PDF → `pdftoppm` 每页导出 PNG/SVG。
 2. 生成 `json/<slug>.json`：`{ title, pages: N, width, height, thumbType }`。
 3. 产物推入仓库，前端渲染器直接读图片 + 元数据。
-
-## 桌面端（Tauri）
-
-站点本身是纯静态的，桌面端只加了一层 Tauri 外壳：同一份 HTML/JS 跑在系统 WebView2 里，离线可用，不需要任何后端。
-
-### 产物
-
-| 产物 | 路径 |
-|------|------|
-| 绿色可执行文件 | `src-tauri/target/release/md-preview.exe` |
-| NSIS 安装包 | `src-tauri/target/release/bundle/nsis/md-preview_<版本>_x64-setup.exe` |
-
-### 构建
-
-```bash
-npm install            # 只装 @tauri-apps/cli
-npm run desktop:dist   # 生成 dist/
-npm run desktop:build  # 编译 + 打包（会先跑 desktop:dist）
-```
-
-前置条件：Rust（MSVC 工具链）与 WebView2（Win10/11 自带）。`npx tauri info` 可一次性体检。
-
-### 桌面端功能一览（dev 分支新增）
-
-- **本地知识库**：悬浮球「本地知识库」选目录 → `pick_folder` / `read_kb_tree` /
-  `read_kb_file`（Rust）挂载为 `kb/` 命名空间，复用侧边栏/搜索/反链/图谱；
-  notify 监视变更实时重渲染；双击 `.md`（文件关联）直接打开。
-- **自动更新**：tauri-plugin-updater，端点指向 GitHub Releases 的
-  `latest.json`。**发布前必须生成签名密钥**：
-  `npx tauri signer generate -w ~/.tauri/md-preview.key`，把公钥填进
-  `src-tauri/tauri.conf.json` 的 `plugins.updater.pubkey`（当前为占位值，
-  未配置时检查更新静默失败），私钥 `TAURI_SIGNING_PRIVATE_KEY` 配到
-  Release CI 环境变量用于产出签名产物。
-- **批量导出**：知识库挂载后，设置面板「整站 EPUB / MD ZIP / HTML 合订本」
-  与命令面板导出动作自动作用于挂载目录。
-- **多窗口**：命令面板「编辑器（独立窗口）」开新 WebviewWindow
-  （label=editor 自动进编辑器模式，IndexedDB 天然共享）。
-
-### `desktop:dist` 做了什么（`iris/scripts/build-desktop-dist.js`）
-
-站点没有打包步骤，Tauri 需要的是一个「能直接当站点根」的目录，所以脚本把运行时文件挑进 `dist/`：
-
-- 仓库根文件（跳过隐藏文件与 `package.json` / `package-lock.json`）
-- `docs/` 整目录
-- `iris/` 整目录，剔除 `node_modules`（jsdom 测试依赖）与 `scripts`（构建期工具）
-
-产物约 34 MB。`dist/` 已在 `.gitignore` 里，不提交。
-
-> 不能直接 `fs.cpSync(仓库根, dist)`：Node 会以「不能拷进自己的子目录」报 `ERR_FS_CP_EINVAL`，
-> 所以脚本按「根文件 + 各目录」分组拷贝。
-
-### 桌面端专属的两处改动
-
-1. **禁用 Service Worker**：`index.html` 的 `registerServiceWorker()` 与 `iris/js/offline.js` 的
-   `swSupported()` 都先判 `window.__TAURI_INTERNALS__`。桌面端资源都在包内，SW 的缓存拦截没有意义，
-   而 `navigator.serviceWorker.ready` 在没有注册时会永远挂着。网页版行为不变。
-2. **外链交给系统浏览器**：站点的 `interceptLinks` 明确跳过 `http(s)` 外链，直接点会把整个应用导航走。
-   `src-tauri/bridge/desktop-bridge.js` 在捕获阶段拦下外链、转交 `tauri-plugin-opener`（同时接管
-   `window.open`）；该脚本由 `desktop:dist` 注入到 `dist/index.html`，不参与网页版。
-
-### 图标
-
-`src-tauri/icons/` 由 `npm run desktop:icon` 从 `iris/icons/icon.svg`（矢量源）生成，只保留桌面需要的格式
-（android/ios 子目录已删）。换 logo 后重跑一次即可。
-
-站点与 PWA 侧的图标（favicon / PWA / maskable / 分享卡片 / README 横幅）不在这里，
-其设计规范、尺寸清单与生成流程见仓库根目录的 [ARTWORK.md](ARTWORK.md)。
-
-### 常见坑
-
-- **构建脚本扫到 `dist/`**：`build-file-tree` / `build-links` / `gen-pinyin-table` / `link-check`
-  的目录排除表都已加入 `dist` 与 `src-tauri`，否则会把站点副本当成源文档。
-- **NSIS 首次打包要联网**：Tauri 会把 `nsis-3.13.zip` 与 `nsis_tauri_utils.dll` 下到
-  `%LOCALAPPDATA%\tauri\NSIS`，之后走缓存。若下载超时（报
-  `failed to bundle project: 'timeout: global'`），**手动装好即可跳过下载**：
-
-  1. 把 `https://github.com/tauri-apps/binary-releases/releases/download/nsis-3.13/nsis-3.13.zip`
-     解压到 `%LOCALAPPDATA%\tauri\NSIS`，**去掉顶层 `nsis-3.13/` 目录**（`makensis.exe` 要在根）；
-  2. 从 `tauri-apps/nsis-tauri-utils` 的 `nsis_tauri_utils-v0.5.3` release 取 `nsis_tauri_utils.dll`，
-     放到 `Plugins\x86-unicode\additional\`；
-  3. 校验：`NSIS.exe` 的 SHA1 应为 `6D45D4E8CCF18FE1FDAC9164058F356102A2ECF2`，
-     dll 应为 `75197FEE3C6A814FE035788D1C34EAD39349B860`。
-
-  命令行下载这个仓库的 release 会偶发断连，`curl --retry` 多试几次即可。
-  Tauri 会逐项比对内置的 `NSIS_REQUIRED_FILES`，**缺任何一项它会把整个目录删掉重下**——
-  最容易漏的就是第 2 步那个 dll。
-- **`__TAURI_BUNDLE_TYPE` 警告**：`tauri` crate（2.12.4）与 `@tauri-apps/cli`（2.12.3）
-  的小版本差会打印一条 `Failed to add bundler type to the binary` 警告，只影响自动更新插件
-  （本项目未用），可忽略。
 
 ## 本地调试与常见坑
 

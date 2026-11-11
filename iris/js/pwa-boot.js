@@ -1,10 +1,9 @@
 /**
  * PWA 启动逻辑（原 index.html 内联脚本外提）
  *
- * 外提原因：Tauri 桌面端 CSP 的 script-src 要去掉 'unsafe-inline'，
- * 内联 <script> 会被策略拦截，安装按钮/Service Worker 注册全部失效。
+ * 外提原因：保持 index.html 清爽，并适配不含 'unsafe-inline' 的严格 CSP。
  *
- * 行为与原来的内联脚本一致：注册 Service Worker、接管 beforeinstallprompt、
+ * 行为：注册 Service Worker、接管 beforeinstallprompt、
  * 维护「安装到本地」按钮的显隐与点击。作为 defer 脚本加载，
  * 执行时机从「解析到该位置」变为「解析完成后」，本模块不依赖解析期状态。
  */
@@ -51,9 +50,6 @@
   }
 
   function registerServiceWorker() {
-    // 桌面端（Tauri）里所有资源都已在本地包内，SW 的缓存拦截没有意义，
-    // 自定义协议下注册也容易出问题 —— 直接跳过。网页版行为不变。
-    if (window.__TAURI_INTERNALS__) return;
     if ('serviceWorker' in navigator) {
       // 每次都以 no-cache 拉取 sw.js，保证部署后新版本能被浏览器发现
       fetch('sw.js', { cache: 'no-store' })

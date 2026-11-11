@@ -803,8 +803,6 @@
     'local.notDoc': '(not a Markdown/text file)',
     'local.count': '{n} files',
     'cjk.loading': 'Loading the Chinese variant converter…',
-    'kb.fileAdded': '{n} added to the library',
-    'kb.fileRemoved': '{n} removed from the library',
     'figure.refMissing': '(broken figure reference)',
     'figure.refMissingHint': 'Target number not found: the alias may be misspelled or belongs to another document',
     'settings.theme.clearColors': 'Switching themes will clear custom colors. Continue?',

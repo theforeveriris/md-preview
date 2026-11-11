@@ -41,7 +41,6 @@ window.MarkdownPreview.mascotCopy = {
     '空闲时自动预取前后篇章，翻页几乎零等待。',
     '最近读过的文章在侧边栏里，历史和收藏一目了然。',
     '界面支持中英双语，设置里一键切换。',
-    '这个站还有桌面端版本，打包成 Windows 应用离线跑。',
     '订阅 RSS 的话，站里有新文章会自动推送给你。'
   ],
   // 英文界面台词池（与 lines 一一对应即可，数量不必相等）
@@ -71,7 +70,6 @@ window.MarkdownPreview.mascotCopy = {
     'Adjacent documents are prefetched while idle.',
     'Recent reads and favorites live in the sidebar.',
     'The UI speaks Chinese and English — switch in Settings.',
-    'There is also a Windows desktop build that runs offline.',
     'Subscribe to the RSS feed for new posts.'
   ]
 };

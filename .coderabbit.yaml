@@ -46,8 +46,7 @@ reviews:
     - "!node_modules/**"
     - "!iris/node_modules/**"
     - "!dist/**"
-    - "!src-tauri/target/**"
-    # 桌面端构建产物
+    # 编辑器构建产物
     - "!iris/scripts/cm6-bundle/**"
 
   # ---- 路径专属规则 ----
@@ -86,7 +85,6 @@ reviews:
         - 本项目没有打包器、没有 node_modules 运行时依赖。
         - 引入第三方库必须 vendor 进 iris/vendor/ 并在 index.html 里按需加载，
           **不要建议**「用 npm 安装依赖」「引入构建步骤」「加上 TypeScript」。
-        - 桌面端（Tauri / src-tauri）复用同一套 index.html + 脚本。
 
         ## 4. 界面文案必须双语齐备
         - 任何用户可见文案都要同时加进 iris/js/i18n.js 的 zh 与 en 两段，

@@ -845,8 +845,6 @@
     'local.notDoc': '（非 Markdown/文本文件）',
     'local.count': '{n} 个文件',
     'cjk.loading': '正在加载繁简转换组件…',
-    'kb.fileAdded': '{n} 已加入知识库',
-    'kb.fileRemoved': '{n} 已从知识库移除',
     'figure.refMissing': '（图表引用失效）',
     'figure.refMissingHint': '目标编号不存在：可能是别名拼错或引用了其他文档的编号',
     'settings.theme.clearColors': '切换主题将清除自定义配色，是否继续？',

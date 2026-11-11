@@ -424,7 +424,7 @@ Service Worker 缓存。`sw.js` 顶部有 `CACHE_NAME` 和 `RUNTIME_CACHE` 两�
 ### 构建脚本扫到了 `dist/`
 
 `build-file-tree` / `build-links` / `gen-pinyin-table` / `link-check`
-的目录排除表都已加入 `dist` 与 `src-tauri`。新增构建脚本时记得也排除掉。
+的目录排除表都已加入 `dist`。新增构建脚本时记得也排除掉。
 
 ### 改了 `index.html` 的 script 顺序
 
@@ -440,11 +440,6 @@ Service Worker 缓存。`sw.js` 顶部有 `CACHE_NAME` 和 `RUNTIME_CACHE` 两�
 
 `Intl.Collator` 的 `caseFirst` / `numeric` 选项影响文件名排序结果，
 改比较器选项时注意跨浏览器、跨平台的一致性。
-
-### 桌面端（Tauri）
-
-`npm run desktop:dist` 打包资源，`npm run desktop:build` 走 Tauri 完整构建。
-NSIS 首次打包需要联网下载工具链，超时的手动处理步骤见 `readme-dev.md` 的「常见坑」。
 
 ---
 
@@ -468,7 +463,7 @@ NSIS 首次打包需要联网下载工具链，超时的手动处理步骤见 `r
 
 ## 提问
 
-- 架构、构建、渲染器、桌面端 → 看 [readme-dev.md](readme-dev.md)
+- 架构、构建、渲染器 → 看 [readme-dev.md](readme-dev.md)
 - 插件 → 看 [docs/plugin-development.md](docs/plugin-development.md)
 - 功能需求与候选池 → 看 [docs/requirements.md](docs/requirements.md)
 - 正式规划 → 看 [docs/roadmap.md](docs/roadmap.md)

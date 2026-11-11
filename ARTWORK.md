@@ -5,7 +5,7 @@ tags: [开发, 设计]
 
 # 美术设计规范 — Markdown Preview
 
-本文件是本项目所有图像资产（应用图标、PWA 图标、桌面端 exe 图标、分享卡片、README 横幅）的设计规范与生成流程。
+本文件是本项目所有图像资产（应用图标、PWA 图标、分享卡片、README 横幅）的设计规范与生成流程。
 
 设计标识是**鸢尾花（Iris）**——对应项目作者 `theforeveriris`，同时 `iris/` 目录名也取自这里。整套资产围绕一枚单色鸢尾剪影展开。
 
@@ -102,7 +102,6 @@ maskable 版采用「紫底 + 白鸢尾」反色方案，避免系统在裁切�
 | PWA any | 透明 | `#8B5CF6` |
 | PWA maskable | `#8B5CF6` 实底 | `#FFFFFF` |
 | apple-touch-icon | `#FFFFFF` 实底 | `#8B5CF6` |
-| 桌面端 exe / ico | 透明 | `#8B5CF6` |
 | Hero 横幅 | 浅紫渐变 | 紫→深紫渐变 |
 
 ---
@@ -125,24 +124,6 @@ maskable 版采用「紫底 + 白鸢尾」反色方案，避免系统在裁切�
 | `hero.png` | 1280×440 | PNG RGB | README 横幅成品 | `README.md` 顶部 |
 | `og-image.png` | 1200×630 | PNG RGB | 社交分享卡片（OG / Twitter Card） | `index.html` og:image |
 | `iris-icon-src2.png` | 1024×1024 | PNG RGB | **素材源**：洋红底原图，供重新抠像 | 生成脚本输入 |
-
-### 3.2 `src-tauri/icons/` —— 桌面端（Tauri）
-
-由 `tauri icon` 从 `iris/icons/icon.svg` 生成，覆盖 Windows / macOS / Linux。
-
-| 文件 | 尺寸 | 用途 |
-|------|------|------|
-| `32x32.png` | 32×32 | 任务栏、窗口标题栏 |
-| `64x64.png` | 64×64 | 通用小尺寸 |
-| `128x128.png` | 128×128 | 通用尺寸 |
-| `128x128@2x.png` | 256×256 | 高 DPI 变体（`bundle.icon` 中引用此项） |
-| `icon.png` | 512×512 | 桌面端主图标 |
-| `icon.ico` | 16/24/32/48/64/256 | Windows exe 与安装包图标 |
-| `icon.icns` | 多尺寸 | macOS 图标（本项目未用） |
-| `Square*Logo.png` | 30～310 | Windows Store 磁贴（未用） |
-| `StoreLogo.png` | 50×50 | Windows Store 小图标（未用） |
-
-`bundle.icon` 生效的 5 项：`32x32.png`、`128x128.png`、`128x128@2x.png`、`icon.icns`、`icon.ico`。
 
 ### 3.3 `docs/image/` —— 文档截图
 
@@ -225,21 +206,6 @@ maskable 版采用「紫底 + 白鸢尾」反色方案，避免系统在裁切�
 （见 [六、运行时分享卡片](#六-运行时分享卡片-selection-tools)），构图语言与本图一致
 （左上花标 / 右上大花水印 / 强调色渐变条）。
 
-### 4.6 桌面端图标
-
-<div align="center" style="background:#F3EEFE;border-radius:12px;padding:18px;margin:1em 0;">
-  <img src="src-tauri/icons/128x128.png" alt="桌面端 128 图标" width="120">
-  <img src="src-tauri/icons/64x64.png" alt="桌面端 64 图标" width="90">
-  <img src="src-tauri/icons/32x32.png" alt="桌面端 32 图标" width="64">
-  <img src="src-tauri/icons/icon.png" alt="桌面端主图标" width="120">
-</div>
-
-依次为 `128x128.png`、`64x64.png`、`32x32.png`、`icon.png`（512×512）。
-均为透明底纯紫鸢尾，由 `tauri icon` 从 `iris/icons/icon.svg` 生成。
-
-`icon.ico` 与 `icon.icns` 为多尺寸容器格式，无法直接以图片预览，
-其内容与上面同源（ICO 内含 16 / 24 / 32 / 48 / 64 / 256 六档）。
-
 ---
 
 ## 五、生成脚本与工作流
@@ -265,12 +231,7 @@ python iris/scripts/make-hero-image.py
 
 # 3) 社交分享卡片
 python iris/scripts/make-og-image.py
-
-# 4) 桌面端 exe 图标（从矢量源生成全套）
-npm run desktop:icon
 ```
-
-`npm run desktop:icon` 会额外产出 `android/` 与 `ios/` 目录，本项目只发布 Windows，**可安全删除**。
 
 ### 5.3 重新绘制鸢尾图形
 
@@ -281,7 +242,7 @@ npm run desktop:icon
 1. 编辑 `iris/icons/iris-icon-src2.png` 的**替代源**（当前是 AI 生成的洋红底图）
 2. 在 `make-iris-icon.py` 中调整 `chroma_key()` 的阈值——脚本用 `|R - B|` 区分洋红底与紫色主体
 3. 重新执行上述四条命令
-4. 同步 `dist/`：`npm run desktop:dist`
+4. 同步 `dist/`：`npm run build:dist`
 
 ### 5.4 SVG 描摹原理
 
@@ -390,8 +351,6 @@ border / text / text-muted / accent-purple / accent-pink`），25 套主题自�
 |------|----------|
 | `index.html` | favicon 链接、`theme-color`、`og:image` |
 | `manifest.json` | `theme_color`、`icons` 数组、`shortcuts` 图标 |
-| `package.json` | `desktop:icon` 脚本的源文件路径 |
-| `src-tauri/tauri.conf.json` | `bundle.icon` 数组 |
 | `iris/js/iris-mascot.js` | `IRIS_PATHS` 导出（icon.svg 同源 path 的运行时消费方） |
 | `iris/js/selection-tools.js` | 运行时分享卡片（品牌头 / 水印 / 渐变条均重绘鸢尾图形，见 §六） |
 | `README.md` | 顶部横幅 `hero.png` |
@@ -410,7 +369,6 @@ border / text / text-muted / accent-purple / accent-pink`），25 套主题自�
 | `hero.*` | README 顶部横幅 |
 | `og-image.png` | 社交分享卡片 |
 | `*-src*.png` | 生成脚本的素材源，非最终产物 |
-| `Square*Logo.png` / `StoreLogo.png` | Tauri 生成的 Windows Store 图标 |
 
 ---
 

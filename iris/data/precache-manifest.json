@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-02T23:49:10.158Z",
+  "generatedAt": "2026-11-11T01:37:45.267Z",
   "version": 1,
-  "count": 183,
+  "count": 182,
   "urls": [
     "./",
     "./404.html",
@@ -57,7 +57,6 @@
     "./iris/js/convert.js",
     "./iris/js/custom-select.js",
     "./iris/js/debug.js",
-    "./iris/js/desktop-kb.js",
     "./iris/js/doc-templates.js",
     "./iris/js/dom.js",
     "./iris/js/editor.js",

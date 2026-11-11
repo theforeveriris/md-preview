@@ -42,10 +42,10 @@ jobs:
         uses: ./.github/actions/build-data
 
       # 挑选运行时文件构建到独立 dist/ 再上传：此前 path: '.' 会把 .git/
-      # （浅历史）一起公开托管到 Pages（复用 build-desktop-dist.js 的挑选逻辑，
+      # （浅历史）一起公开托管到 Pages（复用 build-dist.js 的挑选逻辑，
       # 剔除 .git/.github/node_modules/scripts 等）
       - name: Build Site Dist
-        run: node iris/scripts/build-desktop-dist.js
+        run: node iris/scripts/build-dist.js
 
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3

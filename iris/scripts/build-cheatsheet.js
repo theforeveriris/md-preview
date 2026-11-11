@@ -19,7 +19,7 @@ const DOCS_DIR = path.join(ROOT, 'docs');
 const OUTPUT_FILE = path.join(__dirname, '..', 'data', 'cheatsheet.json');
 
 // 与 build-file-tree.js 的 EXCLUDED_DIRS 保持一致
-const EXCLUDED_DIRS = new Set(['.git', 'node_modules', 'vendor', '.github', 'dist', 'src-tauri', 'zw']);
+const EXCLUDED_DIRS = new Set(['.git', 'node_modules', 'vendor', '.github', 'dist', 'zw']);
 
 // 参与速查聚合的语言 → 展示分组（keepLine 谓词过滤非命令行）
 const LANGS = {
