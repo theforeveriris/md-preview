@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-18T18:35:49.543Z",
+  "generatedAt": "2026-11-18T18:44:51.274Z",
   "version": 1,
-  "count": 188,
+  "count": 189,
   "urls": [
     "./",
     "./404.html",
@@ -149,6 +149,7 @@
     "./iris/js/renderers/secret.js",
     "./iris/js/renderers/sql-erd.js",
     "./iris/js/renderers/steps.js",
+    "./iris/js/renderers/symbolator.js",
     "./iris/js/renderers/table-tools.js",
     "./iris/js/renderers/terminal.js",
     "./iris/js/renderers/trace.js",

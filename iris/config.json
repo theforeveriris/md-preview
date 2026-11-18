@@ -37,6 +37,7 @@
     "kroki": { "enabled": true, "description": "Kroki 图表渲染（PlantUML/Graphviz/Mermaid 等）" },
     "wavedrom": { "enabled": true, "description": "WaveDrom 数字时序图" },
     "wireviz": { "enabled": true, "description": "WireViz 线束 / 接线图" },
+    "symbolator": { "enabled": true, "description": "Symbolator 硬件符号图（Verilog / VHDL）" },
     "apexcharts": { "enabled": true, "description": "ApexCharts 交互式图表" },
     "vega-lite": { "enabled": true, "description": "Vega-Lite 声明式可视化" },
     "diff": { "enabled": true, "description": "Diff 代码对比渲染" },
