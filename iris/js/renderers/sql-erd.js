@@ -1,5 +1,5 @@
 /**
- * SQL DDL → ER 图渲染器（TOOL-3）
+ * SQL DDL / DBML → ER 图渲染器（TOOL-3）
  *
  * Markdown 语法：
  *   ```sql ddl      （或 ```ddl / ```erd）
@@ -7,17 +7,19 @@
  *     id INT PRIMARY KEY,
  *     name VARCHAR(50) NOT NULL
  *   );
- *   CREATE TABLE orders (
- *     id INT PRIMARY KEY,
- *     user_id INT,
- *     FOREIGN KEY (user_id) REFERENCES users(id)
- *   );
+ *   ```
+ *   ```dbml
+ *   Table users {
+ *     id int [pk]
+ *     name varchar
+ *   }
+ *   Ref: posts.user_id > users.id
  *   ```
  *
- * 解析 CREATE TABLE 的列、主键与外键，生成 Mermaid erDiagram 源码，
- * 再交给 mermaid 渲染器出图（本渲染器注册在 mermaid 之前，转换后的
- * mermaid 代码块会被随后的 mermaid 渲染器接管）。
- * 解析不出任何表时保留原代码块（降级为普通 SQL 高亮）。
+ * 解析 CREATE TABLE 的列、主键与外键（或 DBML 的 Table / Ref），生成
+ * Mermaid erDiagram 源码，再交给 mermaid 渲染器出图（本渲染器注册在
+ * mermaid 之前，转换后的 mermaid 代码块会被随后的 mermaid 渲染器接管）。
+ * 解析不出任何表时保留原代码块（降级为普通高亮）。
  */
 (function() {
   'use strict';
@@ -25,7 +27,7 @@
   window.MarkdownPreview.renderers = window.MarkdownPreview.renderers || {};
 
   // 目标语言标记（```sql ddl → data-lang="sql ddl"）
-  const TARGET_LANGS = ['erd', 'ddl', 'sql ddl'];
+  const TARGET_LANGS = ['erd', 'ddl', 'sql ddl', 'dbml'];
 
   // 深度感知地按顶层逗号切分（忽略括号内与引号内的逗号）
   function splitTopLevel(body) {
@@ -129,6 +131,193 @@
     return { tables, rels };
   }
 
+  // ============== DBML ==============
+
+  // 去掉 // 行注释与 /* */ 块注释（保留字符串里的内容）
+  function stripDbmlComments(src) {
+    let out = '';
+    let quote = null;
+    for (let i = 0; i < src.length; i++) {
+      const ch = src[i];
+      const nx = src[i + 1];
+      if (quote) {
+        out += ch;
+        if (ch === quote && src[i - 1] !== '\\') quote = null;
+        continue;
+      }
+      if (ch === '"' || ch === "'") { quote = ch; out += ch; continue; }
+      if (ch === '/' && nx === '/') {
+        while (i < src.length && src[i] !== '\n') i++;
+        out += '\n';
+        continue;
+      }
+      if (ch === '/' && nx === '*') {
+        i += 2;
+        while (i < src.length && !(src[i] === '*' && src[i + 1] === '/')) i++;
+        i += 1;
+        continue;
+      }
+      out += ch;
+    }
+    return out;
+  }
+
+  // 从 openIdx（'{' 的下标）起找配对的 '}'，跳过字符串内的括号
+  function matchBrace(src, openIdx) {
+    let depth = 0;
+    let quote = null;
+    for (let i = openIdx; i < src.length; i++) {
+      const ch = src[i];
+      if (quote) { if (ch === quote && src[i - 1] !== '\\') quote = null; continue; }
+      if (ch === '"' || ch === "'") { quote = ch; continue; }
+      if (ch === '{') depth++;
+      else if (ch === '}') {
+        depth--;
+        if (depth === 0) return i;
+      }
+    }
+    return -1;
+  }
+
+  function unquoteDbml(s) {
+    const v = String(s || '').trim();
+    return v.replace(/^"(.*)"$/, '$1').replace(/^'(.*)'$/, '$1');
+  }
+
+  // 按 . 切分限定名，忽略引号内的点
+  function splitQualified(raw) {
+    const parts = [];
+    let cur = '';
+    let quote = null;
+    const src = String(raw || '');
+    for (let i = 0; i < src.length; i++) {
+      const ch = src[i];
+      if (quote) {
+        cur += ch;
+        if (ch === quote && src[i - 1] !== '\\') quote = null;
+        continue;
+      }
+      if (ch === '"' || ch === "'") { quote = ch; cur += ch; continue; }
+      if (ch === '.') { parts.push(unquoteDbml(cur)); cur = ''; continue; }
+      cur += ch;
+    }
+    if (cur.trim()) parts.push(unquoteDbml(cur));
+    return parts.map(p => p.trim()).filter(Boolean);
+  }
+
+  function refTargetOf(raw) {
+    const parts = splitQualified(raw);
+    if (parts.length < 2) return null;
+    return { table: parts[parts.length - 2], col: parts[parts.length - 1] };
+  }
+
+  // 解析 [pk, ref: > users.id, note: '...'] 设置串
+  function dbmlSettings(settings) {
+    const out = { pk: false, refs: [] };
+    if (!settings) return out;
+    const body = settings.replace(/^\[/, '').replace(/\]$/, '');
+    const parts = splitTopLevel(body);
+    parts.forEach(part => {
+      const p = part.trim();
+      if (/^(pk|primary\s+key)$/i.test(p)) out.pk = true;
+      const m = /^ref\s*:\s*(<>|>|<|-)\s*(.+)$/i.exec(p);
+      if (m) out.refs.push({ kind: m[1], target: m[2].trim() });
+    });
+    return out;
+  }
+
+  const QID = '(?:"(?:[^"\\\\]|\\\\.)*"|[\\w$]+)';
+  const FULL_NAME = QID + '(?:\\s*\\.\\s*' + QID + ')*';
+
+  function parseDbml(text) {
+    const src = stripDbmlComments(String(text || ''));
+    const tables = [];
+    const rels = [];
+    const aliasMap = new Map();
+
+    const tableRe = new RegExp('\\bTable\\s+(' + FULL_NAME + ')(?:\\s+as\\s+([\\w$]+))?\\s*\\{', 'g');
+    let m;
+    while ((m = tableRe.exec(src)) !== null) {
+      const parts = splitQualified(m[1]);
+      const name = ident(parts[parts.length - 1] || '');
+      const open = tableRe.lastIndex - 1;
+      const close = matchBrace(src, open);
+      if (close < 0) break;
+      tableRe.lastIndex = close + 1;
+      if (m[2]) aliasMap.set(m[2], name);
+
+      const body = src.slice(open + 1, close);
+      const cols = [];
+      let inIndexes = 0;
+      const lines = body.split('\n');
+      for (const rawLine of lines) {
+        const line = rawLine.trim();
+        if (!line) continue;
+        if (/^indexes\s*\{/i.test(line)) { inIndexes++; continue; }
+        if (inIndexes) {
+          if (line.indexOf('{') !== -1) inIndexes++;
+          if (line.indexOf('}') !== -1) inIndexes--;
+          continue;
+        }
+        if (/^(Note|TableGroup|Project)\b/i.test(line)) continue;
+        if (/^\}/.test(line)) continue;
+
+        const mm = /^("(?:[^"\\]|\\.)*"|[\w$]+)\s+("(?:[^"\\]|\\.)*"|[\w$]+(?:\([^)]*\))?(?:\[\])?)\s*(\[[\s\S]*\])?$/.exec(line);
+        if (!mm) continue;
+        const colName = unquoteDbml(mm[1]);
+        const type = typeToken(unquoteDbml(mm[2]));
+        const settings = dbmlSettings(mm[3]);
+        cols.push({ name: colName, type, pk: settings.pk });
+        settings.refs.forEach(r => {
+          const target = refTargetOf(r.target);
+          if (!target) return;
+          rels.push({
+            from: name,
+            to: aliasMap.get(target.table) || ident(target.table),
+            fromCol: colName,
+            refCol: target.col,
+            kind: r.kind
+          });
+        });
+      }
+      if (cols.length) tables.push({ name, cols });
+    }
+
+    // 顶层 Ref 声明：Ref [name]: A.x > B.y
+    const refRe = new RegExp('\\bRef(?:\\s+[^:\\n]+)?\\s*:\\s*(' + FULL_NAME + ')\\s*(<>|>|<|-)\\s*(' + FULL_NAME + ')', 'g');
+    let rm;
+    while ((rm = refRe.exec(src)) !== null) {
+      const left = refTargetOf(rm[1]);
+      const right = refTargetOf(rm[3]);
+      if (!left || !right) continue;
+      rels.push({
+        from: aliasMap.get(left.table) || ident(left.table),
+        to: aliasMap.get(right.table) || ident(right.table),
+        fromCol: left.col,
+        refCol: right.col,
+        kind: rm[2]
+      });
+    }
+
+    if (!tables.length) return null;
+    const known = new Set(tables.map(t => t.name));
+    return {
+      tables,
+      rels: rels.filter(r => known.has(r.from) && known.has(r.to))
+    };
+  }
+
+  // DBML 关系方向 → Mermaid 基数
+  function relLine(r) {
+    const label = String(r.fromCol || 'rel').replace(/"/g, '');
+    switch (r.kind) {
+      case '<': return '    ' + r.from + ' ||--o{ ' + r.to + ' : "' + label + '"';
+      case '-': return '    ' + r.from + ' ||--|| ' + r.to + ' : "' + label + '"';
+      case '<>': return '    ' + r.from + ' }o--o{ ' + r.to + ' : "' + label + '"';
+      default: return '    ' + r.to + ' ||--o{ ' + r.from + ' : "' + label + '"';
+    }
+  }
+
   function buildMermaid(model) {
     const lines = ['erDiagram'];
     model.tables.forEach(t => {
@@ -141,8 +330,7 @@
       lines.push('    }');
     });
     model.rels.forEach(r => {
-      const label = (r.fromCol || 'fk').replace(/"/g, '');
-      lines.push('    ' + r.to + ' ||--o{ ' + r.from + ' : "' + label + '"');
+      lines.push(relLine(r));
     });
     return lines.join('\n');
   }
@@ -157,7 +345,10 @@
       pre.dataset.erdDone = '1';
       const code = pre.querySelector('code');
       if (!code) return;
-      const model = parseDdl(code.textContent || '');
+      const lang = String(pre.dataset.lang || '').toLowerCase();
+      const model = lang.indexOf('dbml') !== -1
+        ? parseDbml(code.textContent || '')
+        : parseDdl(code.textContent || '');
       if (!model) return; // 解析失败：保留原代码块
       const diagram = buildMermaid(model);
 
@@ -177,6 +368,6 @@
 
   // 供 Node 冒烟测试直接验证解析逻辑
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { parseDdl, buildMermaid, splitTopLevel };
+    module.exports = { parseDdl, parseDbml, buildMermaid, splitTopLevel };
   }
 })();

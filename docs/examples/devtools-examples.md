@@ -208,43 +208,9 @@ GET https://httpbin.org/status/404
 
 > 跨域（CORS）由目标服务决定；部分接口需在其服务端允许浏览器直接访问。
 
-## SQL DDL → ER 图
+## 数据库模型图
 
-**源码**：
-
-````markdown
-```sql ddl
-CREATE TABLE users (
-  id INT PRIMARY KEY,
-  name VARCHAR(50) NOT NULL,
-  email VARCHAR(120)
-);
-
-CREATE TABLE orders (
-  id INT PRIMARY KEY,
-  user_id INT,
-  total DECIMAL(10,2),
-  FOREIGN KEY (user_id) REFERENCES users(id)
-);
-```
-````
-
-**渲染效果**：
-
-```sql ddl
-CREATE TABLE users (
-  id INT PRIMARY KEY,
-  name VARCHAR(50) NOT NULL,
-  email VARCHAR(120)
-);
-
-CREATE TABLE orders (
-  id INT PRIMARY KEY,
-  user_id INT,
-  total DECIMAL(10,2),
-  FOREIGN KEY (user_id) REFERENCES users(id)
-);
-```
+SQL DDL / DBML 到 ER 图的能力已独立成篇，见 [DBML 与 ER 图](dbml-examples.md)（支持 ` ```dbml `、` ```sql ddl `）。
 
 ## OpenAPI 交互文档
 
