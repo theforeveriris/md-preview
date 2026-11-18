@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-18T17:28:42.755Z",
+  "generatedAt": "2026-11-18T18:17:20.093Z",
   "version": 1,
-  "count": 185,
+  "count": 187,
   "urls": [
     "./",
     "./404.html",
@@ -86,6 +86,7 @@
     "./iris/js/i18n.js",
     "./iris/js/interactions.js",
     "./iris/js/iris-mascot.js",
+    "./iris/js/kroki-client.js",
     "./iris/js/lang-links.js",
     "./iris/js/langs/extra-langs.js",
     "./iris/js/langs/net-config.js",
@@ -153,6 +154,7 @@
     "./iris/js/renderers/trace.js",
     "./iris/js/renderers/traceroute.js",
     "./iris/js/renderers/vega-lite.js",
+    "./iris/js/renderers/wavedrom.js",
     "./iris/js/router.js",
     "./iris/js/search.js",
     "./iris/js/section-collapse.js",

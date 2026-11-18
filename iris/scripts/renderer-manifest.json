@@ -3,10 +3,12 @@
   "items": [
     { "id": "color-utils", "type": "shared", "file": "iris/js/color-utils.js", "note": "color-utils：graph 渲染器与 color 插件共用的颜色解析/对比度工具", "description": "颜色解析/对比度工具（graph 与 color 插件共用）" },
     { "id": "steps", "type": "renderer", "file": "iris/js/renderers/steps.js", "note": "steps/quote/orgchart 语法糖：orgchart 注入 mermaid 块，必须先于 mermaid.js", "description": "步骤/组织图语法糖（注入 mermaid 块）" },
+    { "id": "kroki-client", "type": "shared", "file": "iris/js/kroki-client.js", "description": "Kroki SVG 渲染共用客户端（编码/轮试/回退）" },
     { "id": "sql-erd", "type": "renderer", "file": "iris/js/renderers/sql-erd.js", "description": "SQL DDL / DBML → ER 实体关系图" },
     { "id": "mermaid", "type": "renderer", "file": "iris/js/renderers/mermaid.js", "description": "Mermaid 时序图/流程图/甘特图/ER图/C4/饼图等" },
     { "id": "plantuml", "type": "renderer", "file": "iris/js/renderers/plantuml.js", "description": "PlantUML UML 图表" },
     { "id": "kroki", "type": "renderer", "file": "iris/js/renderers/kroki.js", "description": "Kroki 图表渲染（PlantUML/Graphviz/Mermaid 等）" },
+    { "id": "wavedrom", "type": "renderer", "file": "iris/js/renderers/wavedrom.js", "description": "WaveDrom 数字时序图" },
     { "id": "apexcharts", "type": "renderer", "file": "iris/js/renderers/apexcharts.js", "description": "ApexCharts 交互式图表" },
     { "id": "vega-lite", "type": "renderer", "file": "iris/js/renderers/vega-lite.js", "description": "Vega-Lite 声明式可视化" },
     { "id": "diff", "type": "renderer", "file": "iris/js/renderers/diff.js", "description": "Diff 代码对比渲染" },
