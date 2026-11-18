@@ -20,16 +20,33 @@
     return box;
   }
 
-  async function renderGeoData(type, dataStr, originalMatch, mapId) {
-    // 按需加载 leaflet JS + CSS（~150KB，仅在出现 geojson/topojson 嵌入时才需要）
-    if (typeof L === 'undefined') {
+  // Leaflet 必须按 window.L 取：页面里可能有别的脚本声明了全局 L（词法
+  // 绑定会遮住 window.L），裸 `L` 会指向无关对象，导致 L.map is not a function
+  async function ensureLeaflet() {
+    const ready = () => window.L && typeof window.L.map === 'function';
+    if (ready()) return true;
+    try {
       await Promise.all([
         window.MarkdownPreview.loadStyle('iris/vendor/leaflet/leaflet.css'),
         window.MarkdownPreview.loadScript('iris/vendor/leaflet/leaflet.js'),
       ]);
+    } catch (e) {
+      console.warn('[geo] Leaflet load failed:', e);
     }
-    if (typeof L === 'undefined') {
-      console.error('Leaflet library failed to load');
+    return ready();
+  }
+
+  function showGeoError(mapId, error) {
+    const box = mapId ? document.getElementById(mapId) : null;
+    if (!box) return;
+    box.innerHTML = '';
+    box.style.height = 'auto';
+    box.appendChild(geoErrorNote(error));
+  }
+
+  async function renderGeoData(type, dataStr, originalMatch, mapId) {
+    if (!(await ensureLeaflet())) {
+      showGeoError(mapId, new Error(t('geo.leafletFailed', '地图库 Leaflet 加载失败')));
       return;
     }
 
@@ -47,47 +64,45 @@
         const mapContainer = document.getElementById(mapId);
         if (!mapContainer) return;
 
-        const map = L.map(mapId).setView([35.8617, 104.1954], 5);
+        try {
+          const L = window.L;
+          const map = L.map(mapId).setView([35.8617, 104.1954], 5);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
-
-        if (type === 'geojson') {
-          L.geoJSON(geoData, {
-            onEachFeature: function(feature, layer) {
-              if (feature.properties && feature.properties.name) {
-                // 弹窗内容以文本节点传入：properties.name 来自 GeoJSON 数据
-                // （可能为非受信来源），字符串形式会被 Leaflet 按 HTML 解析
-                layer.bindPopup(document.createTextNode(feature.properties.name));
-              }
-            }
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
           }).addTo(map);
-        } else if (type === 'topojson') {
-          const geojsonData = topojsonToGeoJson(geoData);
-          L.geoJSON(geojsonData, {
-            onEachFeature: function(feature, layer) {
-              if (feature.properties && feature.properties.name) {
-                layer.bindPopup(document.createTextNode(feature.properties.name));
-              }
-            }
-          }).addTo(map);
-        }
 
-        const bounds = map.getBounds();
-        if (bounds.isValid()) {
-          map.fitBounds(bounds);
+          if (type === 'geojson') {
+            const layer = L.geoJSON(geoData, {
+              onEachFeature: function(feature, lay) {
+                if (feature.properties && feature.properties.name) {
+                  // 弹窗内容以文本节点传入：properties.name 来自 GeoJSON 数据
+                  // （可能为非受信来源），字符串形式会被 Leaflet 按 HTML 解析
+                  lay.bindPopup(document.createTextNode(feature.properties.name));
+                }
+              }
+            }).addTo(map);
+            if (layer.getBounds().isValid()) map.fitBounds(layer.getBounds(), { padding: [12, 12] });
+          } else if (type === 'topojson') {
+            const geojsonData = topojsonToGeoJson(geoData);
+            const layer = L.geoJSON(geojsonData, {
+              onEachFeature: function(feature, lay) {
+                if (feature.properties && feature.properties.name) {
+                  lay.bindPopup(document.createTextNode(feature.properties.name));
+                }
+              }
+            }).addTo(map);
+            if (layer.getBounds().isValid()) map.fitBounds(layer.getBounds(), { padding: [12, 12] });
+          }
+        } catch (error) {
+          console.error('[geo] map init failed:', error);
+          showGeoError(mapId, error);
         }
       }, 10);
     } catch (error) {
       console.error('Geo data parsing error:', error);
       // 嵌入路径容器已建好：就地渲染主题化错误提示，不留空白 400px 盒子
-      const box = mapId ? document.getElementById(mapId) : null;
-      if (box) {
-        box.innerHTML = '';
-        box.style.height = 'auto';
-        box.appendChild(geoErrorNote(error));
-      }
+      showGeoError(mapId, error);
     }
   }
 
@@ -101,20 +116,23 @@
     // 全局查询会命中空面板——见 md-render.js resolveRoot 注释）
     const markdownBody = window.MarkdownPreview.mdRender.resolveRoot(root);
     if (!markdownBody) return;
-    const blocks = markdownBody.querySelectorAll('pre code.language-geojson, pre code.language-topojson');
+    // 以 data-lang 为准：高亮/代码阅读器可能改写 <code> 的 class
+    const blocks = markdownBody.querySelectorAll(
+      'pre.code-block[data-lang="geojson"], pre.code-block[data-lang="topojson"]'
+    );
     if (!blocks.length) return;
 
     let idx = 0;
-    for (const code of blocks) {
-      const pre = code.closest('pre');
-      if (!pre || pre.dataset.geoDone) continue;
-      const type = code.className.includes('language-topojson') ? 'topojson' : 'geojson';
-      let data = code.textContent.trim();
+    for (const pre of blocks) {
+      if (pre.dataset.geoDone) continue;
+      const lang = String(pre.dataset.lang || '');
+      const type = lang.indexOf('topojson') !== -1 ? 'topojson' : 'geojson';
+      const code = pre.querySelector('code');
+      let data = (code ? code.textContent : pre.textContent).trim();
       if (!data) continue;
 
-      // 兼容嵌入语法：```geojson 围栏内写 @[geojson](...) 时提取数据部分
-      const embedMatch = data.match(/@\[geojson\]\(([\s\S]*)\)\s*$/);
-      if (embedMatch) data = embedMatch[1];
+      // 围栏里的 @[geojson](...) 嵌入语法交给 embedded.js，避免当 JSON 解析
+      if (/^@\[(?:geojson|topojson)\]\(/.test(data)) continue;
 
       pre.dataset.geoDone = '1';
       // 先验证 JSON 再替换 pre：解析失败保留源码块 + 主题化提示。
@@ -147,72 +165,85 @@
       type: 'FeatureCollection',
       features: []
     };
-    
+    const scale = (topology.transform && topology.transform.scale) || [1, 1];
+    const translate = (topology.transform && topology.transform.translate) || [0, 0];
+    const arcs = Array.isArray(topology.arcs) ? topology.arcs : [];
+
+    const project = (x, y) => [x * scale[0] + translate[0], y * scale[1] + translate[1]];
+
+    // TopoJSON 弧段是增量编码，负下标表示反向引用（~index）
     function decodeArc(arcIndex) {
-      const arc = topology.arcs[arcIndex];
-      const result = [];
-      let x = 0, y = 0;
+      const reversed = arcIndex < 0;
+      const idx = reversed ? ~arcIndex : arcIndex;
+      const arc = arcs[idx];
+      if (!Array.isArray(arc)) return [];
+      const points = [];
+      let x = 0;
+      let y = 0;
       for (let i = 0; i < arc.length; i++) {
         x += arc[i][0];
         y += arc[i][1];
-        result.push([x, y]);
+        points.push(project(x, y));
       }
-      return result;
+      return reversed ? points.reverse() : points;
     }
-    
+
+    function lineFromArcs(list) {
+      const out = [];
+      (list || []).forEach(arcIndex => {
+        const pts = decodeArc(arcIndex);
+        pts.forEach((p, i) => {
+          // 相邻弧段首尾重复时不重复追加
+          if (i === 0 && out.length) {
+            const last = out[out.length - 1];
+            if (last[0] === p[0] && last[1] === p[1]) return;
+          }
+          out.push(p);
+        });
+      });
+      return out;
+    }
+
     function transformGeometry(geometry) {
-      const result = {
-        type: geometry.type,
-        coordinates: []
-      };
-      
+      if (!geometry || !geometry.type) return null;
       switch (geometry.type) {
         case 'Point':
-          result.coordinates = geometry.coordinates;
-          break;
-        case 'LineString':
-          result.coordinates = geometry.arcs.flatMap(arcIdx => decodeArc(arcIdx));
-          break;
-        case 'Polygon':
-          result.coordinates = geometry.arcs.map(ring => ring.flatMap(arcIdx => decodeArc(arcIdx)));
-          break;
+          return { type: 'Point', coordinates: project(geometry.coordinates[0], geometry.coordinates[1]) };
         case 'MultiPoint':
-          result.coordinates = geometry.coordinates;
-          break;
+          return { type: 'MultiPoint', coordinates: geometry.coordinates.map(c => project(c[0], c[1])) };
+        case 'LineString':
+          return { type: 'LineString', coordinates: lineFromArcs(geometry.arcs) };
         case 'MultiLineString':
-          result.coordinates = geometry.arcs.map(line => line.flatMap(arcIdx => decodeArc(arcIdx)));
-          break;
+          return { type: 'MultiLineString', coordinates: (geometry.arcs || []).map(lineFromArcs) };
+        case 'Polygon':
+          return { type: 'Polygon', coordinates: (geometry.arcs || []).map(lineFromArcs) };
         case 'MultiPolygon':
-          result.coordinates = geometry.arcs.map(polygon => polygon.map(ring => ring.flatMap(arcIdx => decodeArc(arcIdx))));
-          break;
+          return { type: 'MultiPolygon', coordinates: (geometry.arcs || []).map(polygon => polygon.map(lineFromArcs)) };
         case 'GeometryCollection':
-          result.geometries = geometry.geometries.map(transformGeometry);
-          delete result.coordinates;
-          break;
+          return {
+            type: 'GeometryCollection',
+            geometries: (geometry.geometries || []).map(transformGeometry).filter(Boolean)
+          };
+        default:
+          return null;
       }
-      
-      return result;
     }
-    
+
     for (const key in topology.objects) {
       const obj = topology.objects[key];
-      if (obj.type === 'GeometryCollection') {
-        obj.geometries.forEach(geom => {
-          result.features.push({
-            type: 'Feature',
-            geometry: transformGeometry(geom),
-            properties: {}
-          });
-        });
-      } else if (obj.type === 'Polygon' || obj.type === 'LineString' || obj.type === 'Point') {
+      const geoms = obj.type === 'GeometryCollection' ? (obj.geometries || []) : [obj];
+      geoms.forEach(geom => {
+        const g = transformGeometry(geom);
+        if (!g) return;
         result.features.push({
           type: 'Feature',
-          geometry: transformGeometry(obj),
-          properties: {}
+          id: geom.id != null ? geom.id : obj.id,
+          geometry: g,
+          properties: geom.properties || obj.properties || {}
         });
-      }
+      });
     }
-    
+
     return result;
   }
   
