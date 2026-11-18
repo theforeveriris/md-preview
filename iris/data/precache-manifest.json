@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T18:26:59.609Z",
+  "generatedAt": "2026-11-18T18:35:49.543Z",
   "version": 1,
   "count": 188,
   "urls": [
@@ -113,7 +113,7 @@
     "./iris/js/reading-pos.js",
     "./iris/js/renderers/acl.js",
     "./iris/js/renderers/apexcharts.js",
-    "./iris/js/renderers/bits.js",
+    "./iris/js/renderers/bytefield.js",
     "./iris/js/renderers/cli-lab.js",
     "./iris/js/renderers/clihelp.js",
     "./iris/js/renderers/code-reader.js",

@@ -319,7 +319,8 @@
     'github', 'issue', 'pr', 'release',
     'katex', 'pulse', 'secret', 'pptx', 'twitter', 'x', 'embed', 'pkt',
     'ensp', 'geojson', 'topojson', 'toml', 'dockerfile', 'properties',
-    'bits', 'heatmap', 'colorcard', 'colors', 'palette',
+    'heatmap', 'colorcard', 'colors', 'palette',
+    'wavedrom', 'wireviz', 'bytefield', 'symbolator', 'dbml',
     'ping', 'tracert', 'cli'
   ]);
 

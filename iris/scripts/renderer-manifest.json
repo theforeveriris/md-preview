@@ -45,7 +45,7 @@
     { "id": "trace", "type": "renderer", "file": "iris/js/renderers/trace.js", "description": "网络追踪数据渲染" },
     { "id": "table-tools", "type": "renderer", "file": "iris/js/renderers/table-tools.js", "description": "Markdown 表格交互工具（排序/过滤/导出）" },
     { "id": "heatmap", "type": "renderer", "file": "iris/js/renderers/heatmap.js", "description": "热力图渲染" },
-    { "id": "bits", "type": "renderer", "file": "iris/js/renderers/bits.js", "description": "位运算可视化" },
+    { "id": "bytefield", "type": "renderer", "file": "iris/js/renderers/bytefield.js", "description": "Bytefield 字节域 / 报文结构图" },
     { "id": "secret", "type": "renderer", "file": "iris/js/renderers/secret.js", "description": "密钥/敏感信息展示（可折叠）" },
     { "id": "pkt-renderer", "type": "embed", "file": "iris/js/pkt/pkt-renderer.js", "note": "Packet Tracer 拓扑渲染器（cytoscape.min.js 已改为按需懒加载，见 pkt-renderer.js#loadAndRender）", "description": "Packet Tracer 拓扑渲染" },
     { "id": "pptx", "type": "embed", "file": "iris/js/renderers/pptx.js", "note": "PPTX 嵌入渲染器（缩略图网格 + 全屏放映模式，详见 pptx.js 顶部注释）", "description": "PPTX 嵌入渲染" },

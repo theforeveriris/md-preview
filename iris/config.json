@@ -72,7 +72,7 @@
     "trace": { "enabled": true, "description": "网络追踪数据渲染" },
     "table-tools": { "enabled": true, "description": "Markdown 表格交互工具（排序/过滤/导出）" },
     "heatmap": { "enabled": true, "description": "热力图渲染" },
-    "bits": { "enabled": true, "description": "位运算可视化" },
+    "bytefield": { "enabled": true, "description": "Bytefield 字节域 / 报文结构图" },
     "secret": { "enabled": true, "description": "密钥/敏感信息展示（可折叠）" },
     "pkt-renderer": { "enabled": true, "description": "Packet Tracer 拓扑渲染" },
     "pptx": { "enabled": true, "description": "PPTX 嵌入渲染" },

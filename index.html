@@ -1706,7 +1706,11 @@
               <button class="dropdown-item" data-insert="```glossary\nOSPF | 开放最短路径优先\nBGP | 边界网关协议\n```" data-cursor="-6">术语表 glossary</button>
               <button class="dropdown-item" data-insert="```terminal\n$ ssh admin@10.1.1.1\nPassword:\nCore-SW> show ip interface brief\n```" data-cursor="-6">终端回放 terminal</button>
               <button class="dropdown-item" data-insert="```secret\nenable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0\n```" data-cursor="-6">敏感遮罩 secret</button>
-              <button class="dropdown-item" data-insert="```bits 0100 0010\n0 | SYN | 发起连接\n6 | ACK | 确认收到\n```" data-cursor="-6">位标注 bits</button>
+              <button class="dropdown-item" data-insert="```bytefield\n(def boxes-per-row 16)\n(draw-column-headers)\n(draw-box &quot;Type&quot; {:span 8})\n(draw-box &quot;Payload&quot; {:span 8})\n```" data-cursor="-6">字节域 bytefield</button>
+              <button class="dropdown-item" data-insert="```wavedrom\n{signal:[\n  {name:'clk', wave:'p....'},\n  {name:'data', wave:'0.1..0'}\n]}\n```" data-cursor="-6">时序图 wavedrom</button>
+              <button class="dropdown-item" data-insert="```wireviz\nconnectors:\n  X1:\n    type: Molex\n    pinlabels: [VCC, GND]\ncables:\n  W1:\n    wirecount: 2\n    wirelabels: [VCC, GND]\nconnections:\n  -\n    - X1: [1,2]\n    - W1: [1,2]\n```" data-cursor="-6">接线图 wireviz</button>
+              <button class="dropdown-item" data-insert="```dbml\nTable users {\n  id int [pk]\n  name varchar\n}\nTable posts {\n  id int [pk]\n  user_id int [ref: &gt; users.id]\n}\n```" data-cursor="-6">数据库模型 dbml</button>
+              <button class="dropdown-item" data-insert="```symbolator\nmodule demo(input a, input b, output y);\nendmodule\n```" data-cursor="-6">硬件符号 symbolator</button>
               <button class="dropdown-item" data-insert="```heatmap\n2025-09-30,9\n2025-10-01,8\n2025-10-02,0\n```" data-cursor="-6">日历热图 heatmap</button>
             </div>
             <div class="dropdown-group">
@@ -2222,7 +2226,7 @@
   <script defer src="iris/js/renderers/trace.js"></script>
   <script defer src="iris/js/renderers/table-tools.js"></script>
   <script defer src="iris/js/renderers/heatmap.js"></script>
-  <script defer src="iris/js/renderers/bits.js"></script>
+  <script defer src="iris/js/renderers/bytefield.js"></script>
   <script defer src="iris/js/renderers/secret.js"></script>
   <!-- Packet Tracer 拓扑渲染器（cytoscape.min.js 已改为按需懒加载，见 pkt-renderer.js#loadAndRender） -->
   <script defer src="iris/js/pkt/pkt-renderer.js"></script>
