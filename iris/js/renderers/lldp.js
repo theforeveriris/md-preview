@@ -166,17 +166,15 @@
   function renderTopology(topo, pre, options) {
     if (!topo.nodes.length) return false;
     const widget = document.createElement('div');
-    widget.className = 'lldp-view';
+    widget.className = 'lldp-view w-has-float';
 
     const toolbar = document.createElement('div');
-    toolbar.className = 'lldp-toolbar';
+    toolbar.className = 'w-float';
     // 工具条按钮一律用图标，文字靠悬停提示（data-tip）
     const circleLabel = t('lldp.circle', '环形');
     const concentricLabel = t('lldp.concentric', '同心');
     const exportLabel = t('lldp.export', '导出 SVG');
     toolbar.innerHTML =
-      '<span class="lldp-meta">' + esc(topo.nodes.length) + ' ' + esc(t('lldp.nodes', '节点')) + ' · ' + esc(topo.edges.length) + ' ' + esc(t('lldp.edges', '链路')) + '</span>' +
-      '<span class="lldp-spacer"></span>' +
       '<button type="button" class="icon-btn lldp-btn" data-layout="circle" data-tip="' + esc(circleLabel) + '" title="' + esc(circleLabel) + '" aria-label="' + esc(circleLabel) + '">' +
         icon('i-graph', 15) + '<span class="icon-btn-label">' + esc(circleLabel) + '</span></button>' +
       '<button type="button" class="icon-btn lldp-btn" data-layout="concentric" data-tip="' + esc(concentricLabel) + '" title="' + esc(concentricLabel) + '" aria-label="' + esc(concentricLabel) + '">' +

@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-11T01:37:45.267Z",
+  "generatedAt": "2026-11-18T17:28:42.755Z",
   "version": 1,
-  "count": 182,
+  "count": 185,
   "urls": [
     "./",
     "./404.html",
@@ -29,6 +29,7 @@
     "./iris/css/themes/themes.css",
     "./iris/css/toc-sidebar.css",
     "./iris/css/traceroute.css",
+    "./iris/css/widget-chrome.css",
     "./iris/data/feed.xml",
     "./iris/data/file-tree.json",
     "./iris/data/links.json",
@@ -63,6 +64,7 @@
     "./iris/js/editor/completions.js",
     "./iris/js/editor/editor-ai.js",
     "./iris/js/editor/find-replace.js",
+    "./iris/js/editor/live-preview.js",
     "./iris/js/editor/media-upload.js",
     "./iris/js/editor/mermaid-pip.js",
     "./iris/js/editor/outline.js",
@@ -173,6 +175,7 @@
     "./iris/js/toc-sidebar.js",
     "./iris/js/ui.js",
     "./iris/js/unread.js",
+    "./iris/js/widget-chrome.js",
     "./iris/js/zip.js",
     "./iris/styles.css",
     "./iris/vendor/codemirror/codemirror.min.js",

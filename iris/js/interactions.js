@@ -687,7 +687,7 @@
       const img = e.target.closest('.markdown-body img');
       if (!img) return;
       // 渲染器自管的图片让位（拓扑/图表有自己的工具条），编辑器输出区不管
-      if (img.closest('.plantuml-diagram, .mermaid-diagram, .geo-map, .pptx-grid, .hm-widget, .csv-table, .cell-output')) return;
+      if (img.closest('.plantuml-diagram, .mermaid-diagram, .geo-map, .pptx-grid, .hm-widget, .csv-table, .cell-output, .cm-content')) return;
       const src = img.currentSrc || img.src;
       if (!src) return;
       e.preventDefault();

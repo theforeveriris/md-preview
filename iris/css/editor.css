@@ -1283,7 +1283,7 @@ body.dual-pane-active .autocomplete-list {
 .search-panel {
   display: none;
   position: fixed;
-  top: 48px;
+  top: 52px;
   right: 16px;
   z-index: 300;
   width: 460px;
@@ -1802,3 +1802,631 @@ body.editor-dark-mode .cell {
   0%, 50% { box-shadow: inset 0 0 0 2px var(--color-accent-purple); }
   100% { box-shadow: none; }
 }
+
+
+/* ============== 单文档编辑区（所见即所得 / 双栏） ============== */
+
+/* 覆盖旧 Cell 布局：编辑区本身不滚动，滚动交给 CM6 与预览栏 */
+.editor-overlay .editor-main {
+  display: flex;
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.doc-workspace {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+}
+
+.doc-source-pane {
+  display: flex;
+  flex: 1 1 50%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.doc-cm-host {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.doc-cm-host .cm-editor {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  background: var(--color-bg);
+}
+
+.doc-cm-host .cm-scroller {
+  overflow: auto;
+}
+
+/* 正文排版：居中、可读行长。字号由字号菜单写入 --doc-editor-font-size */
+.editor-overlay .doc-source-pane .cm-content {
+  box-sizing: border-box;
+  max-width: 880px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 30px 28px 45vh;
+  font-family: 'IBM Plex Sans', 'Noto Sans SC', system-ui, sans-serif;
+  font-size: var(--doc-editor-font-size, 16px);
+  line-height: 1.85;
+}
+
+/* 双栏时左侧是源码：等宽字体、紧凑行高 */
+.editor-overlay .editor-main.mode-split .doc-source-pane .cm-content {
+  max-width: none;
+  width: auto;
+  flex: 1 1 auto;
+  padding: 18px 20px 45vh;
+  font-family: 'JetBrains Mono', 'Cascadia Code', 'SFMono-Regular', Consolas, monospace;
+  font-size: calc(var(--doc-editor-font-size, 16px) * 0.86);
+  line-height: 1.7;
+}
+
+/* 所见即所得不显示行号；双栏保留行号 */
+.editor-main.mode-wysiwyg .cm-gutters {
+  display: none;
+}
+
+.editor-main.mode-wysiwyg .cm-activeLine {
+  background: transparent;
+}
+
+/* 实时预览渲染块 */
+.lp-block {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  cursor: text;
+  border-radius: 8px;
+  transition: background-color 0.12s ease;
+  overflow-wrap: break-word;
+}
+
+.lp-block:hover {
+  background: color-mix(in srgb, var(--color-accent-purple) 5%, transparent);
+}
+
+/* 渲染块复用 .markdown-body 的排版，但不能继承页面级容器留白：
+   否则每个块都带 24px/120px 内边距，块之间会出现巨大空隙。 */
+.editor-overlay .lp-block-body.markdown-body {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  /* CM6 的 .cm-content 是 white-space:pre；渲染块必须恢复 normal，
+     否则 marked 输出里的换行/缩进会变成可见空行与巨大空隙。 */
+  white-space: normal;
+}
+
+/* 性能设置会给 .markdown-body 的直接子元素加 content-visibility:auto 与
+   500px 占位高度；在编辑器里每块都是新建的 widget，占位会造成巨大空隙。 */
+.editor-overlay .lp-block-body.markdown-body,
+.editor-overlay .lp-block-body.markdown-body > *,
+.editor-overlay .doc-preview.markdown-body > * {
+  content-visibility: visible !important;
+  contain-intrinsic-size: none !important;
+}
+
+.lp-block > .lp-block-body > :first-child { margin-top: 0 !important; }
+.lp-block > .lp-block-body > :last-child { margin-bottom: 0 !important; }
+
+.lp-block img,
+.lp-block video,
+.lp-block iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+.lp-block.lp-block-fallback {
+  white-space: pre-wrap;
+  padding: 8px 12px;
+  border-left: 3px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+}
+
+/* 双栏预览 */
+.doc-preview-pane {
+  display: flex;
+  flex: 1 1 50%;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--color-bg);
+  border-left: 1px solid var(--color-border);
+}
+
+.doc-preview-pane[hidden],
+.doc-split-divider[hidden] {
+  display: none !important;
+}
+
+.doc-pane-label {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-bottom: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+  color: var(--color-text-muted);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.doc-preview {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 26px 30px 60px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-scrollbar) transparent;
+}
+
+.doc-preview > :first-child { margin-top: 0; }
+
+.doc-split-divider {
+  flex: 0 0 5px;
+  cursor: col-resize;
+  background: var(--color-border);
+  transition: background-color 0.15s ease;
+}
+
+.doc-split-divider:hover,
+body.doc-split-dragging .doc-split-divider {
+  background: var(--color-accent-purple);
+}
+
+body.doc-split-dragging {
+  cursor: col-resize;
+  user-select: none;
+}
+
+/* 模式切换（工具栏右侧分段按钮） */
+.editor-mode-switch {
+  display: inline-flex;
+  align-items: stretch;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+}
+
+.mode-switch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.mode-switch-btn + .mode-switch-btn {
+  border-left: 1px solid var(--color-border);
+}
+
+.mode-switch-btn:hover {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-accent-purple) 7%, transparent);
+}
+
+.mode-switch-btn.active {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-accent-purple) 15%, transparent);
+}
+
+@media (max-width: 820px) {
+  .editor-overlay .doc-source-pane .cm-content {
+    padding: 20px 16px 40vh;
+  }
+
+  .editor-main.mode-split .doc-workspace {
+    flex-direction: column;
+  }
+
+  .editor-main.mode-split .doc-source-pane,
+  .editor-main.mode-split .doc-preview-pane {
+    flex: 1 1 50%;
+    min-height: 0;
+  }
+
+  .doc-split-divider {
+    display: none !important;
+  }
+
+  .doc-preview-pane {
+    border-left: 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .mode-switch-btn span {
+    display: none;
+  }
+}
+
+/* ============== Word 风格工具栏（导航行 + 浮窗格式条） ============== */
+
+.editor-toolbar {
+  flex-direction: column;
+  align-items: stretch;
+  height: auto;
+  padding: 0;
+  gap: 0;
+}
+
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0 0 auto;
+  height: 44px;
+  padding: 0 12px;
+}
+
+.toolbar-float {
+  height: auto;
+  justify-content: center;
+  padding: 0 12px 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.toolbar-float::-webkit-scrollbar {
+  display: none;
+}
+
+.tb-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  max-width: 100%;
+  padding: 4px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  box-shadow: 0 2px 12px color-mix(in srgb, #000 8%, transparent);
+}
+
+.tb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 30px;
+  height: 28px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.tb-btn:hover {
+  background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent);
+  color: var(--color-accent-purple);
+}
+
+.tb-btn:active {
+  transform: scale(0.96);
+}
+
+.tb-btn .ico {
+  width: 16px;
+  height: 16px;
+}
+
+.tb-btn strong,
+.tb-btn em,
+.tb-btn s {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.tb-btn s {
+  font-size: 13px;
+}
+
+.tb-btn code {
+  padding: 1px 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.tb-tag {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.tb-sep {
+  flex: none;
+  width: 1px;
+  height: 18px;
+  margin: 0 6px;
+  background: var(--color-border);
+}
+
+.tb-dd .toolbar-btn {
+  min-width: 30px;
+  height: 28px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  font-size: 13px;
+}
+
+.tb-dd-tall .dropdown-menu {
+  max-height: 62vh;
+}
+
+/* ============== 无顶栏布局：两角固定小图标 + 选区浮动格式条 ============== */
+
+.doc-stage {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.doc-back {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 30px;
+  border: 1px solid color-mix(in srgb, var(--color-accent-purple) 35%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  color: var(--color-accent-purple);
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.doc-back:hover {
+  background: color-mix(in srgb, var(--color-accent-purple) 18%, transparent);
+  border-color: var(--color-accent-purple);
+}
+
+.doc-corner {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.corner-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.corner-btn:hover {
+  background: color-mix(in srgb, var(--color-accent-purple) 12%, transparent);
+  color: var(--color-accent-purple);
+}
+
+.corner-btn[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--color-accent-purple) 16%, transparent);
+  color: var(--color-accent-purple);
+}
+
+.fmt-float {
+  display: none;
+  position: fixed;
+  z-index: 500;
+}
+
+.fmt-float.visible {
+  display: block;
+  animation: selToolbarFade 0.15s ease;
+}
+
+.fmt-float .tb-bar {
+  box-shadow: var(--shadow-popover);
+}
+
+/* ============== 表格紧凑胶囊（全站：悬停表格才出现） ============== */
+
+/* fixed 定位、挂在正文流之外：宽表的横向滚动容器不会裁切它 */
+.mdt-tools.mdt-compact {
+  display: none;
+  position: fixed;
+  z-index: 60;
+  align-items: center;
+  gap: 1px;
+  flex-wrap: nowrap;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 3px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.mdt-tools.mdt-compact.visible {
+  display: inline-flex;
+}
+
+.mdt-tools.mdt-compact .mdt-btn,
+.mdt-tools.mdt-compact .mdt-btn-filter {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.mdt-tools.mdt-compact .mdt-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.mdt-tools.mdt-compact .mdt-btn:hover {
+  color: var(--color-accent-purple-deep);
+  background: color-mix(in srgb, var(--color-accent-purple) 12%, transparent);
+}
+
+.mdt-tools.mdt-compact.open .mdt-btn-filter {
+  color: var(--color-accent-purple);
+  background: color-mix(in srgb, var(--color-accent-purple) 16%, transparent);
+}
+
+/* 图标按钮不显示文字；复制/导出的即时反馈用气泡显示 */
+.mdt-tools.mdt-compact .mdt-btn-label {
+  display: none;
+}
+
+.mdt-tools.mdt-compact .mdt-btn.mdt-btn-done .mdt-btn-label {
+  display: block;
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 5px);
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: nowrap;
+  z-index: 8;
+}
+
+/* 筛选 / 列：点开后从胶囊下方展开的小面板 */
+.mdt-tools.mdt-compact .mdt-float-pop {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 232px;
+  padding: 9px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+  text-align: left;
+}
+
+.mdt-tools.mdt-compact.open .mdt-float-pop {
+  display: block;
+}
+
+.mdt-tools.mdt-compact .mdt-count {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+}
+
+.mdt-tools.mdt-compact .mdt-search {
+  width: 100%;
+  min-width: 0;
+  gap: 5px;
+  padding: 3px 8px;
+}
+
+.mdt-tools.mdt-compact .mdt-search-input {
+  font-size: 12px;
+}
+
+.mdt-tools.mdt-compact .mdt-menu-actions {
+  display: flex;
+  gap: 10px;
+  margin: 7px 0 4px;
+}
+
+.mdt-tools.mdt-compact .mdt-col-list {
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+/* 双栏预览里旧的圆形「编辑」按钮由胶囊内的表格图标接管 */
+.editor-overlay .cell-table-edit-btn {
+  display: none !important;
+}
+
+@media (max-width: 820px) {
+  .doc-back {
+    top: 6px;
+    left: 6px;
+  }
+
+  .doc-corner {
+    top: 6px;
+    right: 8px;
+    max-width: calc(100vw - 60px);
+    overflow-x: auto;
+  }
+}
+
+@media print {
+  .mdt-tools.mdt-compact {
+    display: none !important;
+  }
+}
+

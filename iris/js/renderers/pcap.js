@@ -30,18 +30,18 @@
 
   // 协议 → 颜色档（走主题变量，暗色自动适配）
   const PROTO_CLS = {
-    TCP: 'pc-proto-tcp', UDP: 'pc-proto-udp', ICMP: 'pc-proto-icmp',
-    DNS: 'pc-proto-dns', ARP: 'pc-proto-arp', TLS: 'pc-proto-tls',
-    HTTP: 'pc-proto-http', DHCP: 'pc-proto-dhcp', IPv6: 'pc-proto-ipv6',
-    SSDP: 'pc-proto-ssdp', MDNS: 'pc-proto-dns', NBNS: 'pc-proto-dns',
-    IGMP: 'pc-proto-igmp', OSPF: 'pc-proto-ospf'
+    TCP: 'pcap-proto-tcp', UDP: 'pcap-proto-udp', ICMP: 'pcap-proto-icmp',
+    DNS: 'pcap-proto-dns', ARP: 'pcap-proto-arp', TLS: 'pcap-proto-tls',
+    HTTP: 'pcap-proto-http', DHCP: 'pcap-proto-dhcp', IPv6: 'pcap-proto-ipv6',
+    SSDP: 'pcap-proto-ssdp', MDNS: 'pcap-proto-dns', NBNS: 'pcap-proto-dns',
+    IGMP: 'pcap-proto-igmp', OSPF: 'pcap-proto-ospf'
   };
   // 端口 → 应用层协议识别（无 DPI，纯端口约定）
   const WELL_PORTS = { 53: 'DNS', 80: 'HTTP', 443: 'TLS', 67: 'DHCP', 68: 'DHCP', 123: 'NTP', 1900: 'SSDP', 5353: 'MDNS', 137: 'NBNS', 520: 'RIP', 179: 'BGP', 22: 'SSH', 21: 'FTP', 25: 'SMTP', 110: 'POP3', 143: 'IMAP', 3389: 'RDP' };
 
   const MAX_RENDER_ROWS = 2000;
 
-  function protoClass(proto) { return PROTO_CLS[String(proto || '').toUpperCase()] || 'pc-proto-other'; }
+  function protoClass(proto) { return PROTO_CLS[String(proto || '').toUpperCase()] || 'pcap-proto-other'; }
 
   // 入口字段净化：no/length/port 在模板里不经 esc 直接插值（数字语境），
   // 内嵌 JSON 可注入字符串——统一在此钳制成有限数字或 ''，
@@ -121,8 +121,10 @@
     const s = String(q || '').trim().toLowerCase();
     if (!s) return null;
     // 按 ` or ` 拆分；每段内 ` and ` 与空格都视为 AND（在 matchEntry 处体现）
+    // 每段可解析出多个原子（空格隐式 AND）：必须摊平，否则组内元素是原子数组，
+    // evalAtom 取不到 type 会走 default 返回 true，导致任何过滤词都「全部命中」。
     const orGroups = s.split(/\s+or\s+/).map(seg =>
-      seg.split(/\s+and\s+/).map(parseAtoms).filter(a => a.length)
+      seg.split(/\s+and\s+/).reduce((all, piece) => all.concat(parseAtoms(piece)), [])
     ).filter(g => g.length);
     return orGroups.length ? { orGroups } : null;
   }
@@ -200,7 +202,7 @@
   // ============== 构建 widget ==============
   function buildWidget(pre, data) {
     const widget = document.createElement('div');
-    widget.className = 'pcap-table';
+    widget.className = 'pcap-table w-has-float';
     widget.dataset.src = JSON.stringify(data); // 工具条复制源码用
 
     if (data.error) {
@@ -215,19 +217,20 @@
     let filterText = '';
 
     widget.innerHTML = `
-      <div class="pcap-toolbar">
-        <div class="pcap-filter">
-          ${icon('i-filter', 13)}
-          <input type="search" class="pcap-filter-input" spellcheck="false"
-                 placeholder="${esc(t('pcap.filterPlaceholder', '显示过滤：tcp、dns、port 53、src==10.0.0.1…'))}"
-                 aria-label="${esc(t('pcap.filterPlaceholder', '显示过滤'))}">
+      <div class="w-float">
+        <button type="button" class="w-icon-btn w-filter-btn" title="${esc(t('pcap.filter', '筛选'))}" aria-label="${esc(t('pcap.filter', '筛选'))}">
+          ${icon('i-search', 15)}<span class="w-badge" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="pcap-export-btn w-icon-btn" title="${esc(t('pcap.exportCsv', '导出当前过滤结果为 CSV'))}" aria-label="${esc(t('pcap.exportCsv', '导出 CSV'))}">${icon('i-download', 15)}</button>
+        <div class="w-pop">
+          <div class="pcap-filter">
+            ${icon('i-filter', 13)}
+            <input type="search" class="pcap-filter-input" spellcheck="false"
+                   placeholder="${esc(t('pcap.filterPlaceholder', '显示过滤：tcp、dns、port 53、src==10.0.0.1…'))}"
+                   aria-label="${esc(t('pcap.filterPlaceholder', '显示过滤'))}">
+          </div>
         </div>
-        <span class="pcap-count" role="status"></span>
-        <span class="pcap-toolbar-space"></span>
-        <button type="button" class="pcap-export-btn" title="${esc(t('pcap.exportCsv', '导出当前过滤结果为 CSV'))}">${esc(t('pcap.exportCsv', '导出 CSV'))}</button>
-        <span class="pcap-file-badge">${esc(data.file || '')}${data.backend ? ' · ' + esc(data.backend) : ''}</span>
       </div>
-      <div class="pcap-proto-bar" aria-hidden="true"></div>
       <div class="pcap-scroll">
         <table class="pcap-grid">
           <thead><tr>
@@ -242,13 +245,16 @@
           <tbody></tbody>
         </table>
       </div>
+      <div class="pcap-proto-bar" aria-hidden="true"></div>
       <div class="pcap-detail" hidden></div>
     `;
 
     const tbody = widget.querySelector('tbody');
-    const countEl = widget.querySelector('.pcap-count');
     const protoBar = widget.querySelector('.pcap-proto-bar');
     const detail = widget.querySelector('.pcap-detail');
+    const filterChip = widget.querySelector('.w-filter-btn');
+    const filterBadge = widget.querySelector('.w-filter-btn .w-badge');
+    window.MarkdownPreview.widgetChrome?.init(widget);
     let detailNo = null;
 
     function visibleRows() {
@@ -278,8 +284,7 @@
         const pct = Math.max(1.2, (n / total) * 100);
         const cls = protoClass(name === 'OTHER' ? 'other' : name);
         return `<span class="pcap-proto-seg ${cls}" style="flex-grow:${n}" title="${esc(name)} ${n} (${Math.round(n / total * 100)}%)"></span>`;
-      }).join('') + `<span class="pcap-proto-legend">${sorted.map(([name, n]) =>
-        `<span class="pcap-legend-item"><span class="pcap-dot ${protoClass(name === 'OTHER' ? 'other' : name)}"></span>${esc(name)} ${n}</span>`).join('')}</span>`;
+      }).join('');
     }
 
     function render() {
@@ -295,12 +300,7 @@
           <td class="pc-num">${p.length}</td>
           <td class="pc-info" title="${esc(p.info || '')}">${esc(p.info || '')}</td>
         </tr>`).join('');
-      countEl.textContent = t('pcap.count', '{shown} / {total} 包')
-        .replace('{shown}', rows.length).replace('{total}', allPackets.length);
       renderProtoBar(rows);
-      if (rows.length > MAX_RENDER_ROWS) {
-        countEl.textContent += t('pcap.renderCapped', '（仅渲染前 {n} 行）').replace('{n}', MAX_RENDER_ROWS);
-      }
       // 表头排序指示
       widget.querySelectorAll('th[data-col]').forEach((th, i) => {
         th.classList.toggle('pc-sorted', i === sortCol);
@@ -322,8 +322,12 @@
     // 过滤（300ms 防抖）
     let filterTimer = null;
     widget.querySelector('.pcap-filter-input').addEventListener('input', (e) => {
+      const value = e.target.value.trim();
+      if (filterChip) filterChip.classList.toggle('active', !!value);
+      if (filterBadge) filterBadge.textContent = value ? '1' : '';
       clearTimeout(filterTimer);
-      filterTimer = setTimeout(() => { filterText = e.target.value; render(); }, 300);
+      const nextFilter = e.target.value;
+      filterTimer = setTimeout(() => { filterText = nextFilter; render(); }, 300);
     });
 
     // 点击行展开字段树

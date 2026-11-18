@@ -118,20 +118,8 @@
     const urls = (images && images.length === pages) ? images
       : Array.from({ length: pages }, (_, i) => `${base}iris/data/pptx/images/${encodeURIComponent(slug)}-${i + 1}.${encodeURIComponent(extEffective)}`);
 
-    // 头部
+    // 无头部行：标题不占位，缩略图直接贴卡片顶
     const displayTitle = title || slug;
-    const heading = document.createElement('div');
-    heading.className = 'pptx-header';
-    heading.innerHTML = `
-      <div class="pptx-header__title">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-          <path d="M3 9h18"></path><path d="M9 21V9"></path>
-        </svg>
-        <span>${esc(displayTitle)}</span>
-      </div>
-      <div class="pptx-header__meta">共 ${pages} 页 · 点击任意页开始放映</div>
-    `;
 
     const grid = document.createElement('div');
     grid.className = 'pptx-thumb-grid';
@@ -154,7 +142,6 @@
     });
 
     container.innerHTML = '';
-    container.appendChild(heading);
     container.appendChild(grid);
   }
 

@@ -174,10 +174,6 @@
       </tr>`).join('');
 
     widget.innerHTML = `
-      <div class="acl-head">
-        <span class="acl-flavor">${esc((flavor || 'ios').toUpperCase())} ACL</span>
-        <span class="acl-count">${t('acl.ruleCount', '{n} 条规则').replace('{n}', rules.length)}</span>
-      </div>
       <div class="acl-table-wrap"><table>
         <thead><tr>
           <th>#</th><th>${esc(t('acl.action', '动作'))}</th><th>${esc(t('acl.proto', '协议'))}</th>
@@ -185,16 +181,17 @@
         </tr></thead>
         <tbody>${rows}</tbody>
       </table></div>
-      <div class="acl-test">
-        <div class="acl-test-title">${esc(t('acl.testTitle', '五元组命中测试'))}</div>
-        <div class="acl-test-form">
-          <select class="acl-test-proto" aria-label="${esc(t('acl.testProto', '协议'))}"><option value="tcp">TCP</option><option value="udp">UDP</option><option value="icmp">ICMP</option><option value="ip">IP</option></select>
+      <div class="acl-test" role="group" aria-label="${esc(t('acl.testTitle', '五元组命中测试'))}">
+        <select class="acl-test-proto" aria-label="${esc(t('acl.testProto', '协议'))}"><option value="tcp">TCP</option><option value="udp">UDP</option><option value="icmp">ICMP</option><option value="ip">IP</option></select>
+        <span class="acl-test-flow">
           <input class="acl-test-src" type="text" placeholder="${esc(t('acl.srcPh', '源 IP（10.1.1.8）'))}" value="10.1.1.8" aria-label="${esc(t('acl.source', '源'))}">
+          <span class="acl-test-sep" aria-hidden="true">→</span>
           <input class="acl-test-dst" type="text" placeholder="${esc(t('acl.dstPh', '目的 IP（8.8.8.8）'))}" value="8.8.8.8" aria-label="${esc(t('acl.dest', '目的'))}">
+          <span class="acl-test-sep acl-test-sep-tight" aria-hidden="true">:</span>
           <input class="acl-test-port" type="text" placeholder="${esc(t('acl.portPh', '端口（443）'))}" value="443" aria-label="${esc(t('acl.port', '端口'))}">
-          <button type="button" class="acl-test-btn" data-tip="${esc(t('acl.testBtn', '测试'))}" title="${esc(t('acl.testBtn', '测试'))}" aria-label="${esc(t('acl.testBtn', '测试'))}">${icon('i-zap', 15)}</button>
-        </div>
-        <div class="acl-test-result" hidden></div>
+        </span>
+        <button type="button" class="acl-test-btn" data-tip="${esc(t('acl.testBtn', '测试'))}" title="${esc(t('acl.testBtn', '测试'))}" aria-label="${esc(t('acl.testBtn', '测试'))}">${icon('i-zap', 15)}</button>
+        <span class="acl-test-result" aria-live="polite" hidden></span>
       </div>`;
 
     const resultBox = widget.querySelector('.acl-test-result');
@@ -217,11 +214,12 @@
         rows[outcome.index]?.classList.add('acl-hit');
         resultBox.hidden = false;
         resultBox.className = 'acl-test-result acl-result-' + outcome.rule.action;
-        resultBox.innerHTML = `<strong>${outcome.rule.action.toUpperCase()}</strong> — ${t('acl.hitRule', '命中第 {n} 条规则').replace('{n}', outcome.index + 1)}`;
+        resultBox.innerHTML = `<strong>${outcome.rule.action.toUpperCase()}</strong> · ${t('acl.hitRule', '命中第 {n} 条').replace('{n}', outcome.index + 1)}`;
       } else {
         resultBox.hidden = false;
         resultBox.className = 'acl-test-result acl-result-deny';
-        resultBox.innerHTML = `<strong>DENY</strong> — ${t('acl.implicitDeny', '未命中任何规则，落入隐式 deny（每条 ACL 末尾都有不可见的 deny ip any any）')}`;
+        resultBox.title = t('acl.implicitDeny', '未命中任何规则，落入隐式 deny（每条 ACL 末尾都有不可见的 deny ip any any）');
+        resultBox.innerHTML = `<strong>DENY</strong> · ${t('acl.implicitShort', '隐式（未命中任何规则）')}`;
       }
     });
 

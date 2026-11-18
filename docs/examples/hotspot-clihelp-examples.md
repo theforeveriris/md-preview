@@ -17,8 +17,8 @@ tags: [图片, 教程, CLI]
   "image": "docs/image/share-card-code.png",
   "title": "分享卡片示例",
   "hotspots": [
-    { "x": 12, "y": 18, "w": 34, "h": 10, "label": "标题区" },
-    { "x": 55, "y": 70, "label": "二维码" }
+    { "x": 2, "y": 5, "w": 96, "h": 9, "label": "标题区" },
+    { "x": 87, "y": 74, "w": 10, "h": 21, "label": "二维码" }
   ]
 }
 ```
@@ -31,8 +31,8 @@ tags: [图片, 教程, CLI]
   "image": "docs/image/share-card-code.png",
   "title": "分享卡片示例",
   "hotspots": [
-    { "x": 12, "y": 18, "w": 34, "h": 10, "label": "标题区" },
-    { "x": 55, "y": 70, "label": "二维码" }
+    { "x": 2, "y": 5, "w": 96, "h": 9, "label": "标题区" },
+    { "x": 87, "y": 74, "w": 10, "h": 21, "label": "二维码" }
   ]
 }
 ```

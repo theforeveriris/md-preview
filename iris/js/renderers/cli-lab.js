@@ -76,13 +76,11 @@
     let cursor = 0; // 下一个待执行的步骤（鼓励按序，但不强制）
 
     const widget = document.createElement('div');
-    widget.className = 'cli-lab';
+    widget.className = 'cli-lab w-has-float';
     widget.innerHTML = `
-      <div class="cli-lab-head">
-        <span class="cli-lab-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span class="cli-lab-title">${esc(t('clilab.title', 'CLI 演练'))}</span>
+      <div class="w-float">
         <span class="cli-lab-progress" role="status"></span>
-        <button type="button" class="cli-lab-reset" title="${esc(t('clilab.reset', '重来'))}">⟲</button>
+        <button type="button" class="cli-lab-reset" title="${esc(t('clilab.reset', '重来'))}" aria-label="${esc(t('clilab.reset', '重来'))}">⟲</button>
       </div>
       <div class="cli-lab-screen">
         <div class="cli-lab-log" aria-live="polite"></div>
@@ -93,7 +91,6 @@
                  placeholder="${esc(t('clilab.inputHint', '输入命令后回车；单独输入 ? 查看本节待练命令'))}">
         </div>
       </div>
-      <div class="cli-lab-hint">${esc(t('clilab.hint', '灰字提示符后的命令是本节要练的内容，敲进去试试。'))}</div>
     `;
 
     const log = widget.querySelector('.cli-lab-log');
@@ -183,7 +180,6 @@
       log.innerHTML = '';
       updateProgress();
       nextPrompt();
-      appendLine(esc(t('clilab.welcome', '演练开始——在下方输入命令')), 'cli-lab-muted');
       input.focus();
     }
 

@@ -37,11 +37,18 @@
       this._onKeyUp = options.onKeyUp;
       this._onClick = options.onClick;
 
-      // 用 Compartment 支持运行时切换主题/字号/占位文本
+      // 用 Compartment 支持运行时切换主题/字号/占位文本/实时预览
       this._themeCompartment = new Compartment();
       this._fontSizeCompartment = new Compartment();
       this._placeholderCompartment = new Compartment();
+      this._livePreviewCompartment = new Compartment();
+      this._livePreviewOn = !!options.livePreview;
+      this._livePreviewOptions = options.livePreviewOptions || null;
       this._placeholderText = options.placeholder || '';
+
+      const livePreviewExt = this._livePreviewOn
+        ? this._buildLivePreview()
+        : [];
 
       const extensions = [
         CM.lineNumbers(),
@@ -74,6 +81,8 @@
         this._themeCompartment.of(this._getTheme(options.dark)),
         // 字号
         this._fontSizeCompartment.of(EditorView.theme({})),
+        // 实时预览（所见即所得）：按模式动态启停
+        this._livePreviewCompartment.of(livePreviewExt),
         // update listener：统一处理 input/scroll/selection 事件
         EditorView.updateListener.of((update) => {
           // 检查是否为程序化更新（setValue），如果是则不触发 input 事件
@@ -260,6 +269,42 @@
     }
 
     // ============== 扩展 API ==============
+
+    /**
+     * 构造实时预览扩展（编辑器内的块级所见即所得）。
+     * 模块缺失时返回空扩展，编辑器退化为普通源码编辑，不影响可用性。
+     */
+    _buildLivePreview() {
+      const lp = window.MarkdownPreview && window.MarkdownPreview.editorLivePreview;
+      if (!lp || typeof lp.create !== 'function') return [];
+      try {
+        return lp.create(this._livePreviewOptions || {});
+      } catch (e) {
+        console.error('[cm-editor] 实时预览初始化失败:', e);
+        return [];
+      }
+    }
+
+    /**
+     * 运行时开关实时预览（所见即所得 ↔ 源码/双栏）。
+     * 复用同一 EditorState 与撤销栈，切换不丢内容、不重置光标。
+     */
+    setLivePreview(enabled) {
+      enabled = !!enabled;
+      if (this._livePreviewOn === enabled) return;
+      this._livePreviewOn = enabled;
+      this.view.dispatch({
+        effects: this._livePreviewCompartment.reconfigure(
+          enabled ? this._buildLivePreview() : []
+        )
+      });
+      // 布局变化（换行/字形宽度）后重新测量
+      if (typeof this.view.requestMeasure === 'function') this.view.requestMeasure();
+    }
+
+    requestMeasure() {
+      if (typeof this.view.requestMeasure === 'function') this.view.requestMeasure();
+    }
 
     /**
      * 设置编辑器内容（程序化，不触发 input 事件）

@@ -72,14 +72,14 @@ snmp-server community public RO
 **源码**
 
 ````markdown
-```secret 2024
+```secret 2026
 vpn pre-shared-key hex 2A4F6B8C0D1E3F5A7B9C2D4E6F8A0C2E
 ```
 ````
 
 **渲染效果**
 
-````secret 2024
+````secret 2026
 vpn pre-shared-key hex 2A4F6B8C0D1E3F5A7B9C2D4E6F8A0C2E
 ````
 

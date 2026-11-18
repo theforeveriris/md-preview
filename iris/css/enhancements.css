@@ -2181,41 +2181,33 @@ body.graph-page #markdownContent > .doc-graph {
   border-radius: 10px;
   margin: 14px 0;
   overflow: hidden;
-  background: #16161f;
+  background: var(--color-code-bg, var(--color-surface));
+  color: var(--color-text);
   font-size: 13px;
 }
 
-.cli-lab-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 7px 12px;
-  background: #1f1f2c;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.cli-lab-dots { display: inline-flex; gap: 5px; }
-.cli-lab-dots i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255, 255, 255, 0.18); }
-.cli-lab-dots i:nth-child(1) { background: #ff5f56; }
-.cli-lab-dots i:nth-child(2) { background: #ffbd2e; }
-.cli-lab-dots i:nth-child(3) { background: #27c93f; }
-
-.cli-lab-title { color: rgba(235, 235, 245, 0.8); font-weight: 600; font-size: 12px; }
+/* 浮窗里的进度与重来：跟着主题走，不再写死浅色 */
 .cli-lab-progress {
-  margin-left: auto;
-  color: rgba(235, 235, 245, 0.55);
+  color: var(--color-text-muted);
   font-size: 11.5px;
   font-variant-numeric: tabular-nums;
+  padding: 0 4px;
 }
+
 .cli-lab-reset {
   border: none;
   background: transparent;
-  color: rgba(235, 235, 245, 0.6);
+  color: var(--color-text-muted);
   cursor: pointer;
   font-size: 14px;
   padding: 0 4px;
+  border-radius: 6px;
 }
-.cli-lab-reset:hover { color: #fff; }
+
+.cli-lab-reset:hover {
+  color: var(--color-accent-purple-deep, var(--color-accent-purple));
+  background: color-mix(in srgb, var(--color-accent-purple) 12%, transparent);
+}
 
 .cli-lab-screen {
   padding: 10px 12px 12px;
@@ -2226,13 +2218,13 @@ body.graph-page #markdownContent > .doc-graph {
 
 .cli-lab-line { white-space: pre-wrap; word-break: break-word; line-height: 1.55; }
 .cli-lab-echo { margin-top: 6px; }
-.cli-lab-echo-prompt { color: #7ce38b; font-weight: 600; }
-.cli-lab-echo-cmd { color: #e8e8f0; }
-.cli-lab-out { color: rgba(235, 235, 245, 0.72); }
-.cli-lab-help { color: #8ab4ff; }
-.cli-lab-err { color: #ff8a8a; }
-.cli-lab-ok { color: #7ce38b; font-weight: 600; margin-top: 4px; }
-.cli-lab-muted { color: rgba(235, 235, 245, 0.4); }
+.cli-lab-echo-prompt { color: var(--color-success, #1e8449); font-weight: 600; }
+.cli-lab-echo-cmd { color: var(--color-text); }
+.cli-lab-out { color: color-mix(in srgb, var(--color-text) 78%, transparent); }
+.cli-lab-help { color: var(--color-link, #2563eb); }
+.cli-lab-err { color: var(--color-error, #c0392b); }
+.cli-lab-ok { color: var(--color-success, #1e8449); font-weight: 600; margin-top: 4px; }
+.cli-lab-muted { color: var(--color-text-muted); }
 
 .cli-lab-input-row {
   display: flex;
@@ -2240,30 +2232,24 @@ body.graph-page #markdownContent > .doc-graph {
   gap: 6px;
   margin-top: 8px;
   padding: 6px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
 }
 .cli-lab-input-row:focus-within { border-color: var(--color-accent-purple); }
-.cli-lab-prompt { color: #7ce38b; font-weight: 600; white-space: nowrap; }
+.cli-lab-prompt { color: var(--color-success, #1e8449); font-weight: 600; white-space: nowrap; }
 .cli-lab-input {
   flex: 1;
   min-width: 0;
   border: none;
   outline: none;
   background: transparent;
-  color: #e8e8f0;
+  color: var(--color-text);
   font-family: inherit;
   font-size: 13px;
 }
 
-.cli-lab-hint {
-  padding: 7px 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  color: var(--color-text-muted);
-  font-size: 11.5px;
-  background: var(--color-surface);
-}
+.cli-lab-input::placeholder { color: var(--color-text-muted); }
 
 
 /* ============== Markdown 表格交互化（B1） ============== */
@@ -3100,6 +3086,12 @@ body.graph-page #markdownContent > .doc-graph {
   border: 1px solid var(--color-border);
   border-radius: 8px;
   background: var(--color-surface);
+  /* 浮窗面板可能比卡片高：不要裁剪，圆角交给内部列表 */
+  overflow: visible;
+}
+
+.har-view .har-body {
+  border-radius: 0 0 8px 8px;
   overflow: hidden;
 }
 
@@ -3787,10 +3779,6 @@ body.graph-page #markdownContent > .doc-graph {
 .hotspot-view {
   position: relative;
   margin: 1.5em 0;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--color-surface);
 }
 
 /* 图片与热点层的定位容器：热点百分比相对图片，不是相对整个视图 */

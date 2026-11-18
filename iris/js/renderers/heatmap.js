@@ -60,10 +60,12 @@
       widget.className = 'hm-widget';
       const yearOptions = years.map(y => `<option value="${y}">${y}</option>`).join('');
       widget.innerHTML = `
-        <div class="hm-head">
-          <div class="hm-head-left">
-            <span class="hm-title">${esc(t('hm.title', '日历热图'))}</span>
-            ${multiYear ? `<label class="hm-year-picker"><span>${esc(t('hm.year', '年份'))}</span><select class="hm-year-select" aria-label="${esc(t('hm.yearAria', '选择年份'))}">${yearOptions}</select></label>` : ''}
+        <div class="w-chrome">
+          <div class="w-info">
+            <span class="w-title">${esc(t('hm.title', '日历热图'))}</span>
+            <span class="w-chips">
+              ${multiYear ? `<label class="hm-year-picker w-chip"><span>${esc(t('hm.year', '年份'))}</span><select class="hm-year-select" aria-label="${esc(t('hm.yearAria', '选择年份'))}">${yearOptions}</select></label>` : ''}
+            </span>
           </div>
           <span class="hm-legend">${esc(t('hm.legendLess', '少'))}
             <span class="hm-cell hm-l0"></span><span class="hm-cell hm-l1"></span><span class="hm-cell hm-l2"></span><span class="hm-cell hm-l3"></span><span class="hm-cell hm-l4"></span>

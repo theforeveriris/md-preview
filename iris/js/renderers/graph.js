@@ -525,7 +525,7 @@
     if (!pre.parentNode) return Promise.resolve();
     const doc = pre.ownerDocument;
     const host = doc.createElement('div');
-    host.className = 'doc-graph';
+    host.className = 'doc-graph' + (document.body.classList.contains('graph-page') ? ' doc-graph--standalone' : ' doc-graph--embedded');
     const canvas = doc.createElement('div');
     canvas.className = 'doc-graph-canvas';
     host.appendChild(canvas);
@@ -825,13 +825,14 @@
     const md = window.MarkdownPreview.markdown;
     if (!md || !md.renderVirtualDoc) return;
     const title = t('graph.pageTitle', '文档图谱');
-    md.renderVirtualDoc('```graph\n```\n', title);
+    // renderMarkdown 会先摘掉 graph-page 标记；用 bodyClass 让本次渲染重新打上，
+    // mount 时据此区分内嵌 / 全页形态
+    md.renderVirtualDoc('```graph\n```\n', title, { bodyClass: 'graph-page' });
     const header = document.getElementById('pageHeader');
     if (header) header.style.display = 'none';
     // 正文不再输出 H1，文档标题得自己设（renderMarkdown 是从 H1 里取的）
     const repo = (window.MarkdownPreview.config && window.MarkdownPreview.config.repo) || 'Markdown Preview';
     document.title = title + ' | ' + repo;
-    document.body.classList.add('graph-page');
   }
 
   // graphStyle / buildTagColors 一并导出：两者都被回归测试直接调用

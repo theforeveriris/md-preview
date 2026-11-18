@@ -178,16 +178,24 @@
       const seqs = parsePingSeq(lines);
       const summary = parsePingSummary(lines);
       const maxRtt = Math.max.apply(null, seqs.concat(summary.max ? [summary.max] : [1]));
+      const avgPct = summary.avg != null ? Math.min(100, Math.max(0, (summary.avg / maxRtt) * 100)) : null;
+      const bars = seqs.map(v =>
+        `<span class="tr-mini-bar" style="height:${Math.max(3, (v / maxRtt) * 100)}%" title="${esc(v.toFixed(2))} ms"></span>`
+      ).join('');
       widget.innerHTML = `
-        <div class="tr-head">${esc(t('tr.pingTitle', 'PING 连通性'))}</div>
-        <div class="tr-summary">
-          ${summary.min != null ? `<span class="tr-stat"><b>${summary.min.toFixed(1)}</b> ${esc(t('tr.min', '最小'))}</span>` : ''}
-          ${summary.avg != null ? `<span class="tr-stat"><b>${summary.avg.toFixed(1)}</b> ${esc(t('tr.avg', '平均'))}</span>` : ''}
-          ${summary.max != null ? `<span class="tr-stat"><b>${summary.max.toFixed(1)}</b> ${esc(t('tr.max', '最大'))}</span>` : ''}
-          ${summary.loss != null ? `<span class="tr-stat tr-stat-loss ${summary.loss > 0 ? 'is-bad' : ''}"><b>${summary.loss}%</b> ${esc(t('tr.loss', '丢包'))}</span>` : ''}
-        </div>
         <div class="tr-seq-chart">
-          ${seqs.map(v => `<span class="tr-mini-bar" style="height:${Math.round(6 + (v / maxRtt) * 54)}px" title="${esc(v.toFixed(2))} ms"></span>`).join('') || ''}
+          <div class="tr-plot">
+            <div class="tr-bars">
+              ${avgPct != null ? `<span class="tr-avg-line" style="bottom:${avgPct.toFixed(1)}%"><span class="tr-avg-label">${esc(t('tr.avg', '平均'))} ${summary.avg.toFixed(1)} ms</span></span>` : ''}
+              ${bars}
+            </div>
+          </div>
+          <div class="tr-seq-caption">
+            ${summary.min != null ? `<span>${esc(t('tr.min', '最小'))} <b>${summary.min.toFixed(1)}</b> ms</span>` : ''}
+            ${summary.avg != null ? `<span>${esc(t('tr.avg', '平均'))} <b>${summary.avg.toFixed(1)}</b> ms</span>` : ''}
+            ${summary.max != null ? `<span>${esc(t('tr.max', '最大'))} <b>${summary.max.toFixed(1)}</b> ms</span>` : ''}
+            ${summary.loss != null ? `<span class="tr-stat-loss ${summary.loss > 0 ? 'is-bad' : ''}">${esc(t('tr.loss', '丢包'))} <b>${summary.loss}%</b></span>` : ''}
+          </div>
         </div>
         ${seqs.length === 0 && summary.min == null ? `<div class="tr-empty">${esc(t('tr.parseFail', '没有识别到 RTT 数据，已保留源码'))}</div>` : ''}
       `;
@@ -207,7 +215,6 @@
       const maxRtt = Math.max.apply(null, valids.concat([1]));
       const totalMs = hops.reduce((a, h) => a + (h.best > 0 ? h.best : 0), 0);
       widget.innerHTML = `
-        <div class="tr-head">${esc(t('tr.traceTitle', '路径追踪'))}<span class="tr-head-meta">${hops.length} ${esc(t('tr.hops', '跳'))} · ${esc(t('tr.total', '累计'))} ${totalMs.toFixed(1)} ms</span></div>
         <div class="tr-body">${hopRowsHtml(hops, maxRtt)}</div>
       `;
       // 点击 IP 复制

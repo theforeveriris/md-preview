@@ -31,20 +31,16 @@
     if (steps.length === 0) return false;
 
     const widget = document.createElement('div');
-    widget.className = 'term-replay';
+    widget.className = 'term-replay w-has-float';
     widget.innerHTML = `
-      <div class="term-head">
-        <span class="term-dots"><i></i><i></i><i></i></span>
-        <span class="term-title">${esc(t('term.title', '终端回放'))}</span>
-        <span class="term-controls">
-          <select class="term-speed" aria-label="${esc(t('term.speed', '回放速度'))}">
-            <option value="1">1×</option>
-            <option value="2" selected>2×</option>
-            <option value="4">4×</option>
-          </select>
-          <button type="button" class="term-play">${esc(t('term.play', '▶ 播放'))}</button>
-          <button type="button" class="term-end">${esc(t('term.showEnd', '直接看结果'))}</button>
-        </span>
+      <div class="w-float term-float">
+        <select class="term-speed" aria-label="${esc(t('term.speed', '回放速度'))}">
+          <option value="1">1×</option>
+          <option value="2" selected>2×</option>
+          <option value="4">4×</option>
+        </select>
+        <button type="button" class="term-play">${esc(t('term.play', '▶ 播放'))}</button>
+        <button type="button" class="term-end w-icon-btn" title="${esc(t('term.showEnd', '直接看结果'))}" aria-label="${esc(t('term.showEnd', '直接看结果'))}">${esc(t('term.showEnd', '直接看结果'))}</button>
       </div>
       <div class="term-body"><code class="term-screen"></code></div>`;
 
@@ -122,7 +118,8 @@
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       renderFinal();
     } else {
-      screen.innerHTML = `<span class="term-idle">${esc(t('term.idle', '点击「播放」逐字回放；嫌慢可点「直接看结果」或调 4×。'))}</span>`;
+      // 空屏只留静默光标，不再写操作说明
+      screen.innerHTML = '<span class="term-cursor" aria-hidden="true"></span>';
     }
 
     // 离场清理：组件脱离 DOM 后停掉打字定时器

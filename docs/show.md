@@ -408,22 +408,18 @@ atom-one-dark、atom-one-light、dracula、github-dark、github、monokai、nord
 
 ## 五、特殊页面
 
-### 类 Jupyter Notebook 的内置 Markdown 编辑器
-
-![特殊页面-仿Jupyternotebook的本站语法糖验证页](image/特殊页面-仿Jupyternotebook的本站语法糖验证页.png)
+### 单文档所见即所得 Markdown 编辑器
 
 **访问 URL**：站点任意页面追加 `?mode=editor`，例如 `https://theforeveriris.github.io/md-preview/?mode=editor`
 
-内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，以全屏覆盖层叠加在文档站之上，特点包括：
-- Cell 模型（markdown / plaintext 两种类型），每 Cell 独立编辑 + 渲染输出
-- 运行当前（`Ctrl+Enter`）/ 全部（`Ctrl+Shift+Enter`）/ 此 Cell 及下方
-- 双屏编辑模式：Cell 头部一键进入全屏双屏，左侧编辑右侧实时预览，分隔条可拖宽、同步滚动
-- IndexedDB 自动保存（1.5s 防抖，多笔记本多标签，刷新不丢内容）
+内置一个单文档 Markdown 编辑器，以全屏覆盖层叠加在文档站之上，特点包括：
+- 所见即所得：光标所在块显示源码，其余块即时渲染；点击渲染块即可就地编辑，整篇文档始终是一份 Markdown
+- 源码 / 渲染双栏：`Ctrl+Shift+M` 或工具栏按钮切换，左侧源码右侧实时预览，分隔条可拖宽、同步滚动
+- IndexedDB 自动保存（1.5s 防抖，多文档标签，刷新不丢内容）
 - 14 类触发字符自动补全，120+ 条目
-- 8 大工具栏下拉菜单：Markdown / HTML / 私有语法 / 工具渲染 / 插入 / 嵌入 / 下载 / 导入
-- 2 列右键菜单（17 项操作）、视口边界自适应定位
-- 跨 Cell 搜索替换（F3 / Shift+F3 导航）
-- 导入导出：.md / .html / 内联 CSS HTML / .pdf / .mdnb 笔记本 / 合并 .md
+- 浮动格式条（选中/双击即现）+ 插入、语法、渲染、文件四个图标下拉，覆盖全部扩展语法模板；常用功能固定正文区右上角
+- 全文搜索替换（F3 / Shift+F3 导航）
+- 导入导出：.md / .html / 内联 CSS HTML / .pdf / .mdnb 备份
 - 4 档字号（12/14/16/18）、亮/暗主题独立切换
 
 该页面同时承担「本站私有语法糖验证页」角色：编辑器内置的工具栏与自动补全覆盖了所有私有语法（画廊、Alerts、Pulse、PKT、PPTX 等嵌入），打开即可即时验证渲染结果。

@@ -1139,19 +1139,11 @@
     var wave = expandWaveform(parsed);
 
     var widget = document.createElement('div');
-    widget.className = 'pulse-widget';
+    widget.className = 'pulse-widget w-has-float';
 
-    var header = document.createElement('div');
-    header.className = 'pulse-header';
-
-    var titleEl = document.createElement('div');
-    titleEl.className = 'pulse-title';
-    titleEl.innerHTML =
-      '<span class="pulse-title-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>' +
-      '<span>' + escapeHtml(title || t('pulse.titleFallback', 'Pulse 波形')) + '</span>';
-
-    var headerRight = document.createElement('div');
-    headerRight.className = 'pulse-header-right';
+    // 无标题行：控件收进悬停浮窗
+    var floatEl = document.createElement('div');
+    floatEl.className = 'w-float pulse-float';
 
     var styleRef = { style: 'bars' };
     var viewModeRef = { view: 'full' };
@@ -1223,13 +1215,10 @@
       }
     });
 
-    headerRight.appendChild(viewToggle);
-    headerRight.appendChild(styleToggle);
-    headerRight.appendChild(sourceBtn);
-    headerRight.appendChild(dlBtn);
-
-    header.appendChild(titleEl);
-    header.appendChild(headerRight);
+    floatEl.appendChild(viewToggle);
+    floatEl.appendChild(styleToggle);
+    floatEl.appendChild(sourceBtn);
+    floatEl.appendChild(dlBtn);
 
     var canvasWrap = document.createElement('div');
     canvasWrap.className = 'pulse-canvas-wrap';
@@ -1237,51 +1226,14 @@
     canvas.className = 'pulse-canvas';
     canvasWrap.appendChild(canvas);
 
-    var legend = document.createElement('div');
-    legend.className = 'pulse-section-legend';
-    for (var si = 0; si < parsed.sections.length; si++) {
-      var sec = parsed.sections[si];
-      var tag = document.createElement('span');
-      tag.className = 'pulse-section-tag' + (sec.enabled ? '' : ' disabled');
-      var freqMsA = freqSliderToMs(sec.freqA);
-      var freqMsB = freqSliderToMs(sec.freqB);
-      var freqHzA = (1000 / freqMsA).toFixed(1);
-      var freqHzB = (1000 / freqMsB).toFixed(1);
-      var modeName = freqModeName(sec.freqMode);
-      var freqText = sec.freqMode === 1
-        ? (freqHzA + 'Hz')
-        : (freqHzA + '→' + freqHzB + 'Hz');
-      tag.innerHTML = '<span class="dot"></span>S' + (si + 1) +
-        ' ' + sec.durationSec.toFixed(1) + 's · ' + freqText +
-        ' · ' + modeName;
-      tag.title = tf('pulse.tipFreqA', '频率A:{a}({ams}ms) · 频率B:{b}({bms}ms)', { a: sec.freqA, ams: freqMsA, b: sec.freqB, bms: freqMsB }) + '\n' +
-        tf('pulse.tipDuration', '时长滑块:{d} · 模式:{m}', { d: sec.durationSlider, m: modeName }) + '\n' +
-        tf('pulse.tipPoints', '脉冲元:{n}点 ({s}s)', { n: sec.points.length, s: sec.pulseMetaSec.toFixed(1) }) + ' · ' +
-        (sec.enabled ? t('pulse.tipEnabled', '启用') : t('pulse.tipDisabled', '禁用'));
-      legend.appendChild(tag);
-    }
-
-    var info = document.createElement('div');
-    info.className = 'pulse-info';
+    // 播放进度不再单独占行：留在无障碍层供动画更新（视觉上进度在画布内）
     var infoLeft = document.createElement('div');
-    infoLeft.className = 'pulse-info-left';
-    var infoRight = document.createElement('div');
-    infoRight.className = 'pulse-info-right';
+    infoLeft.className = 'pulse-info-left sr-only';
+    infoLeft.setAttribute('aria-live', 'off');
 
-    var cycleTime = parsed.totalCycleSec.toFixed(1);
-    infoRight.innerHTML =
-      '<span>' + tf('pulse.sections', '{enabled}/{total} 段', { enabled: parsed.enabledCount, total: parsed.sections.length }) + '</span>' +
-      '<span>' + tf('pulse.speed', '{x}x 速度', { x: parsed.speedMultiplier }) + '</span>' +
-      '<span>' + tf('pulse.restSec', '休息 {s}s', { s: parsed.restSec.toFixed(1) }) + '</span>' +
-      '<span>' + tf('pulse.cycle', '周期 {s}s', { s: cycleTime }) + '</span>';
-
-    info.appendChild(infoLeft);
-    info.appendChild(infoRight);
-
-    widget.appendChild(header);
+    widget.appendChild(floatEl);
     widget.appendChild(canvasWrap);
-    widget.appendChild(legend);
-    widget.appendChild(info);
+    widget.appendChild(infoLeft);
     widget.appendChild(sourcePanel);
 
     requestAnimationFrame(function() {

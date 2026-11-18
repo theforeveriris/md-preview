@@ -46,6 +46,7 @@
   <!-- leaflet.css / katex.min.css / diff2html.min.css 改为按需加载，见 dom.js loadStyle -->
   <link rel="stylesheet" href="iris/vendor/highlight.js/styles/github.css" id="hljs-theme">
   <link rel="stylesheet" href="iris/css/editor.css">
+  <link rel="stylesheet" href="iris/css/widget-chrome.css">
   <link rel="stylesheet" href="iris/css/pulse-generator.css">
   <link rel="stylesheet" href="iris/css/pkt/pkt.css">
   <link rel="stylesheet" href="iris/css/pptx.css">
@@ -153,12 +154,6 @@
         <ul class="local-files-list" id="localFilesList"></ul>
       </div>
       <div class="tag-panel" id="tagPanel" hidden></div>
-      <div class="tree-filter-bar" id="treeFilterBar">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input type="search" id="treeFilterInput" autocomplete="off" spellcheck="false"
-               placeholder="按文件名过滤…" aria-label="按文件名过滤文件树"
-               data-i18n-placeholder="sidebar.treeFilter" data-i18n-aria="sidebar.treeFilter">
-      </div>
       <div class="file-tree" id="fileTree" role="tree" aria-label="文档目录"></div>
       <div class="index-tree hidden" id="indexTree"></div>
     </aside>
@@ -704,19 +699,6 @@
                 <div class="setting-control">
                   <label class="switch">
                     <input type="checkbox" id="truncateFileNamesToggle">
-                    <span class="switch-slider"></span>
-                  </label>
-                </div>
-              </div>
-
-              <div class="setting-item">
-                <div>
-                  <div class="setting-label" data-i18n="settings.display.treeIcons">侧边栏显示文件图标</div>
-                  <div class="setting-description" data-i18n="settings.display.treeIconsDesc">默认关闭，侧边栏是纯文字列表（跟「Index」页签一致）；开启后在文件夹与文件名前显示图标</div>
-                </div>
-                <div class="setting-control">
-                  <label class="switch">
-                    <input type="checkbox" id="showTreeIconsToggle">
                     <span class="switch-slider"></span>
                   </label>
                 </div>
@@ -1356,72 +1338,227 @@
   <template id="tplEditorHtml">
   <div class="editor-overlay" id="editorOverlay" style="display:none;">
     <!-- 顶部工具栏 -->
-    <header class="editor-toolbar">
-      <div class="toolbar-left">
-        <button class="toolbar-home" id="exitEditorBtn" title="返回文档站">
-          <svg class="ico ico-sm"><use href="#i-arrow-left"/></svg>
-          <span>文档站</span>
-        </button>
-        <span class="toolbar-badge" id="cellCountBadge">1 Cell</span>
+    <!-- 顶部工具栏：上行为导航/视图，下行为 Word 风格图标格式条（浮窗样式） -->
+    <!-- 顶部工具栏：上行为导航/视图，下行为 Word 风格图标格式条（浮窗样式） -->
+    
+
+    <!-- 多标签页栏 -->
+    <nav class="tab-bar" id="tabBar" aria-label="文档标签">
+      <div class="tab-list" id="tabList"></div>
+      <button class="tab-new-btn" id="tabNewBtn" title="新建文档 (Ctrl+Alt+T)">
+        <svg class="ico ico-sm"><use href="#i-plus"/></svg>
+      </button>
+    </nav>
+
+    <!-- 搜索/替换面板 -->
+    <div class="search-panel" id="searchPanel">
+      <div class="search-panel-row">
+        <input type="text" id="editorSearchInput" class="search-input" placeholder="查找..." />
+        <input type="text" id="replaceInput" class="search-input" placeholder="替换..." />
+        <button class="search-btn" id="searchPrevBtn" title="上一个 (Shift+F3)"><svg class="ico ico-sm"><use href="#i-chevron-up"/></svg></button>
+        <button class="search-btn" id="searchNextBtn" title="下一个 (F3)"><svg class="ico ico-sm"><use href="#i-chevron-down"/></svg></button>
+        <button class="search-btn primary" id="replaceOneBtn" title="替换">替换</button>
+        <button class="search-btn primary" id="replaceAllBtn" title="全部替换">全部</button>
+        <button class="search-btn" id="searchCloseBtn" title="关闭 (Esc)"><svg class="ico ico-sm"><use href="#i-x"/></svg></button>
       </div>
-      <div class="toolbar-center">
-        <!-- Markdown 语法 -->
-        <div class="toolbar-dropdown" data-dropdown="markdown">
-          <button class="toolbar-btn" title="Markdown 基础语法">Markdown <svg class="ico ico-xs"><use href="#i-chevron-down"/></svg></button>
-          <div class="dropdown-menu" id="dropdownMarkdown">
-            <div class="dropdown-group">
-              <div class="dropdown-group-title">标题</div>
-              <button class="dropdown-item" data-insert="# ">H1 标题</button>
-              <button class="dropdown-item" data-insert="## ">H2 标题</button>
-              <button class="dropdown-item" data-insert="### ">H3 标题</button>
-              <button class="dropdown-item" data-insert="#### ">H4 标题</button>
-              <button class="dropdown-item" data-insert="##### ">H5 标题</button>
-              <button class="dropdown-item" data-insert="###### ">H6 标题</button>
+      <div class="search-panel-info" id="searchInfo">未搜索</div>
+    </div>
+
+    <!-- 字号下拉 -->
+    <div class="font-size-menu" id="fontSizeMenu">
+      <div class="font-size-item" data-size="12">12px</div>
+      <div class="font-size-item" data-size="14">14px (默认)</div>
+      <div class="font-size-item" data-size="16">16px</div>
+      <div class="font-size-item" data-size="18">18px</div>
+    </div>
+
+    <!-- 单文档编辑区：所见即所得 / 源码·预览双栏共用同一个 CodeMirror 实例 -->
+    <!-- 正文区：退出/常用功能固定两角，格式条浮动跟随选区（默认隐藏） -->
+      <div class="doc-stage">
+        <button class="doc-back" id="exitEditorBtn" title="返回文档站">
+          <svg class="ico"><use href="#i-arrow-left"/></svg>
+        </button>
+        <div class="doc-corner">
+          <button class="corner-btn" id="outlineBtn" title="文档大纲"><svg class="ico ico-sm"><use href="#i-list"/></svg></button>
+          <button class="corner-btn" id="fontSizeBtn" title="字号调节"><svg class="ico ico-sm"><use href="#i-font"/></svg></button>
+          <button class="corner-btn" id="imageUploadBtn" title="图片上传设置"><svg class="ico ico-sm"><use href="#i-upload"/></svg></button>
+          <button class="corner-btn" id="searchBtn" title="搜索/替换 (Ctrl+F)"><svg class="ico ico-sm"><use href="#i-search"/></svg></button>
+          <button class="corner-btn" id="themeToggleBtn" title="切换主题"><svg class="ico ico-sm"><use href="#i-moon"/></svg></button>
+          <span class="toolbar-divider"></span>
+          <button class="corner-btn" id="clearAllBtn" title="清空文档"><svg class="ico ico-sm"><use href="#i-trash"/></svg></button>
+          <button class="corner-btn" id="modeSwitch" title="切换 所见即所得 / 双栏 (Ctrl+Shift+M)" aria-pressed="false"><svg class="ico ico-sm"><use href="#i-split"/></svg></button>
+          <div class="image-upload-popover" id="imageUploadPopover">
+        <div class="image-upload-popover-title">图片上传设置</div>
+        <div class="image-upload-mode">
+          <label class="image-upload-radio"><input type="radio" name="imgMode" value="base64" checked> Base64 内嵌（默认，无需配置）</label>
+          <label class="image-upload-radio"><input type="radio" name="imgMode" value="host"> 图床上传</label>
+        </div>
+        <div class="image-upload-host-config" id="imageHostConfig" style="display:none;">
+          <input type="text" id="imageUploadUrl" class="image-upload-input" placeholder="https://your-image-host.com/api/upload" />
+          <div class="image-upload-hint">端点需接收 multipart/form-data（字段名 file），返回 JSON <code>{ "url": "..." }</code></div>
+          <div class="image-upload-hint">若需鉴权，可附带请求头（见下方自定义头）</div>
+          <input type="text" id="imageUploadHeaders" class="image-upload-input" placeholder='自定义请求头 JSON，如 {"Authorization":"Bearer xxx"}' />
+          <div class="image-upload-hint">⚠️ 请求头（可能含 Token）以明文保存在本机 localStorage，且会发送到你填写的任意端点；请勿在共享电脑上使用</div>
+        </div>
+        <div class="image-upload-actions">
+          <button class="toolbar-btn" id="imageUploadClear">清除配置</button>
+          <button class="toolbar-run-btn primary" id="imageUploadSave">保存</button>
+        </div>
+        <div class="image-upload-hint image-upload-hint-tip">提示：在编辑区直接 <kbd>粘贴</kbd> 或 <kbd>拖拽</kbd> 图片即可插入</div>
+      </div>
+        </div>
+        <main class="editor-main mode-wysiwyg" id="editorMain">
+      <div class="doc-workspace" id="docWorkspace">
+        <div class="doc-source-pane" id="docSourcePane">
+          <!-- CodeMirror host 由 editor.js 创建 -->
+        </div>
+        <div class="doc-split-divider" id="docSplitDivider" hidden title="拖动调整宽度"></div>
+        <section class="doc-preview-pane" id="docPreviewPane" hidden>
+          <div class="doc-pane-label"><svg class="ico ico-sm"><use href="#i-eye"/></svg> 渲染预览</div>
+          <div class="doc-preview markdown-body" id="docPreview"></div>
+        </section>
+      </div>
+    </main>
+        <div class="fmt-float" id="fmtFloat">
+          <div class="tb-bar" role="toolbar" aria-label="格式工具栏">
+          <div class="toolbar-dropdown tb-dd" data-dropdown="heading">
+            <button class="toolbar-btn tb-btn" title="标题样式"><span class="tb-tag">H</span><svg class="ico ico-xs"><use href="#i-chevron-down"/></svg></button>
+            <div class="dropdown-menu">
+              <div class="dropdown-group">
+                <button class="dropdown-item" data-format="h1"><span class="tb-tag">H1</span>一级标题</button>
+                <button class="dropdown-item" data-format="h2"><span class="tb-tag">H2</span>二级标题</button>
+                <button class="dropdown-item" data-format="h3"><span class="tb-tag">H3</span>三级标题</button>
+                <button class="dropdown-item" data-format="h4"><span class="tb-tag">H4</span>四级标题</button>
+                <button class="dropdown-item" data-format="h5"><span class="tb-tag">H5</span>五级标题</button>
+                <button class="dropdown-item" data-format="h6"><span class="tb-tag">H6</span>六级标题</button>
+              </div>
             </div>
-            <div class="dropdown-group">
-              <div class="dropdown-group-title">格式</div>
-              <button class="dropdown-item" data-insert="**粗体**" data-cursor="-4">粗体 <kbd>Ctrl+B</kbd></button>
-              <button class="dropdown-item" data-insert="*斜体*" data-cursor="-2">斜体 <kbd>Ctrl+I</kbd></button>
-              <button class="dropdown-item" data-insert="***粗斜体***" data-cursor="-6">粗斜体</button>
-              <button class="dropdown-item" data-insert="~~删除线~~" data-cursor="-4">删除线</button>
-              <button class="dropdown-item" data-insert="`行内代码`" data-cursor="-2">行内代码 <kbd>Ctrl+`</kbd></button>
-            </div>
-            <div class="dropdown-group">
-              <div class="dropdown-group-title">列表</div>
-              <button class="dropdown-item" data-insert="- ">无序列表</button>
-              <button class="dropdown-item" data-insert="1. ">有序列表</button>
-              <button class="dropdown-item" data-insert="- [ ] ">任务列表</button>
-              <button class="dropdown-item" data-insert="- [x] ">已完成任务</button>
-            </div>
-            <div class="dropdown-group">
-              <div class="dropdown-group-title">插入</div>
-              <button class="dropdown-item" data-insert="[链接文字](url)" data-cursor="-4">链接 <kbd>Ctrl+K</kbd></button>
-              <button class="dropdown-item" data-insert="[链接文字](url &quot;提示标题&quot;)" data-cursor="-16">带标题链接</button>
-              <button class="dropdown-item" data-insert="![图片描述](url)">图片</button>
-              <button class="dropdown-item" data-insert="![图片描述](url &quot;宽 600&quot;)">带尺寸图片</button>
-              <button class="dropdown-item" data-insert="\n```\n\n```\n" data-cursor="-5">代码块</button>
-              <button class="dropdown-item" data-insert="> ">引用</button>
-              <button class="dropdown-item" data-insert="---\n">分隔线</button>
-            </div>
-            <div class="dropdown-group">
-              <div class="dropdown-group-title">表格</div>
+          </div>
+          <span class="tb-sep"></span>
+          <button class="tb-btn" data-format="bold" title="粗体 (Ctrl+B)"><strong>B</strong></button>
+          <button class="tb-btn" data-format="italic" title="斜体 (Ctrl+I)"><em>I</em></button>
+          <button class="tb-btn" data-format="strike" title="删除线"><s>S</s></button>
+          <button class="tb-btn" data-format="code" title="行内代码 (Ctrl+`)"><code>&lt;/&gt;</code></button>
+          <span class="tb-sep"></span>
+          <button class="tb-btn" data-format="link" title="链接 (Ctrl+K)"><svg class="ico ico-sm"><use href="#i-link"/></svg></button>
+          <button class="tb-btn" data-insert="![图片描述](url)" title="图片"><svg class="ico ico-sm"><use href="#i-image"/></svg></button>
+          <button class="tb-btn" data-insert="\n```\n\n```\n" data-cursor="-5" title="代码块"><svg class="ico ico-sm"><use href="#i-code"/></svg></button>
+          <button class="tb-btn" data-format="quote" title="引用"><svg class="ico ico-sm"><use href="#i-quote"/></svg></button>
+          <button class="tb-btn" data-insert="---\n" title="分隔线"><svg class="ico ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="12" x2="20" y2="12"/></svg></button>
+          <span class="tb-sep"></span>
+          <button class="tb-btn" data-format="ul" title="无序列表"><svg class="ico ico-sm"><use href="#i-list"/></svg></button>
+          <button class="tb-btn" data-format="ol" title="有序列表"><span class="tb-tag">1.</span></button>
+          <button class="tb-btn" data-format="task" title="任务列表"><svg class="ico ico-sm"><use href="#i-check"/></svg></button>
+          <span class="tb-sep"></span>
+          <div class="toolbar-dropdown tb-dd" data-dropdown="table">
+            <button class="toolbar-btn tb-btn" title="表格"><svg class="ico ico-sm"><use href="#i-table"/></svg><svg class="ico ico-xs"><use href="#i-chevron-down"/></svg></button>
+            <div class="dropdown-menu">
+              <div class="dropdown-group">
+                <div class="dropdown-group-title">表格</div>
               <button class="dropdown-item" data-insert="\n| 列1 | 列2 |\n|------|------|\n| 内容 | 内容 |\n">2 列表格</button>
               <button class="dropdown-item" data-insert="\n| 列1 | 列2 | 列3 |\n|------|------|------|\n| 内容 | 内容 | 内容 |\n">3 列表格</button>
               <button class="dropdown-item" data-insert="\n| 列1 | 列2 | 列3 | 列4 |\n|------|------|------|------|\n| 内容 | 内容 | 内容 | 内容 |\n">4 列表格</button>
+              </div>
+            </div>
+          </div>
+          <span class="tb-sep"></span>
+          <div class="toolbar-dropdown tb-dd" data-dropdown="insert">
+            <button class="toolbar-btn tb-btn" title="插入（日期 / 占位图 / 脚注 / 徽章…）"><svg class="ico ico-sm"><use href="#i-plus"/></svg><svg class="ico ico-xs"><use href="#i-chevron-down"/></svg></button>
+            <div class="dropdown-menu">
+
+            <div class="dropdown-group">
+              <div class="dropdown-group-title">日期时间</div>
+              <button class="dropdown-item" data-action="insert-date">当前日期 (YYYY-MM-DD)</button>
+              <button class="dropdown-item" data-action="insert-time">当前时间 (HH:MM:SS)</button>
+              <button class="dropdown-item" data-action="insert-datetime">日期时间</button>
+              <button class="dropdown-item" data-action="insert-timestamp">Unix 时间戳</button>
             </div>
             <div class="dropdown-group">
+              <div class="dropdown-group-title">占位图片</div>
+              <button class="dropdown-item" data-action="insert-placeholder-300">300×200 占位图</button>
+              <button class="dropdown-item" data-action="insert-placeholder-600">600×400 占位图</button>
+              <button class="dropdown-item" data-action="insert-placeholder-1200">1200×600 横幅</button>
+              <button class="dropdown-item" data-action="insert-placeholder-square">500×500 方图</button>
+            </div>
+            <div class="dropdown-group">
+              <div class="dropdown-group-title">颜色色块</div>
+              <button class="dropdown-item" data-insert="<span style=&quot;color:#e74c3c&quot;>●</span> 红色标记"><span class="color-dot" style="background:#e74c3c"></span>红色</button>
+              <button class="dropdown-item" data-insert="<span style=&quot;color:#e67e22&quot;>●</span> 橙色标记"><span class="color-dot" style="background:#e67e22"></span>橙色</button>
+              <button class="dropdown-item" data-insert="<span style=&quot;color:#f1c40f&quot;>●</span> 黄色标记"><span class="color-dot" style="background:#f1c40f"></span>黄色</button>
+              <button class="dropdown-item" data-insert="<span style=&quot;color:#2ecc71&quot;>●</span> 绿色标记"><span class="color-dot" style="background:#2ecc71"></span>绿色</button>
+              <button class="dropdown-item" data-insert="<span style=&quot;color:#3498db&quot;>●</span> 蓝色标记"><span class="color-dot" style="background:#3498db"></span>蓝色</button>
+              <button class="dropdown-item" data-insert="<span style=&quot;color:#9b59b6&quot;>●</span> 紫色标记"><span class="color-dot" style="background:#9b59b6"></span>紫色</button>
+            </div>
+            <div class="dropdown-group">
+              <div class="dropdown-group-title">分隔线样式</div>
+              <button class="dropdown-item" data-insert="---\n">--- 水平线</button>
+              <button class="dropdown-item" data-insert="***\n">*** 星号线</button>
+              <button class="dropdown-item" data-insert="___\n">___ 下划线</button>
+            </div>
+            <div class="dropdown-group">
+              <div class="dropdown-group-title">徽章</div>
+              <button class="dropdown-item" data-insert="![构建](https://img.shields.io/badge/build-passing-brightgreen)">Shields.io 徽章</button>
+              <button class="dropdown-item" data-insert="![版本](https://badgen.net/badge/version/v1.0.0/blue)">Badgen 徽章</button>
+            </div>
+<div class="dropdown-group">
               <div class="dropdown-group-title">脚注 / 引用</div>
               <button class="dropdown-item" data-insert="[^1]: 脚注内容" data-cursor="-5">脚注定义</button>
               <button class="dropdown-item" data-insert="文字[^1]" data-cursor="-1">脚注引用</button>
               <button class="dropdown-item" data-insert="[1]: https://">引用式链接定义</button>
             </div>
+            </div>
           </div>
-        </div>
+          <div class="toolbar-dropdown tb-dd tb-dd-tall" data-dropdown="syntax">
+            <button class="toolbar-btn tb-btn" title="私有语法与 HTML 标签"><svg class="ico ico-sm"><use href="#i-tag"/></svg><svg class="ico ico-xs"><use href="#i-chevron-down"/></svg></button>
+            <div class="dropdown-menu">
 
-        <!-- HTML 原生标记 -->
-        <div class="toolbar-dropdown" data-dropdown="html">
-          <button class="toolbar-btn" title="HTML 原生标签">HTML <svg class="ico ico-xs"><use href="#i-chevron-down"/></svg></button>
-          <div class="dropdown-menu" id="dropdownHtml">
+            <div class="dropdown-group">
+              <div class="dropdown-group-title">画廊样式</div>
+              <button class="dropdown-item" data-insert="@grid\n">@grid 网格</button>
+              <button class="dropdown-item" data-insert="@cardstack\n">@cardstack 扑克牌堆</button>
+              <button class="dropdown-item" data-insert="@filmstrip\n">@filmstrip 胶片条</button>
+              <button class="dropdown-item" data-insert="@polaroid\n">@polaroid 拍立得墙</button>
+              <button class="dropdown-item" data-insert="@stack\n">@stack 堆叠覆盖</button>
+              <button class="dropdown-item" data-insert="@mosaic\n">@mosaic 马赛克</button>
+              <button class="dropdown-item" data-insert="@scattered\n">@scattered 散落明信片</button>
+              <button class="dropdown-item" data-insert="@hexagon\n">@hexagon 蜂巢六边形</button>
+              <button class="dropdown-item" data-insert="@coverflow\n">@coverflow Cover Flow</button>
+              <button class="dropdown-item" data-insert="@tape\n">@tape 软木板留言墙</button>
+              <button class="dropdown-item" data-insert="@duotone\n">@duotone 双色调</button>
+              <button class="dropdown-item" data-insert="@frame\n">@frame 画框装裱</button>
+              <button class="dropdown-item" data-insert="@arch\n">@arch 拱形画廊</button>
+              <button class="dropdown-item" data-insert="@masonry\n">@masonry 瀑布流</button>
+              <button class="dropdown-item" data-insert="@slider\n">@slider 幻灯片</button>
+              <button class="dropdown-item" data-insert="@ticket\n">@ticket 票根</button>
+              <button class="dropdown-item" data-insert="@panorama\n">@panorama 全景横幅</button>
+            </div>
+            <div class="dropdown-group">
+              <div class="dropdown-group-title">GitHub 提示框</div>
+              <button class="dropdown-item" data-insert="> [!NOTE]\n> ">[!NOTE] 提示</button>
+              <button class="dropdown-item" data-insert="> [!IMPORTANT]\n> ">[!IMPORTANT] 重要</button>
+              <button class="dropdown-item" data-insert="> [!WARNING]\n> ">[!WARNING] 警告</button>
+              <button class="dropdown-item" data-insert="> [!TIP]\n> ">[!TIP] 建议</button>
+              <button class="dropdown-item" data-insert="> [!CAUTION]\n> ">[!CAUTION] 谨慎</button>
+            </div>
+            <div class="dropdown-group">
+              <div class="dropdown-group-title">文档结构</div>
+              <button class="dropdown-item" data-insert="---\ntitle: \ndate: \ntags: []\n---\n" data-cursor="-5">Frontmatter 头信息</button>
+              <button class="dropdown-item" data-insert="<!-- TOC -->\n- [标题1](#标题1)\n- [标题2](#标题2)\n<!-- /TOC -->\n" data-cursor="-1">目录 TOC</button>
+            </div>
+            <div class="dropdown-group">
+              <div class="dropdown-group-title">布局容器</div>
+              <button class="dropdown-item" data-insert="::: code-tabs\n@tab 选项卡 A\n\n内容 A\n\n@tab 选项卡 B\n\n内容 B\n\n:::\n" data-cursor="-6">代码选项卡 code-tabs</button>
+              <button class="dropdown-item" data-insert="::: columns\n\n::: column 标题一\n\n第一栏内容\n\n::: column 标题二\n\n第二栏内容\n\n:::\n" data-cursor="-6">多列布局 columns</button>
+            </div>
+            <div class="dropdown-group">
+              <div class="dropdown-group-title">行内标记</div>
+              <button class="dropdown-item" data-insert="||剧透内容||" data-cursor="-2">剧透/遮罩 spoiler</button>
+            </div>
+            <div class="dropdown-group">
+              <div class="dropdown-group-title">DG-LAB 波形</div>
+              <button class="dropdown-item" data-insert="[pulse title=&quot;标题&quot;]\nDungeonlab+pulse:0,1,16=10,10,10,1,0/50-1,50-1,50-1,50-1\n[/pulse]" data-cursor="-9">波形 pulse</button>
+            </div>
+
             <div class="dropdown-group">
               <div class="dropdown-group-title">文本样式</div>
               <button class="dropdown-item" data-insert="<mark>高亮文字</mark>" data-cursor="-8">高亮 mark</button>
@@ -1482,66 +1619,12 @@
               <button class="dropdown-item" data-insert="<span style=&quot;background: #fff3cd&quot;>背景高亮</span>" data-cursor="-8">背景高亮</button>
               <button class="dropdown-item" data-insert="<!-- 这是一条注释 -->" data-cursor="-4">HTML 注释</button>
             </div>
-          </div>
-        </div>
-
-        <!-- 私有语法 -->
-        <div class="toolbar-dropdown" data-dropdown="private">
-          <button class="toolbar-btn" title="本站私有语法">私有语法 <svg class="ico ico-xs"><use href="#i-chevron-down"/></svg></button>
-          <div class="dropdown-menu" id="dropdownPrivate">
-            <div class="dropdown-group">
-              <div class="dropdown-group-title">画廊样式</div>
-              <button class="dropdown-item" data-insert="@grid\n">@grid 网格</button>
-              <button class="dropdown-item" data-insert="@cardstack\n">@cardstack 扑克牌堆</button>
-              <button class="dropdown-item" data-insert="@filmstrip\n">@filmstrip 胶片条</button>
-              <button class="dropdown-item" data-insert="@polaroid\n">@polaroid 拍立得墙</button>
-              <button class="dropdown-item" data-insert="@stack\n">@stack 堆叠覆盖</button>
-              <button class="dropdown-item" data-insert="@mosaic\n">@mosaic 马赛克</button>
-              <button class="dropdown-item" data-insert="@scattered\n">@scattered 散落明信片</button>
-              <button class="dropdown-item" data-insert="@hexagon\n">@hexagon 蜂巢六边形</button>
-              <button class="dropdown-item" data-insert="@coverflow\n">@coverflow Cover Flow</button>
-              <button class="dropdown-item" data-insert="@tape\n">@tape 软木板留言墙</button>
-              <button class="dropdown-item" data-insert="@duotone\n">@duotone 双色调</button>
-              <button class="dropdown-item" data-insert="@frame\n">@frame 画框装裱</button>
-              <button class="dropdown-item" data-insert="@arch\n">@arch 拱形画廊</button>
-              <button class="dropdown-item" data-insert="@masonry\n">@masonry 瀑布流</button>
-              <button class="dropdown-item" data-insert="@slider\n">@slider 幻灯片</button>
-              <button class="dropdown-item" data-insert="@ticket\n">@ticket 票根</button>
-              <button class="dropdown-item" data-insert="@panorama\n">@panorama 全景横幅</button>
-            </div>
-            <div class="dropdown-group">
-              <div class="dropdown-group-title">GitHub 提示框</div>
-              <button class="dropdown-item" data-insert="> [!NOTE]\n> ">[!NOTE] 提示</button>
-              <button class="dropdown-item" data-insert="> [!IMPORTANT]\n> ">[!IMPORTANT] 重要</button>
-              <button class="dropdown-item" data-insert="> [!WARNING]\n> ">[!WARNING] 警告</button>
-              <button class="dropdown-item" data-insert="> [!TIP]\n> ">[!TIP] 建议</button>
-              <button class="dropdown-item" data-insert="> [!CAUTION]\n> ">[!CAUTION] 谨慎</button>
-            </div>
-            <div class="dropdown-group">
-              <div class="dropdown-group-title">文档结构</div>
-              <button class="dropdown-item" data-insert="---\ntitle: \ndate: \ntags: []\n---\n" data-cursor="-5">Frontmatter 头信息</button>
-              <button class="dropdown-item" data-insert="<!-- TOC -->\n- [标题1](#标题1)\n- [标题2](#标题2)\n<!-- /TOC -->\n" data-cursor="-1">目录 TOC</button>
-            </div>
-            <div class="dropdown-group">
-              <div class="dropdown-group-title">布局容器</div>
-              <button class="dropdown-item" data-insert="::: code-tabs\n@tab 选项卡 A\n\n内容 A\n\n@tab 选项卡 B\n\n内容 B\n\n:::\n" data-cursor="-6">代码选项卡 code-tabs</button>
-              <button class="dropdown-item" data-insert="::: columns\n\n::: column 标题一\n\n第一栏内容\n\n::: column 标题二\n\n第二栏内容\n\n:::\n" data-cursor="-6">多列布局 columns</button>
-            </div>
-            <div class="dropdown-group">
-              <div class="dropdown-group-title">行内标记</div>
-              <button class="dropdown-item" data-insert="||剧透内容||" data-cursor="-2">剧透/遮罩 spoiler</button>
-            </div>
-            <div class="dropdown-group">
-              <div class="dropdown-group-title">DG-LAB 波形</div>
-              <button class="dropdown-item" data-insert="[pulse title=&quot;标题&quot;]\nDungeonlab+pulse:0,1,16=10,10,10,1,0/50-1,50-1,50-1,50-1\n[/pulse]" data-cursor="-9">波形 pulse</button>
             </div>
           </div>
-        </div>
+          <div class="toolbar-dropdown tb-dd tb-dd-tall" data-dropdown="render">
+            <button class="toolbar-btn tb-btn" title="图表渲染与嵌入"><svg class="ico ico-sm"><use href="#i-graph"/></svg><svg class="ico ico-xs"><use href="#i-chevron-down"/></svg></button>
+            <div class="dropdown-menu">
 
-        <!-- 工具渲染 -->
-        <div class="toolbar-dropdown" data-dropdown="tools">
-          <button class="toolbar-btn" title="集成的工具渲染语法">工具渲染 <svg class="ico ico-xs"><use href="#i-chevron-down"/></svg></button>
-          <div class="dropdown-menu" id="dropdownTools">
             <div class="dropdown-group">
               <div class="dropdown-group-title">Mermaid 图表</div>
               <button class="dropdown-item" data-insert="```mermaid\nflowchart TD\n    A --> B\n    B --> C\n```" data-cursor="-6">流程图 flowchart</button>
@@ -1646,54 +1729,7 @@
               <button class="dropdown-item" data-insert="```geojson\n{\n  &quot;type&quot;: &quot;Feature&quot;,\n  &quot;geometry&quot;: {\n    &quot;type&quot;: &quot;Polygon&quot;,\n    &quot;coordinates&quot;: [[[116.3,39.9],[116.5,39.9],[116.5,40.0],[116.3,40.0],[116.3,39.9]]]\n  }\n}\n```" data-cursor="-6">GeoJSON 多边形</button>
               <button class="dropdown-item" data-insert="```topojson\n{\n  &quot;type&quot;: &quot;Topology&quot;,\n  &quot;objects&quot;: {&quot;place&quot;: {&quot;type&quot;:&quot;GeometryCollection&quot;,&quot;geometries&quot;:[{&quot;type&quot;:&quot;Point&quot;,&quot;properties&quot;:{&quot;name&quot;:&quot;A&quot;},&quot;coordinates&quot;:[0,0]}]}},\n  &quot;arcs&quot;: [],\n  &quot;transform&quot;: {&quot;scale&quot;:[1,1],&quot;translate&quot;:[0,0]}\n}\n```" data-cursor="-6">TopoJSON</button>
             </div>
-          </div>
-        </div>
 
-        <!-- 插入（动态内容） -->
-        <div class="toolbar-dropdown" data-dropdown="insert">
-          <button class="toolbar-btn" title="插入动态内容">插入 <svg class="ico ico-xs"><use href="#i-chevron-down"/></svg></button>
-          <div class="dropdown-menu" id="dropdownInsert">
-            <div class="dropdown-group">
-              <div class="dropdown-group-title">日期时间</div>
-              <button class="dropdown-item" data-action="insert-date">当前日期 (YYYY-MM-DD)</button>
-              <button class="dropdown-item" data-action="insert-time">当前时间 (HH:MM:SS)</button>
-              <button class="dropdown-item" data-action="insert-datetime">日期时间</button>
-              <button class="dropdown-item" data-action="insert-timestamp">Unix 时间戳</button>
-            </div>
-            <div class="dropdown-group">
-              <div class="dropdown-group-title">占位图片</div>
-              <button class="dropdown-item" data-action="insert-placeholder-300">300×200 占位图</button>
-              <button class="dropdown-item" data-action="insert-placeholder-600">600×400 占位图</button>
-              <button class="dropdown-item" data-action="insert-placeholder-1200">1200×600 横幅</button>
-              <button class="dropdown-item" data-action="insert-placeholder-square">500×500 方图</button>
-            </div>
-            <div class="dropdown-group">
-              <div class="dropdown-group-title">颜色色块</div>
-              <button class="dropdown-item" data-insert="<span style=&quot;color:#e74c3c&quot;>●</span> 红色标记"><span class="color-dot" style="background:#e74c3c"></span>红色</button>
-              <button class="dropdown-item" data-insert="<span style=&quot;color:#e67e22&quot;>●</span> 橙色标记"><span class="color-dot" style="background:#e67e22"></span>橙色</button>
-              <button class="dropdown-item" data-insert="<span style=&quot;color:#f1c40f&quot;>●</span> 黄色标记"><span class="color-dot" style="background:#f1c40f"></span>黄色</button>
-              <button class="dropdown-item" data-insert="<span style=&quot;color:#2ecc71&quot;>●</span> 绿色标记"><span class="color-dot" style="background:#2ecc71"></span>绿色</button>
-              <button class="dropdown-item" data-insert="<span style=&quot;color:#3498db&quot;>●</span> 蓝色标记"><span class="color-dot" style="background:#3498db"></span>蓝色</button>
-              <button class="dropdown-item" data-insert="<span style=&quot;color:#9b59b6&quot;>●</span> 紫色标记"><span class="color-dot" style="background:#9b59b6"></span>紫色</button>
-            </div>
-            <div class="dropdown-group">
-              <div class="dropdown-group-title">分隔线样式</div>
-              <button class="dropdown-item" data-insert="---\n">--- 水平线</button>
-              <button class="dropdown-item" data-insert="***\n">*** 星号线</button>
-              <button class="dropdown-item" data-insert="___\n">___ 下划线</button>
-            </div>
-            <div class="dropdown-group">
-              <div class="dropdown-group-title">徽章</div>
-              <button class="dropdown-item" data-insert="![构建](https://img.shields.io/badge/build-passing-brightgreen)">Shields.io 徽章</button>
-              <button class="dropdown-item" data-insert="![版本](https://badgen.net/badge/version/v1.0.0/blue)">Badgen 徽章</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 嵌入 -->
-        <div class="toolbar-dropdown" data-dropdown="embed">
-          <button class="toolbar-btn" title="嵌入外部内容">嵌入 <svg class="ico ico-xs"><use href="#i-chevron-down"/></svg></button>
-          <div class="dropdown-menu" id="dropdownEmbed">
             <div class="dropdown-group">
               <div class="dropdown-group-title">视频</div>
               <button class="dropdown-item" data-insert="```embed\n@[youtube](dQw4w9WgXcQ)\n```" data-cursor="-5">YouTube</button>
@@ -1732,213 +1768,59 @@
               <button class="dropdown-item" data-insert="```pkt\n@[ensp](example)\n```" data-cursor="-5">eNSP 拓扑 ensp</button>
               <button class="dropdown-item" data-insert="```pptx\n@[pptx](example)\n```" data-cursor="-5">PPTX 演示 pptx</button>
             </div>
+            </div>
           </div>
-        </div>
-
-        <!-- 下载 -->
-        <div class="toolbar-dropdown" data-dropdown="download">
-          <button class="toolbar-btn" title="导出文件">下载 <svg class="ico ico-xs"><use href="#i-chevron-down"/></svg></button>
-          <div class="dropdown-menu" id="dropdownDownload">
-            <div class="dropdown-group">
-              <div class="dropdown-group-title">当前 Cell</div>
+          <div class="toolbar-dropdown tb-dd" data-dropdown="more">
+            <button class="toolbar-btn tb-btn" title="文件与其他操作"><svg class="ico ico-sm" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><svg class="ico ico-xs"><use href="#i-chevron-down"/></svg></button>
+            <div class="dropdown-menu">
+<div class="dropdown-group">
+              <div class="dropdown-group-title">当前文档</div>
               <button class="dropdown-item" data-action="download-md">下载源文件 (.md)</button>
               <button class="dropdown-item" data-action="download-html">下载渲染结果 (.html)</button>
               <button class="dropdown-item" data-action="download-html-inline">导出离线 HTML（内联 CSS）</button>
               <button class="dropdown-item" data-action="download-pdf">导出 PDF (.pdf)</button>
-            </div>
-            <div class="dropdown-group">
-              <div class="dropdown-group-title">整个笔记本</div>
-              <button class="dropdown-item" data-action="download-notebook">导出笔记本 (.mdnb)</button>
-              <button class="dropdown-item" data-action="download-all-md">合并导出全部 (.md)</button>
               <div class="dropdown-divider"></div>
+              <button class="dropdown-item" data-action="download-notebook">导出备份 (.mdnb)</button>
               <button class="dropdown-item" data-action="version-snapshots">版本快照…</button>
             </div>
-          </div>
-        </div>
-
-        <!-- 导入 -->
-        <div class="toolbar-dropdown" data-dropdown="import">
-          <button class="toolbar-btn" title="导入文件">导入 <svg class="ico ico-xs"><use href="#i-chevron-down"/></svg></button>
-          <div class="dropdown-menu" id="dropdownImport">
             <div class="dropdown-group">
-              <div class="dropdown-group-title">笔记本</div>
-              <button class="dropdown-item" data-action="import-mdnb">导入 .mdnb 笔记本</button>
-              <button class="dropdown-item" data-action="import-md-cells">导入 .md（按 --- 切分为 Cell）</button>
+              <div class="dropdown-group-title">Markdown 文档</div>
+              <button class="dropdown-item" data-action="import-md-cells">导入 .md（替换当前文档）</button>
+              <button class="dropdown-item" data-action="import-md-current">导入 .md（插入到光标处）</button>
+              <button class="dropdown-item" data-action="import-mdnb">导入旧版备份 (.mdnb)</button>
             </div>
             <div class="dropdown-group">
-              <div class="dropdown-group-title">当前 Cell</div>
-              <button class="dropdown-item" data-action="import-md-current">导入 .md 到当前 Cell</button>
-              <div class="dropdown-divider"></div>
+              <div class="dropdown-group-title">其他</div>
               <button class="dropdown-item" data-action="new-from-template">从模板新建…</button>
               <button class="dropdown-item" data-action="diff-vs-head">与 git HEAD 对比</button>
             </div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="toolbar-right">
-        <button class="toolbar-icon-btn" id="outlineBtn" title="笔记本大纲"><svg class="ico"><use href="#i-list"/></svg></button>
-        <button class="toolbar-icon-btn" id="fontSizeBtn" title="字号调节"><svg class="ico"><use href="#i-font"/></svg></button>
-        <button class="toolbar-icon-btn" id="imageUploadBtn" title="图片上传设置"><svg class="ico"><use href="#i-upload"/></svg></button>
-        <button class="toolbar-icon-btn" id="searchBtn" title="全局搜索/替换 (Ctrl+F)"><svg class="ico"><use href="#i-search"/></svg></button>
-        <button class="toolbar-icon-btn" id="themeToggleBtn" title="切换主题"><svg class="ico"><use href="#i-moon"/></svg></button>
-        <span class="toolbar-divider"></span>
-        <button class="toolbar-icon-btn" id="clearAllBtn" title="清空所有 Cell"><svg class="ico"><use href="#i-trash"/></svg></button>
-        <button class="toolbar-run-btn" id="runAllBtn" title="运行全部 Cell (Ctrl+Shift+Enter)"><svg class="ico"><use href="#i-zap"/></svg> 全部运行</button>
-        <button class="toolbar-run-btn primary" id="runCurrentBtn" title="运行当前 Cell (Ctrl+Enter)"><svg class="ico"><use href="#i-play"/></svg> 运行</button>
-      </div>
-
-      <!-- 图片上传设置弹出层 -->
-      <div class="image-upload-popover" id="imageUploadPopover">
-        <div class="image-upload-popover-title">图片上传设置</div>
-        <div class="image-upload-mode">
-          <label class="image-upload-radio"><input type="radio" name="imgMode" value="base64" checked> Base64 内嵌（默认，无需配置）</label>
-          <label class="image-upload-radio"><input type="radio" name="imgMode" value="host"> 图床上传</label>
-        </div>
-        <div class="image-upload-host-config" id="imageHostConfig" style="display:none;">
-          <input type="text" id="imageUploadUrl" class="image-upload-input" placeholder="https://your-image-host.com/api/upload" />
-          <div class="image-upload-hint">端点需接收 multipart/form-data（字段名 file），返回 JSON <code>{ "url": "..." }</code></div>
-          <div class="image-upload-hint">若需鉴权，可附带请求头（见下方自定义头）</div>
-          <input type="text" id="imageUploadHeaders" class="image-upload-input" placeholder='自定义请求头 JSON，如 {"Authorization":"Bearer xxx"}' />
-          <div class="image-upload-hint">⚠️ 请求头（可能含 Token）以明文保存在本机 localStorage，且会发送到你填写的任意端点；请勿在共享电脑上使用</div>
-        </div>
-        <div class="image-upload-actions">
-          <button class="toolbar-btn" id="imageUploadClear">清除配置</button>
-          <button class="toolbar-run-btn primary" id="imageUploadSave">保存</button>
-        </div>
-        <div class="image-upload-hint image-upload-hint-tip">提示：在编辑区直接 <kbd>粘贴</kbd> 或 <kbd>拖拽</kbd> 图片即可插入</div>
-      </div>
-    </header>
-
-    <!-- 多标签页栏 -->
-    <nav class="tab-bar" id="tabBar" aria-label="笔记本标签">
-      <div class="tab-list" id="tabList"></div>
-      <button class="tab-new-btn" id="tabNewBtn" title="新建笔记本 (Ctrl+T)">
-        <svg class="ico ico-sm"><use href="#i-plus"/></svg>
-      </button>
-    </nav>
-
-    <!-- 搜索/替换面板 -->
-    <div class="search-panel" id="searchPanel">
-      <div class="search-panel-row">
-        <input type="text" id="editorSearchInput" class="search-input" placeholder="查找..." />
-        <input type="text" id="replaceInput" class="search-input" placeholder="替换..." />
-        <button class="search-btn" id="searchPrevBtn" title="上一个 (Shift+F3)"><svg class="ico ico-sm"><use href="#i-chevron-up"/></svg></button>
-        <button class="search-btn" id="searchNextBtn" title="下一个 (F3)"><svg class="ico ico-sm"><use href="#i-chevron-down"/></svg></button>
-        <button class="search-btn primary" id="replaceOneBtn" title="替换">替换</button>
-        <button class="search-btn primary" id="replaceAllBtn" title="全部替换">全部</button>
-        <button class="search-btn" id="searchCloseBtn" title="关闭 (Esc)"><svg class="ico ico-sm"><use href="#i-x"/></svg></button>
-      </div>
-      <div class="search-panel-info" id="searchInfo">未搜索</div>
-    </div>
-
-    <!-- 字号下拉 -->
-    <div class="font-size-menu" id="fontSizeMenu">
-      <div class="font-size-item" data-size="12">12px</div>
-      <div class="font-size-item" data-size="14">14px (默认)</div>
-      <div class="font-size-item" data-size="16">16px</div>
-      <div class="font-size-item" data-size="18">18px</div>
-    </div>
-
-    <!-- Cell 容器 -->
-    <main class="editor-main" id="editorMain">
-      <!-- Cells will be dynamically created by editor.js -->
-    </main>
-
-    <!-- 双屏编辑模式（编辑 + 实时预览） -->
-    <div class="dual-pane-overlay" id="dualPaneOverlay">
-      <div class="dual-pane-header">
-        <div class="dual-pane-title">
-          <svg class="ico ico-sm"><use href="#i-split"/></svg>
-          <span>双屏编辑 · Cell [<span id="dualPaneCellNum"></span>]</span>
-        </div>
-        <div class="dual-pane-actions">
-          <button class="dual-pane-btn" id="dualPaneSyncBtn" title="同步滚动"><svg class="ico ico-sm"><use href="#i-refresh"/></svg> 同步滚动</button>
-          <button class="dual-pane-btn dual-pane-close-btn" id="dualPaneCloseBtn" title="退出双屏 (Esc)"><svg class="ico ico-sm"><use href="#i-close"/></svg> 退出</button>
         </div>
       </div>
-      <div class="dual-pane-body">
-        <div class="dual-pane-left" id="dualPaneLeft">
-          <div class="dual-pane-label">编辑</div>
-          <!-- CodeMirror host 会被移动到这里 -->
-        </div>
-        <div class="dual-pane-divider" id="dualPaneDivider"></div>
-        <div class="dual-pane-right" id="dualPaneRight">
-          <div class="dual-pane-label">预览</div>
-          <div class="markdown-body dual-pane-preview" id="dualPanePreview"></div>
-        </div>
-      </div>
-    </div>
 
     <!-- 底部状态栏 -->
     <footer class="editor-statusbar">
       <div class="statusbar-left">
-        <span id="statusCellCount">1 Cell</span>
-        <span class="statusbar-sep">·</span>
-        <span id="statusRunStats">运行 0/0</span>
+        <span id="statusMode">所见即所得</span>
         <span class="statusbar-sep">·</span>
         <span id="statusWords">0 字</span>
         <span class="statusbar-sep">·</span>
         <span id="statusLines">0 行</span>
-        <span class="statusbar-sep">·</span>
-        <span id="statusCurCellWords">当前 0 字</span>
       </div>
       <div class="statusbar-right">
         <span id="statusCursor">行 1, 列 1</span>
         <span class="statusbar-sep">·</span>
-        <span id="statusActive">无活跃 Cell</span>
-        <span class="statusbar-sep">·</span>
-        <span id="statusSave">未保存</span>
+        <span id="statusSave">已保存 ✓</span>
       </div>
     </footer>
 
     <!-- 隐藏的文件输入 -->
     <input type="file" id="fileInput" accept=".md,.mdnb,.txt" style="display:none;" />
 
-    <!-- 选中文字浮动工具栏 -->
-    <div class="selection-toolbar" id="selectionToolbar">
-      <button class="sel-btn" data-format="bold" title="粗体 (Ctrl+B)"><strong>B</strong></button>
-      <button class="sel-btn" data-format="italic" title="斜体 (Ctrl+I)"><em>I</em></button>
-      <button class="sel-btn" data-format="strike" title="删除线"><s>S</s></button>
-      <button class="sel-btn" data-format="code" title="行内代码 (Ctrl+`)"><code>&lt;/&gt;</code></button>
-      <span class="sel-divider"></span>
-      <button class="sel-btn" data-format="h1" title="一级标题">H1</button>
-      <button class="sel-btn" data-format="h2" title="二级标题">H2</button>
-      <button class="sel-btn" data-format="h3" title="三级标题">H3</button>
-      <span class="sel-divider"></span>
-      <button class="sel-btn" data-format="link" title="链接 (Ctrl+K)"><svg class="ico ico-sm"><use href="#i-link"/></svg></button>
-      <button class="sel-btn" data-format="quote" title="引用"><svg class="ico ico-sm"><use href="#i-quote"/></svg></button>
-      <button class="sel-btn" data-format="ul" title="无序列表"><svg class="ico ico-sm"><use href="#i-list"/></svg></button>
-    </div>
-
-    <!-- Cell 右键上下文菜单（2 列布局） -->
-    <div class="context-menu" id="contextMenu">
-      <div class="context-menu-columns">
-        <div class="context-menu-col">
-          <div class="context-menu-col-title">运行与插入</div>
-          <div class="context-menu-item" data-action="ctx-run"><svg class="ico ico-sm"><use href="#i-play"/></svg>运行此 Cell</div>
-          <div class="context-menu-item" data-action="ctx-run-below"><svg class="ico ico-sm"><use href="#i-arrow-down"/></svg>运行此 Cell 及下方</div>
-          <div class="context-menu-item" data-action="ctx-insert-above"><svg class="ico ico-sm"><use href="#i-arrow-up"/></svg>上方插入 Cell</div>
-          <div class="context-menu-item" data-action="ctx-insert-below"><svg class="ico ico-sm"><use href="#i-arrow-down"/></svg>下方插入 Cell</div>
-          <div class="context-menu-item" data-action="ctx-move-up"><svg class="ico ico-sm"><use href="#i-arrow-up"/></svg>上移</div>
-          <div class="context-menu-item" data-action="ctx-move-down"><svg class="ico ico-sm"><use href="#i-arrow-down"/></svg>下移</div>
-          <div class="context-menu-item" data-action="ctx-duplicate"><svg class="ico ico-sm"><use href="#i-copy"/></svg>复制 Cell</div>
-        </div>
-        <div class="context-menu-col">
-          <div class="context-menu-col-title">编辑与清理</div>
-          <div class="context-menu-item" data-action="ctx-toggle-type"><svg class="ico ico-sm"><use href="#i-refresh"/></svg>切换类型</div>
-          <div class="context-menu-item" data-action="ctx-collapse-editor"><svg class="ico ico-sm"><use href="#i-chevron-right"/></svg>折叠编辑器</div>
-          <div class="context-menu-item" data-action="ctx-collapse-output"><svg class="ico ico-sm"><use href="#i-chevron-right"/></svg>折叠输出</div>
-          <div class="context-menu-item" data-action="ctx-copy-html"><svg class="ico ico-sm"><use href="#i-clipboard"/></svg>复制输出 HTML</div>
-          <div class="context-menu-item" data-action="ctx-copy-source"><svg class="ico ico-sm"><use href="#i-copy"/></svg>复制 Cell 源码</div>
-          <div class="context-menu-item" data-action="ctx-export-cell"><svg class="ico ico-sm"><use href="#i-save"/></svg>导出此 Cell</div>
-          <div class="context-menu-item" data-action="ctx-collapse-all"><svg class="ico ico-sm"><use href="#i-chevron-right"/></svg>折叠全部</div>
-          <div class="context-menu-item" data-action="ctx-expand-all"><svg class="ico ico-sm"><use href="#i-chevron-down"/></svg>展开全部</div>
-          <div class="context-menu-item" data-action="ctx-clear-output"><svg class="ico ico-sm"><use href="#i-x"/></svg>清空输出</div>
-          <div class="context-menu-item" data-action="ctx-clear-content"><svg class="ico ico-sm"><use href="#i-ban"/></svg>清空内容</div>
-          <div class="context-menu-item context-menu-item-danger" data-action="ctx-delete"><svg class="ico ico-sm"><use href="#i-trash"/></svg>删除 Cell</div>
-        </div>
-      </div>
-    </div>
+    
 
     <!-- 补全提示 -->
     <div class="autocomplete-list" id="autocompleteList"></div>
@@ -2291,6 +2173,8 @@
   <!-- Built-in Plugins (loaded dynamically via loader.js) -->
 
   <!-- Renderers -->
+  <!-- 组件统一头部（单行信息 / 筛选面板 / 悬停操作胶囊）：必须先于各渲染器加载 -->
+  <script defer src="iris/js/widget-chrome.js"></script>
   <!-- BEGIN RENDERER SCRIPTS (managed by iris/scripts/sync-features.js — do not edit inside) -->
   <!-- color-utils：graph 渲染器与 color 插件共用的颜色解析/对比度工具 -->
   <script defer src="iris/js/color-utils.js"></script>

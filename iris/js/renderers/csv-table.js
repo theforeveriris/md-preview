@@ -176,33 +176,38 @@
     const state = { q: '', sortCol: -1, sortDir: 1, filters: {} };
 
     const widget = document.createElement('div');
-    widget.className = 'csv-table';
-    // 工具条按钮一律用图标，文字靠悬停提示（data-tip），工具条只占一行高
+    widget.className = 'csv-table w-has-float';
+    // 工具条按钮一律用图标，文字靠悬停提示（data-tip），控件收进悬停浮窗
     const chartLabel = t('csv.chart.build', '画成图');
     const copyLabel = t('csv.copyCsv', '复制 CSV');
     const downloadLabel = t('csv.downloadCsv', '下载 CSV');
     widget.innerHTML = `
-      <div class="csv-table-toolbar">
-        <div class="csv-table-search">
-          ${icon('i-search', 13)}
-          <input type="search" class="csv-search-input" placeholder="${esc(t('csv.searchPlaceholder', '搜索表格…'))}" aria-label="${esc(t('csv.searchPlaceholder', '搜索表格…'))}">
+      <div class="w-float">
+        <button type="button" class="w-icon-btn w-filter-btn" title="${esc(t('csv.filter', '筛选'))}" aria-label="${esc(t('csv.filter', '筛选'))}">
+          ${icon('i-search', 15)}<span class="w-badge" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="icon-btn csv-tool-btn csv-copy w-icon-btn" data-tip="${esc(copyLabel)}" title="${esc(copyLabel)}" aria-label="${esc(copyLabel)}">${icon('i-clipboard', 15)}<span class="icon-btn-label">${esc(copyLabel)}</span></button>
+        <button type="button" class="icon-btn csv-tool-btn csv-download w-icon-btn" data-tip="${esc(downloadLabel)}" title="${esc(downloadLabel)}" aria-label="${esc(downloadLabel)}">${icon('i-download', 15)}<span class="icon-btn-label">${esc(downloadLabel)}</span></button>
+        <div class="w-pop">
+          <div class="csv-table-search">
+            ${icon('i-search', 13)}
+            <input type="search" class="csv-search-input" placeholder="${esc(t('csv.searchPlaceholder', '搜索表格…'))}" aria-label="${esc(t('csv.searchPlaceholder', '搜索表格…'))}">
+          </div>
+          <span class="csv-chart-ctrl">
+            <select class="csv-chart-type theme-select" aria-label="${esc(t('csv.chartType', '图表类型'))}">
+              <option value="line">${esc(t('csv.chart.line', '折线'))}</option>
+              <option value="bar">${esc(t('csv.chart.bar', '柱状'))}</option>
+              <option value="area">${esc(t('csv.chart.area', '面积'))}</option>
+              <option value="pie">${esc(t('csv.chart.pie', '饼图'))}</option>
+            </select>
+            <button type="button" class="icon-btn csv-tool-btn csv-chart-btn" data-tip="${esc(chartLabel)}" title="${esc(chartLabel)}" aria-label="${esc(chartLabel)}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l3-4 3 3 4-6"/></svg><span class="icon-btn-label">${esc(chartLabel)}</span></button>
+          </span>
+          <div class="csv-pop-status"><span class="csv-table-count" role="status"></span></div>
         </div>
-        <span class="csv-table-count" role="status"></span>
-        <span class="csv-table-toolbar-space"></span>
-        <span class="csv-chart-ctrl">
-          <select class="csv-chart-type theme-select" aria-label="${esc(t('csv.chartType', '图表类型'))}">
-            <option value="line">${esc(t('csv.chart.line', '折线'))}</option>
-            <option value="bar">${esc(t('csv.chart.bar', '柱状'))}</option>
-            <option value="area">${esc(t('csv.chart.area', '面积'))}</option>
-            <option value="pie">${esc(t('csv.chart.pie', '饼图'))}</option>
-          </select>
-          <button type="button" class="icon-btn csv-tool-btn csv-chart-btn" data-tip="${esc(chartLabel)}" title="${esc(chartLabel)}" aria-label="${esc(chartLabel)}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l3-4 3 3 4-6"/></svg><span class="icon-btn-label">${esc(chartLabel)}</span></button>
-        </span>
-        <button type="button" class="icon-btn csv-tool-btn csv-copy" data-tip="${esc(copyLabel)}" title="${esc(copyLabel)}" aria-label="${esc(copyLabel)}">${icon('i-clipboard', 15)}<span class="icon-btn-label">${esc(copyLabel)}</span></button>
-        <button type="button" class="icon-btn csv-tool-btn csv-download" data-tip="${esc(downloadLabel)}" title="${esc(downloadLabel)}" aria-label="${esc(downloadLabel)}">${icon('i-download', 15)}<span class="icon-btn-label">${esc(downloadLabel)}</span></button>
       </div>
       <div class="csv-table-scroll"><table></table></div>
     `;
+    window.MarkdownPreview.widgetChrome?.init(widget);
 
     const table = widget.querySelector('table');
 
@@ -274,6 +279,12 @@
         count.textContent = t('csv.filteredCount', '{m} / {n} 行')
           .replace('{m}', rowsOut.length).replace('{n}', dataRows.length);
       }
+      // 筛选徽章：搜索 + 列筛选（按生效的条件数计）
+      const activeFilters = (state.q.trim() ? 1 : 0) + Object.keys(state.filters).length;
+      const filterBtn = widget.querySelector('.w-filter-btn');
+      const filterBadge = widget.querySelector('.w-filter-btn .w-badge');
+      if (filterBtn) filterBtn.classList.toggle('active', activeFilters > 0);
+      if (filterBadge) filterBadge.textContent = activeFilters || '';
       if (rowsOut.length === 0) {
         const tr = document.createElement('tr');
         const td = document.createElement('td');

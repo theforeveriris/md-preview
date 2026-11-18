@@ -64,6 +64,14 @@
 
 .image-gallery--grid {
   /* 与默认一致，仅作为显式声明 */
+  align-items: start;
+}
+
+/* 瓦片统一比例：图片高低不齐时行高仍按图片本身算，
+   上下间距与左右 gap 一致，短图下方不再留一大块空白 */
+.image-gallery--grid img {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
 }
 
 /* ============== @cardstack — 扑克牌堆 ============== */
@@ -490,8 +498,9 @@
 
 .image-gallery--scattered img {
   position: absolute;
-  width: 200px;
-  height: 150px;
+  width: 30%;
+  height: auto;
+  aspect-ratio: 3 / 2;
   object-fit: cover;
   border-radius: 6px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
@@ -501,41 +510,41 @@
   cursor: pointer;
 }
 
-/* 6 张以内手动定位，营造散落感 */
+/* 6 张以内手动定位，营造散落感；右列留出 2% 余量，旋转后也不出界 */
 .image-gallery--scattered img:nth-child(1) {
-  top: 8%;
-  left: 6%;
-  transform: rotate(-8deg);
+  top: 6%;
+  left: 2%;
+  transform: rotate(-6deg);
 }
 
 .image-gallery--scattered img:nth-child(2) {
-  top: 4%;
-  left: 38%;
+  top: 3%;
+  left: 34%;
   transform: rotate(4deg);
 }
 
 .image-gallery--scattered img:nth-child(3) {
-  top: 12%;
-  left: 68%;
+  top: 9%;
+  left: 66%;
   transform: rotate(-3deg);
 }
 
 .image-gallery--scattered img:nth-child(4) {
   top: 48%;
-  left: 14%;
-  transform: rotate(6deg);
+  left: 8%;
+  transform: rotate(5deg);
 }
 
 .image-gallery--scattered img:nth-child(5) {
-  top: 52%;
-  left: 44%;
-  transform: rotate(-5deg);
+  top: 53%;
+  left: 40%;
+  transform: rotate(-4deg);
 }
 
 .image-gallery--scattered img:nth-child(6) {
   top: 46%;
-  left: 72%;
-  transform: rotate(9deg);
+  left: 66%;
+  transform: rotate(6deg);
 }
 
 /* 第 7 张及之后：自动流到右侧，避免重叠 */

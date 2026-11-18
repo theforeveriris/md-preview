@@ -56,17 +56,15 @@ Markdown Preview 支持一组全局键盘快捷键，覆盖侧边栏、设置、
 
 | 按键 | 功能 |
 |------|------|
-| `Ctrl/⌘ + Enter` | 运行当前 Cell |
-| `Ctrl/⌘ + Shift + Enter` | 运行全部 Cell |
-| `Ctrl/⌘ + Shift + N` | 当前 Cell 下方新建 |
+| `Ctrl/⌘ + Shift + M` | 切换「所见即所得 / 源码·预览双栏」 |
 | `Ctrl/⌘ + F` / `Ctrl/⌘ + H` | 搜索 / 替换 |
 | `Ctrl/⌘ + B` / `Ctrl/⌘ + I` | 粗体 / 斜体 |
 | `Ctrl/⌘ + K` | 链接 |
 | `Ctrl/⌘ + \` \` | 行内代码 |
 | `Tab` / `Shift + Tab` | 缩进 / 反缩进 |
 | `F3` / `Shift + F3` | 搜索下一个 / 上一个 |
-| `Ctrl/⌘ + Alt + T` | 新建编辑器标签 |
-| `Ctrl/⌘ + Tab` | 切换编辑器标签 |
+| `Ctrl/⌘ + Alt + T` | 新建文档标签 |
+| `Ctrl/⌘ + Tab` | 切换文档标签 |
 
 完整说明见 [编辑器说明](editor.md)。
 

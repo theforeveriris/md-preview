@@ -162,26 +162,31 @@
     });
 
     const widget = document.createElement('div');
-    widget.className = 'trace-view';
+    widget.className = 'trace-view w-has-float';
 
     const services = Array.from(new Set(spans.map(s => s.service)));
     const sum = spans.reduce((a, s) => a + s.duration, 0);
     const errors = spans.filter(s => s.status === 2 || s.status === 'ERROR').length;
 
     widget.innerHTML =
-      '<div class="trace-summary">' +
-        '<span><b>' + spans.length + '</b> ' + esc(t('trace.spans', 'Span')) + '</span>' +
-        '<span><b>' + fmtMs(sum) + '</b> ' + esc(t('trace.duration', '总耗时')) + '</span>' +
-        '<span><b>' + errors + '</b> ' + esc(t('trace.errors', '错误')) + '</span>' +
-        '<span><b>' + esc(services.join(' · ')) + '</b></span>' +
-      '</div>' +
-      '<div class="trace-toolbar">' +
-        '<select class="trace-filter-service" aria-label="' + esc(t('trace.service', '服务')) + '"><option value="">' + esc(t('trace.service', '服务')) + '</option></select>' +
-        '<input type="search" class="trace-search" placeholder="' + esc(t('trace.search', '搜索操作…')) + '" aria-label="' + esc(t('trace.search', '搜索操作')) + '">' +
-        '<span class="trace-count" aria-live="polite"></span>' +
-        '<button type="button" class="icon-btn trace-export" data-tip="' + esc(t('trace.export', '导出 CSV')) + '" title="' + esc(t('trace.export', '导出 CSV')) + '" aria-label="' + esc(t('trace.export', '导出 CSV')) + '">' +
+      '<div class="w-float">' +
+        '<button type="button" class="w-icon-btn w-filter-btn" title="' + esc(t('trace.filter', '筛选')) + '" aria-label="' + esc(t('trace.filter', '筛选')) + '">' +
+          icon('i-search', 15) + '<span class="w-badge" aria-hidden="true"></span></button>' +
+        '<button type="button" class="icon-btn trace-export w-icon-btn" data-tip="' + esc(t('trace.export', '导出 CSV')) + '" title="' + esc(t('trace.export', '导出 CSV')) + '" aria-label="' + esc(t('trace.export', '导出 CSV')) + '">' +
           icon('i-download', 15) + '<span class="icon-btn-label">' + esc(t('trace.export', '导出 CSV')) + '</span></button>' +
+        '<div class="w-pop">' +
+          '<select class="trace-filter-service" aria-label="' + esc(t('trace.service', '服务')) + '"><option value="">' + esc(t('trace.service', '服务')) + '</option></select>' +
+          '<input type="search" class="trace-search" placeholder="' + esc(t('trace.search', '搜索操作…')) + '" aria-label="' + esc(t('trace.search', '搜索操作')) + '">' +
+          '<div class="trace-pop-stats">' +
+            '<span><b>' + spans.length + '</b> ' + esc(t('trace.spans', 'Span')) + '</span>' +
+            '<span><b>' + fmtMs(sum) + '</b> ' + esc(t('trace.duration', '总耗时')) + '</span>' +
+            '<span><b>' + errors + '</b> ' + esc(t('trace.errors', '错误')) + '</span>' +
+            '<span>' + esc(services.join(' · ')) + '</span>' +
+            '<span class="trace-count" aria-live="polite"></span>' +
+          '</div>' +
+        '</div>' +
       '</div>';
+    window.MarkdownPreview.widgetChrome?.init(widget);
 
     const select = widget.querySelector('.trace-filter-service');
     services.forEach(s => { const o = document.createElement('option'); o.value = o.textContent = s; select.appendChild(o); });
@@ -236,8 +241,13 @@
         if (ok) visible++;
       });
       countEl.textContent = visible === spans.length
-        ? t('trace.all', '{n} 条').replace('{n}', visible)
+        ? ''
         : t('trace.filtered', '{m} / {n} 条').replace('{m}', visible).replace('{n}', spans.length);
+      const active = (q ? 1 : 0) + (svc ? 1 : 0);
+      const btn = widget.querySelector('.w-filter-btn');
+      const badge = widget.querySelector('.w-filter-btn .w-badge');
+      if (btn) btn.classList.toggle('active', active > 0);
+      if (badge) badge.textContent = active || '';
     }
     widget.querySelector('.trace-search').addEventListener('input', update);
     select.addEventListener('change', update);

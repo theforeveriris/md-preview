@@ -138,7 +138,8 @@
         // textContent（CodeRabbit review fix）
         const scratch = document.createElement('template');
         const cellText = (md) => {
-          scratch.innerHTML = window.MarkdownPreview.mdRender.parseMarkdown(String(md == null ? '' : md));
+          const parsed = window.MarkdownPreview.mdRender.parseMarkdown(String(md == null ? '' : md));
+          scratch.innerHTML = parsed && typeof parsed === 'object' ? parsed.html : String(parsed);
           const text2 = scratch.content.textContent;
           scratch.innerHTML = '';
           return text2;

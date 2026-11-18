@@ -38,7 +38,7 @@
         if (!listEl) return;
         const items = collect();
         if (items.length === 0) {
-          listEl.innerHTML = `<div class="ed-outline-empty">${esc(editorT('outline.empty', '各 Cell 里写 # 标题就会出现在这里'))}</div>`;
+          listEl.innerHTML = `<div class="ed-outline-empty">${esc(editorT('outline.empty', '文档里写 # 标题就会出现在这里'))}</div>`;
           return;
         }
         listEl.innerHTML = items.map((item, idx) => `

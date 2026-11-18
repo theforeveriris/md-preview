@@ -1,0 +1,759 @@
+/* ============== 组件统一头部（widget chrome） ============== */
+
+.w-chrome {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 2px 10px;
+  border-bottom: 1px solid var(--color-border);
+  background: transparent;
+}
+
+.w-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.w-title {
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.w-chips {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.w-chip {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  background: color-mix(in srgb, var(--color-accent-purple) 7%, transparent);
+  border-radius: 4px;
+  padding: 0 6px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.w-inline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  min-width: 0;
+}
+
+.w-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--color-text-muted);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  flex: none;
+}
+
+.w-icon-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.w-icon-btn:hover {
+  color: var(--color-accent-purple-deep);
+  background: color-mix(in srgb, var(--color-accent-purple) 12%, transparent);
+}
+
+/* 筛选按钮：右侧、常显；有生效筛选时显示小徽章 */
+.w-filter-btn {
+  position: relative;
+  flex: none;
+  margin-left: auto;
+}
+
+.w-chrome .w-inline ~ .w-filter-btn {
+  margin-left: 0;
+}
+
+.w-filter-btn .w-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  min-width: 13px;
+  height: 13px;
+  padding: 0 3px;
+  border-radius: 999px;
+  background: var(--color-accent-purple);
+  color: #fff;
+  font-size: 9px;
+  line-height: 13px;
+  text-align: center;
+  display: none;
+}
+
+.w-filter-btn.active .w-badge {
+  display: block;
+}
+
+.w-chrome.open .w-filter-btn,
+.w-float.open .w-filter-btn {
+  color: var(--color-accent-purple);
+  background: color-mix(in srgb, var(--color-accent-purple) 16%, transparent);
+}
+
+/* 悬停胶囊：次级操作 */
+.w-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  flex: none;
+  margin-left: 2px;
+  padding: 2px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06);
+  opacity: 0;
+  transform: translateY(-2px);
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.w-chrome:hover > .w-actions,
+.w-chrome:focus-within > .w-actions,
+.w-actions:focus-within {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.w-actions .w-icon-btn {
+  width: 24px;
+  height: 24px;
+}
+
+/* 筛选面板 */
+.w-pop {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 30;
+  width: max-content;
+  min-width: 220px;
+  max-width: min(360px, calc(100vw - 24px));
+  padding: 9px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+}
+
+.w-chrome.open .w-pop,
+.w-float.open .w-pop {
+  display: block;
+}
+
+.w-pop input,
+.w-pop select {
+  max-width: 100%;
+}
+
+/* 筛选面板里的旧控件：去掉自带外框，融进面板 */
+.w-pop .pcap-filter,
+.w-pop .har-search,
+.w-pop .csv-search,
+.w-pop .json-search {
+  width: 100%;
+  margin: 0 0 6px;
+}
+
+.w-pop .pcap-filter input,
+.w-pop .har-search input,
+.w-pop .csv-search input,
+.w-pop .json-search input {
+  width: 100%;
+}
+
+/* 触屏没有 hover：胶囊常显 */
+@media (hover: none) {
+  .w-actions {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+}
+
+@media print {
+  .w-actions,
+  .w-pop {
+    display: none !important;
+  }
+}
+
+/* ============== 旧组件头的收敛覆盖 ============== */
+
+/* JSON 树的工具条仍保留 .json-tree-toolbar 类（json-search 依赖它定位），
+   这里压掉旧的两行布局，统一成单行 chrome。 */
+.w-chrome.json-tree-toolbar {
+  flex-wrap: nowrap;
+  min-height: 34px;
+  padding: 2px;
+  background: transparent;
+}
+
+.w-chrome .json-tree-info {
+  max-width: none;
+  flex: 0 1 auto;
+}
+
+.w-chrome .json-tree-controls {
+  margin-left: 0;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.w-pop .json-tree-search,
+.w-pop .json-tree-path {
+  width: 100%;
+}
+
+.w-pop .json-tree-search-input {
+  width: 100%;
+}
+
+.w-pop .json-tree-path-input {
+  flex: 1;
+  width: auto;
+  min-width: 0;
+}
+
+/* 终端可播控在透明头上要能看清 */
+.w-chrome .term-play,
+.w-chrome .term-end {
+  background: color-mix(in srgb, var(--color-accent-purple) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent-purple) 35%, transparent);
+  color: var(--color-text);
+  border-radius: 6px;
+  padding: 3px 9px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.w-chrome .term-play:hover,
+.w-chrome .term-end:hover {
+  border-color: var(--color-accent-purple);
+}
+
+.w-chrome .term-speed {
+  height: 24px;
+  font-size: 12px;
+  border-radius: 6px;
+}
+
+/* pcap 协议分布：6px 条只放色块，图例作为 chips 进头部 */
+.pcap-proto-chips {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.pcap-proto-chips:empty { display: none; }
+
+.w-chip .pcap-dot {
+  width: 7px;
+  height: 7px;
+  margin-right: 4px;
+  border-radius: 2px;
+  vertical-align: middle;
+  background: currentColor;
+}
+
+/* 空 chip 不占位（命中数/过滤数为 0 时） */
+.w-chip:empty { display: none; }
+
+/* 热图图例靠右 */
+.w-chrome > .hm-legend { margin-left: auto; }
+
+/* 标题里的小图标：全局 svg{display:block} 会把标题撑成两行 */
+.w-chrome .w-title svg {
+  display: inline-block;
+  vertical-align: -2px;
+  color: var(--color-accent-purple);
+}
+
+/* 头部里的自定义下拉（cs 代理）压到与图标按钮同高 */
+.w-chrome .cs,
+.w-chrome .cs-trigger {
+  height: 26px;
+  min-height: 26px;
+}
+
+.w-chrome .cs-trigger {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* 热图年份选择：收进 chip 但不撑高头部 */
+.w-chip.hm-year-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px 0 6px;
+}
+
+.hm-year-picker select {
+  height: 20px;
+  padding: 0 2px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* 路由表：常显紧凑搜索 */
+.w-chrome .rt-search,
+.w-float .rt-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  padding: 2px 9px;
+  height: 26px;
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  flex: 0 1 220px;
+  min-width: 120px;
+}
+
+.w-chrome .rt-search svg,
+.w-float .rt-search svg { width: 13px; height: 13px; flex: none; }
+
+.w-chrome .rt-search input,
+.w-float .rt-search input {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.w-chrome .rt-search input::placeholder,
+.w-float .rt-search input::placeholder { color: var(--color-text-muted); }
+
+/* 信息区吃满剩余宽度，芯片单行溢出裁掉（路由表协议分布原本会换行） */
+.w-chrome > .w-info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.w-chrome .rt-dist {
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+/* 协议分布芯片：不压缩、不换行，超出由 .w-chips 裁掉 */
+.w-chrome .rt-dist-chip {
+  flex: none;
+  white-space: nowrap;
+}
+
+/* 标题不参与压缩（否则会被芯片挤成「路由...」），过长时按比例截断 */
+.w-chrome .w-title {
+  flex: 0 0 auto;
+  max-width: 55%;
+}
+
+/* 协议分布条：色块用实色，16% 淡色在 6px 高度上几乎看不见 */
+.pcap-proto-bar > .pcap-proto-seg {
+  background: currentColor;
+  opacity: 0.8;
+}
+
+/* 终端：头部离开深色外壳，深色只保留在终端本体 */
+.term-replay {
+  background: transparent;
+  border: 0;
+  overflow: visible;
+}
+
+.term-replay .term-body {
+  background: #1e1e2e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  margin-top: 6px;
+}
+
+/* 窄屏 / 触屏：芯片行可横向滑动，避免被裁成半个 */
+@media (hover: none), (max-width: 560px) {
+  .w-chrome .w-chips {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+
+  .w-chrome .w-chips::-webkit-scrollbar { display: none; }
+
+  .w-chrome .w-chips > * { flex: none; }
+}
+
+/* 路由表搜索收进筛选面板后铺满面板 */
+.w-pop .rt-search {
+  width: 100%;
+  margin: 0;
+  flex: none;
+}
+
+/* ACL 语法标记做成普通 chip，不再是标题 */
+.acl-flavor-chip {
+  font-family: var(--font-mono, monospace);
+  letter-spacing: 0.02em;
+}
+
+/* 路由表头部：芯片略紧凑，给计数 chip 和筛选按钮留位 */
+.w-chrome .rt-dist { gap: 5px; }
+
+.w-chrome .rt-dist-chip {
+  font-size: 10.5px;
+  padding: 1px 8px;
+}
+
+.w-chrome .w-chips > .w-chip { flex: none; }
+
+/* ============== 悬停浮窗（无头部组件的控件区） ==============
+ * 组件没有常显头部行；筛选 / 搜索 / 导出 / 布局开关全部收进 .w-float。
+ * 组件根节点加 .w-has-float（顺便获得 position:relative），
+ * 悬停组件、浮窗自身或被聚焦时浮出；触屏常显。
+ */
+.w-has-float { position: relative; }
+
+.w-float {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 12;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--color-surface) 90%, transparent);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transform: translateY(-3px);
+  pointer-events: none;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.w-has-float:hover > .w-float,
+.w-has-float:focus-within > .w-float,
+.w-float:hover,
+.w-float:focus-within,
+.w-float.open {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.w-float .w-icon-btn {
+  width: 26px;
+  height: 26px;
+}
+
+.w-float .w-icon-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* 浮窗里的筛选面板从浮窗底部展开，右对齐 */
+.w-float .w-pop {
+  top: calc(100% + 6px);
+  right: 0;
+}
+
+/* 浮窗内的搜索框 / 下拉铺满面板 */
+.w-float .w-pop .rt-search,
+.w-float .w-pop .w-pop-field {
+  width: 100%;
+  margin: 0;
+  flex: none;
+}
+
+/* 浮窗里只剩图标，去掉主控件在头部时的自动靠右 */
+.w-float .w-filter-btn {
+  margin-left: 0;
+}
+
+/* 浮窗内的搜索 / 状态：铺满面板 */
+.w-float .w-pop .csv-table-search {
+  width: 100%;
+  max-width: none;
+  flex: none;
+}
+
+.w-float .w-pop .csv-chart-ctrl {
+  margin-top: 8px;
+  width: 100%;
+}
+
+.w-float .w-pop .csv-chart-type {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.csv-pop-status,
+.rt-pop-status {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.w-pop .rt-dist {
+  margin-top: 8px;
+  gap: 5px;
+}
+
+/* CSV 表头列筛选：平时隐藏，靠近表头 / 聚焦时出现 */
+.csv-table th .csv-filter-btn {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.csv-table th:hover .csv-filter-btn,
+.csv-table thead:hover .csv-filter-btn,
+.csv-table th:focus-within .csv-filter-btn,
+.csv-table th .csv-filter-btn:focus-visible,
+.csv-table th .csv-filter-btn.active {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .csv-table th .csv-filter-btn { opacity: 1; }
+}
+
+/* ============== 迁移到浮窗的各组件细节 ============== */
+
+.w-float-sep {
+  width: 1px;
+  height: 16px;
+  margin: 0 4px;
+  background: var(--color-border);
+  flex: none;
+}
+
+/* pkt / eNSP 拓扑：浮窗里的按钮与搜索 */
+.w-float .pkt-btn {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border-color: transparent;
+}
+
+.w-float .pkt-btn-label { display: none; }
+
+.pkt-zoom-display {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  padding: 0 5px;
+  white-space: nowrap;
+}
+
+.w-float .w-pop .pkt-search {
+  display: flex;
+  width: 100%;
+}
+
+.w-float .w-pop .pkt-search-input,
+.w-float .w-pop .pkt-search-input:focus {
+  width: 100%;
+}
+
+/* Pulse 波形：工具按钮只留图标 */
+.w-float .pulse-style-toggle,
+.w-float .pulse-source-btn,
+.w-float .pulse-download-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.w-float .pulse-style-toggle:hover,
+.w-float .pulse-source-btn:hover,
+.w-float .pulse-download-btn:hover {
+  color: var(--color-accent-purple-deep, var(--color-accent-purple));
+  background: color-mix(in srgb, var(--color-accent-purple) 12%, transparent);
+}
+
+.w-float .pulse-style-toggle > span,
+.w-float .pulse-source-btn > span,
+.w-float .pulse-download-btn > span {
+  display: none;
+}
+
+.pulse-source-btn.active {
+  color: var(--color-accent-purple);
+}
+
+/* 终端回放：倍速与播控在浮窗里紧凑排列 */
+.w-float .term-speed {
+  height: 26px;
+  font-size: 11.5px;
+  padding: 0 4px;
+}
+
+.w-float .term-play,
+.w-float .term-end {
+  height: 26px;
+  padding: 0 9px;
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+.term-cursor {
+  display: inline-block;
+  width: 7px;
+  height: 15px;
+  background: currentColor;
+  opacity: 0.7;
+  animation: term-cursor-blink 1.1s steps(1, end) infinite;
+}
+
+@keyframes term-cursor-blink {
+  50% { opacity: 0; }
+}
+
+/* JSON 树的命中计数 / 黑框状态 */
+.json-pop-status {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.w-pop .json-tree-controls {
+  flex-direction: column;
+  align-items: stretch;
+  margin-left: 0;
+}
+
+.w-pop .json-tree-search-input { width: 100%; }
+
+.w-float .json-tree-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+}
+
+/* Trace 统计放筛选面板底部 */
+.trace-pop-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.trace-pop-stats b { color: var(--color-text); font-weight: 600; }
+.trace-pop-stats .trace-count { margin-left: auto; }
+
+/* HAR 统计与下拉 */
+.w-pop .har-search { width: 100%; }
+
+.har-pop-filters {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.har-pop-filters select {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.har-pop-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.har-pop-stats b { color: var(--color-text); font-weight: 600; }
+.har-pop-stats .har-sum-fail b { color: #dc2626; }
+.har-pop-stats .har-count { margin-left: auto; }
+
+/* LLDP：浮窗按钮 */
+.w-float .lldp-btn {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 6px;
+}
+
+.w-float .lldp-btn:hover {
+  background: color-mix(in srgb, var(--color-accent-purple) 12%, transparent);
+}
+
+/* 内嵌文档图谱：只留画布 */
+.doc-graph--embedded .doc-graph-actions,
+.doc-graph--embedded .doc-graph-searchwrap {
+  display: none;
+}
+
+/* 触屏没有 hover：浮窗常显 */
+@media (hover: none) {
+  .w-float {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+}

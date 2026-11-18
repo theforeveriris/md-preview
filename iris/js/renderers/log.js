@@ -124,22 +124,27 @@
     const text = pre.querySelector('code')?.textContent || '';
     const entries = parseLog(text);
     const widget = document.createElement('div');
-    widget.className = 'log-view';
+    widget.className = 'log-view has-float w-has-float';
 
-    const toolbar = document.createElement('div');
-    toolbar.className = 'log-toolbar';
+    // 没有头部行：筛选 / 搜索 / 导出收进悬停浮出的胶囊
+    const float = document.createElement('div');
+    float.className = 'w-float';
     const exportLabel = t('log.export', '导出');
-    toolbar.innerHTML =
-      '<div class="log-levels" role="group" aria-label="' + esc(t('log.levels', '级别筛选')) + '">' +
-        LEVELS.map(lv => `<button type="button" class="log-chip" data-level="${lv}" aria-pressed="true">${esc(LEVEL_LABEL[lv])}</button>`).join('') +
-      '</div>' +
-      '<label class="log-search">' +
-        '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>' +
-        '<input type="search" class="log-search-input" placeholder="' + esc(t('log.search', '搜索日志…')) + '" aria-label="' + esc(t('log.search', '搜索日志')) + '">' +
-      '</label>' +
-      '<span class="log-count" aria-live="polite"></span>' +
-      '<button type="button" class="icon-btn log-export" data-tip="' + esc(exportLabel) + '" title="' + esc(exportLabel) + '" aria-label="' + esc(exportLabel) + '">' +
-        icon('i-download', 15) + '<span class="icon-btn-label">' + esc(exportLabel) + '</span></button>';
+    float.innerHTML =
+      '<button type="button" class="w-icon-btn w-filter-btn" title="' + esc(t('log.filter', '筛选')) + '" aria-label="' + esc(t('log.filter', '筛选')) + '">' +
+        icon('i-filter', 15) + '<span class="w-badge" aria-hidden="true"></span></button>' +
+      '<button type="button" class="icon-btn log-export w-icon-btn" data-tip="' + esc(exportLabel) + '" title="' + esc(exportLabel) + '" aria-label="' + esc(exportLabel) + '">' +
+        icon('i-download', 15) + '</button>' +
+      '<div class="w-pop">' +
+        '<div class="log-levels" role="group" aria-label="' + esc(t('log.levels', '级别筛选')) + '">' +
+          LEVELS.map(lv => `<button type="button" class="log-chip" data-level="${lv}" aria-pressed="true">${esc(LEVEL_LABEL[lv])}</button>`).join('') +
+        '</div>' +
+        '<label class="log-search">' +
+          '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>' +
+          '<input type="search" class="log-search-input" placeholder="' + esc(t('log.search', '搜索日志…')) + '" aria-label="' + esc(t('log.search', '搜索日志')) + '">' +
+        '</label>' +
+        '<span class="log-count" aria-live="polite"></span>' +
+      '</div>';
 
     const list = document.createElement('div');
     list.className = 'log-list';
@@ -160,13 +165,14 @@
       list.appendChild(row);
     });
 
-    widget.appendChild(toolbar);
+    widget.appendChild(float);
     widget.appendChild(list);
     pre.replaceWith(widget);
+    window.MarkdownPreview.widgetChrome?.init(widget);
 
     const enabled = new Set(LEVELS);
-    const countEl = toolbar.querySelector('.log-count');
-    const searchInput = toolbar.querySelector('.log-search-input');
+    const countEl = float.querySelector('.log-count');
+    const searchInput = float.querySelector('.log-search-input');
 
     function apply() {
       const q = searchInput.value.trim().toLowerCase();
@@ -180,9 +186,14 @@
       countEl.textContent = visible === entries.length
         ? t('log.all', '{n} 条').replace('{n}', visible)
         : t('log.filtered', '{m} / {n} 条').replace('{m}', visible).replace('{n}', entries.length);
+      const active = (enabled.size < LEVELS.length ? 1 : 0) + (q ? 1 : 0);
+      const btn = float.querySelector('.w-filter-btn');
+      const badge = float.querySelector('.w-badge');
+      if (btn) btn.classList.toggle('active', active > 0);
+      if (badge) badge.textContent = active || '';
     }
 
-    toolbar.querySelectorAll('.log-chip').forEach(chip => {
+    float.querySelectorAll('.log-chip').forEach(chip => {
       chip.addEventListener('click', () => {
         const lv = chip.dataset.level;
         if (enabled.has(lv)) {
@@ -197,7 +208,7 @@
       });
     });
     searchInput.addEventListener('input', apply);
-    toolbar.querySelector('.log-export').addEventListener('click', () => {
+    float.querySelector('.log-export').addEventListener('click', () => {
       const rows = Array.from(list.children).filter(r => !r.hidden).map(r =>
         Array.from(r.children).map(c => c.textContent).join(' | '));
       downloadCsv(rows);
@@ -275,12 +286,6 @@
 
     const widget = document.createElement('div');
     widget.className = 'clitable-view';
-
-    const head = document.createElement('div');
-    head.className = 'clitable-head';
-    head.innerHTML = '<span class="clitable-title">' + esc(t('clitable.title', 'CLI 输出')) + '</span>' +
-      '<span class="clitable-count">' + esc(t('clitable.rows', '{n} 行').replace('{n}', parsed.rows.length)) + '</span>';
-    widget.appendChild(head);
 
     const table = document.createElement('table');
     const thead = document.createElement('thead');

@@ -231,23 +231,27 @@
       pre.dataset.jsonDone = '1';
 
       const widget = document.createElement('div');
-      widget.className = 'json-tree';
+      widget.className = 'json-tree w-has-float';
 
       const toolbar = document.createElement('div');
-      toolbar.className = 'json-tree-toolbar';
+      toolbar.className = 'w-float';
       // 工具条按钮一律用图标，文字靠悬停提示（data-tip）
       const btn = (act, ico, label) =>
         `<button type="button" class="icon-btn json-tree-btn" data-act="${act}" data-tip="${esc(label)}" title="${esc(label)}" aria-label="${esc(label)}">` +
         icon(ico, 15) + `<span class="icon-btn-label">${esc(label)}</span></button>`;
       toolbar.innerHTML = `
-        <span class="json-tree-lang">JSON</span>
-        <span class="json-tree-info">${summarizeRoot(data)}</span>
+        <button type="button" class="w-icon-btn w-filter-btn" title="${esc(t('json.search', '搜索 / JSONPath'))}" aria-label="${esc(t('json.search', '搜索 / JSONPath'))}">
+          ${icon('i-search', 15)}<span class="w-badge" aria-hidden="true"></span>
+        </button>
         <span class="json-tree-actions">
           ${btn('collapse', 'i-chevron-down', t('json.collapseAll', '收起'))}
           ${btn('expand', 'i-chevron-up', t('json.expandAll', '展开'))}
           ${btn('copy', 'i-copy', t('json.copyJson', '复制 JSON'))}
           ${btn('download', 'i-download', t('json.download', '下载 .json'))}
         </span>
+        <div class="w-pop">
+          <div class="json-pop-status"><span class="json-hit-count" aria-live="polite"></span></div>
+        </div>
       `;
 
       const tree = document.createElement('div');
@@ -274,6 +278,7 @@
       widget.appendChild(toolbar);
       widget.appendChild(tree);
       pre.parentNode.replaceChild(widget, pre);
+      window.MarkdownPreview.widgetChrome?.init(widget);
     });
     // B2：json-tree 生成后立即挂上搜索 / JSONPath 工具条
     if (window.MarkdownPreview.renderers.jsonsearch) {

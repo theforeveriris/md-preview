@@ -808,6 +808,33 @@ body[data-sidebar-style="floating"] .reading-progress {
   border: 1px solid var(--color-border);
 }
 
+/* 图表自带工具条（缩放 / 下载 SVG·PNG·CSV）收进右上角悬停浮窗 */
+.markdown-body .apex-chart .apexcharts-toolbar {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease;
+  padding: 3px;
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--color-surface) 90%, transparent);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.markdown-body .apex-chart:hover .apexcharts-toolbar,
+.markdown-body .apex-chart:focus-within .apexcharts-toolbar {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (hover: none) {
+  .markdown-body .apex-chart .apexcharts-toolbar {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
 .markdown-body .apex-chart .apexcharts-canvas {
   margin: 0 auto;
 }
@@ -917,6 +944,19 @@ body[data-sidebar-style="floating"] .reading-progress {
 .alert-content {
   font-size: 15px;
   line-height: 1.6;
+}
+
+/* alert 内代码块：不要跳出半透明的主题代码底色，融进 alert 自己的底色 */
+.alert .alert-content pre,
+.alert .alert-content pre code {
+  background: transparent;
+}
+
+.alert .alert-content pre {
+  border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 10px 0;
 }
 
 .alert-note {
@@ -1571,6 +1611,12 @@ body[data-sidebar-style="floating"] .reading-progress {
 body.perf-cv .markdown-body > *:not(.doc-navigation) {
   content-visibility: auto;
   contain-intrinsic-size: auto 500px;
+}
+
+/* 组件浮窗的筛选面板要能溢出卡片：打开时不跳过布局（content-visibility
+   会带来 paint containment，把面板裁在组件边界内） */
+body.perf-cv .markdown-body > :is(.w-has-float, .w-chrome):has(.open) {
+  content-visibility: visible;
 }
 
 /* ===== 中文排版渲染选项（CJK-4）：settings 控制 body 类开关 ===== */

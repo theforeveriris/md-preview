@@ -195,11 +195,13 @@ async function run() {
   assert('beforeunload 保存 activeTab', /storage\.setMeta\('activeTab'/.test(editorCode));
 
   console.log('=== 多标签页：兼容旧版本（无 tabOrder 但有 autosave 笔记本） ===');
-  assert('loadAutosave 兼容旧版本分支', /兼容旧版本：无 tabOrder 但有 autosave 笔记本/.test(editorCode));
-  assert('loadAutosave 多 tab 模式', /多 tab 模式/.test(editorCode));
+  assert('loadAutosave 兼容旧版本分支',
+    /migrateFromLocalStorage/.test(editorCode) && /readLocalStorageBackup/.test(editorCode));
+  assert('loadAutosave 多 tab 模式',
+    /getMeta\('tabOrder'\)/.test(editorCode) && /storage\.loadNotebook/.test(editorCode));
 
   console.log('=== 多标签页：初始化逻辑 ===');
-  assert('初始化时无 tab 则创建', /无历史数据，初始化第一个空白 tab/.test(editorCode));
+  assert('初始化时无 tab 则创建', /createTab\(\{ skipSaveCurrent: true \}\)/.test(editorCode));
 
   console.log('');
   console.log(`============================`);

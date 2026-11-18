@@ -198,6 +198,25 @@
     return segments.join('/');
   }
 
+  // 文件夹展开/收起箭头：vendor 用 ::before + mask 换图，无法做过渡；
+  // 这里换成真实元素（span.ft-chev + inline SVG），展开时整体 rotate(90deg)，
+  // 由 CSS transition 完成动画，vertical-align:middle 与文字中线对齐。
+  var CHEV_SVG = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+  function decorateChevrons(shadow) {
+    if (!shadow) return;
+    shadow.querySelectorAll('li.folder > button').forEach(function(btn) {
+      if (btn.querySelector(':scope > .ft-chev')) return;
+      var span = document.createElement('span');
+      span.className = 'ft-chev';
+      span.setAttribute('aria-hidden', 'true');
+      // 行内声明过渡：shadow 里的样式表 transition 在部分场景不触发，
+      // 行内值稳定生效（transform 本身仍由 .folder.opened 的 CSS 驱动）
+      span.style.transition = 'transform .18s ease';
+      span.innerHTML = CHEV_SVG;
+      btn.insertBefore(span, btn.firstChild);
+    });
+  }
+
   function renderFileTree(files) {
     bindGlobals();
     if (!dom.fileTree) return;
@@ -214,6 +233,8 @@
     // 图标着色样式依赖该类提高优先级（:host(.tinted-icons)），
     // 因为组件自带的 constructable stylesheet 在层叠顺序上晚于注入的 <style>
     tree.classList.add('tinted-icons');
+    // 侧边栏固定为纯文字列表（文件图标随设置项一起移除）
+    tree.classList.add('hide-icons');
 
     // 构建词数映射表：解码后的完整路径 -> 词数
     const wordCountMap = new Map();
@@ -334,11 +355,25 @@
         // :host(.tinted-icons) 用于压过 vendor 样式表里的 background-image
         ':host(.tinted-icons) li.file::before{background:currentColor;-webkit-mask:var(--svg-file) center/contain no-repeat;mask:var(--svg-file) center/contain no-repeat}',
         ':host(.tinted-icons) li.text::before{background:currentColor;-webkit-mask:var(--svg-text) center/contain no-repeat;mask:var(--svg-text) center/contain no-repeat}',
-        ':host(.tinted-icons) li.folder::before{background:currentColor;-webkit-mask:var(--svg-folder) center/contain no-repeat;mask:var(--svg-folder) center/contain no-repeat}',
-        ':host(.tinted-icons) li.folder>button::before{background:currentColor;-webkit-mask:var(--svg-closed) center/contain no-repeat;mask:var(--svg-closed) center/contain no-repeat}',
-        ':host(.tinted-icons) li.folder.opened>button::before{background-image:none;-webkit-mask-image:var(--svg-opened);mask-image:var(--svg-opened)}',
-        // 导航线：vendor 的 1px dotted 换成更淡的 1px 实线，颜色仍跟随文字色
-        ':host(.tinted-icons) li.folder.opened>ul{border-inline-start:1px solid rgb(from currentColor r g b / .12)}',
+        ':host(.tinted-icons) li.folder::before{display:none}',
+        // 展开/收起箭头改由真实元素 .ft-chev 承担（见 decorateChevrons）：
+        // shadow 里 vendor 的 ::before 换 mask 无法过渡，真实元素才能稳定做旋转动画
+        ':host(.tinted-icons) li.folder>button::before{display:none}',
+        'li.folder>button>.ft-chev{display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px;margin-inline-end:9px;vertical-align:middle;position:relative;top:-0.6px;flex:none;transition:transform .18s ease;transform-origin:50% 50%}',
+        '.ft-chev svg{display:block}',
+        'li.folder.opened>button>.ft-chev{transform:rotate(90deg)}',
+        // 图标关掉时仍保留展开/收起箭头（挂进左侧留白，文件名位置不变）
+        ':host(.hide-icons) .ft-chev{display:inline-flex;margin-inline-start:0;margin-inline-end:5px}',
+        // 悬停块向左延伸，把挂出去的箭头也罩进圆角块里
+        ':host(.hide-icons) li.folder>button{margin-inline-start:0;padding-inline-start:4px}',
+        // 层级不再画导航线：靠缩进 + chevron 表达层级，去掉 1px 竖线
+        ':host(.tinted-icons) li.folder.opened>ul{border-inline-start:0}',
+        // 行块：整行是一个圆角块（无边框），悬停淡入底色、移出淡出
+        ':host li>button{border-radius:8px;padding-inline:8px;margin-inline-end:6px;transition:background-color .2s ease,color .2s ease}',
+        ':host li.folder>button{display:flex;align-items:center;flex:1}',
+        ':host li>button:hover{background-color:rgb(from currentColor r g b / 0.07)}',
+        // 图标开时：悬停块向左延伸，把文件图标也罩进圆角块（文字位置不变）
+        ':host(.tinted-icons:not(.hide-icons)) li.file>button,:host(.tinted-icons:not(.hide-icons)) li.text>button{margin-inline-start:-11px;padding-inline-start:19px}',
         // 收藏 / 最近阅读提示（history.js 切换 li 的 .fav / .recent 类）：
         // 收藏 = 文件图标用强调色（md 文档是 li.text，其他文件是 li.file）；
         // 最近 = 文件名淡化（active 选中态优先）
@@ -350,9 +385,13 @@
         // vendor 的图标是 li/button 的 ::before 伪元素，
         // 隐藏后要一并收回它占的缩进，否则文字会比 Index 那边多缩进一截。
         ':host(.hide-icons) li::before,:host(.hide-icons) li>button::before{display:none}',
-        ':host(.hide-icons)>ul{padding-inline-start:var(--padding)}',
+        // 鼠标点完不要留下虚线焦点框，键盘导航仍然保留
+        ':host button:focus:not(:focus-visible){outline:none}',
+        ':host(.hide-icons)>ul{padding-inline-start:0}',
+        // 图标模式保持原来的几何位置（.file-tree 左内边距变动后补回差额）
+        ':host(:not(.hide-icons))>ul{padding-inline-start:2px}',
         ':host(.hide-icons) li.folder>ul{padding-inline-start:calc(var(--padding) + 10px)}',
-        ':host(.hide-icons) li.file>button,:host(.hide-icons) li.text>button{padding-left:var(--padding)}'
+        ':host(.hide-icons) li.file>button,:host(.hide-icons) li.text>button{margin-inline-start:0;padding-left:21px}'
       ].join('\n');
       shadow.appendChild(styleEl);
     }
@@ -405,45 +444,14 @@
       }
     });
 
-    // 文件名过滤（树内 type-to-filter）
-    function applyTreeFilter() {
-      var input = document.getElementById('treeFilterInput');
-      var sh = tree.shadowRoot;
-      if (!input || !sh) return;
-      var q = input.value.trim().toLowerCase();
-      if (!q) {
-        sh.querySelectorAll('li').forEach(function(li) { li.style.display = ''; });
-        return;
-      }
-      // 文件名命中显示；目录自底向上：有可见后代才显示，过滤期间全部展开
-      sh.querySelectorAll('li.file, li.text').forEach(function(li) {
-        li.style.display = li.textContent.toLowerCase().indexOf(q) !== -1 ? '' : 'none';
-      });
-      var folders = Array.prototype.slice.call(sh.querySelectorAll('li.folder')).reverse();
-      folders.forEach(function(folder) {
-        var any = false;
-        Array.prototype.forEach.call(folder.children, function(child) {
-          if (child.tagName === 'UL') {
-            Array.prototype.forEach.call(child.children, function(sub) {
-              if (sub.style.display !== 'none') any = true;
-            });
-          }
-        });
-        folder.style.display = any ? '' : 'none';
-        if (any) folder.classList.add('opened');
-      });
-    }
-    var filterInput = document.getElementById('treeFilterInput');
-    if (filterInput) {
-      filterInput.addEventListener('input', applyTreeFilter);
-    }
-
     dom.fileTree.appendChild(tree);
+    decorateChevrons(tree.shadowRoot);
 
     // 渲染后：展开文件夹、注入词数、建立路径映射
     requestAnimationFrame(() => {
       var sh = tree.shadowRoot;
       if (!sh) return;
+      decorateChevrons(sh);
 
       // 展开所有文件夹（受设置 expandFolders 控制，默认展开；关闭时保持全部折叠）
       var expandSettings = window.MarkdownPreview.settings && window.MarkdownPreview.settings.load ? window.MarkdownPreview.settings.load() : {};
@@ -462,9 +470,6 @@
           }
         });
       }
-      // 过滤输入非空时（树重建后）重放过滤
-      if (filterInput && filterInput.value.trim()) applyTreeFilter();
-
       // 建立路径 -> li 映射，并注入词数
       state.fileLiMap = new Map();
 
@@ -522,7 +527,6 @@
       var settings = window.MarkdownPreview.settings && window.MarkdownPreview.settings.load ? window.MarkdownPreview.settings.load() : {};
       setWordCountVisibility(settings.showWordCount === true);
       setTruncateNames(settings.truncateFileNames !== false);
-      setIconsVisible(settings.showTreeIcons === true);
 
       // 树重建后刷新收藏/最近阅读提示（history.js）
       if (window.MarkdownPreview.history && window.MarkdownPreview.history.syncTreeHints) {
@@ -556,19 +560,6 @@
     var tree = dom.fileTree.querySelector('file-tree');
     if (tree) {
       tree.classList.toggle('truncate-names', truncate !== false);
-    }
-  }
-
-  /**
-   * 设置切换「侧边栏文件图标」后即时生效：就地切 Shadow DOM 里的图标样式。
-   * 默认不显示图标（跟「Index」页签一致，纯粹是文字列表），
-   * 开启后显示文件/文件夹图标。
-   */
-  function setIconsVisible(visible) {
-    bindGlobals();
-    var tree = dom.fileTree.querySelector('file-tree');
-    if (tree) {
-      tree.classList.toggle('hide-icons', visible !== true);
     }
   }
 
@@ -769,7 +760,6 @@
     getAllFilesInDFSOrder,
     getAdjacentFiles,
     setWordCountVisibility,
-    setTruncateNames,
-    setIconsVisible
+    setTruncateNames
   };
 })();

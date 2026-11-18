@@ -81,14 +81,14 @@ tags: [开发]
 | Export Bundle | `iris/js/export-bundle.js` | 整站 MD ZIP 打包、单篇 / 整站 EPUB 导出（EPUB 3 结构：mimetype/opf/nav/xhtml 章节，本地相对路径图片随文打包，总量封顶） |
 | Find Bar | `iris/js/find-bar.js` | 文章内查找条（ui.js 转交 `Ctrl/⌘ + F`），TreeWalker 命中高亮 / 计数 / 跳转，markdown.js 渲染后回调重跑 |
 | Section Collapse | `iris/js/section-collapse.js` | 章节折叠（H2 标题栏按钮，`:scope > h2` 限定顶层章节），按「文档路径 + 标题 id」存 localStorage 记忆 |
-| Split View | `iris/js/split-view.js` | 双栏对照阅读（悬浮球入口，全屏浮层）：编辑器 Cell 同款渲染管线独立渲染两栏、比例同步滚动、内置文档选择器与栏内链接跟读 |
+| Split View | `iris/js/split-view.js` | 双栏对照阅读（悬浮球入口，全屏浮层）：与编辑器同一渲染管线独立渲染两栏、比例同步滚动、内置文档选择器与栏内链接跟读 |
 | i18n | `iris/js/i18n.js` | zh/en 语言包；静态文案用 `data-i18n` 系列属性标记，动态文案走 `t(key, fallback)`；语言选择存 `localStorage('md-preview-lang')`，切换后广播 `langchange` 事件 |
 | App | `iris/app.js` | Hash 路由、编辑器模式 (`?mode=editor`)、Pulse 生成器 (`?mode=pulsegen`) |
 | Iris Mascot | `iris/js/iris-mascot.js` | 站点守护花（空状态 / 加载失败 / 设置页眉装饰 + 点击轮换台词）；台词库外置在 `iris/js/mascot-copy.js`（用户可配置，读取 `window.MarkdownPreview.mascotCopy.lines`，缺失时退回内置兜底） |
 
 ### 渲染器（Renderer）
 
-所有渲染器位于 `iris/js/renderers/`，由统一调度器 `mdRender.runRenderers()`（`iris/js/md-render.js`）执行：遍历 `window.MarkdownPreview.renderers` 注册表，按 index.html 中渲染器脚本的加载顺序逐个调用 `render(root?)`，单个渲染器失败（同步抛错或 Promise 拒绝）被隔离，不影响其余渲染器。文档站主管线传 `null`（渲染器自行回退全局 `.markdown-body`）；编辑器 cell 与对照阅读栏传入自身容器，并可用 `opts.only` 只执行子集。
+所有渲染器位于 `iris/js/renderers/`，由统一调度器 `mdRender.runRenderers()`（`iris/js/md-render.js`）执行：遍历 `window.MarkdownPreview.renderers` 注册表，按 index.html 中渲染器脚本的加载顺序逐个调用 `render(root?)`，单个渲染器失败（同步抛错或 Promise 拒绝）被隔离，不影响其余渲染器。文档站主管线传 `null`（渲染器自行回退全局 `.markdown-body`）；编辑器与对照阅读栏传入自身容器，并可用 `opts.only` 只执行子集。
 
 **渲染器约定**：
 

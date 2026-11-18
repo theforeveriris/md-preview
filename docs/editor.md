@@ -5,363 +5,41 @@ tags: [编辑器]
 
 # Markdown 编辑器
 
-Markdown Preview 内置一个类 Jupyter 的 Cell 化 Markdown 编辑器，可在浏览器内即时编写、运行、预览 Markdown，并支持自动保存、搜索替换、导入导出等能力。
+编辑器采用**单文档所见即所得**布局，不再将文章分成 Cell，也不需要“运行”内容。默认模式下，光标所在的 Markdown 段落显示源码供直接编辑，其余段落即时渲染；点击渲染后的段落即可就地编辑。整篇文章始终是一份 Markdown 源码。
 
-编辑器以全屏覆盖层的形式叠加在文档站之上，复用站点已有的渲染管线（marked.js + 各扩展渲染器与插件），渲染结果与文档站一致；唯一例外是 ```` ```graph ```` 文档图谱挂载点——它依赖构建期生成的全站 links.json，仅在文档站渲染，编辑器预览中保持代码块原样。
+需要同时查看源码和渲染效果时，按 **Ctrl/Cmd + Shift + M**，或点击工具栏右侧的「双栏」按钮。左侧是完整 Markdown 源码，右侧是整篇文章的实时预览；再按一次快捷键或点击「所见即所得」返回。双栏支持拖动分隔条调整宽度，并可同步滚动。
 
----
+## 进入与退出
 
-## 一、入口与退出
+- URL 加 `?mode=editor`，例如 `https://theforeveriris.github.io/md-preview/?mode=editor`（追加 `&view=split` 可直接以双栏模式打开）
+- 右上角悬浮球 → 设置 → 操作 →「打开编辑器」
+- 调用 `window.MarkdownPreview.enterEditorMode()`
+- 点击左上角「文档站」退出，或调用 `window.MarkdownPreview.exitEditorMode()`
 
-### 进入编辑器
+## 编辑方式
 
-三种方式任选其一：
+- **所见即所得（默认）**：同一篇 Markdown 内，当前正在编辑的块保持源码，其余块按站点的 Markdown 渲染管线显示。标题、列表、表格、代码块等无需手动运行；点击渲染块展开源码。编辑器未聚焦时整篇按渲染结果显示，`↑` / `↓` 在块边界会直接跳到相邻块的源码。
+- **源码 / 渲染双栏**：左侧纯源码，右侧整篇实时预览。支持拖动分隔条和同步滚动；窄屏时上下排列。
+- **格式化**：格式条浮在正文上方、默认隐藏——选中文字或双击单词时出现在选区附近（标题、粗体/斜体/删除线/行内代码、链接/图片/代码块/引用/分隔线、三种列表、表格一键直达）。「插入 +」「语法」「渲染」「⋯」四个下拉收纳日期占位图脚注、私有语法与 HTML 标签、图表渲染与嵌入、下载导入等完整模板。常用功能（大纲、字号、图床、搜索、主题、清空、模式切换）固定在正文区右上角小图标，左上角为返回文档站。
+- **表格**：悬停表格时右上角浮出一枚小胶囊（筛选/列显示、复制、下载 CSV；编辑器内另有可视化编辑），移开即消失；编辑保存后只回写对应的表格块。文档站与编辑器共用这一形态。
+- **自动补全**：在源码里输入触发字符（如 `#`、`-`、`` ``` ``、`> [!`、`:::` 等），使用 ↑↓ 选择、Enter/Tab 插入。
+- **搜索替换**：`Ctrl/Cmd+F` 打开搜索，`Ctrl/Cmd+H` 打开替换，F3 / Shift+F3 跳转结果。
 
-1. **URL 参数**：在站点任意 URL 后追加 `?mode=editor`，例如 `https://theforeveriris.github.io/md-preview/?mode=editor`
-2. **设置面板**：右上角悬浮球 → 设置 → 操作 → 「打开编辑器」
-3. **JS 调用**：在控制台或代码中执行 `window.MarkdownPreview.enterEditorMode()`
+## 文档与数据
 
-### 退出编辑器
+编辑器沿用原有浏览器本地存储及标签页。每个标签对应一篇文档；内容自动保存到 IndexedDB（不可用时回退 localStorage）。旧版多 Cell 笔记在打开时会合并成一篇 Markdown 文档；旧的纯文本 Cell 转为 `text` 代码围栏，不会按 `---` 分隔线拆分新导入的普通 Markdown 文档。
 
-- 工具栏左上角「文档站」按钮
-- 调用 `window.MarkdownPreview.exitEditorMode()`
+下载菜单可导出当前文档为 `.md`、HTML 或 PDF，也可导出兼容旧版的 `.mdnb` 备份。导入菜单可用 `.md` 替换当前文档、插入到光标处，或导入旧版 `.mdnb` 备份。版本快照、文档大纲、图片上传设置仍可从工具栏使用。
 
-退出后 URL 上的 `mode=editor` 参数会被移除，回到文档浏览模式。
+渲染复用站点的 Markdown 管线（marked.js 与各扩展渲染器、插件）。```` ```graph ```` 文档图谱依赖构建期生成的全站数据，编辑器中保持代码块原样。
 
----
+## 快捷键
 
-## 二、界面布局
-
-编辑器为单页全屏结构，自上而下分为五个区域：
-
-```
-┌─────────────────────────────────────────────────────┐
-│  顶部工具栏 (editor-toolbar)                          │
-│  左：返回文档站 / 标题 / Cell 计数                     │
-│  中：8 个下拉菜单（Markdown / HTML / 私有语法 /        │
-│      工具渲染 / 插入 / 嵌入 / 下载 / 导入）             │
-│  右：字号 / 搜索 / 主题 / 清空 / 全部运行 / 运行       │
-├─────────────────────────────────────────────────────┤
-│  搜索/替换面板 (search-panel，按需展开)                │
-├─────────────────────────────────────────────────────┤
-│  Cell 容器 (editor-main，可滚动)                      │
-│    ┌───────────────────────────────────────────┐    │
-│    │  Cell 1                                    │    │
-│    │  ┌─────────────────────────────────────┐  │    │
-│    │  │ 编辑区 (textarea + 行号)             │  │    │
-│    │  └─────────────────────────────────────┘  │    │
-│    │  ┌─────────────────────────────────────┐  │    │
-│    │  │ 渲染输出区 (.cell-output)            │  │    │
-│    │  └─────────────────────────────────────┘  │    │
-│    └───────────────────────────────────────────┘    │
-│    ┌───────────────────────────────────────────┐    │
-│    │  Cell 2 ...                                │    │
-│    └───────────────────────────────────────────┘    │
-│    ┌─ + 新建 Cell (全局按钮，仅最后一个 Cell 下方) ─┐  │
-├─────────────────────────────────────────────────────┤
-│  底部状态栏 (editor-statusbar)                        │
-│  左：Cell 数 / 运行统计 / 字数 / 行数 / 当前 Cell 字数 │
-│  右：光标位置 / 活跃 Cell / 保存状态                  │
-└─────────────────────────────────────────────────────┘
-```
-
-此外还有三个浮动元素：
-
-- **选中文字浮动工具栏**：在 textarea 中选中文字时浮现，提供 B/I/S/code/H1~H3/link/quote/ul 快速格式化
-- **Cell 右键菜单**：右键任意 Cell 弹出，2 列布局共 17 项操作
-- **自动补全列表**：输入触发字符时浮现，按 ↑↓ 选择、Enter/Tab 确认
-
----
-
-## 三、Cell 模型
-
-### Cell 类型
-
-| 类型 | 标识 | 行为 |
-|------|------|------|
-| `markdown` | MD | 内容经过完整渲染管线（Mermaid / KaTeX / 代码高亮等） |
-| `plaintext` | TXT | 纯文本，不渲染，原样显示在输出区 |
-
-通过右键菜单「切换类型」或导入时的 `---` 分隔符切换。
-
-### Cell 结构
-
-每个 Cell 由以下部分组成：
-
-- **头部 (cell-header)**：Cell 编号、状态点（灰=未运行 / 绿=已运行 / 橙=已修改）、类型徽章、行数；右侧 6 个操作按钮（运行 / 折叠 / 上移 / 下移 / 复制 / 删除）
-- **编辑区 (cell-editor-wrap)**：行号栏 + textarea，支持 Tab 缩进、Shift+Tab 反缩进
-- **输出区 (cell-output)**：运行后显示渲染结果，未运行时隐藏
-- **输出工具栏 (cell-output-toolbar)**：运行后浮现，提供「复制 HTML / 清空输出 / 折叠输出 / 导出此 Cell」四项操作
-
-### 新建 Cell
-
-- **全局按钮**：在最后一个 Cell 下方有且仅有一个「+ 新建 Cell」虚线按钮
-- **快捷键**：`Ctrl+Shift+N` 在当前 Cell 下方新建
-- **右键菜单**：「上方插入 Cell」/「下方插入 Cell」
-
-### 运行 Cell
-
-- **运行当前**：工具栏「运行」按钮 / Cell 头部播放按钮 / `Ctrl+Enter`
-- **运行全部**：工具栏「全部运行」按钮 / `Ctrl+Shift+Enter`
-- **运行此 Cell 及下方**：右键菜单
-- 运行后状态点变绿；编辑后变橙（已修改，需重新运行）
-
-### 双屏编辑模式
-
-每个 Cell 头部有「双屏编辑」按钮（分栏图标），点击进入全屏双屏 overlay：
-
-- **布局**：左侧为该 Cell 的编辑器（保留原实例与撤销栈），右侧为该 Cell 内容的实时预览；
-- **实时渲染**：输入 250 ms 防抖后自动重渲染，渲染管线与文档站一致；
-- **分隔条拖拽**：拖动中间分隔条调整左右宽度；
-- **同步滚动**：可在开关控制下让编辑区与预览区滚动联动；
-- **退出**：`Esc` 或右上角退出按钮，CodeMirror 宿主移回原 Cell，其它 Cell 完全不受影响。
-
----
-
-## 四、顶部工具栏菜单
-
-工具栏中央有 8 个下拉菜单，覆盖 Markdown 写作所需的全部能力。
-
-### 1. Markdown
-
-| 分组 | 项 |
-|------|------|
-| 标题 | H1 ~ H6 |
-| 格式 | 粗体 / 斜体 / 粗斜体 / 删除线 / 行内代码 |
-| 列表 | 无序 / 有序 / 任务 / 已完成任务 |
-| 插入 | 链接 / 带标题链接 / 图片 / 带尺寸图片 / 代码块 / 引用 / 分隔线 |
-| 表格 | 2 / 3 / 4 列表格 |
-| 脚注 / 引用 | 脚注定义 / 脚注引用 / 引用式链接定义 |
-
-### 2. HTML
-
-| 分组 | 项 |
-|------|------|
-| 文本样式 | mark / u / small / sub / sup / kbd / abbr / time / del+ins / cite / var / samp / dfn / q / wbr |
-| 结构与布局 | details 折叠面板 / 居中对齐 / dl 定义列表 / figure 图文组合 / ruby 注音 / address / br / hr |
-| 交互组件 | dialog 模态对话框 / popover 原生弹出层 / contenteditable 可编辑区域 / template 模板 |
-| 表单与控件 | meter 仪表盘 / progress 进度条 / datalist 自动补全 / output 计算表单 / fieldset 分组 |
-| 多媒体与绘图 | 内联 SVG / Canvas 画布 / iframe srcdoc 内联框架 |
-| 颜色与注释 | 红 / 蓝 / 绿 / 橙 / 紫彩色文字 / 背景高亮 / HTML 注释 |
-
-### 3. 私有语法
-
-| 分组 | 项 |
-|------|------|
-| 画廊样式 | 17 种：grid / cardstack / filmstrip / polaroid / stack / mosaic / scattered / hexagon / coverflow / tape / duotone / frame / arch / masonry / slider / ticket / panorama |
-| GitHub 提示框 | NOTE / IMPORTANT / WARNING / TIP / CAUTION |
-| 多栏与遮罩 | 代码选项卡 code-tabs / 多列布局 columns / 剧透遮罩 spoiler / Pulse 波形 `[pulse]...[/pulse]` |
-| 文档结构 | Frontmatter 头信息 / 目录 TOC |
-
-> 画廊样式详细说明见 [图片画廊布局](examples/gallery-layouts.md) 与 [图片画廊示例](examples/image-gallery-examples.md)。
-
-### 4. 工具渲染
-
-| 分组 | 项 |
-|------|------|
-| Mermaid 图表（15 种） | flowchart / sequenceDiagram / classDiagram / stateDiagram-v2 / erDiagram / gantt / pie / journey / mindmap / timeline / quadrantChart / gitGraph / block / C4Context / xychart-beta |
-| PlantUML（12 种） | 时序图 / 类图 / 用例图 / 活动图 / 状态图 / 组件图 / 部署图 / 思维导图 / WBS / JSON 数据图 / ER 实体关系图 / 线框图 salt |
-| ApexCharts（13 种） | 折线 / 面积 / 柱状（分组）/ 堆叠柱状 / 条形（水平）/ 饼图 / 环形 donut / 雷达 / 散点 scatter / 气泡 bubble / 极坐标 polarArea / 范围区域 rangeArea / 烛台 candlestick |
-| 代码与数学 | Diff 差异 / KaTeX 公式块 / 行内公式 / 矩阵 pmatrix / 方程组 cases / 求和与极限 / 二维码 / 二维码（自定义尺寸） |
-| 插件渲染 | ColorCard 颜色卡片 / Countdown 倒计时（日期或相对时长） |
-| 地理 | GeoJSON 多点 / GeoJSON 线 / GeoJSON 多边形 / TopoJSON |
-
-### 5. 插入
-
-| 分组 | 项 |
-|------|------|
-| 日期时间 | 当前日期 / 当前时间 / 日期时间 / Unix 时间戳 |
-| 占位图片 | 300×200 / 600×400 / 1200×600 横幅 / 500×500 方图 |
-| 颜色色块 | 红 / 橙 / 黄 / 绿 / 蓝 / 紫（HTML 色点，非 emoji） |
-| 分隔线样式 | `---` / `***` / `___` |
-| 徽章 | Shields.io / Badgen |
-
-### 6. 嵌入
-
-| 分组 | 项 |
-|------|------|
-| 视频 | YouTube / Bilibili / Vimeo |
-| 社交 | Twitter 推文 / Twitter 用户时间线 / GitHub Gist |
-| 代码演示 | CodePen / JSFiddle / StackBlitz / Replit |
-| 设计稿 | Figma |
-| 地图 | Google Maps / OpenStreetMap |
-| 办公文档 | Google Docs |
-| 网络拓扑 | eNSP 拓扑（` ```pkt ` 包裹 `@[ensp](slug)`） |
-
-### 7. 下载
-
-| 分组 | 项 |
-|------|------|
-| 当前 Cell | 下载源文件 (.md) / 下载渲染结果 (.html) / 导出离线 HTML（内联 CSS）/ 导出 PDF |
-| 整个笔记本 | 导出笔记本 (.mdnb) / 合并导出全部 (.md) |
-
-### 8. 导入
-
-| 分组 | 项 |
-|------|------|
-| 笔记本 | 导入 .mdnb 笔记本 / 导入 .md（按 `---` 切分为 Cell） |
-| 当前 Cell | 导入 .md 到当前 Cell |
-
----
-
-## 五、自动补全
-
-在编辑区输入触发字符即弹出补全列表，支持 ↑↓ 选择、Enter / Tab 确认、Esc 关闭。共 16 类触发字符，160+ 条目，覆盖文档站全部渲染语法（含插件围栏）。
-
-| 触发字符 | 补全内容 |
-|----------|----------|
-| `@` | 17 种画廊样式 + `@tab` 选项卡分隔（嵌入服务速记已并入 ` ``` ` 组） |
-| ` ``` ` | Mermaid 15 种 + PlantUML 12 种 + ApexCharts 11 种 + 本站全部自定义围栏（steps / quote / orgchart / glossary / timeline / terminal / secret / bits / heatmap / ipcalc / acl / route-table / config-diff / csv / tsv / json 树 / http / openapi / sql ddl / erd / live 沙箱 / graph）+ 插件围栏（regex / cron / time / jwt / hash / color）+ 嵌入围栏（embed / twitter / ensp 及 bilibili、vimeo 速记）+ geojson / topojson / qrcode / diff + 23 种编程语言 |
-| `> [!` | 5 种 GitHub Alerts |
-| `#` | 6 级标题 |
-| `-` | 无序列表 / 任务列表 |
-| `\|` | 2 / 3 / 4 列表格 |
-| `\|\|` | 剧透遮罩 spoiler |
-| `:::` | 容器语法：code-tabs 代码选项卡 / columns 多列布局 |
-| `---` | 水平分割线 / Frontmatter |
-| `>` | 普通引用 |
-| `$$` | KaTeX 公式块 |
-| `![` | 图片 / 带标题图片 |
-| `[` | 链接 / 带标题链接 / 引用式链接 |
-| `[^` | 脚注引用 / 脚注定义 |
-| `<!--` | 图表编号注释 `#fig:` / `#tbl:`、表格样式预设 `table-style:` |
-| `[pulse` | DG-LAB 波形 `[pulse]...[/pulse]` 与迷你波形 `[pulsemini]` |
-
-围栏类模板统一把光标落到闭合围栏之前的块内；含 `$$` 公式块在内，确认后可直接输入内容。
-
----
-
-## 六、右键菜单
-
-右键任意 Cell 弹出 2 列布局菜单，左列「运行与插入」7 项，右列「编辑与清理」10 项，共 17 项操作。菜单位置自动检测视口边界，避免溢出；窄屏自动回退为单列。
-
-### 运行与插入（左列）
-
-| 操作 | 说明 |
-|------|------|
-| 运行此 Cell | 等同 Ctrl+Enter |
-| 运行此 Cell 及下方 | 顺序执行当前及下方所有 Cell |
-| 上方插入 Cell | 在当前 Cell 上方新建空 Cell |
-| 下方插入 Cell | 在当前 Cell 下方新建空 Cell |
-| 上移 | 与上一个 Cell 交换位置 |
-| 下移 | 与下一个 Cell 交换位置 |
-| 复制 Cell | 在下方复制一份内容相同的 Cell |
-
-### 编辑与清理（右列）
-
-| 操作 | 说明 |
-|------|------|
-| 切换类型 | markdown ↔ plaintext |
-| 折叠编辑器 | 隐藏编辑区，仅保留输出 |
-| 折叠输出 | 隐藏输出区 |
-| 复制输出 HTML | 将渲染后的 HTML 复制到剪贴板 |
-| 导出此 Cell | 单独导出当前 Cell |
-| 折叠全部 | 折叠所有 Cell 的编辑器 |
-| 展开全部 | 展开所有 Cell |
-| 清空输出 | 清除当前 Cell 的渲染结果 |
-| 清空内容 | 清空当前 Cell 的编辑区文字 |
-| 删除 Cell | 删除当前 Cell（危险操作，红色高亮） |
-
----
-
-## 七、快捷键
-
-| 快捷键 | 功能 |
-|--------|------|
-| `Ctrl/Cmd + Enter` | 运行当前 Cell |
-| `Ctrl/Cmd + Shift + Enter` | 运行全部 Cell |
-| `Ctrl/Cmd + Shift + N` | 当前 Cell 下方新建 |
-| `Ctrl/Cmd + F` | 打开搜索面板 |
-| `Ctrl/Cmd + H` | 打开替换面板 |
-| `Ctrl/Cmd + B` | 粗体 |
-| `Ctrl/Cmd + I` | 斜体 |
-| `Ctrl/Cmd + K` | 链接 |
-| `Ctrl/Cmd + ` ` | 行内代码 |
-| `Tab` | 缩进 2 空格 |
-| `Shift + Tab` | 移除行首 2 空格 |
-| `F3` / `Shift + F3` | 搜索下一个 / 上一个 |
-| `Ctrl/Cmd + Alt + T` | 新建编辑器标签 |
-| `Ctrl/Cmd + Tab` | 切换编辑器标签 |
-| `Esc` | 关闭右键菜单 / 补全 / 搜索面板；双屏编辑模式中退出双屏 |
-
----
-
-## 八、搜索与替换
-
-工具栏右侧搜索图标（或 `Ctrl+F` / `Ctrl+H`）打开搜索面板：
-
-- **查找**：跨所有 Cell 的 textarea 内容搜索
-- **替换**：替换当前匹配 / 全部替换
-- **导航**：`F3` 下一个、`Shift+F3` 上一个，或点击 ↑↓ 按钮
-- **状态信息**：底部显示「N 个匹配 / 当前第 M 个」
-- `Esc` 关闭面板
-
----
-
-## 九、自动保存
-
-编辑器启用自动保存，**无需手动保存**，存储层为 IndexedDB（`iris/js/storage.js`），突破 localStorage 5 MB 容量限制并支持多笔记本（多标签）：
-
-- **触发**：内容变更后 1.5 秒防抖写入
-- **保存内容**：每个 Cell 的 `id` / `type` / `content` / `output_html`
-- **多标签**：每个编辑器标签对应一个独立笔记本（IndexedDB `notebooks` 对象存储），标签顺序与激活项记录在 `meta` 对象存储
-- **恢复**：再次进入编辑器时自动加载当前笔记本，重建所有 Cell
-- **状态指示**：底部状态栏右侧显示「未保存 *」（橙色）/「已保存 ✓」（绿色）/「保存失败」（红色）
-- **旧数据迁移**：首次加载时若 IndexedDB 无数据而 localStorage 存在旧版自动保存数据（键 `mdnb_autosave_v2`），自动迁移到 IndexedDB 并清除旧键
-
-其他持久化设置（localStorage）：
-
-| 键 | 内容 |
-|----|------|
-| `mdnb_fontsize` | 编辑区字号（12 / 14 / 16 / 18） |
-| `mdnb_theme` | 编辑器明暗会话内覆盖（sessionStorage，light / dark） |
-
-> 自动保存仅写入浏览器本地存储，不会同步到仓库。如需持久分享，请使用「下载」菜单导出 `.mdnb` 笔记本或合并 `.md` 文件。存储层细节见 [开发者文档](../readme-dev.md)。
-
----
-
-## 十、字号与主题
-
-- **字号调节**：工具栏字号图标，可选 12 / 14 / 16 / 18 px，默认 14 px
-- **主题切换**：编辑器明暗跟随站点主题（含 25 套预设主题的明暗派生）自动变化；工具栏主题图标只做本次会话内的临时反转（sessionStorage），关闭标签页后恢复跟随。编辑器画布、快照面板、表格编辑器等全部通过主题 CSS 变量取色，任何主题下与站点观感一致
-
----
-
-## 十一、笔记本文件格式 (.mdnb)
-
-`.mdnb` 是编辑器导出的笔记本格式，本质为 JSON：
-
-```json
-{
-  "version": 2,
-  "type": "mdnb-autosave",
-  "saved": "2026-07-13T12:00:00.000Z",
-  "cells": [
-    {
-      "id": 1,
-      "type": "markdown",
-      "content": "# 标题\n\n正文",
-      "output_html": "<h1>标题</h1><p>正文</p>"
-    },
-    {
-      "id": 2,
-      "type": "plaintext",
-      "content": "纯文本内容",
-      "output_html": ""
-    }
-  ]
-}
-```
-
-通过「导入」菜单可重新加载 `.mdnb` 文件，完整还原 Cell 结构、类型与渲染结果。
-
----
-
-## 相关文档
-
-- [快速开始](getting-started.md)
-- [系统运行时截图](show.md)
-- [图片画廊布局](examples/gallery-layouts.md)
-- [Mermaid 示例](examples/mermaid-examples.md)
-- [LaTeX 示例](examples/latex-examples.md)
-- [开发者文档](../readme-dev.md)
+| 操作 | 快捷键 |
+| --- | --- |
+| 切换所见即所得 / 源码预览双栏 | `Ctrl/Cmd+Shift+M` |
+| 加粗 / 斜体 / 链接 | `Ctrl/Cmd+B` / `Ctrl/Cmd+I` / `Ctrl/Cmd+K` |
+| 查找 / 替换 | `Ctrl/Cmd+F` / `Ctrl/Cmd+H` |
+| 跳转下一个 / 上一个搜索结果 | `F3` / `Shift+F3` |
+| 新建文档标签 | `Ctrl/Cmd+Alt+T` |
+| 切换文档标签 | `Ctrl/Cmd+Tab` / `Ctrl/Cmd+Shift+Tab` |

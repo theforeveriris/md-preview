@@ -73,7 +73,7 @@
 
   function renderWaterfall(entries) {
     const widget = document.createElement('div');
-    widget.className = 'har-view';
+    widget.className = 'har-view w-has-float';
 
     const start = entries.reduce((m, e) => Math.min(m, Date.parse(e.startedDateTime || '') || 0), Infinity);
     let maxTotal = 0;
@@ -85,25 +85,29 @@
     const failures = entries.filter(e => e.response && e.response.status >= 400).length;
 
     const summary = document.createElement('div');
-    summary.className = 'har-summary';
-    summary.innerHTML =
-      '<span class="har-sum-item"><b>' + entries.length + '</b> ' + esc(t('har.requests', '请求')) + '</span>' +
-      '<span class="har-sum-item"><b>' + fmtSize(totalSize) + '</b> ' + esc(t('har.size', '总大小')) + '</span>' +
-      '<span class="har-sum-item"><b>' + fmtMs(totalTime) + '</b> ' + esc(t('har.time', '总耗时')) + '</span>' +
-      '<span class="har-sum-item har-sum-fail"><b>' + failures + '</b> ' + esc(t('har.failures', '失败')) + '</span>';
-    widget.appendChild(summary);
-
-    const toolbar = document.createElement('div');
-    toolbar.className = 'har-toolbar';
+    summary.className = 'w-float';
     const exportLabel = t('har.export', '导出 CSV');
-    toolbar.innerHTML =
-      '<label class="har-search"><input type="search" class="har-search-input" placeholder="' + esc(t('har.search', '搜索 URL…')) + '" aria-label="' + esc(t('har.search', '搜索 URL')) + '"></label>' +
-      '<select class="har-filter-type" aria-label="' + esc(t('har.filterType', '类型')) + '"><option value="">' + esc(t('har.filterType', '类型')) + '</option></select>' +
-      '<select class="har-filter-domain" aria-label="' + esc(t('har.filterDomain', '域名')) + '"><option value="">' + esc(t('har.filterDomain', '域名')) + '</option></select>' +
-      '<span class="har-count" aria-live="polite"></span>' +
-      '<button type="button" class="icon-btn har-export" data-tip="' + esc(exportLabel) + '" title="' + esc(exportLabel) + '" aria-label="' + esc(exportLabel) + '">' +
-        icon('i-download', 15) + '<span class="icon-btn-label">' + esc(exportLabel) + '</span></button>';
-    widget.appendChild(toolbar);
+    summary.innerHTML =
+      '<button type="button" class="w-icon-btn w-filter-btn" title="' + esc(t('har.filter', '筛选')) + '" aria-label="' + esc(t('har.filter', '筛选')) + '">' +
+        icon('i-search', 15) + '<span class="w-badge" aria-hidden="true"></span></button>' +
+      '<button type="button" class="icon-btn har-export w-icon-btn" data-tip="' + esc(exportLabel) + '" title="' + esc(exportLabel) + '" aria-label="' + esc(exportLabel) + '">' +
+        icon('i-download', 15) + '<span class="icon-btn-label">' + esc(exportLabel) + '</span></button>' +
+      '<div class="w-pop">' +
+        '<label class="har-search"><input type="search" class="har-search-input" placeholder="' + esc(t('har.search', '搜索 URL…')) + '" aria-label="' + esc(t('har.search', '搜索 URL')) + '"></label>' +
+        '<div class="har-pop-filters">' +
+          '<select class="har-filter-type" aria-label="' + esc(t('har.filterType', '类型')) + '"><option value="">' + esc(t('har.filterType', '类型')) + '</option></select>' +
+          '<select class="har-filter-domain" aria-label="' + esc(t('har.filterDomain', '域名')) + '"><option value="">' + esc(t('har.filterDomain', '域名')) + '</option></select>' +
+        '</div>' +
+        '<div class="har-pop-stats">' +
+          '<span class="har-sum-item"><b>' + entries.length + '</b> ' + esc(t('har.requests', '请求')) + '</span>' +
+          '<span class="har-sum-item"><b>' + fmtSize(totalSize) + '</b> ' + esc(t('har.size', '总大小')) + '</span>' +
+          '<span class="har-sum-item"><b>' + fmtMs(totalTime) + '</b> ' + esc(t('har.time', '总耗时')) + '</span>' +
+          '<span class="har-sum-item har-sum-fail"><b>' + failures + '</b> ' + esc(t('har.failures', '失败')) + '</span>' +
+          '<span class="har-count" aria-live="polite"></span>' +
+        '</div>' +
+      '</div>';
+    widget.appendChild(summary);
+    window.MarkdownPreview.widgetChrome?.init(summary);
 
     const body = document.createElement('div');
     body.className = 'har-body';
@@ -204,8 +208,13 @@
         if (ok) visible++;
       });
       countEl.textContent = visible === entries.length
-        ? t('har.all', '{n} 条').replace('{n}', visible)
+        ? ''
         : t('har.filtered', '{m} / {n} 条').replace('{m}', visible).replace('{n}', entries.length);
+      const active = [q, tF, dF].filter(Boolean).length;
+      const btn = widget.querySelector('.w-filter-btn');
+      const badge = widget.querySelector('.w-filter-btn .w-badge');
+      if (btn) btn.classList.toggle('active', active > 0);
+      if (badge) badge.textContent = active || '';
     }
     search.addEventListener('input', update);
     typeSel.addEventListener('change', update);

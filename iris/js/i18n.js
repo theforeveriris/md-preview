@@ -231,8 +231,6 @@
     'settings.display.wordCountDesc': '在文件列表中显示每个文件的词数',
     'settings.display.truncate': '折叠过长文件名',
     'settings.display.truncateDesc': '默认关闭，完整显示文件名；开启后用省略号截断过长文件名，超出部分悬停可横向滚动查看',
-    'settings.display.treeIcons': '侧边栏显示文件图标',
-    'settings.display.treeIconsDesc': '默认关闭，侧边栏是纯文字列表（跟「Index」页签一致）；开启后在文件夹与文件名前显示图标',
     'settings.display.expandFolders': '侧边栏文件夹默认展开',
     'settings.display.expandFoldersDesc': '开启时文件树中的文件夹全部展开显示；关闭时默认折叠，点击文件夹手动展开',
     'settings.display.treeSort': '侧边栏排序',

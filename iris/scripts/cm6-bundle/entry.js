@@ -4,10 +4,13 @@
 // 导出面 = cm-editor.js 实际使用的最小集合（此前导出了 autocompletion/
 // search/foldGutter 等 14 项未用 API，白白增大 vendor 体积）
 // 将 CM6 核心模块打包为单一 IIFE bundle，暴露到 window.CodeMirror
-import { EditorState, Compartment, Transaction, Annotation, EditorSelection, Prec } from '@codemirror/state';
+import {
+  EditorState, Compartment, Transaction, Annotation, EditorSelection, Prec,
+  StateField, StateEffect, RangeSetBuilder
+} from '@codemirror/state';
 import {
   EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter,
-  drawSelection, highlightSpecialChars, placeholder
+  drawSelection, highlightSpecialChars, placeholder, Decoration, WidgetType
 } from '@codemirror/view';
 import {
   defaultKeymap, history, historyKeymap, indentWithTab, undo, redo
@@ -28,6 +31,9 @@ const CodeMirrorAPI = {
   Annotation,
   EditorSelection,
   Prec,
+  StateField,
+  StateEffect,
+  RangeSetBuilder,
   // view
   EditorView,
   keymap,
@@ -37,6 +43,8 @@ const CodeMirrorAPI = {
   drawSelection,
   highlightSpecialChars,
   placeholder,
+  Decoration,
+  WidgetType,
   // commands
   defaultKeymap,
   history,

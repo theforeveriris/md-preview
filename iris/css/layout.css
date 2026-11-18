@@ -334,10 +334,8 @@ body.sidebar-resizing .sidebar {
   list-style: none;
   margin: 0;
   /* 文件项是「本地文件」文件夹行的子级：缩进一层。
-     树内文件夹展开时 ul 带 1px 导航线（tinted-icons 注入样式），
-     这里同样补上 1px 边线 + 2×icon-size 缩进，子级文字列才能
-     与树内文件夹子级逐像素对齐 */
-  border-inline-start: 1px solid rgb(from currentColor r g b / 0.12);
+     文件树已去掉层级竖线（tinted-icons 注入样式里 border-inline-start:0），
+     这里也保持一致，只保留缩进 */
   padding: 0 0 0 calc(var(--lfi-icon-size) * 2);
   max-height: 40vh;
   overflow-y: auto;
@@ -553,45 +551,12 @@ body.sidebar-resizing .sidebar {
 }
 
 /* ===== File Tree Component ===== */
-/* 文件名过滤条（Files 选项卡独有，index/tags 模式下随面板一起隐藏） */
-.tree-filter-bar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: 8px 12px 0 16px;
-  padding: 5px 10px;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--color-text) 3%, transparent);
-  color: var(--color-text-muted);
-  transition: var(--transition-smooth);
-}
-
-.tree-filter-bar:focus-within {
-  border-color: var(--color-accent-purple);
-  color: var(--color-text);
-}
-
-.tree-filter-bar input {
-  flex: 1;
-  min-width: 0;
-  border: none;
-  outline: none;
-  background: transparent;
-  color: var(--color-text);
-  font-size: 13px;
-  font-family: inherit;
-}
-
-.tree-filter-bar input::placeholder {
-  color: var(--color-text-muted);
-}
 
 .file-tree {
   --ft-padding: 4px;
   --ft-icon-size: 14px;
   --ft-font-size: 0.875rem;
-  padding: 8px 0 8px 16px;
+  padding: 8px 0 8px 18px;
   overflow-y: auto;
   overflow-x: hidden;
   flex: 1;
@@ -603,7 +568,12 @@ body.sidebar-resizing .sidebar {
   color: var(--color-text);
   display: block;
   width: 100%;
-  overflow-x: hidden;
+  /* 不在 host 上裁切：顶层文件夹的箭头挂在左侧留白里，overflow:hidden 会切掉它。
+     横向越界由外层 .file-tree 的 overflow-x:hidden 兜底 */
+  overflow-x: visible;
+  /* 展开/收起改用 chevron 箭头（vendor 默认是 − / +） */
+  --svg-closed: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" shape-rendering="geometricPrecision"><path d="M9 6l6 6-6 6" /></svg>');
+  --svg-opened: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" shape-rendering="geometricPrecision"><path d="M6 9l6 6 6-6" /></svg>');
 }
 
 .sidebar,

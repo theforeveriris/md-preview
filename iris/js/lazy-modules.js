@@ -65,6 +65,7 @@
     injectTemplate('tplEditorHtml');
     loadOnce('editor', [
       'iris/vendor/codemirror/codemirror.min.js',
+      'iris/js/editor/live-preview.js',
       'iris/js/cm-editor.js',
       'iris/js/editor/completions.js',
       'iris/js/editor/editor-ai.js',

@@ -330,7 +330,7 @@ done
 4. 实现 `render(root?)`：
    - `root` 是本次渲染的根容器；文档站主管线传 `null`，
      自行回退到全局 `.markdown-body`
-   - 编辑器 cell / 对照阅读栏会传入自己的容器，也可用 `opts.only` 只执行子集
+   - 编辑器 / 对照阅读栏会传入自己的容器，也可用 `opts.only` 只执行子集
    - **查询 DOM 无命中直接 return**，避免无谓加载 vendor 库
    - 返回 Promise 或 undefined
    - 抛错会被调度器隔离，不影响其余渲染器

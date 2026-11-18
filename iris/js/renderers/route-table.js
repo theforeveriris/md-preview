@@ -14,6 +14,7 @@
 
   const t = window.MarkdownPreview.t;
   const esc = window.MarkdownPreview.mdRender.escapeHtml;
+  const icon = window.MarkdownPreview.icon;
 
   // 协议代号 → 名称与颜色档
   const PROTO_META = {
@@ -82,22 +83,34 @@
       });
       if (routes.length === 0) return;
 
-      // 协议分布
+      // 协议分布：全部铺开；窄屏由 .w-chips 裁切 / 横向滑动
       const dist = new Map();
       routes.forEach(r => dist.set(r.proto, (dist.get(r.proto) || 0) + 1));
-      const distHtml = [...dist.entries()]
-        .sort((a, b) => b[1] - a[1])
-        .map(([proto, count]) => {
-          const meta = PROTO_META[proto] || { name: proto, cls: 'p-x' };
-          return `<span class="rt-dist-chip ${meta.cls}">${esc(proto)} · ${esc(meta.name)} <strong>${count}</strong></span>`;
-        }).join('');
+      const distEntries = [...dist.entries()].sort((a, b) => b[1] - a[1]);
+      const chipOf = ([proto, count]) => {
+        const meta = PROTO_META[proto] || { name: proto, cls: 'p-x' };
+        return `<span class="rt-dist-chip ${meta.cls}" title="${esc(proto)} · ${esc(meta.name)} ${count}">${esc(proto)} · ${esc(meta.name)} <strong>${count}</strong></span>`;
+      };
+      const distHtml = distEntries.map(chipOf).join('');
 
       const widget = document.createElement('div');
-      widget.className = 'rt-widget';
+      widget.className = 'rt-widget w-has-float';
       widget.innerHTML = `
-        <div class="rt-head">
-          <span class="rt-title">${esc(t('rt.title', '路由表'))}</span>
-          <span class="rt-dist">${distHtml}</span>
+        <div class="w-float">
+          <button type="button" class="w-icon-btn w-filter-btn" title="${esc(t('rt.searchPlaceholder', '搜索前缀 / 下一跳 / 接口'))}" aria-label="${esc(t('rt.searchPlaceholder', '搜索路由表'))}">
+            ${icon ? icon('i-search', 15) : ''}<span class="w-badge" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="w-icon-btn rt-copy" title="${esc(t('rt.copy', '复制表格'))}" aria-label="${esc(t('rt.copy', '复制表格'))}">${icon ? icon('i-clipboard', 15) : ''}</button>
+          <div class="w-pop">
+            <label class="rt-search">
+              ${icon ? icon('i-search', 13) : ''}
+              <input type="search" class="rt-search-input" spellcheck="false"
+                     placeholder="${esc(t('rt.searchPlaceholder', '搜索前缀 / 下一跳 / 接口'))}"
+                     aria-label="${esc(t('rt.searchPlaceholder', '搜索路由表'))}">
+            </label>
+            <div class="rt-dist">${distHtml}</div>
+            <div class="rt-pop-status"><span class="rt-count" role="status"></span></div>
+          </div>
         </div>
         <div class="rt-table-wrap"><table>
           <thead><tr>
@@ -113,11 +126,29 @@
         </table></div>`;
 
       const tbody = widget.querySelector('tbody');
+      const countEl = widget.querySelector('.rt-count');
       let sortKey = null;
       let sortAsc = false;
+      let query = '';
+
+      function matches(r) {
+        if (!query) return true;
+        const meta = PROTO_META[r.proto];
+        const hay = [r.proto, meta ? meta.name : '', r.prefix, r.nextHop, r.iface, r.age].join(' ').toLowerCase();
+        return hay.includes(query);
+      }
 
       function renderBody() {
-        const rows = routes.slice();
+        const rows = routes.filter(matches);
+        if (countEl) {
+          countEl.textContent = rows.length === routes.length
+            ? ''
+            : t('rt.filtered', '{m} / {n} 条').replace('{m}', rows.length).replace('{n}', routes.length);
+        }
+        const filterBtn = widget.querySelector('.w-filter-btn');
+        const filterBadge = widget.querySelector('.w-filter-btn .w-badge');
+        if (filterBtn) filterBtn.classList.toggle('active', !!query);
+        if (filterBadge) filterBadge.textContent = query ? '1' : '';
         if (sortKey) {
           rows.sort((a, b) => {
             let va = a[sortKey], vb = b[sortKey];
@@ -153,6 +184,34 @@
         });
       });
 
+      // 搜索：收在筛选图标面板里
+      const searchInput = widget.querySelector('.rt-search-input');
+      if (searchInput) {
+        searchInput.addEventListener('input', () => {
+          query = searchInput.value.trim().toLowerCase();
+          renderBody();
+        });
+      }
+
+      // 复制当前可见表格（原 table-tools 胶囊在组件浮窗里不再生成）
+      const copyBtn = widget.querySelector('.rt-copy');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+          const rows = Array.from(widget.querySelectorAll('tr'))
+            .filter(tr => tr.offsetParent !== null)
+            .map(tr => Array.from(tr.children).map(cell => cell.textContent.trim()).join('\t'))
+            .join('\n');
+          const done = () => {
+            copyBtn.classList.add('active');
+            setTimeout(() => copyBtn.classList.remove('active'), 1200);
+          };
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(rows).then(done).catch(() => {});
+          }
+        });
+      }
+
+      window.MarkdownPreview.widgetChrome?.init(widget);
       renderBody();
       pre.parentNode.replaceChild(widget, pre);
     });

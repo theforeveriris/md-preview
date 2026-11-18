@@ -374,6 +374,7 @@
     // #/graph 会在渲染完成后由 graph.openPage() 重新打上 —— 这样「离开图谱页」
     // 不需要在每个导航入口单独清理。
     document.body.classList.remove('graph-page');
+    if (opts.bodyClass) document.body.classList.add(opts.bodyClass);
     // .txt 按「无特殊格式的纯文本」处理：不解析 frontmatter，
     // 首行恰好是 --- 时也不该被当成元数据吃掉
     const isPlainText = opts.plainText || /\.txt$/i.test(currentPath || '');
@@ -1338,7 +1339,7 @@
           if (bc) bc.textContent = fileName;
           if (header) header.style.display = 'flex';
         }
-        renderMarkdown(content, '', sanitizeFn ? { sanitize: sanitizeFn } : {});
+        renderMarkdown(content, '', Object.assign({ bodyClass: opts.bodyClass }, sanitizeFn ? { sanitize: sanitizeFn } : {}));
       };
       if (opts.sanitize) {
         return mdRender.ensurePurify()

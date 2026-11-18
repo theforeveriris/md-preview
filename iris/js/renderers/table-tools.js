@@ -120,6 +120,32 @@
     }
   }
 
+  // 紧凑胶囊的筛选面板关闭逻辑用全局单例：WYSIWYG 每次重渲染都会新建
+  // 表格，逐个绑 document 监听器会不断累积
+  function bindCompactDismiss() {
+    if (bindCompactDismiss.done) return;
+    bindCompactDismiss.done = true;
+    document.addEventListener('click', (e) => {
+      document.querySelectorAll('.mdt-compact.open').forEach(t => {
+        if (!t.contains(e.target)) t.classList.remove('open');
+      });
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      document.querySelectorAll('.mdt-compact.open').forEach(t => t.classList.remove('open'));
+    });
+    // 触屏：点空白处收起常显的胶囊
+    if (window.matchMedia && window.matchMedia('(hover: none)').matches) {
+      document.addEventListener('click', (e) => {
+        document.querySelectorAll('.mdt-compact.visible').forEach(t => {
+          if (t.contains(e.target)) return;
+          if (t._table && t._table.contains(e.target)) return;
+          t.classList.remove('visible');
+        });
+      });
+    }
+  }
+
   function enhanceTable(table) {
     if (isSkipped(table)) return;
     const thead = table.tHead;
@@ -142,36 +168,87 @@
     const total = allRows().length;
 
     // ---------- 工具条 ----------
+    // 全站统一紧凑形态：默认隐身，悬停表格时右上角浮出一枚图标胶囊。
+    // 胶囊固定定位、挂在正文流之外，因此不会被表格横向滚动容器裁切。
+    const insideEditor = !!table.closest('.editor-overlay');
+    const compact = true;
     const tools = document.createElement('div');
-    tools.className = 'mdt-tools';
+    tools.className = 'mdt-tools' + (compact ? ' mdt-compact' : '');
     tools.setAttribute('role', 'toolbar');
     tools.setAttribute('aria-label', t('table.tools', '表格工具'));
     // 按钮一律用图标，文字靠悬停提示（data-tip），工具条只占一行高
     const copyLabel = t('table.copy', '复制');
     const csvLabel = t('table.exportCsv', '导出 CSV');
     const colLabel = t('table.columns', '列');
-    tools.innerHTML =
-      '<span class="mdt-count" aria-live="polite"></span>' +
+    const editLabel = t('table.edit', '编辑表格');
+    const filterLabel = t('table.filter', '筛选表格');
+    const colActions =
+      '<div class="mdt-menu-actions">' +
+        '<button type="button" class="mdt-linkbtn" data-act="cols-all">' + esc(t('table.showAll', '全部显示')) + '</button>' +
+        '<button type="button" class="mdt-linkbtn" data-act="cols-none">' + esc(t('table.hideAll', '全部隐藏')) + '</button>' +
+      '</div>';
+    const searchBox =
       '<label class="mdt-search">' +
         '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>' +
-        '<input type="search" class="mdt-search-input" placeholder="' + esc(t('table.filterPlaceholder', '筛选表格…')) + '" aria-label="' + esc(t('table.filter', '筛选表格')) + '">' +
-      '</label>' +
-      '<span class="mdt-spacer"></span>' +
-      '<button type="button" class="mdt-btn" data-act="copy" data-tip="' + esc(copyLabel) + '" title="' + esc(copyLabel) + '" aria-label="' + esc(copyLabel) + '">' +
-        icon('i-copy', 15) + '<span class="mdt-btn-label">' + esc(copyLabel) + '</span></button>' +
-      '<button type="button" class="mdt-btn" data-act="csv" data-tip="' + esc(csvLabel) + '" title="' + esc(csvLabel) + '" aria-label="' + esc(csvLabel) + '">' +
-        icon('i-download', 15) + '<span class="mdt-btn-label">CSV</span></button>' +
-      '<details class="mdt-menu"><summary class="mdt-btn" data-tip="' + esc(colLabel) + '" title="' + esc(colLabel) + '" aria-label="' + esc(colLabel) + '">' +
-        icon('i-list', 15) + '</summary>' +
-        '<div class="mdt-menu-panel"><div class="mdt-menu-actions">' +
-          '<button type="button" class="mdt-linkbtn" data-act="cols-all">' + esc(t('table.showAll', '全部显示')) + '</button>' +
-          '<button type="button" class="mdt-linkbtn" data-act="cols-none">' + esc(t('table.hideAll', '全部隐藏')) + '</button>' +
-        '</div><div class="mdt-col-list"></div></div>' +
-      '</details>';
+        '<input type="search" class="mdt-search-input" placeholder="' + esc(t('table.filterPlaceholder', '筛选表格…')) + '" aria-label="' + esc(filterLabel) + '">' +
+      '</label>';
+
+    if (compact) {
+      tools.innerHTML =
+        '<button type="button" class="mdt-btn mdt-btn-filter" data-act="filter" data-tip="' + esc(filterLabel) + ' / ' + esc(colLabel) + '" title="' + esc(filterLabel) + ' / ' + esc(colLabel) + '" aria-label="' + esc(filterLabel) + '">' +
+          icon('i-search', 15) + '</button>' +
+        '<button type="button" class="mdt-btn" data-act="copy" data-tip="' + esc(copyLabel) + '" title="' + esc(copyLabel) + '" aria-label="' + esc(copyLabel) + '">' +
+          icon('i-copy', 15) + '<span class="mdt-btn-label">' + esc(copyLabel) + '</span></button>' +
+        '<button type="button" class="mdt-btn" data-act="csv" data-tip="' + esc(csvLabel) + '" title="' + esc(csvLabel) + '" aria-label="' + esc(csvLabel) + '">' +
+          icon('i-download', 15) + '<span class="mdt-btn-label">CSV</span></button>' +
+        (insideEditor
+          ? '<button type="button" class="mdt-btn" data-act="edit" data-tip="' + esc(editLabel) + '" title="' + esc(editLabel) + '" aria-label="' + esc(editLabel) + '">' +
+            icon('i-table', 15) + '</button>'
+          : '') +
+        '<div class="mdt-float-pop">' +
+          '<span class="mdt-count" aria-live="polite"></span>' +
+          searchBox +
+          colActions +
+          '<div class="mdt-col-list"></div>' +
+        '</div>';
+    } else {
+      tools.innerHTML =
+        '<span class="mdt-count" aria-live="polite"></span>' +
+        searchBox +
+        '<span class="mdt-spacer"></span>' +
+        '<button type="button" class="mdt-btn" data-act="copy" data-tip="' + esc(copyLabel) + '" title="' + esc(copyLabel) + '" aria-label="' + esc(copyLabel) + '">' +
+          icon('i-copy', 15) + '<span class="mdt-btn-label">' + esc(copyLabel) + '</span></button>' +
+        '<button type="button" class="mdt-btn" data-act="csv" data-tip="' + esc(csvLabel) + '" title="' + esc(csvLabel) + '" aria-label="' + esc(csvLabel) + '">' +
+          icon('i-download', 15) + '<span class="mdt-btn-label">CSV</span></button>' +
+        '<details class="mdt-menu"><summary class="mdt-btn" data-tip="' + esc(colLabel) + '" title="' + esc(colLabel) + '" aria-label="' + esc(colLabel) + '">' +
+          icon('i-list', 15) + '</summary>' +
+          '<div class="mdt-menu-panel">' + colActions +
+          '<div class="mdt-col-list"></div></div>' +
+        '</details>';
+    }
 
     const countEl = tools.querySelector('.mdt-count');
     const searchInput = tools.querySelector('.mdt-search-input');
     const colList = tools.querySelector('.mdt-col-list');
+
+    if (compact) {
+      const filterBtn = tools.querySelector('[data-act="filter"]');
+      filterBtn.addEventListener('click', () => {
+        const open = tools.classList.toggle('open');
+        if (open) setTimeout(() => searchInput.focus(), 0);
+      });
+      const editBtn = tools.querySelector('[data-act="edit"]');
+      if (editBtn) {
+        editBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          table.dispatchEvent(new CustomEvent('mdt-edit-table', {
+            bubbles: true,
+            detail: { table }
+          }));
+        });
+      }
+      bindCompactDismiss();
+    }
 
     function updateCount(visibleRows) {
       if (visibleRows == null) visibleRows = allRows().filter(r => !r.hidden).length;
@@ -306,17 +383,100 @@
       if (menu && menu.open && !menu.contains(e.target)) menu.open = false;
     });
 
-    // 长表：工具栏下方滚动区 + 固定表头
+    // 长表：内部滚动 + 固定表头；胶囊是 fixed 定位，不会被滚动容器裁切
     if (total > LONG_TABLE_ROWS) {
       wrapper.classList.add('mdt-long');
       table.classList.add('mdt-long-table');
     }
 
-    wrapper.parentNode.insertBefore(tools, wrapper);
+    // 组件自带悬停浮窗时（.w-has-float）不再生成全局胶囊：
+    // 两套控件会叠在表格右上角，筛选入口由组件浮窗提供
+    if (compact && !table.closest('.w-has-float')) {
+      // 胶囊挂在正文流之外（编辑器挂 overlay，文档站挂 body），fixed 定位：
+      // 宽表的 overflow-x 容器不会裁切它，滚动时按表格矩形重新吸附。
+      const layer = table.closest('.editor-overlay') || document.body;
+      layer.appendChild(tools);
+      tools._table = table;
+
+      let hideTimer = null;
+      tools._reposition = () => {
+        if (!tools.classList.contains('visible')) return;
+        const r = table.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > window.innerHeight) {
+          tools.classList.remove('visible', 'open');
+          return;
+        }
+        // 宽表放在可横向滚动的容器里时，锚定容器的「可见右缘」而不是表格
+        // 自身的右缘：表格左右滚动时胶囊保持不动，不会跟着内容漂移。
+        const host = wrapper && wrapper.getBoundingClientRect ? wrapper.getBoundingClientRect() : r;
+        const scrollable = wrapper && wrapper.scrollWidth > wrapper.clientWidth + 1;
+        const anchorRight = scrollable ? host.right : Math.min(r.right, host.right);
+        const w = tools.offsetWidth;
+        const h = tools.offsetHeight;
+        let left = Math.min(window.innerWidth - w - 8, Math.max(8, anchorRight - w));
+        let top = r.top - h - 6;
+        // 表格贴近视口顶部时，胶囊落在表格内部右上角
+        if (top < 8) top = r.top + 4;
+        tools.style.left = Math.round(left) + 'px';
+        tools.style.top = Math.round(top) + 'px';
+      };
+
+      const show = () => {
+        if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+        tools.classList.add('visible');
+        tools._reposition();
+      };
+      const hideSoon = () => {
+        if (tools.classList.contains('open') || tools.contains(document.activeElement)) return;
+        if (hideTimer) clearTimeout(hideTimer);
+        hideTimer = setTimeout(() => {
+          tools.classList.remove('visible');
+          hideTimer = null;
+        }, 220);
+      };
+
+      // 悬停表格（或胶囊本身）时出现；移开稍后隐藏，便于鼠标跨过间隙
+      wrapper.addEventListener('mouseenter', show);
+      wrapper.addEventListener('mouseleave', hideSoon);
+      tools.addEventListener('mouseenter', show);
+      tools.addEventListener('mouseleave', hideSoon);
+      tools.addEventListener('mousedown', (e) => e.stopPropagation());
+      tools.addEventListener('click', (e) => e.stopPropagation());
+
+      // 触屏没有 hover：点表格时显式唤出胶囊
+      const coarse = window.matchMedia && window.matchMedia('(hover: none)').matches;
+      if (coarse) {
+        wrapper.addEventListener('click', show);
+      }
+
+      // 滚动/缩放时重新吸附；全局单例，避免逐表累积监听器
+      bindCompactPosition();
+    } else {
+      wrapper.parentNode.insertBefore(tools, wrapper);
+    }
     tools._mdt = { updateCount, filterRows };
   }
 
+  // 全局单例：滚动/缩放时让所有可见胶囊重新吸附表格
+  function bindCompactPosition() {
+    if (bindCompactPosition.done) return;
+    bindCompactPosition.done = true;
+    const repositionAll = () => {
+      document.querySelectorAll('.mdt-compact.visible').forEach(t => t._reposition && t._reposition());
+    };
+    window.addEventListener('scroll', repositionAll, true);
+    window.addEventListener('resize', repositionAll);
+  }
+
+  // 文档站/编辑器重渲染后清掉指向已销毁表格的残留胶囊
+  function cleanupCompactTools() {
+    document.querySelectorAll('.mdt-tools.mdt-compact').forEach(t => {
+      if (!t._table || !t._table.isConnected) t.remove();
+    });
+  }
+
   function render(root) {
+    cleanupCompactTools();
     const scope = window.MarkdownPreview.mdRender.resolveRoot(root);
     if (!scope) return;
     scope.querySelectorAll('table').forEach(enhanceTable);

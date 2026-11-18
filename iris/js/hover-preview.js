@@ -101,6 +101,15 @@
         window.MarkdownPreview.fileTree.highlightFileInSidebar(currentPath);
       }
     });
+    cardEl.addEventListener('mouseleave', () => {
+      // 指针离开卡片：除非又回到对应的链接上，否则收起（移向卡片时保持的逻辑在 content 的 mouseout 里）
+      setTimeout(() => {
+        if (!cardEl.classList.contains('open')) return;
+        if (cardEl.matches(':hover')) return;
+        if (pinnedForLink && pinnedForLink.matches && pinnedForLink.matches(':hover')) return;
+        hideCard();
+      }, 120);
+    });
     return cardEl;
   }
 

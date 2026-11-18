@@ -29,10 +29,9 @@
     if (password) {
       widget.innerHTML = `
         <div class="secret-mask">
-          <div class="secret-hint"><svg class="ico ico-xs" aria-hidden="true"><use href="#i-lock"/></svg><span>${esc(t('secret.passHint', '此内容已上锁，输入口令查看'))}</span></div>
-          <div class="secret-pass-row">
-            <input type="password" class="secret-pass-input" placeholder="${esc(t('secret.passPh', '口令'))}" aria-label="${esc(t('secret.passPh', '口令'))}">
-            <button type="button" class="download-btn secret-unlock">${esc(t('secret.unlock', '解锁'))}</button>
+          <div class="secret-pass-field">
+            <input type="password" class="secret-pass-input" placeholder="${esc(t('secret.passPh', '输入口令'))}" aria-label="${esc(t('secret.passPh', '输入口令'))}">
+            <button type="button" class="secret-unlock" title="${esc(t('secret.unlock', '解锁'))}" aria-label="${esc(t('secret.unlock', '解锁'))}"><svg class="ico ico-xs" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
           </div>
           <div class="secret-error" hidden>${esc(t('secret.wrongPass', '口令不对，再想想'))}</div>
         </div>

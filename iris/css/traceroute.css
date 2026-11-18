@@ -99,14 +99,67 @@
 .tr-stat-loss.is-bad b { color: var(--color-error, #EF4444); }
 
 .tr-seq-chart {
+  padding: 12px 14px 10px;
+}
+
+/* 柱状图区域：数据与统计都画在图里，不再单起一行统计条 */
+.tr-plot {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  height: 84px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.tr-bars {
+  position: relative;
   display: flex;
   align-items: flex-end;
   gap: 3px;
-  height: 64px;
-  padding: 8px 14px 12px;
-  border-top: 1px solid var(--color-border);
-  overflow-x: auto;
+  height: 100%;
+  min-width: 100%;
+  padding-top: 14px;
 }
+
+.tr-seq-chart .tr-mini-bar {
+  width: 7px;
+  min-height: 3px;
+  flex: none;
+}
+
+.tr-avg-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed color-mix(in srgb, var(--color-accent-purple) 65%, transparent);
+  pointer-events: none;
+}
+
+.tr-avg-label {
+  position: absolute;
+  right: 0;
+  bottom: 2px;
+  font-size: 10px;
+  line-height: 1;
+  color: var(--color-accent-purple-deep, var(--color-accent-purple));
+  background: var(--color-surface);
+  padding: 0 3px;
+  white-space: nowrap;
+}
+
+.tr-seq-caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  padding-top: 8px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.tr-seq-caption b { color: var(--color-text); font-weight: 600; }
+.tr-seq-caption .is-bad b { color: var(--color-error, #EF4444); }
 
 .tr-empty { color: var(--color-text-muted); font-size: 13px; padding: 8px 0; }
 

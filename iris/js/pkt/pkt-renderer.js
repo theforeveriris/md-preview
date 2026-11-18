@@ -125,42 +125,51 @@
 
     // 构建 DOM 结构
     const wrapper = document.createElement('div');
-    wrapper.className = 'pkt-topology-container';
+    wrapper.className = 'pkt-topology-container w-has-float';
     wrapper.innerHTML = `
-      <div class="pkt-toolbar">
-        <div class="pkt-toolbar-right">
-          <button class="pkt-btn active" data-action="layout-pt" title="使用 PT 原始坐标布局">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg>
-            <span class="pkt-btn-label">PT 坐标</span>
-          </button>
-          <button class="pkt-btn" data-action="layout-force" title="力导向自动布局">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M8 6h8M6 8l4 8M18 8l-4 8"/></svg>
-            <span class="pkt-btn-label">力导向</span>
-          </button>
-          <button class="pkt-btn" data-action="toggle-grid" title="切换网格背景">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3zM9 3v18M15 3v18M3 9h18M3 15h18"/></svg>
-            <span class="pkt-btn-label">网格</span>
-          </button>
-          <button class="pkt-btn active" data-action="toggle-iface" title="显示/隐藏接口名">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h10M4 17h7"/></svg>
-            <span class="pkt-btn-label">接口名</span>
-          </button>
-          <button class="pkt-btn active" data-action="toggle-subnet" title="显示/隐藏网段">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg>
-            <span class="pkt-btn-label">网段</span>
-          </button>
-          <button class="pkt-btn" data-action="toggle-traffic" title="模拟流量：边上跑光点动画">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2L4.5 13.5H11L9.5 22 19 9.5h-6.5L13 2z"/></svg>
-            <span class="pkt-btn-label">流量</span>
-          </button>
-          <button class="pkt-btn" data-action="fit" title="适应屏幕">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6"/></svg>
-            <span class="pkt-btn-label">复位</span>
-          </button>
-          <button class="pkt-btn" data-action="export" title="导出">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-            <span class="pkt-btn-label">导出</span>
-          </button>
+      <div class="w-float">
+        <button class="pkt-btn active" data-action="layout-pt" title="使用 PT 原始坐标布局" aria-label="使用 PT 原始坐标布局">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg>
+          <span class="pkt-btn-label">PT 坐标</span>
+        </button>
+        <button class="pkt-btn" data-action="layout-force" title="力导向自动布局" aria-label="力导向自动布局">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M8 6h8M6 8l4 8M18 8l-4 8"/></svg>
+          <span class="pkt-btn-label">力导向</span>
+        </button>
+        <button class="pkt-btn" data-action="toggle-grid" title="切换网格背景" aria-label="切换网格背景">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3zM9 3v18M15 3v18M3 9h18M3 15h18"/></svg>
+          <span class="pkt-btn-label">网格</span>
+        </button>
+        <span class="w-float-sep" aria-hidden="true"></span>
+        <button class="pkt-btn active" data-action="toggle-iface" title="显示/隐藏接口名" aria-label="显示/隐藏接口名">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h10M4 17h7"/></svg>
+          <span class="pkt-btn-label">接口名</span>
+        </button>
+        <button class="pkt-btn active" data-action="toggle-subnet" title="显示/隐藏网段" aria-label="显示/隐藏网段">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg>
+          <span class="pkt-btn-label">网段</span>
+        </button>
+        <button class="pkt-btn" data-action="toggle-traffic" title="模拟流量：边上跑光点动画" aria-label="模拟流量">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2L4.5 13.5H11L9.5 22 19 9.5h-6.5L13 2z"/></svg>
+          <span class="pkt-btn-label">流量</span>
+        </button>
+        <span class="w-float-sep" aria-hidden="true"></span>
+        <span class="pkt-zoom-display" title="缩放比例">100%</span>
+        <button class="pkt-btn" data-action="fit" title="适应屏幕" aria-label="适应屏幕">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6"/></svg>
+          <span class="pkt-btn-label">复位</span>
+        </button>
+        <button class="pkt-btn" data-action="export" title="导出" aria-label="导出">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          <span class="pkt-btn-label">导出</span>
+        </button>
+        <button type="button" class="w-icon-btn w-filter-btn" title="搜索设备" aria-label="搜索设备">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        </button>
+        <div class="w-pop">
+          <label class="pkt-search">
+            <input type="search" class="pkt-search-input" placeholder="搜索设备…" aria-label="搜索设备" />
+          </label>
         </div>
       </div>
       <div class="pkt-canvas-wrapper">
@@ -176,23 +185,9 @@
         </div>
         <div class="pkt-canvas"></div>
       </div>
-      <div class="pkt-statusbar">
-        <div class="pkt-statusbar-left">
-          <span class="pkt-statusbar-item">设备 <strong>${jsonData.meta.deviceCount}</strong></span>
-          <span class="pkt-statusbar-item">链路 <strong>${jsonData.meta.linkCount}</strong></span>
-          <span class="pkt-statusbar-item">配置 <strong>${jsonData.meta.configCount}</strong></span>
-          <span class="pkt-statusbar-item">${esc(jsonData.meta.ptVersion || '')}</span>
-        </div>
-        <div class="pkt-statusbar-search">
-          <input type="search" class="pkt-search-input" placeholder="搜索" />
-        </div>
-        <div class="pkt-statusbar-right">
-          <span class="pkt-zoom-display">100%</span>
-        </div>
-      </div>
     `;
     container.appendChild(wrapper);
-
+    window.MarkdownPreview.widgetChrome?.init(wrapper);
     const canvasEl = wrapper.querySelector('.pkt-canvas');
     const canvasWrapper = wrapper.querySelector('.pkt-canvas-wrapper');
 

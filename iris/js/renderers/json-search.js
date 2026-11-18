@@ -219,7 +219,7 @@
 
   function enhance(widget) {
     if (widget.dataset.jsonSearchReady) return;
-    const toolbar = widget.querySelector('.json-tree-toolbar');
+    const toolbar = widget.querySelector('.w-float');
     if (!toolbar) return;
     widget.dataset.jsonSearchReady = '1';
 
@@ -228,6 +228,7 @@
     if (data == null) return;
 
     const actions = toolbar.querySelector('.json-tree-actions');
+    const pop = toolbar.querySelector('.w-pop');
     const controls = document.createElement('span');
     controls.className = 'json-tree-controls';
     controls.innerHTML =
@@ -237,15 +238,24 @@
       '<span class="json-tree-path">' +
         '<input type="text" class="json-tree-path-input" placeholder="' + esc(t('json.jsonpath', 'JSONPath')) + '" aria-label="' + esc(t('json.jsonpath', 'JSONPath')) + '">' +
         '<button type="button" class="json-tree-path-btn">' + esc(t('json.run', '运行')) + '</button>' +
-      '</span>' +
-      '<span class="json-hit-count" aria-live="polite"></span>';
-    if (actions) toolbar.insertBefore(controls, actions);
+      '</span>';
+    if (pop) pop.insertBefore(controls, pop.firstChild);
+    else if (actions) toolbar.insertBefore(controls, actions);
     else toolbar.appendChild(controls);
 
     const searchInput = toolbar.querySelector('.json-tree-search-input');
     const pathInput = toolbar.querySelector('.json-tree-path-input');
+    const filterBtn = toolbar.querySelector('.w-filter-btn');
+    const filterBadge = toolbar.querySelector('.w-filter-btn .w-badge');
+    function updateFilterBadge() {
+      const active = (searchInput.value.trim() ? 1 : 0) + (pathInput.value.trim() ? 1 : 0);
+      if (filterBtn) filterBtn.classList.toggle('active', active > 0);
+      if (filterBadge) filterBadge.textContent = active || '';
+    }
+    window.MarkdownPreview.widgetChrome?.init(widget);
 
     searchInput.addEventListener('input', () => {
+      updateFilterBadge();
       const q = searchInput.value.trim().toLowerCase();
       if (!q) { clearHits(widget); const b = widget.querySelector('.json-hit-count'); if (b) b.textContent = ''; return; }
       applyHits(widget, text => text.toLowerCase().includes(q), t('json.matches', '命中'));
@@ -255,6 +265,7 @@
     });
     toolbar.querySelector('.json-tree-path-btn').addEventListener('click', runPath);
     function runPath() {
+      updateFilterBadge();
       const expr = pathInput.value.trim();
       if (!expr) return;
       const results = queryJsonPath(data, expr);

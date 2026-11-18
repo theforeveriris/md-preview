@@ -206,8 +206,6 @@
     'settings.display.wordCountDesc': 'Show each file\'s word count in the file list',
     'settings.display.truncate': 'Truncate Long File Names',
     'settings.display.truncateDesc': 'Off by default — full file names are shown; when on, long names are truncated with ellipsis and overflow scrolls horizontally on hover',
-    'settings.display.treeIcons': 'Show File Icons in Sidebar',
-    'settings.display.treeIconsDesc': 'Off by default — the sidebar is a plain text list (like the Index tab); when on, icons appear before folder and file names',
     'settings.display.expandFolders': 'Expand Sidebar Folders by Default',
     'settings.display.expandFoldersDesc': 'When on, all folders in the file tree start expanded; when off, folders start collapsed and open on click',
     'settings.display.treeSort': 'Sidebar Sort Order',

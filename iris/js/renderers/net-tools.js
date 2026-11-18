@@ -80,15 +80,6 @@
     const widget = document.createElement('div');
     widget.className = 'nt-view nmap-view';
 
-    const head = document.createElement('div');
-    head.className = 'nt-head';
-    const openCount = parsed.ports.filter(p => p.state === 'open').length;
-    head.innerHTML =
-      '<span class="nt-title">' + esc(t('nmap.title', 'Nmap 端口扫描')) + '</span>' +
-      '<span class="nt-meta">' + esc(parsed.host || '—') + ' · ' + esc(t('nmap.ports', '{n} 端口').replace('{n}', parsed.ports.length)) + ' · ' +
-      esc(t('nmap.open', '{n} 开放').replace('{n}', openCount)) + '</span>';
-    widget.appendChild(head);
-
     const table = document.createElement('table');
     const thead = document.createElement('thead');
     thead.innerHTML = '<tr><th>Port</th><th>Proto</th><th>State</th><th>Service</th><th>Version</th></tr>';
@@ -152,14 +143,6 @@
     const widget = document.createElement('div');
     widget.className = 'nt-view dig-view';
 
-    const head = document.createElement('div');
-    head.className = 'nt-head';
-    head.innerHTML =
-      '<span class="nt-title">' + esc(t('dig.title', 'DNS 查询')) + '</span>' +
-      '<span class="nt-meta">' + esc(parsed.server ? 'Server: ' + parsed.server : '') +
-      (parsed.queryTime ? ' · ' + esc(t('dig.time', '耗时') + ': ' + parsed.queryTime) : '') + '</span>';
-    widget.appendChild(head);
-
     const table = document.createElement('table');
     const thead = document.createElement('thead');
     thead.innerHTML = '<tr><th>Name</th><th>Type</th><th>TTL</th><th>Target</th></tr>';
@@ -179,15 +162,6 @@
     wrap.className = 'table-wrapper mdt-wrapper';
     wrap.appendChild(table);
     widget.appendChild(wrap);
-
-    const sectionsInfo = Object.keys(parsed.sections)
-      .map(k => esc(k) + ' ' + parsed.sections[k].length).join(' · ');
-    if (sectionsInfo) {
-      const foot = document.createElement('div');
-      foot.className = 'nt-foot';
-      foot.textContent = sectionsInfo;
-      widget.appendChild(foot);
-    }
     pre.replaceWith(widget);
     if (window.MarkdownPreview.renderers.tables) window.MarkdownPreview.renderers.tables.render(widget);
     return true;
@@ -238,12 +212,6 @@
     if (!parsed) return false;
     const widget = document.createElement('div');
     widget.className = 'nt-view bgp-view';
-
-    const head = document.createElement('div');
-    head.className = 'nt-head';
-    head.innerHTML = '<span class="nt-title">' + esc(t('bgp.title', 'BGP 前缀')) + '</span>' +
-      '<span class="nt-meta">' + esc(t('bgp.prefixes', '{n} 前缀').replace('{n}', parsed.prefixes.length)) + '</span>';
-    widget.appendChild(head);
 
     const table = document.createElement('table');
     const thead = document.createElement('thead');
