@@ -109,7 +109,11 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 倒计时组件：`countdown` 代码块渲染实时倒计时
 - Spoiler 折叠：内置剧透折叠块语法
 - Columns / ColorCard：页面分栏与彩色卡片布局
-- SQL DDL → ER 图：`sql ddl` / `ddl` / `erd` 代码块解析 `CREATE TABLE` 与外键，自动生成 Mermaid 实体关系图（解析失败回退普通 SQL 高亮）
+- SQL DDL / DBML → ER 图：`dbml` 代码块解析 `Table` / `Ref` / 内联引用，`sql ddl` / `ddl` / `erd` 解析 `CREATE TABLE` 与外键，生成 Mermaid 实体关系图（解析失败回退源码高亮）
+- WaveDrom 时序图：`wavedrom` 代码块写 WaveJSON，渲染时钟、总线、握手、协议帧等数字波形
+- WireViz 接线图：`wireviz` 代码块写连接器 / 线缆 / 连接表，渲染线束与接线图
+- Bytefield 字节域图：`bytefield` 代码块用 bytefield-svg DSL 画报文结构、寄存器与帧格式（取代旧 `bits` 位标注块）
+- Symbolator 硬件符号图：`symbolator` 代码块写 Verilog / VHDL，端口可按 `//# {{分组|标题}}` 分组显示
 - 术语表悬浮：`glossary` 代码块定义术语（每行 `术语 | 解释`），正文首次出现加下划线、悬停 / 聚焦弹出解释卡片
 - HTTP 请求块：`http` 代码块写请求（方法 / URL / 头 / 体），点击「发送」实时请求并展示状态码、耗时、响应头与响应体
 - OpenAPI 交互文档：`openapi` / `swagger` 代码块（JSON / YAML）渲染接口列表与参数表，每个接口可「试一下」直接发请求
@@ -152,10 +156,10 @@ Demo：https://theforeveriris.github.io/md-preview/
 - 插件系统：支持扩展自定义渲染器
 - 编辑此页：悬浮球快速跳转 GitHub 编辑页面
 - 响应式设计：完美适配桌面端和移动端
-- 按需懒加载：Mermaid / ApexCharts / Leaflet / KaTeX / Diff2Html / Cytoscape.js 等重型库只在命中对应代码块时加载，首屏体积从约 6.8 MB 降至约 1 MB
+- 按需懒加载：Mermaid / ApexCharts / Leaflet / KaTeX / Cytoscape.js 等重型库只在命中对应代码块时加载，首屏体积从约 6.8 MB 降至约 1 MB
 - CI 冒烟测试：GitHub Actions 在 push / PR 时自动跑全部构建脚本 + 站点结构 / 语法 / i18n / 数据产物冒烟检查（`smoke-test.yml`）
 - CI 死链检查：内链全量校验（`.md#锚点` 按运行时 slug 规则匹配、`@[pkt/ensp/pptx]` 嵌入产物存在性）+ 外链按日确定性抽查，第三方失败仅告警（`smoke-test.yml`）
-- 可见即渲染：重型渲染器（Mermaid / PlantUML / ApexCharts / Diff / CSV / JSON）滚动到附近才初始化，首屏更轻；视口内立即渲染，`IntersectionObserver` 不可用时自动兜底（`md-render.js`）
+- 可见即渲染：重型渲染器（Mermaid / PlantUML / ApexCharts / CSV / JSON）滚动到附近才初始化，首屏更轻；视口内立即渲染，`IntersectionObserver` 不可用时自动兜底（`md-render.js`）
 - 渐进式代码高亮：长文档先高亮首屏代码块，其余在空闲时分批补齐
 - 屏外内容跳过布局：正文屏外区块 `content-visibility: auto`，滚动更顺滑（设置面板「性能」可关）
 - 中文排版 lint：`iris/scripts/lint-cjk.js` 检查中英混排空格 / 全角半角标点 / 行首禁则 / 引号，支持 `--fix`，CI 以告警方式运行
@@ -332,6 +336,11 @@ python3 iris/scripts/pptx/main.py
 | Trace 瀑布 | OTLP / Jaeger / Zipkin span 瀑布 |
 | Kroki | 通用图类型入口 |
 | Vega-Lite | JSON 规范高级图表 |
+| DBML / SQL DDL | 数据库表定义 → ER 实体关系图 |
+| WaveDrom | 数字时序图（WaveJSON） |
+| WireViz | 线束 / 接线图 |
+| Bytefield | 字节域 / 报文结构图 |
+| Symbolator | 硬件符号图（Verilog / VHDL） |
 | 图片热点 | `hotspot` 百分比坐标标注 |
 | CLI 帮助 | `clihelp` 结构化帮助卡片 |
 | 源码嵌入 | `@[code]` / `@[file]` 仓库源码嵌入 |
@@ -377,7 +386,12 @@ python3 iris/scripts/pptx/main.py
 | `embed-examples.md` | YouTube / Bilibili / Figma / CodePen 嵌入 |
 | `twitter-embed-examples.md` | Twitter 推文嵌入 |
 | `plugin-demo.md` | 插件系统演示 |
-| `devtools-examples.md` | 开发者工具与交互组件（术语表 / HTTP 请求块 / OpenAPI / SQL DDL→ER / 小工具 / 拼音注音 / CSV→图表） |
+| `devtools-examples.md` | 开发者工具与交互组件（术语表 / HTTP 请求块 / OpenAPI / 小工具 / 拼音注音 / CSV→图表） |
+| `dbml-examples.md` | DBML / SQL DDL → ER 实体关系图 |
+| `wavedrom-examples.md` | WaveDrom 数字时序图 |
+| `wireviz-examples.md` | WireViz 线束 / 接线图 |
+| `bytefield-examples.md` | Bytefield 字节域 / 报文结构图 |
+| `symbolator-examples.md` | Symbolator 硬件符号图 |
 | `timeline-examples.md` | 时间线组件（状态色 / 分隔符 / 今日标记线） |
 | `figure-examples.md` | 图 / 表自动编号、别名与交叉引用 |
 | `code-reader-examples.md` | 源码嵌入与代码块阅读模式 |
@@ -499,7 +513,6 @@ python3 iris/scripts/pptx/main.py
 | [Mermaid](https://github.com/mermaid-js/mermaid) | 流程图、时序图、甘特图等 18+ 种图表 | MIT |
 | [ApexCharts](https://github.com/apexcharts/apexcharts.js) | 交互式折线图、柱状图、饼图等 | MIT |
 | [KaTeX](https://github.com/KaTeX/KaTeX) | LaTeX 数学公式渲染 | MIT |
-| [Diff2Html](https://github.com/rtfpessoa/diff2html) | Git Diff 差异可视化 | MIT |
 | [Cytoscape.js](https://github.com/cytoscape/cytoscape.js) | Packet Tracer 网络拓扑图渲染 | MIT |
 
 ### 地图与地理数据

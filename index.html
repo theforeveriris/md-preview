@@ -43,7 +43,7 @@
   <link rel="stylesheet" href="iris/styles.css">
   <link rel="stylesheet" href="iris/css/themes/themes.css">
   <link rel="stylesheet" href="iris/css/custom-select.css">
-  <!-- leaflet.css / katex.min.css / diff2html.min.css 改为按需加载，见 dom.js loadStyle -->
+  <!-- leaflet.css / katex.min.css 改为按需加载，见 dom.js loadStyle -->
   <link rel="stylesheet" href="iris/vendor/highlight.js/styles/github.css" id="hljs-theme">
   <link rel="stylesheet" href="iris/css/editor.css">
   <link rel="stylesheet" href="iris/css/widget-chrome.css">
@@ -2097,7 +2097,7 @@
   <script defer src="iris/vendor/flexsearch.bundle.js"></script>
   <!-- 以下重型 vendor 库改为按需懒加载（由各 renderer 在 DOM 出现对应内容时调用 dom.js#loadScript/loadStyle）：
        mermaid.min.js / pako.min.js / leaflet.js / apexcharts.min.js
-       diff2html.min.js / diff2html-ui.min.js / katex.min.js / auto-render.min.js / cytoscape.min.js
+       katex.min.js / auto-render.min.js / cytoscape.min.js
        codemirror.min.js / cm-editor.js / editor.js 由 lazy-modules.js 在进入编辑模式时按需加载 -->
 
   <!-- twitter widgets.js 改为按需注入：embedded.js 检测到 twitter 嵌入块时

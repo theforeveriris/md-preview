@@ -83,11 +83,51 @@ ApexCharts 交互式图表渲染器，涵盖 13 种常见类型：折线、面�
 
 ---
 
+### DBML / SQL DDL 实体关系图
+
+`dbml` 代码块解析 `Table`、`Ref`、内联 `[ref: ...]`，`sql ddl` / `ddl` / `erd` 解析 `CREATE TABLE` 与外键，统一生成跟随主题的 ER 图；支持一对一、一对多、多对多、自引用、复合主键与 schema 前缀。
+
+详细示例：[DBML 与 ER 图](examples/dbml-examples.md)
+
+---
+
+### WaveDrom 数字时序图
+
+`wavedrom` 代码块写 WaveJSON，渲染时钟、总线、握手、SPI / I²C / UART 帧、状态机与箭头注释；适合协议时序与硬件接口说明。
+
+详细示例：[WaveDrom 时序图示例](examples/wavedrom-examples.md)
+
+---
+
+### WireViz 线束与接线图
+
+`wireviz` 代码块写连接器、线缆与连接表，渲染带线色、线径、屏蔽层的线束图；支持多根电缆与排流线。
+
+详细示例：[WireViz 线束与接线图](examples/wireviz-examples.md)
+
+---
+
+### Bytefield 字节域图
+
+`bytefield` 代码块用 bytefield-svg DSL 画报文结构、寄存器与帧格式，支持跨字节字段、多行、断行、配色与底部注释（取代旧 `bits` 位标注块）。
+
+详细示例：[Bytefield 字节域图](examples/bytefield-examples.md)
+
+---
+
+### Symbolator 硬件符号图
+
+`symbolator` 代码块写 Verilog / VHDL，渲染带端口分组的硬件符号；`//# {{分组|标题}}` 注释控制分组与标题。
+
+详细示例：[Symbolator 硬件符号图](examples/symbolator-examples.md)
+
+---
+
 ### Git Diff 代码对比
 
 ![渲染-代码对比](image/渲染-代码对比.png)
 
-基于 Diff2Html 的 Git Diff 语法高亮对比，支持 Side-by-Side 并排视图与 Line-by-Line 逐行视图两种模式，新增/删除/修改行以不同颜色标记，变更字符级别高亮。
+内置 Git Diff 解析与卡片式渲染：按文件分组，头部显示文件名与 `+N/−N` 统计，正文按 hunk 平铺，旧/新行号双列对齐，新增/删除行使用主题半透明底色；配色随主题切换，不依赖外部 Diff 库。
 
 详细示例：[Diff 差异可视化](examples/diff-examples.md)
 

@@ -44,12 +44,6 @@
 - **来源**: https://github.com/KaTeX/KaTeX
 - **注意**: KaTeX 字体文件 (60个 .ttf/.woff/.woff2) 采用 SIL Open Font License 1.1
 
-### Diff2Html
-- **版本**: 3.4.47
-- **许可证**: MIT
-- **版权**: Copyright (c) 2014-2026 Rodrigo Fernandes
-- **来源**: https://github.com/rtfpessoa/diff2html
-
 ### Cytoscape.js
 - **版本**: 3.x
 - **许可证**: MIT
