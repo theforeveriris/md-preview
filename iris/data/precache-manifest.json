@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-18T18:17:20.093Z",
+  "generatedAt": "2026-11-18T18:26:59.609Z",
   "version": 1,
-  "count": 187,
+  "count": 188,
   "urls": [
     "./",
     "./404.html",
@@ -155,6 +155,7 @@
     "./iris/js/renderers/traceroute.js",
     "./iris/js/renderers/vega-lite.js",
     "./iris/js/renderers/wavedrom.js",
+    "./iris/js/renderers/wireviz.js",
     "./iris/js/router.js",
     "./iris/js/search.js",
     "./iris/js/section-collapse.js",
