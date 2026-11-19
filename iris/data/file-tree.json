@@ -1367,6 +1367,20 @@
         ]
       },
       {
+        "name": "renderers.md",
+        "type": "file",
+        "path": "docs/renderers.md",
+        "wordCount": 669,
+        "created": 0,
+        "modified": 0,
+        "title": "渲染器清单与运行来源",
+        "tags": [
+          "开发",
+          "架构",
+          "渲染器"
+        ]
+      },
+      {
         "name": "requirements.md",
         "type": "file",
         "path": "docs/requirements.md",
@@ -1446,7 +1460,7 @@
         "path": "docs/show.md",
         "wordCount": 3567,
         "created": 1785512983,
-        "modified": 1795023347,
+        "modified": 1795028854,
         "title": "系统运行时截图",
         "tags": [
           "截图"
@@ -1454,7 +1468,7 @@
         "contributors": [
           {
             "name": "theforeveriris",
-            "count": 12
+            "count": 13
           }
         ]
       },
@@ -1482,9 +1496,9 @@
         ]
       }
     ],
-    "wordCount": 32764,
+    "wordCount": 33433,
     "created": 1779157467,
-    "modified": 1795027624
+    "modified": 1795028854
   },
   {
     "name": "iris",
@@ -1641,7 +1655,7 @@
     "path": "README.md",
     "wordCount": 572,
     "created": 1779156860,
-    "modified": 1795023347,
+    "modified": 1795028854,
     "title": "Markdown Preview",
     "tags": [
       "入门"
@@ -1649,7 +1663,7 @@
     "contributors": [
       {
         "name": "theforeveriris",
-        "count": 73
+        "count": 74
       },
       {
         "name": "github-actions[bot]",
