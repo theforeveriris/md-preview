@@ -125,6 +125,14 @@ ApexCharts 交互式图表渲染器，涵盖 13 种常见类型：折线、面�
 
 ---
 
+### TikZ / PGF 图形
+
+`tikz` / `pgf` 代码块写 LaTeX 绘图代码，渲染器自动补全 standalone 文档；支持几何、流程图、树、坐标图、3D 示意与自定义样式，经 Kroki 输出 SVG。
+
+详细示例：[TikZ / PGF 图形](examples/tikz-examples.md)
+
+---
+
 ### 数字逻辑电路
 
 `logic` 代码块用专用 DSL 画逻辑门、触发器、寄存器、计数器、MUX / 译码器 / 加法器；按信号深度自动布局，反馈回路自动绕线，纯组合电路自动生成真值表。

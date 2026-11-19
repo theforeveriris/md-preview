@@ -96,6 +96,7 @@ tags: [开发, 架构, 渲染器]
 | WireViz | `iris/js/renderers/wireviz.js` | ` ```wireviz ` | 同上（`wireviz` 类型） | 渲染时自动 |
 | Bytefield | `iris/js/renderers/bytefield.js` | ` ```bytefield ` | 同上（`bytefield` 类型） | 渲染时自动 |
 | Symbolator | `iris/js/renderers/symbolator.js` | ` ```symbolator ` | 同上（`symbolator` 类型） | 渲染时自动 |
+| TikZ / PGF | `iris/js/renderers/tikz.js` | ` ```tikz `、` ```pgf ` | `https://kroki.io/tikz/svg/…` | 渲染时自动；`krokiServers` |
 | Kroki 共用客户端 | `iris/js/kroki-client.js` | — | 编码用本地 `pako`，请求发往 Kroki | 失败回退源码 + 在线链接 |
 | PlantUML | `iris/js/renderers/plantuml.js` | ` ```plantuml ` | `https://www.plantuml.com/plantuml`，失败回退 `https://kroki.io/plantuml` | 渲染时自动；`plantumlServers` |
 | Vega-Lite | `iris/js/renderers/vega-lite.js` | ` ```vega-lite ` | **CDN**：`cdn.jsdelivr.net` 的 `vega@5`、`vega-lite@5`、`vega-embed@6` | 渲染时自动；暂无本地 vendor 版本 |
@@ -164,6 +165,7 @@ Leaflet 已本地化；如需完全离线，需要自建瓦片服务并替换 `g
 - 关闭后 `npm run sync:features` 会把对应文件移到同目录 `.disabled/`，并从 `index.html` 摘掉脚本。
 - 依赖链：`wavedrom / wireviz / bytefield / symbolator` 依赖 `kroki-client`（shared），关闭 `kroki` 不影响它们，但关闭 `kroki-client` 会让这四个一起失效。
 - `sql-erd` 依赖 `mermaid`；关闭 `mermaid` 后 DBML/SQL 图不会出图，只保留转换后的代码块。
+- `tikz` 依赖 `kroki-client`（shared）；关闭 `kroki-client` 会让 TikZ / PGF 一起失效。
 - `logic` 依赖 `logic-core`（shared）；关闭 `logic-core` 会让逻辑电路渲染器失效。
 - `@[geogebra](…)` 的材料嵌入由 `embedded` 分发；只关闭 `geogebra` 时命令围栏也不可用，`@[geogebra]` 会保留源码块。
 - GeoGebra 使用非商业许可；商用部署前需要取得授权。

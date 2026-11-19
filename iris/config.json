@@ -40,6 +40,7 @@
     "wavedrom": { "enabled": true, "description": "WaveDrom 数字时序图" },
     "wireviz": { "enabled": true, "description": "WireViz 线束 / 接线图" },
     "symbolator": { "enabled": true, "description": "Symbolator 硬件符号图（Verilog / VHDL）" },
+    "tikz": { "enabled": true, "description": "TikZ / PGF 图形（Kroki）" },
     "logic": { "enabled": true, "description": "数字逻辑电路（门 / 触发器 / 寄存器 / 计数器）" },
     "apexcharts": { "enabled": true, "description": "ApexCharts 交互式图表" },
     "vega-lite": { "enabled": true, "description": "Vega-Lite 声明式可视化" },

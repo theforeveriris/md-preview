@@ -25,7 +25,7 @@
     'blockdiag', 'seqdiag', 'actdiag', 'nwdiag', 'packetdiag', 'rackdiag',
     'bytefield', 'ditaa', 'erd', 'graphviz', 'nomnoml', 'svgbob', 'umlet',
     'plantuml', 'mermaid', 'c4plantuml', 'excalidraw', 'dbml', 'wavedrom',
-    'wireviz', 'symbolator', 'roadmap', 'structurizr', 'tidytree'
+    'wireviz', 'symbolator', 'tikz', 'roadmap', 'structurizr', 'tidytree'
   ]);
 
   function client() {
