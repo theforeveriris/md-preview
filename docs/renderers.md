@@ -24,7 +24,7 @@ tags: [开发, 架构, 渲染器]
 | 功能开关 | `iris/config.json` → `features` | `enabled:false` 时 `sync-features` 会把文件移入 `.disabled/` 并摘掉 `<script>` |
 | 脚本注入 | `index.html` 的 `BEGIN/END RENDERER SCRIPTS` 区块 | 由 `npm run sync:features` 整块重建，不要手改 |
 | 运行时调度 | `iris/js/md-render.js` → `runRenderers()` | 按注册顺序调用各渲染器；部分重渲染器滚动到附近才初始化 |
-| 懒加载名单 | `iris/js/md-render.js` → `DEFAULT_LAZY` | 目前是 `mermaid / plantuml / apexcharts / csvtable / jsontree / graph / logic` |
+| 懒加载名单 | `iris/js/md-render.js` → `DEFAULT_LAZY` | 目前是 `mermaid / plantuml / apexcharts / csvtable / jsontree / graph / logic / geogebra` |
 | 文档数据 | `iris/data/file-tree.json`、`links.json`、`search-index.json` 等 | 由 `iris/scripts/build-*.js` 生成 |
 
 新增渲染器的最小步骤：新建 `iris/js/renderers/xxx.js` → 在 `renderer-manifest.json` 加条目 → 在 `config.json` 的 `features` 加开关 → 跑 `npm run sync:features` → 补示例文档。
@@ -104,8 +104,9 @@ tags: [开发, 架构, 渲染器]
 | HTTP 请求块 | `iris/js/renderers/http-request.js` | ` ```http ` | 代码块里写的目标 URL | 点「发送」才请求 |
 | OpenAPI 试请求 | `iris/js/renderers/openapi.js` | ` ```openapi ` | spec 的 `servers[].url` | 点「试一下」才请求 |
 | 通用嵌入 | `iris/js/renderers/embedded.js` | `@[youtube]`、`@[bilibili]`、`@[vimeo]`、`@[figma]`、`@[codepen]`、`@[jsfiddle]`、`@[stackblitz]`、`@[twitter]` | 对应站点 iframe；Twitter 额外加载 `platform.twitter.com/widgets.js` | 渲染时自动 |
+| GeoGebra | `iris/js/renderers/geogebra.js` | ` ```geogebra `、`@[geogebra](材料ID)` | `geogebra.org/apps/deployggb.js` + GeoGebra Apps（CDN / 外部服务） | 默认点击加载；`geogebraScript` 可指向镜像；非商业许可 |
 
-外部服务的失败策略：Kroki / PlantUML / Vega-Lite 失败都会**保留源码**并提供在线打开或编辑器链接，不会留下空白块。
+外部服务的失败策略：Kroki / PlantUML / Vega-Lite / GeoGebra 失败都会**保留源码**并提供在线打开或编辑器链接，不会留下空白块。
 
 ---
 
@@ -164,3 +165,5 @@ Leaflet 已本地化；如需完全离线，需要自建瓦片服务并替换 `g
 - 依赖链：`wavedrom / wireviz / bytefield / symbolator` 依赖 `kroki-client`（shared），关闭 `kroki` 不影响它们，但关闭 `kroki-client` 会让这四个一起失效。
 - `sql-erd` 依赖 `mermaid`；关闭 `mermaid` 后 DBML/SQL 图不会出图，只保留转换后的代码块。
 - `logic` 依赖 `logic-core`（shared）；关闭 `logic-core` 会让逻辑电路渲染器失效。
+- `@[geogebra](…)` 的材料嵌入由 `embedded` 分发；只关闭 `geogebra` 时命令围栏也不可用，`@[geogebra]` 会保留源码块。
+- GeoGebra 使用非商业许可；商用部署前需要取得授权。

@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-19T14:57:41.604Z",
+  "generatedAt": "2026-11-19T15:00:29.358Z",
   "version": 1,
-  "count": 191,
+  "count": 192,
   "urls": [
     "./",
     "./404.html",
@@ -123,6 +123,7 @@
     "./iris/js/renderers/diff.js",
     "./iris/js/renderers/embedded.js",
     "./iris/js/renderers/geo.js",
+    "./iris/js/renderers/geogebra.js",
     "./iris/js/renderers/github.js",
     "./iris/js/renderers/glossary.js",
     "./iris/js/renderers/graph.js",

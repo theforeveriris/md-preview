@@ -133,6 +133,14 @@ ApexCharts 交互式图表渲染器，涵盖 13 种常见类型：折线、面�
 
 ---
 
+### GeoGebra 交互图
+
+`geogebra` 代码块写 GeoGebra 命令，或用 `@[geogebra](材料ID)` 嵌入公开材料；交互图由 geogebra.org 提供，默认点击后才加载（非商业许可）。
+
+详细示例：[GeoGebra 交互图](examples/geogebra-examples.md)
+
+---
+
 ### Git Diff 代码对比
 
 ![渲染-代码对比](image/渲染-代码对比.png)

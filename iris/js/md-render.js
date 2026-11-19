@@ -873,7 +873,10 @@
         const lang = String(p.dataset.lang || '').trim().split(/\s+/)[0];
         return lang === 'logic' || lang === 'circuit';
       });
-
+      case 'geogebra': return pres.filter(p => {
+        const lang = String(p.dataset.lang || '').trim().split(/\s+/)[0];
+        return lang === 'geogebra' || lang === 'ggb';
+      });
       default: return [];
     }
   }
@@ -1010,7 +1013,7 @@
   // pulse 不在此列：它的标记在正文文本节点里（非代码块），走 renderScoped
   // 的「包容器→渲染→搬回」路径会丢失渲染；波形动画改由渲染器内部的
   // IntersectionObserver 离屏暂停（见 pulse.js attachAnimIO）。
-  const DEFAULT_LAZY = ['mermaid', 'plantuml', 'apexcharts', 'csvtable', 'jsontree', 'graph', 'logic'];
+  const DEFAULT_LAZY = ['mermaid', 'plantuml', 'apexcharts', 'csvtable', 'jsontree', 'graph', 'logic', 'geogebra'];
 
   // 编辑器 cell / 双屏对照渲染的渲染器范围：默认全量注册表，仅剔除
   // graph（文档图谱挂载点依赖构建期全站 links.json，局部容器里无意义）。

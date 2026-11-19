@@ -321,7 +321,7 @@
     'ensp', 'geojson', 'topojson', 'toml', 'dockerfile', 'properties',
     'heatmap', 'colorcard', 'colors', 'palette',
     'wavedrom', 'wireviz', 'bytefield', 'symbolator', 'dbml',
-    'logic', 'circuit',
+    'logic', 'circuit', 'geogebra', 'ggb',
     'ping', 'tracert', 'cli'
   ]);
 

@@ -93,6 +93,14 @@
 - **版权**: Copyright (c) 2020-2026 Vercel, Inc.
 - **来源**: https://github.com/vercel/geist-ui
 
+## 外部服务
+
+### GeoGebra
+- **许可证**: GeoGebra Non-Commercial License（非商业用途）
+- **说明**: 不随仓库分发；交互图由 `geogebra.org` 的 `deployggb.js` 与 GeoGebra Apps 在运行时提供
+- **来源**: https://www.geogebra.org/license
+- **注意**: 商业用途需要单独取得 GeoGebra 授权
+
 ## 字体
 
 ### Cormorant Garamond

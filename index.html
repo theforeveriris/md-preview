@@ -1712,6 +1712,7 @@
               <button class="dropdown-item" data-insert="```dbml\nTable users {\n  id int [pk]\n  name varchar\n}\nTable posts {\n  id int [pk]\n  user_id int [ref: &gt; users.id]\n}\n```" data-cursor="-6">数据库模型 dbml</button>
               <button class="dropdown-item" data-insert="```symbolator\nmodule demo(input a, input b, output y);\nendmodule\n```" data-cursor="-6">硬件符号 symbolator</button>
               <button class="dropdown-item" data-insert="```logic\ninput A, B, Cin\noutput S, Cout\nxor x1 = A, B\nxor S = x1, Cin\nand a1 = A, B\nand a2 = x1, Cin\nor Cout = a1, a2\n```" data-cursor="-6">逻辑电路 logic</button>
+              <button class="dropdown-item" data-insert="```geogebra\napp: graphing\nheight: 420\ncommands:\n  - f(x) = sin(x)\n  - (1, 1)\n  - g(x) = f'(x)\n```" data-cursor="-6">交互图 geogebra</button>
               <button class="dropdown-item" data-insert="```heatmap\n2025-09-30,9\n2025-10-01,8\n2025-10-02,0\n```" data-cursor="-6">日历热图 heatmap</button>
             </div>
             <div class="dropdown-group">
@@ -2201,6 +2202,7 @@
   <script defer src="iris/js/renderers/geo.js"></script>
   <script defer src="iris/js/renderers/code-reader.js"></script>
   <script defer src="iris/js/renderers/embedded.js"></script>
+  <script defer src="iris/js/renderers/geogebra.js"></script>
   <script defer src="iris/js/renderers/github.js"></script>
   <script defer src="iris/js/renderers/katex.js"></script>
   <script defer src="iris/js/renderers/pulse.js"></script>

@@ -19,6 +19,7 @@
     { "id": "geo", "type": "renderer", "file": "iris/js/renderers/geo.js", "description": "地理地图渲染（GeoJSON/TopoJSON + Leaflet）" },
     { "id": "code-reader", "type": "renderer", "file": "iris/js/renderers/code-reader.js", "description": "代码阅读器嵌入" },
     { "id": "embedded", "type": "renderer", "file": "iris/js/renderers/embedded.js", "description": "通用嵌入内容分发器" },
+    { "id": "geogebra", "type": "renderer", "file": "iris/js/renderers/geogebra.js", "description": "GeoGebra 材料嵌入与命令渲染" },
     { "id": "github", "type": "renderer", "file": "iris/js/renderers/github.js", "description": "GitHub 卡片嵌入（Issue/PR/Release）" },
     { "id": "katex", "type": "renderer", "file": "iris/js/renderers/katex.js", "description": "KaTeX 数学公式渲染" },
     { "id": "pulse", "type": "renderer", "file": "iris/js/renderers/pulse.js", "description": "波形动画渲染" },

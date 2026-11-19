@@ -4212,3 +4212,134 @@ body.graph-page #markdownContent > .doc-graph {
   .logic-view { break-inside: avoid; }
 }
 
+/* ========== GeoGebra 嵌入 / 命令渲染 ========== */
+.geogebra-card,
+.geogebra-embed-host {
+  margin: 1.5em 0;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.geogebra-head,
+.geogebra-embed-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 12px;
+}
+
+.geogebra-badge {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--color-accent-purple);
+  color: var(--color-text);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .02em;
+}
+
+.geogebra-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text-muted);
+}
+
+.geogebra-open {
+  flex: none;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.geogebra-open:hover { color: var(--color-text); text-decoration: underline; }
+
+.geogebra-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 28px 16px;
+  background: var(--color-bg);
+}
+
+.geogebra-load {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.geogebra-load:hover { border-color: var(--color-text-muted); }
+
+.geogebra-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.geogebra-loading {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 12.5px;
+}
+
+.geogebra-canvas,
+.geogebra-embed-frame {
+  position: relative;
+  width: 100%;
+  background: #fff;
+  overflow: hidden;
+}
+
+.geogebra-canvas iframe,
+.geogebra-embed-frame iframe {
+  display: block;
+  width: 100%;
+  height: 420px;
+  border: 0;
+}
+
+.geogebra-command-warn {
+  padding: 8px 12px;
+  border-top: 1px solid var(--color-border);
+  color: #b7791f;
+  font-size: 12px;
+}
+
+.geogebra-fallback {
+  padding: 12px;
+}
+
+.geogebra-fallback-note {
+  margin-bottom: 8px;
+  color: #c0392b;
+  font-size: 12.5px;
+}
+
+.geogebra-fallback-actions { margin-bottom: 8px; font-size: 12.5px; }
+
+@media (max-width: 640px) {
+  .geogebra-canvas iframe,
+  .geogebra-embed-frame iframe { height: 320px; }
+}
+
+@media print {
+  .geogebra-card, .geogebra-embed-host { break-inside: avoid; }
+}

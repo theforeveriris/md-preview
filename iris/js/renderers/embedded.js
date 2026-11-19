@@ -57,7 +57,7 @@
     // 支持传入外部容器（如编辑器 cell 的 outputElement），不传则默认操作主文档
     const targetEl = container || dom.markdownContent;
 
-    const embedLanguages = ['embed', 'geojson', 'topojson', 'twitter', 'x', 'pkt', 'ensp', 'pptx', 'code', 'file', 'har', 'trace', 'lldp', 'cdp', 'registry', 'github', 'issue', 'pr', 'release'];
+    const embedLanguages = ['embed', 'geojson', 'topojson', 'twitter', 'x', 'pkt', 'ensp', 'pptx', 'geogebra', 'code', 'file', 'har', 'trace', 'lldp', 'cdp', 'registry', 'github', 'issue', 'pr', 'release'];
 
     // 提前检测：文档不含任何嵌入语言标记时直接返回
     const embedSelector = embedLanguages.map(l => `pre code.language-${l}`).join(',');
@@ -123,6 +123,16 @@
             if (window.MarkdownPreview.pkt) {
               window.MarkdownPreview.pkt.loadAndRender(el, embedUrl, service);
             }
+          }
+        });
+      } else if (service === 'geogebra') {
+        mountEmbed({
+          prefix: 'geogebra',
+          className: 'geogebra-embed-host',
+          delay: 0,
+          mount: (el, embedUrl) => {
+            const r = window.MarkdownPreview.renderers.geogebra;
+            if (r && r.renderEmbed) return r.renderEmbed(el, embedUrl);
           }
         });
       } else if (service === 'pptx') {

@@ -8,6 +8,7 @@
   "showEditButton": true,
   "showReadingTime": true,
   "showBreadcrumbs": true,
+  "geogebraScript": "https://www.geogebra.org/apps/deployggb.js",
 
   "_pinned_params_doc": {
     "_说明": "↑ 以上顶层键均可在 config.json 中固定为指定值，覆盖代码内置默认值。修改后推送代码即生效，无需改代码。下方为各键详细说明。",
@@ -46,6 +47,7 @@
     "geo": { "enabled": true, "description": "地理地图渲染（GeoJSON/TopoJSON + Leaflet）" },
     "code-reader": { "enabled": true, "description": "代码阅读器嵌入" },
     "embedded": { "enabled": true, "description": "通用嵌入内容分发器" },
+    "geogebra": { "enabled": true, "description": "GeoGebra 材料嵌入与命令渲染" },
     "github": { "enabled": true, "description": "GitHub 卡片嵌入（Issue/PR/Release）" },
     "katex": { "enabled": true, "description": "KaTeX 数学公式渲染" },
     "pulse": { "enabled": true, "description": "波形动画渲染" },
