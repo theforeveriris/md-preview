@@ -311,7 +311,9 @@
       }
     });
     if (top === Infinity) return null;
-    return top > 12 ? top : bottom;
+    if (top <= 12) return bottom;
+    // 选更近的一侧绕行，避免为了避开端口绕一整圈
+    return Math.abs(y - top) <= Math.abs(y - bottom) ? top : bottom;
   }
 
   function assignLanes(model, edges) {

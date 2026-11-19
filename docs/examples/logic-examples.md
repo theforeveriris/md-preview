@@ -613,46 +613,10 @@ connect D[0] -> Q0
 connect D[3] -> Q3
 ```
 
-### 寄存器输出接到 LED
-
-把 4 位寄存器的每一位接到独立输出，用于示意 LED 或测试点。
-
-**源码**：
-
-````markdown
-```logic
-clock CLK
-input D[3:0], EN
-output Q[3:0], L0, L1, L2, L3
-
-register r0[4] (D[3:0], CLK, EN) -> Q[3:0]
-connect Q[0] -> L0
-connect Q[1] -> L1
-connect Q[2] -> L2
-connect Q[3] -> L3
-```
-````
-
-**渲染效果**：
-
-```logic
-clock CLK
-input D[3:0], EN
-output Q[3:0], L0, L1, L2, L3
-
-register r0[4] (D[3:0], CLK, EN) -> Q[3:0]
-connect Q[0] -> L0
-connect Q[1] -> L1
-connect Q[2] -> L2
-connect Q[3] -> L3
-```
-
----
-
 ## 七、组合 + 时序：计数器驱动译码器
 
-计数器输出 `Q[3:0]` 接到 2-4 译码器？这里用低两位 `Q[1:0]` 选择输出，
-演示总线位选与组合块混用。译码器输出可直接驱动 LED。
+计数器输出 `Q[3:0]`，取低两位接到 2-4 译码器，演示总线位选与组合块混用。
+译码器输出可直接驱动 LED。
 
 **源码**：
 

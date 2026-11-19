@@ -24,7 +24,7 @@ tags: [开发, 架构, 渲染器]
 | 功能开关 | `iris/config.json` → `features` | `enabled:false` 时 `sync-features` 会把文件移入 `.disabled/` 并摘掉 `<script>` |
 | 脚本注入 | `index.html` 的 `BEGIN/END RENDERER SCRIPTS` 区块 | 由 `npm run sync:features` 整块重建，不要手改 |
 | 运行时调度 | `iris/js/md-render.js` → `runRenderers()` | 按注册顺序调用各渲染器；部分重渲染器滚动到附近才初始化 |
-| 懒加载名单 | `iris/js/md-render.js` → `DEFAULT_LAZY` | 目前是 `mermaid / plantuml / apexcharts / csvtable / jsontree / graph / logic / geogebra` |
+| 懒加载名单 | `iris/js/md-render.js` → `DEFAULT_LAZY` | 目前是 `mermaid / plantuml / apexcharts / csvtable / jsontree / graph / geogebra` |
 | 文档数据 | `iris/data/file-tree.json`、`links.json`、`search-index.json` 等 | 由 `iris/scripts/build-*.js` 生成 |
 
 新增渲染器的最小步骤：新建 `iris/js/renderers/xxx.js` → 在 `renderer-manifest.json` 加条目 → 在 `config.json` 的 `features` 加开关 → 跑 `npm run sync:features` → 补示例文档。

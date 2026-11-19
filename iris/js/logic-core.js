@@ -761,15 +761,20 @@
       if (n.kind === 'const') rank.set(n, 0);
     });
 
-    // 输出端口固定在最右列（不把端口自身算进 maxRank，避免多推一列）
+    // 输出端口放在它的驱动源右侧一列，避免所有输出都被推到最右边拉长走线
     let maxRank = 0;
     model.nodes.forEach(n => {
-      if (n.kind === 'port' && n.dir === 'output') return;
+      if (n.kind === 'port' && n.dir === 'output') {
+        const pin = n.inputs[0];
+        const d = pin && pin.net && pin.net.driver;
+        let r = 0;
+        if (d) {
+          const dn = d.kind === 'node' ? d.node : (d.kind === 'port' ? d.port.node : d.node);
+          if (dn) r = rank.get(dn) || 0;
+        }
+        rank.set(n, r + 1);
+      }
       maxRank = Math.max(maxRank, rank.get(n) || 0);
-    });
-    const outRank = maxRank + 1;
-    model.nodes.forEach(n => {
-      if (n.kind === 'port' && n.dir === 'output') rank.set(n, outRank);
     });
 
     model.nodes.forEach(n => { n.rank = rank.get(n) || 0; });
@@ -857,16 +862,23 @@
     });
     const maxH = Math.max.apply(null, Array.from(colHeights.values()).concat([0]));
 
-    const colGap = 190;
     const leftPad = 20;
     const topPad = 20;
+    const rankWidth = new Map();
+    rankKeys.forEach(r => {
+      let w = 0;
+      ranks.get(r).forEach(n => { w = Math.max(w, n.w); });
+      rankWidth.set(r, w);
+    });
+    let colX = leftPad;
     rankKeys.forEach(r => {
       let y = topPad + (maxH - colHeights.get(r)) / 2;
       ranks.get(r).forEach(n => {
-        n.x = leftPad + r * colGap;
+        n.x = colX;
         n.y = y;
         y += n.h + gapY;
       });
+      colX += rankWidth.get(r) + (rankWidth.get(r) === 0 ? 42 : 70);
     });
 
     // tap 节点插在驱动源右侧
@@ -898,6 +910,17 @@
         n.w = 0;
         n.h = 0;
       });
+    });
+
+    // 常量贴近它的负载，避免从最左侧拉一根长线穿过整张图
+    nodes.forEach(n => {
+      if (n.kind !== 'const' || !n.outputs[0] || !n.outputs[0].net) return;
+      const sinks = n.outputs[0].net.sinks;
+      if (!sinks || !sinks.length) return;
+      const sink = sinks[0].node;
+      if (!sink || sink.kind === 'port') return;
+      n.x = Math.max(leftPad, sink.x - 56);
+      n.y = sink.y + sink.h / 2 - n.h / 2;
     });
 
     // 引脚坐标
@@ -970,7 +993,7 @@
       leftPad: leftPad,
       topPad: topPad,
       maxRank: maxRank,
-      colGap: colGap
+      colGap: 70
     };
     return model.layout;
   }
