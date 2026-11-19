@@ -4024,3 +4024,191 @@ body.graph-page #markdownContent > .doc-graph {
   .gh-card { break-inside: avoid; }
   .hotspot-view, .kroki-diagram, .clihelp-view, .registry-view, .nt-view, .trace-view, .har-view, .log-view, .lldp-view { break-inside: avoid; }
 }
+
+/* ========== 数字逻辑电路（logic） ========== */
+.logic-view {
+  position: relative;
+  margin: 1.5em 0;
+  padding: 10px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+}
+
+.logic-stage {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.logic-svg {
+  display: block;
+  max-width: none;
+  height: auto;
+  margin: 0 auto;
+  color: var(--color-text);
+}
+
+.logic-svg text {
+  fill: var(--color-text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.logic-wire {
+  fill: none;
+  stroke: var(--color-text-muted);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  transition: opacity .15s ease, stroke .15s ease;
+}
+
+.logic-wire.logic-bus { stroke-width: 3.2; }
+.logic-wire.logic-feedback { stroke-dasharray: 5 4; }
+.logic-wire.logic-backward { stroke-dasharray: 3 3; }
+
+.logic-gate,
+.logic-block,
+.logic-port,
+.logic-const {
+  fill: var(--color-surface);
+  stroke: var(--color-text);
+  stroke-width: 1.6;
+}
+
+.logic-port-in { fill: var(--color-surface); }
+.logic-port-out { fill: var(--color-bg); }
+
+.logic-gate-arc { fill: none; }
+
+.logic-bubble {
+  fill: var(--color-surface);
+  stroke: var(--color-text);
+  stroke-width: 1.4;
+}
+
+.logic-junction {
+  fill: var(--color-text);
+  stroke: none;
+}
+
+.logic-clock-mark,
+.logic-clock-ring,
+.logic-clock-hand {
+  fill: none;
+  stroke: var(--color-text);
+  stroke-width: 1.3;
+}
+
+.logic-gate-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-anchor: middle;
+}
+
+.logic-block-name {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.logic-block-type,
+.logic-pin-label,
+.logic-tap-label,
+.logic-net-label {
+  fill: var(--color-text-muted);
+}
+
+.logic-block-type { font-size: 9px; }
+.logic-pin-label { font-size: 9px; }
+.logic-tap-label,
+.logic-net-label { font-size: 9px; }
+
+.logic-const-label,
+.logic-port-label {
+  font-size: 10px;
+  text-anchor: middle;
+}
+
+.logic-view.logic-hide-pins .logic-pin-label,
+.logic-view.logic-hide-pins .logic-net-label,
+.logic-view.logic-hide-pins .logic-tap-label {
+  display: none;
+}
+
+.logic-view.is-hovering .logic-wire { opacity: .2; }
+.logic-view.is-hovering .logic-wire.is-hot {
+  opacity: 1;
+  stroke: var(--color-accent-purple-deep);
+  stroke-width: 2.4;
+}
+.logic-view.is-hovering .logic-wire.is-hot.logic-bus { stroke-width: 4; }
+
+.logic-truth-wrap {
+  margin: 12px 0 2px;
+  overflow-x: auto;
+}
+
+.logic-truth {
+  border-collapse: collapse;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  min-width: 240px;
+}
+
+.logic-truth caption {
+  caption-side: top;
+  text-align: left;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  padding: 0 0 6px;
+}
+
+.logic-truth th,
+.logic-truth td {
+  border: 1px solid var(--color-border);
+  padding: 4px 10px;
+  text-align: center;
+}
+
+.logic-truth th {
+  background: var(--color-bg);
+  font-weight: 600;
+}
+
+.logic-truth .logic-th-out,
+.logic-truth .logic-td-out {
+  background: color-mix(in srgb, var(--color-accent-purple) 12%, transparent);
+}
+
+.logic-diag {
+  margin: 0 0 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-text-muted);
+  border-radius: 8px;
+  background: var(--color-bg);
+  font-size: 12.5px;
+}
+
+.logic-diag-fatal { margin: 1.5em 0; }
+
+.logic-diag-title { font-weight: 600; margin-bottom: 4px; }
+.logic-diag-error { color: #c0392b; }
+.logic-diag-warn { color: #b7791f; }
+
+.logic-diag ul {
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.logic-diag li { margin: 2px 0; }
+
+.logic-note {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+@media print {
+  .logic-view { break-inside: avoid; }
+}
+

@@ -114,6 +114,7 @@ Demo：https://theforeveriris.github.io/md-preview/
 - WireViz 接线图：`wireviz` 代码块写连接器 / 线缆 / 连接表，渲染线束与接线图
 - Bytefield 字节域图：`bytefield` 代码块用 bytefield-svg DSL 画报文结构、寄存器与帧格式（取代旧 `bits` 位标注块）
 - Symbolator 硬件符号图：`symbolator` 代码块写 Verilog / VHDL，端口可按 `//# {{分组|标题}}` 分组显示
+- 数字逻辑电路：`logic` 代码块用专用 DSL 画门、触发器、寄存器、计数器、MUX / 译码器 / 加法器；组合逻辑自动生成真值表，反馈回路自动绕线
 - 术语表悬浮：`glossary` 代码块定义术语（每行 `术语 | 解释`），正文首次出现加下划线、悬停 / 聚焦弹出解释卡片
 - HTTP 请求块：`http` 代码块写请求（方法 / URL / 头 / 体），点击「发送」实时请求并展示状态码、耗时、响应头与响应体
 - OpenAPI 交互文档：`openapi` / `swagger` 代码块（JSON / YAML）渲染接口列表与参数表，每个接口可「试一下」直接发请求
@@ -341,6 +342,7 @@ python3 iris/scripts/pptx/main.py
 | WireViz | 线束 / 接线图 |
 | Bytefield | 字节域 / 报文结构图 |
 | Symbolator | 硬件符号图（Verilog / VHDL） |
+| 数字逻辑 | 门 / 触发器 / 寄存器 / 计数器（专用 DSL） |
 | 图片热点 | `hotspot` 百分比坐标标注 |
 | CLI 帮助 | `clihelp` 结构化帮助卡片 |
 | 源码嵌入 | `@[code]` / `@[file]` 仓库源码嵌入 |
@@ -392,6 +394,7 @@ python3 iris/scripts/pptx/main.py
 | `wireviz-examples.md` | WireViz 线束 / 接线图 |
 | `bytefield-examples.md` | Bytefield 字节域 / 报文结构图 |
 | `symbolator-examples.md` | Symbolator 硬件符号图 |
+| `logic-examples.md` | 数字逻辑电路（门 / 触发器 / 寄存器 / 计数器 / 真值表） |
 | `timeline-examples.md` | 时间线组件（状态色 / 分隔符 / 今日标记线） |
 | `figure-examples.md` | 图 / 表自动编号、别名与交叉引用 |
 | `code-reader-examples.md` | 源码嵌入与代码块阅读模式 |

@@ -1711,6 +1711,7 @@
               <button class="dropdown-item" data-insert="```wireviz\nconnectors:\n  X1:\n    type: Molex\n    pinlabels: [VCC, GND]\ncables:\n  W1:\n    wirecount: 2\n    wirelabels: [VCC, GND]\nconnections:\n  -\n    - X1: [1,2]\n    - W1: [1,2]\n```" data-cursor="-6">接线图 wireviz</button>
               <button class="dropdown-item" data-insert="```dbml\nTable users {\n  id int [pk]\n  name varchar\n}\nTable posts {\n  id int [pk]\n  user_id int [ref: &gt; users.id]\n}\n```" data-cursor="-6">数据库模型 dbml</button>
               <button class="dropdown-item" data-insert="```symbolator\nmodule demo(input a, input b, output y);\nendmodule\n```" data-cursor="-6">硬件符号 symbolator</button>
+              <button class="dropdown-item" data-insert="```logic\ninput A, B, Cin\noutput S, Cout\nxor x1 = A, B\nxor S = x1, Cin\nand a1 = A, B\nand a2 = x1, Cin\nor Cout = a1, a2\n```" data-cursor="-6">逻辑电路 logic</button>
               <button class="dropdown-item" data-insert="```heatmap\n2025-09-30,9\n2025-10-01,8\n2025-10-02,0\n```" data-cursor="-6">日历热图 heatmap</button>
             </div>
             <div class="dropdown-group">
@@ -2185,6 +2186,7 @@
   <!-- steps/quote/orgchart 语法糖：orgchart 注入 mermaid 块，必须先于 mermaid.js -->
   <script defer src="iris/js/renderers/steps.js"></script>
   <script defer src="iris/js/kroki-client.js"></script>
+  <script defer src="iris/js/logic-core.js"></script>
   <script defer src="iris/js/renderers/sql-erd.js"></script>
   <script defer src="iris/js/renderers/mermaid.js"></script>
   <script defer src="iris/js/renderers/plantuml.js"></script>
@@ -2192,6 +2194,7 @@
   <script defer src="iris/js/renderers/wavedrom.js"></script>
   <script defer src="iris/js/renderers/wireviz.js"></script>
   <script defer src="iris/js/renderers/symbolator.js"></script>
+  <script defer src="iris/js/renderers/logic.js"></script>
   <script defer src="iris/js/renderers/apexcharts.js"></script>
   <script defer src="iris/js/renderers/vega-lite.js"></script>
   <script defer src="iris/js/renderers/diff.js"></script>

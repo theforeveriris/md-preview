@@ -24,7 +24,7 @@ tags: [开发, 架构, 渲染器]
 | 功能开关 | `iris/config.json` → `features` | `enabled:false` 时 `sync-features` 会把文件移入 `.disabled/` 并摘掉 `<script>` |
 | 脚本注入 | `index.html` 的 `BEGIN/END RENDERER SCRIPTS` 区块 | 由 `npm run sync:features` 整块重建，不要手改 |
 | 运行时调度 | `iris/js/md-render.js` → `runRenderers()` | 按注册顺序调用各渲染器；部分重渲染器滚动到附近才初始化 |
-| 懒加载名单 | `iris/js/md-render.js` → `DEFAULT_LAZY` | 目前是 `mermaid / plantuml / apexcharts / csvtable / jsontree / graph` |
+| 懒加载名单 | `iris/js/md-render.js` → `DEFAULT_LAZY` | 目前是 `mermaid / plantuml / apexcharts / csvtable / jsontree / graph / logic` |
 | 文档数据 | `iris/data/file-tree.json`、`links.json`、`search-index.json` 等 | 由 `iris/scripts/build-*.js` 生成 |
 
 新增渲染器的最小步骤：新建 `iris/js/renderers/xxx.js` → 在 `renderer-manifest.json` 加条目 → 在 `config.json` 的 `features` 加开关 → 跑 `npm run sync:features` → 补示例文档。
@@ -55,6 +55,7 @@ tags: [开发, 架构, 渲染器]
 |--------|----------|----------|------|
 | Git Diff | `iris/js/renderers/diff.js` | ` ```diff ` | 自写解析，无 diff2html |
 | 步骤 / 引用 / 组织图 | `iris/js/renderers/steps.js` | ` ```steps `、` ```quote `、` ```orgchart ` | 生成 Mermaid 块交给本地 Mermaid |
+| 数字逻辑电路 | `iris/js/renderers/logic.js`、`iris/js/logic-core.js` | ` ```logic `、` ```circuit ` | 专用 DSL；原生 SVG + 真值表，无第三方库 |
 | JSON 树 | `iris/js/renderers/json-tree.js` | ` ```json `、` ```json-tree ` | 可折叠树 |
 | JSONPath 搜索 | `iris/js/renderers/json-search.js` | 增强 `json` 块 | 依赖 json-tree 的产物 |
 | CSV / TSV 表格 | `iris/js/renderers/csv-table.js` | ` ```csv `、` ```tsv `、` ```csv rules ` | 「画成图」时才加载本地 ApexCharts |
@@ -162,3 +163,4 @@ Leaflet 已本地化；如需完全离线，需要自建瓦片服务并替换 `g
 - 关闭后 `npm run sync:features` 会把对应文件移到同目录 `.disabled/`，并从 `index.html` 摘掉脚本。
 - 依赖链：`wavedrom / wireviz / bytefield / symbolator` 依赖 `kroki-client`（shared），关闭 `kroki` 不影响它们，但关闭 `kroki-client` 会让这四个一起失效。
 - `sql-erd` 依赖 `mermaid`；关闭 `mermaid` 后 DBML/SQL 图不会出图，只保留转换后的代码块。
+- `logic` 依赖 `logic-core`（shared）；关闭 `logic-core` 会让逻辑电路渲染器失效。

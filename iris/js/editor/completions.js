@@ -90,6 +90,7 @@
     { trigger: '```', label: '```wireviz', desc: '线束 / 接线图·WireViz YAML', insert: '```wireviz\nconnectors:\n  X1:\n    type: Molex\n    pinlabels: [VCC, GND]\ncables:\n  W1:\n    wirecount: 2\n    wirelabels: [VCC, GND]\nconnections:\n  -\n    - X1: [1,2]\n    - W1: [1,2]\n```', replaceLength: 3 },
     { trigger: '```', label: '```dbml', desc: '数据库模型·DBML → ER', insert: '```dbml\nTable users {\n  id int [pk]\n  name varchar\n}\nTable posts {\n  id int [pk]\n  user_id int [ref: > users.id]\n}\n```', replaceLength: 3 },
     { trigger: '```', label: '```symbolator', desc: '硬件符号·Verilog/VHDL', insert: '```symbolator\nmodule demo(input a, input b, output y);\nendmodule\n```', replaceLength: 3 },
+    { trigger: '```', label: '```logic', desc: '数字逻辑电路·门/触发器/计数器', insert: '```logic\ninput A, B, Cin\noutput S, Cout\nxor x1 = A, B\nxor S = x1, Cin\nand a1 = A, B\nand a2 = x1, Cin\nor Cout = a1, a2\n```', replaceLength: 3 },
     { trigger: '```', label: '```heatmap', desc: '日历热图·日期,数值', insert: '```heatmap\n2025-09-30,9\n2025-10-01,8\n2025-10-02,0\n```', replaceLength: 3 },
     { trigger: '```', label: '```ipcalc', desc: '子网计算', insert: '```ipcalc 10.1.1.0/24\n```', replaceLength: 3 },
     { trigger: '```', label: '```acl', desc: 'ACL 分析（ios/vrp）', insert: '```acl ios\n10 permit tcp 10.1.1.0 0.0.0.255 any eq 443\n20 deny ip any any\n```', replaceLength: 3 },

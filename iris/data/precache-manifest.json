@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-19T07:30:58.451Z",
+  "generatedAt": "2026-11-19T14:57:41.604Z",
   "version": 1,
-  "count": 189,
+  "count": 191,
   "urls": [
     "./",
     "./404.html",
@@ -94,6 +94,7 @@
     "./iris/js/learning-path.js",
     "./iris/js/line-highlight.js",
     "./iris/js/local-docs.js",
+    "./iris/js/logic-core.js",
     "./iris/js/markdown.js",
     "./iris/js/mascot-copy.js",
     "./iris/js/md-render.js",
@@ -136,6 +137,7 @@
     "./iris/js/renderers/kroki.js",
     "./iris/js/renderers/lldp.js",
     "./iris/js/renderers/log.js",
+    "./iris/js/renderers/logic.js",
     "./iris/js/renderers/mermaid.js",
     "./iris/js/renderers/net-tools.js",
     "./iris/js/renderers/openapi.js",
