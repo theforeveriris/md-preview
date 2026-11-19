@@ -847,6 +847,26 @@
             ]
           },
           {
+            "name": "nomnoml-examples.md",
+            "type": "file",
+            "path": "docs/examples/nomnoml-examples.md",
+            "wordCount": 163,
+            "created": 1795131660,
+            "modified": 1795131660,
+            "title": "Nomnoml UML 与关系图",
+            "tags": [
+              "图表",
+              "UML",
+              "架构"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "count": 1
+              }
+            ]
+          },
+          {
             "name": "orgchart-examples.md",
             "type": "file",
             "path": "docs/examples/orgchart-examples.md",
@@ -1166,6 +1186,26 @@
             ]
           },
           {
+            "name": "tikz-examples.md",
+            "type": "file",
+            "path": "docs/examples/tikz-examples.md",
+            "wordCount": 344,
+            "created": 1795131341,
+            "modified": 1795131341,
+            "title": "TikZ / PGF 图形",
+            "tags": [
+              "图表",
+              "矢量",
+              "数学"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "count": 1
+              }
+            ]
+          },
+          {
             "name": "timeline-examples.md",
             "type": "file",
             "path": "docs/examples/timeline-examples.md",
@@ -1262,9 +1302,9 @@
             ]
           }
         ],
-        "wordCount": 20244,
+        "wordCount": 20751,
         "created": 1779157467,
-        "modified": 1795120778
+        "modified": 1795131660
       },
       {
         "name": "changelog.md",
@@ -1410,9 +1450,9 @@
         "name": "renderers.md",
         "type": "file",
         "path": "docs/renderers.md",
-        "wordCount": 487,
+        "wordCount": 624,
         "created": 1795073663,
-        "modified": 1795120778,
+        "modified": 1795131660,
         "title": "渲染器清单与运行来源",
         "tags": [
           "开发",
@@ -1422,7 +1462,7 @@
         "contributors": [
           {
             "name": "theforeveriris",
-            "count": 4
+            "count": 6
           }
         ]
       },
@@ -1504,9 +1544,9 @@
         "name": "show.md",
         "type": "file",
         "path": "docs/show.md",
-        "wordCount": 3714,
+        "wordCount": 3826,
         "created": 1785512983,
-        "modified": 1795100707,
+        "modified": 1795131660,
         "title": "系统运行时截图",
         "tags": [
           "截图"
@@ -1514,7 +1554,7 @@
         "contributors": [
           {
             "name": "theforeveriris",
-            "count": 16
+            "count": 18
           }
         ]
       },
@@ -1542,9 +1582,9 @@
         ]
       }
     ],
-    "wordCount": 33896,
+    "wordCount": 34652,
     "created": 1779157467,
-    "modified": 1795120778
+    "modified": 1795131660
   },
   {
     "name": "iris",
@@ -1701,7 +1741,7 @@
     "path": "README.md",
     "wordCount": 572,
     "created": 1779156860,
-    "modified": 1795100707,
+    "modified": 1795131660,
     "title": "Markdown Preview",
     "tags": [
       "入门"
@@ -1709,7 +1749,7 @@
     "contributors": [
       {
         "name": "theforeveriris",
-        "count": 76
+        "count": 78
       },
       {
         "name": "github-actions[bot]",
