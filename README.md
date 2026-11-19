@@ -115,6 +115,7 @@ Demo：https://theforeveriris.github.io/md-preview/
 - Bytefield 字节域图：`bytefield` 代码块用 bytefield-svg DSL 画报文结构、寄存器与帧格式（取代旧 `bits` 位标注块）
 - Symbolator 硬件符号图：`symbolator` 代码块写 Verilog / VHDL，端口可按 `//# {{分组|标题}}` 分组显示
 - TikZ / PGF 图形：`tikz` / `pgf` 代码块写 LaTeX 绘图代码，自动补全 standalone 文档，经 Kroki 渲染为矢量图
+- Nomnoml UML：`nomnoml` 代码块用简洁语法画类图、对象图、组件图、用例图与流程图节点，经 Kroki 渲染
 - 数字逻辑电路：`logic` 代码块用专用 DSL 画门、触发器、寄存器、计数器、MUX / 译码器 / 加法器；组合逻辑自动生成真值表，反馈回路自动绕线
 - GeoGebra 交互图：`geogebra` 代码块写命令，或 `@[geogebra](材料ID)` 嵌入公开材料；默认点击加载，非商业许可
 - 术语表悬浮：`glossary` 代码块定义术语（每行 `术语 | 解释`），正文首次出现加下划线、悬停 / 聚焦弹出解释卡片
@@ -345,6 +346,7 @@ python3 iris/scripts/pptx/main.py
 | Bytefield | 字节域 / 报文结构图 |
 | Symbolator | 硬件符号图（Verilog / VHDL） |
 | TikZ / PGF | LaTeX 矢量绘图（Kroki） |
+| Nomnoml | 简洁 UML / 关系图（Kroki） |
 | 数字逻辑 | 门 / 触发器 / 寄存器 / 计数器（专用 DSL） |
 | GeoGebra | 材料嵌入与命令绘制（外部服务） |
 | 图片热点 | `hotspot` 百分比坐标标注 |
@@ -399,6 +401,7 @@ python3 iris/scripts/pptx/main.py
 | `bytefield-examples.md` | Bytefield 字节域 / 报文结构图 |
 | `symbolator-examples.md` | Symbolator 硬件符号图 |
 | `tikz-examples.md` | TikZ / PGF 矢量图 |
+| `nomnoml-examples.md` | Nomnoml UML / 关系图 |
 | `logic-examples.md` | 数字逻辑电路（门 / 触发器 / 寄存器 / 计数器 / 真值表） |
 | `geogebra-examples.md` | GeoGebra 材料嵌入与命令绘制 |
 | `timeline-examples.md` | 时间线组件（状态色 / 分隔符 / 今日标记线） |
