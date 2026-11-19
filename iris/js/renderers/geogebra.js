@@ -162,7 +162,16 @@
   }
 
   function openLink(app) {
-    return 'https://www.geogebra.org/' + (app === 'classic' ? 'classic' : 'classic');
+    const map = {
+      graphing: 'graphing',
+      geometry: 'geometry',
+      classic: 'classic',
+      '3d': '3d',
+      spreadsheet: 'spreadsheet',
+      probability: 'probability',
+      cas: 'cas'
+    };
+    return 'https://www.geogebra.org/' + (map[app] || 'classic');
   }
 
   function materialId(value) {
