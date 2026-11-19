@@ -378,6 +378,26 @@
             ]
           },
           {
+            "name": "geogebra-examples.md",
+            "type": "file",
+            "path": "docs/examples/geogebra-examples.md",
+            "wordCount": 157,
+            "created": 1795100707,
+            "modified": 1795100707,
+            "title": "GeoGebra 交互图",
+            "tags": [
+              "图表",
+              "数学",
+              "交互"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "count": 1
+              }
+            ]
+          },
+          {
             "name": "geojson-examples.md",
             "type": "file",
             "path": "docs/examples/geojson-examples.md",
@@ -726,6 +746,26 @@
               {
                 "name": "theforeveriris",
                 "count": 1
+              }
+            ]
+          },
+          {
+            "name": "logic-examples.md",
+            "type": "file",
+            "path": "docs/examples/logic-examples.md",
+            "wordCount": 341,
+            "created": 1795100338,
+            "modified": 1795120778,
+            "title": "数字逻辑电路",
+            "tags": [
+              "图表",
+              "硬件",
+              "教学"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "count": 2
               }
             ]
           },
@@ -1222,9 +1262,9 @@
             ]
           }
         ],
-        "wordCount": 19746,
+        "wordCount": 20244,
         "created": 1779157467,
-        "modified": 1795027624
+        "modified": 1795120778
       },
       {
         "name": "changelog.md",
@@ -1370,14 +1410,20 @@
         "name": "renderers.md",
         "type": "file",
         "path": "docs/renderers.md",
-        "wordCount": 669,
-        "created": 0,
-        "modified": 0,
+        "wordCount": 487,
+        "created": 1795073663,
+        "modified": 1795120778,
         "title": "渲染器清单与运行来源",
         "tags": [
           "开发",
           "架构",
           "渲染器"
+        ],
+        "contributors": [
+          {
+            "name": "theforeveriris",
+            "count": 4
+          }
         ]
       },
       {
@@ -1458,9 +1504,9 @@
         "name": "show.md",
         "type": "file",
         "path": "docs/show.md",
-        "wordCount": 3567,
+        "wordCount": 3714,
         "created": 1785512983,
-        "modified": 1795028854,
+        "modified": 1795100707,
         "title": "系统运行时截图",
         "tags": [
           "截图"
@@ -1468,7 +1514,7 @@
         "contributors": [
           {
             "name": "theforeveriris",
-            "count": 13
+            "count": 16
           }
         ]
       },
@@ -1496,9 +1542,9 @@
         ]
       }
     ],
-    "wordCount": 33433,
+    "wordCount": 33896,
     "created": 1779157467,
-    "modified": 1795028854
+    "modified": 1795120778
   },
   {
     "name": "iris",
@@ -1655,7 +1701,7 @@
     "path": "README.md",
     "wordCount": 572,
     "created": 1779156860,
-    "modified": 1795028854,
+    "modified": 1795100707,
     "title": "Markdown Preview",
     "tags": [
       "入门"
@@ -1663,7 +1709,7 @@
     "contributors": [
       {
         "name": "theforeveriris",
-        "count": 74
+        "count": 76
       },
       {
         "name": "github-actions[bot]",
