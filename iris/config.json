@@ -42,6 +42,7 @@
     "symbolator": { "enabled": true, "description": "Symbolator 硬件符号图（Verilog / VHDL）" },
     "tikz": { "enabled": true, "description": "TikZ / PGF 图形（Kroki）" },
     "nomnoml": { "enabled": true, "description": "Nomnoml UML / 关系图（Kroki）" },
+    "abc": { "enabled": true, "description": "ABC 乐谱（abcjs，本地）" },
     "logic": { "enabled": true, "description": "数字逻辑电路（门 / 触发器 / 寄存器 / 计数器）" },
     "apexcharts": { "enabled": true, "description": "ApexCharts 交互式图表" },
     "vega-lite": { "enabled": true, "description": "Vega-Lite 声明式可视化" },

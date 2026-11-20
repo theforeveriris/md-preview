@@ -14,6 +14,7 @@
     { "id": "symbolator", "type": "renderer", "file": "iris/js/renderers/symbolator.js", "description": "Symbolator 硬件符号图（Verilog / VHDL）" },
     { "id": "tikz", "type": "renderer", "file": "iris/js/renderers/tikz.js", "description": "TikZ / PGF 图形（Kroki）" },
     { "id": "nomnoml", "type": "renderer", "file": "iris/js/renderers/nomnoml.js", "description": "Nomnoml UML / 关系图（Kroki）" },
+    { "id": "abc", "type": "renderer", "file": "iris/js/renderers/abc.js", "description": "ABC 乐谱（abcjs，本地）" },
     { "id": "logic", "type": "renderer", "file": "iris/js/renderers/logic.js", "description": "数字逻辑电路（门 / 触发器 / 寄存器 / 计数器）" },
     { "id": "apexcharts", "type": "renderer", "file": "iris/js/renderers/apexcharts.js", "description": "ApexCharts 交互式图表" },
     { "id": "vega-lite", "type": "renderer", "file": "iris/js/renderers/vega-lite.js", "description": "Vega-Lite 声明式可视化" },

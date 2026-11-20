@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-19T23:41:32.941Z",
+  "generatedAt": "2026-11-19T23:59:18.241Z",
   "version": 1,
-  "count": 194,
+  "count": 195,
   "urls": [
     "./",
     "./404.html",
@@ -112,6 +112,7 @@
     "./iris/js/qr-encoder.js",
     "./iris/js/qr-share.js",
     "./iris/js/reading-pos.js",
+    "./iris/js/renderers/abc.js",
     "./iris/js/renderers/acl.js",
     "./iris/js/renderers/apexcharts.js",
     "./iris/js/renderers/bytefield.js",

@@ -50,6 +50,13 @@
 - **版权**: Copyright (c) 2016-2023, The Cytoscape Consortium
 - **来源**: https://github.com/cytoscape/cytoscape.js
 
+### ABCJS
+- **版本**: 6.5.2
+- **许可证**: MIT
+- **版权**: Copyright (c) 2009-2024 Paul Rosen and Gregory Dyke
+- **来源**: https://github.com/paulrosen/abcjs
+- **注意**: 仅使用 `abcjs-basic-min.js`（乐谱渲染，不含音频合成）
+
 ## 地图
 
 ### Leaflet

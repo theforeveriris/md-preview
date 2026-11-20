@@ -38,6 +38,7 @@ tags: [开发, 架构, 渲染器]
 | 渲染器 | 代码位置 | 触发语法 | 本地依赖 |
 |--------|----------|----------|----------|
 | Mermaid | `iris/js/renderers/mermaid.js` | ` ```mermaid ` | `iris/vendor/mermaid.min.js` |
+| ABC 乐谱 | `iris/js/renderers/abc.js` | ` ```abc `、` ```music ` | `iris/vendor/abcjs/abcjs-basic-min.js`（本地，按需加载） |
 | SQL DDL / DBML → ER | `iris/js/renderers/sql-erd.js` | ` ```dbml `、` ```sql ddl `、` ```ddl `、` ```erd ` | 原生解析，出图交给本地 Mermaid |
 | ApexCharts | `iris/js/renderers/apexcharts.js` | ` ```apexcharts ` | `iris/vendor/apexcharts.min.js` |
 | KaTeX | `iris/js/renderers/katex.js` | `$...$`、`$$...$$` | `iris/vendor/katex/katex.min.js`、`auto-render.min.js`、`katex.min.css`、本地字体 |

@@ -877,6 +877,10 @@
         const lang = String(p.dataset.lang || '').trim().split(/\s+/)[0];
         return lang === 'geogebra' || lang === 'ggb';
       });
+      case 'abc': return pres.filter(p => {
+        const lang = String(p.dataset.lang || '').trim().split(/\s+/)[0];
+        return lang === 'abc' || lang === 'music';
+      });
       default: return [];
     }
   }

@@ -320,7 +320,7 @@
     'katex', 'pulse', 'secret', 'pptx', 'twitter', 'x', 'embed', 'pkt',
     'ensp', 'geojson', 'topojson', 'toml', 'dockerfile', 'properties',
     'heatmap', 'colorcard', 'colors', 'palette',
-    'wavedrom', 'wireviz', 'bytefield', 'symbolator', 'dbml', 'tikz', 'pgf', 'nomnoml',
+    'wavedrom', 'wireviz', 'bytefield', 'symbolator', 'dbml', 'tikz', 'pgf', 'nomnoml', 'abc', 'music',
     'logic', 'circuit', 'geogebra', 'ggb',
     'ping', 'tracert', 'cli'
   ]);
