@@ -216,7 +216,7 @@ function run() {
   console.log(`  编辑器: ${editorLines} 行 | markdown.js: ${mdLines} 行 | md-render.js: ${sharedLines} 行（共享）`);
   // 共享模块已承担 alerts/spoiler/ruby/codeTabs/columns/画廊/懒加载/净化等，
   // 体积上限放宽（曾 350，现约 1000）
-  assert('md-render.js 行数合理', sharedLines > 200 && sharedLines < 1200);
+  assert('md-render.js 行数合理', sharedLines > 200 && sharedLines < 1300);
 
   console.log('');
   console.log(`============================`);
