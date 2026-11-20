@@ -8,6 +8,26 @@
         "type": "folder",
         "children": [
           {
+            "name": "abc-examples.md",
+            "type": "file",
+            "path": "docs/examples/abc-examples.md",
+            "wordCount": 318,
+            "created": 1795132842,
+            "modified": 1795132842,
+            "title": "ABC 乐谱",
+            "tags": [
+              "音乐",
+              "图表",
+              "五线谱"
+            ],
+            "contributors": [
+              {
+                "name": "theforeveriris",
+                "count": 1
+              }
+            ]
+          },
+          {
             "name": "acl-route-examples.md",
             "type": "file",
             "path": "docs/examples/acl-route-examples.md",
@@ -1302,9 +1322,9 @@
             ]
           }
         ],
-        "wordCount": 20751,
+        "wordCount": 21069,
         "created": 1779157467,
-        "modified": 1795131660
+        "modified": 1795132842
       },
       {
         "name": "changelog.md",
@@ -1452,7 +1472,7 @@
         "path": "docs/renderers.md",
         "wordCount": 624,
         "created": 1795073663,
-        "modified": 1795131660,
+        "modified": 1795132842,
         "title": "渲染器清单与运行来源",
         "tags": [
           "开发",
@@ -1462,7 +1482,7 @@
         "contributors": [
           {
             "name": "theforeveriris",
-            "count": 6
+            "count": 7
           }
         ]
       },
@@ -1544,9 +1564,9 @@
         "name": "show.md",
         "type": "file",
         "path": "docs/show.md",
-        "wordCount": 3826,
+        "wordCount": 3878,
         "created": 1785512983,
-        "modified": 1795131660,
+        "modified": 1795132842,
         "title": "系统运行时截图",
         "tags": [
           "截图"
@@ -1554,7 +1574,7 @@
         "contributors": [
           {
             "name": "theforeveriris",
-            "count": 18
+            "count": 19
           }
         ]
       },
@@ -1582,9 +1602,9 @@
         ]
       }
     ],
-    "wordCount": 34652,
+    "wordCount": 35022,
     "created": 1779157467,
-    "modified": 1795131660
+    "modified": 1795132842
   },
   {
     "name": "iris",
@@ -1741,7 +1761,7 @@
     "path": "README.md",
     "wordCount": 572,
     "created": 1779156860,
-    "modified": 1795131660,
+    "modified": 1795132842,
     "title": "Markdown Preview",
     "tags": [
       "入门"
@@ -1749,7 +1769,7 @@
     "contributors": [
       {
         "name": "theforeveriris",
-        "count": 78
+        "count": 79
       },
       {
         "name": "github-actions[bot]",
