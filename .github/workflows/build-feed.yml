@@ -1,0 +1,46 @@
+name: Build RSS Feed
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-feed
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      with:
+        fetch-depth: 0  # 完整 git 历史，用于读取文件提交时间
+
+    - name: Set up Node.js
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      with:
+        node-version: '20'
+
+    - name: Build RSS feed
+      run: node iris/scripts/build-feed.js
+
+    - name: Build sitemap
+      run: node iris/scripts/build-sitemap.js
+
+    # 提交+rebase 重试统一走 composite action（此前 feed/links/cjk 三处近逐字重复；
+    # EndBug/add-and-commit 的 add → pull → commit → push 顺序在暂存后 pull --rebase
+    # 会报 uncommitted changes，因此弃用）
+    - name: Commit and push changes
+      uses: ./.github/actions/commit-with-retry
+      with:
+        message: 'build: update feed.xml and sitemap.xml'
+        files: 'iris/data/feed.xml iris/data/sitemap.xml'

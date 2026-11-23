@@ -1,0 +1,250 @@
+/* ============== pcap 抓包渲染器（renderers/pcap.js） ============== */
+/* 类 Wireshark 包列表：工具条 / 协议分布条 / 可排序列表 / 字段树。
+   配色全部走主题变量，明暗主题自动适配。 */
+
+.pcap-table {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  margin: 14px 0;
+  overflow: hidden;
+  background: var(--color-surface);
+  font-size: 13px;
+}
+
+.pcap-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.pcap-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1 1 220px;
+  min-width: 160px;
+  padding: 4px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text-muted);
+}
+
+.pcap-filter:focus-within { border-color: var(--color-accent-purple); }
+
+.pcap-filter-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-mono, monospace);
+  font-size: 12.5px;
+}
+
+.pcap-count { font-size: 12px; color: var(--color-text-muted); white-space: nowrap; }
+.pcap-toolbar-space { flex: 0 0 auto; }
+.pcap-file-badge {
+  font-family: var(--font-mono, monospace);
+  font-size: 11.5px;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 2px 10px;
+  white-space: nowrap;
+}
+
+/* 协议分布条：分段色块 + 图例 */
+.pcap-proto-bar {
+  display: flex;
+  align-items: center;
+  height: 6px;
+  background: color-mix(in srgb, var(--color-text) 5%, transparent);
+}
+.pcap-proto-seg { height: 100%; min-width: 3px; }
+.pcap-proto-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  padding: 6px 12px;
+  font-size: 11.5px;
+  color: var(--color-text-muted);
+}
+.pcap-legend-item { display: inline-flex; align-items: center; gap: 5px; }
+.pcap-dot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+
+/* 包列表 */
+.pcap-scroll { overflow: auto; max-height: 480px; }
+
+.pcap-grid { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+
+.pcap-grid thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--color-surface);
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.pcap-grid thead th.pc-num { text-align: right; }
+.pcap-grid thead th.pc-sorted { color: var(--color-accent-purple-deep); }
+.pcap-grid thead th.pc-sorted-asc::after { content: ' ↑'; }
+.pcap-grid thead th.pc-sorted-desc::after { content: ' ↓'; }
+
+.pcap-grid tbody td {
+  padding: 5px 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
+  white-space: nowrap;
+}
+
+.pcap-grid tbody td.pc-num { text-align: right; color: var(--color-text-muted); }
+.pcap-grid tbody td.pc-addr { font-family: var(--font-mono, monospace); font-size: 12.5px; }
+.pcap-grid tbody td.pc-info {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 340px;
+  color: var(--color-text-muted);
+}
+
+.pcap-row { cursor: pointer; }
+.pcap-row:hover { background: color-mix(in srgb, var(--color-accent-purple) 7%, transparent); }
+.pcap-row.pc-expanded {
+  background: color-mix(in srgb, var(--color-accent-purple) 12%, transparent);
+}
+
+/* 协议着色（chip / 分布条 / 图例共用） */
+.pcap-proto-chip {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-family: var(--font-mono, monospace);
+}
+
+.pcap-proto-tcp   { background: color-mix(in srgb, #10B981 16%, transparent); color: #10B981; }
+.pcap-proto-udp   { background: color-mix(in srgb, #3B82F6 16%, transparent); color: #3B82F6; }
+.pcap-proto-icmp  { background: color-mix(in srgb, #EC4899 16%, transparent); color: #EC4899; }
+.pcap-proto-dns   { background: color-mix(in srgb, #06B6D4 16%, transparent); color: #06B6D4; }
+.pcap-proto-arp   { background: color-mix(in srgb, #F59E0B 16%, transparent); color: #F59E0B; }
+.pcap-proto-tls   { background: color-mix(in srgb, #8B5CF6 16%, transparent); color: #8B5CF6; }
+.pcap-proto-http  { background: color-mix(in srgb, #F97316 16%, transparent); color: #F97316; }
+.pcap-proto-dhcp  { background: color-mix(in srgb, #84CC16 16%, transparent); color: #84CC16; }
+.pcap-proto-ipv6  { background: color-mix(in srgb, #14B8A6 16%, transparent); color: #14B8A6; }
+.pcap-proto-ssdp  { background: color-mix(in srgb, #A855F7 16%, transparent); color: #A855F7; }
+.pcap-proto-igmp  { background: color-mix(in srgb, #EAB308 16%, transparent); color: #EAB308; }
+.pcap-proto-ospf  { background: color-mix(in srgb, #6366F1 16%, transparent); color: #6366F1; }
+.pcap-proto-other { background: color-mix(in srgb, var(--color-text) 10%, transparent); color: var(--color-text-muted); }
+
+/* 高对比环境：色块仅靠颜色区分不够，加边框 */
+@media (prefers-contrast: more) {
+  .pcap-proto-chip, .pcap-proto-seg, .pcap-dot { outline: 1px solid var(--color-border); }
+}
+
+/* 字段树 */
+.pcap-detail {
+  border-top: 1px solid var(--color-border);
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--color-text) 3%, transparent);
+  max-height: 260px;
+  overflow: auto;
+}
+
+.pcap-detail-title {
+  font-weight: 600;
+  font-size: 12.5px;
+  margin-bottom: 8px;
+  color: var(--color-text);
+}
+
+.pc-field {
+  display: flex;
+  gap: 12px;
+  padding: 2px 8px;
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  border-radius: 4px;
+}
+.pc-field:hover { background: color-mix(in srgb, var(--color-accent-purple) 8%, transparent); }
+.pc-field-k { color: var(--color-text-muted); flex: 0 0 150px; }
+.pc-field-v { color: var(--color-text); word-break: break-all; }
+
+/* 解析失败提示 */
+.pcap-error {
+  padding: 10px 14px;
+  border: 1px solid var(--color-error, #ff6b6b);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-error, #ff6b6b) 10%, transparent);
+  color: var(--color-error, #ff6b6b);
+  font-size: 13px;
+}
+.pcap-error-box { margin: 10px 0; }
+
+/* 协议分层树（嵌套可折叠） */
+.pc-layer { margin: 2px 0; padding-left: calc(var(--depth) * 10px); }
+.pc-layer > summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--color-text);
+  padding: 3px 6px;
+  border-radius: 4px;
+  user-select: none;
+}
+.pc-layer > summary:hover { background: color-mix(in srgb, var(--color-accent-purple) 8%, transparent); }
+.pc-layer-leaf {
+  padding-left: calc(var(--depth) * 10px + 4px);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.pc-layer-fields {
+  border-left: 1px solid var(--color-border);
+  margin-left: 8px;
+  padding-left: 8px;
+}
+
+/* Hex Dump（等宽三栏：偏移 / hex / ASCII） */
+.pc-hex {
+  margin-top: 10px;
+  padding: 8px 10px;
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
+  border-radius: 6px;
+  font-family: var(--font-mono, monospace);
+  font-size: 11.5px;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+.pc-hex-row { display: flex; gap: 14px; white-space: pre; }
+.pc-hex-off { color: var(--color-accent-purple-deep); flex: 0 0 36px; }
+.pc-hex-bytes { color: var(--color-text); }
+.pc-hex-ascii { color: var(--color-text-muted); }
+
+/* 导出按钮 */
+.pcap-export-btn {
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition-smooth);
+}
+.pcap-export-btn:hover { color: var(--color-accent-purple); border-color: var(--color-accent-purple); }

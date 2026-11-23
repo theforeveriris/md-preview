@@ -1,0 +1,102 @@
+(function() {
+  window.MarkdownPreview = window.MarkdownPreview || {};
+
+  // ============== 按需加载 vendor 脚本/样式（带去重缓存） ==============
+  // 首屏不再 defer 加载重型库，改由各渲染器在真正需要时调用
+  window.MarkdownPreview._scriptCache = window.MarkdownPreview._scriptCache || {};
+  window.MarkdownPreview._styleCache = window.MarkdownPreview._styleCache || {};
+
+  window.MarkdownPreview.loadScript = function(src) {
+    const cache = window.MarkdownPreview._scriptCache;
+    if (cache[src]) return cache[src];
+    // 已经存在同名 <script>（例如历史遗留标签）则复用
+    const existing = document.querySelector('script[src="' + (window.CSS && CSS.escape ? CSS.escape(src) : src) + '"]');
+    if (existing && existing.dataset.loaded === '1') {
+      cache[src] = Promise.resolve();
+      return cache[src];
+    }
+    cache[src] = new Promise((resolve, reject) => {
+      if (existing) {
+        // 旧标签已失败（error 标记）：替换新标签重试，而不是挂已死节点导致 Promise 永远悬挂
+        if (existing.dataset.failed === '1') {
+          existing.remove();
+          delete cache[src];
+          return loadScript(src).then(resolve, reject);
+        }
+        existing.addEventListener('load', () => { existing.dataset.loaded = '1'; resolve(); });
+        existing.addEventListener('error', () => {
+          existing.dataset.failed = '1';
+          delete cache[src];
+          reject(new Error('Failed to load ' + src));
+        });
+        return;
+      }
+      const s = document.createElement('script');
+      s.src = src;
+      s.async = true;
+      s.onload = () => { s.dataset.loaded = '1'; resolve(); };
+      s.onerror = () => {
+        // 不 remove：保留 failed 标记，重复调用走上面的替换重试路径
+        s.dataset.failed = '1';
+        delete cache[src];
+        reject(new Error('Failed to load ' + src));
+      };
+      document.head.appendChild(s);
+    });
+    return cache[src];
+  };
+
+  window.MarkdownPreview.loadStyle = function(href) {
+    const cache = window.MarkdownPreview._styleCache;
+    if (cache[href]) return cache[href];
+    if (document.querySelector('link[rel="stylesheet"][href="' + (window.CSS && CSS.escape ? CSS.escape(href) : href) + '"]')) {
+      cache[href] = Promise.resolve();
+      return cache[href];
+    }
+    cache[href] = new Promise((resolve, reject) => {
+      const l = document.createElement('link');
+      l.rel = 'stylesheet';
+      l.href = href;
+      l.onload = () => resolve();
+      l.onerror = () => { delete cache[href]; l.remove(); reject(new Error('Failed to load ' + href)); };
+      document.head.appendChild(l);
+    });
+    return cache[href];
+  };
+
+  // 渲染器共用 SVG 图标构造（此前 csv-table/json-tree/sandbox 三份逐字副本）
+  window.MarkdownPreview.icon = function(name, size) {
+    return `<svg width="${size || 14}" height="${size || 14}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#${name}"/></svg>`;
+  };
+
+  window.MarkdownPreview.dom = {
+    fileTree: document.getElementById('fileTree'),
+    markdownContent: document.getElementById('markdownContent'),
+    sidebar: document.getElementById('sidebar'),
+    sidebarToggle: document.getElementById('sidebarToggle'),
+    mobileMenuBtn: document.getElementById('mobileMenuBtn'),
+    sidebarOverlay: document.getElementById('sidebarOverlay'),
+    progressBar: document.getElementById('progressBar'),
+    readingProgressBar: document.querySelector('.reading-progress-bar'),
+    modeFiles: document.getElementById('modeFiles'),
+    modeIndex: document.getElementById('modeIndex'),
+    modeTags: document.getElementById('modeTags'),
+    indexTree: document.getElementById('indexTree'),
+    searchInput: document.getElementById('searchInput'),
+    searchResults: document.getElementById('searchResults'),
+    searchTrigger: document.getElementById('searchTrigger'),
+    searchTriggerKbd: document.getElementById('searchTriggerKbd'),
+    paletteOverlay: document.getElementById('paletteOverlay'),
+    paletteClear: document.getElementById('paletteClear'),
+    pageHeader: document.getElementById('pageHeader'),
+    pageBreadcrumbs: document.getElementById('pageBreadcrumbs'),
+    editPageBtn: document.getElementById('editPageBtn'),
+    floatingMenu: document.getElementById('floatingMenu'),
+    menuTrigger: document.getElementById('menuTrigger'),
+    menuItems: document.querySelector('.menu-items'),
+    backToTopBtn: document.getElementById('backToTopBtn'),
+    openSettingsBtn: document.getElementById('openSettingsBtn'),
+    settingsOverlay: document.getElementById('settingsOverlay'),
+    showReadingProgressToggle: document.getElementById('showReadingProgressToggle')
+  };
+})();
