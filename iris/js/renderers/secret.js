@@ -33,18 +33,19 @@
             <input type="password" class="secret-pass-input" placeholder="${esc(t('secret.passPh', '输入口令'))}" aria-label="${esc(t('secret.passPh', '输入口令'))}">
             <button type="button" class="secret-unlock" title="${esc(t('secret.unlock', '解锁'))}" aria-label="${esc(t('secret.unlock', '解锁'))}"><svg class="ico ico-xs" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
           </div>
-          <div class="secret-error" hidden>${esc(t('secret.wrongPass', '口令不对，再想想'))}</div>
         </div>
         ${contentHtml}`;
       const input = widget.querySelector('.secret-pass-input');
       const unlock = () => {
         if (input.value === password) {
+          widget.classList.remove('secret-wrong');
           widget.classList.add('secret-revealed');
         } else {
-          const err = widget.querySelector('.secret-error');
-          err.hidden = false;
+          // 口令不对：输入框标红 + 轻微抖动，不再显示文字提示
           widget.classList.remove('secret-shake');
+          widget.classList.add('secret-wrong');
           requestAnimationFrame(() => widget.classList.add('secret-shake'));
+          input.select();
         }
       };
       widget.querySelector('.secret-unlock').addEventListener('click', unlock);

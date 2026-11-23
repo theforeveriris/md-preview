@@ -124,7 +124,7 @@
     const text = pre.querySelector('code')?.textContent || '';
     const entries = parseLog(text);
     const widget = document.createElement('div');
-    widget.className = 'log-view has-float w-has-float';
+    widget.className = 'log-view w-has-float';
 
     // 没有头部行：筛选 / 搜索 / 导出收进悬停浮出的胶囊
     const float = document.createElement('div');

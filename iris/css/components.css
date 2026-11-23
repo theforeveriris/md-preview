@@ -1112,35 +1112,43 @@ pre.code-block code { position: relative; z-index: 1; }
 .rt-direct { color: var(--color-text-muted); }
 .rt-widget.p-c .rt-proto { color: #2980b9; }
 
-/* ============== 终端回放块（renderers/terminal.js） ============== */
+/* ============== 终端回放块（renderers/terminal.js） ==============
+   没有头部行：倍速 / 播放 / 直接看结果收进右上角悬停浮窗，
+   深色只保留在终端本体（.term-body），整体跟随主题。 */
 .term-replay {
+  position: relative;
   border-radius: 10px;
-  overflow: hidden;
   margin: 14px 0;
-  background: #1e1e2e;
-  border: 1px solid rgba(255, 255, 255, 0.08);
 }
-.term-head {
-  display: flex; align-items: center; gap: 10px;
-  padding: 8px 12px; background: #181825; border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-.term-dots { display: inline-flex; gap: 5px; }
-.term-dots i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-.term-dots i:nth-child(1) { background: #f38ba8; }
-.term-dots i:nth-child(2) { background: #f9e2af; }
-.term-dots i:nth-child(3) { background: #a6e3a1; }
-.term-title { font-size: 12px; color: #a6adc8; flex: 1 1 auto; }
-.term-controls { display: inline-flex; align-items: center; gap: 6px; }
 .term-speed {
-  background: #313244; color: #cdd6f4; border: none; border-radius: 6px;
-  font-size: 11.5px; padding: 3px 6px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 11.5px;
+  padding: 3px 6px;
 }
 .term-play, .term-end {
-  background: #45475a; color: #cdd6f4; border: none; border-radius: 6px;
-  font-size: 11.5px; padding: 3px 10px; cursor: pointer;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 11.5px;
+  padding: 3px 10px;
+  cursor: pointer;
 }
-.term-play:hover, .term-end:hover { background: #585b70; }
-.term-body { max-height: 420px; overflow: auto; padding: 14px 16px; }
+.term-play:hover, .term-end:hover {
+  border-color: var(--color-accent-purple);
+  color: var(--color-accent-purple-deep);
+}
+.term-body {
+  max-height: 420px;
+  overflow: auto;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: var(--color-term-bg, #1e1e2e);
+  border: 1px solid var(--color-border);
+}
 .term-screen {
   font-family: Consolas, Monaco, monospace; font-size: 12.5px; line-height: 1.6;
   color: #cdd6f4; white-space: pre-wrap; word-break: break-all; display: block;
@@ -1261,12 +1269,9 @@ pre.code-block code { position: relative; z-index: 1; }
 }
 .secret-unlock:hover { background: rgba(255, 255, 255, 0.3); }
 .secret-unlock .ico { width: 15px; height: 15px; }
-.secret-error {
-  font-size: 12px;
-  color: #c0392b;
-  background: var(--color-surface);
-  border-radius: 6px;
-  padding: 2px 9px;
+/* 口令不对：输入框边框标红（不再显示文字提示） */
+.secret-widget.secret-wrong .secret-pass-field {
+  box-shadow: 0 0 0 3px color-mix(in srgb, #c0392b 32%, transparent), 0 4px 18px rgba(0, 0, 0, 0.25);
 }
 .secret-shake { animation: secret-shake 0.35s ease; }
 @keyframes secret-shake {

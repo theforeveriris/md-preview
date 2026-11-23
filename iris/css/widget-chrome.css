@@ -400,7 +400,7 @@
   opacity: 0.8;
 }
 
-/* 终端：头部离开深色外壳，深色只保留在终端本体 */
+/* 终端：无头部行，浮窗浮在终端本体右上角 */
 .term-replay {
   background: transparent;
   border: 0;
@@ -408,10 +408,13 @@
 }
 
 .term-replay .term-body {
-  background: #1e1e2e;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  margin-top: 6px;
+  margin-top: 0;
+}
+
+/* 终端浮窗在深色本体上：按钮用深色玻璃质感 */
+.term-float {
+  background: color-mix(in srgb, var(--color-term-bg, #1e1e2e) 88%, transparent);
+  border-color: rgba(255, 255, 255, 0.14);
 }
 
 /* 窄屏 / 触屏：芯片行可横向滑动，避免被裁成半个 */
@@ -637,11 +640,14 @@
   color: var(--color-accent-purple);
 }
 
-/* 终端回放：倍速与播控在浮窗里紧凑排列 */
+/* 终端回放：倍速与播控在浮窗里紧凑排列（浮窗是深色玻璃） */
 .w-float .term-speed {
   height: 26px;
   font-size: 11.5px;
   padding: 0 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+  color: #cdd6f4;
 }
 
 .w-float .term-play,
@@ -650,6 +656,16 @@
   padding: 0 9px;
   font-size: 11.5px;
   white-space: nowrap;
+  background: rgba(255, 255, 255, 0.14);
+  border-color: transparent;
+  color: #cdd6f4;
+}
+
+.w-float .term-play:hover,
+.w-float .term-end:hover {
+  background: rgba(255, 255, 255, 0.24);
+  border-color: transparent;
+  color: #fff;
 }
 
 .term-cursor {
